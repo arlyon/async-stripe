@@ -123,13 +123,13 @@ impl CustomerBalanceCustomerBalanceSettingsReconciliationMode {
 }
 
 impl std::str::FromStr for CustomerBalanceCustomerBalanceSettingsReconciliationMode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerBalanceCustomerBalanceSettingsReconciliationMode::*;
         match s {
             "automatic" => Ok(Automatic),
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

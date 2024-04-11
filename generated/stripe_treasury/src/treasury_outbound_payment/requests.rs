@@ -185,7 +185,7 @@ impl ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetailsCode {
 }
 
 impl std::str::FromStr for ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetailsCode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetailsCode::*;
         match s {
@@ -199,7 +199,7 @@ impl std::str::FromStr for ReturnOutboundPaymentTreasuryOutboundPaymentReturnedD
             "invalid_currency" => Ok(InvalidCurrency),
             "no_account" => Ok(NoAccount),
             "other" => Ok(Other),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -422,13 +422,13 @@ impl CreateTreasuryOutboundPaymentDestinationPaymentMethodDataType {
 }
 
 impl std::str::FromStr for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryOutboundPaymentDestinationPaymentMethodDataType::*;
         match s {
             "financial_account" => Ok(FinancialAccount),
             "us_bank_account" => Ok(UsBankAccount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -511,13 +511,13 @@ impl CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccou
 impl std::str::FromStr
     for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountHolderType
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -575,13 +575,13 @@ impl CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccou
 impl std::str::FromStr
     for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountType
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountType::*;
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -667,13 +667,13 @@ impl CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccountNe
 impl std::str::FromStr
     for CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccountNetwork
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccountNetwork::*;
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

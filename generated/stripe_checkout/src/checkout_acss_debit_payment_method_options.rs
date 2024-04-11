@@ -141,13 +141,13 @@ impl CheckoutAcssDebitPaymentMethodOptionsCurrency {
 }
 
 impl std::str::FromStr for CheckoutAcssDebitPaymentMethodOptionsCurrency {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutAcssDebitPaymentMethodOptionsCurrency::*;
         match s {
             "cad" => Ok(Cad),
             "usd" => Ok(Usd),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -225,14 +225,14 @@ impl CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage {
 }
 
 impl std::str::FromStr for CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -307,14 +307,14 @@ impl CheckoutAcssDebitPaymentMethodOptionsVerificationMethod {
 }
 
 impl std::str::FromStr for CheckoutAcssDebitPaymentMethodOptionsVerificationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutAcssDebitPaymentMethodOptionsVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

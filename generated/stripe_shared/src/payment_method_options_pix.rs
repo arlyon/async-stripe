@@ -138,12 +138,12 @@ impl PaymentMethodOptionsPixSetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsPixSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsPixSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

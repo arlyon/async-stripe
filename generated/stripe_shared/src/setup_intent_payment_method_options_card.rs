@@ -154,7 +154,7 @@ impl SetupIntentPaymentMethodOptionsCardNetwork {
 }
 
 impl std::str::FromStr for SetupIntentPaymentMethodOptionsCardNetwork {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentPaymentMethodOptionsCardNetwork::*;
         match s {
@@ -169,7 +169,7 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsCardNetwork {
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -243,14 +243,14 @@ impl SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
 }
 
 impl std::str::FromStr for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentPaymentMethodOptionsCardRequestThreeDSecure::*;
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

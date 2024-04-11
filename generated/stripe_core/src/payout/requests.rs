@@ -144,13 +144,13 @@ impl CreatePayoutMethod {
 }
 
 impl std::str::FromStr for CreatePayoutMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePayoutMethod::*;
         match s {
             "instant" => Ok(Instant),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -204,14 +204,14 @@ impl CreatePayoutSourceType {
 }
 
 impl std::str::FromStr for CreatePayoutSourceType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePayoutSourceType::*;
         match s {
             "bank_account" => Ok(BankAccount),
             "card" => Ok(Card),
             "fpx" => Ok(Fpx),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

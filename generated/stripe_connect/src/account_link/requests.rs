@@ -54,13 +54,13 @@ impl CreateAccountLinkCollect {
 }
 
 impl std::str::FromStr for CreateAccountLinkCollect {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAccountLinkCollect::*;
         match s {
             "currently_due" => Ok(CurrentlyDue),
             "eventually_due" => Ok(EventuallyDue),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -126,13 +126,13 @@ impl CreateAccountLinkCollectionOptionsFields {
 }
 
 impl std::str::FromStr for CreateAccountLinkCollectionOptionsFields {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAccountLinkCollectionOptionsFields::*;
         match s {
             "currently_due" => Ok(CurrentlyDue),
             "eventually_due" => Ok(EventuallyDue),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -183,13 +183,13 @@ impl CreateAccountLinkCollectionOptionsFutureRequirements {
 }
 
 impl std::str::FromStr for CreateAccountLinkCollectionOptionsFutureRequirements {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAccountLinkCollectionOptionsFutureRequirements::*;
         match s {
             "include" => Ok(Include),
             "omit" => Ok(Omit),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -242,13 +242,13 @@ impl CreateAccountLinkType {
 }
 
 impl std::str::FromStr for CreateAccountLinkType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAccountLinkType::*;
         match s {
             "account_onboarding" => Ok(AccountOnboarding),
             "account_update" => Ok(AccountUpdate),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

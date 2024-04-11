@@ -233,7 +233,7 @@ impl ReviewClosedReason {
 }
 
 impl std::str::FromStr for ReviewClosedReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ReviewClosedReason::*;
         match s {
@@ -242,7 +242,7 @@ impl std::str::FromStr for ReviewClosedReason {
             "redacted" => Ok(Redacted),
             "refunded" => Ok(Refunded),
             "refunded_as_fraud" => Ok(RefundedAsFraud),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -307,13 +307,13 @@ impl ReviewOpenedReason {
 }
 
 impl std::str::FromStr for ReviewOpenedReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ReviewOpenedReason::*;
         match s {
             "manual" => Ok(Manual),
             "rule" => Ok(Rule),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

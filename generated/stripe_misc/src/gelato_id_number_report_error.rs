@@ -116,14 +116,14 @@ impl GelatoIdNumberReportErrorCode {
 }
 
 impl std::str::FromStr for GelatoIdNumberReportErrorCode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoIdNumberReportErrorCode::*;
         match s {
             "id_number_insufficient_document_data" => Ok(IdNumberInsufficientDocumentData),
             "id_number_mismatch" => Ok(IdNumberMismatch),
             "id_number_unverified_other" => Ok(IdNumberUnverifiedOther),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

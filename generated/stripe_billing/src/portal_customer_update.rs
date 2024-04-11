@@ -124,7 +124,7 @@ impl PortalCustomerUpdateAllowedUpdates {
 }
 
 impl std::str::FromStr for PortalCustomerUpdateAllowedUpdates {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalCustomerUpdateAllowedUpdates::*;
         match s {
@@ -134,7 +134,7 @@ impl std::str::FromStr for PortalCustomerUpdateAllowedUpdates {
             "phone" => Ok(Phone),
             "shipping" => Ok(Shipping),
             "tax_id" => Ok(TaxId),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

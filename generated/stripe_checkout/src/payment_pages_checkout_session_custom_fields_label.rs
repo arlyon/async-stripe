@@ -112,12 +112,12 @@ impl PaymentPagesCheckoutSessionCustomFieldsLabelType {
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionCustomFieldsLabelType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionCustomFieldsLabelType::*;
         match s {
             "custom" => Ok(Custom),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

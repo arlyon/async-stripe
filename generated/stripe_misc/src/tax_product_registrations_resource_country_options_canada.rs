@@ -122,14 +122,14 @@ impl TaxProductRegistrationsResourceCountryOptionsCanadaType {
 }
 
 impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsCanadaType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductRegistrationsResourceCountryOptionsCanadaType::*;
         match s {
             "province_standard" => Ok(ProvinceStandard),
             "simplified" => Ok(Simplified),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

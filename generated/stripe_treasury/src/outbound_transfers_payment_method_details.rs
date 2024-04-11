@@ -125,12 +125,12 @@ impl OutboundTransfersPaymentMethodDetailsType {
 }
 
 impl std::str::FromStr for OutboundTransfersPaymentMethodDetailsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use OutboundTransfersPaymentMethodDetailsType::*;
         match s {
             "us_bank_account" => Ok(UsBankAccount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

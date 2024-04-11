@@ -82,7 +82,7 @@ impl ListPriceRecurringInterval {
 }
 
 impl std::str::FromStr for ListPriceRecurringInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListPriceRecurringInterval::*;
         match s {
@@ -90,7 +90,7 @@ impl std::str::FromStr for ListPriceRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -139,13 +139,13 @@ impl ListPriceRecurringUsageType {
 }
 
 impl std::str::FromStr for ListPriceRecurringUsageType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListPriceRecurringUsageType::*;
         match s {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -533,7 +533,7 @@ impl CreatePriceRecurringAggregateUsage {
 }
 
 impl std::str::FromStr for CreatePriceRecurringAggregateUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePriceRecurringAggregateUsage::*;
         match s {
@@ -541,7 +541,7 @@ impl std::str::FromStr for CreatePriceRecurringAggregateUsage {
             "last_ever" => Ok(LastEver),
             "max" => Ok(Max),
             "sum" => Ok(Sum),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -595,7 +595,7 @@ impl CreatePriceRecurringInterval {
 }
 
 impl std::str::FromStr for CreatePriceRecurringInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePriceRecurringInterval::*;
         match s {
@@ -603,7 +603,7 @@ impl std::str::FromStr for CreatePriceRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -656,13 +656,13 @@ impl CreatePriceRecurringUsageType {
 }
 
 impl std::str::FromStr for CreatePriceRecurringUsageType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePriceRecurringUsageType::*;
         match s {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -770,13 +770,13 @@ impl CreatePriceTransformQuantityRound {
 }
 
 impl std::str::FromStr for CreatePriceTransformQuantityRound {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePriceTransformQuantityRound::*;
         match s {
             "down" => Ok(Down),
             "up" => Ok(Up),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

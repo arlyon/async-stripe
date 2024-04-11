@@ -119,7 +119,7 @@ impl ShippingRateDeliveryEstimateBoundUnit {
 }
 
 impl std::str::FromStr for ShippingRateDeliveryEstimateBoundUnit {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ShippingRateDeliveryEstimateBoundUnit::*;
         match s {
@@ -128,7 +128,7 @@ impl std::str::FromStr for ShippingRateDeliveryEstimateBoundUnit {
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

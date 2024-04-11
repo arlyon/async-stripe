@@ -409,13 +409,13 @@ impl PaymentLinkCustomerCreation {
 }
 
 impl std::str::FromStr for PaymentLinkCustomerCreation {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinkCustomerCreation::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -480,13 +480,13 @@ impl PaymentLinkPaymentMethodCollection {
 }
 
 impl std::str::FromStr for PaymentLinkPaymentMethodCollection {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinkPaymentMethodCollection::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -563,13 +563,13 @@ impl PaymentLinkBillingAddressCollection {
 }
 
 impl std::str::FromStr for PaymentLinkBillingAddressCollection {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinkBillingAddressCollection::*;
         match s {
             "auto" => Ok(Auto),
             "required" => Ok(Required),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -692,7 +692,7 @@ impl PaymentLinkPaymentMethodTypes {
 }
 
 impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinkPaymentMethodTypes::*;
         match s {
@@ -725,7 +725,7 @@ impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
             "swish" => Ok(Swish),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -757,10 +757,7 @@ impl miniserde::Deserialize for PaymentLinkPaymentMethodTypes {
 impl miniserde::de::Visitor for crate::Place<PaymentLinkPaymentMethodTypes> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentLinkPaymentMethodTypes::from_str(s)
-                .unwrap_or(PaymentLinkPaymentMethodTypes::Unknown),
-        );
+        self.out = Some(PaymentLinkPaymentMethodTypes::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -771,7 +768,7 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -794,7 +791,7 @@ impl PaymentLinkSubmitType {
 }
 
 impl std::str::FromStr for PaymentLinkSubmitType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinkSubmitType::*;
         match s {
@@ -802,7 +799,7 @@ impl std::str::FromStr for PaymentLinkSubmitType {
             "book" => Ok(Book),
             "donate" => Ok(Donate),
             "pay" => Ok(Pay),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

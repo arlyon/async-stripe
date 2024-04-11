@@ -173,7 +173,7 @@ impl FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
 }
 
 impl std::str::FromStr for FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FundingInstructionsBankTransferFinancialAddressSupportedNetworks::*;
         match s {
@@ -185,7 +185,7 @@ impl std::str::FromStr for FundingInstructionsBankTransferFinancialAddressSuppor
             "spei" => Ok(Spei),
             "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -266,7 +266,7 @@ impl FundingInstructionsBankTransferFinancialAddressType {
 }
 
 impl std::str::FromStr for FundingInstructionsBankTransferFinancialAddressType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FundingInstructionsBankTransferFinancialAddressType::*;
         match s {
@@ -276,7 +276,7 @@ impl std::str::FromStr for FundingInstructionsBankTransferFinancialAddressType {
             "spei" => Ok(Spei),
             "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

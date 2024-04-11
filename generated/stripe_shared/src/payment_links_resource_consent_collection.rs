@@ -133,13 +133,13 @@ impl PaymentLinksResourceConsentCollectionPromotions {
 }
 
 impl std::str::FromStr for PaymentLinksResourceConsentCollectionPromotions {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinksResourceConsentCollectionPromotions::*;
         match s {
             "auto" => Ok(Auto),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -211,13 +211,13 @@ impl PaymentLinksResourceConsentCollectionTermsOfService {
 }
 
 impl std::str::FromStr for PaymentLinksResourceConsentCollectionTermsOfService {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinksResourceConsentCollectionTermsOfService::*;
         match s {
             "none" => Ok(None),
             "required" => Ok(Required),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

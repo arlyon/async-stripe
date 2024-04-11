@@ -114,13 +114,13 @@ impl ConnectAccountReferenceType {
 }
 
 impl std::str::FromStr for ConnectAccountReferenceType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConnectAccountReferenceType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

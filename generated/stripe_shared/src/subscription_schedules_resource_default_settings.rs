@@ -195,13 +195,13 @@ impl SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor {
 }
 
 impl std::str::FromStr for SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor::*;
         match s {
             "automatic" => Ok(Automatic),
             "phase_start" => Ok(PhaseStart),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -280,13 +280,13 @@ impl SubscriptionSchedulesResourceDefaultSettingsCollectionMethod {
 }
 
 impl std::str::FromStr for SubscriptionSchedulesResourceDefaultSettingsCollectionMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionSchedulesResourceDefaultSettingsCollectionMethod::*;
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

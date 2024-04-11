@@ -389,13 +389,13 @@ impl CardAvailablePayoutMethods {
 }
 
 impl std::str::FromStr for CardAvailablePayoutMethods {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CardAvailablePayoutMethods::*;
         match s {
             "instant" => Ok(Instant),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

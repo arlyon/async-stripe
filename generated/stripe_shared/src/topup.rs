@@ -260,7 +260,7 @@ impl TopupStatus {
 }
 
 impl std::str::FromStr for TopupStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TopupStatus::*;
         match s {
@@ -269,7 +269,7 @@ impl std::str::FromStr for TopupStatus {
             "pending" => Ok(Pending),
             "reversed" => Ok(Reversed),
             "succeeded" => Ok(Succeeded),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

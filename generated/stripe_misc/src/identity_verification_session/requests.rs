@@ -148,14 +148,14 @@ impl CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
 }
 
 impl std::str::FromStr for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIdentityVerificationSessionOptionsDocumentAllowedTypes::*;
         match s {
             "driving_license" => Ok(DrivingLicense),
             "id_card" => Ok(IdCard),
             "passport" => Ok(Passport),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -284,14 +284,14 @@ impl UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
 }
 
 impl std::str::FromStr for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes::*;
         match s {
             "driving_license" => Ok(DrivingLicense),
             "id_card" => Ok(IdCard),
             "passport" => Ok(Passport),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -856,7 +856,7 @@ impl CreateForceCaptureIssuingTransactionMerchantDataCategory {
 }
 
 impl std::str::FromStr for CreateForceCaptureIssuingTransactionMerchantDataCategory {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateForceCaptureIssuingTransactionMerchantDataCategory::*;
         match s {
@@ -1202,7 +1202,7 @@ impl std::str::FromStr for CreateForceCaptureIssuingTransactionMerchantDataCateg
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1230,7 +1230,7 @@ impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionMercha
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Additional purchase information that is optionally provided by the merchant.
@@ -1304,7 +1304,7 @@ impl CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType {
 }
 
 impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType::*;
         match s {
@@ -1313,7 +1313,7 @@ impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFu
             "unleaded_plus" => Ok(UnleadedPlus),
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1365,13 +1365,13 @@ impl CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
 }
 
 impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit::*;
         match s {
             "liter" => Ok(Liter),
             "us_gallon" => Ok(UsGallon),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2142,7 +2142,7 @@ impl CreateUnlinkedRefundIssuingTransactionMerchantDataCategory {
 }
 
 impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionMerchantDataCategory {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateUnlinkedRefundIssuingTransactionMerchantDataCategory::*;
         match s {
@@ -2488,7 +2488,7 @@ impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionMerchantDataCat
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -2516,7 +2516,7 @@ impl<'de> serde::Deserialize<'de> for CreateUnlinkedRefundIssuingTransactionMerc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Additional purchase information that is optionally provided by the merchant.
@@ -2590,7 +2590,7 @@ impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType {
 }
 
 impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType::*;
         match s {
@@ -2599,7 +2599,7 @@ impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetails
             "unleaded_plus" => Ok(UnleadedPlus),
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2653,13 +2653,13 @@ impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
 }
 
 impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit::*;
         match s {
             "liter" => Ok(Liter),
             "us_gallon" => Ok(UsGallon),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

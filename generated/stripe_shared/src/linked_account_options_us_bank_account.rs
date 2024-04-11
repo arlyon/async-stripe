@@ -131,7 +131,7 @@ impl LinkedAccountOptionsUsBankAccountPermissions {
 }
 
 impl std::str::FromStr for LinkedAccountOptionsUsBankAccountPermissions {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use LinkedAccountOptionsUsBankAccountPermissions::*;
         match s {
@@ -139,7 +139,7 @@ impl std::str::FromStr for LinkedAccountOptionsUsBankAccountPermissions {
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -210,13 +210,13 @@ impl LinkedAccountOptionsUsBankAccountPrefetch {
 }
 
 impl std::str::FromStr for LinkedAccountOptionsUsBankAccountPrefetch {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use LinkedAccountOptionsUsBankAccountPrefetch::*;
         match s {
             "balances" => Ok(Balances),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

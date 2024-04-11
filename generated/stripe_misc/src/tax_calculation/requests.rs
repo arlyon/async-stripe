@@ -156,13 +156,13 @@ impl CreateTaxCalculationCustomerDetailsAddressSource {
 }
 
 impl std::str::FromStr for CreateTaxCalculationCustomerDetailsAddressSource {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxCalculationCustomerDetailsAddressSource::*;
         match s {
             "billing" => Ok(Billing),
             "shipping" => Ok(Shipping),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -362,7 +362,7 @@ impl CreateTaxCalculationCustomerDetailsTaxIdsType {
 }
 
 impl std::str::FromStr for CreateTaxCalculationCustomerDetailsTaxIdsType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxCalculationCustomerDetailsTaxIdsType::*;
         match s {
@@ -432,7 +432,7 @@ impl std::str::FromStr for CreateTaxCalculationCustomerDetailsTaxIdsType {
             "ve_rif" => Ok(VeRif),
             "vn_tin" => Ok(VnTin),
             "za_vat" => Ok(ZaVat),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -460,7 +460,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationCustomerDetailsTaxIdsT
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Overrides the tax calculation result to allow you to not collect tax from your customer.
@@ -484,14 +484,14 @@ impl CreateTaxCalculationCustomerDetailsTaxabilityOverride {
 }
 
 impl std::str::FromStr for CreateTaxCalculationCustomerDetailsTaxabilityOverride {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxCalculationCustomerDetailsTaxabilityOverride::*;
         match s {
             "customer_exempt" => Ok(CustomerExempt),
             "none" => Ok(None),
             "reverse_charge" => Ok(ReverseCharge),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -583,13 +583,13 @@ impl CreateTaxCalculationLineItemsTaxBehavior {
 }
 
 impl std::str::FromStr for CreateTaxCalculationLineItemsTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxCalculationLineItemsTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -668,13 +668,13 @@ impl CreateTaxCalculationShippingCostTaxBehavior {
 }
 
 impl std::str::FromStr for CreateTaxCalculationShippingCostTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxCalculationShippingCostTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -114,14 +114,14 @@ impl InvoiceRenderingPdfPageSize {
 }
 
 impl std::str::FromStr for InvoiceRenderingPdfPageSize {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoiceRenderingPdfPageSize::*;
         match s {
             "a4" => Ok(A4),
             "auto" => Ok(Auto),
             "letter" => Ok(Letter),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

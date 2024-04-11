@@ -607,7 +607,7 @@ impl CreateWebhookEndpointEnabledEvents {
 }
 
 impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateWebhookEndpointEnabledEvents::*;
         match s {
@@ -863,7 +863,7 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "treasury.received_credit.failed" => Ok(TreasuryReceivedCreditFailed),
             "treasury.received_credit.succeeded" => Ok(TreasuryReceivedCreditSucceeded),
             "treasury.received_debit.created" => Ok(TreasuryReceivedDebitCreated),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -891,7 +891,7 @@ impl<'de> serde::Deserialize<'de> for CreateWebhookEndpointEnabledEvents {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 impl<'a> CreateWebhookEndpoint<'a> {
@@ -1421,7 +1421,7 @@ impl UpdateWebhookEndpointEnabledEvents {
 }
 
 impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateWebhookEndpointEnabledEvents::*;
         match s {
@@ -1677,7 +1677,7 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "treasury.received_credit.failed" => Ok(TreasuryReceivedCreditFailed),
             "treasury.received_credit.succeeded" => Ok(TreasuryReceivedCreditSucceeded),
             "treasury.received_debit.created" => Ok(TreasuryReceivedDebitCreated),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1705,7 +1705,7 @@ impl<'de> serde::Deserialize<'de> for UpdateWebhookEndpointEnabledEvents {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 impl<'a> UpdateWebhookEndpoint<'a> {

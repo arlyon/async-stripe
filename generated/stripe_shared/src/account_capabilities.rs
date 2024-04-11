@@ -410,14 +410,14 @@ impl AccountCapabilitiesStatus {
 }
 
 impl std::str::FromStr for AccountCapabilitiesStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountCapabilitiesStatus::*;
         match s {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
             "pending" => Ok(Pending),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

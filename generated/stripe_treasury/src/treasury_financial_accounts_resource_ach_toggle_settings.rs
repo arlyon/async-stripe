@@ -131,14 +131,14 @@ impl TreasuryFinancialAccountsResourceAchToggleSettingsStatus {
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourceAchToggleSettingsStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourceAchToggleSettingsStatus::*;
         match s {
             "active" => Ok(Active),
             "pending" => Ok(Pending),
             "restricted" => Ok(Restricted),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

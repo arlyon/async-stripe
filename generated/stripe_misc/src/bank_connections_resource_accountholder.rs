@@ -129,13 +129,13 @@ impl BankConnectionsResourceAccountholderType {
 }
 
 impl std::str::FromStr for BankConnectionsResourceAccountholderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BankConnectionsResourceAccountholderType::*;
         match s {
             "account" => Ok(Account),
             "customer" => Ok(Customer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

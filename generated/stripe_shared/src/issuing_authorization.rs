@@ -350,7 +350,7 @@ impl IssuingAuthorizationAuthorizationMethod {
 }
 
 impl std::str::FromStr for IssuingAuthorizationAuthorizationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationAuthorizationMethod::*;
         match s {
@@ -359,7 +359,7 @@ impl std::str::FromStr for IssuingAuthorizationAuthorizationMethod {
             "keyed_in" => Ok(KeyedIn),
             "online" => Ok(Online),
             "swipe" => Ok(Swipe),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -427,14 +427,14 @@ impl IssuingAuthorizationStatus {
 }
 
 impl std::str::FromStr for IssuingAuthorizationStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationStatus::*;
         match s {
             "closed" => Ok(Closed),
             "pending" => Ok(Pending),
             "reversed" => Ok(Reversed),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

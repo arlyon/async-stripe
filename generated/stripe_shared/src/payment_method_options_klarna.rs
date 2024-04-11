@@ -131,12 +131,12 @@ impl PaymentMethodOptionsKlarnaCaptureMethod {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsKlarnaCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsKlarnaCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -207,12 +207,12 @@ impl PaymentMethodOptionsKlarnaSetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsKlarnaSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsKlarnaSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

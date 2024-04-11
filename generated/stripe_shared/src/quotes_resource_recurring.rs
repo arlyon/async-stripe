@@ -144,7 +144,7 @@ impl QuotesResourceRecurringInterval {
 }
 
 impl std::str::FromStr for QuotesResourceRecurringInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use QuotesResourceRecurringInterval::*;
         match s {
@@ -152,7 +152,7 @@ impl std::str::FromStr for QuotesResourceRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -123,13 +123,13 @@ Unavailable => "unavailable",
 }
 
 impl std::str::FromStr for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureStatus::*;
         match s {
     "available" => Ok(Available),
 "unavailable" => Ok(Unavailable),
-_ => Err(())
+_ => Err(stripe_types::StripeParseError)
 
         }
     }

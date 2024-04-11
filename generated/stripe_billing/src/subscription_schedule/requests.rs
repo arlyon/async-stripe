@@ -223,13 +223,13 @@ impl CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
 }
 
 impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -281,13 +281,13 @@ impl CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
 }
 
 impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor::*;
         match s {
             "automatic" => Ok(Automatic),
             "phase_start" => Ok(PhaseStart),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -342,13 +342,13 @@ impl CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
 }
 
 impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionScheduleDefaultSettingsCollectionMethod::*;
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -437,13 +437,13 @@ impl CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
 }
 
 impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -667,14 +667,14 @@ impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -757,13 +757,13 @@ impl CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
 }
 
 impl std::str::FromStr for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -817,13 +817,13 @@ impl CreateSubscriptionSchedulePhasesBillingCycleAnchor {
 }
 
 impl std::str::FromStr for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionSchedulePhasesBillingCycleAnchor::*;
         match s {
             "automatic" => Ok(Automatic),
             "phase_start" => Ok(PhaseStart),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -878,13 +878,13 @@ impl CreateSubscriptionSchedulePhasesCollectionMethod {
 }
 
 impl std::str::FromStr for CreateSubscriptionSchedulePhasesCollectionMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionSchedulePhasesCollectionMethod::*;
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -973,13 +973,13 @@ impl CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
 }
 
 impl std::str::FromStr for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1128,7 +1128,7 @@ impl CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
 }
 
 impl std::str::FromStr for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval::*;
         match s {
@@ -1136,7 +1136,7 @@ impl std::str::FromStr for CreateSubscriptionSchedulePhasesItemsPriceDataRecurri
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1195,14 +1195,14 @@ impl CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1259,14 +1259,14 @@ impl CreateSubscriptionSchedulePhasesProrationBehavior {
 }
 
 impl std::str::FromStr for CreateSubscriptionSchedulePhasesProrationBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionSchedulePhasesProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1457,13 +1457,13 @@ impl UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
 }
 
 impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1515,13 +1515,13 @@ impl UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
 }
 
 impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor::*;
         match s {
             "automatic" => Ok(Automatic),
             "phase_start" => Ok(PhaseStart),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1576,13 +1576,13 @@ impl UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
 }
 
 impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionScheduleDefaultSettingsCollectionMethod::*;
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1671,13 +1671,13 @@ impl UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
 }
 
 impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1907,14 +1907,14 @@ impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1997,13 +1997,13 @@ impl UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
 }
 
 impl std::str::FromStr for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2057,13 +2057,13 @@ impl UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
 }
 
 impl std::str::FromStr for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionSchedulePhasesBillingCycleAnchor::*;
         match s {
             "automatic" => Ok(Automatic),
             "phase_start" => Ok(PhaseStart),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2118,13 +2118,13 @@ impl UpdateSubscriptionSchedulePhasesCollectionMethod {
 }
 
 impl std::str::FromStr for UpdateSubscriptionSchedulePhasesCollectionMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionSchedulePhasesCollectionMethod::*;
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2221,13 +2221,13 @@ impl UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
 }
 
 impl std::str::FromStr for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2376,7 +2376,7 @@ impl UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
 }
 
 impl std::str::FromStr for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval::*;
         match s {
@@ -2384,7 +2384,7 @@ impl std::str::FromStr for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurri
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2443,14 +2443,14 @@ impl UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2507,14 +2507,14 @@ impl UpdateSubscriptionSchedulePhasesProrationBehavior {
 }
 
 impl std::str::FromStr for UpdateSubscriptionSchedulePhasesProrationBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionSchedulePhasesProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2585,14 +2585,14 @@ impl UpdateSubscriptionScheduleProrationBehavior {
 }
 
 impl std::str::FromStr for UpdateSubscriptionScheduleProrationBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionScheduleProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

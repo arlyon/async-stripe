@@ -65,13 +65,13 @@ impl ListAccountExternalAccountObject {
 }
 
 impl std::str::FromStr for ListAccountExternalAccountObject {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListAccountExternalAccountObject::*;
         match s {
             "bank_account" => Ok(BankAccount),
             "card" => Ok(Card),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -259,13 +259,13 @@ impl UpdateExternalAccountAccountHolderType {
 }
 
 impl std::str::FromStr for UpdateExternalAccountAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateExternalAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -321,7 +321,7 @@ impl UpdateExternalAccountAccountType {
 }
 
 impl std::str::FromStr for UpdateExternalAccountAccountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateExternalAccountAccountType::*;
         match s {
@@ -329,7 +329,7 @@ impl std::str::FromStr for UpdateExternalAccountAccountType {
             "futsu" => Ok(Futsu),
             "savings" => Ok(Savings),
             "toza" => Ok(Toza),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

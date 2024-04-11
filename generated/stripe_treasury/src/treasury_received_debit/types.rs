@@ -256,7 +256,7 @@ impl TreasuryReceivedDebitFailureCode {
 }
 
 impl std::str::FromStr for TreasuryReceivedDebitFailureCode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryReceivedDebitFailureCode::*;
         match s {
@@ -264,7 +264,7 @@ impl std::str::FromStr for TreasuryReceivedDebitFailureCode {
             "account_frozen" => Ok(AccountFrozen),
             "insufficient_funds" => Ok(InsufficientFunds),
             "other" => Ok(Other),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -333,14 +333,14 @@ impl TreasuryReceivedDebitNetwork {
 }
 
 impl std::str::FromStr for TreasuryReceivedDebitNetwork {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryReceivedDebitNetwork::*;
         match s {
             "ach" => Ok(Ach),
             "card" => Ok(Card),
             "stripe" => Ok(Stripe),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -415,13 +415,13 @@ impl TreasuryReceivedDebitStatus {
 }
 
 impl std::str::FromStr for TreasuryReceivedDebitStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryReceivedDebitStatus::*;
         match s {
             "failed" => Ok(Failed),
             "succeeded" => Ok(Succeeded),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

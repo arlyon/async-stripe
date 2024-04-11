@@ -226,7 +226,7 @@ impl TerminalReaderDeviceType {
 }
 
 impl std::str::FromStr for TerminalReaderDeviceType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderDeviceType::*;
         match s {
@@ -236,7 +236,7 @@ impl std::str::FromStr for TerminalReaderDeviceType {
             "simulated_wisepos_e" => Ok(SimulatedWiseposE),
             "stripe_m2" => Ok(StripeM2),
             "verifone_P400" => Ok(VerifoneP400),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -299,13 +299,13 @@ impl TerminalReaderStatus {
 }
 
 impl std::str::FromStr for TerminalReaderStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderStatus::*;
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

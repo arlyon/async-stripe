@@ -98,7 +98,7 @@ impl CreateTokenAccountBusinessType {
 }
 
 impl std::str::FromStr for CreateTokenAccountBusinessType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTokenAccountBusinessType::*;
         match s {
@@ -106,7 +106,7 @@ impl std::str::FromStr for CreateTokenAccountBusinessType {
             "government_entity" => Ok(GovernmentEntity),
             "individual" => Ok(Individual),
             "non_profit" => Ok(NonProfit),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -359,7 +359,7 @@ impl CreateTokenAccountCompanyStructure {
 }
 
 impl std::str::FromStr for CreateTokenAccountCompanyStructure {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTokenAccountCompanyStructure::*;
         match s {
@@ -386,7 +386,7 @@ impl std::str::FromStr for CreateTokenAccountCompanyStructure {
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
             "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -414,7 +414,7 @@ impl<'de> serde::Deserialize<'de> for CreateTokenAccountCompanyStructure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Information on the verification state of the company.
@@ -608,13 +608,13 @@ impl CreateTokenAccountIndividualPoliticalExposure {
 }
 
 impl std::str::FromStr for CreateTokenAccountIndividualPoliticalExposure {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTokenAccountIndividualPoliticalExposure::*;
         match s {
             "existing" => Ok(Existing),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -736,13 +736,13 @@ impl CreateTokenBankAccountAccountHolderType {
 }
 
 impl std::str::FromStr for CreateTokenBankAccountAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTokenBankAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -798,7 +798,7 @@ impl CreateTokenBankAccountAccountType {
 }
 
 impl std::str::FromStr for CreateTokenBankAccountAccountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTokenBankAccountAccountType::*;
         match s {
@@ -806,7 +806,7 @@ impl std::str::FromStr for CreateTokenBankAccountAccountType {
             "futsu" => Ok(Futsu),
             "savings" => Ok(Savings),
             "toza" => Ok(Toza),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

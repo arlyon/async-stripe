@@ -322,14 +322,14 @@ impl PayoutReconciliationStatus {
 }
 
 impl std::str::FromStr for PayoutReconciliationStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PayoutReconciliationStatus::*;
         match s {
             "completed" => Ok(Completed),
             "in_progress" => Ok(InProgress),
             "not_applicable" => Ok(NotApplicable),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -394,13 +394,13 @@ impl PayoutType {
 }
 
 impl std::str::FromStr for PayoutType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PayoutType::*;
         match s {
             "bank_account" => Ok(BankAccount),
             "card" => Ok(Card),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -244,7 +244,7 @@ impl TaxProductResourceCustomerDetailsResourceTaxIdType {
 }
 
 impl std::str::FromStr for TaxProductResourceCustomerDetailsResourceTaxIdType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceCustomerDetailsResourceTaxIdType::*;
         match s {
@@ -315,7 +315,7 @@ impl std::str::FromStr for TaxProductResourceCustomerDetailsResourceTaxIdType {
             "ve_rif" => Ok(VeRif),
             "vn_tin" => Ok(VnTin),
             "za_vat" => Ok(ZaVat),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

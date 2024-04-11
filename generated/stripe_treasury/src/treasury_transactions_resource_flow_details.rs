@@ -177,7 +177,7 @@ impl TreasuryTransactionsResourceFlowDetailsType {
 }
 
 impl std::str::FromStr for TreasuryTransactionsResourceFlowDetailsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryTransactionsResourceFlowDetailsType::*;
         match s {
@@ -190,7 +190,7 @@ impl std::str::FromStr for TreasuryTransactionsResourceFlowDetailsType {
             "outbound_transfer" => Ok(OutboundTransfer),
             "received_credit" => Ok(ReceivedCredit),
             "received_debit" => Ok(ReceivedDebit),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -132,12 +132,12 @@ impl CheckoutKonbiniPaymentMethodOptionsSetupFutureUsage {
 }
 
 impl std::str::FromStr for CheckoutKonbiniPaymentMethodOptionsSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutKonbiniPaymentMethodOptionsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

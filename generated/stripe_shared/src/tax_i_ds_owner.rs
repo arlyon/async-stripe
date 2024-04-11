@@ -138,7 +138,7 @@ impl TaxIDsOwnerType {
 }
 
 impl std::str::FromStr for TaxIDsOwnerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxIDsOwnerType::*;
         match s {
@@ -146,7 +146,7 @@ impl std::str::FromStr for TaxIDsOwnerType {
             "application" => Ok(Application),
             "customer" => Ok(Customer),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

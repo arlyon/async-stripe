@@ -152,14 +152,14 @@ impl PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionCustomerDetailsTaxExempt::*;
         match s {
             "exempt" => Ok(Exempt),
             "none" => Ok(None),
             "reverse" => Ok(Reverse),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

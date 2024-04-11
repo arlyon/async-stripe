@@ -544,7 +544,7 @@ impl ApiErrorsCode {
 }
 
 impl std::str::FromStr for ApiErrorsCode {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ApiErrorsCode::*;
         match s {
@@ -737,7 +737,7 @@ impl std::str::FromStr for ApiErrorsCode {
             }
             "transfers_not_allowed" => Ok(TransfersNotAllowed),
             "url_invalid" => Ok(UrlInvalid),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -770,7 +770,7 @@ impl miniserde::Deserialize for ApiErrorsCode {
 impl miniserde::de::Visitor for crate::Place<ApiErrorsCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ApiErrorsCode::from_str(s).unwrap_or(ApiErrorsCode::Unknown));
+        self.out = Some(ApiErrorsCode::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -781,7 +781,7 @@ impl<'de> serde::Deserialize<'de> for ApiErrorsCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// The type of error returned.
@@ -806,7 +806,7 @@ impl ApiErrorsType {
 }
 
 impl std::str::FromStr for ApiErrorsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ApiErrorsType::*;
         match s {
@@ -814,7 +814,7 @@ impl std::str::FromStr for ApiErrorsType {
             "card_error" => Ok(CardError),
             "idempotency_error" => Ok(IdempotencyError),
             "invalid_request_error" => Ok(InvalidRequestError),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

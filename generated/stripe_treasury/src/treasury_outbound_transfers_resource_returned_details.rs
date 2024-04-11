@@ -129,7 +129,7 @@ impl TreasuryOutboundTransfersResourceReturnedDetailsCode {
 }
 
 impl std::str::FromStr for TreasuryOutboundTransfersResourceReturnedDetailsCode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryOutboundTransfersResourceReturnedDetailsCode::*;
         match s {
@@ -143,7 +143,7 @@ impl std::str::FromStr for TreasuryOutboundTransfersResourceReturnedDetailsCode 
             "invalid_currency" => Ok(InvalidCurrency),
             "no_account" => Ok(NoAccount),
             "other" => Ok(Other),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

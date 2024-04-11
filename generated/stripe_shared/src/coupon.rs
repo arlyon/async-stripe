@@ -270,14 +270,14 @@ impl CouponDuration {
 }
 
 impl std::str::FromStr for CouponDuration {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CouponDuration::*;
         match s {
             "forever" => Ok(Forever),
             "once" => Ok(Once),
             "repeating" => Ok(Repeating),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

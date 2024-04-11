@@ -113,13 +113,13 @@ impl UsBankAccountNetworksSupported {
 }
 
 impl std::str::FromStr for UsBankAccountNetworksSupported {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UsBankAccountNetworksSupported::*;
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

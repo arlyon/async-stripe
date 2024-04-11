@@ -109,12 +109,12 @@ impl TaxProductRegistrationsResourceCountryOptionsDefaultType {
 }
 
 impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsDefaultType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductRegistrationsResourceCountryOptionsDefaultType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

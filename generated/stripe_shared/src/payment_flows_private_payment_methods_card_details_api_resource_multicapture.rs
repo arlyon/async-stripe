@@ -110,13 +110,13 @@ impl PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus {
 impl std::str::FromStr
     for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus::*;
         match s {
             "available" => Ok(Available),
             "unavailable" => Ok(Unavailable),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

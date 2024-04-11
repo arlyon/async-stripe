@@ -188,7 +188,7 @@ impl CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
 }
 
 impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates::*;
         match s {
@@ -198,7 +198,7 @@ impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesCustomerUpdat
             "phone" => Ok(Phone),
             "shipping" => Ok(Shipping),
             "tax_id" => Ok(TaxId),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -325,7 +325,7 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReaso
 impl std::str::FromStr
     for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions::*;
         match s {
@@ -337,7 +337,7 @@ impl std::str::FromStr
             "too_complex" => Ok(TooComplex),
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -393,13 +393,13 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
 }
 
 impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode::*;
         match s {
             "at_period_end" => Ok(AtPeriodEnd),
             "immediately" => Ok(Immediately),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -459,14 +459,14 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
 impl std::str::FromStr
     for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -551,14 +551,14 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpd
 impl std::str::FromStr
     for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates::*;
         match s {
             "price" => Ok(Price),
             "promotion_code" => Ok(PromotionCode),
             "quantity" => Ok(Quantity),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -619,14 +619,14 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
 impl std::str::FromStr
     for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -806,7 +806,7 @@ impl UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
 }
 
 impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates::*;
         match s {
@@ -816,7 +816,7 @@ impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesCustomerUpdat
             "phone" => Ok(Phone),
             "shipping" => Ok(Shipping),
             "tax_id" => Ok(TaxId),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -943,7 +943,7 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReaso
 impl std::str::FromStr
     for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions::*;
         match s {
@@ -955,7 +955,7 @@ impl std::str::FromStr
             "too_complex" => Ok(TooComplex),
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1011,13 +1011,13 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
 }
 
 impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode::*;
         match s {
             "at_period_end" => Ok(AtPeriodEnd),
             "immediately" => Ok(Immediately),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1077,14 +1077,14 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
 impl std::str::FromStr
     for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1169,14 +1169,14 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpd
 impl std::str::FromStr
     for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates::*;
         match s {
             "price" => Ok(Price),
             "promotion_code" => Ok(PromotionCode),
             "quantity" => Ok(Quantity),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1237,14 +1237,14 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
 impl std::str::FromStr
     for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

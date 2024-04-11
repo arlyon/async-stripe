@@ -129,13 +129,13 @@ impl PaymentMethodDetailsFpxAccountHolderType {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsFpxAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsFpxAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -248,7 +248,7 @@ impl PaymentMethodDetailsFpxBank {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsFpxBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsFpxBank::*;
         match s {
@@ -274,7 +274,7 @@ impl std::str::FromStr for PaymentMethodDetailsFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -307,10 +307,7 @@ impl miniserde::Deserialize for PaymentMethodDetailsFpxBank {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsFpxBank> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodDetailsFpxBank::from_str(s)
-                .unwrap_or(PaymentMethodDetailsFpxBank::Unknown),
-        );
+        self.out = Some(PaymentMethodDetailsFpxBank::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -321,6 +318,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsFpxBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }

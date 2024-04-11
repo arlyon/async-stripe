@@ -197,14 +197,14 @@ impl MandateStatus {
 }
 
 impl std::str::FromStr for MandateStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use MandateStatus::*;
         match s {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
             "pending" => Ok(Pending),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -268,13 +268,13 @@ impl MandateType {
 }
 
 impl std::str::FromStr for MandateType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use MandateType::*;
         match s {
             "multi_use" => Ok(MultiUse),
             "single_use" => Ok(SingleUse),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

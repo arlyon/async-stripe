@@ -176,7 +176,7 @@ impl IssuingDisputeEvidenceReason {
 }
 
 impl std::str::FromStr for IssuingDisputeEvidenceReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingDisputeEvidenceReason::*;
         match s {
@@ -187,7 +187,7 @@ impl std::str::FromStr for IssuingDisputeEvidenceReason {
             "not_received" => Ok(NotReceived),
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

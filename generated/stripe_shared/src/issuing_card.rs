@@ -306,14 +306,14 @@ impl IssuingCardCancellationReason {
 }
 
 impl std::str::FromStr for IssuingCardCancellationReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardCancellationReason::*;
         match s {
             "design_rejected" => Ok(DesignRejected),
             "lost" => Ok(Lost),
             "stolen" => Ok(Stolen),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -393,7 +393,7 @@ impl IssuingCardReplacementReason {
 }
 
 impl std::str::FromStr for IssuingCardReplacementReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardReplacementReason::*;
         match s {
@@ -401,7 +401,7 @@ impl std::str::FromStr for IssuingCardReplacementReason {
             "expired" => Ok(Expired),
             "lost" => Ok(Lost),
             "stolen" => Ok(Stolen),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -466,14 +466,14 @@ impl IssuingCardStatus {
 }
 
 impl std::str::FromStr for IssuingCardStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardStatus::*;
         match s {
             "active" => Ok(Active),
             "canceled" => Ok(Canceled),
             "inactive" => Ok(Inactive),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -536,13 +536,13 @@ impl IssuingCardType {
 }
 
 impl std::str::FromStr for IssuingCardType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardType::*;
         match s {
             "physical" => Ok(Physical),
             "virtual" => Ok(Virtual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

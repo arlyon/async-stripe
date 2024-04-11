@@ -113,12 +113,12 @@ impl OutboundPaymentsPaymentMethodDetailsFinancialAccountNetwork {
 }
 
 impl std::str::FromStr for OutboundPaymentsPaymentMethodDetailsFinancialAccountNetwork {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use OutboundPaymentsPaymentMethodDetailsFinancialAccountNetwork::*;
         match s {
             "stripe" => Ok(Stripe),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

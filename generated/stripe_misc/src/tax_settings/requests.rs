@@ -70,14 +70,14 @@ impl UpdateTaxSettingsDefaultsTaxBehavior {
 }
 
 impl std::str::FromStr for UpdateTaxSettingsDefaultsTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateTaxSettingsDefaultsTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "inferred_by_currency" => Ok(InferredByCurrency),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

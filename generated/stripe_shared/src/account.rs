@@ -307,7 +307,7 @@ impl AccountBusinessType {
 }
 
 impl std::str::FromStr for AccountBusinessType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountBusinessType::*;
         match s {
@@ -315,7 +315,7 @@ impl std::str::FromStr for AccountBusinessType {
             "government_entity" => Ok(GovernmentEntity),
             "individual" => Ok(Individual),
             "non_profit" => Ok(NonProfit),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -380,14 +380,14 @@ impl AccountType {
 }
 
 impl std::str::FromStr for AccountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountType::*;
         match s {
             "custom" => Ok(Custom),
             "express" => Ok(Express),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

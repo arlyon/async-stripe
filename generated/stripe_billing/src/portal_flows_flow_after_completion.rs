@@ -132,14 +132,14 @@ impl PortalFlowsFlowAfterCompletionType {
 }
 
 impl std::str::FromStr for PortalFlowsFlowAfterCompletionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalFlowsFlowAfterCompletionType::*;
         match s {
             "hosted_confirmation" => Ok(HostedConfirmation),
             "portal_homepage" => Ok(PortalHomepage),
             "redirect" => Ok(Redirect),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

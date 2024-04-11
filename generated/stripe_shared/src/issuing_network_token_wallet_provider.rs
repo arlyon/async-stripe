@@ -197,7 +197,7 @@ impl IssuingNetworkTokenWalletProviderCardNumberSource {
 }
 
 impl std::str::FromStr for IssuingNetworkTokenWalletProviderCardNumberSource {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingNetworkTokenWalletProviderCardNumberSource::*;
         match s {
@@ -205,7 +205,7 @@ impl std::str::FromStr for IssuingNetworkTokenWalletProviderCardNumberSource {
             "manual" => Ok(Manual),
             "on_file" => Ok(OnFile),
             "other" => Ok(Other),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -336,7 +336,7 @@ impl IssuingNetworkTokenWalletProviderReasonCodes {
 }
 
 impl std::str::FromStr for IssuingNetworkTokenWalletProviderReasonCodes {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingNetworkTokenWalletProviderReasonCodes::*;
         match s {
@@ -372,7 +372,7 @@ impl std::str::FromStr for IssuingNetworkTokenWalletProviderReasonCodes {
             "too_many_different_cardholders" => Ok(TooManyDifferentCardholders),
             "too_many_recent_attempts" => Ok(TooManyRecentAttempts),
             "too_many_recent_tokens" => Ok(TooManyRecentTokens),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -405,10 +405,7 @@ impl miniserde::Deserialize for IssuingNetworkTokenWalletProviderReasonCodes {
 impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderReasonCodes> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingNetworkTokenWalletProviderReasonCodes::from_str(s)
-                .unwrap_or(IssuingNetworkTokenWalletProviderReasonCodes::Unknown),
-        );
+        self.out = Some(IssuingNetworkTokenWalletProviderReasonCodes::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -419,7 +416,7 @@ impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderReasonCod
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// The recommendation on responding to the tokenization request.
@@ -441,14 +438,14 @@ impl IssuingNetworkTokenWalletProviderSuggestedDecision {
 }
 
 impl std::str::FromStr for IssuingNetworkTokenWalletProviderSuggestedDecision {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingNetworkTokenWalletProviderSuggestedDecision::*;
         match s {
             "approve" => Ok(Approve),
             "decline" => Ok(Decline),
             "require_auth" => Ok(RequireAuth),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

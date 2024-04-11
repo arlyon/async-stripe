@@ -164,7 +164,7 @@ impl PaymentIntentNextActionDisplayBankTransferInstructionsType {
 }
 
 impl std::str::FromStr for PaymentIntentNextActionDisplayBankTransferInstructionsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentNextActionDisplayBankTransferInstructionsType::*;
         match s {
@@ -173,7 +173,7 @@ impl std::str::FromStr for PaymentIntentNextActionDisplayBankTransferInstruction
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

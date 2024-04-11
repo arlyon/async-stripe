@@ -244,13 +244,13 @@ impl SetupAttemptFlowDirections {
 }
 
 impl std::str::FromStr for SetupAttemptFlowDirections {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupAttemptFlowDirections::*;
         match s {
             "inbound" => Ok(Inbound),
             "outbound" => Ok(Outbound),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

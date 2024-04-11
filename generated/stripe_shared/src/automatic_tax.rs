@@ -131,14 +131,14 @@ impl AutomaticTaxStatus {
 }
 
 impl std::str::FromStr for AutomaticTaxStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AutomaticTaxStatus::*;
         match s {
             "complete" => Ok(Complete),
             "failed" => Ok(Failed),
             "requires_location_inputs" => Ok(RequiresLocationInputs),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

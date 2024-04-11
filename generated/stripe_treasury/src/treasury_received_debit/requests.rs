@@ -141,12 +141,12 @@ impl CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType {
 }
 
 impl std::str::FromStr for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType::*;
         match s {
             "us_bank_account" => Ok(UsBankAccount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -216,12 +216,12 @@ impl CreateTreasuryReceivedDebitNetwork {
 }
 
 impl std::str::FromStr for CreateTreasuryReceivedDebitNetwork {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryReceivedDebitNetwork::*;
         match s {
             "ach" => Ok(Ach),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

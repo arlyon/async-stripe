@@ -162,12 +162,12 @@ impl TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethod
 impl std::str::FromStr
     for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance::*;
         match s {
             "payments" => Ok(Payments),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -256,7 +256,7 @@ impl TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethod
 impl std::str::FromStr
     for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType::*;
         match s {
@@ -265,7 +265,7 @@ impl std::str::FromStr
             "issuing_card" => Ok(IssuingCard),
             "stripe" => Ok(Stripe),
             "us_bank_account" => Ok(UsBankAccount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

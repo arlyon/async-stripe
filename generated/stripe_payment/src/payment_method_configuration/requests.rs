@@ -268,14 +268,14 @@ impl CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -353,14 +353,14 @@ impl CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -441,14 +441,14 @@ impl CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
 impl std::str::FromStr
     for CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -533,14 +533,14 @@ impl CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -618,14 +618,14 @@ impl CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -704,14 +704,14 @@ impl CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
 impl std::str::FromStr
     for CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -790,14 +790,14 @@ impl CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -873,14 +873,14 @@ impl CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -958,14 +958,14 @@ impl CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1043,14 +1043,14 @@ impl CreatePaymentMethodConfigurationBlikDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationBlikDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationBlikDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1131,14 +1131,14 @@ impl CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1215,14 +1215,14 @@ impl CreatePaymentMethodConfigurationCardDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationCardDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationCardDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1308,14 +1308,14 @@ impl CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference 
 impl std::str::FromStr
     for CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1398,14 +1398,14 @@ impl CreatePaymentMethodConfigurationCashappDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationCashappDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationCashappDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1487,14 +1487,14 @@ impl CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference 
 impl std::str::FromStr
     for CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1578,14 +1578,14 @@ impl CreatePaymentMethodConfigurationEpsDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationEpsDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationEpsDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1668,14 +1668,14 @@ impl CreatePaymentMethodConfigurationFpxDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationFpxDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationFpxDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1759,14 +1759,14 @@ impl CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1844,14 +1844,14 @@ impl CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1929,14 +1929,14 @@ impl CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2014,14 +2014,14 @@ impl CreatePaymentMethodConfigurationIdealDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationIdealDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationIdealDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2099,14 +2099,14 @@ impl CreatePaymentMethodConfigurationJcbDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationJcbDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationJcbDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2189,14 +2189,14 @@ impl CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2273,14 +2273,14 @@ impl CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2357,14 +2357,14 @@ impl CreatePaymentMethodConfigurationLinkDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationLinkDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationLinkDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2446,14 +2446,14 @@ impl CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2535,14 +2535,14 @@ impl CreatePaymentMethodConfigurationP24DisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationP24DisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationP24DisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2623,14 +2623,14 @@ impl CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2707,14 +2707,14 @@ impl CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2791,14 +2791,14 @@ impl CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2875,14 +2875,14 @@ impl CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2959,14 +2959,14 @@ impl CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3043,14 +3043,14 @@ impl CreatePaymentMethodConfigurationSofortDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationSofortDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationSofortDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3130,14 +3130,14 @@ impl CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
 impl std::str::FromStr
     for CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3218,14 +3218,14 @@ impl CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3488,14 +3488,14 @@ impl UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3573,14 +3573,14 @@ impl UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3661,14 +3661,14 @@ impl UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
 impl std::str::FromStr
     for UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3753,14 +3753,14 @@ impl UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3838,14 +3838,14 @@ impl UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3924,14 +3924,14 @@ impl UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
 impl std::str::FromStr
     for UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4010,14 +4010,14 @@ impl UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4093,14 +4093,14 @@ impl UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4178,14 +4178,14 @@ impl UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4263,14 +4263,14 @@ impl UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4351,14 +4351,14 @@ impl UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4435,14 +4435,14 @@ impl UpdatePaymentMethodConfigurationCardDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationCardDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationCardDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4528,14 +4528,14 @@ impl UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference 
 impl std::str::FromStr
     for UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4618,14 +4618,14 @@ impl UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4707,14 +4707,14 @@ impl UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference 
 impl std::str::FromStr
     for UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4798,14 +4798,14 @@ impl UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4888,14 +4888,14 @@ impl UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4979,14 +4979,14 @@ impl UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5064,14 +5064,14 @@ impl UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5149,14 +5149,14 @@ impl UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5234,14 +5234,14 @@ impl UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5319,14 +5319,14 @@ impl UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5409,14 +5409,14 @@ impl UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5493,14 +5493,14 @@ impl UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5577,14 +5577,14 @@ impl UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5666,14 +5666,14 @@ impl UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5755,14 +5755,14 @@ impl UpdatePaymentMethodConfigurationP24DisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationP24DisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationP24DisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5843,14 +5843,14 @@ impl UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5927,14 +5927,14 @@ impl UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6011,14 +6011,14 @@ impl UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6095,14 +6095,14 @@ impl UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6179,14 +6179,14 @@ impl UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6263,14 +6263,14 @@ impl UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6350,14 +6350,14 @@ impl UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
 impl std::str::FromStr
     for UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6438,14 +6438,14 @@ impl UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

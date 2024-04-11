@@ -246,7 +246,7 @@ impl TreasuryTransactionFlowType {
 }
 
 impl std::str::FromStr for TreasuryTransactionFlowType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryTransactionFlowType::*;
         match s {
@@ -259,7 +259,7 @@ impl std::str::FromStr for TreasuryTransactionFlowType {
             "outbound_transfer" => Ok(OutboundTransfer),
             "received_credit" => Ok(ReceivedCredit),
             "received_debit" => Ok(ReceivedDebit),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -336,14 +336,14 @@ impl TreasuryTransactionStatus {
 }
 
 impl std::str::FromStr for TreasuryTransactionStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryTransactionStatus::*;
         match s {
             "open" => Ok(Open),
             "posted" => Ok(Posted),
             "void" => Ok(Void),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

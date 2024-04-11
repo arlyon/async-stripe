@@ -130,13 +130,13 @@ impl InvoiceMandateOptionsCardAmountType {
 }
 
 impl std::str::FromStr for InvoiceMandateOptionsCardAmountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoiceMandateOptionsCardAmountType::*;
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

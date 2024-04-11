@@ -113,14 +113,14 @@ impl SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
 }
 
 impl std::str::FromStr for SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::*;
         match s {
             "cancel" => Ok(Cancel),
             "create_invoice" => Ok(CreateInvoice),
             "pause" => Ok(Pause),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

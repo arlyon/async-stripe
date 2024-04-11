@@ -196,14 +196,14 @@ impl PaymentMethodDetailsInteracPresentReceiptAccountType {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsInteracPresentReceiptAccountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsInteracPresentReceiptAccountType::*;
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
             "unknown" => Ok(Unknown),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

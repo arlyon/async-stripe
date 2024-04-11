@@ -177,13 +177,13 @@ impl PaymentMethodOptionsCardMandateOptionsAmountType {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCardMandateOptionsAmountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCardMandateOptionsAmountType::*;
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -260,7 +260,7 @@ impl PaymentMethodOptionsCardMandateOptionsInterval {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCardMandateOptionsInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCardMandateOptionsInterval::*;
         match s {
@@ -269,7 +269,7 @@ impl std::str::FromStr for PaymentMethodOptionsCardMandateOptionsInterval {
             "sporadic" => Ok(Sporadic),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -338,12 +338,12 @@ impl PaymentMethodOptionsCardMandateOptionsSupportedTypes {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCardMandateOptionsSupportedTypes::*;
         match s {
             "india" => Ok(India),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -117,12 +117,12 @@ impl InvoicePaymentMethodOptionsCustomerBalanceFundingType {
 }
 
 impl std::str::FromStr for InvoicePaymentMethodOptionsCustomerBalanceFundingType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoicePaymentMethodOptionsCustomerBalanceFundingType::*;
         match s {
             "bank_transfer" => Ok(BankTransfer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

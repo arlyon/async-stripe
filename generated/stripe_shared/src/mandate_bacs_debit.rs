@@ -139,7 +139,7 @@ impl MandateBacsDebitNetworkStatus {
 }
 
 impl std::str::FromStr for MandateBacsDebitNetworkStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use MandateBacsDebitNetworkStatus::*;
         match s {
@@ -147,7 +147,7 @@ impl std::str::FromStr for MandateBacsDebitNetworkStatus {
             "pending" => Ok(Pending),
             "refused" => Ok(Refused),
             "revoked" => Ok(Revoked),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -219,7 +219,7 @@ impl MandateBacsDebitRevocationReason {
 }
 
 impl std::str::FromStr for MandateBacsDebitRevocationReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use MandateBacsDebitRevocationReason::*;
         match s {
@@ -228,7 +228,7 @@ impl std::str::FromStr for MandateBacsDebitRevocationReason {
             "bank_ownership_changed" => Ok(BankOwnershipChanged),
             "could_not_process" => Ok(CouldNotProcess),
             "debit_not_authorized" => Ok(DebitNotAuthorized),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

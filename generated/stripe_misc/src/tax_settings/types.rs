@@ -159,13 +159,13 @@ impl TaxSettingsStatus {
 }
 
 impl std::str::FromStr for TaxSettingsStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxSettingsStatus::*;
         match s {
             "active" => Ok(Active),
             "pending" => Ok(Pending),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

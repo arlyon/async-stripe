@@ -118,12 +118,12 @@ impl PaymentMethodOptionsZipSetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsZipSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsZipSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

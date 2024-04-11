@@ -132,7 +132,7 @@ impl PaymentMethodOptionsBancontactPreferredLanguage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsBancontactPreferredLanguage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsBancontactPreferredLanguage::*;
         match s {
@@ -140,7 +140,7 @@ impl std::str::FromStr for PaymentMethodOptionsBancontactPreferredLanguage {
             "en" => Ok(En),
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -216,13 +216,13 @@ impl PaymentMethodOptionsBancontactSetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsBancontactSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsBancontactSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

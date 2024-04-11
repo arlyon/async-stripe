@@ -168,7 +168,7 @@ impl CreateShippingRateDeliveryEstimateMaximumUnit {
 }
 
 impl std::str::FromStr for CreateShippingRateDeliveryEstimateMaximumUnit {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateShippingRateDeliveryEstimateMaximumUnit::*;
         match s {
@@ -177,7 +177,7 @@ impl std::str::FromStr for CreateShippingRateDeliveryEstimateMaximumUnit {
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -248,7 +248,7 @@ impl CreateShippingRateDeliveryEstimateMinimumUnit {
 }
 
 impl std::str::FromStr for CreateShippingRateDeliveryEstimateMinimumUnit {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateShippingRateDeliveryEstimateMinimumUnit::*;
         match s {
@@ -257,7 +257,7 @@ impl std::str::FromStr for CreateShippingRateDeliveryEstimateMinimumUnit {
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -38,14 +38,14 @@ impl DeleteSubscriptionItemProrationBehavior {
 }
 
 impl std::str::FromStr for DeleteSubscriptionItemProrationBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DeleteSubscriptionItemProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -320,7 +320,7 @@ impl CreateSubscriptionItemPaymentBehavior {
 }
 
 impl std::str::FromStr for CreateSubscriptionItemPaymentBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionItemPaymentBehavior::*;
         match s {
@@ -328,7 +328,7 @@ impl std::str::FromStr for CreateSubscriptionItemPaymentBehavior {
             "default_incomplete" => Ok(DefaultIncomplete),
             "error_if_incomplete" => Ok(ErrorIfIncomplete),
             "pending_if_incomplete" => Ok(PendingIfIncomplete),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -438,7 +438,7 @@ impl CreateSubscriptionItemPriceDataRecurringInterval {
 }
 
 impl std::str::FromStr for CreateSubscriptionItemPriceDataRecurringInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionItemPriceDataRecurringInterval::*;
         match s {
@@ -446,7 +446,7 @@ impl std::str::FromStr for CreateSubscriptionItemPriceDataRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -503,14 +503,14 @@ impl CreateSubscriptionItemPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for CreateSubscriptionItemPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionItemPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -563,14 +563,14 @@ impl CreateSubscriptionItemProrationBehavior {
 }
 
 impl std::str::FromStr for CreateSubscriptionItemProrationBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionItemProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -718,7 +718,7 @@ impl UpdateSubscriptionItemPaymentBehavior {
 }
 
 impl std::str::FromStr for UpdateSubscriptionItemPaymentBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionItemPaymentBehavior::*;
         match s {
@@ -726,7 +726,7 @@ impl std::str::FromStr for UpdateSubscriptionItemPaymentBehavior {
             "default_incomplete" => Ok(DefaultIncomplete),
             "error_if_incomplete" => Ok(ErrorIfIncomplete),
             "pending_if_incomplete" => Ok(PendingIfIncomplete),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -836,7 +836,7 @@ impl UpdateSubscriptionItemPriceDataRecurringInterval {
 }
 
 impl std::str::FromStr for UpdateSubscriptionItemPriceDataRecurringInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionItemPriceDataRecurringInterval::*;
         match s {
@@ -844,7 +844,7 @@ impl std::str::FromStr for UpdateSubscriptionItemPriceDataRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -901,14 +901,14 @@ impl UpdateSubscriptionItemPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for UpdateSubscriptionItemPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionItemPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -961,14 +961,14 @@ impl UpdateSubscriptionItemProrationBehavior {
 }
 
 impl std::str::FromStr for UpdateSubscriptionItemProrationBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionItemProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

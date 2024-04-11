@@ -60,13 +60,13 @@ impl ListAppsSecretScopeType {
 }
 
 impl std::str::FromStr for ListAppsSecretScopeType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListAppsSecretScopeType::*;
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -160,13 +160,13 @@ impl FindAppsSecretScopeType {
 }
 
 impl std::str::FromStr for FindAppsSecretScopeType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FindAppsSecretScopeType::*;
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -259,13 +259,13 @@ impl CreateAppsSecretScopeType {
 }
 
 impl std::str::FromStr for CreateAppsSecretScopeType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAppsSecretScopeType::*;
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -353,13 +353,13 @@ impl DeleteWhereAppsSecretScopeType {
 }
 
 impl std::str::FromStr for DeleteWhereAppsSecretScopeType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DeleteWhereAppsSecretScopeType::*;
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

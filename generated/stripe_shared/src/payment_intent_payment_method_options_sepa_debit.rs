@@ -134,14 +134,14 @@ impl PaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

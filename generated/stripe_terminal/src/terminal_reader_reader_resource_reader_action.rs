@@ -174,14 +174,14 @@ impl TerminalReaderReaderResourceReaderActionStatus {
 }
 
 impl std::str::FromStr for TerminalReaderReaderResourceReaderActionStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderReaderResourceReaderActionStatus::*;
         match s {
             "failed" => Ok(Failed),
             "in_progress" => Ok(InProgress),
             "succeeded" => Ok(Succeeded),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -256,7 +256,7 @@ impl TerminalReaderReaderResourceReaderActionType {
 }
 
 impl std::str::FromStr for TerminalReaderReaderResourceReaderActionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderReaderResourceReaderActionType::*;
         match s {
@@ -264,7 +264,7 @@ impl std::str::FromStr for TerminalReaderReaderResourceReaderActionType {
             "process_setup_intent" => Ok(ProcessSetupIntent),
             "refund_payment" => Ok(RefundPayment),
             "set_reader_display" => Ok(SetReaderDisplay),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

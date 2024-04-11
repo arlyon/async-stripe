@@ -144,14 +144,14 @@ impl CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage {
 }
 
 impl std::str::FromStr for CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -226,13 +226,13 @@ impl CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod {
 }
 
 impl std::str::FromStr for CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

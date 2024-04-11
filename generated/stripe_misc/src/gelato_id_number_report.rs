@@ -157,14 +157,14 @@ impl GelatoIdNumberReportIdNumberType {
 }
 
 impl std::str::FromStr for GelatoIdNumberReportIdNumberType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoIdNumberReportIdNumberType::*;
         match s {
             "br_cpf" => Ok(BrCpf),
             "sg_nric" => Ok(SgNric),
             "us_ssn" => Ok(UsSsn),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -231,13 +231,13 @@ impl GelatoIdNumberReportStatus {
 }
 
 impl std::str::FromStr for GelatoIdNumberReportStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoIdNumberReportStatus::*;
         match s {
             "unverified" => Ok(Unverified),
             "verified" => Ok(Verified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
