@@ -17,6 +17,10 @@ pub fn write_object_trait(out: &mut String, ident: &RustIdent, id_type: &Printab
                 fn id(&self) -> &Self::Id {{
                     &self.id
                 }}
+
+                fn into_id(self) -> Self::Id {{
+                    self.id
+                }}
             }}
             "#
     );
@@ -28,9 +32,11 @@ pub fn write_object_trait_for_enum(
     variants: &IndexMap<String, ObjectRef>,
 ) {
     let mut match_inner = String::with_capacity(32);
+    let mut match_into_inner = String::with_capacity(32);
     for variant in variants.values() {
         let ident = &variant.ident;
         let _ = writeln!(match_inner, "Self::{ident}(v) => v.id.inner(),");
+        let _ = writeln!(match_into_inner, "Self::{ident}(v) => v.id.into_inner(),");
     }
     let _ = writedoc!(
         out,
@@ -40,6 +46,12 @@ pub fn write_object_trait_for_enum(
                 fn id(&self) -> &Self::Id {{
                     match self {{
                     {match_inner}
+                    }}
+                }}
+
+                fn into_id(self) -> Self::Id {{
+                    match self {{
+                    {match_into_inner}
                     }}
                 }}
             }}

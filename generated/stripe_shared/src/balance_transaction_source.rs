@@ -212,4 +212,26 @@ impl stripe_types::Object for BalanceTransactionSource {
             Self::TransferReversal(v) => v.id.inner(),
         }
     }
+
+    fn into_id(self) -> Self::Id {
+        match self {
+            Self::ApplicationFee(v) => v.id.into_inner(),
+            Self::Charge(v) => v.id.into_inner(),
+            Self::ConnectCollectionTransfer(v) => v.id.into_inner(),
+            Self::CustomerCashBalanceTransaction(v) => v.id.into_inner(),
+            Self::Dispute(v) => v.id.into_inner(),
+            Self::ApplicationFeeRefund(v) => v.id.into_inner(),
+            Self::IssuingAuthorization(v) => v.id.into_inner(),
+            Self::IssuingDispute(v) => v.id.into_inner(),
+            Self::IssuingTransaction(v) => v.id.into_inner(),
+            Self::Payout(v) => v.id.into_inner(),
+            Self::PlatformTaxFee(v) => v.id.into_inner(),
+            Self::Refund(v) => v.id.into_inner(),
+            Self::ReserveTransaction(v) => v.id.into_inner(),
+            Self::TaxDeductedAtSource(v) => v.id.into_inner(),
+            Self::Topup(v) => v.id.into_inner(),
+            Self::Transfer(v) => v.id.into_inner(),
+            Self::TransferReversal(v) => v.id.into_inner(),
+        }
+    }
 }

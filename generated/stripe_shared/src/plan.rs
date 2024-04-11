@@ -283,6 +283,10 @@ impl stripe_types::Object for Plan {
     fn id(&self) -> &Self::Id {
         &self.id
     }
+
+    fn into_id(self) -> Self::Id {
+        self.id
+    }
 }
 stripe_types::def_id!(PlanId);
 #[derive(Copy, Clone, Eq, PartialEq)]
