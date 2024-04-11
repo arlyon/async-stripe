@@ -113,4 +113,8 @@ impl stripe_types::Object for DeletedTaxId {
     fn id(&self) -> &Self::Id {
         &self.id
     }
+
+    fn into_id(self) -> Self::Id {
+        self.id
+    }
 }

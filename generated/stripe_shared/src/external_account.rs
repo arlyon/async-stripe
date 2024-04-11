@@ -103,4 +103,11 @@ impl stripe_types::Object for ExternalAccount {
             Self::Card(v) => v.id.inner(),
         }
     }
+
+    fn into_id(self) -> Self::Id {
+        match self {
+            Self::BankAccount(v) => v.id.into_inner(),
+            Self::Card(v) => v.id.into_inner(),
+        }
+    }
 }

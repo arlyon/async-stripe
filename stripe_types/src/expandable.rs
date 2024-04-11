@@ -54,6 +54,13 @@ impl<T: Object> Expandable<T> {
             Expandable::Object(obj) => Some(*obj),
         }
     }
+
+    pub fn into_id(self) -> T::Id {
+        match self {
+            Expandable::Id(id) => id,
+            Expandable::Object(obj) => obj.into_id(),
+        }
+    }
 }
 
 #[doc(hidden)]

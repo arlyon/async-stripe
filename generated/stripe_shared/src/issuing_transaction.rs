@@ -360,6 +360,10 @@ impl stripe_types::Object for IssuingTransaction {
     fn id(&self) -> &Self::Id {
         &self.id
     }
+
+    fn into_id(self) -> Self::Id {
+        self.id
+    }
 }
 stripe_types::def_id!(IssuingTransactionId);
 #[derive(Copy, Clone, Eq, PartialEq)]

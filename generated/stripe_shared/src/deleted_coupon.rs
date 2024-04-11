@@ -113,4 +113,8 @@ impl stripe_types::Object for DeletedCoupon {
     fn id(&self) -> &Self::Id {
         &self.id
     }
+
+    fn into_id(self) -> Self::Id {
+        self.id
+    }
 }

@@ -503,6 +503,10 @@ impl stripe_types::Object for CreditNote {
     fn id(&self) -> &Self::Id {
         &self.id
     }
+
+    fn into_id(self) -> Self::Id {
+        self.id
+    }
 }
 stripe_types::def_id!(CreditNoteId);
 #[derive(Copy, Clone, Eq, PartialEq)]

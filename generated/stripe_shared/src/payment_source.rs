@@ -111,4 +111,13 @@ impl stripe_types::Object for PaymentSource {
             Self::Source(v) => v.id.inner(),
         }
     }
+
+    fn into_id(self) -> Self::Id {
+        match self {
+            Self::Account(v) => v.id.into_inner(),
+            Self::BankAccount(v) => v.id.into_inner(),
+            Self::Card(v) => v.id.into_inner(),
+            Self::Source(v) => v.id.into_inner(),
+        }
+    }
 }

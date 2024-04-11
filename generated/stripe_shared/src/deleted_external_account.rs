@@ -105,4 +105,11 @@ impl stripe_types::Object for DeletedExternalAccount {
             Self::DeletedCard(v) => v.id.inner(),
         }
     }
+
+    fn into_id(self) -> Self::Id {
+        match self {
+            Self::DeletedBankAccount(v) => v.id.into_inner(),
+            Self::DeletedCard(v) => v.id.into_inner(),
+        }
+    }
 }
