@@ -81,10 +81,11 @@ pub struct AccountCapabilityFutureRequirements {
     /// New fields will never appear here; `future_requirements.past_due` will always be a subset of `requirements.past_due`.
     pub past_due: Vec<String>,
 
-    /// Fields that may become required depending on the results of verification or review.
+    /// Fields that might become required depending on the results of verification or review.
     ///
-    /// Will be an empty array unless an asynchronous verification is pending.
+    /// It's an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due` or `currently_due`.
+    /// Fields might appear in `eventually_due` or `currently_due` and in `pending_verification` if verification fails but another verification is still pending.
     pub pending_verification: Vec<String>,
 }
 
@@ -123,10 +124,11 @@ pub struct AccountCapabilityRequirements {
     /// These fields need to be collected to enable the capability on the account.
     pub past_due: Vec<String>,
 
-    /// Fields that may become required depending on the results of verification or review.
+    /// Fields that might become required depending on the results of verification or review.
     ///
-    /// Will be an empty array unless an asynchronous verification is pending.
+    /// It's an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
+    /// Fields might appear in `eventually_due`, `currently_due`, or `past_due` and in `pending_verification` if verification fails but another verification is still pending.
     pub pending_verification: Vec<String>,
 }
 
@@ -238,6 +240,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedKeyedMatch,
     VerificationFailedNameMatch,
     VerificationFailedOther,
+    VerificationFailedRepresentativeAuthority,
     VerificationFailedResidentialAddress,
     VerificationFailedTaxIdMatch,
     VerificationFailedTaxIdNotIssued,
@@ -330,6 +333,7 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationFailedKeyedMatch => "verification_failed_keyed_match",
             AccountRequirementsErrorCode::VerificationFailedNameMatch => "verification_failed_name_match",
             AccountRequirementsErrorCode::VerificationFailedOther => "verification_failed_other",
+            AccountRequirementsErrorCode::VerificationFailedRepresentativeAuthority => "verification_failed_representative_authority",
             AccountRequirementsErrorCode::VerificationFailedResidentialAddress => "verification_failed_residential_address",
             AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => "verification_failed_tax_id_match",
             AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",

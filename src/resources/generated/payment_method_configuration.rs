@@ -31,6 +31,9 @@ pub struct PaymentMethodConfiguration {
     pub alipay: Option<PaymentMethodConfigResourcePaymentMethodProperties>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub amazon_pay: Option<PaymentMethodConfigResourcePaymentMethodProperties>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub apple_pay: Option<PaymentMethodConfigResourcePaymentMethodProperties>,
 
     /// For child configs, the Connect application associated with the configuration.
@@ -134,6 +137,9 @@ pub struct PaymentMethodConfiguration {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<PaymentMethodConfigResourcePaymentMethodProperties>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<PaymentMethodConfigResourcePaymentMethodProperties>,
 }
 
 impl PaymentMethodConfiguration {
@@ -224,6 +230,10 @@ pub struct CreatePaymentMethodConfiguration<'a> {
     /// Check this [page](https://stripe.com/docs/payments/alipay) for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<CreatePaymentMethodConfigurationAlipay>,
+
+    /// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amazon_pay: Option<CreatePaymentMethodConfigurationAmazonPay>,
 
     /// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
     ///
@@ -441,6 +451,12 @@ pub struct CreatePaymentMethodConfiguration<'a> {
     /// Check this [page](https://stripe.com/docs/payments/wechat-pay) for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<CreatePaymentMethodConfigurationWechatPay>,
+
+    /// Zip gives your customers a way to split purchases over a series of payments.
+    ///
+    /// Check this [page](https://stripe.com/docs/payments/zip) for more details like country availability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<CreatePaymentMethodConfigurationZip>,
 }
 
 impl<'a> CreatePaymentMethodConfiguration<'a> {
@@ -450,6 +466,7 @@ impl<'a> CreatePaymentMethodConfiguration<'a> {
             affirm: Default::default(),
             afterpay_clearpay: Default::default(),
             alipay: Default::default(),
+            amazon_pay: Default::default(),
             apple_pay: Default::default(),
             apple_pay_later: Default::default(),
             au_becs_debit: Default::default(),
@@ -484,6 +501,7 @@ impl<'a> CreatePaymentMethodConfiguration<'a> {
             sofort: Default::default(),
             us_bank_account: Default::default(),
             wechat_pay: Default::default(),
+            zip: Default::default(),
         }
     }
 }
@@ -546,6 +564,10 @@ pub struct UpdatePaymentMethodConfiguration<'a> {
     /// Check this [page](https://stripe.com/docs/payments/alipay) for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<UpdatePaymentMethodConfigurationAlipay>,
+
+    /// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amazon_pay: Option<UpdatePaymentMethodConfigurationAmazonPay>,
 
     /// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
     ///
@@ -757,6 +779,12 @@ pub struct UpdatePaymentMethodConfiguration<'a> {
     /// Check this [page](https://stripe.com/docs/payments/wechat-pay) for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<UpdatePaymentMethodConfigurationWechatPay>,
+
+    /// Zip gives your customers a way to split purchases over a series of payments.
+    ///
+    /// Check this [page](https://stripe.com/docs/payments/zip) for more details like country availability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<UpdatePaymentMethodConfigurationZip>,
 }
 
 impl<'a> UpdatePaymentMethodConfiguration<'a> {
@@ -767,6 +795,7 @@ impl<'a> UpdatePaymentMethodConfiguration<'a> {
             affirm: Default::default(),
             afterpay_clearpay: Default::default(),
             alipay: Default::default(),
+            amazon_pay: Default::default(),
             apple_pay: Default::default(),
             apple_pay_later: Default::default(),
             au_becs_debit: Default::default(),
@@ -800,6 +829,7 @@ impl<'a> UpdatePaymentMethodConfiguration<'a> {
             sofort: Default::default(),
             us_bank_account: Default::default(),
             wechat_pay: Default::default(),
+            zip: Default::default(),
         }
     }
 }
@@ -834,6 +864,14 @@ pub struct CreatePaymentMethodConfigurationAlipay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationAlipayDisplayPreference>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodConfigurationAmazonPay {
+
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationAmazonPayDisplayPreference>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1077,6 +1115,14 @@ pub struct CreatePaymentMethodConfigurationWechatPay {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodConfigurationZip {
+
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationZipDisplayPreference>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentMethodConfigurationAcssDebit {
 
     /// Whether or not the payment method should be displayed.
@@ -1106,6 +1152,14 @@ pub struct UpdatePaymentMethodConfigurationAlipay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationAlipayDisplayPreference>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentMethodConfigurationAmazonPay {
+
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationAmazonPayDisplayPreference>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1349,6 +1403,14 @@ pub struct UpdatePaymentMethodConfigurationWechatPay {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentMethodConfigurationZip {
+
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationZipDisplayPreference>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodConfigurationAcssDebitDisplayPreference {
 
     /// The account's preference for whether or not to display this payment method.
@@ -1378,6 +1440,14 @@ pub struct CreatePaymentMethodConfigurationAlipayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodConfigurationAmazonPayDisplayPreference {
+
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1621,6 +1691,14 @@ pub struct CreatePaymentMethodConfigurationWechatPayDisplayPreference {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodConfigurationZipDisplayPreference {
+
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationZipDisplayPreferencePreference>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentMethodConfigurationAcssDebitDisplayPreference {
 
     /// The account's preference for whether or not to display this payment method.
@@ -1650,6 +1728,14 @@ pub struct UpdatePaymentMethodConfigurationAlipayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentMethodConfigurationAmazonPayDisplayPreference {
+
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1892,6 +1978,14 @@ pub struct UpdatePaymentMethodConfigurationWechatPayDisplayPreference {
     pub preference: Option<UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference>,
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentMethodConfigurationZipDisplayPreference {
+
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationZipDisplayPreferencePreference>,
+}
+
 /// An enum representing the possible values of an `CreatePaymentMethodConfigurationAcssDebitDisplayPreference`'s `preference` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2031,6 +2125,42 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationAlipayDisplayPreferen
     }
 }
 impl std::default::Default for CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentMethodConfigurationAmazonPayDisplayPreference`'s `preference` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+
+impl CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::None => "none",
+            CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::Off => "off",
+            CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::On => "on",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
     fn default() -> Self {
         Self::None
     }
@@ -3116,6 +3246,42 @@ impl std::default::Default for CreatePaymentMethodConfigurationWechatPayDisplayP
     }
 }
 
+/// An enum representing the possible values of an `CreatePaymentMethodConfigurationZipDisplayPreference`'s `preference` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+
+impl CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentMethodConfigurationZipDisplayPreferencePreference::None => "none",
+            CreatePaymentMethodConfigurationZipDisplayPreferencePreference::Off => "off",
+            CreatePaymentMethodConfigurationZipDisplayPreferencePreference::On => "on",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 /// An enum representing the possible values of an `PaymentMethodConfigResourceDisplayPreference`'s `preference` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3325,6 +3491,42 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationAlipayDisplayPreferen
     }
 }
 impl std::default::Default for UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentMethodConfigurationAmazonPayDisplayPreference`'s `preference` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+
+impl UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::None => "none",
+            UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::Off => "off",
+            UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::On => "on",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
     fn default() -> Self {
         Self::None
     }
@@ -4405,6 +4607,42 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationWechatPayDisplayPrefe
     }
 }
 impl std::default::Default for UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentMethodConfigurationZipDisplayPreference`'s `preference` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+
+impl UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentMethodConfigurationZipDisplayPreferencePreference::None => "none",
+            UpdatePaymentMethodConfigurationZipDisplayPreferencePreference::Off => "off",
+            UpdatePaymentMethodConfigurationZipDisplayPreferencePreference::On => "on",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
     fn default() -> Self {
         Self::None
     }
