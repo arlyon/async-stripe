@@ -87,6 +87,7 @@ impl Object for TaxId {
 
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct CreateTaxId<'a> {
+    #[serde(rename = "type")]
     pub type_: TaxIdType,
     pub value: &'a str,
 }
