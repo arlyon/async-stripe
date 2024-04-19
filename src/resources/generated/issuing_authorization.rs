@@ -2,15 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::IssuingAuthorizationId;
+use crate::ids::{IssuingAuthorizationId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{
-    BalanceTransaction, Currency, IssuingAuthorizationAmountDetails, IssuingAuthorizationCheck,
-    IssuingAuthorizationMethod, IssuingAuthorizationReason, IssuingCard, IssuingCardholder,
-    IssuingToken, IssuingTransaction, MerchantData,
-};
+use crate::resources::{BalanceTransaction, Currency, IssuingAuthorizationAmountDetails, IssuingAuthorizationCheck, IssuingAuthorizationMethod, IssuingAuthorizationReason, IssuingCard, IssuingCardholder, IssuingToken, IssuingTransaction, MerchantData};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingAuthorization".
 ///
@@ -132,6 +127,7 @@ impl Object for IssuingAuthorization {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationNetworkData {
+
     /// Identifier assigned to the acquirer by the card network.
     ///
     /// Sometimes this value is not provided by the network; in this case, the value will be `null`.
@@ -148,6 +144,7 @@ pub struct IssuingAuthorizationNetworkData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationPendingRequest {
+
     /// The additional amount Stripe will hold if the authorization is approved, in the card's [currency](https://stripe.com/docs/api#issuing_authorization_object-pending-request-currency) and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
 
@@ -180,6 +177,7 @@ pub struct IssuingAuthorizationPendingRequest {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationRequest {
+
     /// The `pending_request.amount` at the time of the request, presented in your card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     ///
     /// Stripe held this amount from your account to fund the authorization if the request was approved.
@@ -239,6 +237,7 @@ pub struct IssuingAuthorizationRequest {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationTreasury {
+
     /// The array of [ReceivedCredits](https://stripe.com/docs/api/treasury/received_credits) associated with this authorization.
     pub received_credits: Vec<String>,
 
@@ -251,6 +250,7 @@ pub struct IssuingAuthorizationTreasury {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationVerificationData {
+
     /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
     pub address_line1_check: IssuingAuthorizationCheck,
 
@@ -275,6 +275,7 @@ pub struct IssuingAuthorizationVerificationData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationAuthenticationExemption {
+
     /// The entity that requested the exemption, either the acquiring merchant or the Issuing user.
     pub claimed_by: IssuingAuthorizationAuthenticationExemptionClaimedBy,
 
@@ -285,6 +286,7 @@ pub struct IssuingAuthorizationAuthenticationExemption {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationThreeDSecure {
+
     /// The outcome of the 3D Secure authentication request.
     pub result: IssuingAuthorizationThreeDSecureResult,
 }
@@ -335,12 +337,8 @@ pub enum IssuingAuthorizationAuthenticationExemptionType {
 impl IssuingAuthorizationAuthenticationExemptionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            IssuingAuthorizationAuthenticationExemptionType::LowValueTransaction => {
-                "low_value_transaction"
-            }
-            IssuingAuthorizationAuthenticationExemptionType::TransactionRiskAnalysis => {
-                "transaction_risk_analysis"
-            }
+            IssuingAuthorizationAuthenticationExemptionType::LowValueTransaction => "low_value_transaction",
+            IssuingAuthorizationAuthenticationExemptionType::TransactionRiskAnalysis => "transaction_risk_analysis",
             IssuingAuthorizationAuthenticationExemptionType::Unknown => "unknown",
         }
     }
