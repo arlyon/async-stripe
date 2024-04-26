@@ -5,7 +5,7 @@ use crate::params::to_snakecase;
 /// Currency is the list of supported currencies.
 ///
 /// For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash, Default)]
 pub enum Currency {
     #[serde(rename = "byn")]
     BYN, // Belarusian Ruble
@@ -262,6 +262,7 @@ pub enum Currency {
     #[serde(rename = "ugx")]
     UGX, // Ugandan Shilling
     #[serde(rename = "usd")]
+    #[default]
     USD, // United States Dollar
     #[serde(rename = "uyu")]
     UYU, // Uruguayan Peso
@@ -289,12 +290,6 @@ pub enum Currency {
     ZAR, // South African Rand
     #[serde(rename = "zmw")]
     ZMW, // Zambian Kwacha
-}
-
-impl Default for Currency {
-    fn default() -> Self {
-        Currency::USD
-    }
 }
 
 impl std::fmt::Display for Currency {
