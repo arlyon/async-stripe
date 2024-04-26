@@ -235,7 +235,7 @@ impl CheckoutSession {
         client: &Client,
         params: &ListCheckoutSessions<'_>,
     ) -> Response<List<CheckoutSession>> {
-        client.get_query("/checkout/sessions", &params)
+        client.get_query("/checkout/sessions", params)
     }
 
     /// Creates a Session object.

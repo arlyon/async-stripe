@@ -146,7 +146,7 @@ pub struct Quote {
 impl Quote {
     /// Returns a list of your quotes.
     pub fn list(client: &Client, params: &ListQuotes<'_>) -> Response<List<Quote>> {
-        client.get_query("/quotes", &params)
+        client.get_query("/quotes", params)
     }
 
     /// Retrieves the quote with the given ID.

@@ -140,7 +140,7 @@ impl PaymentMethodConfiguration {
 
     /// List payment method configurations.
 pub fn list(client: &Client, params: &ListPaymentMethodConfigurations<'_>) -> Response<List<PaymentMethodConfiguration>> {
-   client.get_query("/payment_method_configurations", &params)
+   client.get_query("/payment_method_configurations", params)
 }
 
 

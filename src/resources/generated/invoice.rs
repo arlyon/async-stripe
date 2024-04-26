@@ -473,7 +473,7 @@ impl Invoice {
     ///
     /// The invoices are returned sorted by creation date, with the most recently created invoices appearing first.
     pub fn list(client: &Client, params: &ListInvoices<'_>) -> Response<List<Invoice>> {
-        client.get_query("/invoices", &params)
+        client.get_query("/invoices", params)
     }
 
     /// This endpoint creates a draft invoice for a given customer.

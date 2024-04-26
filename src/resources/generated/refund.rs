@@ -98,7 +98,7 @@ impl Refund {
     ///
     /// We return the refunds in sorted order, with the most recent refunds appearing first The 10 most recent refunds are always available by default on the Charge object.
     pub fn list(client: &Client, params: &ListRefunds<'_>) -> Response<List<Refund>> {
-        client.get_query("/refunds", &params)
+        client.get_query("/refunds", params)
     }
 
     /// When you create a new refund, you must specify a Charge or a PaymentIntent object on which to create it.

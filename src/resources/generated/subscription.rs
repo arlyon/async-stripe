@@ -215,7 +215,7 @@ impl Subscription {
     ///
     /// In order to list canceled subscriptions, specify `status=canceled`.
     pub fn list(client: &Client, params: &ListSubscriptions<'_>) -> Response<List<Subscription>> {
-        client.get_query("/subscriptions", &params)
+        client.get_query("/subscriptions", params)
     }
 
     /// Creates a new subscription on an existing customer.

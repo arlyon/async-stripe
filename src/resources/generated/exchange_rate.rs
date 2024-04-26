@@ -25,7 +25,7 @@ impl ExchangeRate {
     ///
     /// Only shows the currencies for which Stripe supports.
 pub fn list(client: &Client, params: &ListExchangeRates<'_>) -> Response<List<ExchangeRate>> {
-   client.get_query("/exchange_rates", &params)
+   client.get_query("/exchange_rates", params)
 }
 
 

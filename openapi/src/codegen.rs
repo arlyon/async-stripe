@@ -1387,7 +1387,7 @@ pub fn gen_impl_requests(
                 let query_path = segments.join("/");
                 writedoc!(&mut out, r#"
                     pub fn list(client: &Client, params: &{params_name}<'_>) -> Response<List<{rust_struct}>> {{
-                       client.get_query("/{query_path}", &params)
+                       client.get_query("/{query_path}", params)
                     }}
                 "#).unwrap();
                 methods.insert(MethodTypes::List, out);

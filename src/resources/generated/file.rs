@@ -54,7 +54,7 @@ impl File {
     ///
     /// Stripe sorts and returns the files by their creation dates, placing the most recently created files at the top.
     pub fn list(client: &Client, params: &ListFiles<'_>) -> Response<List<File>> {
-        client.get_query("/files", &params)
+        client.get_query("/files", params)
     }
 
     /// Retrieves the details of an existing file object.

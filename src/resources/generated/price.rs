@@ -137,7 +137,7 @@ impl Price {
     ///
     /// For the list of inactive prices, set `active` to false.
     pub fn list(client: &Client, params: &ListPrices<'_>) -> Response<List<Price>> {
-        client.get_query("/prices", &params)
+        client.get_query("/prices", params)
     }
 
     /// Creates a new price for an existing product.

@@ -48,7 +48,7 @@ impl TerminalConfiguration {
         client: &Client,
         params: &ListTerminalConfigurations<'_>,
     ) -> Response<List<TerminalConfiguration>> {
-        client.get_query("/terminal/configurations", &params)
+        client.get_query("/terminal/configurations", params)
     }
 
     /// Creates a new `Configuration` object.

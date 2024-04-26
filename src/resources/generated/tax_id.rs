@@ -62,7 +62,7 @@ pub struct TaxId {
 impl TaxId {
     /// Returns a list of tax IDs.
     pub fn list(client: &Client, params: &ListTaxIds<'_>) -> Response<List<TaxId>> {
-        client.get_query("/tax_ids", &params)
+        client.get_query("/tax_ids", params)
     }
 
     /// Creates a new account or customer `tax_id` object.

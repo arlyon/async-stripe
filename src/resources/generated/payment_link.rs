@@ -127,7 +127,7 @@ pub struct PaymentLink {
 impl PaymentLink {
     /// Returns a list of your payment links.
     pub fn list(client: &Client, params: &ListPaymentLinks<'_>) -> Response<List<PaymentLink>> {
-        client.get_query("/payment_links", &params)
+        client.get_query("/payment_links", params)
     }
 
     /// Creates a payment link.

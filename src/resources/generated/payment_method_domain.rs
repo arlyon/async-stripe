@@ -44,7 +44,7 @@ impl PaymentMethodDomain {
 
     /// Lists the details of existing payment method domains.
 pub fn list(client: &Client, params: &ListPaymentMethodDomains<'_>) -> Response<List<PaymentMethodDomain>> {
-   client.get_query("/payment_method_domains", &params)
+   client.get_query("/payment_method_domains", params)
 }
 
 

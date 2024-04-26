@@ -134,7 +134,7 @@ pub struct Plan {
 impl Plan {
     /// Returns a list of your plans.
     pub fn list(client: &Client, params: &ListPlans<'_>) -> Response<List<Plan>> {
-        client.get_query("/plans", &params)
+        client.get_query("/plans", params)
     }
 
     /// Retrieves the plan with the given ID.

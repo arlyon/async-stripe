@@ -198,7 +198,7 @@ pub struct PaymentIntent {
 impl PaymentIntent {
     /// Returns a list of PaymentIntents.
     pub fn list(client: &Client, params: &ListPaymentIntents<'_>) -> Response<List<PaymentIntent>> {
-        client.get_query("/payment_intents", &params)
+        client.get_query("/payment_intents", params)
     }
 
     /// Creates a PaymentIntent object.

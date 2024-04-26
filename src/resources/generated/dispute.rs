@@ -80,7 +80,7 @@ pub struct Dispute {
 impl Dispute {
     /// Returns a list of your disputes.
     pub fn list(client: &Client, params: &ListDisputes<'_>) -> Response<List<Dispute>> {
-        client.get_query("/disputes", &params)
+        client.get_query("/disputes", params)
     }
 
     /// Retrieves the dispute with the given ID.

@@ -70,7 +70,7 @@ impl TerminalReader {
         client: &Client,
         params: &ListTerminalReaders<'_>,
     ) -> Response<List<TerminalReader>> {
-        client.get_query("/terminal/readers", &params)
+        client.get_query("/terminal/readers", params)
     }
 
     /// Creates a new `Reader` object.

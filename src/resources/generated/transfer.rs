@@ -84,7 +84,7 @@ impl Transfer {
     ///
     /// The transfers are returned in sorted order, with the most recently created transfers appearing first.
     pub fn list(client: &Client, params: &ListTransfers<'_>) -> Response<List<Transfer>> {
-        client.get_query("/transfers", &params)
+        client.get_query("/transfers", params)
     }
 
     /// To send funds from your Stripe account to a connected account, you create a new transfer object.

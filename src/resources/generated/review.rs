@@ -70,7 +70,7 @@ impl Review {
     ///
     /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
     pub fn list(client: &Client, params: &ListReviews<'_>) -> Response<List<Review>> {
-        client.get_query("/reviews", &params)
+        client.get_query("/reviews", params)
     }
 
     /// Retrieves a `Review` object.

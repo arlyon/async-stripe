@@ -45,7 +45,7 @@ impl CountrySpec {
 
     /// Lists all Country Spec objects available in the API.
 pub fn list(client: &Client, params: &ListCountrySpecs<'_>) -> Response<List<CountrySpec>> {
-   client.get_query("/country_specs", &params)
+   client.get_query("/country_specs", params)
 }
 
 

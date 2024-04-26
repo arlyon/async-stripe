@@ -115,7 +115,7 @@ impl Product {
     ///
     /// The products are returned sorted by creation date, with the most recently created products appearing first.
     pub fn list(client: &Client, params: &ListProducts<'_>) -> Response<List<Product>> {
-        client.get_query("/products", &params)
+        client.get_query("/products", params)
     }
 
     /// Creates a new product object.

@@ -106,7 +106,7 @@ impl Payout {
     ///
     /// The payouts return in sorted order, with the most recently created payouts appearing first.
     pub fn list(client: &Client, params: &ListPayouts<'_>) -> Response<List<Payout>> {
-        client.get_query("/payouts", &params)
+        client.get_query("/payouts", params)
     }
 
     /// To send funds to your own bank account, create a new payout object.

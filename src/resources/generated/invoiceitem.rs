@@ -134,7 +134,7 @@ impl InvoiceItem {
     ///
     /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
     pub fn list(client: &Client, params: &ListInvoiceItems<'_>) -> Response<List<InvoiceItem>> {
-        client.get_query("/invoiceitems", &params)
+        client.get_query("/invoiceitems", params)
     }
 
     /// Creates an item to be added to a draft invoice (up to 250 items per invoice).

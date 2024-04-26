@@ -78,7 +78,7 @@ impl WebhookEndpoint {
         client: &Client,
         params: &ListWebhookEndpoints<'_>,
     ) -> Response<List<WebhookEndpoint>> {
-        client.get_query("/webhook_endpoints", &params)
+        client.get_query("/webhook_endpoints", params)
     }
 
     /// A webhook endpoint must have a `url` and a list of `enabled_events`.

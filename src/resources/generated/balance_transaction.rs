@@ -88,7 +88,7 @@ impl BalanceTransaction {
         client: &Client,
         params: &ListBalanceTransactions<'_>,
     ) -> Response<List<BalanceTransaction>> {
-        client.get_query("/balance_transactions", &params)
+        client.get_query("/balance_transactions", params)
     }
 
     /// Retrieves the balance transaction with the given ID.

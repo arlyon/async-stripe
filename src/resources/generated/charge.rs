@@ -213,7 +213,7 @@ impl Charge {
     ///
     /// The charges are returned in sorted order, with the most recent charges appearing first.
     pub fn list(client: &Client, params: &ListCharges<'_>) -> Response<List<Charge>> {
-        client.get_query("/charges", &params)
+        client.get_query("/charges", params)
     }
 
     /// This method is no longer recommended—use the [Payment Intents API](https://stripe.com/docs/api/payment_intents)

@@ -49,7 +49,7 @@ impl TerminalLocation {
         client: &Client,
         params: &ListTerminalLocations<'_>,
     ) -> Response<List<TerminalLocation>> {
-        client.get_query("/terminal/locations", &params)
+        client.get_query("/terminal/locations", params)
     }
 
     /// Creates a new `Location` object.

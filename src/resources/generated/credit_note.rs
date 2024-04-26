@@ -123,7 +123,7 @@ pub struct CreditNote {
 impl CreditNote {
     /// Returns a list of credit notes.
     pub fn list(client: &Client, params: &ListCreditNotes<'_>) -> Response<List<CreditNote>> {
-        client.get_query("/credit_notes", &params)
+        client.get_query("/credit_notes", params)
     }
 
     /// Issue a credit note to adjust the amount of a finalized invoice.
