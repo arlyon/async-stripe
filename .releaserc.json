@@ -5,11 +5,10 @@
     "@semantic-release/release-notes-generator",
     "@semantic-release/changelog",
     [
-      "@semantic-release-cargo/semantic-release-cargo",
+      "semantic-release-cargo",
       {
-        "features": {
-          "async-stripe": ["runtime-tokio-hyper"]
-        }
+        "check": false,
+        "publishArgs": ["--features", "runtime-tokio-hyper"]
       }
     ],
     [
