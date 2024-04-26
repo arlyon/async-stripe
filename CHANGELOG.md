@@ -1,3 +1,11 @@
+## [0.35.1](https://github.com/arlyon/async-stripe/compare/v0.35.0...v0.35.1) (2024-04-26)
+
+
+### Bug Fixes
+
+* bump MSRV (closes [#532](https://github.com/arlyon/async-stripe/issues/532)) ([1379a90](https://github.com/arlyon/async-stripe/commit/1379a900090e59ee05611ddfb3b8842261a761e2))
+* Unused import ([baf0b98](https://github.com/arlyon/async-stripe/commit/baf0b98a60ff335a0760f3d8e785715d36d044f7))
+
 # [0.35.0](https://github.com/arlyon/async-stripe/compare/v0.34.2...v0.35.0) (2024-04-04)
 
 
