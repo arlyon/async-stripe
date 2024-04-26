@@ -55,6 +55,8 @@
 #![allow(clippy::map_clone, clippy::large_enum_variant)]
 #![warn(clippy::unwrap_used, clippy::missing_errors_doc, clippy::missing_panics_doc)]
 #![forbid(unsafe_code)]
+// Workaround
+#![allow(ambiguous_glob_reexports)]
 
 // Give a clear error when a required runtime error is not present. Would be better for this
 // to be a fatal error preventing emission of further compile errors relating to lack of
