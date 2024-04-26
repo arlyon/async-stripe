@@ -75,7 +75,7 @@ impl Review {
 
     /// Retrieves a `Review` object.
     pub fn retrieve(client: &Client, id: &ReviewId, expand: &[&str]) -> Response<Review> {
-        client.get_query(&format!("/reviews/{}", id), &Expand { expand })
+        client.get_query(&format!("/reviews/{}", id), Expand { expand })
     }
 }
 

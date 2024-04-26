@@ -28,6 +28,12 @@ pub struct TokioBlockingClient {
     runtime: Arc<tokio::runtime::Runtime>,
 }
 
+impl Default for TokioBlockingClient {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TokioBlockingClient {
     /// Creates a new client pointed to `https://api.stripe.com/`
     pub fn new() -> TokioBlockingClient {

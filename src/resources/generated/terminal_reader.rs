@@ -75,6 +75,7 @@ impl TerminalReader {
 
     /// Creates a new `Reader` object.
     pub fn create(client: &Client, params: CreateTerminalReader<'_>) -> Response<TerminalReader> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/terminal/readers", &params)
     }
 }

@@ -85,7 +85,7 @@ impl Dispute {
 
     /// Retrieves the dispute with the given ID.
     pub fn retrieve(client: &Client, id: &DisputeId, expand: &[&str]) -> Response<Dispute> {
-        client.get_query(&format!("/disputes/{}", id), &Expand { expand })
+        client.get_query(&format!("/disputes/{}", id), Expand { expand })
     }
 }
 

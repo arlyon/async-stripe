@@ -37,6 +37,7 @@ pub struct EphemeralKey {
 impl EphemeralKey {
     /// Creates a short-lived API key for a given resource.
     pub fn create(client: &Client, params: CreateEphemeralKey<'_>) -> Response<EphemeralKey> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/ephemeral_keys", &params)
     }
 

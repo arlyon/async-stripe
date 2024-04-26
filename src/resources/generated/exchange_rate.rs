@@ -31,7 +31,7 @@ pub fn list(client: &Client, params: &ListExchangeRates<'_>) -> Response<List<Ex
 
     /// Retrieves the exchange rates from the given currency to every supported currency.
     pub fn retrieve(client: &Client, id: &ExchangeRateId, expand: &[&str]) -> Response<ExchangeRate> {
-        client.get_query(&format!("/exchange_rates/{}", id), &Expand { expand })
+        client.get_query(&format!("/exchange_rates/{}", id), Expand { expand })
     }
 }
 

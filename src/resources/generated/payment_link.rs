@@ -132,12 +132,13 @@ impl PaymentLink {
 
     /// Creates a payment link.
     pub fn create(client: &Client, params: CreatePaymentLink<'_>) -> Response<PaymentLink> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/payment_links", &params)
     }
 
     /// Retrieve a payment link.
     pub fn retrieve(client: &Client, id: &PaymentLinkId, expand: &[&str]) -> Response<PaymentLink> {
-        client.get_query(&format!("/payment_links/{}", id), &Expand { expand })
+        client.get_query(&format!("/payment_links/{}", id), Expand { expand })
     }
 
     /// Updates a payment link.
@@ -146,6 +147,7 @@ impl PaymentLink {
         id: &PaymentLinkId,
         params: UpdatePaymentLink<'_>,
     ) -> Response<PaymentLink> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/payment_links/{}", id), &params)
     }
 }

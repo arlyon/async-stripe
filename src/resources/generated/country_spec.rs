@@ -51,7 +51,7 @@ pub fn list(client: &Client, params: &ListCountrySpecs<'_>) -> Response<List<Cou
 
     /// Returns a Country Spec for a given Country code.
     pub fn retrieve(client: &Client, id: &CountrySpecId, expand: &[&str]) -> Response<CountrySpec> {
-        client.get_query(&format!("/country_specs/{}", id), &Expand { expand })
+        client.get_query(&format!("/country_specs/{}", id), Expand { expand })
     }
 }
 

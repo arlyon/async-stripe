@@ -75,6 +75,7 @@ impl ShippingRate {
 
     /// Creates a new shipping rate object.
     pub fn create(client: &Client, params: CreateShippingRate<'_>) -> Response<ShippingRate> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/shipping_rates", &params)
     }
 
@@ -84,7 +85,7 @@ impl ShippingRate {
         id: &ShippingRateId,
         expand: &[&str],
     ) -> Response<ShippingRate> {
-        client.get_query(&format!("/shipping_rates/{}", id), &Expand { expand })
+        client.get_query(&format!("/shipping_rates/{}", id), Expand { expand })
     }
 
     /// Updates an existing shipping rate object.
@@ -93,6 +94,7 @@ impl ShippingRate {
         id: &ShippingRateId,
         params: UpdateShippingRate<'_>,
     ) -> Response<ShippingRate> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/shipping_rates/{}", id), &params)
     }
 }

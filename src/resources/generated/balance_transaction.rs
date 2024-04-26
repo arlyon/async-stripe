@@ -99,7 +99,7 @@ impl BalanceTransaction {
         id: &BalanceTransactionId,
         expand: &[&str],
     ) -> Response<BalanceTransaction> {
-        client.get_query(&format!("/balance_transactions/{}", id), &Expand { expand })
+        client.get_query(&format!("/balance_transactions/{}", id), Expand { expand })
     }
 }
 

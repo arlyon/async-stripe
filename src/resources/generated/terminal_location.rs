@@ -58,6 +58,7 @@ impl TerminalLocation {
         client: &Client,
         params: CreateTerminalLocation<'_>,
     ) -> Response<TerminalLocation> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/terminal/locations", &params)
     }
 }

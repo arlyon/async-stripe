@@ -139,7 +139,7 @@ impl Plan {
 
     /// Retrieves the plan with the given ID.
     pub fn retrieve(client: &Client, id: &PlanId, expand: &[&str]) -> Response<Plan> {
-        client.get_query(&format!("/plans/{}", id), &Expand { expand })
+        client.get_query(&format!("/plans/{}", id), Expand { expand })
     }
 
     /// Updates the specified plan by setting the values of the parameters passed.
@@ -147,6 +147,7 @@ impl Plan {
     /// Any parameters not provided are left unchanged.
     /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
     pub fn update(client: &Client, id: &PlanId, params: UpdatePlan<'_>) -> Response<Plan> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/plans/{}", id), &params)
     }
 

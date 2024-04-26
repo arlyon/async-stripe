@@ -240,6 +240,7 @@ impl CheckoutSession {
 
     /// Creates a Session object.
     pub fn create(client: &Client, params: CreateCheckoutSession<'_>) -> Response<CheckoutSession> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/checkout/sessions", &params)
     }
 }

@@ -480,12 +480,13 @@ impl Invoice {
     ///
     /// The invoice remains a draft until you [finalize](https://stripe.com/docs/api#finalize_invoice) the invoice, which allows you to [pay](https://stripe.com/docs/api#pay_invoice) or [send](https://stripe.com/docs/api#send_invoice) the invoice to your customers.
     pub fn create(client: &Client, params: CreateInvoice<'_>) -> Response<Invoice> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/invoices", &params)
     }
 
     /// Retrieves the invoice with the given ID.
     pub fn retrieve(client: &Client, id: &InvoiceId, expand: &[&str]) -> Response<Invoice> {
-        client.get_query(&format!("/invoices/{}", id), &Expand { expand })
+        client.get_query(&format!("/invoices/{}", id), Expand { expand })
     }
 
     /// Permanently deletes a one-off invoice draft.

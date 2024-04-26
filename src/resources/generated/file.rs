@@ -62,7 +62,7 @@ impl File {
     /// After you supply a unique file ID, Stripe returns the corresponding file object.
     /// Learn how to [access file contents](https://stripe.com/docs/file-upload#download-file-contents).
     pub fn retrieve(client: &Client, id: &FileId, expand: &[&str]) -> Response<File> {
-        client.get_query(&format!("/files/{}", id), &Expand { expand })
+        client.get_query(&format!("/files/{}", id), Expand { expand })
     }
 }
 

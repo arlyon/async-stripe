@@ -151,7 +151,7 @@ impl Quote {
 
     /// Retrieves the quote with the given ID.
     pub fn retrieve(client: &Client, id: &QuoteId, expand: &[&str]) -> Response<Quote> {
-        client.get_query(&format!("/quotes/{}", id), &Expand { expand })
+        client.get_query(&format!("/quotes/{}", id), Expand { expand })
     }
 }
 

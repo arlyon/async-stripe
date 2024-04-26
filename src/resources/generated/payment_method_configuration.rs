@@ -146,16 +146,18 @@ pub fn list(client: &Client, params: &ListPaymentMethodConfigurations<'_>) -> Re
 
     /// Creates a payment method configuration.
     pub fn create(client: &Client, params: CreatePaymentMethodConfiguration<'_>) -> Response<PaymentMethodConfiguration> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/payment_method_configurations", &params)
     }
 
     /// Retrieve payment method configuration.
     pub fn retrieve(client: &Client, id: &PaymentMethodConfigurationId, expand: &[&str]) -> Response<PaymentMethodConfiguration> {
-        client.get_query(&format!("/payment_method_configurations/{}", id), &Expand { expand })
+        client.get_query(&format!("/payment_method_configurations/{}", id), Expand { expand })
     }
 
     /// Update payment method configuration.
     pub fn update(client: &Client, id: &PaymentMethodConfigurationId, params: UpdatePaymentMethodConfiguration<'_>) -> Response<PaymentMethodConfiguration> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/payment_method_configurations/{}", id), &params)
     }
 }

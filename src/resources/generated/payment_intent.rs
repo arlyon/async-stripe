@@ -209,6 +209,7 @@ impl PaymentIntent {
     /// Learn more about [the available payment flows with the Payment Intents API](https://stripe.com/docs/payments/payment-intents).  When you use `confirm=true` during creation, it’s equivalent to creating and confirming the PaymentIntent in the same call.
     /// You can use any parameters available in the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) when you supply `confirm=true`.
     pub fn create(client: &Client, params: CreatePaymentIntent<'_>) -> Response<PaymentIntent> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/payment_intents", &params)
     }
 
@@ -222,7 +223,7 @@ impl PaymentIntent {
         id: &PaymentIntentId,
         expand: &[&str],
     ) -> Response<PaymentIntent> {
-        client.get_query(&format!("/payment_intents/{}", id), &Expand { expand })
+        client.get_query(&format!("/payment_intents/{}", id), Expand { expand })
     }
 
     /// Updates properties on a PaymentIntent object without confirming.
@@ -237,6 +238,7 @@ impl PaymentIntent {
         id: &PaymentIntentId,
         params: UpdatePaymentIntent<'_>,
     ) -> Response<PaymentIntent> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/payment_intents/{}", id), &params)
     }
 }

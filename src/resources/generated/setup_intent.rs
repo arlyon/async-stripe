@@ -135,6 +135,7 @@ impl SetupIntent {
     /// After you create the SetupIntent, attach a payment method and [confirm](https://stripe.com/docs/api/setup_intents/confirm)
     /// it to collect any required permissions to charge the payment method later.
     pub fn create(client: &Client, params: CreateSetupIntent<'_>) -> Response<SetupIntent> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/setup_intents", &params)
     }
 
@@ -144,7 +145,7 @@ impl SetupIntent {
     /// When retrieved with a publishable key, only a subset of properties will be returned.
     /// Please refer to the [SetupIntent](https://stripe.com/docs/api#setup_intent_object) object reference for more details.
     pub fn retrieve(client: &Client, id: &SetupIntentId, expand: &[&str]) -> Response<SetupIntent> {
-        client.get_query(&format!("/setup_intents/{}", id), &Expand { expand })
+        client.get_query(&format!("/setup_intents/{}", id), Expand { expand })
     }
 
     /// Updates a SetupIntent object.
@@ -153,6 +154,7 @@ impl SetupIntent {
         id: &SetupIntentId,
         params: UpdateSetupIntent<'_>,
     ) -> Response<SetupIntent> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/setup_intents/{}", id), &params)
     }
 }

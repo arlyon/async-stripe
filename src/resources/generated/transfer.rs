@@ -91,6 +91,7 @@ impl Transfer {
     ///
     /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the transfer amount, or you’ll receive an “Insufficient Funds” error.
     pub fn create(client: &Client, params: CreateTransfer<'_>) -> Response<Transfer> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/transfers", &params)
     }
 
@@ -98,7 +99,7 @@ impl Transfer {
     ///
     /// Supply the unique transfer ID from either a transfer creation request or the transfer list, and Stripe will return the corresponding transfer information.
     pub fn retrieve(client: &Client, id: &TransferId, expand: &[&str]) -> Response<Transfer> {
-        client.get_query(&format!("/transfers/{}", id), &Expand { expand })
+        client.get_query(&format!("/transfers/{}", id), Expand { expand })
     }
 
     /// Updates the specified transfer by setting the values of the parameters passed.
@@ -109,6 +110,7 @@ impl Transfer {
         id: &TransferId,
         params: UpdateTransfer<'_>,
     ) -> Response<Transfer> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/transfers/{}", id), &params)
     }
 }

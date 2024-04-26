@@ -50,16 +50,18 @@ pub fn list(client: &Client, params: &ListPaymentMethodDomains<'_>) -> Response<
 
     /// Creates a payment method domain.
     pub fn create(client: &Client, params: CreatePaymentMethodDomain<'_>) -> Response<PaymentMethodDomain> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/payment_method_domains", &params)
     }
 
     /// Retrieves the details of an existing payment method domain.
     pub fn retrieve(client: &Client, id: &PaymentMethodDomainId, expand: &[&str]) -> Response<PaymentMethodDomain> {
-        client.get_query(&format!("/payment_method_domains/{}", id), &Expand { expand })
+        client.get_query(&format!("/payment_method_domains/{}", id), Expand { expand })
     }
 
     /// Updates an existing payment method domain.
     pub fn update(client: &Client, id: &PaymentMethodDomainId, params: UpdatePaymentMethodDomain<'_>) -> Response<PaymentMethodDomain> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/payment_method_domains/{}", id), &params)
     }
 }

@@ -81,7 +81,7 @@ impl ApplicationFee {
         id: &ApplicationFeeId,
         expand: &[&str],
     ) -> Response<ApplicationFee> {
-        client.get_query(&format!("/application_fees/{}", id), &Expand { expand })
+        client.get_query(&format!("/application_fees/{}", id), Expand { expand })
     }
 }
 

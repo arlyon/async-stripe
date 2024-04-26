@@ -56,6 +56,7 @@ impl TerminalConfiguration {
         client: &Client,
         params: CreateTerminalConfiguration<'_>,
     ) -> Response<TerminalConfiguration> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/terminal/configurations", &params)
     }
 }

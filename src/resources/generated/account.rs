@@ -133,12 +133,13 @@ impl Account {
     ///
     /// Connect Onboarding won’t ask for the prefilled information during account onboarding. You can prefill any information on the account.
     pub fn create(client: &Client, params: CreateAccount<'_>) -> Response<Account> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/accounts", &params)
     }
 
     /// Retrieves the details of an account.
     pub fn retrieve(client: &Client, id: &AccountId, expand: &[&str]) -> Response<Account> {
-        client.get_query(&format!("/accounts/{}", id), &Expand { expand })
+        client.get_query(&format!("/accounts/{}", id), Expand { expand })
     }
 
     /// Updates a [connected account](https://stripe.com/docs/connect/accounts) by setting the values of the parameters passed.
@@ -148,6 +149,7 @@ impl Account {
     /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), some properties can only be changed or updated for Custom accounts.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/settings/account).
     /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
     pub fn update(client: &Client, id: &AccountId, params: UpdateAccount<'_>) -> Response<Account> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/accounts/{}", id), &params)
     }
 

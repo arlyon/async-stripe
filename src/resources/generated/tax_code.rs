@@ -33,7 +33,7 @@ impl TaxCode {
     ///
     /// Supply the unique tax code ID and Stripe will return the corresponding tax code information.
     pub fn retrieve(client: &Client, id: &TaxCodeId, expand: &[&str]) -> Response<TaxCode> {
-        client.get_query(&format!("/tax_codes/{}", id), &Expand { expand })
+        client.get_query(&format!("/tax_codes/{}", id), Expand { expand })
     }
 }
 

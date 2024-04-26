@@ -59,7 +59,7 @@ impl Event {
     ///
     /// Supply the unique identifier of the event, which you might have received in a webhook.
     pub fn retrieve(client: &Client, id: &EventId, expand: &[&str]) -> Response<Event> {
-        client.get_query(&format!("/events/{}", id), &Expand { expand })
+        client.get_query(&format!("/events/{}", id), Expand { expand })
     }
 }
 
