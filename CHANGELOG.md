@@ -1,3 +1,15 @@
+## [0.35.3](https://github.com/arlyon/async-stripe/compare/v0.35.2...v0.35.3) (2024-04-26)
+
+
+### Bug Fixes
+
+* Clippy append instead of extend ([1a85b9b](https://github.com/arlyon/async-stripe/commit/1a85b9b9ea3dc940ea86434d3ef9a2a6755b6160))
+* Clippy explicit ToString implementation ([15250a9](https://github.com/arlyon/async-stripe/commit/15250a96d19ec142693761c3d4a455a35b1ae780))
+* Clippy panic warnings ([552aff2](https://github.com/arlyon/async-stripe/commit/552aff238dd16135d7645f1692b891c75cb0459b))
+* Clippys from generated code ([89cce5b](https://github.com/arlyon/async-stripe/commit/89cce5ba442a528939aa54c455eefd9ad27f8b58))
+* More clippy warnings ([6de23bb](https://github.com/arlyon/async-stripe/commit/6de23bbee3713cc54bc148513a6c1331f0fb5998))
+* Remove useless reference that causes clippy warnings ([2fca98b](https://github.com/arlyon/async-stripe/commit/2fca98be10ba9f5a746d04a46aa7ef1532c00056))
+
 ## [0.35.2](https://github.com/arlyon/async-stripe/compare/v0.35.1...v0.35.2) (2024-04-26)
 
 
