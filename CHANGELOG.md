@@ -1,3 +1,12 @@
+## [0.35.2](https://github.com/arlyon/async-stripe/compare/v0.35.1...v0.35.2) (2024-04-26)
+
+
+### Bug Fixes
+
+* Clippy warnings ([842bce6](https://github.com/arlyon/async-stripe/commit/842bce6d94654ca0a9ea0a52c899f98055ab531b))
+* Implement workaround for ace in the verify-codegen action ([79c1f6f](https://github.com/arlyon/async-stripe/commit/79c1f6f6da182ab80fd02b9e1662aeec5915ec12))
+* Semantic release needs minimal rust version ([642ea31](https://github.com/arlyon/async-stripe/commit/642ea3193944048670619fb60ca3d4a973c439e7))
+
 ## [0.35.1](https://github.com/arlyon/async-stripe/compare/v0.35.0...v0.35.1) (2024-04-26)
 
 
