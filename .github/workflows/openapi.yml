@@ -16,7 +16,7 @@ jobs:
           components: rustfmt
       - uses: davidB/rust-cargo-make@v1
       - name: regenerate openapi
-        uses: actions-rs/cargo@v1
+        uses: clechasseur/rs-cargo@v2
         with:
           command: make
           args: openapi-install-latest
