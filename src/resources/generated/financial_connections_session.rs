@@ -50,6 +50,7 @@ impl FinancialConnectionsSession {
     ///
     /// The session’s `client_secret` can be used to launch the flow using Stripe.js.
     pub fn create(client: &Client, params: CreateFinancialConnectionsSession<'_>) -> Response<FinancialConnectionsSession> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/financial_connections/sessions", &params)
     }
 }

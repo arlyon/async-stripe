@@ -106,7 +106,7 @@ impl Payout {
     ///
     /// The payouts return in sorted order, with the most recently created payouts appearing first.
     pub fn list(client: &Client, params: &ListPayouts<'_>) -> Response<List<Payout>> {
-        client.get_query("/payouts", &params)
+        client.get_query("/payouts", params)
     }
 
     /// To send funds to your own bank account, create a new payout object.
@@ -115,6 +115,7 @@ impl Payout {
     /// If it doesn’t, you receive an “Insufficient Funds” error.  If your API key is in test mode, money won’t actually be sent, though every other action occurs as if you’re in live mode.  If you create a manual payout on a Stripe account that uses multiple payment source types, you need to specify the source type balance that the payout draws from.
     /// The [balance object](https://stripe.com/docs/api#balance_object) details available and pending amounts by source type.
     pub fn create(client: &Client, params: CreatePayout<'_>) -> Response<Payout> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/payouts", &params)
     }
 
@@ -123,7 +124,7 @@ impl Payout {
     /// Supply the unique payout ID from either a payout creation request or the payout list.
     /// Stripe returns the corresponding payout information.
     pub fn retrieve(client: &Client, id: &PayoutId, expand: &[&str]) -> Response<Payout> {
-        client.get_query(&format!("/payouts/{}", id), &Expand { expand })
+        client.get_query(&format!("/payouts/{}", id), Expand { expand })
     }
 
     /// Updates the specified payout by setting the values of the parameters you pass.
@@ -131,6 +132,7 @@ impl Payout {
     /// We don’t change parameters that you don’t provide.
     /// This request only accepts the metadata as arguments.
     pub fn update(client: &Client, id: &PayoutId, params: UpdatePayout<'_>) -> Response<Payout> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/payouts/{}", id), &params)
     }
 }

@@ -49,12 +49,13 @@ impl Token {
     /// You can only use this token once.
     /// To do so, attach it to a [Custom account](https://stripe.com/docs/api#accounts).
     pub fn create(client: &Client, params: CreateToken<'_>) -> Response<Token> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/tokens", &params)
     }
 
     /// Retrieves the token with the given ID.
     pub fn retrieve(client: &Client, id: &TokenId, expand: &[&str]) -> Response<Token> {
-        client.get_query(&format!("/tokens/{}", id), &Expand { expand })
+        client.get_query(&format!("/tokens/{}", id), Expand { expand })
     }
 }
 

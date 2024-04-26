@@ -7,8 +7,9 @@
 //! some are generated.
 
 mod currency;
+#[allow(clippy::module_inception)]
+#[allow(clippy::new_without_default)]
 pub mod generated;
-mod placeholders;
 mod types;
 
 #[path = "resources"]

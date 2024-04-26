@@ -64,7 +64,7 @@ impl SubscriptionItem {
         client: &Client,
         params: &ListSubscriptionItems<'_>,
     ) -> Response<List<SubscriptionItem>> {
-        client.get_query("/subscription_items", &params)
+        client.get_query("/subscription_items", params)
     }
 
     /// Adds a new item to an existing subscription.
@@ -74,6 +74,7 @@ impl SubscriptionItem {
         client: &Client,
         params: CreateSubscriptionItem<'_>,
     ) -> Response<SubscriptionItem> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/subscription_items", &params)
     }
 
@@ -83,7 +84,7 @@ impl SubscriptionItem {
         id: &SubscriptionItemId,
         expand: &[&str],
     ) -> Response<SubscriptionItem> {
-        client.get_query(&format!("/subscription_items/{}", id), &Expand { expand })
+        client.get_query(&format!("/subscription_items/{}", id), Expand { expand })
     }
 
     /// Updates the plan or quantity of an item on a current subscription.
@@ -92,6 +93,7 @@ impl SubscriptionItem {
         id: &SubscriptionItemId,
         params: UpdateSubscriptionItem<'_>,
     ) -> Response<SubscriptionItem> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/subscription_items/{}", id), &params)
     }
 

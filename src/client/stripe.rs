@@ -29,6 +29,9 @@ impl Client {
     }
 
     /// Create a new account pointed at a specific URL. This is useful for testing.
+    ///
+    /// # Panics
+    /// If the url can't be parsed
     pub fn from_url<'a>(url: impl Into<&'a str>, secret_key: impl Into<String>) -> Self {
         Client {
             client: BaseClient::new(),
@@ -76,7 +79,7 @@ impl Client {
         url: Option<String>,
     ) -> Self {
         let app_info = AppInfo { name, version, url };
-        self.headers.user_agent = format!("{} {}", USER_AGENT, app_info.to_string());
+        self.headers.user_agent = format!("{} {}", USER_AGENT, app_info);
         self.app_info = Some(app_info);
         self
     }
@@ -126,6 +129,9 @@ impl Client {
     }
 
     /// Make a `POST` http request with urlencoded body
+    ///
+    /// # Panics
+    /// If the form is not serialized to an utf8 string.
     pub fn post_form<T: DeserializeOwned + Send + 'static, F: Serialize>(
         &self,
         path: &str,

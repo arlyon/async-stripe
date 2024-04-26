@@ -70,7 +70,7 @@ impl ApplicationFee {
         client: &Client,
         params: &ListApplicationFees<'_>,
     ) -> Response<List<ApplicationFee>> {
-        client.get_query("/application_fees", &params)
+        client.get_query("/application_fees", params)
     }
 
     /// Retrieves the details of an application fee that your account has collected.
@@ -81,7 +81,7 @@ impl ApplicationFee {
         id: &ApplicationFeeId,
         expand: &[&str],
     ) -> Response<ApplicationFee> {
-        client.get_query(&format!("/application_fees/{}", id), &Expand { expand })
+        client.get_query(&format!("/application_fees/{}", id), Expand { expand })
     }
 }
 

@@ -78,7 +78,7 @@ impl WebhookEndpoint {
         client: &Client,
         params: &ListWebhookEndpoints<'_>,
     ) -> Response<List<WebhookEndpoint>> {
-        client.get_query("/webhook_endpoints", &params)
+        client.get_query("/webhook_endpoints", params)
     }
 
     /// A webhook endpoint must have a `url` and a list of `enabled_events`.
@@ -87,6 +87,7 @@ impl WebhookEndpoint {
     /// If set to true, then a Connect webhook endpoint that notifies the specified `url` about events from all connected accounts is created; otherwise an account webhook endpoint that notifies the specified `url` only about events from your account is created.
     /// You can also create webhook endpoints in the [webhooks settings](https://dashboard.stripe.com/account/webhooks) section of the Dashboard.
     pub fn create(client: &Client, params: CreateWebhookEndpoint<'_>) -> Response<WebhookEndpoint> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/webhook_endpoints", &params)
     }
 
@@ -96,7 +97,7 @@ impl WebhookEndpoint {
         id: &WebhookEndpointId,
         expand: &[&str],
     ) -> Response<WebhookEndpoint> {
-        client.get_query(&format!("/webhook_endpoints/{}", id), &Expand { expand })
+        client.get_query(&format!("/webhook_endpoints/{}", id), Expand { expand })
     }
 
     /// Updates the webhook endpoint.
@@ -107,6 +108,7 @@ impl WebhookEndpoint {
         id: &WebhookEndpointId,
         params: UpdateWebhookEndpoint<'_>,
     ) -> Response<WebhookEndpoint> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/webhook_endpoints/{}", id), &params)
     }
 

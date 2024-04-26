@@ -235,11 +235,12 @@ impl CheckoutSession {
         client: &Client,
         params: &ListCheckoutSessions<'_>,
     ) -> Response<List<CheckoutSession>> {
-        client.get_query("/checkout/sessions", &params)
+        client.get_query("/checkout/sessions", params)
     }
 
     /// Creates a Session object.
     pub fn create(client: &Client, params: CreateCheckoutSession<'_>) -> Response<CheckoutSession> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/checkout/sessions", &params)
     }
 }

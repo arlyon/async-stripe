@@ -134,19 +134,20 @@ impl InvoiceItem {
     ///
     /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
     pub fn list(client: &Client, params: &ListInvoiceItems<'_>) -> Response<List<InvoiceItem>> {
-        client.get_query("/invoiceitems", &params)
+        client.get_query("/invoiceitems", params)
     }
 
     /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
     ///
     /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
     pub fn create(client: &Client, params: CreateInvoiceItem<'_>) -> Response<InvoiceItem> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/invoiceitems", &params)
     }
 
     /// Retrieves the invoice item with the given ID.
     pub fn retrieve(client: &Client, id: &InvoiceItemId, expand: &[&str]) -> Response<InvoiceItem> {
-        client.get_query(&format!("/invoiceitems/{}", id), &Expand { expand })
+        client.get_query(&format!("/invoiceitems/{}", id), Expand { expand })
     }
 
     /// Updates the amount or description of an invoice item on an upcoming invoice.
@@ -157,6 +158,7 @@ impl InvoiceItem {
         id: &InvoiceItemId,
         params: UpdateInvoiceItem<'_>,
     ) -> Response<InvoiceItem> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/invoiceitems/{}", id), &params)
     }
 

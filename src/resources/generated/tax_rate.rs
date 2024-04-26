@@ -83,21 +83,23 @@ impl TaxRate {
     ///
     /// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
     pub fn list(client: &Client, params: &ListTaxRates<'_>) -> Response<List<TaxRate>> {
-        client.get_query("/tax_rates", &params)
+        client.get_query("/tax_rates", params)
     }
 
     /// Creates a new tax rate.
     pub fn create(client: &Client, params: CreateTaxRate<'_>) -> Response<TaxRate> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/tax_rates", &params)
     }
 
     /// Retrieves a tax rate with the given ID.
     pub fn retrieve(client: &Client, id: &TaxRateId, expand: &[&str]) -> Response<TaxRate> {
-        client.get_query(&format!("/tax_rates/{}", id), &Expand { expand })
+        client.get_query(&format!("/tax_rates/{}", id), Expand { expand })
     }
 
     /// Updates an existing tax rate.
     pub fn update(client: &Client, id: &TaxRateId, params: UpdateTaxRate<'_>) -> Response<TaxRate> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/tax_rates/{}", id), &params)
     }
 }

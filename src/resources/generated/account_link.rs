@@ -28,6 +28,7 @@ pub struct AccountLink {
 impl AccountLink {
     /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
     pub fn create(client: &Client, params: CreateAccountLink<'_>) -> Response<AccountLink> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/account_links", &params)
     }
 }

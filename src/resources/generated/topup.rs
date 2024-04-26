@@ -81,20 +81,21 @@ pub struct Topup {
 impl Topup {
     /// Returns a list of top-ups.
     pub fn list(client: &Client, params: &ListTopups<'_>) -> Response<List<Topup>> {
-        client.get_query("/topups", &params)
+        client.get_query("/topups", params)
     }
 
     /// Retrieves the details of a top-up that has previously been created.
     ///
     /// Supply the unique top-up ID that was returned from your previous request, and Stripe will return the corresponding top-up information.
     pub fn retrieve(client: &Client, id: &TopupId, expand: &[&str]) -> Response<Topup> {
-        client.get_query(&format!("/topups/{}", id), &Expand { expand })
+        client.get_query(&format!("/topups/{}", id), Expand { expand })
     }
 
     /// Updates the metadata of a top-up.
     ///
     /// Other top-up details are not editable by design.
     pub fn update(client: &Client, id: &TopupId, params: UpdateTopup<'_>) -> Response<Topup> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/topups/{}", id), &params)
     }
 }

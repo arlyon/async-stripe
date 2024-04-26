@@ -162,11 +162,12 @@ pub struct Source {
 impl Source {
     /// List source transactions for a given source.
     pub fn list(client: &Client, params: &ListSources<'_>) -> Response<List<Source>> {
-        client.get_query("/sources/{source}/source_transactions", &params)
+        client.get_query("/sources/{source}/source_transactions", params)
     }
 
     /// Creates a new source object.
     pub fn create(client: &Client, params: CreateSource<'_>) -> Response<Source> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/sources", &params)
     }
 
@@ -174,7 +175,7 @@ impl Source {
     ///
     /// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
     pub fn retrieve(client: &Client, id: &SourceId, expand: &[&str]) -> Response<Source> {
-        client.get_query(&format!("/sources/{}", id), &Expand { expand })
+        client.get_query(&format!("/sources/{}", id), Expand { expand })
     }
 
     /// Updates the specified source by setting the values of the parameters passed.
@@ -183,6 +184,7 @@ impl Source {
     /// It is also possible to update type specific information for selected payment methods.
     /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
     pub fn update(client: &Client, id: &SourceId, params: UpdateSource<'_>) -> Response<Source> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/sources/{}", id), &params)
     }
 }
