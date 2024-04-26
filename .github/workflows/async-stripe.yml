@@ -44,8 +44,10 @@ jobs:
             **/*.rs
       - name: report changed files
         if: steps.verify-changed-files.outputs.files_changed == 'true'
+        env:
+          CHANGED_FILES: ${{ steps.verify-changed-files.outputs.changed_files }}
         run: |
-          echo "Some files changed after code generation: ${{ steps.verify-changed-files.outputs.changed_files }}"
+          echo "Some files changed after code generation: $CHANGED_FILES"
           exit 1
 
   clippy:
