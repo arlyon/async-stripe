@@ -178,6 +178,12 @@ pub struct BankConnectionsResourceOwnershipRefresh {
     /// Measured in seconds since the Unix epoch.
     pub last_attempted_at: Timestamp,
 
+    /// Time at which the next ownership refresh can be initiated.
+    ///
+    /// This value will be `null` when `status` is `pending`.
+    /// Measured in seconds since the Unix epoch.
+    pub next_refresh_available_at: Option<Timestamp>,
+
     /// The status of the last refresh attempt.
     pub status: BankConnectionsResourceOwnershipRefreshStatus,
 }
