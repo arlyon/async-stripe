@@ -1,6 +1,7 @@
 use serde::Serialize;
 
 use crate::client::{Client, Response};
+use crate::params::Expand;
 use crate::resources::SetupIntent;
 use crate::{PaymentMethodId, SetupIntentCancellationReason, SetupIntentId};
 
@@ -47,6 +48,24 @@ pub struct CancelSetupIntent {
     pub cancellation_reason: Option<SetupIntentCancellationReason>,
 }
 
+/// Verifies microdeposits on a SetupIntent object.
+///
+/// For more details see <https://stripe.com/docs/api/setup_intents/verify_microdeposits>
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct VerifyMicrodeposits<'a> {
+    /// Two positive integers, in cents, equal to the values of the microdeposits sent to the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amounts: Option<Vec<i64>>,
+
+    /// A six-character code starting with SM present in the microdeposit sent to the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub descriptor_code: Option<&'a str>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    pub expand: &'a [&'a str],
+}
+
 impl SetupIntent {
     pub fn confirm(
         client: &Client,
@@ -54,6 +73,14 @@ impl SetupIntent {
         params: ConfirmSetupIntent,
     ) -> Response<SetupIntent> {
         client.post_form(&format!("/setup_intents/{}/confirm", setup_id), &params)
+    }
+
+    pub fn verify_micro_deposits(
+        client: &Client,
+        setup_id: &SetupIntentId,
+        params: VerifyMicrodeposits,
+    ) -> Response<SetupIntent> {
+        client.post_form(&format!("/setup_intents/{}/verify_microdeposits", setup_id), &params)
     }
 
     /// A SetupIntent object can be canceled when it is in one of these statuses: requires_payment_method, requires_confirmation, or requires_action.
