@@ -328,11 +328,11 @@ where
         let mut paginator = self;
         loop {
             if !paginator.page.has_more() {
-                data.extend(paginator.page.get_data_mut().drain(..));
+                data.append(paginator.page.get_data_mut());
                 break;
             }
             let next_paginator = paginator.next(client)?;
-            data.extend(paginator.page.get_data_mut().drain(..));
+            data.append(paginator.page.get_data_mut());
             paginator = next_paginator
         }
         Ok(data)
