@@ -22,7 +22,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.REPO_SCOPED_TOKEN }}
-      - uses: dtolnay/rust-toolchain@1.60
+      - uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: "1.60"
       - uses: cycjimmy/semantic-release-action@v4
         with:
           extra_plugins: |
