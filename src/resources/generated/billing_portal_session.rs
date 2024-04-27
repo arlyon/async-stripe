@@ -59,6 +59,7 @@ impl BillingPortalSession {
         client: &Client,
         params: CreateBillingPortalSession<'_>,
     ) -> Response<BillingPortalSession> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/billing_portal/sessions", &params)
     }
 }

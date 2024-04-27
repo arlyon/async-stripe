@@ -43,6 +43,7 @@ impl CustomerSession {
 
     /// Creates a customer session object that includes a single-use client secret that you can use on your front-end to grant client-side API access for certain customer resources.
     pub fn create(client: &Client, params: CreateCustomerSession<'_>) -> Response<CustomerSession> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/customer_sessions", &params)
     }
 }

@@ -48,7 +48,7 @@ pub struct Mandate {
 impl Mandate {
     /// Retrieves a Mandate object.
     pub fn retrieve(client: &Client, id: &MandateId, expand: &[&str]) -> Response<Mandate> {
-        client.get_query(&format!("/mandates/{}", id), &Expand { expand })
+        client.get_query(&format!("/mandates/{}", id), Expand { expand })
     }
 }
 

@@ -161,13 +161,14 @@ impl PaymentMethod {
     ///
     /// If you want to list the PaymentMethods attached to a Customer for payments, you should use the [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list) API instead.
     pub fn list(client: &Client, params: &ListPaymentMethods<'_>) -> Response<List<PaymentMethod>> {
-        client.get_query("/payment_methods", &params)
+        client.get_query("/payment_methods", params)
     }
 
     /// Creates a PaymentMethod object.
     ///
     /// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.  Instead of creating a PaymentMethod directly, we recommend using the [PaymentIntents](https://stripe.com/docs/payments/accept-a-payment) API to accept a payment immediately or the [SetupIntent](https://stripe.com/docs/payments/save-and-reuse) API to collect payment method details ahead of a future payment.
     pub fn create(client: &Client, params: CreatePaymentMethod<'_>) -> Response<PaymentMethod> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/payment_methods", &params)
     }
 
@@ -179,7 +180,7 @@ impl PaymentMethod {
         id: &PaymentMethodId,
         expand: &[&str],
     ) -> Response<PaymentMethod> {
-        client.get_query(&format!("/payment_methods/{}", id), &Expand { expand })
+        client.get_query(&format!("/payment_methods/{}", id), Expand { expand })
     }
 
     /// Updates a PaymentMethod object.
@@ -190,6 +191,7 @@ impl PaymentMethod {
         id: &PaymentMethodId,
         params: UpdatePaymentMethod<'_>,
     ) -> Response<PaymentMethod> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/payment_methods/{}", id), &params)
     }
 }

@@ -46,17 +46,18 @@ pub struct FileLink {
 impl FileLink {
     /// Returns a list of file links.
     pub fn list(client: &Client, params: &ListFileLinks<'_>) -> Response<List<FileLink>> {
-        client.get_query("/file_links", &params)
+        client.get_query("/file_links", params)
     }
 
     /// Creates a new file link object.
     pub fn create(client: &Client, params: CreateFileLink<'_>) -> Response<FileLink> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/file_links", &params)
     }
 
     /// Retrieves the file link with the given ID.
     pub fn retrieve(client: &Client, id: &FileLinkId, expand: &[&str]) -> Response<FileLink> {
-        client.get_query(&format!("/file_links/{}", id), &Expand { expand })
+        client.get_query(&format!("/file_links/{}", id), Expand { expand })
     }
 
     /// Updates an existing file link object.
@@ -67,6 +68,7 @@ impl FileLink {
         id: &FileLinkId,
         params: UpdateFileLink<'_>,
     ) -> Response<FileLink> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/file_links/{}", id), &params)
     }
 }

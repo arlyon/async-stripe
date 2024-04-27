@@ -98,7 +98,7 @@ impl Refund {
     ///
     /// We return the refunds in sorted order, with the most recent refunds appearing first The 10 most recent refunds are always available by default on the Charge object.
     pub fn list(client: &Client, params: &ListRefunds<'_>) -> Response<List<Refund>> {
-        client.get_query("/refunds", &params)
+        client.get_query("/refunds", params)
     }
 
     /// When you create a new refund, you must specify a Charge or a PaymentIntent object on which to create it.
@@ -113,18 +113,20 @@ impl Refund {
     /// This method will raise an error when called on an already-refunded charge,
     /// or when trying to refund more money than is left on a charge.
     pub fn create(client: &Client, params: CreateRefund<'_>) -> Response<Refund> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/refunds", &params)
     }
 
     /// Retrieves the details of an existing refund.
     pub fn retrieve(client: &Client, id: &RefundId, expand: &[&str]) -> Response<Refund> {
-        client.get_query(&format!("/refunds/{}", id), &Expand { expand })
+        client.get_query(&format!("/refunds/{}", id), Expand { expand })
     }
 
     /// Updates the refund that you specify by setting the values of the passed parameters.
     ///
     /// Any parameters that you don’t provide remain unchanged.  This request only accepts `metadata` as an argument.
     pub fn update(client: &Client, id: &RefundId, params: UpdateRefund<'_>) -> Response<Refund> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/refunds/{}", id), &params)
     }
 }

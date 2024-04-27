@@ -10,15 +10,14 @@ jobs:
   format:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@v1
         with:
-          profile: minimal
           toolchain: nightly
           components: rustfmt
       - uses: davidB/rust-cargo-make@v1
       - name: regenerate openapi
-        uses: actions-rs/cargo@v1
+        uses: clechasseur/rs-cargo@v2
         with:
           command: make
           args: check
@@ -26,32 +25,35 @@ jobs:
   verify-codegen:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@v1
         with:
-          profile: minimal
           toolchain: nightly
           components: rustfmt
       - uses: davidB/rust-cargo-make@v1
       - name: regenerate openapi
-        uses: actions-rs/cargo@v1
+        uses: clechasseur/rs-cargo@v2
         with:
           command: make
           args: openapi-install
       - name: ensure generated files unchanged
-        uses: tj-actions/verify-changed-files@v11.1
+        uses: tj-actions/verify-changed-files@v19
         id: verify-changed-files
         with:
           files: |
             **/*.rs
       - name: report changed files
         if: steps.verify-changed-files.outputs.files_changed == 'true'
+        env:
+          CHANGED_FILES: ${{ steps.verify-changed-files.outputs.changed_files }}
         run: |
-          echo "Some files changed after code generation: ${{ steps.verify-changed-files.outputs.changed_files }}"
+          echo "Some files changed after code generation: $CHANGED_FILES"
           exit 1
 
   clippy:
     runs-on: ubuntu-20.04
+    env:
+      RUSTFLAGS: -D warnings
     strategy:
       matrix:
         runtime:
@@ -65,20 +67,19 @@ jobs:
             blocking-rustls-webpki,
           ]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@v1
         with:
-          profile: minimal
           toolchain: stable
           components: clippy
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
           key: ${{ runner.os }}-clippy-${{ matrix.runtime }}-${{ hashFiles('**/Cargo.lock') }}
-      - uses: actions-rs/cargo@v1
+      - uses: clechasseur/rs-cargo@v2
         with:
           command: clippy
           args: >
@@ -107,13 +108,11 @@ jobs:
           - 12111:12111
           - 12112:12112
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@v1
         with:
-          profile: minimal
-          toolchain: "1.68.0"
-          override: true
-      - uses: actions/cache@v2
+          toolchain: "1.74.0"
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/registry

@@ -146,6 +146,7 @@ impl Customer {
         customer_id: &CustomerId,
         params: CustomerPaymentMethodRetrieval<'_>,
     ) -> Response<List<PaymentMethod>> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.get_query(&format!("/customers/{}/payment_methods", customer_id), &params)
     }
 

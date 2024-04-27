@@ -31,6 +31,7 @@ impl TerminalConnectionToken {
         client: &Client,
         params: CreateTerminalConnectionToken<'_>,
     ) -> Response<TerminalConnectionToken> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/terminal/connection_tokens", &params)
     }
 }

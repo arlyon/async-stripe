@@ -39,6 +39,7 @@ impl SetupIntent {
         setup_id: &SetupIntentId,
         params: ConfirmSetupIntent,
     ) -> Response<SetupIntent> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/setup_intents/{}/confirm", setup_id), &params)
     }
 

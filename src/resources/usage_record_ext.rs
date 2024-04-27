@@ -8,6 +8,7 @@ impl UsageRecord {
         subscription_item_id: &SubscriptionItemId,
         params: CreateUsageRecord,
     ) -> Response<UsageRecord> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(
             &format!("/subscription_items/{}/usage_records", subscription_item_id),
             &params,

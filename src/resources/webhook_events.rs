@@ -405,7 +405,7 @@ pub enum EventType {
 
 impl std::fmt::Display for EventType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(&serde_json::to_string(self).unwrap())
+        f.write_str(&serde_json::to_string(self).expect("serializing EventType should not fail"))
     }
 }
 

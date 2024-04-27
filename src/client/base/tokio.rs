@@ -76,6 +76,12 @@ pub struct TokioClient {
     client: HttpClient,
 }
 
+impl Default for TokioClient {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TokioClient {
     pub fn new() -> Self {
         Self {

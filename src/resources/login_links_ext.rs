@@ -21,6 +21,7 @@ impl LoginLink {
         let create_login_link =
             CreateLoginLink { expand: &[], redirect_url: Some(redirect_url.to_string()) };
 
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/accounts/{}/login_links", id), &create_login_link)
     }
 }

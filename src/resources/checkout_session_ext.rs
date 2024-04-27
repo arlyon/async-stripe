@@ -12,7 +12,7 @@ impl CheckoutSession {
         id: &CheckoutSessionId,
         expand: &[&str],
     ) -> Response<CheckoutSession> {
-        client.get_query(&format!("/checkout/sessions/{}", id), &Expand { expand })
+        client.get_query(&format!("/checkout/sessions/{}", id), Expand { expand })
     }
 
     /// Expires a checkout session.

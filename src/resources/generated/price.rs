@@ -137,25 +137,27 @@ impl Price {
     ///
     /// For the list of inactive prices, set `active` to false.
     pub fn list(client: &Client, params: &ListPrices<'_>) -> Response<List<Price>> {
-        client.get_query("/prices", &params)
+        client.get_query("/prices", params)
     }
 
     /// Creates a new price for an existing product.
     ///
     /// The price can be recurring or one-time.
     pub fn create(client: &Client, params: CreatePrice<'_>) -> Response<Price> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/prices", &params)
     }
 
     /// Retrieves the price with the given ID.
     pub fn retrieve(client: &Client, id: &PriceId, expand: &[&str]) -> Response<Price> {
-        client.get_query(&format!("/prices/{}", id), &Expand { expand })
+        client.get_query(&format!("/prices/{}", id), Expand { expand })
     }
 
     /// Updates the specified price by setting the values of the parameters passed.
     ///
     /// Any parameters not provided are left unchanged.
     pub fn update(client: &Client, id: &PriceId, params: UpdatePrice<'_>) -> Response<Price> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/prices/{}", id), &params)
     }
 }

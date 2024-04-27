@@ -115,11 +115,12 @@ impl Product {
     ///
     /// The products are returned sorted by creation date, with the most recently created products appearing first.
     pub fn list(client: &Client, params: &ListProducts<'_>) -> Response<List<Product>> {
-        client.get_query("/products", &params)
+        client.get_query("/products", params)
     }
 
     /// Creates a new product object.
     pub fn create(client: &Client, params: CreateProduct<'_>) -> Response<Product> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/products", &params)
     }
 
@@ -127,13 +128,14 @@ impl Product {
     ///
     /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
     pub fn retrieve(client: &Client, id: &ProductId, expand: &[&str]) -> Response<Product> {
-        client.get_query(&format!("/products/{}", id), &Expand { expand })
+        client.get_query(&format!("/products/{}", id), Expand { expand })
     }
 
     /// Updates the specific product by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.
     pub fn update(client: &Client, id: &ProductId, params: UpdateProduct<'_>) -> Response<Product> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/products/{}", id), &params)
     }
 

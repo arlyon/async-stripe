@@ -19,10 +19,12 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.REPO_SCOPED_TOKEN }}
-      - uses: dtolnay/rust-toolchain@1.60
+      - uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: "1.74.0"
       - uses: cycjimmy/semantic-release-action@v4
         with:
           extra_plugins: |
