@@ -1,3 +1,16 @@
+# [0.37.0](https://github.com/arlyon/async-stripe/compare/v0.36.0...v0.37.0) (2024-04-30)
+
+
+### Bug Fixes
+
+* **customer-ext,PM query:** type field is optional ([362659e](https://github.com/arlyon/async-stripe/commit/362659e3e7ace2706fae172e7936efdc5c17929d))
+
+
+### Features
+
+* **setup_intent:** add mandate_data for confirm ([51e34d6](https://github.com/arlyon/async-stripe/commit/51e34d6fec2238d27e937f361d9e0b60f1bc564c))
+* **setup_intent:** verify microdeposits flow ([15b3663](https://github.com/arlyon/async-stripe/commit/15b3663336561ccf55d78dc66668d28627b4d59b))
+
 # [0.36.0](https://github.com/arlyon/async-stripe/compare/v0.35.3...v0.36.0) (2024-04-30)
 
 
