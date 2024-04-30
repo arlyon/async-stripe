@@ -1,3 +1,10 @@
+# [0.36.0](https://github.com/arlyon/async-stripe/compare/v0.35.3...v0.36.0) (2024-04-30)
+
+
+### Features
+
+* Add `retrieve_line_items` function for `CheckoutSession` ([5c74b3b](https://github.com/arlyon/async-stripe/commit/5c74b3b13fc30e7f81191c43016ab46c3d8ef9d6))
+
 ## [0.35.3](https://github.com/arlyon/async-stripe/compare/v0.35.2...v0.35.3) (2024-04-26)
 
 
