@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
-use crate::ids::TerminalLocationId;
+use crate::ids::{TerminalLocationId};
 use crate::params::{Expand, List, Metadata, Object, Paginable};
-use crate::resources::Address;
+use crate::resources::{Address};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TerminalLocationLocation".
 ///
@@ -44,20 +43,16 @@ pub struct TerminalLocation {
 }
 
 impl TerminalLocation {
+
     /// Returns a list of `Location` objects.
-    pub fn list(
-        client: &Client,
-        params: &ListTerminalLocations<'_>,
-    ) -> Response<List<TerminalLocation>> {
-        client.get_query("/terminal/locations", params)
-    }
+pub fn list(client: &Client, params: &ListTerminalLocations<'_>) -> Response<List<TerminalLocation>> {
+   client.get_query("/terminal/locations", params)
+}
+
 
     /// Creates a new `Location` object.
     /// For further details, including which address fields are required in each country, see the [Manage locations](https://stripe.com/docs/terminal/fleet/locations) guide.
-    pub fn create(
-        client: &Client,
-        params: CreateTerminalLocation<'_>,
-    ) -> Response<TerminalLocation> {
+    pub fn create(client: &Client, params: CreateTerminalLocation<'_>) -> Response<TerminalLocation> {
         #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/terminal/locations", &params)
     }
@@ -76,6 +71,7 @@ impl Object for TerminalLocation {
 /// The parameters for `TerminalLocation::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTerminalLocation<'a> {
+
     /// The full address of the location.
     pub address: CreateTerminalLocationAddress,
 
@@ -114,6 +110,7 @@ impl<'a> CreateTerminalLocation<'a> {
 /// The parameters for `TerminalLocation::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTerminalLocations<'a> {
+
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
@@ -152,11 +149,11 @@ impl<'a> ListTerminalLocations<'a> {
 impl Paginable for ListTerminalLocations<'_> {
     type O = TerminalLocation;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalLocationAddress {
+
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,

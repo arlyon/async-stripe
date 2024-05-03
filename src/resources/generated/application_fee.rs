@@ -2,14 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{ApplicationFeeId, ChargeId};
 use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, Application, ApplicationFeeRefund, BalanceTransaction, Charge, Currency,
-};
+use crate::resources::{Account, Application, ApplicationFeeRefund, BalanceTransaction, Charge, Currency};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PlatformFee".
 ///
@@ -63,24 +60,19 @@ pub struct ApplicationFee {
 }
 
 impl ApplicationFee {
+
     /// Returns a list of application fees you’ve previously collected.
     ///
     /// The application fees are returned in sorted order, with the most recent fees appearing first.
-    pub fn list(
-        client: &Client,
-        params: &ListApplicationFees<'_>,
-    ) -> Response<List<ApplicationFee>> {
-        client.get_query("/application_fees", params)
-    }
+pub fn list(client: &Client, params: &ListApplicationFees<'_>) -> Response<List<ApplicationFee>> {
+   client.get_query("/application_fees", params)
+}
+
 
     /// Retrieves the details of an application fee that your account has collected.
     ///
     /// The same information is returned when refunding the application fee.
-    pub fn retrieve(
-        client: &Client,
-        id: &ApplicationFeeId,
-        expand: &[&str],
-    ) -> Response<ApplicationFee> {
+    pub fn retrieve(client: &Client, id: &ApplicationFeeId, expand: &[&str]) -> Response<ApplicationFee> {
         client.get_query(&format!("/application_fees/{}", id), Expand { expand })
     }
 }
@@ -98,10 +90,12 @@ impl Object for ApplicationFee {
 /// The parameters for `ApplicationFee::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListApplicationFees<'a> {
+
     /// Only return application fees for the charge specified by this charge ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<ChargeId>,
 
+    /// Only return applications fees that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -145,6 +139,5 @@ impl<'a> ListApplicationFees<'a> {
 impl Paginable for ListApplicationFees<'_> {
     type O = ApplicationFee;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
