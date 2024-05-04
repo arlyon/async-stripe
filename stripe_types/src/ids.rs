@@ -18,6 +18,12 @@ macro_rules! def_id {
             pub fn inner(&self) -> &smol_str::SmolStr {
                 &self.0
             }
+
+            /// Unwrap to the underlying `SmolStr`.
+            #[inline]
+            pub fn into_inner(self) -> smol_str::SmolStr {
+                self.0
+            }
         }
 
         impl stripe_types::AsCursor for $struct_name {

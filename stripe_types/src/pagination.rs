@@ -53,8 +53,12 @@ impl<T: AsCursor> AsCursorOpt for Option<T> {
 pub trait Object {
     /// The canonical id type for this object.
     type Id: AsCursorOpt + FromCursor;
+
     /// The id of the object.
     fn id(&self) -> &Self::Id;
+
+    /// The owned id of the object.
+    fn into_id(self) -> Self::Id;
 }
 
 /// A trait allowing `List<T>` and `SearchList<T>` to be treated the same. Not part of the

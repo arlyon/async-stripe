@@ -1077,6 +1077,10 @@ impl stripe_types::Object for Invoice {
     fn id(&self) -> &Self::Id {
         &self.id
     }
+
+    fn into_id(self) -> Self::Id {
+        self.id
+    }
 }
 stripe_types::def_id!(InvoiceId);
 #[derive(Copy, Clone, Eq, PartialEq)]

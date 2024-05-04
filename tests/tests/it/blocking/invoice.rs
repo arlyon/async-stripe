@@ -2,6 +2,7 @@ use stripe_billing::invoice::{
     FinalizeInvoiceInvoice, PayInvoice, RetrieveInvoice, UpcomingInvoice,
     UpcomingInvoiceSubscriptionItems,
 };
+use stripe_core::ChargeId;
 
 use crate::mock::get_client;
 
@@ -15,7 +16,10 @@ fn is_invoice_retrievable() {
     let id = "in_123".parse().unwrap();
     let result = retriever.send(&client, &id).unwrap();
     let charge = result.charge.unwrap();
+    let expected_id = ChargeId::from("ch_1OPoueJN5vQBdWEx5AWizjSY".to_string());
     assert!(charge.is_object());
+    assert_eq!(charge.id(), &expected_id);
+    assert_eq!(charge.into_id(), expected_id);
 }
 
 // https://github.com/arlyon/async-stripe/issues/446

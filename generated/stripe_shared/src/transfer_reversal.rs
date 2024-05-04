@@ -198,5 +198,9 @@ impl stripe_types::Object for TransferReversal {
     fn id(&self) -> &Self::Id {
         &self.id
     }
+
+    fn into_id(self) -> Self::Id {
+        self.id
+    }
 }
 stripe_types::def_id!(TransferReversalId);

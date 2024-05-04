@@ -113,4 +113,8 @@ impl stripe_types::Object for DeletedTerminalReader {
     fn id(&self) -> &Self::Id {
         &self.id
     }
+
+    fn into_id(self) -> Self::Id {
+        self.id
+    }
 }
