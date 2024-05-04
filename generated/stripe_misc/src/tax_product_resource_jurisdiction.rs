@@ -140,7 +140,7 @@ impl TaxProductResourceJurisdictionLevel {
 }
 
 impl std::str::FromStr for TaxProductResourceJurisdictionLevel {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceJurisdictionLevel::*;
         match s {
@@ -149,7 +149,7 @@ impl std::str::FromStr for TaxProductResourceJurisdictionLevel {
             "county" => Ok(County),
             "district" => Ok(District),
             "state" => Ok(State),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

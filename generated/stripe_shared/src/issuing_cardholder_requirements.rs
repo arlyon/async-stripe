@@ -120,7 +120,7 @@ impl IssuingCardholderRequirementsDisabledReason {
 }
 
 impl std::str::FromStr for IssuingCardholderRequirementsDisabledReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardholderRequirementsDisabledReason::*;
         match s {
@@ -128,7 +128,7 @@ impl std::str::FromStr for IssuingCardholderRequirementsDisabledReason {
             "rejected.listed" => Ok(RejectedListed),
             "requirements.past_due" => Ok(RequirementsPastDue),
             "under_review" => Ok(UnderReview),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -217,7 +217,7 @@ impl IssuingCardholderRequirementsPastDue {
 }
 
 impl std::str::FromStr for IssuingCardholderRequirementsPastDue {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardholderRequirementsPastDue::*;
         match s {
@@ -234,7 +234,7 @@ impl std::str::FromStr for IssuingCardholderRequirementsPastDue {
             "individual.first_name" => Ok(IndividualFirstName),
             "individual.last_name" => Ok(IndividualLastName),
             "individual.verification.document" => Ok(IndividualVerificationDocument),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

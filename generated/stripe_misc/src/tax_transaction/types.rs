@@ -225,13 +225,13 @@ impl TaxTransactionType {
 }
 
 impl std::str::FromStr for TaxTransactionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxTransactionType::*;
         match s {
             "reversal" => Ok(Reversal),
             "transaction" => Ok(Transaction),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

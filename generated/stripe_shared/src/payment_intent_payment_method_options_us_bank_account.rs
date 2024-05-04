@@ -158,13 +158,13 @@ impl PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
         match s {
             "fastest" => Ok(Fastest),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -246,14 +246,14 @@ impl PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -332,14 +332,14 @@ impl PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

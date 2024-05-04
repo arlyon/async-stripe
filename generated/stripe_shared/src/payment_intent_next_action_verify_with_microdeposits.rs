@@ -131,13 +131,13 @@ impl PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType {
 }
 
 impl std::str::FromStr for PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType::*;
         match s {
             "amounts" => Ok(Amounts),
             "descriptor_code" => Ok(DescriptorCode),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

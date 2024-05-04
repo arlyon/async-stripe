@@ -938,7 +938,7 @@ impl CreateIssuingAuthorizationMerchantDataCategory {
 }
 
 impl std::str::FromStr for CreateIssuingAuthorizationMerchantDataCategory {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationMerchantDataCategory::*;
         match s {
@@ -1284,7 +1284,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationMerchantDataCategory {
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1312,7 +1312,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationMerchantDataCate
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Details about the authorization, such as identifiers, set by the card network.
@@ -1375,14 +1375,14 @@ impl CreateIssuingAuthorizationVerificationDataAddressLine1Check {
 }
 
 impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataAddressLine1Check {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationVerificationDataAddressLine1Check::*;
         match s {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1436,14 +1436,14 @@ impl CreateIssuingAuthorizationVerificationDataAddressPostalCodeCheck {
 }
 
 impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataAddressPostalCodeCheck {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationVerificationDataAddressPostalCodeCheck::*;
         match s {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1512,13 +1512,13 @@ impl CreateIssuingAuthorizationVerificationDataAuthenticationExemptionClaimedBy 
 impl std::str::FromStr
     for CreateIssuingAuthorizationVerificationDataAuthenticationExemptionClaimedBy
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationVerificationDataAuthenticationExemptionClaimedBy::*;
         match s {
             "acquirer" => Ok(Acquirer),
             "issuer" => Ok(Issuer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1576,14 +1576,14 @@ impl CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType {
 }
 
 impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType::*;
         match s {
             "low_value_transaction" => Ok(LowValueTransaction),
             "transaction_risk_analysis" => Ok(TransactionRiskAnalysis),
             "unknown" => Ok(Unknown),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1635,14 +1635,14 @@ impl CreateIssuingAuthorizationVerificationDataCvcCheck {
 }
 
 impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataCvcCheck {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationVerificationDataCvcCheck::*;
         match s {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1696,14 +1696,14 @@ impl CreateIssuingAuthorizationVerificationDataExpiryCheck {
 }
 
 impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataExpiryCheck {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationVerificationDataExpiryCheck::*;
         match s {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1770,7 +1770,7 @@ impl CreateIssuingAuthorizationVerificationDataThreeDSecureResult {
 }
 
 impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataThreeDSecureResult {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationVerificationDataThreeDSecureResult::*;
         match s {
@@ -1778,7 +1778,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataThreeDSecur
             "authenticated" => Ok(Authenticated),
             "failed" => Ok(Failed),
             "required" => Ok(Required),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1834,14 +1834,14 @@ impl CreateIssuingAuthorizationWallet {
 }
 
 impl std::str::FromStr for CreateIssuingAuthorizationWallet {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationWallet::*;
         match s {
             "apple_pay" => Ok(ApplePay),
             "google_pay" => Ok(GooglePay),
             "samsung_pay" => Ok(SamsungPay),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2029,7 +2029,7 @@ impl CaptureIssuingAuthorizationPurchaseDetailsFuelType {
 }
 
 impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFuelType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CaptureIssuingAuthorizationPurchaseDetailsFuelType::*;
         match s {
@@ -2038,7 +2038,7 @@ impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFuelType {
             "unleaded_plus" => Ok(UnleadedPlus),
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2090,13 +2090,13 @@ impl CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
 }
 
 impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CaptureIssuingAuthorizationPurchaseDetailsFuelUnit::*;
         match s {
             "liter" => Ok(Liter),
             "us_gallon" => Ok(UsGallon),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

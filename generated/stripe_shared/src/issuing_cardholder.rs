@@ -261,7 +261,7 @@ impl IssuingCardholderPreferredLocales {
 }
 
 impl std::str::FromStr for IssuingCardholderPreferredLocales {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardholderPreferredLocales::*;
         match s {
@@ -270,7 +270,7 @@ impl std::str::FromStr for IssuingCardholderPreferredLocales {
             "es" => Ok(Es),
             "fr" => Ok(Fr),
             "it" => Ok(It),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -337,14 +337,14 @@ impl IssuingCardholderStatus {
 }
 
 impl std::str::FromStr for IssuingCardholderStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardholderStatus::*;
         match s {
             "active" => Ok(Active),
             "blocked" => Ok(Blocked),
             "inactive" => Ok(Inactive),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -407,13 +407,13 @@ impl IssuingCardholderType {
 }
 
 impl std::str::FromStr for IssuingCardholderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardholderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

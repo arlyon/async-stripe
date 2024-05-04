@@ -584,7 +584,7 @@ impl PaymentLinksResourceShippingAddressCollectionAllowedCountries {
 }
 
 impl std::str::FromStr for PaymentLinksResourceShippingAddressCollectionAllowedCountries {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinksResourceShippingAddressCollectionAllowedCountries::*;
         match s {
@@ -825,7 +825,7 @@ impl std::str::FromStr for PaymentLinksResourceShippingAddressCollectionAllowedC
             "ZM" => Ok(Zm),
             "ZW" => Ok(Zw),
             "ZZ" => Ok(Zz),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -861,8 +861,7 @@ impl miniserde::de::Visitor
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentLinksResourceShippingAddressCollectionAllowedCountries::from_str(s)
-                .unwrap_or(PaymentLinksResourceShippingAddressCollectionAllowedCountries::Unknown),
+            PaymentLinksResourceShippingAddressCollectionAllowedCountries::from_str(s).unwrap(),
         );
         Ok(())
     }
@@ -878,6 +877,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }

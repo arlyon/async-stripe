@@ -381,7 +381,7 @@ impl SetupIntentStatus {
 }
 
 impl std::str::FromStr for SetupIntentStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentStatus::*;
         match s {
@@ -391,7 +391,7 @@ impl std::str::FromStr for SetupIntentStatus {
             "requires_confirmation" => Ok(RequiresConfirmation),
             "requires_payment_method" => Ok(RequiresPaymentMethod),
             "succeeded" => Ok(Succeeded),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -468,14 +468,14 @@ impl SetupIntentCancellationReason {
 }
 
 impl std::str::FromStr for SetupIntentCancellationReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentCancellationReason::*;
         match s {
             "abandoned" => Ok(Abandoned),
             "duplicate" => Ok(Duplicate),
             "requested_by_customer" => Ok(RequestedByCustomer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -539,13 +539,13 @@ impl SetupIntentFlowDirections {
 }
 
 impl std::str::FromStr for SetupIntentFlowDirections {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentFlowDirections::*;
         match s {
             "inbound" => Ok(Inbound),
             "outbound" => Ok(Outbound),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -295,14 +295,14 @@ impl ClimateOrderCancellationReason {
 }
 
 impl std::str::FromStr for ClimateOrderCancellationReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ClimateOrderCancellationReason::*;
         match s {
             "expired" => Ok(Expired),
             "product_unavailable" => Ok(ProductUnavailable),
             "requested" => Ok(Requested),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -374,7 +374,7 @@ impl ClimateOrderStatus {
 }
 
 impl std::str::FromStr for ClimateOrderStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ClimateOrderStatus::*;
         match s {
@@ -383,7 +383,7 @@ impl std::str::FromStr for ClimateOrderStatus {
             "confirmed" => Ok(Confirmed),
             "delivered" => Ok(Delivered),
             "open" => Ok(Open),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

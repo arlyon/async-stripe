@@ -118,12 +118,12 @@ impl PaymentMethodOptionsP24SetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsP24SetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsP24SetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

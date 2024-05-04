@@ -121,13 +121,13 @@ impl TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows::*;
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -200,13 +200,13 @@ impl TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows::*;
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

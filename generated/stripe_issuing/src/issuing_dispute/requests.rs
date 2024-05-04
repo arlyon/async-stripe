@@ -189,13 +189,13 @@ impl CreateIssuingDisputeEvidenceCanceledProductType {
 }
 
 impl std::str::FromStr for CreateIssuingDisputeEvidenceCanceledProductType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingDisputeEvidenceCanceledProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -247,13 +247,13 @@ impl CreateIssuingDisputeEvidenceCanceledReturnStatus {
 }
 
 impl std::str::FromStr for CreateIssuingDisputeEvidenceCanceledReturnStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingDisputeEvidenceCanceledReturnStatus::*;
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -332,13 +332,13 @@ impl CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
 }
 
 impl std::str::FromStr for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus::*;
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -412,13 +412,13 @@ impl CreateIssuingDisputeEvidenceNotReceivedProductType {
 }
 
 impl std::str::FromStr for CreateIssuingDisputeEvidenceNotReceivedProductType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingDisputeEvidenceNotReceivedProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -491,13 +491,13 @@ impl CreateIssuingDisputeEvidenceOtherProductType {
 }
 
 impl std::str::FromStr for CreateIssuingDisputeEvidenceOtherProductType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingDisputeEvidenceOtherProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -559,7 +559,7 @@ impl CreateIssuingDisputeEvidenceReason {
 }
 
 impl std::str::FromStr for CreateIssuingDisputeEvidenceReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingDisputeEvidenceReason::*;
         match s {
@@ -570,7 +570,7 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceReason {
             "not_received" => Ok(NotReceived),
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -736,13 +736,13 @@ impl UpdateIssuingDisputeEvidenceCanceledProductType {
 }
 
 impl std::str::FromStr for UpdateIssuingDisputeEvidenceCanceledProductType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingDisputeEvidenceCanceledProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -794,13 +794,13 @@ impl UpdateIssuingDisputeEvidenceCanceledReturnStatus {
 }
 
 impl std::str::FromStr for UpdateIssuingDisputeEvidenceCanceledReturnStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingDisputeEvidenceCanceledReturnStatus::*;
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -879,13 +879,13 @@ impl UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
 }
 
 impl std::str::FromStr for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus::*;
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -959,13 +959,13 @@ impl UpdateIssuingDisputeEvidenceNotReceivedProductType {
 }
 
 impl std::str::FromStr for UpdateIssuingDisputeEvidenceNotReceivedProductType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingDisputeEvidenceNotReceivedProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1038,13 +1038,13 @@ impl UpdateIssuingDisputeEvidenceOtherProductType {
 }
 
 impl std::str::FromStr for UpdateIssuingDisputeEvidenceOtherProductType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingDisputeEvidenceOtherProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1106,7 +1106,7 @@ impl UpdateIssuingDisputeEvidenceReason {
 }
 
 impl std::str::FromStr for UpdateIssuingDisputeEvidenceReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingDisputeEvidenceReason::*;
         match s {
@@ -1117,7 +1117,7 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceReason {
             "not_received" => Ok(NotReceived),
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -116,13 +116,13 @@ impl TaxProductRegistrationsResourceCountryOptionsEuStandardPlaceOfSupplyScheme 
 impl std::str::FromStr
     for TaxProductRegistrationsResourceCountryOptionsEuStandardPlaceOfSupplyScheme
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductRegistrationsResourceCountryOptionsEuStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

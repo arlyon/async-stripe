@@ -263,7 +263,7 @@ impl IdentityVerificationSessionStatus {
 }
 
 impl std::str::FromStr for IdentityVerificationSessionStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IdentityVerificationSessionStatus::*;
         match s {
@@ -271,7 +271,7 @@ impl std::str::FromStr for IdentityVerificationSessionStatus {
             "processing" => Ok(Processing),
             "requires_input" => Ok(RequiresInput),
             "verified" => Ok(Verified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -336,13 +336,13 @@ impl IdentityVerificationSessionType {
 }
 
 impl std::str::FromStr for IdentityVerificationSessionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IdentityVerificationSessionType::*;
         match s {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

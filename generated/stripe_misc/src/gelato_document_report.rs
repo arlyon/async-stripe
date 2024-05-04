@@ -191,13 +191,13 @@ impl GelatoDocumentReportStatus {
 }
 
 impl std::str::FromStr for GelatoDocumentReportStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoDocumentReportStatus::*;
         match s {
             "unverified" => Ok(Unverified),
             "verified" => Ok(Verified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -264,14 +264,14 @@ impl GelatoDocumentReportType {
 }
 
 impl std::str::FromStr for GelatoDocumentReportType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoDocumentReportType::*;
         match s {
             "driving_license" => Ok(DrivingLicense),
             "id_card" => Ok(IdCard),
             "passport" => Ok(Passport),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

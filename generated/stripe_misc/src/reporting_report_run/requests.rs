@@ -206,7 +206,7 @@ impl CreateReportingReportRunParametersReportingCategory {
 }
 
 impl std::str::FromStr for CreateReportingReportRunParametersReportingCategory {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateReportingReportRunParametersReportingCategory::*;
         match s {
@@ -247,7 +247,7 @@ impl std::str::FromStr for CreateReportingReportRunParametersReportingCategory {
             "transfer" => Ok(Transfer),
             "transfer_reversal" => Ok(TransferReversal),
             "unreconciled_customer_funds" => Ok(UnreconciledCustomerFunds),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -275,7 +275,7 @@ impl<'de> serde::Deserialize<'de> for CreateReportingReportRunParametersReportin
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Defaults to `Etc/UTC`.
@@ -1494,7 +1494,7 @@ impl CreateReportingReportRunParametersTimezone {
 }
 
 impl std::str::FromStr for CreateReportingReportRunParametersTimezone {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateReportingReportRunParametersTimezone::*;
         match s {
@@ -2096,7 +2096,7 @@ impl std::str::FromStr for CreateReportingReportRunParametersTimezone {
             "W-SU" => Ok(WMinusSu),
             "WET" => Ok(Wet),
             "Zulu" => Ok(Zulu),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -2124,7 +2124,7 @@ impl<'de> serde::Deserialize<'de> for CreateReportingReportRunParametersTimezone
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 impl<'a> CreateReportingReportRun<'a> {

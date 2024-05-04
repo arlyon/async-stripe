@@ -295,13 +295,13 @@ impl BankAccountAvailablePayoutMethods {
 }
 
 impl std::str::FromStr for BankAccountAvailablePayoutMethods {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BankAccountAvailablePayoutMethods::*;
         match s {
             "instant" => Ok(Instant),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

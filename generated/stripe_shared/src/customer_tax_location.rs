@@ -130,7 +130,7 @@ impl CustomerTaxLocationSource {
 }
 
 impl std::str::FromStr for CustomerTaxLocationSource {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerTaxLocationSource::*;
         match s {
@@ -138,7 +138,7 @@ impl std::str::FromStr for CustomerTaxLocationSource {
             "ip_address" => Ok(IpAddress),
             "payment_method" => Ok(PaymentMethod),
             "shipping_destination" => Ok(ShippingDestination),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -146,14 +146,14 @@ impl PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::*;
         match s {
             "combined" => Ok(Combined),
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -228,13 +228,13 @@ impl PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::*;
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -131,14 +131,14 @@ impl SetupAttemptPaymentMethodDetailsCardWalletType {
 }
 
 impl std::str::FromStr for SetupAttemptPaymentMethodDetailsCardWalletType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupAttemptPaymentMethodDetailsCardWalletType::*;
         match s {
             "apple_pay" => Ok(ApplePay),
             "google_pay" => Ok(GooglePay),
             "link" => Ok(Link),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

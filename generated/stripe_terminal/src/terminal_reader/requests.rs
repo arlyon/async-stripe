@@ -554,12 +554,12 @@ impl SetReaderDisplayTerminalReaderType {
 }
 
 impl std::str::FromStr for SetReaderDisplayTerminalReaderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetReaderDisplayTerminalReaderType::*;
         match s {
             "cart" => Ok(Cart),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -671,13 +671,13 @@ impl PresentPaymentMethodTerminalReaderType {
 }
 
 impl std::str::FromStr for PresentPaymentMethodTerminalReaderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PresentPaymentMethodTerminalReaderType::*;
         match s {
             "card_present" => Ok(CardPresent),
             "interac_present" => Ok(InteracPresent),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

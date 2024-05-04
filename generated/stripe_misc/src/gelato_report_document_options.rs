@@ -142,14 +142,14 @@ impl GelatoReportDocumentOptionsAllowedTypes {
 }
 
 impl std::str::FromStr for GelatoReportDocumentOptionsAllowedTypes {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoReportDocumentOptionsAllowedTypes::*;
         match s {
             "driving_license" => Ok(DrivingLicense),
             "id_card" => Ok(IdCard),
             "passport" => Ok(Passport),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

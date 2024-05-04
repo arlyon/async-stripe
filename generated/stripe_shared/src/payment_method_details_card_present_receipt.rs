@@ -198,7 +198,7 @@ impl PaymentMethodDetailsCardPresentReceiptAccountType {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsCardPresentReceiptAccountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsCardPresentReceiptAccountType::*;
         match s {
@@ -206,7 +206,7 @@ impl std::str::FromStr for PaymentMethodDetailsCardPresentReceiptAccountType {
             "credit" => Ok(Credit),
             "prepaid" => Ok(Prepaid),
             "unknown" => Ok(Unknown),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

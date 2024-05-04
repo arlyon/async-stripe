@@ -329,13 +329,13 @@ impl CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
 }
 
 impl std::str::FromStr for CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows::*;
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -389,13 +389,13 @@ impl CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
 }
 
 impl std::str::FromStr for CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows::*;
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -685,13 +685,13 @@ impl UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
 }
 
 impl std::str::FromStr for UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows::*;
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -745,13 +745,13 @@ impl UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
 }
 
 impl std::str::FromStr for UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows::*;
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

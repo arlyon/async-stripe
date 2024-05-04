@@ -133,7 +133,14 @@ impl<'a> ObjectWriter<'a> {
         for FieldlessVariant { wire_name, variant_name } in variants {
             let _ = writeln!(from_str_body, r#""{wire_name}" => Ok({variant_name}),"#);
         }
-        let _ = writeln!(from_str_body, "_ => Err(())");
+
+        let from_str_err = if self.provide_unknown_variant {
+            let _ = writeln!(from_str_body, "_ => Ok(Self::Unknown)");
+            "std::convert::Infallible"
+        } else {
+            let _ = writeln!(from_str_body, "_ => Err(stripe_types::StripeParseError)");
+            "stripe_types::StripeParseError"
+        };
 
         // NB: we manually implement Debug, Serialize, Deserialize to avoid duplicating
         // the (potentially many) strings in `as_str` and `from_str` used with the default derive.
@@ -157,7 +164,7 @@ impl<'a> ObjectWriter<'a> {
             }}
             
             impl std::str::FromStr for {enum_name} {{
-                type Err = ();
+                type Err = {from_str_err};
                 fn from_str(s: &str) -> Result<Self, Self::Err> {{
                     use {enum_name}::*;
                     match s {{
@@ -194,7 +201,7 @@ impl<'a> ObjectWriter<'a> {
         );
 
         let miniserde_assign_line = if self.provide_unknown_variant {
-            format!("Some({enum_name}::from_str(s).unwrap_or({enum_name}::Unknown))")
+            format!("Some({enum_name}::from_str(s).unwrap())")
         } else {
             format!("Some({enum_name}::from_str(s).map_err(|_| miniserde::Error)?)")
         };
@@ -223,7 +230,7 @@ impl<'a> ObjectWriter<'a> {
         }
 
         let serde_ret_line = if self.provide_unknown_variant {
-            "Ok(Self::from_str(&s).unwrap_or(Self::Unknown))".into()
+            "Ok(Self::from_str(&s).unwrap())".into()
         } else {
             format!(
                 r#"Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for {enum_name}"))"#

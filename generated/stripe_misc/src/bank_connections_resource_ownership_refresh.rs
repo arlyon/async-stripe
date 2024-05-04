@@ -115,14 +115,14 @@ impl BankConnectionsResourceOwnershipRefreshStatus {
 }
 
 impl std::str::FromStr for BankConnectionsResourceOwnershipRefreshStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BankConnectionsResourceOwnershipRefreshStatus::*;
         match s {
             "failed" => Ok(Failed),
             "pending" => Ok(Pending),
             "succeeded" => Ok(Succeeded),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

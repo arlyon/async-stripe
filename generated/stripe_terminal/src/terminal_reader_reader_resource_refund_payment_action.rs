@@ -172,14 +172,14 @@ impl TerminalReaderReaderResourceRefundPaymentActionReason {
 }
 
 impl std::str::FromStr for TerminalReaderReaderResourceRefundPaymentActionReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderReaderResourceRefundPaymentActionReason::*;
         match s {
             "duplicate" => Ok(Duplicate),
             "fraudulent" => Ok(Fraudulent),
             "requested_by_customer" => Ok(RequestedByCustomer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

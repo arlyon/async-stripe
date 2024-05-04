@@ -112,12 +112,12 @@ impl PaymentLinksResourceCustomFieldsLabelType {
 }
 
 impl std::str::FromStr for PaymentLinksResourceCustomFieldsLabelType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinksResourceCustomFieldsLabelType::*;
         match s {
             "custom" => Ok(Custom),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

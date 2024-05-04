@@ -1,12 +1,14 @@
 //! This crate provides Rust bindings for core types to the Stripe HTTP API.
 
 mod currency;
+mod error;
 mod expandable;
 mod ids;
 mod pagination;
 mod params;
 
 pub use currency::{Currency, ParseCurrencyError};
+pub use error::StripeParseError;
 pub use expandable::*;
 pub use pagination::*;
 pub use params::*;

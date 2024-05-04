@@ -318,13 +318,13 @@ impl PriceBillingScheme {
 }
 
 impl std::str::FromStr for PriceBillingScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PriceBillingScheme::*;
         match s {
             "per_unit" => Ok(PerUnit),
             "tiered" => Ok(Tiered),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -389,14 +389,14 @@ impl PriceTaxBehavior {
 }
 
 impl std::str::FromStr for PriceTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PriceTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -459,13 +459,13 @@ impl PriceTiersMode {
 }
 
 impl std::str::FromStr for PriceTiersMode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PriceTiersMode::*;
         match s {
             "graduated" => Ok(Graduated),
             "volume" => Ok(Volume),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -527,13 +527,13 @@ impl PriceType {
 }
 
 impl std::str::FromStr for PriceType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PriceType::*;
         match s {
             "one_time" => Ok(OneTime),
             "recurring" => Ok(Recurring),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

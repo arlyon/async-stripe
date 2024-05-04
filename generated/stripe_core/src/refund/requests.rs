@@ -135,12 +135,12 @@ impl CreateRefundOrigin {
 }
 
 impl std::str::FromStr for CreateRefundOrigin {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateRefundOrigin::*;
         match s {
             "customer_balance" => Ok(CustomerBalance),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -193,14 +193,14 @@ impl CreateRefundReason {
 }
 
 impl std::str::FromStr for CreateRefundReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateRefundReason::*;
         match s {
             "duplicate" => Ok(Duplicate),
             "fraudulent" => Ok(Fraudulent),
             "requested_by_customer" => Ok(RequestedByCustomer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

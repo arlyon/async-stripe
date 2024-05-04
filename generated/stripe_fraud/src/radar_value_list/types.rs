@@ -219,7 +219,7 @@ impl RadarValueListItemType {
 }
 
 impl std::str::FromStr for RadarValueListItemType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RadarValueListItemType::*;
         match s {
@@ -233,7 +233,7 @@ impl std::str::FromStr for RadarValueListItemType {
             "sepa_debit_fingerprint" => Ok(SepaDebitFingerprint),
             "string" => Ok(String),
             "us_bank_account_fingerprint" => Ok(UsBankAccountFingerprint),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

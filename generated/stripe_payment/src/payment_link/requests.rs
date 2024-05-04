@@ -280,13 +280,13 @@ impl CreatePaymentLinkAfterCompletionType {
 }
 
 impl std::str::FromStr for CreatePaymentLinkAfterCompletionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkAfterCompletionType::*;
         match s {
             "hosted_confirmation" => Ok(HostedConfirmation),
             "redirect" => Ok(Redirect),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -369,13 +369,13 @@ impl CreatePaymentLinkAutomaticTaxLiabilityType {
 }
 
 impl std::str::FromStr for CreatePaymentLinkAutomaticTaxLiabilityType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -469,13 +469,13 @@ impl CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
 }
 
 impl std::str::FromStr for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition::*;
         match s {
             "auto" => Ok(Auto),
             "hidden" => Ok(Hidden),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -528,13 +528,13 @@ impl CreatePaymentLinkConsentCollectionPromotions {
 }
 
 impl std::str::FromStr for CreatePaymentLinkConsentCollectionPromotions {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkConsentCollectionPromotions::*;
         match s {
             "auto" => Ok(Auto),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -587,13 +587,13 @@ impl CreatePaymentLinkConsentCollectionTermsOfService {
 }
 
 impl std::str::FromStr for CreatePaymentLinkConsentCollectionTermsOfService {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkConsentCollectionTermsOfService::*;
         match s {
             "none" => Ok(None),
             "required" => Ok(Required),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -692,12 +692,12 @@ impl CreatePaymentLinkCustomFieldsLabelType {
 }
 
 impl std::str::FromStr for CreatePaymentLinkCustomFieldsLabelType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkCustomFieldsLabelType::*;
         match s {
             "custom" => Ok(Custom),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -779,14 +779,14 @@ impl CreatePaymentLinkCustomFieldsType {
 }
 
 impl std::str::FromStr for CreatePaymentLinkCustomFieldsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkCustomFieldsType::*;
         match s {
             "dropdown" => Ok(Dropdown),
             "numeric" => Ok(Numeric),
             "text" => Ok(Text),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -836,13 +836,13 @@ impl CreatePaymentLinkCustomerCreation {
 }
 
 impl std::str::FromStr for CreatePaymentLinkCustomerCreation {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkCustomerCreation::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -956,13 +956,13 @@ impl CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
 }
 
 impl std::str::FromStr for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1035,13 +1035,13 @@ impl CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
 impl std::str::FromStr
     for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay::*;
         match s {
             "exclude_tax" => Ok(ExcludeTax),
             "include_inclusive_tax" => Ok(IncludeInclusiveTax),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1164,14 +1164,14 @@ impl CreatePaymentLinkPaymentIntentDataCaptureMethod {
 }
 
 impl std::str::FromStr for CreatePaymentLinkPaymentIntentDataCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkPaymentIntentDataCaptureMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "automatic_async" => Ok(AutomaticAsync),
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1234,13 +1234,13 @@ impl CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkPaymentIntentDataSetupFutureUsage::*;
         match s {
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1297,13 +1297,13 @@ impl CreatePaymentLinkPaymentMethodCollection {
 }
 
 impl std::str::FromStr for CreatePaymentLinkPaymentMethodCollection {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkPaymentMethodCollection::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1857,7 +1857,7 @@ impl CreatePaymentLinkShippingAddressCollectionAllowedCountries {
 }
 
 impl std::str::FromStr for CreatePaymentLinkShippingAddressCollectionAllowedCountries {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkShippingAddressCollectionAllowedCountries::*;
         match s {
@@ -2098,7 +2098,7 @@ impl std::str::FromStr for CreatePaymentLinkShippingAddressCollectionAllowedCoun
             "ZM" => Ok(Zm),
             "ZW" => Ok(Zw),
             "ZZ" => Ok(Zz),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -2126,7 +2126,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkShippingAddressCollection
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// The shipping rate options to apply to [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link.
@@ -2216,13 +2216,13 @@ impl CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
 }
 
 impl std::str::FromStr for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2303,14 +2303,14 @@ impl CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMeth
 impl std::str::FromStr
     for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::*;
         match s {
             "cancel" => Ok(Cancel),
             "create_invoice" => Ok(CreateInvoice),
             "pause" => Ok(Pause),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2498,13 +2498,13 @@ impl UpdatePaymentLinkAfterCompletionType {
 }
 
 impl std::str::FromStr for UpdatePaymentLinkAfterCompletionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentLinkAfterCompletionType::*;
         match s {
             "hosted_confirmation" => Ok(HostedConfirmation),
             "redirect" => Ok(Redirect),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2587,13 +2587,13 @@ impl UpdatePaymentLinkAutomaticTaxLiabilityType {
 }
 
 impl std::str::FromStr for UpdatePaymentLinkAutomaticTaxLiabilityType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentLinkAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2690,12 +2690,12 @@ impl UpdatePaymentLinkCustomFieldsLabelType {
 }
 
 impl std::str::FromStr for UpdatePaymentLinkCustomFieldsLabelType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentLinkCustomFieldsLabelType::*;
         match s {
             "custom" => Ok(Custom),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2777,14 +2777,14 @@ impl UpdatePaymentLinkCustomFieldsType {
 }
 
 impl std::str::FromStr for UpdatePaymentLinkCustomFieldsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentLinkCustomFieldsType::*;
         match s {
             "dropdown" => Ok(Dropdown),
             "numeric" => Ok(Numeric),
             "text" => Ok(Text),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2834,13 +2834,13 @@ impl UpdatePaymentLinkCustomerCreation {
 }
 
 impl std::str::FromStr for UpdatePaymentLinkCustomerCreation {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentLinkCustomerCreation::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2954,13 +2954,13 @@ impl UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
 }
 
 impl std::str::FromStr for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3033,13 +3033,13 @@ impl UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
 impl std::str::FromStr
     for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay::*;
         match s {
             "exclude_tax" => Ok(ExcludeTax),
             "include_inclusive_tax" => Ok(IncludeInclusiveTax),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3149,13 +3149,13 @@ impl UpdatePaymentLinkPaymentMethodCollection {
 }
 
 impl std::str::FromStr for UpdatePaymentLinkPaymentMethodCollection {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentLinkPaymentMethodCollection::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3696,7 +3696,7 @@ impl UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
 }
 
 impl std::str::FromStr for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentLinkShippingAddressCollectionAllowedCountries::*;
         match s {
@@ -3937,7 +3937,7 @@ impl std::str::FromStr for UpdatePaymentLinkShippingAddressCollectionAllowedCoun
             "ZM" => Ok(Zm),
             "ZW" => Ok(Zw),
             "ZZ" => Ok(Zz),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -3965,7 +3965,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkShippingAddressCollection
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// When creating a subscription, the specified configuration data will be used.
@@ -4035,13 +4035,13 @@ impl UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
 }
 
 impl std::str::FromStr for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4122,14 +4122,14 @@ impl UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMeth
 impl std::str::FromStr
     for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::*;
         match s {
             "cancel" => Ok(Cancel),
             "create_invoice" => Ok(CreateInvoice),
             "pause" => Ok(Pause),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

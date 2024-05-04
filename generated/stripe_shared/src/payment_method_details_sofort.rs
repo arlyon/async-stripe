@@ -189,7 +189,7 @@ impl PaymentMethodDetailsSofortPreferredLanguage {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsSofortPreferredLanguage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsSofortPreferredLanguage::*;
         match s {
@@ -200,7 +200,7 @@ impl std::str::FromStr for PaymentMethodDetailsSofortPreferredLanguage {
             "it" => Ok(It),
             "nl" => Ok(Nl),
             "pl" => Ok(Pl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

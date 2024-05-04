@@ -242,7 +242,7 @@ impl CustomerBalanceTransactionType {
 }
 
 impl std::str::FromStr for CustomerBalanceTransactionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerBalanceTransactionType::*;
         match s {
@@ -256,7 +256,7 @@ impl std::str::FromStr for CustomerBalanceTransactionType {
             "migration" => Ok(Migration),
             "unapplied_from_invoice" => Ok(UnappliedFromInvoice),
             "unspent_receiver_credit" => Ok(UnspentReceiverCredit),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -158,13 +158,13 @@ impl ThreeDSecureDetailsAuthenticationFlow {
 }
 
 impl std::str::FromStr for ThreeDSecureDetailsAuthenticationFlow {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ThreeDSecureDetailsAuthenticationFlow::*;
         match s {
             "challenge" => Ok(Challenge),
             "frictionless" => Ok(Frictionless),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -238,7 +238,7 @@ impl ThreeDSecureDetailsElectronicCommerceIndicator {
 }
 
 impl std::str::FromStr for ThreeDSecureDetailsElectronicCommerceIndicator {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ThreeDSecureDetailsElectronicCommerceIndicator::*;
         match s {
@@ -247,7 +247,7 @@ impl std::str::FromStr for ThreeDSecureDetailsElectronicCommerceIndicator {
             "05" => Ok(V05),
             "06" => Ok(V06),
             "07" => Ok(V07),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -326,7 +326,7 @@ impl ThreeDSecureDetailsResult {
 }
 
 impl std::str::FromStr for ThreeDSecureDetailsResult {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ThreeDSecureDetailsResult::*;
         match s {
@@ -336,7 +336,7 @@ impl std::str::FromStr for ThreeDSecureDetailsResult {
             "failed" => Ok(Failed),
             "not_supported" => Ok(NotSupported),
             "processing_error" => Ok(ProcessingError),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -412,7 +412,7 @@ impl ThreeDSecureDetailsResultReason {
 }
 
 impl std::str::FromStr for ThreeDSecureDetailsResultReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ThreeDSecureDetailsResultReason::*;
         match s {
@@ -423,7 +423,7 @@ impl std::str::FromStr for ThreeDSecureDetailsResultReason {
             "network_not_supported" => Ok(NetworkNotSupported),
             "protocol_error" => Ok(ProtocolError),
             "rejected" => Ok(Rejected),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -492,14 +492,14 @@ impl ThreeDSecureDetailsVersion {
 }
 
 impl std::str::FromStr for ThreeDSecureDetailsVersion {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ThreeDSecureDetailsVersion::*;
         match s {
             "1.0.2" => Ok(V1_0_2),
             "2.1.0" => Ok(V2_1_0),
             "2.2.0" => Ok(V2_2_0),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -132,13 +132,13 @@ impl CustomerAcceptanceType {
 }
 
 impl std::str::FromStr for CustomerAcceptanceType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerAcceptanceType::*;
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

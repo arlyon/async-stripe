@@ -124,12 +124,12 @@ impl PaymentMethodOptionsCashappCaptureMethod {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCashappCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCashappCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -204,14 +204,14 @@ impl PaymentMethodOptionsCashappSetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCashappSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCashappSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

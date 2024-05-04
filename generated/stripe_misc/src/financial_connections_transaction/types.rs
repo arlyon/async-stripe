@@ -211,14 +211,14 @@ impl FinancialConnectionsTransactionStatus {
 }
 
 impl std::str::FromStr for FinancialConnectionsTransactionStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FinancialConnectionsTransactionStatus::*;
         match s {
             "pending" => Ok(Pending),
             "posted" => Ok(Posted),
             "void" => Ok(Void),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -130,13 +130,13 @@ impl FundingInstructionsBankTransferType {
 }
 
 impl std::str::FromStr for FundingInstructionsBankTransferType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FundingInstructionsBankTransferType::*;
         match s {
             "eu_bank_transfer" => Ok(EuBankTransfer),
             "jp_bank_transfer" => Ok(JpBankTransfer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -106,12 +106,12 @@ impl MandateUsBankAccountCollectionMethod {
 }
 
 impl std::str::FromStr for MandateUsBankAccountCollectionMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use MandateUsBankAccountCollectionMethod::*;
         match s {
             "paper" => Ok(Paper),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -150,13 +150,13 @@ impl PaymentMethodDetailsAchDebitAccountHolderType {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsAchDebitAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsAchDebitAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

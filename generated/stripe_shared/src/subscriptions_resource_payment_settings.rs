@@ -193,7 +193,7 @@ impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
 }
 
 impl std::str::FromStr for SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionsResourcePaymentSettingsPaymentMethodTypes::*;
         match s {
@@ -223,7 +223,7 @@ impl std::str::FromStr for SubscriptionsResourcePaymentSettingsPaymentMethodType
             "sofort" => Ok(Sofort),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -258,10 +258,8 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SubscriptionsResourcePaymentSettingsPaymentMethodTypes::from_str(s)
-                .unwrap_or(SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Unknown),
-        );
+        self.out =
+            Some(SubscriptionsResourcePaymentSettingsPaymentMethodTypes::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -272,7 +270,7 @@ impl<'de> serde::Deserialize<'de> for SubscriptionsResourcePaymentSettingsPaymen
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Either `off`, or `on_subscription`.
@@ -293,13 +291,13 @@ impl SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
 }
 
 impl std::str::FromStr for SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod::*;
         match s {
             "off" => Ok(Off),
             "on_subscription" => Ok(OnSubscription),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

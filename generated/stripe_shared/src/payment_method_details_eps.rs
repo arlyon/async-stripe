@@ -173,7 +173,7 @@ impl PaymentMethodDetailsEpsBank {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsEpsBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsEpsBank::*;
         match s {
@@ -205,7 +205,7 @@ impl std::str::FromStr for PaymentMethodDetailsEpsBank {
             "volksbank_gruppe" => Ok(VolksbankGruppe),
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -238,10 +238,7 @@ impl miniserde::Deserialize for PaymentMethodDetailsEpsBank {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsEpsBank> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodDetailsEpsBank::from_str(s)
-                .unwrap_or(PaymentMethodDetailsEpsBank::Unknown),
-        );
+        self.out = Some(PaymentMethodDetailsEpsBank::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -252,6 +249,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsEpsBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }

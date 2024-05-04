@@ -137,13 +137,13 @@ impl PortalSubscriptionCancelMode {
 }
 
 impl std::str::FromStr for PortalSubscriptionCancelMode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalSubscriptionCancelMode::*;
         match s {
             "at_period_end" => Ok(AtPeriodEnd),
             "immediately" => Ok(Immediately),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -211,14 +211,14 @@ impl PortalSubscriptionCancelProrationBehavior {
 }
 
 impl std::str::FromStr for PortalSubscriptionCancelProrationBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalSubscriptionCancelProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

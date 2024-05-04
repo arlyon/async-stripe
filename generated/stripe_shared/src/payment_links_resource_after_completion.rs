@@ -129,13 +129,13 @@ impl PaymentLinksResourceAfterCompletionType {
 }
 
 impl std::str::FromStr for PaymentLinksResourceAfterCompletionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinksResourceAfterCompletionType::*;
         match s {
             "hosted_confirmation" => Ok(HostedConfirmation),
             "redirect" => Ok(Redirect),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

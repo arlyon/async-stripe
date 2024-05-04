@@ -144,14 +144,14 @@ impl PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -228,14 +228,14 @@ impl PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

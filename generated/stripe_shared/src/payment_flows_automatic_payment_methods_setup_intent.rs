@@ -119,13 +119,13 @@ impl PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects {
 }
 
 impl std::str::FromStr for PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects::*;
         match s {
             "always" => Ok(Always),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

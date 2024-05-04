@@ -68,14 +68,14 @@ impl UpdateCashBalanceSettingsReconciliationMode {
 }
 
 impl std::str::FromStr for UpdateCashBalanceSettingsReconciliationMode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateCashBalanceSettingsReconciliationMode::*;
         match s {
             "automatic" => Ok(Automatic),
             "manual" => Ok(Manual),
             "merchant_default" => Ok(MerchantDefault),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

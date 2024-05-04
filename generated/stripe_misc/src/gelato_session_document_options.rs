@@ -142,14 +142,14 @@ impl GelatoSessionDocumentOptionsAllowedTypes {
 }
 
 impl std::str::FromStr for GelatoSessionDocumentOptionsAllowedTypes {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoSessionDocumentOptionsAllowedTypes::*;
         match s {
             "driving_license" => Ok(DrivingLicense),
             "id_card" => Ok(IdCard),
             "passport" => Ok(Passport),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

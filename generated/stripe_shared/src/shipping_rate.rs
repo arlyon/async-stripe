@@ -224,14 +224,14 @@ impl ShippingRateTaxBehavior {
 }
 
 impl std::str::FromStr for ShippingRateTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ShippingRateTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -292,12 +292,12 @@ impl ShippingRateType {
 }
 
 impl std::str::FromStr for ShippingRateType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ShippingRateType::*;
         match s {
             "fixed_amount" => Ok(FixedAmount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

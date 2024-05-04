@@ -167,7 +167,7 @@ impl ListTaxIdOwnerType {
 }
 
 impl std::str::FromStr for ListTaxIdOwnerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListTaxIdOwnerType::*;
         match s {
@@ -175,7 +175,7 @@ impl std::str::FromStr for ListTaxIdOwnerType {
             "application" => Ok(Application),
             "customer" => Ok(Customer),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -405,7 +405,7 @@ impl CreateCustomerTaxIdType {
 }
 
 impl std::str::FromStr for CreateCustomerTaxIdType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCustomerTaxIdType::*;
         match s {
@@ -475,7 +475,7 @@ impl std::str::FromStr for CreateCustomerTaxIdType {
             "ve_rif" => Ok(VeRif),
             "vn_tin" => Ok(VnTin),
             "za_vat" => Ok(ZaVat),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -503,7 +503,7 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxIdType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 impl<'a> CreateCustomerTaxId<'a> {
@@ -574,7 +574,7 @@ impl CreateTaxIdOwnerType {
 }
 
 impl std::str::FromStr for CreateTaxIdOwnerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxIdOwnerType::*;
         match s {
@@ -582,7 +582,7 @@ impl std::str::FromStr for CreateTaxIdOwnerType {
             "application" => Ok(Application),
             "customer" => Ok(Customer),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -763,7 +763,7 @@ impl CreateTaxIdType {
 }
 
 impl std::str::FromStr for CreateTaxIdType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxIdType::*;
         match s {
@@ -833,7 +833,7 @@ impl std::str::FromStr for CreateTaxIdType {
             "ve_rif" => Ok(VeRif),
             "vn_tin" => Ok(VnTin),
             "za_vat" => Ok(ZaVat),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -861,7 +861,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxIdType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 impl<'a> CreateTaxId<'a> {

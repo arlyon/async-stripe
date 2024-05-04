@@ -329,13 +329,13 @@ impl CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
 }
 
 impl std::str::FromStr for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects::*;
         match s {
             "always" => Ok(Always),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -423,13 +423,13 @@ impl CreatePaymentIntentMandateDataCustomerAcceptanceType {
 }
 
 impl std::str::FromStr for CreatePaymentIntentMandateDataCustomerAcceptanceType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentMandateDataCustomerAcceptanceType::*;
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -833,7 +833,7 @@ impl CreatePaymentIntentPaymentMethodDataEpsBank {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataEpsBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodDataEpsBank::*;
         match s {
@@ -865,7 +865,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataEpsBank {
             "volksbank_gruppe" => Ok(VolksbankGruppe),
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -893,7 +893,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataEpsBan
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
@@ -927,13 +927,13 @@ impl CreatePaymentIntentPaymentMethodDataFpxAccountHolderType {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataFpxAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodDataFpxAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1029,7 +1029,7 @@ impl CreatePaymentIntentPaymentMethodDataFpxBank {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataFpxBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodDataFpxBank::*;
         match s {
@@ -1055,7 +1055,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1083,7 +1083,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataFpxBan
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
@@ -1147,7 +1147,7 @@ impl CreatePaymentIntentPaymentMethodDataIdealBank {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataIdealBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodDataIdealBank::*;
         match s {
@@ -1167,7 +1167,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1195,7 +1195,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataIdealB
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
@@ -1291,7 +1291,7 @@ impl CreatePaymentIntentPaymentMethodDataP24Bank {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataP24Bank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodDataP24Bank::*;
         match s {
@@ -1321,7 +1321,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataP24Bank {
             "toyota_bank" => Ok(ToyotaBank),
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1349,7 +1349,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataP24Ban
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Options to configure Radar.
@@ -1412,7 +1412,7 @@ impl CreatePaymentIntentPaymentMethodDataSofortCountry {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataSofortCountry {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodDataSofortCountry::*;
         match s {
@@ -1422,7 +1422,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataSofortCountry {
             "ES" => Ok(Es),
             "IT" => Ok(It),
             "NL" => Ok(Nl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1540,7 +1540,7 @@ impl CreatePaymentIntentPaymentMethodDataType {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodDataType::*;
         match s {
@@ -1576,7 +1576,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1604,7 +1604,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -1649,13 +1649,13 @@ impl CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1705,13 +1705,13 @@ impl CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType::*;
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1935,14 +1935,14 @@ impl CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedu
 impl std::str::FromStr
     for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::*;
         match s {
             "combined" => Ok(Combined),
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2000,13 +2000,13 @@ impl CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionTy
 impl std::str::FromStr
     for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2071,14 +2071,14 @@ impl CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2130,14 +2130,14 @@ impl CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2218,12 +2218,12 @@ impl CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2280,12 +2280,12 @@ impl CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2374,12 +2374,12 @@ impl CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2434,12 +2434,12 @@ impl CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2515,13 +2515,13 @@ impl CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2604,14 +2604,14 @@ impl CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2690,14 +2690,14 @@ impl CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2775,7 +2775,7 @@ impl CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage::*;
         match s {
@@ -2783,7 +2783,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBancontactPref
             "en" => Ok(En),
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2840,13 +2840,13 @@ impl CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2924,12 +2924,12 @@ impl CreatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3013,14 +3013,14 @@ impl CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3167,12 +3167,12 @@ impl CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3265,12 +3265,12 @@ impl CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval::*;
         match s {
             "month" => Ok(Month),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3318,12 +3318,12 @@ impl CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType::*;
         match s {
             "fixed_count" => Ok(FixedCount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3434,13 +3434,13 @@ impl CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType::*;
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3496,7 +3496,7 @@ impl CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval::*;
         match s {
@@ -3505,7 +3505,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardMandateOpt
             "sporadic" => Ok(Sporadic),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3553,12 +3553,12 @@ impl CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes::*;
         match s {
             "india" => Ok(India),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3628,7 +3628,7 @@ impl CreatePaymentIntentPaymentMethodOptionsCardNetwork {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardNetwork::*;
         match s {
@@ -3643,7 +3643,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3695,13 +3695,13 @@ impl CreatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3753,13 +3753,13 @@ impl CreatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization 
 impl std::str::FromStr
     for CreatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3815,13 +3815,13 @@ impl CreatePaymentIntentPaymentMethodOptionsCardRequestMulticapture {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardRequestMulticapture {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardRequestMulticapture::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3875,13 +3875,13 @@ impl CreatePaymentIntentPaymentMethodOptionsCardRequestOvercapture {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardRequestOvercapture {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardRequestOvercapture::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3940,14 +3940,14 @@ impl CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::*;
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4010,14 +4010,14 @@ impl CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4135,7 +4135,7 @@ impl CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus::*;
         match s {
@@ -4146,7 +4146,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecu
             "R" => Ok(R),
             "U" => Ok(U),
             "Y" => Ok(Y),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4205,7 +4205,7 @@ impl CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIn
 impl std::str::FromStr
     for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator::*;
         match s {
@@ -4214,7 +4214,7 @@ impl std::str::FromStr
             "05" => Ok(V05),
             "06" => Ok(V06),
             "07" => Ok(V07),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4272,13 +4272,13 @@ impl CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator {
 impl std::str::FromStr
     for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator::*;
         match s {
             "low_risk" => Ok(LowRisk),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4387,7 +4387,7 @@ impl CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartes
 impl std::str::FromStr
     for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo::*;
         match s {
@@ -4397,7 +4397,7 @@ impl std::str::FromStr
             "3" => Ok(V3),
             "4" => Ok(V4),
             "A" => Ok(A),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4455,14 +4455,14 @@ impl CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion::*;
         match s {
             "1.0.2" => Ok(V1_0_2),
             "2.1.0" => Ok(V2_1_0),
             "2.2.0" => Ok(V2_2_0),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4544,12 +4544,12 @@ impl CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4610,14 +4610,14 @@ impl CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4738,7 +4738,7 @@ impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequested
 impl std::str::FromStr
     for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::*;
         match s {
@@ -4749,7 +4749,7 @@ impl std::str::FromStr
             "spei" => Ok(Spei),
             "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4811,7 +4811,7 @@ impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::*;
         match s {
@@ -4820,7 +4820,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCustomerBalanc
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4869,12 +4869,12 @@ impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType::*;
         match s {
             "bank_transfer" => Ok(BankTransfer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4929,12 +4929,12 @@ impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5008,12 +5008,12 @@ impl CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5089,12 +5089,12 @@ impl CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5170,12 +5170,12 @@ impl CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5253,12 +5253,12 @@ impl CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5338,13 +5338,13 @@ impl CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5427,12 +5427,12 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5572,7 +5572,7 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::*;
         match s {
@@ -5620,7 +5620,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferre
             "pt-PT" => Ok(PtMinusPt),
             "sv-FI" => Ok(SvMinusFi),
             "sv-SE" => Ok(SvMinusSe),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -5648,7 +5648,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsKla
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -5673,12 +5673,12 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5773,12 +5773,12 @@ impl CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5863,12 +5863,12 @@ impl CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5927,13 +5927,13 @@ impl CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6013,12 +6013,12 @@ impl CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6097,12 +6097,12 @@ impl CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6178,12 +6178,12 @@ impl CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6267,12 +6267,12 @@ impl CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6366,7 +6366,7 @@ impl CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale::*;
         match s {
@@ -6391,7 +6391,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaypalPreferre
             "pt-PT" => Ok(PtMinusPt),
             "sk-SK" => Ok(SkMinusSk),
             "sv-SE" => Ok(SvMinusSe),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -6419,7 +6419,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPay
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -6446,13 +6446,13 @@ impl CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6538,12 +6538,12 @@ impl CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6620,12 +6620,12 @@ impl CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6698,13 +6698,13 @@ impl CreatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6787,14 +6787,14 @@ impl CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6876,7 +6876,7 @@ impl CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage::*;
         match s {
@@ -6887,7 +6887,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSofortPreferre
             "it" => Ok(It),
             "nl" => Ok(Nl),
             "pl" => Ok(Pl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6948,13 +6948,13 @@ impl CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -7035,12 +7035,12 @@ impl CreatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -7163,7 +7163,7 @@ impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPer
 impl std::str::FromStr
     for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
         match s {
@@ -7171,7 +7171,7 @@ impl std::str::FromStr
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -7229,13 +7229,13 @@ impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPre
 impl std::str::FromStr
     for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match s {
             "balances" => Ok(Balances),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -7304,12 +7304,12 @@ impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectio
 impl std::str::FromStr
     for CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::*;
         match s {
             "paper" => Ok(Paper),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -7378,13 +7378,13 @@ impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested::*;
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -7436,13 +7436,13 @@ impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpee
 impl std::str::FromStr
     for CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
         match s {
             "fastest" => Ok(Fastest),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -7507,14 +7507,14 @@ impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -7566,14 +7566,14 @@ impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -7650,14 +7650,14 @@ impl CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsWechatPayClient::*;
         match s {
             "android" => Ok(Android),
             "ios" => Ok(Ios),
             "web" => Ok(Web),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -7714,12 +7714,12 @@ impl CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -7793,12 +7793,12 @@ impl CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -8393,7 +8393,7 @@ impl UpdatePaymentIntentPaymentMethodDataEpsBank {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataEpsBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodDataEpsBank::*;
         match s {
@@ -8425,7 +8425,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataEpsBank {
             "volksbank_gruppe" => Ok(VolksbankGruppe),
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -8453,7 +8453,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataEpsBan
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
@@ -8487,13 +8487,13 @@ impl UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -8589,7 +8589,7 @@ impl UpdatePaymentIntentPaymentMethodDataFpxBank {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataFpxBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodDataFpxBank::*;
         match s {
@@ -8615,7 +8615,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -8643,7 +8643,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataFpxBan
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
@@ -8707,7 +8707,7 @@ impl UpdatePaymentIntentPaymentMethodDataIdealBank {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataIdealBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodDataIdealBank::*;
         match s {
@@ -8727,7 +8727,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -8755,7 +8755,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataIdealB
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
@@ -8851,7 +8851,7 @@ impl UpdatePaymentIntentPaymentMethodDataP24Bank {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataP24Bank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodDataP24Bank::*;
         match s {
@@ -8881,7 +8881,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataP24Bank {
             "toyota_bank" => Ok(ToyotaBank),
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -8909,7 +8909,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataP24Ban
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Options to configure Radar.
@@ -8972,7 +8972,7 @@ impl UpdatePaymentIntentPaymentMethodDataSofortCountry {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataSofortCountry {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodDataSofortCountry::*;
         match s {
@@ -8982,7 +8982,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataSofortCountry {
             "ES" => Ok(Es),
             "IT" => Ok(It),
             "NL" => Ok(Nl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -9100,7 +9100,7 @@ impl UpdatePaymentIntentPaymentMethodDataType {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodDataType::*;
         match s {
@@ -9136,7 +9136,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -9164,7 +9164,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -9209,13 +9209,13 @@ impl UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -9265,13 +9265,13 @@ impl UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType::*;
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -9495,14 +9495,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedu
 impl std::str::FromStr
     for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::*;
         match s {
             "combined" => Ok(Combined),
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -9560,13 +9560,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionTy
 impl std::str::FromStr
     for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -9631,14 +9631,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -9690,14 +9690,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -9778,12 +9778,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -9840,12 +9840,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -9934,12 +9934,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -9994,12 +9994,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -10075,13 +10075,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -10164,14 +10164,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -10250,14 +10250,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -10335,7 +10335,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage::*;
         match s {
@@ -10343,7 +10343,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBancontactPref
             "en" => Ok(En),
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -10400,13 +10400,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -10484,12 +10484,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -10573,14 +10573,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -10727,12 +10727,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -10825,12 +10825,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval::*;
         match s {
             "month" => Ok(Month),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -10878,12 +10878,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType::*;
         match s {
             "fixed_count" => Ok(FixedCount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -10994,13 +10994,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType::*;
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -11056,7 +11056,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval::*;
         match s {
@@ -11065,7 +11065,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardMandateOpt
             "sporadic" => Ok(Sporadic),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -11113,12 +11113,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes::*;
         match s {
             "india" => Ok(India),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -11188,7 +11188,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardNetwork::*;
         match s {
@@ -11203,7 +11203,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -11255,13 +11255,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -11313,13 +11313,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization 
 impl std::str::FromStr
     for UpdatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -11375,13 +11375,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardRequestMulticapture {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardRequestMulticapture {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardRequestMulticapture::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -11435,13 +11435,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardRequestOvercapture {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardRequestOvercapture {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardRequestOvercapture::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -11500,14 +11500,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::*;
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -11570,14 +11570,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -11695,7 +11695,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus::*;
         match s {
@@ -11706,7 +11706,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecu
             "R" => Ok(R),
             "U" => Ok(U),
             "Y" => Ok(Y),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -11765,7 +11765,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIn
 impl std::str::FromStr
     for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator::*;
         match s {
@@ -11774,7 +11774,7 @@ impl std::str::FromStr
             "05" => Ok(V05),
             "06" => Ok(V06),
             "07" => Ok(V07),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -11832,13 +11832,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator {
 impl std::str::FromStr
     for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator::*;
         match s {
             "low_risk" => Ok(LowRisk),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -11947,7 +11947,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartes
 impl std::str::FromStr
     for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo::*;
         match s {
@@ -11957,7 +11957,7 @@ impl std::str::FromStr
             "3" => Ok(V3),
             "4" => Ok(V4),
             "A" => Ok(A),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -12015,14 +12015,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion::*;
         match s {
             "1.0.2" => Ok(V1_0_2),
             "2.1.0" => Ok(V2_1_0),
             "2.2.0" => Ok(V2_2_0),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -12104,12 +12104,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -12170,14 +12170,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -12298,7 +12298,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequested
 impl std::str::FromStr
     for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::*;
         match s {
@@ -12309,7 +12309,7 @@ impl std::str::FromStr
             "spei" => Ok(Spei),
             "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -12371,7 +12371,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::*;
         match s {
@@ -12380,7 +12380,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanc
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -12429,12 +12429,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType::*;
         match s {
             "bank_transfer" => Ok(BankTransfer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -12489,12 +12489,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -12568,12 +12568,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -12649,12 +12649,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -12730,12 +12730,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -12813,12 +12813,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -12898,13 +12898,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -12987,12 +12987,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -13132,7 +13132,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::*;
         match s {
@@ -13180,7 +13180,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferre
             "pt-PT" => Ok(PtMinusPt),
             "sv-FI" => Ok(SvMinusFi),
             "sv-SE" => Ok(SvMinusSe),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -13208,7 +13208,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsKla
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -13233,12 +13233,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -13333,12 +13333,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -13423,12 +13423,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -13487,13 +13487,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -13573,12 +13573,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -13657,12 +13657,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -13738,12 +13738,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -13827,12 +13827,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -13926,7 +13926,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale::*;
         match s {
@@ -13951,7 +13951,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferre
             "pt-PT" => Ok(PtMinusPt),
             "sk-SK" => Ok(SkMinusSk),
             "sv-SE" => Ok(SvMinusSe),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -13979,7 +13979,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPay
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -14006,13 +14006,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -14098,12 +14098,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -14180,12 +14180,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -14258,13 +14258,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -14347,14 +14347,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -14436,7 +14436,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage::*;
         match s {
@@ -14447,7 +14447,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSofortPreferre
             "it" => Ok(It),
             "nl" => Ok(Nl),
             "pl" => Ok(Pl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -14508,13 +14508,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -14595,12 +14595,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -14723,7 +14723,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPer
 impl std::str::FromStr
     for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
         match s {
@@ -14731,7 +14731,7 @@ impl std::str::FromStr
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -14789,13 +14789,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPre
 impl std::str::FromStr
     for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match s {
             "balances" => Ok(Balances),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -14864,12 +14864,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectio
 impl std::str::FromStr
     for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::*;
         match s {
             "paper" => Ok(Paper),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -14938,13 +14938,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested::*;
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -14996,13 +14996,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpee
 impl std::str::FromStr
     for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
         match s {
             "fastest" => Ok(Fastest),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -15067,14 +15067,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -15126,14 +15126,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -15210,14 +15210,14 @@ impl UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsWechatPayClient::*;
         match s {
             "android" => Ok(Android),
             "ios" => Ok(Ios),
             "web" => Ok(Web),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -15274,12 +15274,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -15353,12 +15353,12 @@ impl UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -15534,7 +15534,7 @@ impl CancelPaymentIntentCancellationReason {
 }
 
 impl std::str::FromStr for CancelPaymentIntentCancellationReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CancelPaymentIntentCancellationReason::*;
         match s {
@@ -15542,7 +15542,7 @@ impl std::str::FromStr for CancelPaymentIntentCancellationReason {
             "duplicate" => Ok(Duplicate),
             "fraudulent" => Ok(Fraudulent),
             "requested_by_customer" => Ok(RequestedByCustomer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -15788,13 +15788,13 @@ impl ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType::*;
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -15888,12 +15888,12 @@ impl ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType::*;
         match s {
             "online" => Ok(Online),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -16296,7 +16296,7 @@ impl ConfirmPaymentIntentPaymentMethodDataEpsBank {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataEpsBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodDataEpsBank::*;
         match s {
@@ -16328,7 +16328,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataEpsBank {
             "volksbank_gruppe" => Ok(VolksbankGruppe),
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -16356,7 +16356,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataEpsBa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
@@ -16390,13 +16390,13 @@ impl ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -16492,7 +16492,7 @@ impl ConfirmPaymentIntentPaymentMethodDataFpxBank {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataFpxBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodDataFpxBank::*;
         match s {
@@ -16518,7 +16518,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -16546,7 +16546,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataFpxBa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
@@ -16610,7 +16610,7 @@ impl ConfirmPaymentIntentPaymentMethodDataIdealBank {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataIdealBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodDataIdealBank::*;
         match s {
@@ -16630,7 +16630,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -16658,7 +16658,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataIdeal
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
@@ -16754,7 +16754,7 @@ impl ConfirmPaymentIntentPaymentMethodDataP24Bank {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataP24Bank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodDataP24Bank::*;
         match s {
@@ -16784,7 +16784,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataP24Bank {
             "toyota_bank" => Ok(ToyotaBank),
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -16812,7 +16812,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataP24Ba
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Options to configure Radar.
@@ -16875,7 +16875,7 @@ impl ConfirmPaymentIntentPaymentMethodDataSofortCountry {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataSofortCountry {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodDataSofortCountry::*;
         match s {
@@ -16885,7 +16885,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataSofortCountry {
             "ES" => Ok(Es),
             "IT" => Ok(It),
             "NL" => Ok(Nl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -17003,7 +17003,7 @@ impl ConfirmPaymentIntentPaymentMethodDataType {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodDataType::*;
         match s {
@@ -17039,7 +17039,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -17067,7 +17067,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -17112,13 +17112,13 @@ impl ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -17168,13 +17168,13 @@ impl ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType::*;
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -17401,14 +17401,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSched
 impl std::str::FromStr
     for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::*;
         match s {
             "combined" => Ok(Combined),
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -17466,13 +17466,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionT
 impl std::str::FromStr
     for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -17537,14 +17537,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -17596,14 +17596,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -17684,12 +17684,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -17746,12 +17746,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -17840,12 +17840,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -17902,12 +17902,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
 impl std::str::FromStr
     for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -17985,13 +17985,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -18074,14 +18074,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -18160,14 +18160,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -18245,7 +18245,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage::*;
         match s {
@@ -18253,7 +18253,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBancontactPre
             "en" => Ok(En),
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -18310,13 +18310,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -18394,12 +18394,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -18483,14 +18483,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -18637,12 +18637,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -18735,12 +18735,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval::*;
         match s {
             "month" => Ok(Month),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -18788,12 +18788,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType::*;
         match s {
             "fixed_count" => Ok(FixedCount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -18900,13 +18900,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType::*;
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -18962,7 +18962,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval::*;
         match s {
@@ -18971,7 +18971,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOp
             "sporadic" => Ok(Sporadic),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -19021,12 +19021,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
 impl std::str::FromStr
     for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes::*;
         match s {
             "india" => Ok(India),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -19098,7 +19098,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardNetwork::*;
         match s {
@@ -19113,7 +19113,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -19167,13 +19167,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
 impl std::str::FromStr
     for ConfirmPaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -19227,13 +19227,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
 impl std::str::FromStr
     for ConfirmPaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -19289,13 +19289,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardRequestMulticapture {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardRequestMulticapture {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardRequestMulticapture::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -19349,13 +19349,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardRequestOvercapture {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardRequestOvercapture {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardRequestOvercapture::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -19414,14 +19414,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::*;
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -19484,14 +19484,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -19609,7 +19609,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus::*;
         match s {
@@ -19620,7 +19620,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSec
             "R" => Ok(R),
             "U" => Ok(U),
             "Y" => Ok(Y),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -19679,7 +19679,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceI
 impl std::str::FromStr
     for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator::*;
         match s {
@@ -19688,7 +19688,7 @@ impl std::str::FromStr
             "05" => Ok(V05),
             "06" => Ok(V06),
             "07" => Ok(V07),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -19746,13 +19746,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator 
 impl std::str::FromStr
     for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator::*;
         match s {
             "low_risk" => Ok(LowRisk),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -19861,7 +19861,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCarte
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo::*;
         match s {
@@ -19871,7 +19871,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSec
 "3" => Ok(V3),
 "4" => Ok(V4),
 "A" => Ok(A),
-_ => Err(())
+_ => Err(stripe_types::StripeParseError)
 
         }
     }
@@ -19919,14 +19919,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion::*;
         match s {
             "1.0.2" => Ok(V1_0_2),
             "2.1.0" => Ok(V2_1_0),
             "2.2.0" => Ok(V2_2_0),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -20008,12 +20008,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -20074,14 +20074,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCashappSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -20202,7 +20202,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequeste
 impl std::str::FromStr
     for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::*;
         match s {
@@ -20213,7 +20213,7 @@ impl std::str::FromStr
             "spei" => Ok(Spei),
             "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -20275,7 +20275,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::*;
         match s {
@@ -20284,7 +20284,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalan
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -20333,12 +20333,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType::*;
         match s {
             "bank_transfer" => Ok(BankTransfer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -20393,12 +20393,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -20472,12 +20472,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -20553,12 +20553,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -20634,12 +20634,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -20717,12 +20717,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -20802,13 +20802,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -20893,12 +20893,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -21038,7 +21038,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::*;
         match s {
@@ -21086,7 +21086,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferr
             "pt-PT" => Ok(PtMinusPt),
             "sv-FI" => Ok(SvMinusFi),
             "sv-SE" => Ok(SvMinusSe),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -21116,7 +21116,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -21141,12 +21141,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -21241,12 +21241,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -21331,12 +21331,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -21395,13 +21395,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -21481,12 +21481,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -21565,12 +21565,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -21646,12 +21646,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -21735,12 +21735,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -21834,7 +21834,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale::*;
         match s {
@@ -21859,7 +21859,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferr
             "pt-PT" => Ok(PtMinusPt),
             "sk-SK" => Ok(SkMinusSk),
             "sv-SE" => Ok(SvMinusSe),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -21889,7 +21889,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -21916,13 +21916,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -22008,12 +22008,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -22090,12 +22090,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -22168,13 +22168,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -22257,14 +22257,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -22346,7 +22346,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage::*;
         match s {
@@ -22357,7 +22357,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferr
             "it" => Ok(It),
             "nl" => Ok(Nl),
             "pl" => Ok(Pl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -22418,13 +22418,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -22505,12 +22505,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -22633,7 +22633,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPe
 impl std::str::FromStr
     for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
         match s {
@@ -22641,7 +22641,7 @@ impl std::str::FromStr
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -22699,13 +22699,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPr
 impl std::str::FromStr
     for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match s {
             "balances" => Ok(Balances),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -22774,12 +22774,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollecti
 impl std::str::FromStr
     for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::*;
         match s {
             "paper" => Ok(Paper),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -22848,13 +22848,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested::*;
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -22906,13 +22906,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpe
 impl std::str::FromStr
     for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
         match s {
             "fastest" => Ok(Fastest),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -22977,14 +22977,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -23036,14 +23036,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -23120,14 +23120,14 @@ impl ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient::*;
         match s {
             "android" => Ok(Android),
             "ios" => Ok(Ios),
             "web" => Ok(Web),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -23184,12 +23184,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -23263,12 +23263,12 @@ impl ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

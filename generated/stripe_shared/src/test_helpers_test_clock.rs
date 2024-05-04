@@ -177,14 +177,14 @@ impl TestHelpersTestClockStatus {
 }
 
 impl std::str::FromStr for TestHelpersTestClockStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TestHelpersTestClockStatus::*;
         match s {
             "advancing" => Ok(Advancing),
             "internal_failure" => Ok(InternalFailure),
             "ready" => Ok(Ready),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

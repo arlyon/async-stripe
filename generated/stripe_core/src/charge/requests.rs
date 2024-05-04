@@ -331,13 +331,13 @@ impl UpdateChargeFraudDetailsUserReport {
 }
 
 impl std::str::FromStr for UpdateChargeFraudDetailsUserReport {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateChargeFraudDetailsUserReport::*;
         match s {
             "fraudulent" => Ok(Fraudulent),
             "safe" => Ok(Safe),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

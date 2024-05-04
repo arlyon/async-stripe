@@ -116,14 +116,14 @@ impl GelatoDocumentReportErrorCode {
 }
 
 impl std::str::FromStr for GelatoDocumentReportErrorCode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoDocumentReportErrorCode::*;
         match s {
             "document_expired" => Ok(DocumentExpired),
             "document_type_not_supported" => Ok(DocumentTypeNotSupported),
             "document_unverified_other" => Ok(DocumentUnverifiedOther),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

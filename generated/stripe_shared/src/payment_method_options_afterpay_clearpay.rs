@@ -133,12 +133,12 @@ impl PaymentMethodOptionsAfterpayClearpayCaptureMethod {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsAfterpayClearpayCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsAfterpayClearpayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -212,12 +212,12 @@ impl PaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsAfterpayClearpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

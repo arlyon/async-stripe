@@ -505,7 +505,7 @@ impl PaymentMethodType {
 }
 
 impl std::str::FromStr for PaymentMethodType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodType::*;
         match s {
@@ -544,7 +544,7 @@ impl std::str::FromStr for PaymentMethodType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -577,7 +577,7 @@ impl miniserde::Deserialize for PaymentMethodType {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentMethodType::from_str(s).unwrap_or(PaymentMethodType::Unknown));
+        self.out = Some(PaymentMethodType::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -588,7 +588,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 impl stripe_types::Object for PaymentMethod {

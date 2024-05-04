@@ -148,13 +148,13 @@ impl BankConnectionsResourceBalanceType {
 }
 
 impl std::str::FromStr for BankConnectionsResourceBalanceType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BankConnectionsResourceBalanceType::*;
         match s {
             "cash" => Ok(Cash),
             "credit" => Ok(Credit),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

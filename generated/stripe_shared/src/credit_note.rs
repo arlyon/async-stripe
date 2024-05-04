@@ -372,13 +372,13 @@ impl CreditNoteStatus {
 }
 
 impl std::str::FromStr for CreditNoteStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreditNoteStatus::*;
         match s {
             "issued" => Ok(Issued),
             "void" => Ok(Void),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -445,13 +445,13 @@ impl CreditNoteType {
 }
 
 impl std::str::FromStr for CreditNoteType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreditNoteType::*;
         match s {
             "post_payment" => Ok(PostPayment),
             "pre_payment" => Ok(PrePayment),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -529,7 +529,7 @@ impl CreditNoteReason {
 }
 
 impl std::str::FromStr for CreditNoteReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreditNoteReason::*;
         match s {
@@ -537,7 +537,7 @@ impl std::str::FromStr for CreditNoteReason {
             "fraudulent" => Ok(Fraudulent),
             "order_change" => Ok(OrderChange),
             "product_unsatisfactory" => Ok(ProductUnsatisfactory),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

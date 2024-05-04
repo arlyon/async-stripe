@@ -133,7 +133,7 @@ impl PaymentMethodUsBankAccountBlockedNetworkCode {
 }
 
 impl std::str::FromStr for PaymentMethodUsBankAccountBlockedNetworkCode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodUsBankAccountBlockedNetworkCode::*;
         match s {
@@ -149,7 +149,7 @@ impl std::str::FromStr for PaymentMethodUsBankAccountBlockedNetworkCode {
             "R20" => Ok(R20),
             "R29" => Ok(R29),
             "R31" => Ok(R31),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -228,7 +228,7 @@ impl PaymentMethodUsBankAccountBlockedReason {
 }
 
 impl std::str::FromStr for PaymentMethodUsBankAccountBlockedReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodUsBankAccountBlockedReason::*;
         match s {
@@ -238,7 +238,7 @@ impl std::str::FromStr for PaymentMethodUsBankAccountBlockedReason {
             "bank_account_restricted" => Ok(BankAccountRestricted),
             "bank_account_unusable" => Ok(BankAccountUnusable),
             "debit_not_authorized" => Ok(DebitNotAuthorized),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

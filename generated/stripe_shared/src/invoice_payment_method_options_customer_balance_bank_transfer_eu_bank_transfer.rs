@@ -120,7 +120,7 @@ impl InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
 impl std::str::FromStr
     for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::*;
         match s {
@@ -130,7 +130,7 @@ impl std::str::FromStr
             "FR" => Ok(Fr),
             "IE" => Ok(Ie),
             "NL" => Ok(Nl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

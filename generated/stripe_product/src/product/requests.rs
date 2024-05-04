@@ -349,14 +349,14 @@ impl CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
 }
 
 impl std::str::FromStr for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -472,7 +472,7 @@ impl CreateProductDefaultPriceDataRecurringInterval {
 }
 
 impl std::str::FromStr for CreateProductDefaultPriceDataRecurringInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateProductDefaultPriceDataRecurringInterval::*;
         match s {
@@ -480,7 +480,7 @@ impl std::str::FromStr for CreateProductDefaultPriceDataRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -537,14 +537,14 @@ impl CreateProductDefaultPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for CreateProductDefaultPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateProductDefaultPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

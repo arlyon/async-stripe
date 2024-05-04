@@ -125,12 +125,12 @@ impl InboundTransfersType {
 }
 
 impl std::str::FromStr for InboundTransfersType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InboundTransfersType::*;
         match s {
             "us_bank_account" => Ok(UsBankAccount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

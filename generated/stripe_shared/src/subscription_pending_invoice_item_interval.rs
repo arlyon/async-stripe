@@ -119,7 +119,7 @@ impl SubscriptionPendingInvoiceItemIntervalInterval {
 }
 
 impl std::str::FromStr for SubscriptionPendingInvoiceItemIntervalInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionPendingInvoiceItemIntervalInterval::*;
         match s {
@@ -127,7 +127,7 @@ impl std::str::FromStr for SubscriptionPendingInvoiceItemIntervalInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

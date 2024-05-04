@@ -154,7 +154,7 @@ impl PortalFlowsFlowType {
 }
 
 impl std::str::FromStr for PortalFlowsFlowType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalFlowsFlowType::*;
         match s {
@@ -162,7 +162,7 @@ impl std::str::FromStr for PortalFlowsFlowType {
             "subscription_cancel" => Ok(SubscriptionCancel),
             "subscription_update" => Ok(SubscriptionUpdate),
             "subscription_update_confirm" => Ok(SubscriptionUpdateConfirm),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

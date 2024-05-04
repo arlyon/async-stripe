@@ -198,7 +198,7 @@ impl IssuingCardShippingCarrier {
 }
 
 impl std::str::FromStr for IssuingCardShippingCarrier {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardShippingCarrier::*;
         match s {
@@ -206,7 +206,7 @@ impl std::str::FromStr for IssuingCardShippingCarrier {
             "fedex" => Ok(Fedex),
             "royal_mail" => Ok(RoyalMail),
             "usps" => Ok(Usps),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -273,14 +273,14 @@ impl IssuingCardShippingService {
 }
 
 impl std::str::FromStr for IssuingCardShippingService {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardShippingService::*;
         match s {
             "express" => Ok(Express),
             "priority" => Ok(Priority),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -353,7 +353,7 @@ impl IssuingCardShippingStatus {
 }
 
 impl std::str::FromStr for IssuingCardShippingStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardShippingStatus::*;
         match s {
@@ -363,7 +363,7 @@ impl std::str::FromStr for IssuingCardShippingStatus {
             "pending" => Ok(Pending),
             "returned" => Ok(Returned),
             "shipped" => Ok(Shipped),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -428,13 +428,13 @@ impl IssuingCardShippingType {
 }
 
 impl std::str::FromStr for IssuingCardShippingType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardShippingType::*;
         match s {
             "bulk" => Ok(Bulk),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -124,14 +124,14 @@ impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
 }
 
 impl std::str::FromStr for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::*;
         match s {
             "balances" => Ok(Balances),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -206,13 +206,13 @@ impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
 }
 
 impl std::str::FromStr for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::*;
         match s {
             "balances" => Ok(Balances),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

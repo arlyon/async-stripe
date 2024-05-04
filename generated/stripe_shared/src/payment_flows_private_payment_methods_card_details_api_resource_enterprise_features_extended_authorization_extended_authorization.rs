@@ -116,13 +116,13 @@ Enabled => "enabled",
 }
 
 impl std::str::FromStr for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorizationStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorizationStatus::*;
         match s {
     "disabled" => Ok(Disabled),
 "enabled" => Ok(Enabled),
-_ => Err(())
+_ => Err(stripe_types::StripeParseError)
 
         }
     }

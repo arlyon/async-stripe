@@ -136,13 +136,13 @@ impl MandateAcssDebitDefaultFor {
 }
 
 impl std::str::FromStr for MandateAcssDebitDefaultFor {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use MandateAcssDebitDefaultFor::*;
         match s {
             "invoice" => Ok(Invoice),
             "subscription" => Ok(Subscription),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -209,14 +209,14 @@ impl MandateAcssDebitPaymentSchedule {
 }
 
 impl std::str::FromStr for MandateAcssDebitPaymentSchedule {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use MandateAcssDebitPaymentSchedule::*;
         match s {
             "combined" => Ok(Combined),
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -283,13 +283,13 @@ impl MandateAcssDebitTransactionType {
 }
 
 impl std::str::FromStr for MandateAcssDebitTransactionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use MandateAcssDebitTransactionType::*;
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

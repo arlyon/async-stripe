@@ -114,13 +114,13 @@ impl PaymentLinksResourcePaymentMethodReuseAgreementPosition {
 }
 
 impl std::str::FromStr for PaymentLinksResourcePaymentMethodReuseAgreementPosition {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinksResourcePaymentMethodReuseAgreementPosition::*;
         match s {
             "auto" => Ok(Auto),
             "hidden" => Ok(Hidden),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

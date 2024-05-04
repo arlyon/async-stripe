@@ -125,7 +125,7 @@ impl PortalSubscriptionCancellationReasonOptions {
 }
 
 impl std::str::FromStr for PortalSubscriptionCancellationReasonOptions {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalSubscriptionCancellationReasonOptions::*;
         match s {
@@ -137,7 +137,7 @@ impl std::str::FromStr for PortalSubscriptionCancellationReasonOptions {
             "too_complex" => Ok(TooComplex),
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

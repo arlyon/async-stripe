@@ -763,7 +763,7 @@ impl IssuingCardholderSpendingLimitCategories {
 }
 
 impl std::str::FromStr for IssuingCardholderSpendingLimitCategories {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardholderSpendingLimitCategories::*;
         match s {
@@ -1110,7 +1110,7 @@ impl std::str::FromStr for IssuingCardholderSpendingLimitCategories {
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1143,10 +1143,7 @@ impl miniserde::Deserialize for IssuingCardholderSpendingLimitCategories {
 impl miniserde::de::Visitor for crate::Place<IssuingCardholderSpendingLimitCategories> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingCardholderSpendingLimitCategories::from_str(s)
-                .unwrap_or(IssuingCardholderSpendingLimitCategories::Unknown),
-        );
+        self.out = Some(IssuingCardholderSpendingLimitCategories::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -1157,7 +1154,7 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderSpendingLimitCategories {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Interval (or event) to which the amount applies.
@@ -1185,7 +1182,7 @@ impl IssuingCardholderSpendingLimitInterval {
 }
 
 impl std::str::FromStr for IssuingCardholderSpendingLimitInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardholderSpendingLimitInterval::*;
         match s {
@@ -1195,7 +1192,7 @@ impl std::str::FromStr for IssuingCardholderSpendingLimitInterval {
             "per_authorization" => Ok(PerAuthorization),
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

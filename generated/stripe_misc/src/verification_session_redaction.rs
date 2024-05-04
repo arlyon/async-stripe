@@ -108,13 +108,13 @@ impl VerificationSessionRedactionStatus {
 }
 
 impl std::str::FromStr for VerificationSessionRedactionStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use VerificationSessionRedactionStatus::*;
         match s {
             "processing" => Ok(Processing),
             "redacted" => Ok(Redacted),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

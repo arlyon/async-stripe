@@ -223,14 +223,14 @@ impl UpdateInvoiceLineItemPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for UpdateInvoiceLineItemPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoiceLineItemPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -382,7 +382,7 @@ impl UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
 }
 
 impl std::str::FromStr for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType::*;
         match s {
@@ -399,7 +399,7 @@ impl std::str::FromStr for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
             "sales_tax" => Ok(SalesTax),
             "service_tax" => Ok(ServiceTax),
             "vat" => Ok(Vat),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -427,7 +427,7 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemTaxAmountsTaxRateData
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 impl<'a> UpdateInvoiceLineItem<'a> {

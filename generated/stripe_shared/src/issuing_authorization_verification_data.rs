@@ -168,14 +168,14 @@ impl IssuingAuthorizationVerificationDataAddressLine1Check {
 }
 
 impl std::str::FromStr for IssuingAuthorizationVerificationDataAddressLine1Check {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationVerificationDataAddressLine1Check::*;
         match s {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -250,14 +250,14 @@ impl IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
 }
 
 impl std::str::FromStr for IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationVerificationDataAddressPostalCodeCheck::*;
         match s {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -334,14 +334,14 @@ impl IssuingAuthorizationVerificationDataCvcCheck {
 }
 
 impl std::str::FromStr for IssuingAuthorizationVerificationDataCvcCheck {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationVerificationDataCvcCheck::*;
         match s {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -414,14 +414,14 @@ impl IssuingAuthorizationVerificationDataExpiryCheck {
 }
 
 impl std::str::FromStr for IssuingAuthorizationVerificationDataExpiryCheck {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationVerificationDataExpiryCheck::*;
         match s {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

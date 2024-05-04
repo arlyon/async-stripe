@@ -335,7 +335,7 @@ impl TreasuryOutboundPaymentStatus {
 }
 
 impl std::str::FromStr for TreasuryOutboundPaymentStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryOutboundPaymentStatus::*;
         match s {
@@ -344,7 +344,7 @@ impl std::str::FromStr for TreasuryOutboundPaymentStatus {
             "posted" => Ok(Posted),
             "processing" => Ok(Processing),
             "returned" => Ok(Returned),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

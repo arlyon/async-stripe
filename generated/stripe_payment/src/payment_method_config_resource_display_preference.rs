@@ -129,14 +129,14 @@ impl PaymentMethodConfigResourceDisplayPreferencePreference {
 }
 
 impl std::str::FromStr for PaymentMethodConfigResourceDisplayPreferencePreference {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodConfigResourceDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -209,13 +209,13 @@ impl PaymentMethodConfigResourceDisplayPreferenceValue {
 }
 
 impl std::str::FromStr for PaymentMethodConfigResourceDisplayPreferenceValue {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodConfigResourceDisplayPreferenceValue::*;
         match s {
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -270,7 +270,7 @@ impl SubscriptionScheduleStatus {
 }
 
 impl std::str::FromStr for SubscriptionScheduleStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionScheduleStatus::*;
         match s {
@@ -279,7 +279,7 @@ impl std::str::FromStr for SubscriptionScheduleStatus {
             "completed" => Ok(Completed),
             "not_started" => Ok(NotStarted),
             "released" => Ok(Released),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -358,7 +358,7 @@ impl SubscriptionScheduleEndBehavior {
 }
 
 impl std::str::FromStr for SubscriptionScheduleEndBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionScheduleEndBehavior::*;
         match s {
@@ -366,7 +366,7 @@ impl std::str::FromStr for SubscriptionScheduleEndBehavior {
             "none" => Ok(None),
             "release" => Ok(Release),
             "renew" => Ok(Renew),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

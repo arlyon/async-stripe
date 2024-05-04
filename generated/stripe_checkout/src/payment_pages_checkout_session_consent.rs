@@ -118,13 +118,13 @@ impl PaymentPagesCheckoutSessionConsentPromotions {
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionConsentPromotions {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionConsentPromotions::*;
         match s {
             "opt_in" => Ok(OptIn),
             "opt_out" => Ok(OptOut),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -193,12 +193,12 @@ impl PaymentPagesCheckoutSessionConsentTermsOfService {
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionConsentTermsOfService {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionConsentTermsOfService::*;
         match s {
             "accepted" => Ok(Accepted),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

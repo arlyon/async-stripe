@@ -125,14 +125,14 @@ Swift => "swift",
 }
 
 impl std::str::FromStr for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork::*;
         match s {
     "ach" => Ok(Ach),
 "domestic_wire_us" => Ok(DomesticWireUs),
 "swift" => Ok(Swift),
-_ => Err(())
+_ => Err(stripe_types::StripeParseError)
 
         }
     }

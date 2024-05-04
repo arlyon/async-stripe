@@ -47,7 +47,7 @@ impl ListTaxRegistrationStatus {
 }
 
 impl std::str::FromStr for ListTaxRegistrationStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListTaxRegistrationStatus::*;
         match s {
@@ -55,7 +55,7 @@ impl std::str::FromStr for ListTaxRegistrationStatus {
             "all" => Ok(All),
             "expired" => Ok(Expired),
             "scheduled" => Ok(Scheduled),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -340,12 +340,12 @@ impl CreateTaxRegistrationCountryOptionsAeType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAeType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAeType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -423,13 +423,13 @@ impl CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -483,7 +483,7 @@ impl CreateTaxRegistrationCountryOptionsAtType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAtType::*;
         match s {
@@ -491,7 +491,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -551,12 +551,12 @@ impl CreateTaxRegistrationCountryOptionsAuType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAuType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAuType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -634,13 +634,13 @@ impl CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -694,7 +694,7 @@ impl CreateTaxRegistrationCountryOptionsBeType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBeType::*;
         match s {
@@ -702,7 +702,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -780,13 +780,13 @@ impl CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -840,7 +840,7 @@ impl CreateTaxRegistrationCountryOptionsBgType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBgType::*;
         match s {
@@ -848,7 +848,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -926,14 +926,14 @@ impl CreateTaxRegistrationCountryOptionsCaType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCaType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCaType::*;
         match s {
             "province_standard" => Ok(ProvinceStandard),
             "simplified" => Ok(Simplified),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -993,12 +993,12 @@ impl CreateTaxRegistrationCountryOptionsChType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsChType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsChType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1058,12 +1058,12 @@ impl CreateTaxRegistrationCountryOptionsClType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsClType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsClType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1123,12 +1123,12 @@ impl CreateTaxRegistrationCountryOptionsCoType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCoType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCoType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1206,13 +1206,13 @@ impl CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1266,7 +1266,7 @@ impl CreateTaxRegistrationCountryOptionsCyType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCyType::*;
         match s {
@@ -1274,7 +1274,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1352,13 +1352,13 @@ impl CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1412,7 +1412,7 @@ impl CreateTaxRegistrationCountryOptionsCzType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCzType::*;
         match s {
@@ -1420,7 +1420,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1498,13 +1498,13 @@ impl CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1558,7 +1558,7 @@ impl CreateTaxRegistrationCountryOptionsDeType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsDeType::*;
         match s {
@@ -1566,7 +1566,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1644,13 +1644,13 @@ impl CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1704,7 +1704,7 @@ impl CreateTaxRegistrationCountryOptionsDkType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsDkType::*;
         match s {
@@ -1712,7 +1712,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1790,13 +1790,13 @@ impl CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1850,7 +1850,7 @@ impl CreateTaxRegistrationCountryOptionsEeType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEeType::*;
         match s {
@@ -1858,7 +1858,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1936,13 +1936,13 @@ impl CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1996,7 +1996,7 @@ impl CreateTaxRegistrationCountryOptionsEsType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEsType::*;
         match s {
@@ -2004,7 +2004,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2082,13 +2082,13 @@ impl CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2142,7 +2142,7 @@ impl CreateTaxRegistrationCountryOptionsFiType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsFiType::*;
         match s {
@@ -2150,7 +2150,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2228,13 +2228,13 @@ impl CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2288,7 +2288,7 @@ impl CreateTaxRegistrationCountryOptionsFrType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsFrType::*;
         match s {
@@ -2296,7 +2296,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2356,12 +2356,12 @@ impl CreateTaxRegistrationCountryOptionsGbType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGbType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsGbType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2439,13 +2439,13 @@ impl CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2499,7 +2499,7 @@ impl CreateTaxRegistrationCountryOptionsGrType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsGrType::*;
         match s {
@@ -2507,7 +2507,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2585,13 +2585,13 @@ impl CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2645,7 +2645,7 @@ impl CreateTaxRegistrationCountryOptionsHrType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsHrType::*;
         match s {
@@ -2653,7 +2653,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2731,13 +2731,13 @@ impl CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2791,7 +2791,7 @@ impl CreateTaxRegistrationCountryOptionsHuType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsHuType::*;
         match s {
@@ -2799,7 +2799,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2859,12 +2859,12 @@ impl CreateTaxRegistrationCountryOptionsIdType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIdType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsIdType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2942,13 +2942,13 @@ impl CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3002,7 +3002,7 @@ impl CreateTaxRegistrationCountryOptionsIeType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsIeType::*;
         match s {
@@ -3010,7 +3010,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3070,12 +3070,12 @@ impl CreateTaxRegistrationCountryOptionsIsType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsIsType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3153,13 +3153,13 @@ impl CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3213,7 +3213,7 @@ impl CreateTaxRegistrationCountryOptionsItType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsItType::*;
         match s {
@@ -3221,7 +3221,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3281,12 +3281,12 @@ impl CreateTaxRegistrationCountryOptionsJpType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsJpType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsJpType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3346,12 +3346,12 @@ impl CreateTaxRegistrationCountryOptionsKrType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKrType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsKrType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3429,13 +3429,13 @@ impl CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3489,7 +3489,7 @@ impl CreateTaxRegistrationCountryOptionsLtType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLtType::*;
         match s {
@@ -3497,7 +3497,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3575,13 +3575,13 @@ impl CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3635,7 +3635,7 @@ impl CreateTaxRegistrationCountryOptionsLuType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLuType::*;
         match s {
@@ -3643,7 +3643,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3721,13 +3721,13 @@ impl CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3781,7 +3781,7 @@ impl CreateTaxRegistrationCountryOptionsLvType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLvType::*;
         match s {
@@ -3789,7 +3789,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3867,13 +3867,13 @@ impl CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3927,7 +3927,7 @@ impl CreateTaxRegistrationCountryOptionsMtType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMtType::*;
         match s {
@@ -3935,7 +3935,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3995,12 +3995,12 @@ impl CreateTaxRegistrationCountryOptionsMxType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMxType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMxType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4060,12 +4060,12 @@ impl CreateTaxRegistrationCountryOptionsMyType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMyType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMyType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4143,13 +4143,13 @@ impl CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4203,7 +4203,7 @@ impl CreateTaxRegistrationCountryOptionsNlType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsNlType::*;
         match s {
@@ -4211,7 +4211,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4271,12 +4271,12 @@ impl CreateTaxRegistrationCountryOptionsNoType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNoType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsNoType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4336,12 +4336,12 @@ impl CreateTaxRegistrationCountryOptionsNzType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNzType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsNzType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4419,13 +4419,13 @@ impl CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4479,7 +4479,7 @@ impl CreateTaxRegistrationCountryOptionsPlType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsPlType::*;
         match s {
@@ -4487,7 +4487,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4565,13 +4565,13 @@ impl CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4625,7 +4625,7 @@ impl CreateTaxRegistrationCountryOptionsPtType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsPtType::*;
         match s {
@@ -4633,7 +4633,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4711,13 +4711,13 @@ impl CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4771,7 +4771,7 @@ impl CreateTaxRegistrationCountryOptionsRoType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsRoType::*;
         match s {
@@ -4779,7 +4779,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4839,12 +4839,12 @@ impl CreateTaxRegistrationCountryOptionsSaType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSaType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSaType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4922,13 +4922,13 @@ impl CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4982,7 +4982,7 @@ impl CreateTaxRegistrationCountryOptionsSeType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSeType::*;
         match s {
@@ -4990,7 +4990,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5050,12 +5050,12 @@ impl CreateTaxRegistrationCountryOptionsSgType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSgType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSgType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5133,13 +5133,13 @@ impl CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5193,7 +5193,7 @@ impl CreateTaxRegistrationCountryOptionsSiType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSiType::*;
         match s {
@@ -5201,7 +5201,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5279,13 +5279,13 @@ impl CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme::*;
         match s {
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5339,7 +5339,7 @@ impl CreateTaxRegistrationCountryOptionsSkType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSkType::*;
         match s {
@@ -5347,7 +5347,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5407,12 +5407,12 @@ impl CreateTaxRegistrationCountryOptionsThType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsThType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsThType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5472,12 +5472,12 @@ impl CreateTaxRegistrationCountryOptionsTrType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTrType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsTrType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5575,7 +5575,7 @@ impl CreateTaxRegistrationCountryOptionsUsType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsUsType::*;
         match s {
@@ -5583,7 +5583,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUsType {
             "local_lease_tax" => Ok(LocalLeaseTax),
             "state_communications_tax" => Ok(StateCommunicationsTax),
             "state_sales_tax" => Ok(StateSalesTax),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5643,12 +5643,12 @@ impl CreateTaxRegistrationCountryOptionsVnType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsVnType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsVnType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5708,12 +5708,12 @@ impl CreateTaxRegistrationCountryOptionsZaType {
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZaType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsZaType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

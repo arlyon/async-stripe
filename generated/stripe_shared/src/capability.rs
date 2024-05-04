@@ -181,7 +181,7 @@ impl CapabilityStatus {
 }
 
 impl std::str::FromStr for CapabilityStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CapabilityStatus::*;
         match s {
@@ -190,7 +190,7 @@ impl std::str::FromStr for CapabilityStatus {
             "inactive" => Ok(Inactive),
             "pending" => Ok(Pending),
             "unrequested" => Ok(Unrequested),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -144,7 +144,7 @@ impl GelatoSessionLastErrorCode {
 }
 
 impl std::str::FromStr for GelatoSessionLastErrorCode {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoSessionLastErrorCode::*;
         match s {
@@ -163,7 +163,7 @@ impl std::str::FromStr for GelatoSessionLastErrorCode {
             "selfie_manipulated" => Ok(SelfieManipulated),
             "selfie_unverified_other" => Ok(SelfieUnverifiedOther),
             "under_supported_age" => Ok(UnderSupportedAge),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -196,9 +196,7 @@ impl miniserde::Deserialize for GelatoSessionLastErrorCode {
 impl miniserde::de::Visitor for crate::Place<GelatoSessionLastErrorCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            GelatoSessionLastErrorCode::from_str(s).unwrap_or(GelatoSessionLastErrorCode::Unknown),
-        );
+        self.out = Some(GelatoSessionLastErrorCode::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -209,6 +207,6 @@ impl<'de> serde::Deserialize<'de> for GelatoSessionLastErrorCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }

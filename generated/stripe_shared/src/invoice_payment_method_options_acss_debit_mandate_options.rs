@@ -109,13 +109,13 @@ impl InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
 }
 
 impl std::str::FromStr for InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
