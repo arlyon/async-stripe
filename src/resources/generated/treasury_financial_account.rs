@@ -109,6 +109,7 @@ pub struct TreasuryFinancialAccountsResourceAbaRecord {
     pub account_holder_name: String,
 
     /// The account number.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_number: Option<String>,
 
     /// The last four characters of the account number.
