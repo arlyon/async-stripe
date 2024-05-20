@@ -111,14 +111,26 @@ impl TokioClient {
                         String::from_utf8(bytes.clone().to_vec()) // Clones bytes to keep for JSON parsing
                             .expect("Response was not valid UTF-8"); // Handles potential UTF-8 conversion error
 
-                    // Calculate the indices for substring extraction around the error location.
-                    let position = e.inner().column(); // Position of the error
-                    let start = position.saturating_sub(30); // 30 characters before the error or the start of the string
-                    let end = std::cmp::min(response_string.len(), position + 30); // 30 characters after the error or the end of the string
+                    // Extract line and column from the error
+                    let error_line = e.inner().line(); // 1-based index of the error line
+                    let error_column = e.inner().column(); // 1-based index of the error column
+                                                           // Split the response into lines and find the error line
+                    let lines: Vec<&str> = response_string.lines().collect();
+                    if error_line > 0 && error_line <= lines.len() {
+                        let line = lines[error_line - 1]; // Get the line containing the error (convert to 0-based index)
 
-                    // Extract the relevant substring
-                    let error_context = &response_string[start..end];
-                    println!("Error around deserialization: {}", error_context); // Prints the error context
+                        // Calculate start and end indices for the error context in the line
+                        let start = error_column.saturating_sub(31).max(0); // Start from 30 chars before the error or start of line
+                        let end = std::cmp::min(line.len(), error_column + 29); // End at 30 chars after the error or end of line
+
+                        // Extract the relevant substring
+                        let error_context = &line[start..end];
+
+                        println!("Error around deserialization: '{}'", error_context);
+                    } else {
+                        // Prints the error context
+                        println!("Error line out of bounds."); // In case the error line is not in the range
+                    }
 
                     Err(StripeError::from(e))
                 }
