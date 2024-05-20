@@ -7,9 +7,9 @@ members = [
 
 [package]
 name = "async-stripe"
-version = "0.34.2"
+version = "0.37.0"
 description = "API bindings for the Stripe HTTP API"
-rust-version = "1.68.0"
+rust-version = "1.74.0"
 authors = [
   "Anna Baldwin <abaldwin@developers.wyyerd.com>",
   "Kevin Stenerson <kestred@users.noreply.github.com>",
@@ -43,6 +43,7 @@ full = [
   "terminal",
   "webhook-endpoints",
   "tax-calculation",
+  "products",
 ]
 
 stream = []
@@ -58,6 +59,7 @@ sigma = []
 terminal = []
 webhook-endpoints = []
 tax-calculation = []
+products = []
 
 # deserialize events from webhooks
 webhook-events = ["events", "hmac", "sha2", "chrono", "hex"]

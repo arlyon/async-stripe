@@ -405,7 +405,7 @@ pub enum EventType {
 
 impl std::fmt::Display for EventType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(&serde_json::to_string(self).unwrap())
+        f.write_str(&serde_json::to_string(self).expect("serializing EventType should not fail"))
     }
 }
 
@@ -493,6 +493,8 @@ pub struct Webhook {
 
 #[cfg(feature = "webhook-events")]
 impl Webhook {
+    /// Construct an event from a webhook payload and signature.
+    ///
     /// # Errors
     ///
     /// This function will return a WebhookError if:
@@ -501,6 +503,27 @@ impl Webhook {
     ///  - the signature timestamp is older than 5 minutes
     pub fn construct_event(payload: &str, sig: &str, secret: &str) -> Result<Event, WebhookError> {
         Self { current_timestamp: Utc::now().timestamp() }.do_construct_event(payload, sig, secret)
+    }
+
+    /// Construct an event from a webhook payload and signature, verifying its signature
+    /// using the provided timestamp.
+    ///
+    /// This is helpful for replaying requests in tests and should be avoided otherwise
+    /// in production use.
+    ///
+    /// # Errors
+    ///
+    /// This function will return a WebhookError if:
+    /// - the provided signature is invalid
+    /// - the provided secret is invalid
+    /// - the signature timestamp is older than 5 minutes from the provided timestamp
+    pub fn construct_event_with_timestamp(
+        payload: &str,
+        sig: &str,
+        secret: &str,
+        timestamp: i64,
+    ) -> Result<Event, WebhookError> {
+        Self { current_timestamp: timestamp }.do_construct_event(payload, sig, secret)
     }
 
     fn do_construct_event(

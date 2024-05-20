@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt::Display;
 
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
@@ -20,16 +21,16 @@ pub struct AppInfo {
     pub version: Option<String>,
 }
 
-impl ToString for AppInfo {
-    /// Formats a plugin's 'App Info' into a string that can be added to the end of an User-Agent string.
+impl Display for AppInfo {
+    /// Formats a plugin's 'App Info' that can be added to the end of a User-Agent string.
     ///
     /// This formatting matches that of other libraries, and if changed then it should be changed everywhere.
-    fn to_string(&self) -> String {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match (&self.version, &self.url) {
-            (Some(a), Some(b)) => format!("{}/{} ({})", &self.name, a, b),
-            (Some(a), None) => format!("{}/{}", &self.name, a),
-            (None, Some(b)) => format!("{} ({})", &self.name, b),
-            _ => self.name.to_string(),
+            (Some(a), Some(b)) => write!(f, "{}/{} ({})", &self.name, a, b),
+            (Some(a), None) => write!(f, "{}/{}", &self.name, a),
+            (None, Some(b)) => write!(f, "{} ({})", &self.name, b),
+            _ => write!(f, "{}", self.name),
         }
     }
 }
@@ -327,11 +328,11 @@ where
         let mut paginator = self;
         loop {
             if !paginator.page.has_more() {
-                data.extend(paginator.page.get_data_mut().drain(..));
+                data.append(paginator.page.get_data_mut());
                 break;
             }
             let next_paginator = paginator.next(client)?;
-            data.extend(paginator.page.get_data_mut().drain(..));
+            data.append(paginator.page.get_data_mut());
             paginator = next_paginator
         }
         Ok(data)

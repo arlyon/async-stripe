@@ -215,13 +215,14 @@ impl Subscription {
     ///
     /// In order to list canceled subscriptions, specify `status=canceled`.
     pub fn list(client: &Client, params: &ListSubscriptions<'_>) -> Response<List<Subscription>> {
-        client.get_query("/subscriptions", &params)
+        client.get_query("/subscriptions", params)
     }
 
     /// Creates a new subscription on an existing customer.
     ///
     /// Each customer can have up to 500 active or scheduled subscriptions.  When you create a subscription with `collection_method=charge_automatically`, the first invoice is finalized as part of the request. The `payment_behavior` parameter determines the exact behavior of the initial payment.  To start subscriptions where the first invoice always begins in a `draft` status, use [subscription schedules](https://stripe.com/docs/billing/subscriptions/subscription-schedules#managing) instead. Schedules provide the flexibility to model more complex billing configurations that change over time.
     pub fn create(client: &Client, params: CreateSubscription<'_>) -> Response<Subscription> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/subscriptions", &params)
     }
 
@@ -231,7 +232,7 @@ impl Subscription {
         id: &SubscriptionId,
         expand: &[&str],
     ) -> Response<Subscription> {
-        client.get_query(&format!("/subscriptions/{}", id), &Expand { expand })
+        client.get_query(&format!("/subscriptions/{}", id), Expand { expand })
     }
 
     /// Updates an existing subscription to match the specified parameters.
@@ -255,6 +256,7 @@ impl Subscription {
         id: &SubscriptionId,
         params: UpdateSubscription<'_>,
     ) -> Response<Subscription> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/subscriptions/{}", id), &params)
     }
 

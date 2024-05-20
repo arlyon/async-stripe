@@ -123,7 +123,7 @@ pub struct CreditNote {
 impl CreditNote {
     /// Returns a list of credit notes.
     pub fn list(client: &Client, params: &ListCreditNotes<'_>) -> Response<List<CreditNote>> {
-        client.get_query("/credit_notes", &params)
+        client.get_query("/credit_notes", params)
     }
 
     /// Issue a credit note to adjust the amount of a finalized invoice.
@@ -133,12 +133,13 @@ impl CreditNote {
     /// Instead, it can result in any combination of the following:  <ul> <li>Refund: create a new refund (using `refund_amount`) or link an existing refund (using `refund`).</li> <li>Customer balance credit: credit the customer’s balance (using `credit_amount`) which will be automatically applied to their next invoice when it’s finalized.</li> <li>Outside of Stripe credit: record the amount that is or will be credited outside of Stripe (using `out_of_band_amount`).</li> </ul>  For post-payment credit notes the sum of the refund, credit and outside of Stripe amounts must equal the credit note total.  You may issue multiple credit notes for an invoice.
     /// Each credit note will increment the invoice’s `pre_payment_credit_notes_amount` or `post_payment_credit_notes_amount` depending on its `status` at the time of credit note creation.
     pub fn create(client: &Client, params: CreateCreditNote<'_>) -> Response<CreditNote> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/credit_notes", &params)
     }
 
     /// Retrieves the credit note object with the given identifier.
     pub fn retrieve(client: &Client, id: &CreditNoteId, expand: &[&str]) -> Response<CreditNote> {
-        client.get_query(&format!("/credit_notes/{}", id), &Expand { expand })
+        client.get_query(&format!("/credit_notes/{}", id), Expand { expand })
     }
 
     /// Updates an existing credit note.
@@ -147,6 +148,7 @@ impl CreditNote {
         id: &CreditNoteId,
         params: UpdateCreditNote<'_>,
     ) -> Response<CreditNote> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/credit_notes/{}", id), &params)
     }
 }

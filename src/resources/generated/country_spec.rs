@@ -45,13 +45,13 @@ impl CountrySpec {
 
     /// Lists all Country Spec objects available in the API.
 pub fn list(client: &Client, params: &ListCountrySpecs<'_>) -> Response<List<CountrySpec>> {
-   client.get_query("/country_specs", &params)
+   client.get_query("/country_specs", params)
 }
 
 
     /// Returns a Country Spec for a given Country code.
     pub fn retrieve(client: &Client, id: &CountrySpecId, expand: &[&str]) -> Response<CountrySpec> {
-        client.get_query(&format!("/country_specs/{}", id), &Expand { expand })
+        client.get_query(&format!("/country_specs/{}", id), Expand { expand })
     }
 }
 

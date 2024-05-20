@@ -62,17 +62,18 @@ pub struct TaxId {
 impl TaxId {
     /// Returns a list of tax IDs.
     pub fn list(client: &Client, params: &ListTaxIds<'_>) -> Response<List<TaxId>> {
-        client.get_query("/tax_ids", &params)
+        client.get_query("/tax_ids", params)
     }
 
     /// Creates a new account or customer `tax_id` object.
     pub fn create(client: &Client, params: CreateTaxId<'_>) -> Response<TaxId> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/tax_ids", &params)
     }
 
     /// Retrieves an account or customer `tax_id` object.
     pub fn retrieve(client: &Client, id: &TaxIdId, expand: &[&str]) -> Response<TaxId> {
-        client.get_query(&format!("/tax_ids/{}", id), &Expand { expand })
+        client.get_query(&format!("/tax_ids/{}", id), Expand { expand })
     }
 
     /// Deletes an existing account or customer `tax_id` object.

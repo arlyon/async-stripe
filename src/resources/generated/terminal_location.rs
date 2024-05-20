@@ -49,7 +49,7 @@ impl TerminalLocation {
         client: &Client,
         params: &ListTerminalLocations<'_>,
     ) -> Response<List<TerminalLocation>> {
-        client.get_query("/terminal/locations", &params)
+        client.get_query("/terminal/locations", params)
     }
 
     /// Creates a new `Location` object.
@@ -58,6 +58,7 @@ impl TerminalLocation {
         client: &Client,
         params: CreateTerminalLocation<'_>,
     ) -> Response<TerminalLocation> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/terminal/locations", &params)
     }
 }

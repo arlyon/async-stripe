@@ -36,6 +36,7 @@ impl AccountSession {
 
     /// Creates a AccountSession object that includes a single-use token that the platform can use on their front-end to grant client-side API access.
     pub fn create(client: &Client, params: CreateAccountSession<'_>) -> Response<AccountSession> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/account_sessions", &params)
     }
 }

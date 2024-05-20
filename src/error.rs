@@ -36,9 +36,10 @@ impl From<http_types::Error> for StripeError {
 }
 
 /// The list of possible values for a RequestError's type.
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, PartialEq, Deserialize, Default)]
 pub enum ErrorType {
     #[serde(skip_deserializing)]
+    #[default]
     Unknown,
     #[serde(rename = "api_error")]
     Api,
@@ -56,12 +57,6 @@ pub enum ErrorType {
     RateLimit,
     #[serde(rename = "validation_error")]
     Validation,
-}
-
-impl Default for ErrorType {
-    fn default() -> Self {
-        ErrorType::Unknown
-    }
 }
 
 impl std::fmt::Display for ErrorType {
@@ -166,7 +161,9 @@ impl std::fmt::Display for ErrorCode {
 ///
 /// For more details see <https://stripe.com/docs/api#errors>.
 #[derive(Debug, Default, Deserialize, Error)]
-#[error("{error_type} ({http_status}) with message: {message:?}")]
+#[error("{error_type} ({http_status}){}", message.as_ref().map(|msg| {
+    format!(" with message: {msg:?}")
+}).unwrap_or_default())]
 pub struct RequestError {
     /// The HTTP status in the response.
     #[serde(skip_deserializing)]

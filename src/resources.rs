@@ -7,8 +7,9 @@
 //! some are generated.
 
 mod currency;
+#[allow(clippy::module_inception)]
+#[allow(clippy::new_without_default)]
 pub mod generated;
-mod placeholders;
 mod types;
 
 #[path = "resources"]
@@ -183,12 +184,20 @@ pub use {
 #[rustfmt::skip]
 #[cfg(feature = "checkout")]
 pub use {
-    checkout::checkout_session_ext::*,
     generated::checkout::{
         checkout_session::*,
         payment_link::*,
         item::*
     },
+};
+
+#[rustfmt::skip]
+#[cfg(feature = "products")]
+pub use {
+    products::{
+        product_ext::*,
+        price_ext::*,
+    }
 };
 
 #[rustfmt::skip]

@@ -1,3 +1,67 @@
+# [0.37.0](https://github.com/arlyon/async-stripe/compare/v0.36.0...v0.37.0) (2024-04-30)
+
+
+### Bug Fixes
+
+* **customer-ext,PM query:** type field is optional ([362659e](https://github.com/arlyon/async-stripe/commit/362659e3e7ace2706fae172e7936efdc5c17929d))
+
+
+### Features
+
+* **setup_intent:** add mandate_data for confirm ([51e34d6](https://github.com/arlyon/async-stripe/commit/51e34d6fec2238d27e937f361d9e0b60f1bc564c))
+* **setup_intent:** verify microdeposits flow ([15b3663](https://github.com/arlyon/async-stripe/commit/15b3663336561ccf55d78dc66668d28627b4d59b))
+
+# [0.36.0](https://github.com/arlyon/async-stripe/compare/v0.35.3...v0.36.0) (2024-04-30)
+
+
+### Features
+
+* Add `retrieve_line_items` function for `CheckoutSession` ([5c74b3b](https://github.com/arlyon/async-stripe/commit/5c74b3b13fc30e7f81191c43016ab46c3d8ef9d6))
+
+## [0.35.3](https://github.com/arlyon/async-stripe/compare/v0.35.2...v0.35.3) (2024-04-26)
+
+
+### Bug Fixes
+
+* Clippy append instead of extend ([1a85b9b](https://github.com/arlyon/async-stripe/commit/1a85b9b9ea3dc940ea86434d3ef9a2a6755b6160))
+* Clippy explicit ToString implementation ([15250a9](https://github.com/arlyon/async-stripe/commit/15250a96d19ec142693761c3d4a455a35b1ae780))
+* Clippy panic warnings ([552aff2](https://github.com/arlyon/async-stripe/commit/552aff238dd16135d7645f1692b891c75cb0459b))
+* Clippys from generated code ([89cce5b](https://github.com/arlyon/async-stripe/commit/89cce5ba442a528939aa54c455eefd9ad27f8b58))
+* More clippy warnings ([6de23bb](https://github.com/arlyon/async-stripe/commit/6de23bbee3713cc54bc148513a6c1331f0fb5998))
+* Remove useless reference that causes clippy warnings ([2fca98b](https://github.com/arlyon/async-stripe/commit/2fca98be10ba9f5a746d04a46aa7ef1532c00056))
+
+## [0.35.2](https://github.com/arlyon/async-stripe/compare/v0.35.1...v0.35.2) (2024-04-26)
+
+
+### Bug Fixes
+
+* Clippy warnings ([842bce6](https://github.com/arlyon/async-stripe/commit/842bce6d94654ca0a9ea0a52c899f98055ab531b))
+* Implement workaround for ace in the verify-codegen action ([79c1f6f](https://github.com/arlyon/async-stripe/commit/79c1f6f6da182ab80fd02b9e1662aeec5915ec12))
+* Semantic release needs minimal rust version ([642ea31](https://github.com/arlyon/async-stripe/commit/642ea3193944048670619fb60ca3d4a973c439e7))
+
+## [0.35.1](https://github.com/arlyon/async-stripe/compare/v0.35.0...v0.35.1) (2024-04-26)
+
+
+### Bug Fixes
+
+* bump MSRV (closes [#532](https://github.com/arlyon/async-stripe/issues/532)) ([1379a90](https://github.com/arlyon/async-stripe/commit/1379a900090e59ee05611ddfb3b8842261a761e2))
+* Unused import ([baf0b98](https://github.com/arlyon/async-stripe/commit/baf0b98a60ff335a0760f3d8e785715d36d044f7))
+
+# [0.35.0](https://github.com/arlyon/async-stripe/compare/v0.34.2...v0.35.0) (2024-04-04)
+
+
+### Bug Fixes
+
+* add products to features list in cargo.toml and export from resourses ([d26860f](https://github.com/arlyon/async-stripe/commit/d26860f9049dd3a9ef934ad1a5f5ed3e6b365e70))
+* export SearchList ([a427943](https://github.com/arlyon/async-stripe/commit/a42794314a5c41b34c349835e705d890cbc62d3e))
+* Remove "Some()" from RequestError's display ([e609cad](https://github.com/arlyon/async-stripe/commit/e609cadb1321cd097d9a2fb9fc23d87a13eff1f5))
+* rename redirect_url to return_url on ConfirmSetupIntent ([9da5a28](https://github.com/arlyon/async-stripe/commit/9da5a28864215967d39ddb432cc593820a797a9e)), closes [#504](https://github.com/arlyon/async-stripe/issues/504)
+
+
+### Features
+
+* **webhook_events:** support construct_event with timestamp ([88fe501](https://github.com/arlyon/async-stripe/commit/88fe501f3b735b87b10f80acb227bd05765355b8))
+
 ## [0.34.2](https://github.com/arlyon/async-stripe/compare/v0.34.1...v0.34.2) (2024-02-21)
 
 

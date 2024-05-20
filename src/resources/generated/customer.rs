@@ -165,17 +165,18 @@ impl Customer {
     ///
     /// The customers are returned sorted by creation date, with the most recent customers appearing first.
     pub fn list(client: &Client, params: &ListCustomers<'_>) -> Response<List<Customer>> {
-        client.get_query("/customers", &params)
+        client.get_query("/customers", params)
     }
 
     /// Creates a new customer object.
     pub fn create(client: &Client, params: CreateCustomer<'_>) -> Response<Customer> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/customers", &params)
     }
 
     /// Retrieves a Customer object.
     pub fn retrieve(client: &Client, id: &CustomerId, expand: &[&str]) -> Response<Customer> {
-        client.get_query(&format!("/customers/{}", id), &Expand { expand })
+        client.get_query(&format!("/customers/{}", id), Expand { expand })
     }
 
     /// Updates the specified customer by setting the values of the parameters passed.
@@ -190,6 +191,7 @@ impl Customer {
         id: &CustomerId,
         params: UpdateCustomer<'_>,
     ) -> Response<Customer> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/customers/{}", id), &params)
     }
 

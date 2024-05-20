@@ -62,7 +62,7 @@ pub struct PromotionCode {
 impl PromotionCode {
     /// Returns a list of your promotion codes.
     pub fn list(client: &Client, params: &ListPromotionCodes<'_>) -> Response<List<PromotionCode>> {
-        client.get_query("/promotion_codes", &params)
+        client.get_query("/promotion_codes", params)
     }
 
     /// Retrieves the promotion code with the given ID.
@@ -73,7 +73,7 @@ impl PromotionCode {
         id: &PromotionCodeId,
         expand: &[&str],
     ) -> Response<PromotionCode> {
-        client.get_query(&format!("/promotion_codes/{}", id), &Expand { expand })
+        client.get_query(&format!("/promotion_codes/{}", id), Expand { expand })
     }
 
     /// Updates the specified promotion code by setting the values of the parameters passed.
@@ -84,6 +84,7 @@ impl PromotionCode {
         id: &PromotionCodeId,
         params: UpdatePromotionCode<'_>,
     ) -> Response<PromotionCode> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/promotion_codes/{}", id), &params)
     }
 }

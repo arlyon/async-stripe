@@ -124,7 +124,9 @@ impl std::default::Default for BalanceTransactionStatus {
 /// An enum representing the possible values of an `Fee`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
+#[derive(Default)]
 pub enum FeeType {
+    #[default]
     ApplicationFee,
     StripeFee,
     Tax,
@@ -149,11 +151,5 @@ impl AsRef<str> for FeeType {
 impl std::fmt::Display for FeeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-impl std::default::Default for FeeType {
-    fn default() -> Self {
-        FeeType::ApplicationFee
     }
 }

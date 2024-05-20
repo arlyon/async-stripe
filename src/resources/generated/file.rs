@@ -54,7 +54,7 @@ impl File {
     ///
     /// Stripe sorts and returns the files by their creation dates, placing the most recently created files at the top.
     pub fn list(client: &Client, params: &ListFiles<'_>) -> Response<List<File>> {
-        client.get_query("/files", &params)
+        client.get_query("/files", params)
     }
 
     /// Retrieves the details of an existing file object.
@@ -62,7 +62,7 @@ impl File {
     /// After you supply a unique file ID, Stripe returns the corresponding file object.
     /// Learn how to [access file contents](https://stripe.com/docs/file-upload#download-file-contents).
     pub fn retrieve(client: &Client, id: &FileId, expand: &[&str]) -> Response<File> {
-        client.get_query(&format!("/files/{}", id), &Expand { expand })
+        client.get_query(&format!("/files/{}", id), Expand { expand })
     }
 }
 

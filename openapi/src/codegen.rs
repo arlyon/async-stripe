@@ -1387,7 +1387,7 @@ pub fn gen_impl_requests(
                 let query_path = segments.join("/");
                 writedoc!(&mut out, r#"
                     pub fn list(client: &Client, params: &{params_name}<'_>) -> Response<List<{rust_struct}>> {{
-                       client.get_query("/{query_path}", &params)
+                       client.get_query("/{query_path}", params)
                     }}
                 "#).unwrap();
                 methods.insert(MethodTypes::List, out);
@@ -1414,7 +1414,7 @@ pub fn gen_impl_requests(
                         out.push_str("> {\n");
                         out.push_str("        client.get_query(");
                         out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
-                        out.push_str(", &Expand { expand })\n");
+                        out.push_str(", Expand { expand })\n");
                     } else {
                         out.push_str(") -> Response<");
                         out.push_str(&rust_struct);
@@ -1473,6 +1473,7 @@ pub fn gen_impl_requests(
                 out.push_str("<'_>) -> Response<");
                 out.push_str(&return_type);
                 out.push_str("> {\n");
+                out.push_str("        #[allow(clippy::needless_borrows_for_generic_args)]\n");
                 out.push_str("        client.post_form(\"/");
                 out.push_str(&segments.join("/"));
                 out.push_str("\", &params)\n");
@@ -1513,6 +1514,7 @@ pub fn gen_impl_requests(
                     out.push_str("<'_>) -> Response<");
                     out.push_str(&return_type);
                     out.push_str("> {\n");
+                    out.push_str("        #[allow(clippy::needless_borrows_for_generic_args)]\n");
                     out.push_str("        client.post_form(");
                     out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
                     out.push_str(", &params)\n");
