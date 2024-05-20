@@ -101,15 +101,28 @@ impl TokioClient {
 
         Box::pin(async move {
             let bytes = send_inner(&client, request, &strategy).await?;
-
-            // Convert bytes to string for printing. Assuming the response is UTF-8 encoded.
-            let response_string = String::from_utf8(bytes.clone().to_vec()) // Clones bytes to keep for JSON parsing
-                .expect("Response was not valid UTF-8"); // Handles potential UTF-8 conversion error
-            println!("API Response: {}", response_string); // Prints the response string
-
             let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
 
-            serde_path_to_error::deserialize(json_deserializer).map_err(StripeError::from)
+            match serde_path_to_error::deserialize(json_deserializer) {
+                Ok(de) => Ok(de),
+                Err(e) => {
+                    // Convert bytes to string for printing. Assuming the response is UTF-8 encoded.
+                    let response_string =
+                        String::from_utf8(bytes.clone().to_vec()) // Clones bytes to keep for JSON parsing
+                            .expect("Response was not valid UTF-8"); // Handles potential UTF-8 conversion error
+
+                    // Calculate the indices for substring extraction around the error location.
+                    let position = e.inner().column(); // Position of the error
+                    let start = position.saturating_sub(30); // 30 characters before the error or the start of the string
+                    let end = std::cmp::min(response_string.len(), position + 30); // 30 characters after the error or the end of the string
+
+                    // Extract the relevant substring
+                    let error_context = &response_string[start..end];
+                    println!("Error around deserialization: {}", error_context); // Prints the error context
+
+                    Err(StripeError::from(e))
+                }
+            }
         })
     }
 }
