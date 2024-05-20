@@ -101,7 +101,14 @@ impl TokioClient {
 
         Box::pin(async move {
             let bytes = send_inner(&client, request, &strategy).await?;
+
+            // Convert bytes to string for printing. Assuming the response is UTF-8 encoded.
+            let response_string = String::from_utf8(bytes.clone().to_vec()) // Clones bytes to keep for JSON parsing
+                .expect("Response was not valid UTF-8"); // Handles potential UTF-8 conversion error
+            println!("API Response: {}", response_string); // Prints the response string
+
             let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
+
             serde_path_to_error::deserialize(json_deserializer).map_err(StripeError::from)
         })
     }
