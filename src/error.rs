@@ -113,6 +113,7 @@ pub enum ErrorCode {
     InvoiceUpcomingNone,
     LivemodeMismatch,
     Missing,
+    MorePermissionsRequiredForApplication,
     OrderCreationFailed,
     OrderRequiredSettings,
     OrderStatusInvalid,
