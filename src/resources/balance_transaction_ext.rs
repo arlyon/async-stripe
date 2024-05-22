@@ -8,6 +8,8 @@ use crate::resources::{
     ReserveTransaction, TaxDeductedAtSource, Topup, Transfer, TransferReversal,
 };
 
+// How untagged enums deserialize
+// https://serde.rs/enum-representations.html#untagged
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, rename_all = "snake_case")]
 pub enum BalanceTransactionSourceUnion {

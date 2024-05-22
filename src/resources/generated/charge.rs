@@ -170,7 +170,7 @@ pub struct Charge {
     ///
     /// It contains the Source, Card, or BankAccount object used for the charge.
     /// For details about the payment method used for this charge, refer to `payment_method` or `payment_method_details` instead.
-    pub source: Option<PaymentSource>,
+    // pub source: Option<PaymentSource>,
 
     /// The transfer ID which created this charge.
     ///

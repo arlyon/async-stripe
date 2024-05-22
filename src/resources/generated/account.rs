@@ -22,6 +22,17 @@ pub struct Account {
     /// Unique identifier for the object.
     pub id: AccountId,
 
+    // These were missing, I found them in relation
+    // to the "Gumroad" application
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_icon: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_logo: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_url: Option<String>,
+
     /// Business information about the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_profile: Option<BusinessProfile>,
