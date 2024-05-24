@@ -555,7 +555,7 @@ def_id!(
 def_id!(PersonId, "person_");
 def_id!(PlanId: String); // N.B. A plan id can be user-provided so can be any arbitrary string
 def_id!(PlatformTaxFeeId, "ptf");
-def_id!(PriceId, "price_" | "plan_"); // see #470
+def_id!(PriceId, "price_" | "plan_" | "subscription_plan_"); // see #470
 def_id!(ProductId: String); // N.B. A product id can be user-provided so can be any arbitrary string
 def_id!(PromotionCodeId, "promo_");
 def_id!(QuoteId, "qt_");
