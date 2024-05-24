@@ -146,3 +146,21 @@ jobs:
       #   with:
       #     name: code-coverage-report
       #     path: lcov.info
+
+  public-api:
+    continue-on-error: true
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: nightly 
+      - uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: stable
+      - name: Install cargo-public-api
+        uses: baptiste0928/cargo-install@v3
+        with:
+           crate: cargo-public-api
+      - name: Compare with latest version published on crates.io
+        run: cargo public-api diff latest --features runtime-tokio-hyper
