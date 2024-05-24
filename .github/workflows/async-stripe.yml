@@ -50,6 +50,18 @@ jobs:
           echo "Some files changed after code generation: $CHANGED_FILES"
           exit 1
 
+  clippy-codegen:
+    runs-on: ubuntu-20.04
+    env:
+      RUSTFLAGS: -D warnings
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: stable
+          components: clippy
+      - run: cargo clippy -p stripe-openapi-codegen --tests
+
   clippy:
     runs-on: ubuntu-20.04
     env:

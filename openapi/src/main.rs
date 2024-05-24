@@ -7,6 +7,7 @@ use crate::spec::Spec;
 use crate::spec_fetch::fetch_spec;
 use crate::{metadata::Metadata, url_finder::UrlFinder};
 
+#[allow(clippy::too_many_arguments)]
 mod codegen;
 mod file_generator;
 mod mappings;
