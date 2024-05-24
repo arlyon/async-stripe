@@ -55,6 +55,6 @@ impl CheckoutSession {
         id: &CheckoutSessionId,
         params: &RetrieveCheckoutSessionLineItems,
     ) -> Response<List<CheckoutSessionItem>> {
-        client.get_query(&format!("/checkout/sessions/{}/line_items", id), &params)
+        client.get_query(&format!("/checkout/sessions/{}/line_items", id), params)
     }
 }
