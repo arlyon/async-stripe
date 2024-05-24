@@ -7,7 +7,7 @@ use crate::resources::{
     BankAccount, Customer, PaymentMethod, PaymentSource, PaymentSourceParams, Source,
 };
 
-#[derive(Clone, Debug, Serialize, Eq, PartialEq)]
+#[derive(Clone, Debug, Serialize, Default, Eq, PartialEq)]
 pub struct CustomerPaymentMethodRetrieval<'a> {
     /// A cursor for use in pagination. `ending_before` is an object ID that defines your place in the list.
     ///For instance, if you make a list request and receive 100 objects, starting with `obj_bar`,
@@ -37,13 +37,7 @@ pub struct CustomerPaymentMethodRetrieval<'a> {
 
 impl<'a> CustomerPaymentMethodRetrieval<'a> {
     pub fn new() -> Self {
-        CustomerPaymentMethodRetrieval {
-            ending_before: None,
-            expand: &[],
-            limit: None,
-            starting_after: None,
-            type_: None,
-        }
+        CustomerPaymentMethodRetrieval::default()
     }
 }
 
@@ -83,7 +77,7 @@ pub struct CustomerSearchParams<'a> {
 
 impl<'a> CustomerSearchParams<'a> {
     pub fn new() -> CustomerSearchParams<'a> {
-        CustomerSearchParams { query: String::new(), limit: None, page: None, expand: &[] }
+        CustomerSearchParams::default()
     }
 }
 
