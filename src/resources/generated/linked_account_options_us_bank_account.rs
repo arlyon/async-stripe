@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "linked_account_options_us_bank_account".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LinkedAccountOptionsUsBankAccount {
+
     /// The list of permissions to request.
     ///
     /// The `payment_method` permission must be included.
@@ -66,6 +67,7 @@ impl std::default::Default for LinkedAccountOptionsUsBankAccountPermissions {
 #[serde(rename_all = "snake_case")]
 pub enum LinkedAccountOptionsUsBankAccountPrefetch {
     Balances,
+    Ownership,
     Transactions,
 }
 
@@ -73,6 +75,7 @@ impl LinkedAccountOptionsUsBankAccountPrefetch {
     pub fn as_str(self) -> &'static str {
         match self {
             LinkedAccountOptionsUsBankAccountPrefetch::Balances => "balances",
+            LinkedAccountOptionsUsBankAccountPrefetch::Ownership => "ownership",
             LinkedAccountOptionsUsBankAccountPrefetch::Transactions => "transactions",
         }
     }
