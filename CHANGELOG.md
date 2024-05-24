@@ -1,3 +1,11 @@
+## [0.37.1](https://github.com/arlyon/async-stripe/compare/v0.37.0...v0.37.1) (2024-05-24)
+
+
+### Bug Fixes
+
+* Leftover clippy warnings ([888307d](https://github.com/arlyon/async-stripe/commit/888307d23d852ebc2f453e788e7fd682efb9dd6f))
+* Run clippy on openapi generator ([c63c197](https://github.com/arlyon/async-stripe/commit/c63c197e7cd6f73c0183345c82be77ef2a4c06f5))
+
 # [0.37.0](https://github.com/arlyon/async-stripe/compare/v0.36.0...v0.37.0) (2024-04-30)
 
 
