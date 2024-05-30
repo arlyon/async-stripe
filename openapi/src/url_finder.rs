@@ -23,7 +23,7 @@ impl UrlFinder {
                 let initial_state: StripeInitialState = serde_json::from_str(
                     line.trim()
                         .trim_start_matches("window.__INITIAL_STATE__ = ")
-                        .trim_end_matches(";"),
+                        .trim_end_matches(';'),
                 )
                 .expect("should be valid json");
                 Ok(Self { url_lookup: initial_state.into() })

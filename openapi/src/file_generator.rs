@@ -24,7 +24,6 @@ use crate::{
     url_finder::UrlFinder,
 };
 
-///
 #[derive(Default, Debug)]
 pub struct FileGenerator {
     pub name: String,
@@ -206,7 +205,7 @@ impl FileGenerator {
 
     pub fn add_use(&mut self, use_path: &str) {
         for path in use_path.split(',') {
-            match path.into() {
+            match path {
                 "" | "String" => {}
                 "Metadata" => {
                     self.use_params.insert("Metadata");
@@ -235,7 +234,7 @@ impl Eq for FileGenerator {}
 
 impl PartialOrd for FileGenerator {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        self.name.partial_cmp(&other.name)
+        Some(self.cmp(other))
     }
 }
 

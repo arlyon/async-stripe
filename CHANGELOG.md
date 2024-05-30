@@ -1,3 +1,31 @@
+## [0.37.1](https://github.com/arlyon/async-stripe/compare/v0.37.0...v0.37.1) (2024-05-24)
+
+
+### Bug Fixes
+
+* Leftover clippy warnings ([888307d](https://github.com/arlyon/async-stripe/commit/888307d23d852ebc2f453e788e7fd682efb9dd6f))
+* Run clippy on openapi generator ([c63c197](https://github.com/arlyon/async-stripe/commit/c63c197e7cd6f73c0183345c82be77ef2a4c06f5))
+
+# [0.37.0](https://github.com/arlyon/async-stripe/compare/v0.36.0...v0.37.0) (2024-04-30)
+
+
+### Bug Fixes
+
+* **customer-ext,PM query:** type field is optional ([362659e](https://github.com/arlyon/async-stripe/commit/362659e3e7ace2706fae172e7936efdc5c17929d))
+
+
+### Features
+
+* **setup_intent:** add mandate_data for confirm ([51e34d6](https://github.com/arlyon/async-stripe/commit/51e34d6fec2238d27e937f361d9e0b60f1bc564c))
+* **setup_intent:** verify microdeposits flow ([15b3663](https://github.com/arlyon/async-stripe/commit/15b3663336561ccf55d78dc66668d28627b4d59b))
+
+# [0.36.0](https://github.com/arlyon/async-stripe/compare/v0.35.3...v0.36.0) (2024-04-30)
+
+
+### Features
+
+* Add `retrieve_line_items` function for `CheckoutSession` ([5c74b3b](https://github.com/arlyon/async-stripe/commit/5c74b3b13fc30e7f81191c43016ab46c3d8ef9d6))
+
 ## [0.35.3](https://github.com/arlyon/async-stripe/compare/v0.35.2...v0.35.3) (2024-04-26)
 
 

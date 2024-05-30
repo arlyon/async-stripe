@@ -137,7 +137,7 @@ impl<'a> Metadata<'a> {
             out.push_str("}\n");
         }
 
-        write(&out_path.as_ref().join("placeholders.rs"), out.as_bytes()).unwrap();
+        write(out_path.as_ref().join("placeholders.rs"), out.as_bytes()).unwrap();
     }
 
     pub fn write_version<T>(&self, out_path: T)
@@ -151,7 +151,7 @@ impl<'a> Metadata<'a> {
             self.spec.version().replace('-', "_")
         ));
 
-        write(&out_path.as_ref().join("version.rs"), out.as_bytes()).unwrap();
+        write(out_path.as_ref().join("version.rs"), out.as_bytes()).unwrap();
     }
 
     #[tracing::instrument(skip_all)]
