@@ -140,7 +140,8 @@ pub struct CreateFinancialConnectionsSessionAccountHolder {
 pub struct CreateFinancialConnectionsSessionFilters {
 
     /// List of countries from which to collect accounts.
-    pub countries: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub countries: Option<Vec<String>>,
 }
 
 /// An enum representing the possible values of an `CreateFinancialConnectionsSessionAccountHolder`'s `type` field.

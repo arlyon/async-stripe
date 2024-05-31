@@ -73,6 +73,9 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
     pub bg: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub bh: Option<TaxProductRegistrationsResourceCountryOptionsDefault>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ca: Option<TaxProductRegistrationsResourceCountryOptionsCanada>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -100,6 +103,9 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
     pub ee: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub eg: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub es: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -110,6 +116,9 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gb: Option<TaxProductRegistrationsResourceCountryOptionsDefault>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ge: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gr: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
@@ -136,7 +145,13 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
     pub jp: Option<TaxProductRegistrationsResourceCountryOptionsDefault>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub ke: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub kr: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kz: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lt: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
@@ -157,6 +172,9 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
     pub my: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub ng: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub nl: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -164,6 +182,9 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nz: Option<TaxProductRegistrationsResourceCountryOptionsDefault>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub om: Option<TaxProductRegistrationsResourceCountryOptionsDefault>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pl: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
