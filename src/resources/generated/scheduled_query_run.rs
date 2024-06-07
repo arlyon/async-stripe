@@ -2,15 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::ScheduledQueryRunId;
+use crate::ids::{ScheduledQueryRunId};
 use crate::params::{Object, Timestamp};
-use crate::resources::File;
+use crate::resources::{File};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "ScheduledQueryRun".
 ///
-/// For more details see <https://stripe.com/docs/api/sigma/scheduled_queries/object>
+/// For more details see <https://stripe.com/api/sigma/scheduled_queries/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ScheduledQueryRun {
     /// Unique identifier for the object.
@@ -58,6 +57,7 @@ impl Object for ScheduledQueryRun {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SigmaScheduledQueryRunError {
+
     /// Information about the run failure.
     pub message: String,
 }

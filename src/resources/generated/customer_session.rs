@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CustomerSessionResourceCustomerSession".
 ///
-/// For more details see <https://stripe.com/docs/api/customer_sessions/object>
+/// For more details see <https://stripe.com/api/customer_sessions/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerSession {
 
