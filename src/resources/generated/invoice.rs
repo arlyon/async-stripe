@@ -496,6 +496,13 @@ impl Invoice {
     pub fn delete(client: &Client, id: &InvoiceId) -> Response<Deleted<InvoiceId>> {
         client.delete(&format!("/invoices/{}", id))
     }
+
+    /// Void an invoice that's already been finalized.
+    ///
+    /// This cannot be undone.
+    pub fn void(client: &Client, id: &InvoiceId) -> Response<Invoice> {
+        client.post(&format!("/invoices/{}/void", id))
+    }
 }
 
 impl Object for Invoice {
