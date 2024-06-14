@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BankConnectionsResourceLinkAccountSession".
 ///
-/// For more details see <https://stripe.com/docs/api/financial_connections/sessions/object>
+/// For more details see <https://stripe.com/api/financial_connections/sessions/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FinancialConnectionsSession {
     /// Unique identifier for the object.
@@ -140,7 +140,8 @@ pub struct CreateFinancialConnectionsSessionAccountHolder {
 pub struct CreateFinancialConnectionsSessionFilters {
 
     /// List of countries from which to collect accounts.
-    pub countries: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub countries: Option<Vec<String>>,
 }
 
 /// An enum representing the possible values of an `CreateFinancialConnectionsSessionAccountHolder`'s `type` field.
