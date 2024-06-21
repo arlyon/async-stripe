@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "RadarListList".
 ///
-/// For more details see <https://stripe.com/docs/api/radar/value_lists/object>
+/// For more details see <https://stripe.com/api/radar/value_lists/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RadarValueList {
     /// Unique identifier for the object.

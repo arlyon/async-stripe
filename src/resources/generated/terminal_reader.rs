@@ -2,16 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
-use crate::ids::TerminalReaderId;
+use crate::ids::{TerminalReaderId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable};
 use crate::resources::{Charge, Currency, PaymentIntent, Refund, SetupIntent, TerminalLocation};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TerminalReaderReader".
 ///
-/// For more details see <https://stripe.com/docs/api/terminal/readers/object>
+/// For more details see <https://stripe.com/api/terminal/readers/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReader {
     /// Unique identifier for the object.
@@ -29,7 +28,7 @@ pub struct TerminalReader {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_sw_version: Option<String>,
 
-    /// Type of reader, one of `bbpos_wisepad3`, `stripe_m2`, `bbpos_chipper2x`, `bbpos_wisepos_e`, `verifone_P400`, or `simulated_wisepos_e`.
+    /// Type of reader, one of `bbpos_wisepad3`, `stripe_m2`, `bbpos_chipper2x`, `bbpos_wisepos_e`, `verifone_P400`, `simulated_wisepos_e`, or `mobile_phone_reader`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_type: Option<TerminalReaderDeviceType>,
 
@@ -65,13 +64,12 @@ pub struct TerminalReader {
 }
 
 impl TerminalReader {
+
     /// Returns a list of `Reader` objects.
-    pub fn list(
-        client: &Client,
-        params: &ListTerminalReaders<'_>,
-    ) -> Response<List<TerminalReader>> {
-        client.get_query("/terminal/readers", params)
-    }
+pub fn list(client: &Client, params: &ListTerminalReaders<'_>) -> Response<List<TerminalReader>> {
+   client.get_query("/terminal/readers", params)
+}
+
 
     /// Creates a new `Reader` object.
     pub fn create(client: &Client, params: CreateTerminalReader<'_>) -> Response<TerminalReader> {
@@ -92,6 +90,7 @@ impl Object for TerminalReader {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceReaderAction {
+
     /// Failure code, only set if status is `failed`.
     pub failure_code: Option<String>,
 
@@ -120,6 +119,7 @@ pub struct TerminalReaderReaderResourceReaderAction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceProcessPaymentIntentAction {
+
     /// Most recent PaymentIntent processed by the reader.
     pub payment_intent: Expandable<PaymentIntent>,
 
@@ -129,6 +129,11 @@ pub struct TerminalReaderReaderResourceProcessPaymentIntentAction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceProcessConfig {
+
+    /// Enable customer initiated cancellation when processing this payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_customer_cancellation: Option<bool>,
+
     /// Override showing a tipping selection screen on this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub skip_tipping: Option<bool>,
@@ -139,6 +144,7 @@ pub struct TerminalReaderReaderResourceProcessConfig {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
+
     /// ID of a card PaymentMethod generated from the card_present PaymentMethod that may be attached to a Customer for future transactions.
     ///
     /// Only present if it was possible to generate a card PaymentMethod.
@@ -153,10 +159,16 @@ pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct TerminalReaderReaderResourceProcessSetupConfig {}
+pub struct TerminalReaderReaderResourceProcessSetupConfig {
+
+    /// Enable customer initiated cancellation when processing this SetupIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_customer_cancellation: Option<bool>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceRefundPaymentAction {
+
     /// The amount being refunded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -191,6 +203,9 @@ pub struct TerminalReaderReaderResourceRefundPaymentAction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_application_fee: Option<bool>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_payment_config: Option<TerminalReaderReaderResourceRefundPaymentConfig>,
+
     /// Boolean indicating whether the transfer should be reversed when refunding this charge.
     ///
     /// The transfer will be reversed proportionally to the amount being refunded (either the entire or partial amount).
@@ -200,7 +215,16 @@ pub struct TerminalReaderReaderResourceRefundPaymentAction {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceRefundPaymentConfig {
+
+    /// Enable customer initiated cancellation when refunding this payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_customer_cancellation: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceSetReaderDisplayAction {
+
     /// Cart object to be displayed by the reader.
     pub cart: Option<TerminalReaderReaderResourceCart>,
 
@@ -211,6 +235,7 @@ pub struct TerminalReaderReaderResourceSetReaderDisplayAction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceCart {
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -232,6 +257,7 @@ pub struct TerminalReaderReaderResourceCart {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceLineItem {
+
     /// The amount of the line item.
     ///
     /// A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
@@ -246,6 +272,7 @@ pub struct TerminalReaderReaderResourceLineItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceTippingConfig {
+
     /// Amount used to calculate tip suggestions on tipping selection screen for this transaction.
     ///
     /// Must be a positive integer in the smallest currency unit (e.g., 100 cents to represent $1.00 or 100 to represent ¥100, a zero-decimal currency).
@@ -256,6 +283,7 @@ pub struct TerminalReaderReaderResourceTippingConfig {
 /// The parameters for `TerminalReader::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTerminalReader<'a> {
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -297,6 +325,7 @@ impl<'a> CreateTerminalReader<'a> {
 /// The parameters for `TerminalReader::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTerminalReaders<'a> {
+
     /// Filters readers by device type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_type: Option<TerminalReaderDeviceType>,
@@ -355,9 +384,8 @@ impl<'a> ListTerminalReaders<'a> {
 impl Paginable for ListTerminalReaders<'_> {
     type O = TerminalReader;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// An enum representing the possible values of an `TerminalReader`'s `device_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -365,6 +393,7 @@ pub enum TerminalReaderDeviceType {
     BbposChipper2x,
     BbposWisepad3,
     BbposWiseposE,
+    MobilePhoneReader,
     SimulatedWiseposE,
     StripeM2,
     #[serde(rename = "verifone_P400")]
@@ -377,6 +406,7 @@ impl TerminalReaderDeviceType {
             TerminalReaderDeviceType::BbposChipper2x => "bbpos_chipper2x",
             TerminalReaderDeviceType::BbposWisepad3 => "bbpos_wisepad3",
             TerminalReaderDeviceType::BbposWiseposE => "bbpos_wisepos_e",
+            TerminalReaderDeviceType::MobilePhoneReader => "mobile_phone_reader",
             TerminalReaderDeviceType::SimulatedWiseposE => "simulated_wisepos_e",
             TerminalReaderDeviceType::StripeM2 => "stripe_m2",
             TerminalReaderDeviceType::VerifoneP400 => "verifone_P400",
@@ -450,12 +480,8 @@ pub enum TerminalReaderReaderResourceReaderActionType {
 impl TerminalReaderReaderResourceReaderActionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            TerminalReaderReaderResourceReaderActionType::ProcessPaymentIntent => {
-                "process_payment_intent"
-            }
-            TerminalReaderReaderResourceReaderActionType::ProcessSetupIntent => {
-                "process_setup_intent"
-            }
+            TerminalReaderReaderResourceReaderActionType::ProcessPaymentIntent => "process_payment_intent",
+            TerminalReaderReaderResourceReaderActionType::ProcessSetupIntent => "process_setup_intent",
             TerminalReaderReaderResourceReaderActionType::RefundPayment => "refund_payment",
             TerminalReaderReaderResourceReaderActionType::SetReaderDisplay => "set_reader_display",
         }
@@ -493,9 +519,7 @@ impl TerminalReaderReaderResourceRefundPaymentActionReason {
         match self {
             TerminalReaderReaderResourceRefundPaymentActionReason::Duplicate => "duplicate",
             TerminalReaderReaderResourceRefundPaymentActionReason::Fraudulent => "fraudulent",
-            TerminalReaderReaderResourceRefundPaymentActionReason::RequestedByCustomer => {
-                "requested_by_customer"
-            }
+            TerminalReaderReaderResourceRefundPaymentActionReason::RequestedByCustomer => "requested_by_customer",
         }
     }
 }
