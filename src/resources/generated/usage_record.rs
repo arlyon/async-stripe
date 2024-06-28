@@ -2,14 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::UsageRecordId;
+use crate::ids::{UsageRecordId};
 use crate::params::{Object, Timestamp};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "UsageRecord".
 ///
-/// For more details see <https://stripe.com/docs/api/usage_records/object>
+/// For more details see <https://stripe.com/api/usage_records/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UsageRecord {
     /// Unique identifier for the object.
