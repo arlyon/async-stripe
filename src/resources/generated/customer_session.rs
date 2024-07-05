@@ -10,11 +10,11 @@ use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CustomerSessionResourceCustomerSession".
 ///
-/// For more details see <https://stripe.com/docs/api/customer_sessions/object>
+/// For more details see <https://stripe.com/api/customer_sessions/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerSession {
 
-    /// The client secret of this customer session.
+    /// The client secret of this Customer Session.
     ///
     /// Used on the client to set up secure access to the given `customer`.  The client secret can be used to provide access to `customer` from your frontend.
     /// It should not be stored, logged, or exposed to anyone other than the relevant customer.
@@ -29,10 +29,10 @@ pub struct CustomerSession {
     /// Measured in seconds since the Unix epoch.
     pub created: Timestamp,
 
-    /// The customer the customer session was created for.
+    /// The Customer the Customer Session was created for.
     pub customer: Expandable<Customer>,
 
-    /// The timestamp at which this customer session will expire.
+    /// The timestamp at which this Customer Session will expire.
     pub expires_at: Timestamp,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -41,7 +41,7 @@ pub struct CustomerSession {
 
 impl CustomerSession {
 
-    /// Creates a customer session object that includes a single-use client secret that you can use on your front-end to grant client-side API access for certain customer resources.
+    /// Creates a Customer Session object that includes a single-use client secret that you can use on your front-end to grant client-side API access for certain customer resources.
     pub fn create(client: &Client, params: CreateCustomerSession<'_>) -> Response<CustomerSession> {
         #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/customer_sessions", &params)
@@ -87,7 +87,7 @@ pub struct CreateCustomerSession<'a> {
     /// Exactly 1 component must be enabled.
     pub components: CreateCustomerSessionComponents,
 
-    /// The ID of an existing customer for which to create the customer session.
+    /// The ID of an existing customer for which to create the Customer Session.
     pub customer: CustomerId,
 
     /// Specifies which fields in the response should be expanded.

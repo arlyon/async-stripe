@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BankConnectionsResourceLinkedAccount".
 ///
-/// For more details see <https://stripe.com/docs/api/financial_connections/accounts/object>
+/// For more details see <https://stripe.com/api/financial_connections/accounts/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FinancialConnectionsAccount {
     /// Unique identifier for the object.
@@ -177,6 +177,12 @@ pub struct BankConnectionsResourceOwnershipRefresh {
     ///
     /// Measured in seconds since the Unix epoch.
     pub last_attempted_at: Timestamp,
+
+    /// Time at which the next ownership refresh can be initiated.
+    ///
+    /// This value will be `null` when `status` is `pending`.
+    /// Measured in seconds since the Unix epoch.
+    pub next_refresh_available_at: Option<Timestamp>,
 
     /// The status of the last refresh attempt.
     pub status: BankConnectionsResourceOwnershipRefreshStatus,
