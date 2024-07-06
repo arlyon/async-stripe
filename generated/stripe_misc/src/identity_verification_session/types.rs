@@ -14,6 +14,9 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IdentityVerificationSession {
+    /// A string to reference this user.
+    /// This can be a customer ID, a session ID, or similar, and can be used to reconcile this verification with your internal systems.
+    pub client_reference_id: Option<String>,
     /// The short-lived client secret used by Stripe.js to [show a verification modal](https://stripe.com/docs/js/identity/modal) inside your app.
     /// This client secret expires after 24 hours and can only be used once.
     /// Don’t store it, log it, embed it in a URL, or expose it to anyone other than the user.
@@ -37,6 +40,8 @@ pub struct IdentityVerificationSession {
     pub metadata: std::collections::HashMap<String, String>,
     /// A set of options for the session’s verification checks.
     pub options: Option<stripe_misc::GelatoVerificationSessionOptions>,
+    /// Details provided about the user being verified. These details may be shown to the user.
+    pub provided_details: Option<stripe_misc::GelatoProvidedDetails>,
     /// Redaction status of this VerificationSession.
     /// If the VerificationSession is not redacted, this field will be null.
     pub redaction: Option<stripe_misc::VerificationSessionRedaction>,
@@ -45,17 +50,20 @@ pub struct IdentityVerificationSession {
     pub status: stripe_misc::IdentityVerificationSessionStatus,
     /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
-    pub type_: Option<stripe_misc::IdentityVerificationSessionType>,
+    pub type_: IdentityVerificationSessionType,
     /// The short-lived URL that you use to redirect a user to Stripe to submit their identity information.
     /// This URL expires after 48 hours and can only be used once.
     /// Don’t store it, log it, send it in emails or expose it to anyone other than the user.
     /// Refer to our docs on [verifying identity documents](https://stripe.com/docs/identity/verify-identity-documents?platform=web&type=redirect) to learn how to redirect users to Stripe.
     pub url: Option<String>,
+    /// The configuration token of a Verification Flow from the dashboard.
+    pub verification_flow: Option<String>,
     /// The user’s verified data.
     pub verified_outputs: Option<stripe_misc::GelatoVerifiedOutputs>,
 }
 #[doc(hidden)]
 pub struct IdentityVerificationSessionBuilder {
+    client_reference_id: Option<Option<String>>,
     client_secret: Option<Option<String>>,
     created: Option<stripe_types::Timestamp>,
     id: Option<stripe_misc::IdentityVerificationSessionId>,
@@ -65,10 +73,12 @@ pub struct IdentityVerificationSessionBuilder {
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
     options: Option<Option<stripe_misc::GelatoVerificationSessionOptions>>,
+    provided_details: Option<Option<stripe_misc::GelatoProvidedDetails>>,
     redaction: Option<Option<stripe_misc::VerificationSessionRedaction>>,
     status: Option<stripe_misc::IdentityVerificationSessionStatus>,
-    type_: Option<Option<stripe_misc::IdentityVerificationSessionType>>,
+    type_: Option<IdentityVerificationSessionType>,
     url: Option<Option<String>>,
+    verification_flow: Option<Option<String>>,
     verified_outputs: Option<Option<stripe_misc::GelatoVerifiedOutputs>>,
 }
 
@@ -106,6 +116,7 @@ const _: () = {
         type Out = IdentityVerificationSession;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "client_reference_id" => Deserialize::begin(&mut self.client_reference_id),
                 "client_secret" => Deserialize::begin(&mut self.client_secret),
                 "created" => Deserialize::begin(&mut self.created),
                 "id" => Deserialize::begin(&mut self.id),
@@ -116,10 +127,12 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "options" => Deserialize::begin(&mut self.options),
+                "provided_details" => Deserialize::begin(&mut self.provided_details),
                 "redaction" => Deserialize::begin(&mut self.redaction),
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
                 "url" => Deserialize::begin(&mut self.url),
+                "verification_flow" => Deserialize::begin(&mut self.verification_flow),
                 "verified_outputs" => Deserialize::begin(&mut self.verified_outputs),
 
                 _ => <dyn Visitor>::ignore(),
@@ -128,6 +141,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                client_reference_id: Deserialize::default(),
                 client_secret: Deserialize::default(),
                 created: Deserialize::default(),
                 id: Deserialize::default(),
@@ -136,16 +150,19 @@ const _: () = {
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
                 options: Deserialize::default(),
+                provided_details: Deserialize::default(),
                 redaction: Deserialize::default(),
                 status: Deserialize::default(),
                 type_: Deserialize::default(),
                 url: Deserialize::default(),
+                verification_flow: Deserialize::default(),
                 verified_outputs: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             Some(Self::Out {
+                client_reference_id: self.client_reference_id.take()?,
                 client_secret: self.client_secret.take()?,
                 created: self.created?,
                 id: self.id.take()?,
@@ -154,10 +171,12 @@ const _: () = {
                 livemode: self.livemode?,
                 metadata: self.metadata.take()?,
                 options: self.options.take()?,
+                provided_details: self.provided_details.take()?,
                 redaction: self.redaction?,
                 status: self.status?,
                 type_: self.type_?,
                 url: self.url.take()?,
+                verification_flow: self.verification_flow.take()?,
                 verified_outputs: self.verified_outputs.take()?,
             })
         }
@@ -186,6 +205,9 @@ const _: () = {
             let mut b = IdentityVerificationSessionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "client_reference_id" => {
+                        b.client_reference_id = Some(FromValueOpt::from_value(v)?)
+                    }
                     "client_secret" => b.client_secret = Some(FromValueOpt::from_value(v)?),
                     "created" => b.created = Some(FromValueOpt::from_value(v)?),
                     "id" => b.id = Some(FromValueOpt::from_value(v)?),
@@ -196,10 +218,12 @@ const _: () = {
                     "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
                     "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
                     "options" => b.options = Some(FromValueOpt::from_value(v)?),
+                    "provided_details" => b.provided_details = Some(FromValueOpt::from_value(v)?),
                     "redaction" => b.redaction = Some(FromValueOpt::from_value(v)?),
                     "status" => b.status = Some(FromValueOpt::from_value(v)?),
                     "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
                     "url" => b.url = Some(FromValueOpt::from_value(v)?),
+                    "verification_flow" => b.verification_flow = Some(FromValueOpt::from_value(v)?),
                     "verified_outputs" => b.verified_outputs = Some(FromValueOpt::from_value(v)?),
 
                     _ => {}
@@ -213,7 +237,8 @@ const _: () = {
 impl serde::Serialize for IdentityVerificationSession {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("IdentityVerificationSession", 14)?;
+        let mut s = s.serialize_struct("IdentityVerificationSession", 17)?;
+        s.serialize_field("client_reference_id", &self.client_reference_id)?;
         s.serialize_field("client_secret", &self.client_secret)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("id", &self.id)?;
@@ -222,14 +247,92 @@ impl serde::Serialize for IdentityVerificationSession {
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("options", &self.options)?;
+        s.serialize_field("provided_details", &self.provided_details)?;
         s.serialize_field("redaction", &self.redaction)?;
         s.serialize_field("status", &self.status)?;
         s.serialize_field("type", &self.type_)?;
         s.serialize_field("url", &self.url)?;
+        s.serialize_field("verification_flow", &self.verification_flow)?;
         s.serialize_field("verified_outputs", &self.verified_outputs)?;
 
         s.serialize_field("object", "identity.verification_session")?;
         s.end()
+    }
+}
+/// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum IdentityVerificationSessionType {
+    Document,
+    IdNumber,
+    VerificationFlow,
+}
+impl IdentityVerificationSessionType {
+    pub fn as_str(self) -> &'static str {
+        use IdentityVerificationSessionType::*;
+        match self {
+            Document => "document",
+            IdNumber => "id_number",
+            VerificationFlow => "verification_flow",
+        }
+    }
+}
+
+impl std::str::FromStr for IdentityVerificationSessionType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use IdentityVerificationSessionType::*;
+        match s {
+            "document" => Ok(Document),
+            "id_number" => Ok(IdNumber),
+            "verification_flow" => Ok(VerificationFlow),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for IdentityVerificationSessionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for IdentityVerificationSessionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for IdentityVerificationSessionType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for IdentityVerificationSessionType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<IdentityVerificationSessionType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(IdentityVerificationSessionType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IdentityVerificationSessionType);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for IdentityVerificationSessionType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for IdentityVerificationSessionType")
+        })
     }
 }
 impl stripe_types::Object for IdentityVerificationSession {
@@ -317,77 +420,6 @@ impl<'de> serde::Deserialize<'de> for IdentityVerificationSessionStatus {
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for IdentityVerificationSessionStatus")
-        })
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum IdentityVerificationSessionType {
-    Document,
-    IdNumber,
-}
-impl IdentityVerificationSessionType {
-    pub fn as_str(self) -> &'static str {
-        use IdentityVerificationSessionType::*;
-        match self {
-            Document => "document",
-            IdNumber => "id_number",
-        }
-    }
-}
-
-impl std::str::FromStr for IdentityVerificationSessionType {
-    type Err = stripe_types::StripeParseError;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IdentityVerificationSessionType::*;
-        match s {
-            "document" => Ok(Document),
-            "id_number" => Ok(IdNumber),
-            _ => Err(stripe_types::StripeParseError),
-        }
-    }
-}
-impl std::fmt::Display for IdentityVerificationSessionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for IdentityVerificationSessionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for IdentityVerificationSessionType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IdentityVerificationSessionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IdentityVerificationSessionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(IdentityVerificationSessionType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IdentityVerificationSessionType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IdentityVerificationSessionType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IdentityVerificationSessionType")
         })
     }
 }

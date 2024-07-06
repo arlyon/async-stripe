@@ -11,7 +11,7 @@ pub struct Fee {
     pub currency: stripe_types::Currency,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub description: Option<String>,
-    /// Type of the fee, one of: `application_fee`, `stripe_fee` or `tax`.
+    /// Type of the fee, one of: `application_fee`, `payment_method_passthrough_fee`, `stripe_fee` or `tax`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: String,
 }

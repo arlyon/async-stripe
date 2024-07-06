@@ -11,14 +11,16 @@ pub struct AccountCapabilityRequirements {
     /// If not collected by `current_deadline`, these fields appear in `past_due` as well, and the capability is disabled.
     pub currently_due: Vec<String>,
     /// If the capability is disabled, this string describes why.
-    /// Can be `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.fraud`, `rejected.listed`, `rejected.terms_of_service`, `rejected.other`, `under_review`, or `other`.
+    /// Can be `requirements.fields_needed`, `pending.onboarding`, `pending.review`, `rejected.fraud`, `rejected.other`, `platform_paused`, `action_required.requested_capabilities`, `rejected.inactivty`, or `rejected.unsupported_business`.
     ///
     /// `rejected.unsupported_business` means that the account's business is not supported by the capability.
-    /// For example, payment methods may restrict the businesses they support in their terms of service:.
+    /// For example, payment methods may restrict the businesses they support in their terms of service, such as in [Afterpay Clearpay's terms of service](/afterpay-clearpay/legal#restricted-businesses).
     ///
-    /// - [Afterpay Clearpay's terms of service](/afterpay-clearpay/legal#restricted-businesses)
+    /// `rejected.inactivity` means that the capability has been paused for inactivity.
+    /// This disabled reason currently only applies to the Issuing capability.
+    /// See [Issuing: Managing Inactive Connects](https://support.stripe.com/questions/issuing-managing-inactive-connect-accounts) for more details.
     ///
-    /// If you believe that the rejection is in error, please contact support at <https://support.stripe.com/contact/> for assistance.
+    /// If you believe that a rejection is in error, please contact support at <https://support.stripe.com/contact/> for assistance.
     pub disabled_reason: Option<String>,
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<stripe_shared::AccountRequirementsError>,
@@ -28,9 +30,10 @@ pub struct AccountCapabilityRequirements {
     /// Fields that weren't collected by `current_deadline`.
     /// These fields need to be collected to enable the capability on the account.
     pub past_due: Vec<String>,
-    /// Fields that may become required depending on the results of verification or review.
-    /// Will be an empty array unless an asynchronous verification is pending.
+    /// Fields that might become required depending on the results of verification or review.
+    /// It's an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
+    /// Fields might appear in `eventually_due`, `currently_due`, or `past_due` and in `pending_verification` if verification fails but another verification is still pending.
     pub pending_verification: Vec<String>,
 }
 #[doc(hidden)]

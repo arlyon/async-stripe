@@ -12,6 +12,7 @@ pub struct PaymentMethod {
     pub affirm: Option<stripe_shared::PaymentMethodAffirm>,
     pub afterpay_clearpay: Option<stripe_shared::PaymentMethodAfterpayClearpay>,
     pub alipay: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsAlipay>,
+    pub amazon_pay: Option<stripe_shared::PaymentMethodAmazonPay>,
     pub au_becs_debit: Option<stripe_shared::PaymentMethodAuBecsDebit>,
     pub bacs_debit: Option<stripe_shared::PaymentMethodBacsDebit>,
     pub bancontact: Option<stripe_shared::PaymentMethodBancontact>,
@@ -43,6 +44,7 @@ pub struct PaymentMethod {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
+    pub mobilepay: Option<stripe_shared::PaymentMethodMobilepay>,
     pub oxxo: Option<stripe_shared::PaymentMethodOxxo>,
     pub p24: Option<stripe_shared::PaymentMethodP24>,
     pub paynow: Option<stripe_shared::PaymentMethodPaynow>,
@@ -69,6 +71,7 @@ pub struct PaymentMethodBuilder {
     affirm: Option<Option<stripe_shared::PaymentMethodAffirm>>,
     afterpay_clearpay: Option<Option<stripe_shared::PaymentMethodAfterpayClearpay>>,
     alipay: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsAlipay>>,
+    amazon_pay: Option<Option<stripe_shared::PaymentMethodAmazonPay>>,
     au_becs_debit: Option<Option<stripe_shared::PaymentMethodAuBecsDebit>>,
     bacs_debit: Option<Option<stripe_shared::PaymentMethodBacsDebit>>,
     bancontact: Option<Option<stripe_shared::PaymentMethodBancontact>>,
@@ -93,6 +96,7 @@ pub struct PaymentMethodBuilder {
     link: Option<Option<stripe_shared::PaymentMethodLink>>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    mobilepay: Option<Option<stripe_shared::PaymentMethodMobilepay>>,
     oxxo: Option<Option<stripe_shared::PaymentMethodOxxo>>,
     p24: Option<Option<stripe_shared::PaymentMethodP24>>,
     paynow: Option<Option<stripe_shared::PaymentMethodPaynow>>,
@@ -148,6 +152,7 @@ const _: () = {
                 "affirm" => Deserialize::begin(&mut self.affirm),
                 "afterpay_clearpay" => Deserialize::begin(&mut self.afterpay_clearpay),
                 "alipay" => Deserialize::begin(&mut self.alipay),
+                "amazon_pay" => Deserialize::begin(&mut self.amazon_pay),
                 "au_becs_debit" => Deserialize::begin(&mut self.au_becs_debit),
                 "bacs_debit" => Deserialize::begin(&mut self.bacs_debit),
                 "bancontact" => Deserialize::begin(&mut self.bancontact),
@@ -172,6 +177,7 @@ const _: () = {
                 "link" => Deserialize::begin(&mut self.link),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
+                "mobilepay" => Deserialize::begin(&mut self.mobilepay),
                 "oxxo" => Deserialize::begin(&mut self.oxxo),
                 "p24" => Deserialize::begin(&mut self.p24),
                 "paynow" => Deserialize::begin(&mut self.paynow),
@@ -198,6 +204,7 @@ const _: () = {
                 affirm: Deserialize::default(),
                 afterpay_clearpay: Deserialize::default(),
                 alipay: Deserialize::default(),
+                amazon_pay: Deserialize::default(),
                 au_becs_debit: Deserialize::default(),
                 bacs_debit: Deserialize::default(),
                 bancontact: Deserialize::default(),
@@ -222,6 +229,7 @@ const _: () = {
                 link: Deserialize::default(),
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
+                mobilepay: Deserialize::default(),
                 oxxo: Deserialize::default(),
                 p24: Deserialize::default(),
                 paynow: Deserialize::default(),
@@ -246,6 +254,7 @@ const _: () = {
                 affirm: self.affirm?,
                 afterpay_clearpay: self.afterpay_clearpay?,
                 alipay: self.alipay?,
+                amazon_pay: self.amazon_pay?,
                 au_becs_debit: self.au_becs_debit.take()?,
                 bacs_debit: self.bacs_debit.take()?,
                 bancontact: self.bancontact?,
@@ -270,6 +279,7 @@ const _: () = {
                 link: self.link.take()?,
                 livemode: self.livemode?,
                 metadata: self.metadata.take()?,
+                mobilepay: self.mobilepay?,
                 oxxo: self.oxxo?,
                 p24: self.p24?,
                 paynow: self.paynow?,
@@ -316,6 +326,7 @@ const _: () = {
                     "affirm" => b.affirm = Some(FromValueOpt::from_value(v)?),
                     "afterpay_clearpay" => b.afterpay_clearpay = Some(FromValueOpt::from_value(v)?),
                     "alipay" => b.alipay = Some(FromValueOpt::from_value(v)?),
+                    "amazon_pay" => b.amazon_pay = Some(FromValueOpt::from_value(v)?),
                     "au_becs_debit" => b.au_becs_debit = Some(FromValueOpt::from_value(v)?),
                     "bacs_debit" => b.bacs_debit = Some(FromValueOpt::from_value(v)?),
                     "bancontact" => b.bancontact = Some(FromValueOpt::from_value(v)?),
@@ -340,6 +351,7 @@ const _: () = {
                     "link" => b.link = Some(FromValueOpt::from_value(v)?),
                     "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
                     "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "mobilepay" => b.mobilepay = Some(FromValueOpt::from_value(v)?),
                     "oxxo" => b.oxxo = Some(FromValueOpt::from_value(v)?),
                     "p24" => b.p24 = Some(FromValueOpt::from_value(v)?),
                     "paynow" => b.paynow = Some(FromValueOpt::from_value(v)?),
@@ -367,11 +379,12 @@ const _: () = {
 impl serde::Serialize for PaymentMethod {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethod", 44)?;
+        let mut s = s.serialize_struct("PaymentMethod", 46)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("affirm", &self.affirm)?;
         s.serialize_field("afterpay_clearpay", &self.afterpay_clearpay)?;
         s.serialize_field("alipay", &self.alipay)?;
+        s.serialize_field("amazon_pay", &self.amazon_pay)?;
         s.serialize_field("au_becs_debit", &self.au_becs_debit)?;
         s.serialize_field("bacs_debit", &self.bacs_debit)?;
         s.serialize_field("bancontact", &self.bancontact)?;
@@ -396,6 +409,7 @@ impl serde::Serialize for PaymentMethod {
         s.serialize_field("link", &self.link)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("mobilepay", &self.mobilepay)?;
         s.serialize_field("oxxo", &self.oxxo)?;
         s.serialize_field("p24", &self.p24)?;
         s.serialize_field("paynow", &self.paynow)?;
@@ -426,6 +440,7 @@ pub enum PaymentMethodType {
     Affirm,
     AfterpayClearpay,
     Alipay,
+    AmazonPay,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
@@ -444,6 +459,7 @@ pub enum PaymentMethodType {
     Klarna,
     Konbini,
     Link,
+    Mobilepay,
     Oxxo,
     P24,
     Paynow,
@@ -468,6 +484,7 @@ impl PaymentMethodType {
             Affirm => "affirm",
             AfterpayClearpay => "afterpay_clearpay",
             Alipay => "alipay",
+            AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
@@ -486,6 +503,7 @@ impl PaymentMethodType {
             Klarna => "klarna",
             Konbini => "konbini",
             Link => "link",
+            Mobilepay => "mobilepay",
             Oxxo => "oxxo",
             P24 => "p24",
             Paynow => "paynow",
@@ -513,6 +531,7 @@ impl std::str::FromStr for PaymentMethodType {
             "affirm" => Ok(Affirm),
             "afterpay_clearpay" => Ok(AfterpayClearpay),
             "alipay" => Ok(Alipay),
+            "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
@@ -531,6 +550,7 @@ impl std::str::FromStr for PaymentMethodType {
             "klarna" => Ok(Klarna),
             "konbini" => Ok(Konbini),
             "link" => Ok(Link),
+            "mobilepay" => Ok(Mobilepay),
             "oxxo" => Ok(Oxxo),
             "p24" => Ok(P24),
             "paynow" => Ok(Paynow),

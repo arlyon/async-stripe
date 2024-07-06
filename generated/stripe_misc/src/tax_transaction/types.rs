@@ -27,6 +27,8 @@ pub struct TaxTransaction {
     pub reference: String,
     /// If `type=reversal`, contains information about what was reversed.
     pub reversal: Option<stripe_misc::TaxProductResourceTaxTransactionResourceReversal>,
+    /// The details of the ship from location, such as the address.
+    pub ship_from_details: Option<stripe_misc::TaxProductResourceShipFromDetails>,
     /// The shipping cost details for the transaction.
     pub shipping_cost: Option<stripe_misc::TaxProductResourceTaxTransactionShippingCost>,
     /// Timestamp of date at which the tax rules and rates in effect applies for the calculation.
@@ -47,6 +49,7 @@ pub struct TaxTransactionBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     reference: Option<String>,
     reversal: Option<Option<stripe_misc::TaxProductResourceTaxTransactionResourceReversal>>,
+    ship_from_details: Option<Option<stripe_misc::TaxProductResourceShipFromDetails>>,
     shipping_cost: Option<Option<stripe_misc::TaxProductResourceTaxTransactionShippingCost>>,
     tax_date: Option<stripe_types::Timestamp>,
     type_: Option<TaxTransactionType>,
@@ -96,6 +99,7 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "reference" => Deserialize::begin(&mut self.reference),
                 "reversal" => Deserialize::begin(&mut self.reversal),
+                "ship_from_details" => Deserialize::begin(&mut self.ship_from_details),
                 "shipping_cost" => Deserialize::begin(&mut self.shipping_cost),
                 "tax_date" => Deserialize::begin(&mut self.tax_date),
                 "type" => Deserialize::begin(&mut self.type_),
@@ -116,6 +120,7 @@ const _: () = {
                 metadata: Deserialize::default(),
                 reference: Deserialize::default(),
                 reversal: Deserialize::default(),
+                ship_from_details: Deserialize::default(),
                 shipping_cost: Deserialize::default(),
                 tax_date: Deserialize::default(),
                 type_: Deserialize::default(),
@@ -134,6 +139,7 @@ const _: () = {
                 metadata: self.metadata.take()?,
                 reference: self.reference.take()?,
                 reversal: self.reversal.take()?,
+                ship_from_details: self.ship_from_details.take()?,
                 shipping_cost: self.shipping_cost.take()?,
                 tax_date: self.tax_date?,
                 type_: self.type_?,
@@ -174,6 +180,7 @@ const _: () = {
                     "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
                     "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
                     "reversal" => b.reversal = Some(FromValueOpt::from_value(v)?),
+                    "ship_from_details" => b.ship_from_details = Some(FromValueOpt::from_value(v)?),
                     "shipping_cost" => b.shipping_cost = Some(FromValueOpt::from_value(v)?),
                     "tax_date" => b.tax_date = Some(FromValueOpt::from_value(v)?),
                     "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
@@ -189,7 +196,7 @@ const _: () = {
 impl serde::Serialize for TaxTransaction {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TaxTransaction", 14)?;
+        let mut s = s.serialize_struct("TaxTransaction", 15)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
@@ -200,6 +207,7 @@ impl serde::Serialize for TaxTransaction {
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("reference", &self.reference)?;
         s.serialize_field("reversal", &self.reversal)?;
+        s.serialize_field("ship_from_details", &self.ship_from_details)?;
         s.serialize_field("shipping_cost", &self.shipping_cost)?;
         s.serialize_field("tax_date", &self.tax_date)?;
         s.serialize_field("type", &self.type_)?;

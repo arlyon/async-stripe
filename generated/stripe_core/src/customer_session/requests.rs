@@ -1,20 +1,21 @@
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateCustomerSession<'a> {
-    /// Configuration for each component. Exactly 1 component must be enabled.
-    pub components: CreateCustomerSessionComponents,
-    /// The ID of an existing customer for which to create the customer session.
-    pub customer: &'a str,
-    /// Specifies which fields in the response should be expanded.
+struct CreateCustomerSessionBuilder<'a> {
+    components: CreateCustomerSessionComponents,
+    customer: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    expand: Option<&'a [&'a str]>,
 }
-impl<'a> CreateCustomerSession<'a> {
-    pub fn new(components: CreateCustomerSessionComponents, customer: &'a str) -> Self {
+impl<'a> CreateCustomerSessionBuilder<'a> {
+    fn new(components: CreateCustomerSessionComponents, customer: &'a str) -> Self {
         Self { components, customer, expand: None }
     }
 }
 /// Configuration for each component. Exactly 1 component must be enabled.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCustomerSessionComponents {
     /// Configuration for buy button.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25,7 +26,12 @@ pub struct CreateCustomerSessionComponents {
 }
 impl CreateCustomerSessionComponents {
     pub fn new() -> Self {
-        Self::default()
+        Self { buy_button: None, pricing_table: None }
+    }
+}
+impl Default for CreateCustomerSessionComponents {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Configuration for buy button.
@@ -50,9 +56,44 @@ impl CreateCustomerSessionComponentsPricingTable {
         Self { enabled }
     }
 }
+/// Creates a customer session object that includes a single-use client secret that you can use on your front-end to grant client-side API access for certain customer resources.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateCustomerSession<'a> {
+    inner: CreateCustomerSessionBuilder<'a>,
+}
 impl<'a> CreateCustomerSession<'a> {
-    /// Creates a customer session object that includes a single-use client secret that you can use on your front-end to grant client-side API access for certain customer resources.
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_core::CustomerSession> {
-        client.send_form("/customer_sessions", self, http_types::Method::Post)
+    /// Construct a new `CreateCustomerSession`.
+    pub fn new(components: CreateCustomerSessionComponents, customer: &'a str) -> Self {
+        Self { inner: CreateCustomerSessionBuilder::new(components, customer) }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl CreateCustomerSession<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateCustomerSession<'_> {
+    type Output = stripe_core::CustomerSession;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/customer_sessions").form(&self.inner)
     }
 }

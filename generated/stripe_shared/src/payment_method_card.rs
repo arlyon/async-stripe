@@ -13,6 +13,9 @@ pub struct PaymentMethodCard {
     /// A high-level description of the type of cards issued in this range.
     /// (For internal use only and not typically available in standard API requests.).
     pub description: Option<String>,
+    /// The brand to use when displaying the card, this accounts for customer's brand choice on dual-branded cards.
+    /// Can be `american_express`, `cartes_bancaires`, `diners_club`, `discover`, `eftpos_australia`, `interac`, `jcb`, `mastercard`, `union_pay`, `visa`, or `other` and may contain more values in the future.
+    pub display_brand: Option<String>,
     /// Two-digit number representing the card's expiration month.
     pub exp_month: i64,
     /// Four-digit number representing the card's expiration year.
@@ -46,6 +49,7 @@ pub struct PaymentMethodCardBuilder {
     checks: Option<Option<stripe_shared::PaymentMethodCardChecks>>,
     country: Option<Option<String>>,
     description: Option<Option<String>>,
+    display_brand: Option<Option<String>>,
     exp_month: Option<i64>,
     exp_year: Option<i64>,
     fingerprint: Option<Option<String>>,
@@ -96,6 +100,7 @@ const _: () = {
                 "checks" => Deserialize::begin(&mut self.checks),
                 "country" => Deserialize::begin(&mut self.country),
                 "description" => Deserialize::begin(&mut self.description),
+                "display_brand" => Deserialize::begin(&mut self.display_brand),
                 "exp_month" => Deserialize::begin(&mut self.exp_month),
                 "exp_year" => Deserialize::begin(&mut self.exp_year),
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
@@ -117,6 +122,7 @@ const _: () = {
                 checks: Deserialize::default(),
                 country: Deserialize::default(),
                 description: Deserialize::default(),
+                display_brand: Deserialize::default(),
                 exp_month: Deserialize::default(),
                 exp_year: Deserialize::default(),
                 fingerprint: Deserialize::default(),
@@ -136,6 +142,7 @@ const _: () = {
                 checks: self.checks.take()?,
                 country: self.country.take()?,
                 description: self.description.take()?,
+                display_brand: self.display_brand.take()?,
                 exp_month: self.exp_month?,
                 exp_year: self.exp_year?,
                 fingerprint: self.fingerprint.take()?,
@@ -177,6 +184,7 @@ const _: () = {
                     "checks" => b.checks = Some(FromValueOpt::from_value(v)?),
                     "country" => b.country = Some(FromValueOpt::from_value(v)?),
                     "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "display_brand" => b.display_brand = Some(FromValueOpt::from_value(v)?),
                     "exp_month" => b.exp_month = Some(FromValueOpt::from_value(v)?),
                     "exp_year" => b.exp_year = Some(FromValueOpt::from_value(v)?),
                     "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),

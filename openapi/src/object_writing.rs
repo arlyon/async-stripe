@@ -43,10 +43,10 @@ impl Components {
 
         match obj {
             RustObject::Struct(struct_) => {
-                let should_derive_default =
-                    struct_.fields.iter().all(|field| field.rust_type.is_option());
-                writer.derive_default(should_derive_default);
-                writer.write_struct(out, struct_);
+                writer.write_struct_definition(out, struct_);
+                if usage.used_as_request_param {
+                    writer.write_struct_constructor(out, struct_);
+                }
 
                 for field in &struct_.fields {
                     if let Some((obj, meta)) = field.rust_type.extract_object() {
@@ -124,7 +124,9 @@ pub fn gen_requests(specs: &[RequestSpec], components: &Components) -> String {
     let mut out = String::with_capacity(128);
 
     for req in specs {
-        components.write_rust_type_objs(&req.params, &mut out, ObjectUsage::request_param());
+        if let Some(params) = &req.params {
+            components.write_rust_type_objs(&params.typ, &mut out, ObjectUsage::request_param());
+        }
 
         let req_body = req.gen(components);
         let _ = write!(out, "{}", req_body);

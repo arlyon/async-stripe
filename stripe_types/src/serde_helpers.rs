@@ -1,8 +1,7 @@
-use miniserde::json::{Array, Number};
-use miniserde::json::{Object, Value as MiniValue};
+use miniserde::json::Number;
+use miniserde::json::Value as MiniValue;
 use serde::ser::{SerializeMap, SerializeSeq};
 use serde::{Serialize, Serializer};
-use serde_json::Value;
 
 struct Wrapper<'a>(&'a miniserde::json::Value);
 
@@ -40,16 +39,19 @@ impl Serialize for Wrapper<'_> {
 
 pub mod with_serde_json {
     use miniserde::json::Value as MiniValue;
-    use serde::{Deserialize, Deserializer, Serialize, Serializer};
-    use serde_json::Value;
+    use serde::{Serialize, Serializer};
 
-    use crate::serde_helpers::{serde_json_to_mini, Wrapper};
+    use crate::serde_helpers::Wrapper;
 
+    #[cfg(feature = "deserialize")]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<MiniValue, D::Error>
     where
-        D: Deserializer<'de>,
+        D: serde::Deserializer<'de>,
     {
-        let value = Value::deserialize(deserializer)?;
+        use serde::Deserialize;
+
+        use crate::serde_helpers::serde_json_to_mini;
+        let value = serde_json::Value::deserialize(deserializer)?;
         serde_json_to_mini(value).ok_or_else(|| {
             serde::de::Error::custom("could not convert serde_json::Value to miniserde::Value")
         })
@@ -62,16 +64,17 @@ pub mod with_serde_json {
 
 pub mod with_serde_json_opt {
     use miniserde::json::Value as MiniValue;
-    use serde::{Deserialize, Deserializer, Serializer};
-    use serde_json::Value;
+    use serde::Serializer;
 
-    use crate::serde_helpers::{serde_json_to_mini, Wrapper};
+    use crate::serde_helpers::Wrapper;
 
+    #[cfg(feature = "deserialize")]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<MiniValue>, D::Error>
     where
-        D: Deserializer<'de>,
+        D: serde::Deserializer<'de>,
     {
-        let value: Option<Value> = Deserialize::deserialize(deserializer)?;
+        use crate::serde_helpers::serde_json_to_mini;
+        let value: Option<serde_json::Value> = serde::Deserialize::deserialize(deserializer)?;
         match value {
             None => Ok(None),
             Some(s) => Ok(Some(serde_json_to_mini(s).ok_or_else(|| {
@@ -88,11 +91,13 @@ pub mod with_serde_json_opt {
     }
 }
 
-fn serde_json_to_mini(val: Value) -> Option<MiniValue> {
+#[cfg(feature = "deserialize")]
+fn serde_json_to_mini(val: serde_json::Value) -> Option<MiniValue> {
+    use miniserde::json::{Array, Object};
     Some(match val {
-        Value::Null => MiniValue::Null,
-        Value::Bool(bool) => MiniValue::Bool(bool),
-        Value::Number(num) => {
+        serde_json::Value::Null => MiniValue::Null,
+        serde_json::Value::Bool(bool) => MiniValue::Bool(bool),
+        serde_json::Value::Number(num) => {
             if let Some(float) = num.as_f64() {
                 MiniValue::Number(Number::F64(float))
             } else if let Some(uint) = num.as_u64() {
@@ -103,12 +108,12 @@ fn serde_json_to_mini(val: Value) -> Option<MiniValue> {
                 return None;
             }
         }
-        Value::String(str) => MiniValue::String(str),
-        Value::Array(arr) => {
+        serde_json::Value::String(str) => MiniValue::String(str),
+        serde_json::Value::Array(arr) => {
             let arr_conv = arr.into_iter().map(serde_json_to_mini).collect::<Option<Vec<_>>>()?;
             MiniValue::Array(Array::from_iter(arr_conv))
         }
-        Value::Object(obj) => {
+        serde_json::Value::Object(obj) => {
             let items = obj
                 .into_iter()
                 .map(|(key, val)| serde_json_to_mini(val).map(|v| (key, v)))

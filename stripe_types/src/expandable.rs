@@ -13,7 +13,9 @@ use crate::Object;
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[serde(untagged)]
 pub enum Expandable<T: Object> {
+    /// Just the object id.
     Id(T::Id),
+    /// The entire object.
     Object(Box<T>),
 }
 
@@ -27,6 +29,7 @@ where
 }
 
 impl<T: Object> Expandable<T> {
+    /// Returns true if we have the object.
     pub fn is_object(&self) -> bool {
         match self {
             Expandable::Id(_) => false,
@@ -34,6 +37,7 @@ impl<T: Object> Expandable<T> {
         }
     }
 
+    /// If the `Expandable` is an object, return that, otherwise return None.
     pub fn as_object(&self) -> Option<&T> {
         match self {
             Expandable::Id(_) => None,
@@ -41,13 +45,7 @@ impl<T: Object> Expandable<T> {
         }
     }
 
-    pub fn id(&self) -> &T::Id {
-        match self {
-            Expandable::Id(id) => id,
-            Expandable::Object(obj) => obj.id(),
-        }
-    }
-
+    /// If the `Expandable` is an object, return that by taking ownership, otherwise return None.
     pub fn into_object(self) -> Option<T> {
         match self {
             Expandable::Id(_) => None,
@@ -55,10 +53,19 @@ impl<T: Object> Expandable<T> {
         }
     }
 
+    /// Take ownership of the object's id.
     pub fn into_id(self) -> T::Id {
         match self {
             Expandable::Id(id) => id,
             Expandable::Object(obj) => obj.into_id(),
+        }
+    }
+
+    /// Extract the object's id.
+    pub fn id(&self) -> &T::Id {
+        match self {
+            Expandable::Id(id) => id,
+            Expandable::Object(obj) => obj.id(),
         }
     }
 }

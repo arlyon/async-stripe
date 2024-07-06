@@ -1,85 +1,201 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteTerminalConfiguration {}
-impl DeleteTerminalConfiguration {
-    pub fn new() -> Self {
-        Self::default()
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+/// Deletes a `Configuration` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DeleteTerminalConfiguration<'a> {
+    configuration: &'a stripe_terminal::TerminalConfigurationId,
+}
+impl<'a> DeleteTerminalConfiguration<'a> {
+    /// Construct a new `DeleteTerminalConfiguration`.
+    pub fn new(configuration: &'a stripe_terminal::TerminalConfigurationId) -> Self {
+        Self { configuration }
     }
 }
-impl DeleteTerminalConfiguration {
-    /// Deletes a `Configuration` object.
-    pub fn send(
+impl DeleteTerminalConfiguration<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        configuration: &stripe_terminal::TerminalConfigurationId,
-    ) -> stripe::Response<stripe_terminal::DeletedTerminalConfiguration> {
-        client.send_form(
-            &format!("/terminal/configurations/{configuration}"),
-            self,
-            http_types::Method::Delete,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for DeleteTerminalConfiguration<'_> {
+    type Output = stripe_terminal::DeletedTerminalConfiguration;
+
+    fn build(&self) -> RequestBuilder {
+        let configuration = self.configuration;
+        RequestBuilder::new(
+            StripeMethod::Delete,
+            format!("/terminal/configurations/{configuration}"),
         )
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListTerminalConfigurationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    is_account_default: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> ListTerminalConfigurationBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            ending_before: None,
+            expand: None,
+            is_account_default: None,
+            limit: None,
+            starting_after: None,
+        }
+    }
+}
+/// Returns a list of `Configuration` objects.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ListTerminalConfiguration<'a> {
+    inner: ListTerminalConfigurationBuilder<'a>,
+}
+impl<'a> ListTerminalConfiguration<'a> {
+    /// Construct a new `ListTerminalConfiguration`.
+    pub fn new() -> Self {
+        Self { inner: ListTerminalConfigurationBuilder::new() }
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// if present, only return the account default or non-default configurations.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_account_default: Option<bool>,
+    pub fn is_account_default(mut self, is_account_default: bool) -> Self {
+        self.inner.is_account_default = Some(is_account_default);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListTerminalConfiguration<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
     }
 }
-impl<'a> ListTerminalConfiguration<'a> {
-    /// Returns a list of `Configuration` objects.
-    pub fn send(
+impl<'a> Default for ListTerminalConfiguration<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListTerminalConfiguration<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalConfiguration>> {
-        client.get_query("/terminal/configurations", self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_terminal::TerminalConfiguration>> {
-        stripe::ListPaginator::from_list_params("/terminal/configurations", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTerminalConfiguration<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTerminalConfiguration<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveTerminalConfiguration<'a> {
-    /// Retrieves a `Configuration` object.
-    pub fn send(
         &self,
-        client: &stripe::Client,
-        configuration: &stripe_terminal::TerminalConfigurationId,
-    ) -> stripe::Response<RetrieveTerminalConfigurationReturned> {
-        client.get_query(&format!("/terminal/configurations/{configuration}"), self)
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_terminal::TerminalConfiguration>>
+    {
+        stripe_client_core::ListPaginator::new_list("/terminal/configurations", self.inner)
+    }
+}
+
+impl StripeRequest for ListTerminalConfiguration<'_> {
+    type Output = stripe_types::List<stripe_terminal::TerminalConfiguration>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/terminal/configurations").query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveTerminalConfigurationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveTerminalConfigurationBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves a `Configuration` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveTerminalConfiguration<'a> {
+    inner: RetrieveTerminalConfigurationBuilder<'a>,
+    configuration: &'a stripe_terminal::TerminalConfigurationId,
+}
+impl<'a> RetrieveTerminalConfiguration<'a> {
+    /// Construct a new `RetrieveTerminalConfiguration`.
+    pub fn new(configuration: &'a stripe_terminal::TerminalConfigurationId) -> Self {
+        Self { configuration, inner: RetrieveTerminalConfigurationBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveTerminalConfiguration<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveTerminalConfiguration<'_> {
+    type Output = RetrieveTerminalConfigurationReturned;
+
+    fn build(&self) -> RequestBuilder {
+        let configuration = self.configuration;
+        RequestBuilder::new(StripeMethod::Get, format!("/terminal/configurations/{configuration}"))
+            .query(&self.inner)
     }
 }
 #[derive(Clone, Debug)]
@@ -164,31 +280,35 @@ const _: () = {
     }
 };
 
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateTerminalConfiguration<'a> {
-    /// An object containing device type specific settings for BBPOS WisePOS E readers
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateTerminalConfigurationBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bbpos_wisepos_e: Option<CreateTerminalConfigurationBbposWiseposE<'a>>,
-    /// Specifies which fields in the response should be expanded.
+    bbpos_wisepos_e: Option<CreateTerminalConfigurationBbposWiseposE<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Configurations for collecting transactions offline.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub offline: Option<Offline>,
-    /// Tipping configurations for readers supporting on-reader tips
+    name: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tipping: Option<Tipping<'a>>,
-    /// An object containing device type specific settings for Verifone P400 readers
+    offline: Option<Offline>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verifone_p400: Option<CreateTerminalConfigurationVerifoneP400<'a>>,
+    tipping: Option<Tipping<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    verifone_p400: Option<CreateTerminalConfigurationVerifoneP400<'a>>,
 }
-impl<'a> CreateTerminalConfiguration<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> CreateTerminalConfigurationBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            bbpos_wisepos_e: None,
+            expand: None,
+            name: None,
+            offline: None,
+            tipping: None,
+            verifone_p400: None,
+        }
     }
 }
 /// An object containing device type specific settings for BBPOS WisePOS E readers
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTerminalConfigurationBbposWiseposE<'a> {
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -196,11 +316,16 @@ pub struct CreateTerminalConfigurationBbposWiseposE<'a> {
 }
 impl<'a> CreateTerminalConfigurationBbposWiseposE<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { splashscreen: None }
+    }
+}
+impl<'a> Default for CreateTerminalConfigurationBbposWiseposE<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// An object containing device type specific settings for Verifone P400 readers
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTerminalConfigurationVerifoneP400<'a> {
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -208,43 +333,120 @@ pub struct CreateTerminalConfigurationVerifoneP400<'a> {
 }
 impl<'a> CreateTerminalConfigurationVerifoneP400<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { splashscreen: None }
     }
+}
+impl<'a> Default for CreateTerminalConfigurationVerifoneP400<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Creates a new `Configuration` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTerminalConfiguration<'a> {
+    inner: CreateTerminalConfigurationBuilder<'a>,
 }
 impl<'a> CreateTerminalConfiguration<'a> {
-    /// Creates a new `Configuration` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_terminal::TerminalConfiguration> {
-        client.send_form("/terminal/configurations", self, http_types::Method::Post)
+    /// Construct a new `CreateTerminalConfiguration`.
+    pub fn new() -> Self {
+        Self { inner: CreateTerminalConfigurationBuilder::new() }
+    }
+    /// An object containing device type specific settings for BBPOS WisePOS E readers
+    pub fn bbpos_wisepos_e(
+        mut self,
+        bbpos_wisepos_e: CreateTerminalConfigurationBbposWiseposE<'a>,
+    ) -> Self {
+        self.inner.bbpos_wisepos_e = Some(bbpos_wisepos_e);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Name of the configuration
+    pub fn name(mut self, name: &'a str) -> Self {
+        self.inner.name = Some(name);
+        self
+    }
+    /// Configurations for collecting transactions offline.
+    pub fn offline(mut self, offline: Offline) -> Self {
+        self.inner.offline = Some(offline);
+        self
+    }
+    /// Tipping configurations for readers supporting on-reader tips
+    pub fn tipping(mut self, tipping: Tipping<'a>) -> Self {
+        self.inner.tipping = Some(tipping);
+        self
+    }
+    /// An object containing device type specific settings for Verifone P400 readers
+    pub fn verifone_p400(
+        mut self,
+        verifone_p400: CreateTerminalConfigurationVerifoneP400<'a>,
+    ) -> Self {
+        self.inner.verifone_p400 = Some(verifone_p400);
+        self
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateTerminalConfiguration<'a> {
-    /// An object containing device type specific settings for BBPOS WisePOS E readers
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bbpos_wisepos_e: Option<UpdateTerminalConfigurationBbposWiseposE<'a>>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Configurations for collecting transactions offline.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub offline: Option<Offline>,
-    /// Tipping configurations for readers supporting on-reader tips
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tipping: Option<Tipping<'a>>,
-    /// An object containing device type specific settings for Verifone P400 readers
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub verifone_p400: Option<UpdateTerminalConfigurationVerifoneP400<'a>>,
+impl<'a> Default for CreateTerminalConfiguration<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
-impl<'a> UpdateTerminalConfiguration<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl CreateTerminalConfiguration<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateTerminalConfiguration<'_> {
+    type Output = stripe_terminal::TerminalConfiguration;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/terminal/configurations").form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateTerminalConfigurationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    bbpos_wisepos_e: Option<UpdateTerminalConfigurationBbposWiseposE<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    offline: Option<Offline>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tipping: Option<Tipping<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    verifone_p400: Option<UpdateTerminalConfigurationVerifoneP400<'a>>,
+}
+impl<'a> UpdateTerminalConfigurationBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            bbpos_wisepos_e: None,
+            expand: None,
+            name: None,
+            offline: None,
+            tipping: None,
+            verifone_p400: None,
+        }
     }
 }
 /// An object containing device type specific settings for BBPOS WisePOS E readers
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateTerminalConfigurationBbposWiseposE<'a> {
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -252,11 +454,16 @@ pub struct UpdateTerminalConfigurationBbposWiseposE<'a> {
 }
 impl<'a> UpdateTerminalConfigurationBbposWiseposE<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { splashscreen: None }
+    }
+}
+impl<'a> Default for UpdateTerminalConfigurationBbposWiseposE<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// An object containing device type specific settings for Verifone P400 readers
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateTerminalConfigurationVerifoneP400<'a> {
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -264,21 +471,87 @@ pub struct UpdateTerminalConfigurationVerifoneP400<'a> {
 }
 impl<'a> UpdateTerminalConfigurationVerifoneP400<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { splashscreen: None }
     }
 }
+impl<'a> Default for UpdateTerminalConfigurationVerifoneP400<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Updates a new `Configuration` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTerminalConfiguration<'a> {
+    inner: UpdateTerminalConfigurationBuilder<'a>,
+    configuration: &'a stripe_terminal::TerminalConfigurationId,
+}
 impl<'a> UpdateTerminalConfiguration<'a> {
-    /// Updates a new `Configuration` object.
-    pub fn send(
+    /// Construct a new `UpdateTerminalConfiguration`.
+    pub fn new(configuration: &'a stripe_terminal::TerminalConfigurationId) -> Self {
+        Self { configuration, inner: UpdateTerminalConfigurationBuilder::new() }
+    }
+    /// An object containing device type specific settings for BBPOS WisePOS E readers
+    pub fn bbpos_wisepos_e(
+        mut self,
+        bbpos_wisepos_e: UpdateTerminalConfigurationBbposWiseposE<'a>,
+    ) -> Self {
+        self.inner.bbpos_wisepos_e = Some(bbpos_wisepos_e);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Name of the configuration
+    pub fn name(mut self, name: &'a str) -> Self {
+        self.inner.name = Some(name);
+        self
+    }
+    /// Configurations for collecting transactions offline.
+    pub fn offline(mut self, offline: Offline) -> Self {
+        self.inner.offline = Some(offline);
+        self
+    }
+    /// Tipping configurations for readers supporting on-reader tips
+    pub fn tipping(mut self, tipping: Tipping<'a>) -> Self {
+        self.inner.tipping = Some(tipping);
+        self
+    }
+    /// An object containing device type specific settings for Verifone P400 readers
+    pub fn verifone_p400(
+        mut self,
+        verifone_p400: UpdateTerminalConfigurationVerifoneP400<'a>,
+    ) -> Self {
+        self.inner.verifone_p400 = Some(verifone_p400);
+        self
+    }
+}
+impl UpdateTerminalConfiguration<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        configuration: &stripe_terminal::TerminalConfigurationId,
-    ) -> stripe::Response<UpdateTerminalConfigurationReturned> {
-        client.send_form(
-            &format!("/terminal/configurations/{configuration}"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateTerminalConfiguration<'_> {
+    type Output = UpdateTerminalConfigurationReturned;
+
+    fn build(&self) -> RequestBuilder {
+        let configuration = self.configuration;
+        RequestBuilder::new(StripeMethod::Post, format!("/terminal/configurations/{configuration}"))
+            .form(&self.inner)
     }
 }
 #[derive(Clone, Debug)]
@@ -374,7 +647,7 @@ impl Offline {
         Self { enabled }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CurrencySpecificConfig<'a> {
     /// Fixed amounts displayed when collecting a tip
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -388,10 +661,15 @@ pub struct CurrencySpecificConfig<'a> {
 }
 impl<'a> CurrencySpecificConfig<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { fixed_amounts: None, percentages: None, smart_tip_threshold: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for CurrencySpecificConfig<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct Tipping<'a> {
     /// Tipping configuration for AUD
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -438,6 +716,26 @@ pub struct Tipping<'a> {
 }
 impl<'a> Tipping<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            aud: None,
+            cad: None,
+            chf: None,
+            czk: None,
+            dkk: None,
+            eur: None,
+            gbp: None,
+            hkd: None,
+            myr: None,
+            nok: None,
+            nzd: None,
+            sek: None,
+            sgd: None,
+            usd: None,
+        }
+    }
+}
+impl<'a> Default for Tipping<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }

@@ -13,7 +13,31 @@ miniserde::make_place!(Place);
 pub mod bank_account;
 pub use stripe_shared::bank_account::*;
 pub mod card;
-pub use stripe_shared::card::*;pub use stripe_shared::card_issuing_account_terms_of_service::*;pub use stripe_shared::card_mandate_payment_method_details::*;pub use stripe_shared::deleted_bank_account::*;pub use stripe_shared::deleted_card::*;pub use stripe_shared::deleted_external_account::*;pub use stripe_shared::deleted_payment_source::*;pub use stripe_shared::external_account_requirements::*;pub use stripe_shared::networks::*;pub use stripe_shared::payment_flows_private_payment_methods_alipay::*;pub use stripe_shared::payment_flows_private_payment_methods_alipay_details::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_extended_authorization_extended_authorization::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_incremental_authorization_incremental_authorization::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_overcapture_overcapture::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_multicapture::*;pub use stripe_shared::payment_flows_private_payment_methods_klarna_dob::*;
+pub use confirmation_token::types::*;
+pub use stripe_shared::card::*;
+pub use stripe_shared::card_issuing_account_terms_of_service::*;
+pub use stripe_shared::card_mandate_payment_method_details::*;
+pub mod confirmation_token;
+#[doc(hidden)]
+pub mod confirmation_tokens_resource_mandate_data;
+#[doc(inline)]
+pub use confirmation_tokens_resource_mandate_data::*;
+#[doc(hidden)]
+pub mod confirmation_tokens_resource_mandate_data_resource_customer_acceptance;
+#[doc(inline)]
+pub use confirmation_tokens_resource_mandate_data_resource_customer_acceptance::*;
+#[doc(hidden)]
+pub mod confirmation_tokens_resource_mandate_data_resource_customer_acceptance_resource_online;
+#[doc(inline)]
+pub use confirmation_tokens_resource_mandate_data_resource_customer_acceptance_resource_online::*;
+#[doc(hidden)]
+pub mod confirmation_tokens_resource_payment_method_preview;
+#[doc(inline)]
+pub use confirmation_tokens_resource_payment_method_preview::*;
+#[doc(hidden)]
+pub mod confirmation_tokens_resource_shipping;
+#[doc(inline)]
+pub use confirmation_tokens_resource_shipping::*;pub use stripe_shared::deleted_bank_account::*;pub use stripe_shared::deleted_card::*;pub use stripe_shared::deleted_external_account::*;pub use stripe_shared::deleted_payment_source::*;pub use stripe_shared::external_account_requirements::*;pub use stripe_shared::internal_card::*;pub use stripe_shared::networks::*;pub use stripe_shared::payment_flows_private_payment_methods_alipay::*;pub use stripe_shared::payment_flows_private_payment_methods_alipay_details::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_extended_authorization_extended_authorization::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_incremental_authorization_incremental_authorization::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_overcapture_overcapture::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_multicapture::*;pub use stripe_shared::payment_flows_private_payment_methods_klarna_dob::*;
 pub mod payment_link;
 pub use stripe_shared::payment_link::*;
 pub use stripe_shared::payment_links_resource_after_completion::*;
@@ -47,6 +71,7 @@ pub use stripe_shared::payment_method::*;
 pub use stripe_shared::payment_method_acss_debit::*;
 pub use stripe_shared::payment_method_affirm::*;
 pub use stripe_shared::payment_method_afterpay_clearpay::*;
+pub use stripe_shared::payment_method_amazon_pay::*;
 pub use stripe_shared::payment_method_au_becs_debit::*;
 pub use stripe_shared::payment_method_bacs_debit::*;
 pub use stripe_shared::payment_method_bancontact::*;
@@ -84,6 +109,7 @@ pub use stripe_shared::payment_method_details_ach_debit::*;
 pub use stripe_shared::payment_method_details_acss_debit::*;
 pub use stripe_shared::payment_method_details_affirm::*;
 pub use stripe_shared::payment_method_details_afterpay_clearpay::*;
+pub use stripe_shared::payment_method_details_amazon_pay::*;
 pub use stripe_shared::payment_method_details_au_becs_debit::*;
 pub use stripe_shared::payment_method_details_bacs_debit::*;
 pub use stripe_shared::payment_method_details_bancontact::*;
@@ -118,6 +144,7 @@ pub use stripe_shared::payment_method_details_klarna::*;
 pub use stripe_shared::payment_method_details_konbini::*;
 pub use stripe_shared::payment_method_details_konbini_store::*;
 pub use stripe_shared::payment_method_details_link::*;
+pub use stripe_shared::payment_method_details_mobilepay::*;
 pub use stripe_shared::payment_method_details_multibanco::*;
 pub use stripe_shared::payment_method_details_oxxo::*;
 pub use stripe_shared::payment_method_details_p24::*;
@@ -153,9 +180,11 @@ pub use stripe_shared::payment_method_interac_present::*;
 pub use stripe_shared::payment_method_klarna::*;
 pub use stripe_shared::payment_method_konbini::*;
 pub use stripe_shared::payment_method_link::*;
+pub use stripe_shared::payment_method_mobilepay::*;
 pub use stripe_shared::payment_method_options_affirm::*;
 pub use stripe_shared::payment_method_options_afterpay_clearpay::*;
 pub use stripe_shared::payment_method_options_alipay::*;
+pub use stripe_shared::payment_method_options_amazon_pay::*;
 pub use stripe_shared::payment_method_options_bacs_debit::*;
 pub use stripe_shared::payment_method_options_bancontact::*;
 pub use stripe_shared::payment_method_options_boleto::*;

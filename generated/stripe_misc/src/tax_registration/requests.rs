@@ -1,29 +1,23 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListTaxRegistration<'a> {
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListTaxRegistrationBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
+    ending_before: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-    /// The status of the Tax Registration.
+    starting_after: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<ListTaxRegistrationStatus>,
+    status: Option<ListTaxRegistrationStatus>,
 }
-impl<'a> ListTaxRegistration<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> ListTaxRegistrationBuilder<'a> {
+    fn new() -> Self {
+        Self { ending_before: None, expand: None, limit: None, starting_after: None, status: None }
     }
 }
 /// The status of the Tax Registration.
@@ -87,61 +81,149 @@ impl<'de> serde::Deserialize<'de> for ListTaxRegistrationStatus {
             .map_err(|_| serde::de::Error::custom("Unknown value for ListTaxRegistrationStatus"))
     }
 }
+/// Returns a list of Tax `Registration` objects.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListTaxRegistration<'a> {
+    inner: ListTaxRegistrationBuilder<'a>,
+}
 impl<'a> ListTaxRegistration<'a> {
-    /// Returns a list of Tax `Registration` objects.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_misc::TaxRegistration>> {
-        client.get_query("/tax/registrations", self)
-    }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_misc::TaxRegistration>> {
-        stripe::ListPaginator::from_list_params("/tax/registrations", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTaxRegistration<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTaxRegistration<'a> {
+    /// Construct a new `ListTaxRegistration`.
     pub fn new() -> Self {
-        Self::default()
+        Self { inner: ListTaxRegistrationBuilder::new() }
+    }
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
+    /// The status of the Tax Registration.
+    pub fn status(mut self, status: ListTaxRegistrationStatus) -> Self {
+        self.inner.status = Some(status);
+        self
     }
 }
-impl<'a> RetrieveTaxRegistration<'a> {
-    /// Returns a Tax `Registration` object.
-    pub fn send(
+impl<'a> Default for ListTaxRegistration<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListTaxRegistration<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        id: &stripe_misc::TaxRegistrationId,
-    ) -> stripe::Response<stripe_misc::TaxRegistration> {
-        client.get_query(&format!("/tax/registrations/{id}"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
+    pub fn paginate(
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_misc::TaxRegistration>> {
+        stripe_client_core::ListPaginator::new_list("/tax/registrations", self.inner)
+    }
+}
+
+impl StripeRequest for ListTaxRegistration<'_> {
+    type Output = stripe_types::List<stripe_misc::TaxRegistration>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/tax/registrations").query(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTaxRegistration<'a> {
-    /// Time at which the Tax Registration becomes active.
-    /// It can be either `now` to indicate the current time, or a future timestamp measured in seconds since the Unix epoch.
-    pub active_from: CreateTaxRegistrationActiveFrom,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    pub country: &'a str,
-    /// Specific options for a registration in the specified `country`.
-    pub country_options: CreateTaxRegistrationCountryOptions<'a>,
-    /// Specifies which fields in the response should be expanded.
+struct RetrieveTaxRegistrationBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// If set, the Tax Registration stops being active at this time.
-    /// If not set, the Tax Registration will be active indefinitely.
-    /// Timestamp measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<stripe_types::Timestamp>,
+    expand: Option<&'a [&'a str]>,
 }
-impl<'a> CreateTaxRegistration<'a> {
-    pub fn new(
+impl<'a> RetrieveTaxRegistrationBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Returns a Tax `Registration` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveTaxRegistration<'a> {
+    inner: RetrieveTaxRegistrationBuilder<'a>,
+    id: &'a stripe_misc::TaxRegistrationId,
+}
+impl<'a> RetrieveTaxRegistration<'a> {
+    /// Construct a new `RetrieveTaxRegistration`.
+    pub fn new(id: &'a stripe_misc::TaxRegistrationId) -> Self {
+        Self { id, inner: RetrieveTaxRegistrationBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveTaxRegistration<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveTaxRegistration<'_> {
+    type Output = stripe_misc::TaxRegistration;
+
+    fn build(&self) -> RequestBuilder {
+        let id = self.id;
+        RequestBuilder::new(StripeMethod::Get, format!("/tax/registrations/{id}"))
+            .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateTaxRegistrationBuilder<'a> {
+    active_from: CreateTaxRegistrationActiveFrom,
+    country: &'a str,
+    country_options: CreateTaxRegistrationCountryOptions<'a>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expires_at: Option<stripe_types::Timestamp>,
+}
+impl<'a> CreateTaxRegistrationBuilder<'a> {
+    fn new(
         active_from: CreateTaxRegistrationActiveFrom,
         country: &'a str,
         country_options: CreateTaxRegistrationCountryOptions<'a>,
@@ -158,7 +240,7 @@ pub enum CreateTaxRegistrationActiveFrom {
     Timestamp(stripe_types::Timestamp),
 }
 /// Specific options for a registration in the specified `country`.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptions<'a> {
     /// Options for the registration in AE.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -310,7 +392,62 @@ pub struct CreateTaxRegistrationCountryOptions<'a> {
 }
 impl<'a> CreateTaxRegistrationCountryOptions<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            ae: None,
+            at: None,
+            au: None,
+            be: None,
+            bg: None,
+            ca: None,
+            ch: None,
+            cl: None,
+            co: None,
+            cy: None,
+            cz: None,
+            de: None,
+            dk: None,
+            ee: None,
+            es: None,
+            fi: None,
+            fr: None,
+            gb: None,
+            gr: None,
+            hr: None,
+            hu: None,
+            id: None,
+            ie: None,
+            is: None,
+            it: None,
+            jp: None,
+            kr: None,
+            lt: None,
+            lu: None,
+            lv: None,
+            mt: None,
+            mx: None,
+            my: None,
+            nl: None,
+            no: None,
+            nz: None,
+            pl: None,
+            pt: None,
+            ro: None,
+            sa: None,
+            se: None,
+            sg: None,
+            si: None,
+            sk: None,
+            th: None,
+            tr: None,
+            us: None,
+            vn: None,
+            za: None,
+        }
+    }
+}
+impl<'a> Default for CreateTaxRegistrationCountryOptions<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Options for the registration in AE.
@@ -5746,30 +5883,70 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZaType 
         })
     }
 }
+/// Creates a new Tax `Registration` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistration<'a> {
+    inner: CreateTaxRegistrationBuilder<'a>,
+}
 impl<'a> CreateTaxRegistration<'a> {
-    /// Creates a new Tax `Registration` object.
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_misc::TaxRegistration> {
-        client.send_form("/tax/registrations", self, http_types::Method::Post)
+    /// Construct a new `CreateTaxRegistration`.
+    pub fn new(
+        active_from: CreateTaxRegistrationActiveFrom,
+        country: &'a str,
+        country_options: CreateTaxRegistrationCountryOptions<'a>,
+    ) -> Self {
+        Self { inner: CreateTaxRegistrationBuilder::new(active_from, country, country_options) }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// If set, the Tax Registration stops being active at this time.
+    /// If not set, the Tax Registration will be active indefinitely.
+    /// Timestamp measured in seconds since the Unix epoch.
+    pub fn expires_at(mut self, expires_at: stripe_types::Timestamp) -> Self {
+        self.inner.expires_at = Some(expires_at);
+        self
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateTaxRegistration<'a> {
-    /// Time at which the registration becomes active.
-    /// It can be either `now` to indicate the current time, or a timestamp measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub active_from: Option<UpdateTaxRegistrationActiveFrom>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// If set, the registration stops being active at this time.
-    /// If not set, the registration will be active indefinitely.
-    /// It can be either `now` to indicate the current time, or a timestamp measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<UpdateTaxRegistrationExpiresAt>,
+impl CreateTaxRegistration<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
 }
-impl<'a> UpdateTaxRegistration<'a> {
-    pub fn new() -> Self {
-        Self::default()
+
+impl StripeRequest for CreateTaxRegistration<'_> {
+    type Output = stripe_misc::TaxRegistration;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/tax/registrations").form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateTaxRegistrationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    active_from: Option<UpdateTaxRegistrationActiveFrom>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expires_at: Option<UpdateTaxRegistrationExpiresAt>,
+}
+impl<'a> UpdateTaxRegistrationBuilder<'a> {
+    fn new() -> Self {
+        Self { active_from: None, expand: None, expires_at: None }
     }
 }
 /// Time at which the registration becomes active.
@@ -5789,16 +5966,63 @@ pub enum UpdateTaxRegistrationExpiresAt {
     Now,
     Timestamp(stripe_types::Timestamp),
 }
+/// Updates an existing Tax `Registration` object.
+///
+/// A registration cannot be deleted after it has been created.
+/// If you wish to end a registration you may do so by setting `expires_at`.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTaxRegistration<'a> {
+    inner: UpdateTaxRegistrationBuilder<'a>,
+    id: &'a stripe_misc::TaxRegistrationId,
+}
 impl<'a> UpdateTaxRegistration<'a> {
-    /// Updates an existing Tax `Registration` object.
-    ///
-    /// A registration cannot be deleted after it has been created.
-    /// If you wish to end a registration you may do so by setting `expires_at`.
-    pub fn send(
+    /// Construct a new `UpdateTaxRegistration`.
+    pub fn new(id: &'a stripe_misc::TaxRegistrationId) -> Self {
+        Self { id, inner: UpdateTaxRegistrationBuilder::new() }
+    }
+    /// Time at which the registration becomes active.
+    /// It can be either `now` to indicate the current time, or a timestamp measured in seconds since the Unix epoch.
+    pub fn active_from(mut self, active_from: UpdateTaxRegistrationActiveFrom) -> Self {
+        self.inner.active_from = Some(active_from);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// If set, the registration stops being active at this time.
+    /// If not set, the registration will be active indefinitely.
+    /// It can be either `now` to indicate the current time, or a timestamp measured in seconds since the Unix epoch.
+    pub fn expires_at(mut self, expires_at: UpdateTaxRegistrationExpiresAt) -> Self {
+        self.inner.expires_at = Some(expires_at);
+        self
+    }
+}
+impl UpdateTaxRegistration<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        id: &stripe_misc::TaxRegistrationId,
-    ) -> stripe::Response<stripe_misc::TaxRegistration> {
-        client.send_form(&format!("/tax/registrations/{id}"), self, http_types::Method::Post)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateTaxRegistration<'_> {
+    type Output = stripe_misc::TaxRegistration;
+
+    fn build(&self) -> RequestBuilder {
+        let id = self.id;
+        RequestBuilder::new(StripeMethod::Post, format!("/tax/registrations/{id}"))
+            .form(&self.inner)
     }
 }

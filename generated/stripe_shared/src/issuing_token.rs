@@ -9,7 +9,7 @@ pub struct IssuingToken {
     pub card: stripe_types::Expandable<stripe_shared::IssuingCard>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
-    /// The hashed ID derived from the device ID from the card network associated with the token
+    /// The hashed ID derived from the device ID from the card network associated with the token.
     pub device_fingerprint: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_shared::IssuingTokenId,

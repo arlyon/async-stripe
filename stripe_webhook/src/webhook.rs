@@ -46,6 +46,7 @@ pub struct EventData {
     pub previous_attributes: Option<miniserde::json::Value>,
 }
 
+#[derive(Debug)]
 pub struct Webhook {
     current_timestamp: i64,
 }

@@ -19,7 +19,7 @@ pub struct TaxId {
     pub livemode: bool,
     /// The account or customer the tax ID belongs to.
     pub owner: Option<stripe_shared::TaxIDsOwner>,
-    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
+    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
     /// Note that some legacy tax IDs have type `unknown`.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: TaxIdType,
@@ -174,7 +174,7 @@ impl serde::Serialize for TaxId {
         s.end()
     }
 }
-/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
+/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
 /// Note that some legacy tax IDs have type `unknown`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxIdType {
@@ -184,6 +184,7 @@ pub enum TaxIdType {
     AuAbn,
     AuArn,
     BgUic,
+    BhVat,
     BoTin,
     BrCnpj,
     BrCpf,
@@ -217,13 +218,17 @@ pub enum TaxIdType {
     JpTrn,
     KePin,
     KrBrn,
+    KzBin,
     LiUid,
     MxRfc,
     MyFrp,
     MyItn,
     MySst,
+    NgTin,
     NoVat,
+    NoVoec,
     NzGst,
+    OmVat,
     PeRuc,
     PhTin,
     RoTin,
@@ -256,6 +261,7 @@ impl TaxIdType {
             AuAbn => "au_abn",
             AuArn => "au_arn",
             BgUic => "bg_uic",
+            BhVat => "bh_vat",
             BoTin => "bo_tin",
             BrCnpj => "br_cnpj",
             BrCpf => "br_cpf",
@@ -289,13 +295,17 @@ impl TaxIdType {
             JpTrn => "jp_trn",
             KePin => "ke_pin",
             KrBrn => "kr_brn",
+            KzBin => "kz_bin",
             LiUid => "li_uid",
             MxRfc => "mx_rfc",
             MyFrp => "my_frp",
             MyItn => "my_itn",
             MySst => "my_sst",
+            NgTin => "ng_tin",
             NoVat => "no_vat",
+            NoVoec => "no_voec",
             NzGst => "nz_gst",
+            OmVat => "om_vat",
             PeRuc => "pe_ruc",
             PhTin => "ph_tin",
             RoTin => "ro_tin",
@@ -332,6 +342,7 @@ impl std::str::FromStr for TaxIdType {
             "au_abn" => Ok(AuAbn),
             "au_arn" => Ok(AuArn),
             "bg_uic" => Ok(BgUic),
+            "bh_vat" => Ok(BhVat),
             "bo_tin" => Ok(BoTin),
             "br_cnpj" => Ok(BrCnpj),
             "br_cpf" => Ok(BrCpf),
@@ -365,13 +376,17 @@ impl std::str::FromStr for TaxIdType {
             "jp_trn" => Ok(JpTrn),
             "ke_pin" => Ok(KePin),
             "kr_brn" => Ok(KrBrn),
+            "kz_bin" => Ok(KzBin),
             "li_uid" => Ok(LiUid),
             "mx_rfc" => Ok(MxRfc),
             "my_frp" => Ok(MyFrp),
             "my_itn" => Ok(MyItn),
             "my_sst" => Ok(MySst),
+            "ng_tin" => Ok(NgTin),
             "no_vat" => Ok(NoVat),
+            "no_voec" => Ok(NoVoec),
             "nz_gst" => Ok(NzGst),
+            "om_vat" => Ok(OmVat),
             "pe_ruc" => Ok(PeRuc),
             "ph_tin" => Ok(PhTin),
             "ro_tin" => Ok(RoTin),

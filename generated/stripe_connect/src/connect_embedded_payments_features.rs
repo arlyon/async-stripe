@@ -4,6 +4,9 @@
 pub struct ConnectEmbeddedPaymentsFeatures {
     /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
     pub capture_payments: bool,
+    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    /// This is `false` by default.
+    pub destination_on_behalf_of_charge_management: bool,
     /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
     /// This is `true` by default.
     pub dispute_management: bool,
@@ -13,6 +16,7 @@ pub struct ConnectEmbeddedPaymentsFeatures {
 #[doc(hidden)]
 pub struct ConnectEmbeddedPaymentsFeaturesBuilder {
     capture_payments: Option<bool>,
+    destination_on_behalf_of_charge_management: Option<bool>,
     dispute_management: Option<bool>,
     refund_management: Option<bool>,
 }
@@ -52,6 +56,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "capture_payments" => Deserialize::begin(&mut self.capture_payments),
+                "destination_on_behalf_of_charge_management" => {
+                    Deserialize::begin(&mut self.destination_on_behalf_of_charge_management)
+                }
                 "dispute_management" => Deserialize::begin(&mut self.dispute_management),
                 "refund_management" => Deserialize::begin(&mut self.refund_management),
 
@@ -62,6 +69,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 capture_payments: Deserialize::default(),
+                destination_on_behalf_of_charge_management: Deserialize::default(),
                 dispute_management: Deserialize::default(),
                 refund_management: Deserialize::default(),
             }
@@ -70,6 +78,8 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             Some(Self::Out {
                 capture_payments: self.capture_payments?,
+                destination_on_behalf_of_charge_management: self
+                    .destination_on_behalf_of_charge_management?,
                 dispute_management: self.dispute_management?,
                 refund_management: self.refund_management?,
             })
@@ -100,6 +110,10 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "capture_payments" => b.capture_payments = Some(FromValueOpt::from_value(v)?),
+                    "destination_on_behalf_of_charge_management" => {
+                        b.destination_on_behalf_of_charge_management =
+                            Some(FromValueOpt::from_value(v)?)
+                    }
                     "dispute_management" => {
                         b.dispute_management = Some(FromValueOpt::from_value(v)?)
                     }

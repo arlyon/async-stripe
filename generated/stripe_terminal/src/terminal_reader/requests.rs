@@ -1,90 +1,222 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteTerminalReader {}
-impl DeleteTerminalReader {
-    pub fn new() -> Self {
-        Self::default()
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+/// Deletes a `Reader` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DeleteTerminalReader<'a> {
+    reader: &'a stripe_terminal::TerminalReaderId,
+}
+impl<'a> DeleteTerminalReader<'a> {
+    /// Construct a new `DeleteTerminalReader`.
+    pub fn new(reader: &'a stripe_terminal::TerminalReaderId) -> Self {
+        Self { reader }
     }
 }
-impl DeleteTerminalReader {
-    /// Deletes a `Reader` object.
-    pub fn send(
+impl DeleteTerminalReader<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<stripe_terminal::DeletedTerminalReader> {
-        client.send_form(&format!("/terminal/readers/{reader}"), self, http_types::Method::Delete)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListTerminalReader<'a> {
-    /// Filters readers by device type
+
+impl StripeRequest for DeleteTerminalReader<'_> {
+    type Output = stripe_terminal::DeletedTerminalReader;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = self.reader;
+        RequestBuilder::new(StripeMethod::Delete, format!("/terminal/readers/{reader}"))
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListTerminalReaderBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub device_type: Option<stripe_terminal::TerminalReaderDeviceType>,
+    device_type: Option<stripe_terminal::TerminalReaderDeviceType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    location: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    serial_number: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    status: Option<stripe_terminal::TerminalReaderStatus>,
+}
+impl<'a> ListTerminalReaderBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            device_type: None,
+            ending_before: None,
+            expand: None,
+            limit: None,
+            location: None,
+            serial_number: None,
+            starting_after: None,
+            status: None,
+        }
+    }
+}
+/// Returns a list of `Reader` objects.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListTerminalReader<'a> {
+    inner: ListTerminalReaderBuilder<'a>,
+}
+impl<'a> ListTerminalReader<'a> {
+    /// Construct a new `ListTerminalReader`.
+    pub fn new() -> Self {
+        Self { inner: ListTerminalReaderBuilder::new() }
+    }
+    /// Filters readers by device type
+    pub fn device_type(mut self, device_type: stripe_terminal::TerminalReaderDeviceType) -> Self {
+        self.inner.device_type = Some(device_type);
+        self
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// A location ID to filter the response list to only readers at the specific location
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub location: Option<&'a str>,
+    pub fn location(mut self, location: &'a str) -> Self {
+        self.inner.location = Some(location);
+        self
+    }
     /// Filters readers by serial number
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub serial_number: Option<&'a str>,
+    pub fn serial_number(mut self, serial_number: &'a str) -> Self {
+        self.inner.serial_number = Some(serial_number);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
     /// A status filter to filter readers to only offline or online readers
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<stripe_terminal::TerminalReaderStatus>,
-}
-impl<'a> ListTerminalReader<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn status(mut self, status: stripe_terminal::TerminalReaderStatus) -> Self {
+        self.inner.status = Some(status);
+        self
     }
 }
-impl<'a> ListTerminalReader<'a> {
-    /// Returns a list of `Reader` objects.
-    pub fn send(
+impl<'a> Default for ListTerminalReader<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListTerminalReader<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalReader>> {
-        client.get_query("/terminal/readers", self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_terminal::TerminalReader>> {
-        stripe::ListPaginator::from_list_params("/terminal/readers", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTerminalReader<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTerminalReader<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveTerminalReader<'a> {
-    /// Retrieves a `Reader` object.
-    pub fn send(
         &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<RetrieveTerminalReaderReturned> {
-        client.get_query(&format!("/terminal/readers/{reader}"), self)
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_terminal::TerminalReader>>
+    {
+        stripe_client_core::ListPaginator::new_list("/terminal/readers", self.inner)
+    }
+}
+
+impl StripeRequest for ListTerminalReader<'_> {
+    type Output = stripe_types::List<stripe_terminal::TerminalReader>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/terminal/readers").query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveTerminalReaderBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveTerminalReaderBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves a `Reader` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveTerminalReader<'a> {
+    inner: RetrieveTerminalReaderBuilder<'a>,
+    reader: &'a stripe_terminal::TerminalReaderId,
+}
+impl<'a> RetrieveTerminalReader<'a> {
+    /// Construct a new `RetrieveTerminalReader`.
+    pub fn new(reader: &'a stripe_terminal::TerminalReaderId) -> Self {
+        Self { reader, inner: RetrieveTerminalReaderBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveTerminalReader<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveTerminalReader<'_> {
+    type Output = RetrieveTerminalReaderReturned;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = self.reader;
+        RequestBuilder::new(StripeMethod::Get, format!("/terminal/readers/{reader}"))
+            .query(&self.inner)
     }
 }
 #[derive(Clone, Debug)]
@@ -170,69 +302,152 @@ const _: () = {
 };
 
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTerminalReader<'a> {
-    /// Specifies which fields in the response should be expanded.
+struct CreateTerminalReaderBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Custom label given to the reader for easier identification.
-    /// If no label is specified, the registration code will be used.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub label: Option<&'a str>,
-    /// The location to assign the reader to.
+    label: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub location: Option<&'a str>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
+    location: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// A code generated by the reader used for registering to an account.
-    pub registration_code: &'a str,
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    registration_code: &'a str,
 }
-impl<'a> CreateTerminalReader<'a> {
-    pub fn new(registration_code: &'a str) -> Self {
+impl<'a> CreateTerminalReaderBuilder<'a> {
+    fn new(registration_code: &'a str) -> Self {
         Self { expand: None, label: None, location: None, metadata: None, registration_code }
     }
 }
-impl<'a> CreateTerminalReader<'a> {
-    /// Creates a new `Reader` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form("/terminal/readers", self, http_types::Method::Post)
-    }
+/// Creates a new `Reader` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTerminalReader<'a> {
+    inner: CreateTerminalReaderBuilder<'a>,
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateTerminalReader<'a> {
+impl<'a> CreateTerminalReader<'a> {
+    /// Construct a new `CreateTerminalReader`.
+    pub fn new(registration_code: &'a str) -> Self {
+        Self { inner: CreateTerminalReaderBuilder::new(registration_code) }
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The new label of the reader.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub label: Option<&'a str>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Custom label given to the reader for easier identification.
+    /// If no label is specified, the registration code will be used.
+    pub fn label(mut self, label: &'a str) -> Self {
+        self.inner.label = Some(label);
+        self
+    }
+    /// The location to assign the reader to.
+    pub fn location(mut self, location: &'a str) -> Self {
+        self.inner.location = Some(location);
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-}
-impl<'a> UpdateTerminalReader<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
     }
 }
-impl<'a> UpdateTerminalReader<'a> {
-    /// Updates a `Reader` object by setting the values of the parameters passed.
-    /// Any parameters not provided will be left unchanged.
-    pub fn send(
+impl CreateTerminalReader<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<UpdateTerminalReaderReturned> {
-        client.send_form(&format!("/terminal/readers/{reader}"), self, http_types::Method::Post)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateTerminalReader<'_> {
+    type Output = stripe_terminal::TerminalReader;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/terminal/readers").form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateTerminalReaderBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    label: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+}
+impl<'a> UpdateTerminalReaderBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None, label: None, metadata: None }
+    }
+}
+/// Updates a `Reader` object by setting the values of the parameters passed.
+/// Any parameters not provided will be left unchanged.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTerminalReader<'a> {
+    inner: UpdateTerminalReaderBuilder<'a>,
+    reader: &'a stripe_terminal::TerminalReaderId,
+}
+impl<'a> UpdateTerminalReader<'a> {
+    /// Construct a new `UpdateTerminalReader`.
+    pub fn new(reader: &'a stripe_terminal::TerminalReaderId) -> Self {
+        Self { reader, inner: UpdateTerminalReaderBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// The new label of the reader.
+    pub fn label(mut self, label: &'a str) -> Self {
+        self.inner.label = Some(label);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+}
+impl UpdateTerminalReader<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateTerminalReader<'_> {
+    type Output = UpdateTerminalReaderReturned;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = self.reader;
+        RequestBuilder::new(StripeMethod::Post, format!("/terminal/readers/{reader}"))
+            .form(&self.inner)
     }
 }
 #[derive(Clone, Debug)]
@@ -317,50 +532,79 @@ const _: () = {
     }
 };
 
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CancelActionTerminalReader<'a> {
-    /// Specifies which fields in the response should be expanded.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CancelActionTerminalReaderBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    expand: Option<&'a [&'a str]>,
 }
-impl<'a> CancelActionTerminalReader<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> CancelActionTerminalReaderBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
     }
 }
+/// Cancels the current reader action.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CancelActionTerminalReader<'a> {
+    inner: CancelActionTerminalReaderBuilder<'a>,
+    reader: &'a stripe_terminal::TerminalReaderId,
+}
 impl<'a> CancelActionTerminalReader<'a> {
-    /// Cancels the current reader action.
-    pub fn send(
+    /// Construct a new `CancelActionTerminalReader`.
+    pub fn new(reader: &'a stripe_terminal::TerminalReaderId) -> Self {
+        Self { reader, inner: CancelActionTerminalReaderBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl CancelActionTerminalReader<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form(
-            &format!("/terminal/readers/{reader}/cancel_action"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CancelActionTerminalReader<'_> {
+    type Output = stripe_terminal::TerminalReader;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = self.reader;
+        RequestBuilder::new(StripeMethod::Post, format!("/terminal/readers/{reader}/cancel_action"))
+            .form(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ProcessPaymentIntentTerminalReader<'a> {
-    /// Specifies which fields in the response should be expanded.
+struct ProcessPaymentIntentTerminalReaderBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// PaymentIntent ID
-    pub payment_intent: &'a str,
-    /// Configuration overrides
+    expand: Option<&'a [&'a str]>,
+    payment_intent: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub process_config: Option<ProcessPaymentIntentTerminalReaderProcessConfig>,
+    process_config: Option<ProcessPaymentIntentTerminalReaderProcessConfig>,
 }
-impl<'a> ProcessPaymentIntentTerminalReader<'a> {
-    pub fn new(payment_intent: &'a str) -> Self {
+impl<'a> ProcessPaymentIntentTerminalReaderBuilder<'a> {
+    fn new(payment_intent: &'a str) -> Self {
         Self { expand: None, payment_intent, process_config: None }
     }
 }
 /// Configuration overrides
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ProcessPaymentIntentTerminalReaderProcessConfig {
+    /// Enables cancel button on transaction screens.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_customer_cancellation: Option<bool>,
     /// Override showing a tipping selection screen on this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub skip_tipping: Option<bool>,
@@ -370,11 +614,16 @@ pub struct ProcessPaymentIntentTerminalReaderProcessConfig {
 }
 impl ProcessPaymentIntentTerminalReaderProcessConfig {
     pub fn new() -> Self {
-        Self::default()
+        Self { enable_customer_cancellation: None, skip_tipping: None, tipping: None }
+    }
+}
+impl Default for ProcessPaymentIntentTerminalReaderProcessConfig {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Tipping configuration for this transaction.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ProcessPaymentIntentTerminalReaderProcessConfigTipping {
     /// Amount used to calculate tip suggestions on tipping selection screen for this transaction.
     /// Must be a positive integer in the smallest currency unit (e.g., 100 cents to represent $1.00 or 100 to represent ¥100, a zero-decimal currency).
@@ -383,121 +632,319 @@ pub struct ProcessPaymentIntentTerminalReaderProcessConfigTipping {
 }
 impl ProcessPaymentIntentTerminalReaderProcessConfigTipping {
     pub fn new() -> Self {
-        Self::default()
+        Self { amount_eligible: None }
     }
+}
+impl Default for ProcessPaymentIntentTerminalReaderProcessConfigTipping {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Initiates a payment flow on a Reader.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ProcessPaymentIntentTerminalReader<'a> {
+    inner: ProcessPaymentIntentTerminalReaderBuilder<'a>,
+    reader: &'a stripe_terminal::TerminalReaderId,
 }
 impl<'a> ProcessPaymentIntentTerminalReader<'a> {
-    /// Initiates a payment flow on a Reader.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form(
-            &format!("/terminal/readers/{reader}/process_payment_intent"),
-            self,
-            http_types::Method::Post,
-        )
+    /// Construct a new `ProcessPaymentIntentTerminalReader`.
+    pub fn new(reader: &'a stripe_terminal::TerminalReaderId, payment_intent: &'a str) -> Self {
+        Self { reader, inner: ProcessPaymentIntentTerminalReaderBuilder::new(payment_intent) }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Configuration overrides
+    pub fn process_config(
+        mut self,
+        process_config: ProcessPaymentIntentTerminalReaderProcessConfig,
+    ) -> Self {
+        self.inner.process_config = Some(process_config);
+        self
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct ProcessSetupIntentTerminalReader<'a> {
-    /// Customer Consent Collected
-    pub customer_consent_collected: bool,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Configuration overrides
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub process_config: Option<miniserde::json::Value>,
-    /// SetupIntent ID
-    pub setup_intent: &'a str,
+impl ProcessPaymentIntentTerminalReader<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
 }
-impl<'a> ProcessSetupIntentTerminalReader<'a> {
-    pub fn new(customer_consent_collected: bool, setup_intent: &'a str) -> Self {
+
+impl StripeRequest for ProcessPaymentIntentTerminalReader<'_> {
+    type Output = stripe_terminal::TerminalReader;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = self.reader;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/terminal/readers/{reader}/process_payment_intent"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ProcessSetupIntentTerminalReaderBuilder<'a> {
+    customer_consent_collected: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    process_config: Option<ProcessSetupIntentTerminalReaderProcessConfig>,
+    setup_intent: &'a str,
+}
+impl<'a> ProcessSetupIntentTerminalReaderBuilder<'a> {
+    fn new(customer_consent_collected: bool, setup_intent: &'a str) -> Self {
         Self { customer_consent_collected, expand: None, process_config: None, setup_intent }
     }
 }
-impl<'a> ProcessSetupIntentTerminalReader<'a> {
-    /// Initiates a setup intent flow on a Reader.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form(
-            &format!("/terminal/readers/{reader}/process_setup_intent"),
-            self,
-            http_types::Method::Post,
-        )
+/// Configuration overrides
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct ProcessSetupIntentTerminalReaderProcessConfig {
+    /// Enables cancel button on transaction screens.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_customer_cancellation: Option<bool>,
+}
+impl ProcessSetupIntentTerminalReaderProcessConfig {
+    pub fn new() -> Self {
+        Self { enable_customer_cancellation: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RefundPaymentTerminalReader<'a> {
-    /// A positive integer in __cents__ representing how much of this charge to refund.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// ID of the Charge to refund.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub charge: Option<&'a str>,
+impl Default for ProcessSetupIntentTerminalReaderProcessConfig {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Initiates a setup intent flow on a Reader.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ProcessSetupIntentTerminalReader<'a> {
+    inner: ProcessSetupIntentTerminalReaderBuilder<'a>,
+    reader: &'a stripe_terminal::TerminalReaderId,
+}
+impl<'a> ProcessSetupIntentTerminalReader<'a> {
+    /// Construct a new `ProcessSetupIntentTerminalReader`.
+    pub fn new(
+        reader: &'a stripe_terminal::TerminalReaderId,
+        customer_consent_collected: bool,
+        setup_intent: &'a str,
+    ) -> Self {
+        Self {
+            reader,
+            inner: ProcessSetupIntentTerminalReaderBuilder::new(
+                customer_consent_collected,
+                setup_intent,
+            ),
+        }
+    }
     /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Configuration overrides
+    pub fn process_config(
+        mut self,
+        process_config: ProcessSetupIntentTerminalReaderProcessConfig,
+    ) -> Self {
+        self.inner.process_config = Some(process_config);
+        self
+    }
+}
+impl ProcessSetupIntentTerminalReader<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for ProcessSetupIntentTerminalReader<'_> {
+    type Output = stripe_terminal::TerminalReader;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = self.reader;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/terminal/readers/{reader}/process_setup_intent"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RefundPaymentTerminalReaderBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    amount: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    charge: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_intent: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    refund_application_fee: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    refund_payment_config: Option<RefundPaymentTerminalReaderRefundPaymentConfig>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reverse_transfer: Option<bool>,
+}
+impl<'a> RefundPaymentTerminalReaderBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            amount: None,
+            charge: None,
+            expand: None,
+            metadata: None,
+            payment_intent: None,
+            refund_application_fee: None,
+            refund_payment_config: None,
+            reverse_transfer: None,
+        }
+    }
+}
+/// Configuration overrides
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct RefundPaymentTerminalReaderRefundPaymentConfig {
+    /// Enables cancel button on transaction screens.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_customer_cancellation: Option<bool>,
+}
+impl RefundPaymentTerminalReaderRefundPaymentConfig {
+    pub fn new() -> Self {
+        Self { enable_customer_cancellation: None }
+    }
+}
+impl Default for RefundPaymentTerminalReaderRefundPaymentConfig {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Initiates a refund on a Reader
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RefundPaymentTerminalReader<'a> {
+    inner: RefundPaymentTerminalReaderBuilder<'a>,
+    reader: &'a stripe_terminal::TerminalReaderId,
+}
+impl<'a> RefundPaymentTerminalReader<'a> {
+    /// Construct a new `RefundPaymentTerminalReader`.
+    pub fn new(reader: &'a stripe_terminal::TerminalReaderId) -> Self {
+        Self { reader, inner: RefundPaymentTerminalReaderBuilder::new() }
+    }
+    /// A positive integer in __cents__ representing how much of this charge to refund.
+    pub fn amount(mut self, amount: i64) -> Self {
+        self.inner.amount = Some(amount);
+        self
+    }
+    /// ID of the Charge to refund.
+    pub fn charge(mut self, charge: &'a str) -> Self {
+        self.inner.charge = Some(charge);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
     /// ID of the PaymentIntent to refund.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_intent: Option<&'a str>,
+    pub fn payment_intent(mut self, payment_intent: &'a str) -> Self {
+        self.inner.payment_intent = Some(payment_intent);
+        self
+    }
     /// Boolean indicating whether the application fee should be refunded when refunding this charge.
     /// If a full charge refund is given, the full application fee will be refunded.
     /// Otherwise, the application fee will be refunded in an amount proportional to the amount of the charge refunded.
     /// An application fee can be refunded only by the application that created the charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub refund_application_fee: Option<bool>,
+    pub fn refund_application_fee(mut self, refund_application_fee: bool) -> Self {
+        self.inner.refund_application_fee = Some(refund_application_fee);
+        self
+    }
+    /// Configuration overrides
+    pub fn refund_payment_config(
+        mut self,
+        refund_payment_config: RefundPaymentTerminalReaderRefundPaymentConfig,
+    ) -> Self {
+        self.inner.refund_payment_config = Some(refund_payment_config);
+        self
+    }
     /// Boolean indicating whether the transfer should be reversed when refunding this charge.
     /// The transfer will be reversed proportionally to the amount being refunded (either the entire or partial amount).
     /// A transfer can be reversed only by the application that created the charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reverse_transfer: Option<bool>,
-}
-impl<'a> RefundPaymentTerminalReader<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn reverse_transfer(mut self, reverse_transfer: bool) -> Self {
+        self.inner.reverse_transfer = Some(reverse_transfer);
+        self
     }
 }
-impl<'a> RefundPaymentTerminalReader<'a> {
-    /// Initiates a refund on a Reader
-    pub fn send(
+impl RefundPaymentTerminalReader<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form(
-            &format!("/terminal/readers/{reader}/refund_payment"),
-            self,
-            http_types::Method::Post,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RefundPaymentTerminalReader<'_> {
+    type Output = stripe_terminal::TerminalReader;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = self.reader;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/terminal/readers/{reader}/refund_payment"),
         )
+        .form(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct SetReaderDisplayTerminalReader<'a> {
-    /// Cart
+struct SetReaderDisplayTerminalReaderBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cart: Option<SetReaderDisplayTerminalReaderCart<'a>>,
-    /// Specifies which fields in the response should be expanded.
+    cart: Option<SetReaderDisplayTerminalReaderCart<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Type
+    expand: Option<&'a [&'a str]>,
     #[serde(rename = "type")]
-    pub type_: SetReaderDisplayTerminalReaderType,
+    type_: SetReaderDisplayTerminalReaderType,
 }
-impl<'a> SetReaderDisplayTerminalReader<'a> {
-    pub fn new(type_: SetReaderDisplayTerminalReaderType) -> Self {
+impl<'a> SetReaderDisplayTerminalReaderBuilder<'a> {
+    fn new(type_: SetReaderDisplayTerminalReaderType) -> Self {
         Self { cart: None, expand: None, type_ }
     }
 }
@@ -592,46 +1039,88 @@ impl<'de> serde::Deserialize<'de> for SetReaderDisplayTerminalReaderType {
         })
     }
 }
+/// Sets reader display to show cart details.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct SetReaderDisplayTerminalReader<'a> {
+    inner: SetReaderDisplayTerminalReaderBuilder<'a>,
+    reader: &'a stripe_terminal::TerminalReaderId,
+}
 impl<'a> SetReaderDisplayTerminalReader<'a> {
-    /// Sets reader display to show cart details.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form(
-            &format!("/terminal/readers/{reader}/set_reader_display"),
-            self,
-            http_types::Method::Post,
-        )
+    /// Construct a new `SetReaderDisplayTerminalReader`.
+    pub fn new(
+        reader: &'a stripe_terminal::TerminalReaderId,
+        type_: SetReaderDisplayTerminalReaderType,
+    ) -> Self {
+        Self { reader, inner: SetReaderDisplayTerminalReaderBuilder::new(type_) }
+    }
+    /// Cart
+    pub fn cart(mut self, cart: SetReaderDisplayTerminalReaderCart<'a>) -> Self {
+        self.inner.cart = Some(cart);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct PresentPaymentMethodTerminalReader<'a> {
-    /// Simulated on-reader tip amount.
+impl SetReaderDisplayTerminalReader<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for SetReaderDisplayTerminalReader<'_> {
+    type Output = stripe_terminal::TerminalReader;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = self.reader;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/terminal/readers/{reader}/set_reader_display"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct PresentPaymentMethodTerminalReaderBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_tip: Option<i64>,
-    /// Simulated data for the card_present payment method.
+    amount_tip: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_present: Option<PresentPaymentMethodTerminalReaderCardPresent<'a>>,
-    /// Specifies which fields in the response should be expanded.
+    card_present: Option<PresentPaymentMethodTerminalReaderCardPresent<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Simulated data for the interac_present payment method.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interac_present: Option<PresentPaymentMethodTerminalReaderInteracPresent<'a>>,
-    /// Simulated payment type.
+    interac_present: Option<PresentPaymentMethodTerminalReaderInteracPresent<'a>>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<PresentPaymentMethodTerminalReaderType>,
+    type_: Option<PresentPaymentMethodTerminalReaderType>,
 }
-impl<'a> PresentPaymentMethodTerminalReader<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> PresentPaymentMethodTerminalReaderBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            amount_tip: None,
+            card_present: None,
+            expand: None,
+            interac_present: None,
+            type_: None,
+        }
     }
 }
 /// Simulated data for the card_present payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct PresentPaymentMethodTerminalReaderCardPresent<'a> {
     /// The card number, as a string without any separators.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -639,11 +1128,16 @@ pub struct PresentPaymentMethodTerminalReaderCardPresent<'a> {
 }
 impl<'a> PresentPaymentMethodTerminalReaderCardPresent<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { number: None }
+    }
+}
+impl<'a> Default for PresentPaymentMethodTerminalReaderCardPresent<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Simulated data for the interac_present payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct PresentPaymentMethodTerminalReaderInteracPresent<'a> {
     /// Card Number
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -651,7 +1145,12 @@ pub struct PresentPaymentMethodTerminalReaderInteracPresent<'a> {
 }
 impl<'a> PresentPaymentMethodTerminalReaderInteracPresent<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { number: None }
+    }
+}
+impl<'a> Default for PresentPaymentMethodTerminalReaderInteracPresent<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Simulated payment type.
@@ -710,18 +1209,77 @@ impl<'de> serde::Deserialize<'de> for PresentPaymentMethodTerminalReaderType {
         })
     }
 }
+/// Presents a payment method on a simulated reader.
+/// Can be used to simulate accepting a payment, saving a card or refunding a transaction.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct PresentPaymentMethodTerminalReader<'a> {
+    inner: PresentPaymentMethodTerminalReaderBuilder<'a>,
+    reader: &'a str,
+}
 impl<'a> PresentPaymentMethodTerminalReader<'a> {
-    /// Presents a payment method on a simulated reader.
-    /// Can be used to simulate accepting a payment, saving a card or refunding a transaction.
-    pub fn send(
+    /// Construct a new `PresentPaymentMethodTerminalReader`.
+    pub fn new(reader: &'a str) -> Self {
+        Self { reader, inner: PresentPaymentMethodTerminalReaderBuilder::new() }
+    }
+    /// Simulated on-reader tip amount.
+    pub fn amount_tip(mut self, amount_tip: i64) -> Self {
+        self.inner.amount_tip = Some(amount_tip);
+        self
+    }
+    /// Simulated data for the card_present payment method.
+    pub fn card_present(
+        mut self,
+        card_present: PresentPaymentMethodTerminalReaderCardPresent<'a>,
+    ) -> Self {
+        self.inner.card_present = Some(card_present);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Simulated data for the interac_present payment method.
+    pub fn interac_present(
+        mut self,
+        interac_present: PresentPaymentMethodTerminalReaderInteracPresent<'a>,
+    ) -> Self {
+        self.inner.interac_present = Some(interac_present);
+        self
+    }
+    /// Simulated payment type.
+    pub fn type_(mut self, type_: PresentPaymentMethodTerminalReaderType) -> Self {
+        self.inner.type_ = Some(type_);
+        self
+    }
+}
+impl PresentPaymentMethodTerminalReader<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        reader: &str,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form(
-            &format!("/test_helpers/terminal/readers/{reader}/present_payment_method"),
-            self,
-            http_types::Method::Post,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for PresentPaymentMethodTerminalReader<'_> {
+    type Output = stripe_terminal::TerminalReader;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = self.reader;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/terminal/readers/{reader}/present_payment_method"),
         )
+        .form(&self.inner)
     }
 }

@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsCardPresentReceipt {
@@ -12,7 +12,8 @@ pub struct PaymentMethodDetailsCardPresentReceipt {
     pub authorization_code: Option<String>,
     /// EMV tag 8A. A code returned by the card issuer.
     pub authorization_response_code: Option<String>,
-    /// How the cardholder verified ownership of the card.
+    /// Describes the method used by the cardholder to verify ownership of the card.
+    /// One of the following: `approval`, `failure`, `none`, `offline_pin`, `offline_pin_and_signature`, `online_pin`, or `signature`.
     pub cardholder_verification_method: Option<String>,
     /// EMV tag 84. Similar to the application identifier stored on the integrated circuit chip.
     pub dedicated_file_name: Option<String>,

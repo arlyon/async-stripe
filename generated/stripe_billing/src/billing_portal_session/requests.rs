@@ -1,34 +1,25 @@
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateBillingPortalSession<'a> {
-    /// The ID of an existing [configuration](https://stripe.com/docs/api/customer_portal/configuration) to use for this session, describing its functionality and features.
-    /// If not specified, the session uses the default configuration.
+struct CreateBillingPortalSessionBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub configuration: Option<&'a str>,
-    /// The ID of an existing customer.
-    pub customer: &'a str,
-    /// Specifies which fields in the response should be expanded.
+    configuration: Option<&'a str>,
+    customer: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Information about a specific flow for the customer to go through.
-    /// See the [docs](https://stripe.com/docs/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flow_data: Option<CreateBillingPortalSessionFlowData<'a>>,
-    /// The IETF language tag of the locale customer portal is displayed in.
-    /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
+    flow_data: Option<CreateBillingPortalSessionFlowData<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub locale: Option<stripe_billing::BillingPortalSessionLocale>,
-    /// The `on_behalf_of` account to use for this session.
-    /// When specified, only subscriptions and invoices with this `on_behalf_of` account appear in the portal.
-    /// For more information, see the [docs](https://stripe.com/docs/connect/separate-charges-and-transfers#on-behalf-of).
-    /// Use the [Accounts API](https://stripe.com/docs/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
+    locale: Option<stripe_billing::BillingPortalSessionLocale>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<&'a str>,
-    /// The default URL to redirect customers to when they click on the portal's link to return to your website.
+    on_behalf_of: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub return_url: Option<&'a str>,
+    return_url: Option<&'a str>,
 }
-impl<'a> CreateBillingPortalSession<'a> {
-    pub fn new(customer: &'a str) -> Self {
+impl<'a> CreateBillingPortalSessionBuilder<'a> {
+    fn new(customer: &'a str) -> Self {
         Self {
             configuration: None,
             customer,
@@ -92,7 +83,7 @@ impl<'a> CreateBillingPortalSessionFlowDataAfterCompletion<'a> {
     }
 }
 /// Configuration when `after_completion.type=hosted_confirmation`.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation<'a> {
     /// A custom message to display to the customer after the flow is completed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -100,7 +91,12 @@ pub struct CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation<'
 }
 impl<'a> CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { custom_message: None }
+    }
+}
+impl<'a> Default for CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Configuration when `after_completion.type=redirect`.
@@ -305,7 +301,7 @@ impl<'a> CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm<'a> {
 }
 /// The coupon or promotion code to apply to this subscription update.
 /// Currently, only up to one may be specified.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts<'a> {
     /// The ID of the coupon to apply to this subscription update.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -316,7 +312,12 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts<
 }
 impl<'a> CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { coupon: None, promotion_code: None }
+    }
+}
+impl<'a> Default for CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The [subscription item](https://stripe.com/docs/api/subscription_items) to be updated through this flow.
@@ -400,12 +401,75 @@ impl<'de> serde::Deserialize<'de> for CreateBillingPortalSessionFlowDataType {
         })
     }
 }
+/// Creates a session of the customer portal.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateBillingPortalSession<'a> {
+    inner: CreateBillingPortalSessionBuilder<'a>,
+}
 impl<'a> CreateBillingPortalSession<'a> {
-    /// Creates a session of the customer portal.
-    pub fn send(
+    /// Construct a new `CreateBillingPortalSession`.
+    pub fn new(customer: &'a str) -> Self {
+        Self { inner: CreateBillingPortalSessionBuilder::new(customer) }
+    }
+    /// The ID of an existing [configuration](https://stripe.com/docs/api/customer_portal/configuration) to use for this session, describing its functionality and features.
+    /// If not specified, the session uses the default configuration.
+    pub fn configuration(mut self, configuration: &'a str) -> Self {
+        self.inner.configuration = Some(configuration);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Information about a specific flow for the customer to go through.
+    /// See the [docs](https://stripe.com/docs/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
+    pub fn flow_data(mut self, flow_data: CreateBillingPortalSessionFlowData<'a>) -> Self {
+        self.inner.flow_data = Some(flow_data);
+        self
+    }
+    /// The IETF language tag of the locale customer portal is displayed in.
+    /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
+    pub fn locale(mut self, locale: stripe_billing::BillingPortalSessionLocale) -> Self {
+        self.inner.locale = Some(locale);
+        self
+    }
+    /// The `on_behalf_of` account to use for this session.
+    /// When specified, only subscriptions and invoices with this `on_behalf_of` account appear in the portal.
+    /// For more information, see the [docs](https://stripe.com/docs/connect/separate-charges-and-transfers#settlement-merchant).
+    /// Use the [Accounts API](https://stripe.com/docs/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
+    pub fn on_behalf_of(mut self, on_behalf_of: &'a str) -> Self {
+        self.inner.on_behalf_of = Some(on_behalf_of);
+        self
+    }
+    /// The default URL to redirect customers to when they click on the portal's link to return to your website.
+    pub fn return_url(mut self, return_url: &'a str) -> Self {
+        self.inner.return_url = Some(return_url);
+        self
+    }
+}
+impl CreateBillingPortalSession<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_billing::BillingPortalSession> {
-        client.send_form("/billing_portal/sessions", self, http_types::Method::Post)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateBillingPortalSession<'_> {
+    type Output = stripe_billing::BillingPortalSession;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/billing_portal/sessions").form(&self.inner)
     }
 }

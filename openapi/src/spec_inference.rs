@@ -9,7 +9,7 @@ use openapiv3::{
 };
 
 use crate::rust_object::{
-    EnumVariant, FieldlessVariant, ObjectMetadata, RustObject, Struct, StructField,
+    EnumVariant, FieldlessVariant, ObjectMetadata, RustObject, Struct, StructField, Visibility,
 };
 use crate::rust_type::{ExtType, IntType, RustType, SimpleType};
 use crate::spec::{
@@ -296,7 +296,15 @@ impl<'a> Inference<'a> {
         if field_rename == "type" {
             field_rename = "type_".into();
         }
-        let mut struct_field = StructField::new(&field_rename, rust_type, self.required);
+
+        // The `deleted` field is only used as a de/ser discriminant, so there is no reason to make it public
+        let force_private =
+            matches!(rust_type, RustType::Simple(SimpleType::Ext(ExtType::AlwaysTrue)));
+
+        let mut struct_field = StructField::new(&field_rename, rust_type).required(self.required);
+        if force_private {
+            struct_field = struct_field.vis(Visibility::Private);
+        }
         if let Some(doc) = self.description {
             struct_field = struct_field.doc(doc);
         }

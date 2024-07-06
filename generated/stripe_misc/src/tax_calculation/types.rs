@@ -22,6 +22,8 @@ pub struct TaxCalculation {
     pub line_items: Option<stripe_types::List<stripe_misc::TaxCalculationLineItem>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+    /// The details of the ship from location, such as the address.
+    pub ship_from_details: Option<stripe_misc::TaxProductResourceShipFromDetails>,
     /// The shipping cost details for the calculation.
     pub shipping_cost: Option<stripe_misc::TaxProductResourceTaxCalculationShippingCost>,
     /// The amount of tax to be collected on top of the line item prices.
@@ -43,6 +45,7 @@ pub struct TaxCalculationBuilder {
     id: Option<Option<stripe_misc::TaxCalculationId>>,
     line_items: Option<Option<stripe_types::List<stripe_misc::TaxCalculationLineItem>>>,
     livemode: Option<bool>,
+    ship_from_details: Option<Option<stripe_misc::TaxProductResourceShipFromDetails>>,
     shipping_cost: Option<Option<stripe_misc::TaxProductResourceTaxCalculationShippingCost>>,
     tax_amount_exclusive: Option<i64>,
     tax_amount_inclusive: Option<i64>,
@@ -92,6 +95,7 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "line_items" => Deserialize::begin(&mut self.line_items),
                 "livemode" => Deserialize::begin(&mut self.livemode),
+                "ship_from_details" => Deserialize::begin(&mut self.ship_from_details),
                 "shipping_cost" => Deserialize::begin(&mut self.shipping_cost),
                 "tax_amount_exclusive" => Deserialize::begin(&mut self.tax_amount_exclusive),
                 "tax_amount_inclusive" => Deserialize::begin(&mut self.tax_amount_inclusive),
@@ -112,6 +116,7 @@ const _: () = {
                 id: Deserialize::default(),
                 line_items: Deserialize::default(),
                 livemode: Deserialize::default(),
+                ship_from_details: Deserialize::default(),
                 shipping_cost: Deserialize::default(),
                 tax_amount_exclusive: Deserialize::default(),
                 tax_amount_inclusive: Deserialize::default(),
@@ -130,6 +135,7 @@ const _: () = {
                 id: self.id.take()?,
                 line_items: self.line_items.take()?,
                 livemode: self.livemode?,
+                ship_from_details: self.ship_from_details.take()?,
                 shipping_cost: self.shipping_cost.take()?,
                 tax_amount_exclusive: self.tax_amount_exclusive?,
                 tax_amount_inclusive: self.tax_amount_inclusive?,
@@ -170,6 +176,7 @@ const _: () = {
                     "id" => b.id = Some(FromValueOpt::from_value(v)?),
                     "line_items" => b.line_items = Some(FromValueOpt::from_value(v)?),
                     "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "ship_from_details" => b.ship_from_details = Some(FromValueOpt::from_value(v)?),
                     "shipping_cost" => b.shipping_cost = Some(FromValueOpt::from_value(v)?),
                     "tax_amount_exclusive" => {
                         b.tax_amount_exclusive = Some(FromValueOpt::from_value(v)?)
@@ -191,7 +198,7 @@ const _: () = {
 impl serde::Serialize for TaxCalculation {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TaxCalculation", 14)?;
+        let mut s = s.serialize_struct("TaxCalculation", 15)?;
         s.serialize_field("amount_total", &self.amount_total)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
@@ -200,6 +207,7 @@ impl serde::Serialize for TaxCalculation {
         s.serialize_field("id", &self.id)?;
         s.serialize_field("line_items", &self.line_items)?;
         s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("ship_from_details", &self.ship_from_details)?;
         s.serialize_field("shipping_cost", &self.shipping_cost)?;
         s.serialize_field("tax_amount_exclusive", &self.tax_amount_exclusive)?;
         s.serialize_field("tax_amount_inclusive", &self.tax_amount_inclusive)?;

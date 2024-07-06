@@ -1,3 +1,4 @@
+#![allow(missing_docs)]
 use serde::Serialize;
 
 /// Currency is the list of supported currencies.

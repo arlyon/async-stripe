@@ -17,16 +17,18 @@ pub struct InvoiceLineItem {
     /// The discounts applied to the invoice line item.
     /// Line item discounts are applied before invoice discounts.
     /// Use `expand[]=discounts` to expand each discount.
-    pub discounts: Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>,
+    pub discounts: Vec<stripe_types::Expandable<stripe_shared::Discount>>,
     /// Unique identifier for the object.
     pub id: stripe_shared::InvoiceLineItemId,
+    /// The ID of the invoice that contains this line item.
+    pub invoice: Option<String>,
     /// The ID of the [invoice item](https://stripe.com/docs/api/invoiceitems) associated with this line item if any.
     pub invoice_item: Option<stripe_types::Expandable<stripe_shared::InvoiceItem>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
-    /// Note that for line items with `type=subscription` this will reflect the metadata of the subscription that caused the line item to be created.
+    /// Note that for line items with `type=subscription`, `metadata` reflects the current metadata from the subscription associated with the line item, unless the invoice line was directly updated with different metadata after creation.
     pub metadata: std::collections::HashMap<String, String>,
     pub period: stripe_shared::InvoiceLineItemPeriod,
     /// The plan of the subscription, if the line item is a subscription or a proration.
@@ -62,8 +64,9 @@ pub struct InvoiceLineItemBuilder {
     description: Option<Option<String>>,
     discount_amounts: Option<Option<Vec<stripe_shared::DiscountsResourceDiscountAmount>>>,
     discountable: Option<bool>,
-    discounts: Option<Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>>,
+    discounts: Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>,
     id: Option<stripe_shared::InvoiceLineItemId>,
+    invoice: Option<Option<String>>,
     invoice_item: Option<Option<stripe_types::Expandable<stripe_shared::InvoiceItem>>>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
@@ -123,6 +126,7 @@ const _: () = {
                 "discountable" => Deserialize::begin(&mut self.discountable),
                 "discounts" => Deserialize::begin(&mut self.discounts),
                 "id" => Deserialize::begin(&mut self.id),
+                "invoice" => Deserialize::begin(&mut self.invoice),
                 "invoice_item" => Deserialize::begin(&mut self.invoice_item),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
@@ -155,6 +159,7 @@ const _: () = {
                 discountable: Deserialize::default(),
                 discounts: Deserialize::default(),
                 id: Deserialize::default(),
+                invoice: Deserialize::default(),
                 invoice_item: Deserialize::default(),
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
@@ -183,6 +188,7 @@ const _: () = {
                 discountable: self.discountable?,
                 discounts: self.discounts.take()?,
                 id: self.id.take()?,
+                invoice: self.invoice.take()?,
                 invoice_item: self.invoice_item.take()?,
                 livemode: self.livemode?,
                 metadata: self.metadata.take()?,
@@ -235,6 +241,7 @@ const _: () = {
                     "discountable" => b.discountable = Some(FromValueOpt::from_value(v)?),
                     "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
                     "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
                     "invoice_item" => b.invoice_item = Some(FromValueOpt::from_value(v)?),
                     "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
                     "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
@@ -264,7 +271,7 @@ const _: () = {
 impl serde::Serialize for InvoiceLineItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("InvoiceLineItem", 24)?;
+        let mut s = s.serialize_struct("InvoiceLineItem", 25)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_excluding_tax", &self.amount_excluding_tax)?;
         s.serialize_field("currency", &self.currency)?;
@@ -273,6 +280,7 @@ impl serde::Serialize for InvoiceLineItem {
         s.serialize_field("discountable", &self.discountable)?;
         s.serialize_field("discounts", &self.discounts)?;
         s.serialize_field("id", &self.id)?;
+        s.serialize_field("invoice", &self.invoice)?;
         s.serialize_field("invoice_item", &self.invoice_item)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;

@@ -12,6 +12,8 @@ pub struct TerminalConfiguration {
     pub is_account_default: Option<bool>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+    /// String indicating the name of the Configuration object, set by the user
+    pub name: Option<String>,
     pub offline: Option<stripe_terminal::TerminalConfigurationConfigurationResourceOfflineConfig>,
     pub tipping: Option<stripe_terminal::TerminalConfigurationConfigurationResourceTipping>,
     pub verifone_p400:
@@ -25,6 +27,7 @@ pub struct TerminalConfigurationBuilder {
     id: Option<stripe_terminal::TerminalConfigurationId>,
     is_account_default: Option<Option<bool>>,
     livemode: Option<bool>,
+    name: Option<Option<String>>,
     offline:
         Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceOfflineConfig>>,
     tipping: Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceTipping>>,
@@ -71,6 +74,7 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "is_account_default" => Deserialize::begin(&mut self.is_account_default),
                 "livemode" => Deserialize::begin(&mut self.livemode),
+                "name" => Deserialize::begin(&mut self.name),
                 "offline" => Deserialize::begin(&mut self.offline),
                 "tipping" => Deserialize::begin(&mut self.tipping),
                 "verifone_p400" => Deserialize::begin(&mut self.verifone_p400),
@@ -85,6 +89,7 @@ const _: () = {
                 id: Deserialize::default(),
                 is_account_default: Deserialize::default(),
                 livemode: Deserialize::default(),
+                name: Deserialize::default(),
                 offline: Deserialize::default(),
                 tipping: Deserialize::default(),
                 verifone_p400: Deserialize::default(),
@@ -97,6 +102,7 @@ const _: () = {
                 id: self.id.take()?,
                 is_account_default: self.is_account_default?,
                 livemode: self.livemode?,
+                name: self.name.take()?,
                 offline: self.offline?,
                 tipping: self.tipping.take()?,
                 verifone_p400: self.verifone_p400.take()?,
@@ -133,6 +139,7 @@ const _: () = {
                         b.is_account_default = Some(FromValueOpt::from_value(v)?)
                     }
                     "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
                     "offline" => b.offline = Some(FromValueOpt::from_value(v)?),
                     "tipping" => b.tipping = Some(FromValueOpt::from_value(v)?),
                     "verifone_p400" => b.verifone_p400 = Some(FromValueOpt::from_value(v)?),
@@ -148,11 +155,12 @@ const _: () = {
 impl serde::Serialize for TerminalConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TerminalConfiguration", 8)?;
+        let mut s = s.serialize_struct("TerminalConfiguration", 9)?;
         s.serialize_field("bbpos_wisepos_e", &self.bbpos_wisepos_e)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("is_account_default", &self.is_account_default)?;
         s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("name", &self.name)?;
         s.serialize_field("offline", &self.offline)?;
         s.serialize_field("tipping", &self.tipping)?;
         s.serialize_field("verifone_p400", &self.verifone_p400)?;

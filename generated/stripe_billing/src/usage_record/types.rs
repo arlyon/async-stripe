@@ -3,6 +3,9 @@
 ///
 /// Related guide: [Metered billing](https://stripe.com/docs/billing/subscriptions/metered-billing)
 ///
+/// This is our legacy usage-based billing API.
+/// See the [updated usage-based billing docs](https://docs.stripe.com/billing/subscriptions/usage-based).
+///
 /// For more details see <<https://stripe.com/docs/api/usage_records/object>>.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]

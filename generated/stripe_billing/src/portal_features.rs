@@ -6,7 +6,6 @@ pub struct PortalFeatures {
     pub invoice_history: stripe_billing::PortalInvoiceList,
     pub payment_method_update: stripe_billing::PortalPaymentMethodUpdate,
     pub subscription_cancel: stripe_billing::PortalSubscriptionCancel,
-    pub subscription_pause: stripe_billing::PortalSubscriptionPause,
     pub subscription_update: stripe_billing::PortalSubscriptionUpdate,
 }
 #[doc(hidden)]
@@ -15,7 +14,6 @@ pub struct PortalFeaturesBuilder {
     invoice_history: Option<stripe_billing::PortalInvoiceList>,
     payment_method_update: Option<stripe_billing::PortalPaymentMethodUpdate>,
     subscription_cancel: Option<stripe_billing::PortalSubscriptionCancel>,
-    subscription_pause: Option<stripe_billing::PortalSubscriptionPause>,
     subscription_update: Option<stripe_billing::PortalSubscriptionUpdate>,
 }
 
@@ -57,7 +55,6 @@ const _: () = {
                 "invoice_history" => Deserialize::begin(&mut self.invoice_history),
                 "payment_method_update" => Deserialize::begin(&mut self.payment_method_update),
                 "subscription_cancel" => Deserialize::begin(&mut self.subscription_cancel),
-                "subscription_pause" => Deserialize::begin(&mut self.subscription_pause),
                 "subscription_update" => Deserialize::begin(&mut self.subscription_update),
 
                 _ => <dyn Visitor>::ignore(),
@@ -70,7 +67,6 @@ const _: () = {
                 invoice_history: Deserialize::default(),
                 payment_method_update: Deserialize::default(),
                 subscription_cancel: Deserialize::default(),
-                subscription_pause: Deserialize::default(),
                 subscription_update: Deserialize::default(),
             }
         }
@@ -81,7 +77,6 @@ const _: () = {
                 invoice_history: self.invoice_history?,
                 payment_method_update: self.payment_method_update?,
                 subscription_cancel: self.subscription_cancel.take()?,
-                subscription_pause: self.subscription_pause?,
                 subscription_update: self.subscription_update.take()?,
             })
         }
@@ -117,9 +112,6 @@ const _: () = {
                     }
                     "subscription_cancel" => {
                         b.subscription_cancel = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "subscription_pause" => {
-                        b.subscription_pause = Some(FromValueOpt::from_value(v)?)
                     }
                     "subscription_update" => {
                         b.subscription_update = Some(FromValueOpt::from_value(v)?)

@@ -1,14 +1,18 @@
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct GelatoVerificationSessionOptions {
     pub document: Option<stripe_misc::GelatoSessionDocumentOptions>,
+    pub email: Option<stripe_misc::GelatoSessionEmailOptions>,
     pub id_number: Option<stripe_misc::GelatoSessionIdNumberOptions>,
+    pub phone: Option<stripe_misc::GelatoSessionPhoneOptions>,
 }
 #[doc(hidden)]
 pub struct GelatoVerificationSessionOptionsBuilder {
     document: Option<Option<stripe_misc::GelatoSessionDocumentOptions>>,
+    email: Option<Option<stripe_misc::GelatoSessionEmailOptions>>,
     id_number: Option<Option<stripe_misc::GelatoSessionIdNumberOptions>>,
+    phone: Option<Option<stripe_misc::GelatoSessionPhoneOptions>>,
 }
 
 #[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
@@ -46,18 +50,30 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "document" => Deserialize::begin(&mut self.document),
+                "email" => Deserialize::begin(&mut self.email),
                 "id_number" => Deserialize::begin(&mut self.id_number),
+                "phone" => Deserialize::begin(&mut self.phone),
 
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { document: Deserialize::default(), id_number: Deserialize::default() }
+            Self {
+                document: Deserialize::default(),
+                email: Deserialize::default(),
+                id_number: Deserialize::default(),
+                phone: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { document: self.document.take()?, id_number: self.id_number? })
+            Some(Self::Out {
+                document: self.document.take()?,
+                email: self.email?,
+                id_number: self.id_number?,
+                phone: self.phone?,
+            })
         }
     }
 
@@ -85,7 +101,9 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "document" => b.document = Some(FromValueOpt::from_value(v)?),
+                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
                     "id_number" => b.id_number = Some(FromValueOpt::from_value(v)?),
+                    "phone" => b.phone = Some(FromValueOpt::from_value(v)?),
 
                     _ => {}
                 }

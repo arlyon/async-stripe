@@ -1,132 +1,238 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTaxTransaction<'a> {
-    /// Specifies which fields in the response should be expanded.
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveTaxTransactionBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    expand: Option<&'a [&'a str]>,
 }
-impl<'a> RetrieveTaxTransaction<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> RetrieveTaxTransactionBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
     }
 }
+/// Retrieves a Tax `Transaction` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveTaxTransaction<'a> {
+    inner: RetrieveTaxTransactionBuilder<'a>,
+    transaction: &'a stripe_misc::TaxTransactionId,
+}
 impl<'a> RetrieveTaxTransaction<'a> {
-    /// Retrieves a Tax `Transaction` object.
-    pub fn send(
+    /// Construct a new `RetrieveTaxTransaction`.
+    pub fn new(transaction: &'a stripe_misc::TaxTransactionId) -> Self {
+        Self { transaction, inner: RetrieveTaxTransactionBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveTaxTransaction<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        transaction: &stripe_misc::TaxTransactionId,
-    ) -> stripe::Response<stripe_misc::TaxTransaction> {
-        client.get_query(&format!("/tax/transactions/{transaction}"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for RetrieveTaxTransaction<'_> {
+    type Output = stripe_misc::TaxTransaction;
+
+    fn build(&self) -> RequestBuilder {
+        let transaction = self.transaction;
+        RequestBuilder::new(StripeMethod::Get, format!("/tax/transactions/{transaction}"))
+            .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListLineItemsTaxTransactionBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> ListLineItemsTaxTransactionBuilder<'a> {
+    fn new() -> Self {
+        Self { ending_before: None, expand: None, limit: None, starting_after: None }
+    }
+}
+/// Retrieves the line items of a committed standalone transaction as a collection.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ListLineItemsTaxTransaction<'a> {
+    inner: ListLineItemsTaxTransactionBuilder<'a>,
+    transaction: &'a stripe_misc::TaxTransactionId,
+}
+impl<'a> ListLineItemsTaxTransaction<'a> {
+    /// Construct a new `ListLineItemsTaxTransaction`.
+    pub fn new(transaction: &'a stripe_misc::TaxTransactionId) -> Self {
+        Self { transaction, inner: ListLineItemsTaxTransactionBuilder::new() }
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListLineItemsTaxTransaction<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
     }
 }
-impl<'a> ListLineItemsTaxTransaction<'a> {
-    /// Retrieves the line items of a committed standalone transaction as a collection.
-    pub fn send(
+impl ListLineItemsTaxTransaction<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        transaction: &stripe_misc::TaxTransactionId,
-    ) -> stripe::Response<stripe_types::List<stripe_misc::TaxTransactionLineItem>> {
-        client.get_query(&format!("/tax/transactions/{transaction}/line_items"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-        transaction: &stripe_misc::TaxTransactionId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_misc::TaxTransactionLineItem>> {
-        stripe::ListPaginator::from_list_params(
-            &format!("/tax/transactions/{transaction}/line_items"),
-            self,
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_misc::TaxTransactionLineItem>>
+    {
+        let transaction = self.transaction;
+
+        stripe_client_core::ListPaginator::new_list(
+            format!("/tax/transactions/{transaction}/line_items"),
+            self.inner,
         )
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateFromCalculationTaxTransaction<'a> {
-    /// Tax Calculation ID to be used as input when creating the transaction.
-    pub calculation: &'a str,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// A custom order or sale identifier, such as 'myOrder_123'.
-    /// Must be unique across all transactions, including reversals.
-    pub reference: &'a str,
+
+impl StripeRequest for ListLineItemsTaxTransaction<'_> {
+    type Output = stripe_types::List<stripe_misc::TaxTransactionLineItem>;
+
+    fn build(&self) -> RequestBuilder {
+        let transaction = self.transaction;
+        RequestBuilder::new(
+            StripeMethod::Get,
+            format!("/tax/transactions/{transaction}/line_items"),
+        )
+        .query(&self.inner)
+    }
 }
-impl<'a> CreateFromCalculationTaxTransaction<'a> {
-    pub fn new(calculation: &'a str, reference: &'a str) -> Self {
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateFromCalculationTaxTransactionBuilder<'a> {
+    calculation: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    reference: &'a str,
+}
+impl<'a> CreateFromCalculationTaxTransactionBuilder<'a> {
+    fn new(calculation: &'a str, reference: &'a str) -> Self {
         Self { calculation, expand: None, metadata: None, reference }
     }
 }
-impl<'a> CreateFromCalculationTaxTransaction<'a> {
-    /// Creates a Tax `Transaction` from a calculation.
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_misc::TaxTransaction> {
-        client.send_form(
-            "/tax/transactions/create_from_calculation",
-            self,
-            http_types::Method::Post,
-        )
-    }
+/// Creates a Tax `Transaction` from a calculation.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateFromCalculationTaxTransaction<'a> {
+    inner: CreateFromCalculationTaxTransactionBuilder<'a>,
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateReversalTaxTransaction<'a> {
+impl<'a> CreateFromCalculationTaxTransaction<'a> {
+    /// Construct a new `CreateFromCalculationTaxTransaction`.
+    pub fn new(calculation: &'a str, reference: &'a str) -> Self {
+        Self { inner: CreateFromCalculationTaxTransactionBuilder::new(calculation, reference) }
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A flat amount to reverse across the entire transaction, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) in negative.
-    /// This value represents the total amount to refund from the transaction, including taxes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub flat_amount: Option<i64>,
-    /// The line item amounts to reverse.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line_items: Option<&'a [CreateReversalTaxTransactionLineItems<'a>]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// If `partial`, the provided line item or shipping cost amounts are reversed.
-    /// If `full`, the original transaction is fully reversed.
-    pub mode: CreateReversalTaxTransactionMode,
-    /// The ID of the Transaction to partially or fully reverse.
-    pub original_transaction: &'a str,
-    /// A custom identifier for this reversal, such as `myOrder_123-refund_1`, which must be unique across all transactions.
-    /// The reference helps identify this reversal transaction in exported [tax reports](https://stripe.com/docs/tax/reports).
-    pub reference: &'a str,
-    /// The shipping cost to reverse.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_cost: Option<CreateReversalTaxTransactionShippingCost>,
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
 }
-impl<'a> CreateReversalTaxTransaction<'a> {
-    pub fn new(
+impl CreateFromCalculationTaxTransaction<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateFromCalculationTaxTransaction<'_> {
+    type Output = stripe_misc::TaxTransaction;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/tax/transactions/create_from_calculation")
+            .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateReversalTaxTransactionBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    flat_amount: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    line_items: Option<&'a [CreateReversalTaxTransactionLineItems<'a>]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    mode: CreateReversalTaxTransactionMode,
+    original_transaction: &'a str,
+    reference: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    shipping_cost: Option<CreateReversalTaxTransactionShippingCost>,
+}
+impl<'a> CreateReversalTaxTransactionBuilder<'a> {
+    fn new(
         mode: CreateReversalTaxTransactionMode,
         original_transaction: &'a str,
         reference: &'a str,
@@ -243,9 +349,81 @@ impl CreateReversalTaxTransactionShippingCost {
         Self { amount, amount_tax }
     }
 }
+/// Partially or fully reverses a previously created `Transaction`.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateReversalTaxTransaction<'a> {
+    inner: CreateReversalTaxTransactionBuilder<'a>,
+}
 impl<'a> CreateReversalTaxTransaction<'a> {
-    /// Partially or fully reverses a previously created `Transaction`.
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_misc::TaxTransaction> {
-        client.send_form("/tax/transactions/create_reversal", self, http_types::Method::Post)
+    /// Construct a new `CreateReversalTaxTransaction`.
+    pub fn new(
+        mode: CreateReversalTaxTransactionMode,
+        original_transaction: &'a str,
+        reference: &'a str,
+    ) -> Self {
+        Self {
+            inner: CreateReversalTaxTransactionBuilder::new(mode, original_transaction, reference),
+        }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A flat amount to reverse across the entire transaction, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) in negative.
+    /// This value represents the total amount to refund from the transaction, including taxes.
+    pub fn flat_amount(mut self, flat_amount: i64) -> Self {
+        self.inner.flat_amount = Some(flat_amount);
+        self
+    }
+    /// The line item amounts to reverse.
+    pub fn line_items(
+        mut self,
+        line_items: &'a [CreateReversalTaxTransactionLineItems<'a>],
+    ) -> Self {
+        self.inner.line_items = Some(line_items);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+    /// The shipping cost to reverse.
+    pub fn shipping_cost(
+        mut self,
+        shipping_cost: CreateReversalTaxTransactionShippingCost,
+    ) -> Self {
+        self.inner.shipping_cost = Some(shipping_cost);
+        self
+    }
+}
+impl CreateReversalTaxTransaction<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateReversalTaxTransaction<'_> {
+    type Output = stripe_misc::TaxTransaction;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/tax/transactions/create_reversal")
+            .form(&self.inner)
     }
 }

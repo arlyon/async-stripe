@@ -1,16 +1,18 @@
 [workspace]
 members = [
-    "async-stripe",
     "stripe_types",
     "stripe_webhook",
     "tests",
     "generated/*",
     "examples/*",
+    "stripe_client_core",
+    "async-stripe",
+    "stripe_async_std"
 ]
 
 # Skip "examples/*" when running default commands since that adds a bunch of deps that makes
-# development feedback loop slower
-default-members = ["async-stripe", "stripe_types", "stripe_webhook", "tests", "generated/*"]
+# development feedback loop slower.
+default-members = ["async-stripe", "stripe_types", "stripe_webhook", "stripe_client_core", "generated/*", "stripe_async_std"]
 resolver = "2"
 # Makes dependency management simpler to allow codegen crate to use whichever dep versions
 # it wants without affecting dependency resolution of the user-facing library crates
@@ -19,7 +21,7 @@ exclude = ["openapi"]
 [workspace.package]
 version = "0.22.2"
 description = "API bindings for the Stripe HTTP API"
-rust-version = "1.73.0"
+rust-version = "1.75.0"
 authors = [
     "Anna Baldwin <abaldwin@developers.wyyerd.com>",
     "Kevin Stenerson <kestred@users.noreply.github.com>",
@@ -37,7 +39,7 @@ edition = "2021"
 
 [workspace.dependencies]
 serde = { version = ">=1.0.79", features = ["derive"] } # we use `serde(other)` which was introduced in 1.0.79
-serde_json = "1"
-http-types = { version = "2.12.0", default-features = false }
 smol_str = { version = "0.2.0", features = ["serde"] }
 miniserde = "0.1.34"
+serde_json = "1.0.115"
+serde_qs = "0.12.0"

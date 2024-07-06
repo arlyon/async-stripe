@@ -206,6 +206,10 @@ pub enum ApiErrorsCode {
     BankAccountUnverified,
     BankAccountVerificationFailed,
     BillingInvalidMandate,
+    BillingPolicyRemoteFunctionResponseInvalid,
+    BillingPolicyRemoteFunctionTimeout,
+    BillingPolicyRemoteFunctionUnexpectedStatusCode,
+    BillingPolicyRemoteFunctionUnreachable,
     BitcoinUpgradeRequired,
     CaptureChargeAuthorizationExpired,
     CaptureUnauthorizedPayment,
@@ -231,6 +235,10 @@ pub enum ApiErrorsCode {
     ExpiredCard,
     FinancialConnectionsAccountInactive,
     FinancialConnectionsNoSuccessfulTransactionRefresh,
+    ForwardingApiInactive,
+    ForwardingApiInvalidParameter,
+    ForwardingApiUpstreamConnectionError,
+    ForwardingApiUpstreamConnectionTimeout,
     IdempotencyKeyInUse,
     IncorrectAddress,
     IncorrectCvc,
@@ -326,6 +334,7 @@ pub enum ApiErrorsCode {
     SetupIntentMandateInvalid,
     SetupIntentSetupAttemptExpired,
     SetupIntentUnexpectedState,
+    ShippingAddressInvalid,
     ShippingCalculationFailed,
     SkuInactive,
     StateUnsupported,
@@ -378,6 +387,14 @@ impl ApiErrorsCode {
             BankAccountUnverified => "bank_account_unverified",
             BankAccountVerificationFailed => "bank_account_verification_failed",
             BillingInvalidMandate => "billing_invalid_mandate",
+            BillingPolicyRemoteFunctionResponseInvalid => {
+                "billing_policy_remote_function_response_invalid"
+            }
+            BillingPolicyRemoteFunctionTimeout => "billing_policy_remote_function_timeout",
+            BillingPolicyRemoteFunctionUnexpectedStatusCode => {
+                "billing_policy_remote_function_unexpected_status_code"
+            }
+            BillingPolicyRemoteFunctionUnreachable => "billing_policy_remote_function_unreachable",
             BitcoinUpgradeRequired => "bitcoin_upgrade_required",
             CaptureChargeAuthorizationExpired => "capture_charge_authorization_expired",
             CaptureUnauthorizedPayment => "capture_unauthorized_payment",
@@ -405,6 +422,10 @@ impl ApiErrorsCode {
             FinancialConnectionsNoSuccessfulTransactionRefresh => {
                 "financial_connections_no_successful_transaction_refresh"
             }
+            ForwardingApiInactive => "forwarding_api_inactive",
+            ForwardingApiInvalidParameter => "forwarding_api_invalid_parameter",
+            ForwardingApiUpstreamConnectionError => "forwarding_api_upstream_connection_error",
+            ForwardingApiUpstreamConnectionTimeout => "forwarding_api_upstream_connection_timeout",
             IdempotencyKeyInUse => "idempotency_key_in_use",
             IncorrectAddress => "incorrect_address",
             IncorrectCvc => "incorrect_cvc",
@@ -516,6 +537,7 @@ impl ApiErrorsCode {
             SetupIntentMandateInvalid => "setup_intent_mandate_invalid",
             SetupIntentSetupAttemptExpired => "setup_intent_setup_attempt_expired",
             SetupIntentUnexpectedState => "setup_intent_unexpected_state",
+            ShippingAddressInvalid => "shipping_address_invalid",
             ShippingCalculationFailed => "shipping_calculation_failed",
             SkuInactive => "sku_inactive",
             StateUnsupported => "state_unsupported",
@@ -573,6 +595,16 @@ impl std::str::FromStr for ApiErrorsCode {
             "bank_account_unverified" => Ok(BankAccountUnverified),
             "bank_account_verification_failed" => Ok(BankAccountVerificationFailed),
             "billing_invalid_mandate" => Ok(BillingInvalidMandate),
+            "billing_policy_remote_function_response_invalid" => {
+                Ok(BillingPolicyRemoteFunctionResponseInvalid)
+            }
+            "billing_policy_remote_function_timeout" => Ok(BillingPolicyRemoteFunctionTimeout),
+            "billing_policy_remote_function_unexpected_status_code" => {
+                Ok(BillingPolicyRemoteFunctionUnexpectedStatusCode)
+            }
+            "billing_policy_remote_function_unreachable" => {
+                Ok(BillingPolicyRemoteFunctionUnreachable)
+            }
             "bitcoin_upgrade_required" => Ok(BitcoinUpgradeRequired),
             "capture_charge_authorization_expired" => Ok(CaptureChargeAuthorizationExpired),
             "capture_unauthorized_payment" => Ok(CaptureUnauthorizedPayment),
@@ -599,6 +631,12 @@ impl std::str::FromStr for ApiErrorsCode {
             "financial_connections_account_inactive" => Ok(FinancialConnectionsAccountInactive),
             "financial_connections_no_successful_transaction_refresh" => {
                 Ok(FinancialConnectionsNoSuccessfulTransactionRefresh)
+            }
+            "forwarding_api_inactive" => Ok(ForwardingApiInactive),
+            "forwarding_api_invalid_parameter" => Ok(ForwardingApiInvalidParameter),
+            "forwarding_api_upstream_connection_error" => Ok(ForwardingApiUpstreamConnectionError),
+            "forwarding_api_upstream_connection_timeout" => {
+                Ok(ForwardingApiUpstreamConnectionTimeout)
             }
             "idempotency_key_in_use" => Ok(IdempotencyKeyInUse),
             "incorrect_address" => Ok(IncorrectAddress),
@@ -715,6 +753,7 @@ impl std::str::FromStr for ApiErrorsCode {
             "setup_intent_mandate_invalid" => Ok(SetupIntentMandateInvalid),
             "setup_intent_setup_attempt_expired" => Ok(SetupIntentSetupAttemptExpired),
             "setup_intent_unexpected_state" => Ok(SetupIntentUnexpectedState),
+            "shipping_address_invalid" => Ok(ShippingAddressInvalid),
             "shipping_calculation_failed" => Ok(ShippingCalculationFailed),
             "sku_inactive" => Ok(SkuInactive),
             "state_unsupported" => Ok(StateUnsupported),

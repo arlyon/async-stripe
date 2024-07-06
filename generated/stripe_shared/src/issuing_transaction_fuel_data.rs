@@ -6,7 +6,7 @@ pub struct IssuingTransactionFuelData {
     /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: String,
-    /// The units for `volume_decimal`. One of `us_gallon` or `liter`.
+    /// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
     pub unit: String,
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
     pub unit_cost_decimal: String,

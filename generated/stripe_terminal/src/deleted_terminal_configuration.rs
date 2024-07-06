@@ -1,7 +1,6 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DeletedTerminalConfiguration {
-    /// Always true for a deleted object
     #[allow(dead_code)]
     deleted: stripe_types::AlwaysTrue,
     /// Unique identifier for the object.

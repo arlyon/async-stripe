@@ -3,14 +3,16 @@ use std::fmt::Write;
 use indoc::{formatdoc, writedoc};
 
 use crate::printable::PrintableWithLifetime;
-use crate::rust_object::{ObjectKind, Struct, StructField, Visibility};
+use crate::rust_object::{ObjectKind, Struct, StructField};
 use crate::rust_type::{ExtType, RustType, SimpleType};
 use crate::templates::object_writer::write_derives_line;
-use crate::templates::utils::{write_doc_comment, SerdeDeriveState, ShouldDerive};
+use crate::templates::utils::{
+    write_default_impl, write_doc_comment, SerdeDeriveState, ShouldDerive,
+};
 use crate::templates::ObjectWriter;
 
 impl<'a> ObjectWriter<'a> {
-    pub fn write_struct(&self, out: &mut String, struct_: &Struct) {
+    pub fn write_struct_definition(&self, out: &mut String, struct_: &Struct) {
         let mut serde_derive = SerdeDeriveState::default();
         // In theory this could be supported, but it would require not borrowing in request structs
         if !matches!(self.usage.kind, ObjectKind::RequestParam) {
@@ -37,66 +39,77 @@ impl<'a> ObjectWriter<'a> {
         let lifetime_str = self.lifetime_param();
         write_derives_line(out, self.derives);
         serde_derive.write_derives(out);
+        let vis = struct_.vis;
 
         let _ = writedoc!(
             out,
             r"
-        pub struct {name}{lifetime_str} {{
+        {vis} struct {name}{lifetime_str} {{
         {fields_str}
         }}
     "
         );
 
-        if self.usage.used_as_request_param {
-            let cons_body = if self.derives.default {
-                r"
-            pub fn new() -> Self {
-                Self::default()
-            }
-            "
-                .into()
-            } else {
-                let mut cons_inner = String::new();
-                let mut params = String::new();
-                for field in fields {
-                    if field.required {
-                        let printable = self.get_printable(&field.rust_type);
-                        let typ = PrintableWithLifetime::new(&printable, self.lifetime);
-                        let _ = write!(params, "{}: {typ},", field.field_name);
-                        let _ = write!(cons_inner, "{},", field.field_name);
-                    } else {
-                        // `Default::default()` would also evaluate to `None` for `Option` types, but nice to
-                        // generate less code and maybe make things easier for the compiler since most
-                        // of these types are `Option`.
-                        let field_default_val =
-                            if field.rust_type.is_option() { "None" } else { "Default::default()" };
-                        let _ = write!(cons_inner, "{}: {field_default_val},", field.field_name);
-                    }
-                }
-                formatdoc! {
-                    r"
-                pub fn new({params}) -> Self {{
-                    Self {{
-                        {cons_inner}
-                    }}
-                }} 
-                "
-                }
-            };
-            let _ = writedoc!(
-                out,
-                r"
-            impl{lifetime_str} {name}{lifetime_str} {{
-                {cons_body}
-            }}
-                "
-            );
-        }
         if self.usage.should_impl_deserialize() {
             self.gen_miniserde_struct_deserialize(out, fields)
         }
         if let Some(obj_name) = &struct_.object_field {
             self.write_serde_serialization_with_object_tag(out, &struct_.fields, obj_name);
+        }
+    }
+
+    fn get_required_param_args(&self, fields: &[StructField]) -> String {
+        let mut params = String::new();
+        for field in fields.iter().filter(|f| f.required) {
+            let printable = self.get_printable(&field.rust_type);
+            let typ = PrintableWithLifetime::new(&printable, self.lifetime);
+            let _ = write!(params, "{}: {typ},", field.field_name);
+        }
+        params
+    }
+
+    pub fn write_struct_constructor(&self, out: &mut String, struct_: &Struct) {
+        let name = self.ident;
+        let lifetime_str = self.lifetime_param();
+        let mut cons_inner = String::new();
+        let params = self.get_required_param_args(&struct_.fields);
+        for field in &struct_.fields {
+            let f_name = &field.field_name;
+            if field.required {
+                let _ = write!(cons_inner, "{f_name},");
+            } else {
+                // `Default::default()` would also work here, but nice to
+                // generate less code and maybe make things easier for the compiler since all
+                // of these types are `Option`.
+                if !field.rust_type.is_option() {
+                    panic!("expected all not required types to be `Option`");
+                }
+                let _ = write!(cons_inner, "{f_name}: None,");
+            }
+        }
+
+        let vis = struct_.vis;
+        let cons_body = formatdoc! {
+            r"
+                {vis} fn new({params}) -> Self {{
+                    Self {{
+                        {cons_inner}
+                    }}
+                }}
+                "
+        };
+        let _ = writedoc!(
+            out,
+            r"
+            impl{lifetime_str} {name}{lifetime_str} {{
+                {cons_body}
+            }}
+                "
+        );
+
+        // Implement `Default` for public types with no required parameters
+        if vis.is_public() && !struct_.fields.iter().any(|f| f.required) {
+            write_default_impl(name, lifetime_str, out);
         }
     }
 
@@ -106,8 +119,12 @@ impl<'a> ObjectWriter<'a> {
         field: &StructField,
         serde_derive: SerdeDeriveState,
     ) {
-        if let Some(doc_comment) = &field.doc_comment {
-            let _ = writeln!(out, "{}", write_doc_comment(doc_comment, 1).trim_end());
+        // We skip writing the doc comment for private fields because we'll write them
+        // later on the corresponding builder method.
+        if field.vis.is_public() {
+            if let Some(doc_comment) = &field.doc_comment {
+                let _ = writeln!(out, "{}", write_doc_comment(doc_comment, 1).trim_end());
+            }
         }
         if let Some(renamer) = &field.rename_as {
             serde_derive.maybe_write_rename(out, renamer);
@@ -126,19 +143,14 @@ impl<'a> ObjectWriter<'a> {
             serde_derive.maybe_write_tag(out, format!(r#"with = "stripe_types::{with}""#));
         }
 
-        // For the private `AlwaysTrue` or `ObjectName` field used as a serde discriminant. For `miniserde`, it
-        // is unused
-        if field.rust_type.implies_private_field() {
+        // This field is used as a discriminant for `serde(untagged)`
+        if matches!(field.rust_type, RustType::Simple(SimpleType::Ext(ExtType::AlwaysTrue))) {
             let _ = writeln!(out, "#[allow(dead_code)]");
         }
 
         let printable = self.get_printable(&field.rust_type);
         let typ = PrintableWithLifetime::new(&printable, self.lifetime);
-        let vis = match field.vis {
-            Visibility::Public => "pub ",
-            Visibility::Private => "",
-        };
-        let _ = writeln!(out, "{vis}{}: {typ},", field.field_name);
+        let _ = writeln!(out, "{} {}: {typ},", field.vis, field.field_name);
     }
 
     fn write_serde_serialization_with_object_tag(

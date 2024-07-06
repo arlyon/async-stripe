@@ -1,18 +1,18 @@
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentNextActionSwishHandleRedirectOrDisplayQrCode {
     /// The URL to the hosted Swish instructions page, which allows customers to view the QR code.
-    pub hosted_instructions_url: Option<String>,
-    /// The url for mobile redirect based auth
-    pub mobile_auth_url: Option<String>,
-    pub qr_code: Option<stripe_shared::PaymentIntentNextActionSwishQrCode>,
+    pub hosted_instructions_url: String,
+    /// The url for mobile redirect based auth (for internal use only and not typically available in standard API requests).
+    pub mobile_auth_url: String,
+    pub qr_code: stripe_shared::PaymentIntentNextActionSwishQrCode,
 }
 #[doc(hidden)]
 pub struct PaymentIntentNextActionSwishHandleRedirectOrDisplayQrCodeBuilder {
-    hosted_instructions_url: Option<Option<String>>,
-    mobile_auth_url: Option<Option<String>>,
-    qr_code: Option<Option<stripe_shared::PaymentIntentNextActionSwishQrCode>>,
+    hosted_instructions_url: Option<String>,
+    mobile_auth_url: Option<String>,
+    qr_code: Option<stripe_shared::PaymentIntentNextActionSwishQrCode>,
 }
 
 #[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]

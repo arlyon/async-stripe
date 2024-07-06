@@ -18,6 +18,10 @@ pub use stripe_shared::custom_unit_amount::*;
 pub use stripe_shared::deleted_coupon::*;
 pub use stripe_shared::deleted_discount::*;
 pub use stripe_shared::deleted_product::*;
+#[doc(hidden)]
+pub mod deleted_product_feature;
+#[doc(inline)]
+pub use deleted_product_feature::*;
 pub use stripe_shared::discount::*;
 pub use stripe_shared::line_items_discount_amount::*;
 pub use stripe_shared::line_items_tax_amount::*;
@@ -26,8 +30,10 @@ pub mod price;
 pub use stripe_shared::price::*;
 pub use stripe_shared::price_tier::*;
 pub mod product;
+pub use product_feature::types::*;
 pub use stripe_shared::product::*;
-pub use stripe_shared::product_feature::*;
+pub mod product_feature;
+pub use stripe_shared::product_marketing_feature::*;
 pub mod promotion_code;
 pub use stripe_shared::promotion_code::*;
 pub use stripe_shared::promotion_code_currency_option::*;

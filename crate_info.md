@@ -1,5 +1,9 @@
 | Name                                                                                             | Crate           | Feature Gate                      |
 |--------------------------------------------------------------------------------------------------|-----------------|-----------------------------------|
+| BillingMeter                                                                                     | stripe_billing  | billing_meter                     |
+| BillingMeterEvent                                                                                | stripe_billing  | billing_meter_event               |
+| BillingMeterEventAdjustment                                                                      | stripe_billing  | billing_meter_event_adjustment    |
+| BillingMeterEventSummary                                                                         | stripe_billing  | billing_meter_event_summary       |
 | BillingPortalConfiguration                                                                       | stripe_billing  | billing_portal_configuration      |
 | BillingPortalSession                                                                             | stripe_billing  | billing_portal_session            |
 | InvoiceLineItem                                                                                  | stripe_billing  | invoice_line_item                 |
@@ -55,6 +59,8 @@
 | [RadarValueListItem](https://stripe.com/docs/api/radar/value_list_items/object)                  | stripe_fraud    | radar_value_list_item             |
 | [RadarValueList](https://stripe.com/docs/api/radar/value_lists/object)                           | stripe_fraud    | radar_value_list                  |
 | [Review](https://stripe.com/docs/api/radar/reviews/object)                                       | stripe_fraud    | review                            |
+| IssuingPersonalizationDesign                                                                     | stripe_issuing  | issuing_personalization_design    |
+| IssuingPhysicalBundle                                                                            | stripe_issuing  | issuing_physical_bundle           |
 | [IssuingAuthorization](https://stripe.com/docs/api/issuing/authorizations/object)                | stripe_issuing  | issuing_authorization             |
 | [IssuingCard](https://stripe.com/docs/api/issuing/cards/object)                                  | stripe_issuing  | issuing_card                      |
 | [IssuingCardholder](https://stripe.com/docs/api/issuing/cardholders/object)                      | stripe_issuing  | issuing_cardholder                |
@@ -65,9 +71,12 @@
 | ClimateOrder                                                                                     | stripe_misc     | climate_order                     |
 | ClimateProduct                                                                                   | stripe_misc     | climate_product                   |
 | ClimateSupplier                                                                                  | stripe_misc     | climate_supplier                  |
+| EntitlementsActiveEntitlement                                                                    | stripe_misc     | entitlements_active_entitlement   |
+| EntitlementsFeature                                                                              | stripe_misc     | entitlements_feature              |
 | EphemeralKey                                                                                     | stripe_misc     | ephemeral_key                     |
 | ExchangeRate                                                                                     | stripe_misc     | exchange_rate                     |
 | FinancialConnectionsTransaction                                                                  | stripe_misc     | financial_connections_transaction |
+| ForwardingRequest                                                                                | stripe_misc     | forwarding_request                |
 | TaxRegistration                                                                                  | stripe_misc     | tax_registration                  |
 | [FinancialConnectionsAccount](https://stripe.com/docs/api/financial_connections/accounts/object) | stripe_misc     | financial_connections_account     |
 | [FinancialConnectionsSession](https://stripe.com/docs/api/financial_connections/sessions/object) | stripe_misc     | financial_connections_session     |
@@ -81,12 +90,14 @@
 | [TaxTransaction](https://stripe.com/docs/api/tax/transactions/object)                            | stripe_misc     | tax_transaction                   |
 | [WebhookEndpoint](https://stripe.com/docs/api/webhook_endpoints/object)                          | stripe_misc     | webhook_endpoint                  |
 | BankAccount                                                                                      | stripe_payment  | bank_account                      |
+| ConfirmationToken                                                                                | stripe_payment  | confirmation_token                |
 | [Card](https://stripe.com/docs/api/cards/object)                                                 | stripe_payment  | card                              |
 | [PaymentLink](https://stripe.com/docs/api/payment_links/payment_links/object)                    | stripe_payment  | payment_link                      |
 | [PaymentMethodConfiguration](https://stripe.com/docs/api/payment_method_configurations/object)   | stripe_payment  | payment_method_configuration      |
 | [PaymentMethodDomain](https://stripe.com/docs/api/payment_method_domains/object)                 | stripe_payment  | payment_method_domain             |
 | [PaymentMethod](https://stripe.com/docs/api/payment_methods/object)                              | stripe_payment  | payment_method                    |
 | [Source](https://stripe.com/docs/api/sources/object)                                             | stripe_payment  | source                            |
+| ProductFeature                                                                                   | stripe_product  | product_feature                   |
 | [Coupon](https://stripe.com/docs/api/coupons/object)                                             | stripe_product  | coupon                            |
 | [Price](https://stripe.com/docs/api/prices/object)                                               | stripe_product  | price                             |
 | [Product](https://stripe.com/docs/api/products/object)                                           | stripe_product  | product                           |

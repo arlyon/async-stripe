@@ -1,232 +1,304 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListPaymentMethodConfigurationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    application: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> ListPaymentMethodConfigurationBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            application: None,
+            ending_before: None,
+            expand: None,
+            limit: None,
+            starting_after: None,
+        }
+    }
+}
+/// List payment method configurations
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ListPaymentMethodConfiguration<'a> {
+    inner: ListPaymentMethodConfigurationBuilder<'a>,
+}
+impl<'a> ListPaymentMethodConfiguration<'a> {
+    /// Construct a new `ListPaymentMethodConfiguration`.
+    pub fn new() -> Self {
+        Self { inner: ListPaymentMethodConfigurationBuilder::new() }
+    }
     /// The Connect application to filter by.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub application: Option<&'a str>,
+    pub fn application(mut self, application: &'a str) -> Self {
+        self.inner.application = Some(application);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> ListPaymentMethodConfiguration<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
     }
 }
-impl<'a> ListPaymentMethodConfiguration<'a> {
-    /// List payment method configurations
-    pub fn send(
+impl<'a> Default for ListPaymentMethodConfiguration<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListPaymentMethodConfiguration<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_payment::PaymentMethodConfiguration>> {
-        client.get_query("/payment_method_configurations", self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_payment::PaymentMethodConfiguration>> {
-        stripe::ListPaginator::from_list_params("/payment_method_configurations", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrievePaymentMethodConfiguration<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrievePaymentMethodConfiguration<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrievePaymentMethodConfiguration<'a> {
-    /// Retrieve payment method configuration
-    pub fn send(
         &self,
-        client: &stripe::Client,
-        configuration: &stripe_payment::PaymentMethodConfigurationId,
-    ) -> stripe::Response<stripe_payment::PaymentMethodConfiguration> {
-        client.get_query(&format!("/payment_method_configurations/{configuration}"), self)
+    ) -> stripe_client_core::ListPaginator<
+        stripe_types::List<stripe_payment::PaymentMethodConfiguration>,
+    > {
+        stripe_client_core::ListPaginator::new_list("/payment_method_configurations", self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodConfiguration<'a> {
-    /// Canadian pre-authorized debit payments, check this [page](https://stripe.com/docs/payments/acss-debit) for more details like country availability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<CreatePaymentMethodConfigurationAcssDebit>,
-    /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
-    /// Depending on the purchase, they can pay with four interest-free payments (Split Pay) or pay over a longer term (Installments), which might include interest.
-    /// Check this [page](https://stripe.com/docs/payments/affirm) for more details like country availability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub affirm: Option<CreatePaymentMethodConfigurationAffirm>,
-    /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://stripe.com/docs/payments/afterpay-clearpay) for more details like country availability.
-    /// Afterpay is particularly popular among businesses selling fashion, beauty, and sports products.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub afterpay_clearpay: Option<CreatePaymentMethodConfigurationAfterpayClearpay>,
-    /// Alipay is a digital wallet in China that has more than a billion active users worldwide.
-    /// Alipay users can pay on the web or on a mobile device using login credentials or their Alipay app.
-    /// Alipay has a low dispute rate and reduces fraud by authenticating payments using the customer's login credentials.
-    /// Check this [page](https://stripe.com/docs/payments/alipay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub alipay: Option<CreatePaymentMethodConfigurationAlipay>,
-    /// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
-    /// There are no additional fees to process Apple Pay payments, and the [pricing](/pricing) is the same as other card transactions.
-    /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub apple_pay: Option<CreatePaymentMethodConfigurationApplePay>,
-    /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub apple_pay_later: Option<CreatePaymentMethodConfigurationApplePayLater>,
-    /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
-    /// Check this [page](https://stripe.com/docs/payments/au-becs-debit) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit: Option<CreatePaymentMethodConfigurationAuBecsDebit>,
-    /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://stripe.com/docs/payments/payment-methods/bacs-debit) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit: Option<CreatePaymentMethodConfigurationBacsDebit>,
-    /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
-    /// [Customers](https://stripe.com/docs/api/customers) use a Bancontact card or mobile app linked to a Belgian bank account to make online payments that are secure, guaranteed, and confirmed immediately.
-    /// Check this [page](https://stripe.com/docs/payments/bancontact) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<CreatePaymentMethodConfigurationBancontact>,
-    /// BLIK is a [single use](https://stripe.com/docs/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
-    /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
-    /// Check this [page](https://stripe.com/docs/payments/blik) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<CreatePaymentMethodConfigurationBlik>,
-    /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
-    /// Check this [page](https://stripe.com/docs/payments/boleto) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub boleto: Option<CreatePaymentMethodConfigurationBoleto>,
-    /// Cards are a popular way for consumers and businesses to pay online or in person.
-    /// Stripe supports global and local card networks.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<CreatePaymentMethodConfigurationCard>,
-    /// Cartes Bancaires is France's local card network.
-    /// More than 95% of these cards are co-branded with either Visa or Mastercard, meaning you can process these cards over either Cartes Bancaires or the Visa or Mastercard networks.
-    /// Check this [page](https://stripe.com/docs/payments/cartes-bancaires) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cartes_bancaires: Option<CreatePaymentMethodConfigurationCartesBancaires>,
-    /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
-    /// Check this [page](https://stripe.com/docs/payments/cash-app-pay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp: Option<CreatePaymentMethodConfigurationCashapp>,
-    /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
-    /// The cash balance can be funded via a bank transfer.
-    /// Check this [page](https://stripe.com/docs/payments/bank-transfers) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<CreatePaymentMethodConfigurationCustomerBalance>,
-    /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
-    /// EPS is supported by all Austrian banks and is accepted by over 80% of Austrian online retailers.
-    /// Check this [page](https://stripe.com/docs/payments/eps) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub eps: Option<CreatePaymentMethodConfigurationEps>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Financial Process Exchange (FPX) is a Malaysia-based payment method that allows customers to complete transactions online using their bank credentials.
-    /// Bank Negara Malaysia (BNM), the Central Bank of Malaysia, and eleven other major Malaysian financial institutions are members of the PayNet Group, which owns and operates FPX.
-    /// It is one of the most popular online payment methods in Malaysia, with nearly 90 million transactions in 2018 according to BNM.
-    /// Check this [page](https://stripe.com/docs/payments/fpx) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fpx: Option<CreatePaymentMethodConfigurationFpx>,
-    /// giropay is a German payment method based on online banking, introduced in 2006.
-    /// It allows customers to complete transactions online using their online banking environment, with funds debited from their bank account.
-    /// Depending on their bank, customers confirm payments on giropay using a second factor of authentication or a PIN.
-    /// giropay accounts for 10% of online checkouts in Germany.
-    /// Check this [page](https://stripe.com/docs/payments/giropay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub giropay: Option<CreatePaymentMethodConfigurationGiropay>,
-    /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
-    /// Use the Google Pay API to request any credit or debit card stored in your customer's Google account.
-    /// Check this [page](https://stripe.com/docs/google-pay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub google_pay: Option<CreatePaymentMethodConfigurationGooglePay>,
-    /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
-    /// GrabPay is a digital wallet - customers maintain a balance in their wallets that they pay out with.
-    /// Check this [page](https://stripe.com/docs/payments/grabpay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub grabpay: Option<CreatePaymentMethodConfigurationGrabpay>,
-    /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
-    /// All major Dutch banks are members of Currence, the scheme that operates iDEAL, making it the most popular online payment method in the Netherlands with a share of online transactions close to 55%.
-    /// Check this [page](https://stripe.com/docs/payments/ideal) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ideal: Option<CreatePaymentMethodConfigurationIdeal>,
-    /// JCB is a credit card company based in Japan.
-    /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
-    /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub jcb: Option<CreatePaymentMethodConfigurationJcb>,
-    /// Klarna gives customers a range of [payment options](https://stripe.com/docs/payments/klarna#payment-options) during checkout.
-    /// Available payment options vary depending on the customer's billing address and the transaction amount.
-    /// These payment options make it convenient for customers to purchase items in all price ranges.
-    /// Check this [page](https://stripe.com/docs/payments/klarna) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub klarna: Option<CreatePaymentMethodConfigurationKlarna>,
-    /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
-    /// Check this [page](https://stripe.com/docs/payments/konbini) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<CreatePaymentMethodConfigurationKonbini>,
-    /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
-    /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub link: Option<CreatePaymentMethodConfigurationLink>,
-    /// Configuration name.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<&'a str>,
-    /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
-    /// OXXO allows customers to pay bills and online purchases in-store with cash.
-    /// Check this [page](https://stripe.com/docs/payments/oxxo) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo: Option<CreatePaymentMethodConfigurationOxxo>,
-    /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
-    /// Bank transfers account for 30% of online payments in Poland and Przelewy24 provides a way for customers to pay with over 165 banks.
-    /// Check this [page](https://stripe.com/docs/payments/p24) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub p24: Option<CreatePaymentMethodConfigurationP24>,
-    /// Configuration's parent configuration. Specify to create a child configuration.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub parent: Option<&'a str>,
-    /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
-    /// Check this [page](https://stripe.com/docs/payments/paynow) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub paynow: Option<CreatePaymentMethodConfigurationPaynow>,
-    /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
-    /// Check this [page](https://stripe.com/docs/payments/paypal) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub paypal: Option<CreatePaymentMethodConfigurationPaypal>,
-    /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
-    /// Check this [page](https://stripe.com/docs/payments/promptpay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub promptpay: Option<CreatePaymentMethodConfigurationPromptpay>,
-    /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
-    /// Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub revolut_pay: Option<CreatePaymentMethodConfigurationRevolutPay>,
-    /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
-    /// SEPA established and enforced banking standards to allow for the direct debiting of every EUR-denominated bank account within the SEPA region, check this [page](https://stripe.com/docs/payments/sepa-debit) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<CreatePaymentMethodConfigurationSepaDebit>,
-    /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
-    /// Check this [page](https://stripe.com/docs/payments/sofort) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sofort: Option<CreatePaymentMethodConfigurationSofort>,
-    /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
-    /// Check this [page](https://stripe.com/docs/payments/ach-debit) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_bank_account: Option<CreatePaymentMethodConfigurationUsBankAccount>,
-    /// WeChat, owned by Tencent, is China's leading mobile app with over 1 billion monthly active users.
-    /// Chinese consumers can use WeChat Pay to pay for goods and services inside of businesses' apps and websites.
-    /// WeChat Pay users buy most frequently in gaming, e-commerce, travel, online education, and food/nutrition.
-    /// Check this [page](https://stripe.com/docs/payments/wechat-pay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat_pay: Option<CreatePaymentMethodConfigurationWechatPay>,
+
+impl StripeRequest for ListPaymentMethodConfiguration<'_> {
+    type Output = stripe_types::List<stripe_payment::PaymentMethodConfiguration>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/payment_method_configurations").query(&self.inner)
+    }
 }
-impl<'a> CreatePaymentMethodConfiguration<'a> {
-    pub fn new() -> Self {
-        Self::default()
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrievePaymentMethodConfigurationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrievePaymentMethodConfigurationBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieve payment method configuration
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrievePaymentMethodConfiguration<'a> {
+    inner: RetrievePaymentMethodConfigurationBuilder<'a>,
+    configuration: &'a stripe_payment::PaymentMethodConfigurationId,
+}
+impl<'a> RetrievePaymentMethodConfiguration<'a> {
+    /// Construct a new `RetrievePaymentMethodConfiguration`.
+    pub fn new(configuration: &'a stripe_payment::PaymentMethodConfigurationId) -> Self {
+        Self { configuration, inner: RetrievePaymentMethodConfigurationBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrievePaymentMethodConfiguration<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrievePaymentMethodConfiguration<'_> {
+    type Output = stripe_payment::PaymentMethodConfiguration;
+
+    fn build(&self) -> RequestBuilder {
+        let configuration = self.configuration;
+        RequestBuilder::new(
+            StripeMethod::Get,
+            format!("/payment_method_configurations/{configuration}"),
+        )
+        .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreatePaymentMethodConfigurationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    acss_debit: Option<CreatePaymentMethodConfigurationAcssDebit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    affirm: Option<CreatePaymentMethodConfigurationAffirm>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    afterpay_clearpay: Option<CreatePaymentMethodConfigurationAfterpayClearpay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    alipay: Option<CreatePaymentMethodConfigurationAlipay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    amazon_pay: Option<CreatePaymentMethodConfigurationAmazonPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    apple_pay: Option<CreatePaymentMethodConfigurationApplePay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    apple_pay_later: Option<CreatePaymentMethodConfigurationApplePayLater>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    au_becs_debit: Option<CreatePaymentMethodConfigurationAuBecsDebit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    bacs_debit: Option<CreatePaymentMethodConfigurationBacsDebit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    bancontact: Option<CreatePaymentMethodConfigurationBancontact>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    blik: Option<CreatePaymentMethodConfigurationBlik>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    boleto: Option<CreatePaymentMethodConfigurationBoleto>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    card: Option<CreatePaymentMethodConfigurationCard>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cartes_bancaires: Option<CreatePaymentMethodConfigurationCartesBancaires>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cashapp: Option<CreatePaymentMethodConfigurationCashapp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_balance: Option<CreatePaymentMethodConfigurationCustomerBalance>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    eps: Option<CreatePaymentMethodConfigurationEps>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    fpx: Option<CreatePaymentMethodConfigurationFpx>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    giropay: Option<CreatePaymentMethodConfigurationGiropay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    google_pay: Option<CreatePaymentMethodConfigurationGooglePay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    grabpay: Option<CreatePaymentMethodConfigurationGrabpay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ideal: Option<CreatePaymentMethodConfigurationIdeal>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    jcb: Option<CreatePaymentMethodConfigurationJcb>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    klarna: Option<CreatePaymentMethodConfigurationKlarna>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    konbini: Option<CreatePaymentMethodConfigurationKonbini>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    link: Option<CreatePaymentMethodConfigurationLink>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    mobilepay: Option<CreatePaymentMethodConfigurationMobilepay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    oxxo: Option<CreatePaymentMethodConfigurationOxxo>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    p24: Option<CreatePaymentMethodConfigurationP24>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    parent: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    paynow: Option<CreatePaymentMethodConfigurationPaynow>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    paypal: Option<CreatePaymentMethodConfigurationPaypal>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    promptpay: Option<CreatePaymentMethodConfigurationPromptpay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    revolut_pay: Option<CreatePaymentMethodConfigurationRevolutPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    sepa_debit: Option<CreatePaymentMethodConfigurationSepaDebit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    sofort: Option<CreatePaymentMethodConfigurationSofort>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    swish: Option<CreatePaymentMethodConfigurationSwish>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    us_bank_account: Option<CreatePaymentMethodConfigurationUsBankAccount>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    wechat_pay: Option<CreatePaymentMethodConfigurationWechatPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    zip: Option<CreatePaymentMethodConfigurationZip>,
+}
+impl<'a> CreatePaymentMethodConfigurationBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            acss_debit: None,
+            affirm: None,
+            afterpay_clearpay: None,
+            alipay: None,
+            amazon_pay: None,
+            apple_pay: None,
+            apple_pay_later: None,
+            au_becs_debit: None,
+            bacs_debit: None,
+            bancontact: None,
+            blik: None,
+            boleto: None,
+            card: None,
+            cartes_bancaires: None,
+            cashapp: None,
+            customer_balance: None,
+            eps: None,
+            expand: None,
+            fpx: None,
+            giropay: None,
+            google_pay: None,
+            grabpay: None,
+            ideal: None,
+            jcb: None,
+            klarna: None,
+            konbini: None,
+            link: None,
+            mobilepay: None,
+            name: None,
+            oxxo: None,
+            p24: None,
+            parent: None,
+            paynow: None,
+            paypal: None,
+            promptpay: None,
+            revolut_pay: None,
+            sepa_debit: None,
+            sofort: None,
+            swish: None,
+            us_bank_account: None,
+            wechat_pay: None,
+            zip: None,
+        }
     }
 }
 /// Canadian pre-authorized debit payments, check this [page](https://stripe.com/docs/payments/acss-debit) for more details like country availability.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAcssDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -234,11 +306,16 @@ pub struct CreatePaymentMethodConfigurationAcssDebit {
 }
 impl CreatePaymentMethodConfigurationAcssDebit {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationAcssDebit {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAcssDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -246,7 +323,12 @@ pub struct CreatePaymentMethodConfigurationAcssDebitDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationAcssDebitDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationAcssDebitDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -311,7 +393,7 @@ impl<'de> serde::Deserialize<'de>
 /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
 /// Depending on the purchase, they can pay with four interest-free payments (Split Pay) or pay over a longer term (Installments), which might include interest.
 /// Check this [page](https://stripe.com/docs/payments/affirm) for more details like country availability.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAffirm {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -319,11 +401,16 @@ pub struct CreatePaymentMethodConfigurationAffirm {
 }
 impl CreatePaymentMethodConfigurationAffirm {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationAffirm {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAffirmDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -331,7 +418,12 @@ pub struct CreatePaymentMethodConfigurationAffirmDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationAffirmDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationAffirmDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -395,7 +487,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://stripe.com/docs/payments/afterpay-clearpay) for more details like country availability.
 /// Afterpay is particularly popular among businesses selling fashion, beauty, and sports products.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAfterpayClearpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -404,11 +496,16 @@ pub struct CreatePaymentMethodConfigurationAfterpayClearpay {
 }
 impl CreatePaymentMethodConfigurationAfterpayClearpay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationAfterpayClearpay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -417,7 +514,12 @@ pub struct CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -491,7 +593,7 @@ impl<'de> serde::Deserialize<'de>
 /// Alipay users can pay on the web or on a mobile device using login credentials or their Alipay app.
 /// Alipay has a low dispute rate and reduces fraud by authenticating payments using the customer's login credentials.
 /// Check this [page](https://stripe.com/docs/payments/alipay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAlipay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -499,11 +601,16 @@ pub struct CreatePaymentMethodConfigurationAlipay {
 }
 impl CreatePaymentMethodConfigurationAlipay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationAlipay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAlipayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -511,7 +618,12 @@ pub struct CreatePaymentMethodConfigurationAlipayDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationAlipayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationAlipayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -573,10 +685,103 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference"))
     }
 }
+/// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationAmazonPay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationAmazonPayDisplayPreference>,
+}
+impl CreatePaymentMethodConfigurationAmazonPay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationAmazonPay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationAmazonPayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference>,
+}
+impl CreatePaymentMethodConfigurationAmazonPayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationAmazonPayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference"))
+    }
+}
 /// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
 /// There are no additional fees to process Apple Pay payments, and the [pricing](/pricing) is the same as other card transactions.
 /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationApplePay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -584,11 +789,16 @@ pub struct CreatePaymentMethodConfigurationApplePay {
 }
 impl CreatePaymentMethodConfigurationApplePay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationApplePay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationApplePayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -596,7 +806,12 @@ pub struct CreatePaymentMethodConfigurationApplePayDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationApplePayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationApplePayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -659,7 +874,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationApplePayLater {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -667,11 +882,16 @@ pub struct CreatePaymentMethodConfigurationApplePayLater {
 }
 impl CreatePaymentMethodConfigurationApplePayLater {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationApplePayLater {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationApplePayLaterDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -680,7 +900,12 @@ pub struct CreatePaymentMethodConfigurationApplePayLaterDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationApplePayLaterDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationApplePayLaterDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -748,7 +973,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
 /// Check this [page](https://stripe.com/docs/payments/au-becs-debit) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAuBecsDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -756,11 +981,16 @@ pub struct CreatePaymentMethodConfigurationAuBecsDebit {
 }
 impl CreatePaymentMethodConfigurationAuBecsDebit {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationAuBecsDebit {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -768,7 +998,12 @@ pub struct CreatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -831,7 +1066,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://stripe.com/docs/payments/payment-methods/bacs-debit) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBacsDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -839,11 +1074,16 @@ pub struct CreatePaymentMethodConfigurationBacsDebit {
 }
 impl CreatePaymentMethodConfigurationBacsDebit {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationBacsDebit {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBacsDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -851,7 +1091,12 @@ pub struct CreatePaymentMethodConfigurationBacsDebitDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationBacsDebitDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationBacsDebitDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -916,7 +1161,7 @@ impl<'de> serde::Deserialize<'de>
 /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
 /// [Customers](https://stripe.com/docs/api/customers) use a Bancontact card or mobile app linked to a Belgian bank account to make online payments that are secure, guaranteed, and confirmed immediately.
 /// Check this [page](https://stripe.com/docs/payments/bancontact) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBancontact {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -924,11 +1169,16 @@ pub struct CreatePaymentMethodConfigurationBancontact {
 }
 impl CreatePaymentMethodConfigurationBancontact {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationBancontact {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBancontactDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -936,7 +1186,12 @@ pub struct CreatePaymentMethodConfigurationBancontactDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationBancontactDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationBancontactDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -1001,7 +1256,7 @@ impl<'de> serde::Deserialize<'de>
 /// BLIK is a [single use](https://stripe.com/docs/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
 /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
 /// Check this [page](https://stripe.com/docs/payments/blik) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBlik {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1009,11 +1264,16 @@ pub struct CreatePaymentMethodConfigurationBlik {
 }
 impl CreatePaymentMethodConfigurationBlik {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationBlik {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBlikDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1021,7 +1281,12 @@ pub struct CreatePaymentMethodConfigurationBlikDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationBlikDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationBlikDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -1089,7 +1354,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
 /// Check this [page](https://stripe.com/docs/payments/boleto) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBoleto {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1097,11 +1362,16 @@ pub struct CreatePaymentMethodConfigurationBoleto {
 }
 impl CreatePaymentMethodConfigurationBoleto {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationBoleto {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBoletoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1109,7 +1379,12 @@ pub struct CreatePaymentMethodConfigurationBoletoDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationBoletoDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationBoletoDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -1173,7 +1448,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Cards are a popular way for consumers and businesses to pay online or in person.
 /// Stripe supports global and local card networks.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCard {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1181,11 +1456,16 @@ pub struct CreatePaymentMethodConfigurationCard {
 }
 impl CreatePaymentMethodConfigurationCard {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationCard {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCardDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1193,7 +1473,12 @@ pub struct CreatePaymentMethodConfigurationCardDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationCardDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationCardDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -1262,7 +1547,7 @@ impl<'de> serde::Deserialize<'de>
 /// Cartes Bancaires is France's local card network.
 /// More than 95% of these cards are co-branded with either Visa or Mastercard, meaning you can process these cards over either Cartes Bancaires or the Visa or Mastercard networks.
 /// Check this [page](https://stripe.com/docs/payments/cartes-bancaires) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCartesBancaires {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1271,11 +1556,16 @@ pub struct CreatePaymentMethodConfigurationCartesBancaires {
 }
 impl CreatePaymentMethodConfigurationCartesBancaires {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationCartesBancaires {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCartesBancairesDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1284,7 +1574,12 @@ pub struct CreatePaymentMethodConfigurationCartesBancairesDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationCartesBancairesDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationCartesBancairesDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -1356,7 +1651,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
 /// Check this [page](https://stripe.com/docs/payments/cash-app-pay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCashapp {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1364,11 +1659,16 @@ pub struct CreatePaymentMethodConfigurationCashapp {
 }
 impl CreatePaymentMethodConfigurationCashapp {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationCashapp {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCashappDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1376,7 +1676,12 @@ pub struct CreatePaymentMethodConfigurationCashappDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationCashappDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationCashappDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -1441,7 +1746,7 @@ impl<'de> serde::Deserialize<'de>
 /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
 /// The cash balance can be funded via a bank transfer.
 /// Check this [page](https://stripe.com/docs/payments/bank-transfers) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCustomerBalance {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1450,11 +1755,16 @@ pub struct CreatePaymentMethodConfigurationCustomerBalance {
 }
 impl CreatePaymentMethodConfigurationCustomerBalance {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationCustomerBalance {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1463,7 +1773,12 @@ pub struct CreatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -1536,7 +1851,7 @@ impl<'de> serde::Deserialize<'de>
 /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
 /// EPS is supported by all Austrian banks and is accepted by over 80% of Austrian online retailers.
 /// Check this [page](https://stripe.com/docs/payments/eps) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationEps {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1544,11 +1859,16 @@ pub struct CreatePaymentMethodConfigurationEps {
 }
 impl CreatePaymentMethodConfigurationEps {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationEps {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationEpsDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1556,7 +1876,12 @@ pub struct CreatePaymentMethodConfigurationEpsDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationEpsDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationEpsDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -1626,7 +1951,7 @@ impl<'de> serde::Deserialize<'de>
 /// Bank Negara Malaysia (BNM), the Central Bank of Malaysia, and eleven other major Malaysian financial institutions are members of the PayNet Group, which owns and operates FPX.
 /// It is one of the most popular online payment methods in Malaysia, with nearly 90 million transactions in 2018 according to BNM.
 /// Check this [page](https://stripe.com/docs/payments/fpx) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationFpx {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1634,11 +1959,16 @@ pub struct CreatePaymentMethodConfigurationFpx {
 }
 impl CreatePaymentMethodConfigurationFpx {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationFpx {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationFpxDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1646,7 +1976,12 @@ pub struct CreatePaymentMethodConfigurationFpxDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationFpxDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationFpxDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -1717,7 +2052,7 @@ impl<'de> serde::Deserialize<'de>
 /// Depending on their bank, customers confirm payments on giropay using a second factor of authentication or a PIN.
 /// giropay accounts for 10% of online checkouts in Germany.
 /// Check this [page](https://stripe.com/docs/payments/giropay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGiropay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1725,11 +2060,16 @@ pub struct CreatePaymentMethodConfigurationGiropay {
 }
 impl CreatePaymentMethodConfigurationGiropay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationGiropay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGiropayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1737,7 +2077,12 @@ pub struct CreatePaymentMethodConfigurationGiropayDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationGiropayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationGiropayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -1802,7 +2147,7 @@ impl<'de> serde::Deserialize<'de>
 /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
 /// Use the Google Pay API to request any credit or debit card stored in your customer's Google account.
 /// Check this [page](https://stripe.com/docs/google-pay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGooglePay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1810,11 +2155,16 @@ pub struct CreatePaymentMethodConfigurationGooglePay {
 }
 impl CreatePaymentMethodConfigurationGooglePay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationGooglePay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGooglePayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1822,7 +2172,12 @@ pub struct CreatePaymentMethodConfigurationGooglePayDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationGooglePayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationGooglePayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -1887,7 +2242,7 @@ impl<'de> serde::Deserialize<'de>
 /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
 /// GrabPay is a digital wallet - customers maintain a balance in their wallets that they pay out with.
 /// Check this [page](https://stripe.com/docs/payments/grabpay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGrabpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1895,11 +2250,16 @@ pub struct CreatePaymentMethodConfigurationGrabpay {
 }
 impl CreatePaymentMethodConfigurationGrabpay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationGrabpay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGrabpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1907,7 +2267,12 @@ pub struct CreatePaymentMethodConfigurationGrabpayDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationGrabpayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationGrabpayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -1972,7 +2337,7 @@ impl<'de> serde::Deserialize<'de>
 /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
 /// All major Dutch banks are members of Currence, the scheme that operates iDEAL, making it the most popular online payment method in the Netherlands with a share of online transactions close to 55%.
 /// Check this [page](https://stripe.com/docs/payments/ideal) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationIdeal {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1980,11 +2345,16 @@ pub struct CreatePaymentMethodConfigurationIdeal {
 }
 impl CreatePaymentMethodConfigurationIdeal {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationIdeal {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationIdealDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1992,7 +2362,12 @@ pub struct CreatePaymentMethodConfigurationIdealDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationIdealDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationIdealDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -2057,7 +2432,7 @@ impl<'de> serde::Deserialize<'de>
 /// JCB is a credit card company based in Japan.
 /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
 /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationJcb {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2065,11 +2440,16 @@ pub struct CreatePaymentMethodConfigurationJcb {
 }
 impl CreatePaymentMethodConfigurationJcb {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationJcb {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationJcbDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2077,7 +2457,12 @@ pub struct CreatePaymentMethodConfigurationJcbDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationJcbDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationJcbDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -2147,7 +2532,7 @@ impl<'de> serde::Deserialize<'de>
 /// Available payment options vary depending on the customer's billing address and the transaction amount.
 /// These payment options make it convenient for customers to purchase items in all price ranges.
 /// Check this [page](https://stripe.com/docs/payments/klarna) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKlarna {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2155,11 +2540,16 @@ pub struct CreatePaymentMethodConfigurationKlarna {
 }
 impl CreatePaymentMethodConfigurationKlarna {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationKlarna {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKlarnaDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2167,7 +2557,12 @@ pub struct CreatePaymentMethodConfigurationKlarnaDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationKlarnaDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationKlarnaDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -2231,7 +2626,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
 /// Check this [page](https://stripe.com/docs/payments/konbini) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKonbini {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2239,11 +2634,16 @@ pub struct CreatePaymentMethodConfigurationKonbini {
 }
 impl CreatePaymentMethodConfigurationKonbini {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationKonbini {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKonbiniDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2251,7 +2651,12 @@ pub struct CreatePaymentMethodConfigurationKonbiniDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationKonbiniDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationKonbiniDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -2315,7 +2720,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
 /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationLink {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2323,11 +2728,16 @@ pub struct CreatePaymentMethodConfigurationLink {
 }
 impl CreatePaymentMethodConfigurationLink {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationLink {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationLinkDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2335,7 +2745,12 @@ pub struct CreatePaymentMethodConfigurationLinkDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationLinkDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationLinkDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -2401,10 +2816,105 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
+/// MobilePay is a [single-use](https://stripe.com/docs/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
+/// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the MobilePay app.
+/// Check this [page](https://stripe.com/docs/payments/mobilepay) for more details.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationMobilepay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationMobilepayDisplayPreference>,
+}
+impl CreatePaymentMethodConfigurationMobilepay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationMobilepay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationMobilepayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference>,
+}
+impl CreatePaymentMethodConfigurationMobilepayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationMobilepayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference"))
+    }
+}
 /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
 /// OXXO allows customers to pay bills and online purchases in-store with cash.
 /// Check this [page](https://stripe.com/docs/payments/oxxo) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationOxxo {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2412,11 +2922,16 @@ pub struct CreatePaymentMethodConfigurationOxxo {
 }
 impl CreatePaymentMethodConfigurationOxxo {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationOxxo {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationOxxoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2424,7 +2939,12 @@ pub struct CreatePaymentMethodConfigurationOxxoDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationOxxoDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationOxxoDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -2493,7 +3013,7 @@ impl<'de> serde::Deserialize<'de>
 /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
 /// Bank transfers account for 30% of online payments in Poland and Przelewy24 provides a way for customers to pay with over 165 banks.
 /// Check this [page](https://stripe.com/docs/payments/p24) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationP24 {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2501,11 +3021,16 @@ pub struct CreatePaymentMethodConfigurationP24 {
 }
 impl CreatePaymentMethodConfigurationP24 {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationP24 {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationP24DisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2513,7 +3038,12 @@ pub struct CreatePaymentMethodConfigurationP24DisplayPreference {
 }
 impl CreatePaymentMethodConfigurationP24DisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationP24DisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -2581,7 +3111,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
 /// Check this [page](https://stripe.com/docs/payments/paynow) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaynow {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2589,11 +3119,16 @@ pub struct CreatePaymentMethodConfigurationPaynow {
 }
 impl CreatePaymentMethodConfigurationPaynow {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationPaynow {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaynowDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2601,7 +3136,12 @@ pub struct CreatePaymentMethodConfigurationPaynowDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationPaynowDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationPaynowDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -2665,7 +3205,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
 /// Check this [page](https://stripe.com/docs/payments/paypal) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaypal {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2673,11 +3213,16 @@ pub struct CreatePaymentMethodConfigurationPaypal {
 }
 impl CreatePaymentMethodConfigurationPaypal {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationPaypal {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaypalDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2685,7 +3230,12 @@ pub struct CreatePaymentMethodConfigurationPaypalDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationPaypalDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationPaypalDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -2749,7 +3299,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
 /// Check this [page](https://stripe.com/docs/payments/promptpay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPromptpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2757,11 +3307,16 @@ pub struct CreatePaymentMethodConfigurationPromptpay {
 }
 impl CreatePaymentMethodConfigurationPromptpay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationPromptpay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPromptpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2769,7 +3324,12 @@ pub struct CreatePaymentMethodConfigurationPromptpayDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationPromptpayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationPromptpayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -2833,7 +3393,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
 /// Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationRevolutPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2841,11 +3401,16 @@ pub struct CreatePaymentMethodConfigurationRevolutPay {
 }
 impl CreatePaymentMethodConfigurationRevolutPay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationRevolutPay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationRevolutPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2853,7 +3418,12 @@ pub struct CreatePaymentMethodConfigurationRevolutPayDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationRevolutPayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationRevolutPayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -2917,7 +3487,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
 /// SEPA established and enforced banking standards to allow for the direct debiting of every EUR-denominated bank account within the SEPA region, check this [page](https://stripe.com/docs/payments/sepa-debit) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSepaDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2925,11 +3495,16 @@ pub struct CreatePaymentMethodConfigurationSepaDebit {
 }
 impl CreatePaymentMethodConfigurationSepaDebit {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationSepaDebit {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSepaDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2937,7 +3512,12 @@ pub struct CreatePaymentMethodConfigurationSepaDebitDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationSepaDebitDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationSepaDebitDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -3001,7 +3581,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
 /// Check this [page](https://stripe.com/docs/payments/sofort) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSofort {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3009,11 +3589,16 @@ pub struct CreatePaymentMethodConfigurationSofort {
 }
 impl CreatePaymentMethodConfigurationSofort {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationSofort {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSofortDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3021,7 +3606,12 @@ pub struct CreatePaymentMethodConfigurationSofortDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationSofortDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationSofortDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -3083,9 +3673,104 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationSofortDisplayPreferencePreference"))
     }
 }
+/// Swish is a [real-time](https://stripe.com/docs/payments/real-time) payment method popular in Sweden.
+/// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
+/// Check this [page](https://stripe.com/docs/payments/swish) for more details.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationSwish {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationSwishDisplayPreference>,
+}
+impl CreatePaymentMethodConfigurationSwish {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationSwish {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationSwishDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationSwishDisplayPreferencePreference>,
+}
+impl CreatePaymentMethodConfigurationSwishDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationSwishDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl CreatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodConfigurationSwishDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationSwishDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationSwishDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationSwishDisplayPreferencePreference"))
+    }
+}
 /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
 /// Check this [page](https://stripe.com/docs/payments/ach-debit) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationUsBankAccount {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3093,11 +3778,16 @@ pub struct CreatePaymentMethodConfigurationUsBankAccount {
 }
 impl CreatePaymentMethodConfigurationUsBankAccount {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationUsBankAccount {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationUsBankAccountDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3106,7 +3796,12 @@ pub struct CreatePaymentMethodConfigurationUsBankAccountDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationUsBankAccountDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationUsBankAccountDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -3176,7 +3871,7 @@ impl<'de> serde::Deserialize<'de>
 /// Chinese consumers can use WeChat Pay to pay for goods and services inside of businesses' apps and websites.
 /// WeChat Pay users buy most frequently in gaming, e-commerce, travel, online education, and food/nutrition.
 /// Check this [page](https://stripe.com/docs/payments/wechat-pay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationWechatPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3184,11 +3879,16 @@ pub struct CreatePaymentMethodConfigurationWechatPay {
 }
 impl CreatePaymentMethodConfigurationWechatPay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationWechatPay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationWechatPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3196,7 +3896,12 @@ pub struct CreatePaymentMethodConfigurationWechatPayDisplayPreference {
 }
 impl CreatePaymentMethodConfigurationWechatPayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationWechatPayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -3258,195 +3963,571 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference"))
     }
 }
-impl<'a> CreatePaymentMethodConfiguration<'a> {
-    /// Creates a payment method configuration
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_payment::PaymentMethodConfiguration> {
-        client.send_form("/payment_method_configurations", self, http_types::Method::Post)
+/// Zip gives your customers a way to split purchases over a series of payments.
+/// Check this [page](https://stripe.com/docs/payments/zip) for more details like country availability.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationZip {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationZipDisplayPreference>,
+}
+impl CreatePaymentMethodConfigurationZip {
+    pub fn new() -> Self {
+        Self { display_preference: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePaymentMethodConfiguration<'a> {
+impl Default for CreatePaymentMethodConfigurationZip {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationZipDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationZipDisplayPreferencePreference>,
+}
+impl CreatePaymentMethodConfigurationZipDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationZipDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodConfigurationZipDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationZipDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationZipDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentMethodConfigurationZipDisplayPreferencePreference",
+            )
+        })
+    }
+}
+/// Creates a payment method configuration
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfiguration<'a> {
+    inner: CreatePaymentMethodConfigurationBuilder<'a>,
+}
+impl<'a> CreatePaymentMethodConfiguration<'a> {
+    /// Construct a new `CreatePaymentMethodConfiguration`.
+    pub fn new() -> Self {
+        Self { inner: CreatePaymentMethodConfigurationBuilder::new() }
+    }
     /// Canadian pre-authorized debit payments, check this [page](https://stripe.com/docs/payments/acss-debit) for more details like country availability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<UpdatePaymentMethodConfigurationAcssDebit>,
-    /// Whether the configuration can be used for new payments.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub active: Option<bool>,
+    pub fn acss_debit(mut self, acss_debit: CreatePaymentMethodConfigurationAcssDebit) -> Self {
+        self.inner.acss_debit = Some(acss_debit);
+        self
+    }
     /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
     /// Depending on the purchase, they can pay with four interest-free payments (Split Pay) or pay over a longer term (Installments), which might include interest.
     /// Check this [page](https://stripe.com/docs/payments/affirm) for more details like country availability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub affirm: Option<UpdatePaymentMethodConfigurationAffirm>,
+    pub fn affirm(mut self, affirm: CreatePaymentMethodConfigurationAffirm) -> Self {
+        self.inner.affirm = Some(affirm);
+        self
+    }
     /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://stripe.com/docs/payments/afterpay-clearpay) for more details like country availability.
     /// Afterpay is particularly popular among businesses selling fashion, beauty, and sports products.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub afterpay_clearpay: Option<UpdatePaymentMethodConfigurationAfterpayClearpay>,
+    pub fn afterpay_clearpay(
+        mut self,
+        afterpay_clearpay: CreatePaymentMethodConfigurationAfterpayClearpay,
+    ) -> Self {
+        self.inner.afterpay_clearpay = Some(afterpay_clearpay);
+        self
+    }
     /// Alipay is a digital wallet in China that has more than a billion active users worldwide.
     /// Alipay users can pay on the web or on a mobile device using login credentials or their Alipay app.
     /// Alipay has a low dispute rate and reduces fraud by authenticating payments using the customer's login credentials.
     /// Check this [page](https://stripe.com/docs/payments/alipay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub alipay: Option<UpdatePaymentMethodConfigurationAlipay>,
+    pub fn alipay(mut self, alipay: CreatePaymentMethodConfigurationAlipay) -> Self {
+        self.inner.alipay = Some(alipay);
+        self
+    }
+    /// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
+    pub fn amazon_pay(mut self, amazon_pay: CreatePaymentMethodConfigurationAmazonPay) -> Self {
+        self.inner.amazon_pay = Some(amazon_pay);
+        self
+    }
     /// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
     /// There are no additional fees to process Apple Pay payments, and the [pricing](/pricing) is the same as other card transactions.
     /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub apple_pay: Option<UpdatePaymentMethodConfigurationApplePay>,
+    pub fn apple_pay(mut self, apple_pay: CreatePaymentMethodConfigurationApplePay) -> Self {
+        self.inner.apple_pay = Some(apple_pay);
+        self
+    }
     /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub apple_pay_later: Option<UpdatePaymentMethodConfigurationApplePayLater>,
+    pub fn apple_pay_later(
+        mut self,
+        apple_pay_later: CreatePaymentMethodConfigurationApplePayLater,
+    ) -> Self {
+        self.inner.apple_pay_later = Some(apple_pay_later);
+        self
+    }
     /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
     /// Check this [page](https://stripe.com/docs/payments/au-becs-debit) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit: Option<UpdatePaymentMethodConfigurationAuBecsDebit>,
+    pub fn au_becs_debit(
+        mut self,
+        au_becs_debit: CreatePaymentMethodConfigurationAuBecsDebit,
+    ) -> Self {
+        self.inner.au_becs_debit = Some(au_becs_debit);
+        self
+    }
     /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://stripe.com/docs/payments/payment-methods/bacs-debit) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit: Option<UpdatePaymentMethodConfigurationBacsDebit>,
+    pub fn bacs_debit(mut self, bacs_debit: CreatePaymentMethodConfigurationBacsDebit) -> Self {
+        self.inner.bacs_debit = Some(bacs_debit);
+        self
+    }
     /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
     /// [Customers](https://stripe.com/docs/api/customers) use a Bancontact card or mobile app linked to a Belgian bank account to make online payments that are secure, guaranteed, and confirmed immediately.
     /// Check this [page](https://stripe.com/docs/payments/bancontact) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<UpdatePaymentMethodConfigurationBancontact>,
+    pub fn bancontact(mut self, bancontact: CreatePaymentMethodConfigurationBancontact) -> Self {
+        self.inner.bancontact = Some(bancontact);
+        self
+    }
     /// BLIK is a [single use](https://stripe.com/docs/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
     /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
     /// Check this [page](https://stripe.com/docs/payments/blik) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<UpdatePaymentMethodConfigurationBlik>,
+    pub fn blik(mut self, blik: CreatePaymentMethodConfigurationBlik) -> Self {
+        self.inner.blik = Some(blik);
+        self
+    }
     /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
     /// Check this [page](https://stripe.com/docs/payments/boleto) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub boleto: Option<UpdatePaymentMethodConfigurationBoleto>,
+    pub fn boleto(mut self, boleto: CreatePaymentMethodConfigurationBoleto) -> Self {
+        self.inner.boleto = Some(boleto);
+        self
+    }
     /// Cards are a popular way for consumers and businesses to pay online or in person.
     /// Stripe supports global and local card networks.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<UpdatePaymentMethodConfigurationCard>,
+    pub fn card(mut self, card: CreatePaymentMethodConfigurationCard) -> Self {
+        self.inner.card = Some(card);
+        self
+    }
     /// Cartes Bancaires is France's local card network.
     /// More than 95% of these cards are co-branded with either Visa or Mastercard, meaning you can process these cards over either Cartes Bancaires or the Visa or Mastercard networks.
     /// Check this [page](https://stripe.com/docs/payments/cartes-bancaires) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cartes_bancaires: Option<UpdatePaymentMethodConfigurationCartesBancaires>,
+    pub fn cartes_bancaires(
+        mut self,
+        cartes_bancaires: CreatePaymentMethodConfigurationCartesBancaires,
+    ) -> Self {
+        self.inner.cartes_bancaires = Some(cartes_bancaires);
+        self
+    }
     /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
     /// Check this [page](https://stripe.com/docs/payments/cash-app-pay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp: Option<UpdatePaymentMethodConfigurationCashapp>,
+    pub fn cashapp(mut self, cashapp: CreatePaymentMethodConfigurationCashapp) -> Self {
+        self.inner.cashapp = Some(cashapp);
+        self
+    }
     /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
     /// The cash balance can be funded via a bank transfer.
     /// Check this [page](https://stripe.com/docs/payments/bank-transfers) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<UpdatePaymentMethodConfigurationCustomerBalance>,
+    pub fn customer_balance(
+        mut self,
+        customer_balance: CreatePaymentMethodConfigurationCustomerBalance,
+    ) -> Self {
+        self.inner.customer_balance = Some(customer_balance);
+        self
+    }
     /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
     /// EPS is supported by all Austrian banks and is accepted by over 80% of Austrian online retailers.
     /// Check this [page](https://stripe.com/docs/payments/eps) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub eps: Option<UpdatePaymentMethodConfigurationEps>,
+    pub fn eps(mut self, eps: CreatePaymentMethodConfigurationEps) -> Self {
+        self.inner.eps = Some(eps);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// Financial Process Exchange (FPX) is a Malaysia-based payment method that allows customers to complete transactions online using their bank credentials.
     /// Bank Negara Malaysia (BNM), the Central Bank of Malaysia, and eleven other major Malaysian financial institutions are members of the PayNet Group, which owns and operates FPX.
     /// It is one of the most popular online payment methods in Malaysia, with nearly 90 million transactions in 2018 according to BNM.
     /// Check this [page](https://stripe.com/docs/payments/fpx) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fpx: Option<UpdatePaymentMethodConfigurationFpx>,
+    pub fn fpx(mut self, fpx: CreatePaymentMethodConfigurationFpx) -> Self {
+        self.inner.fpx = Some(fpx);
+        self
+    }
     /// giropay is a German payment method based on online banking, introduced in 2006.
     /// It allows customers to complete transactions online using their online banking environment, with funds debited from their bank account.
     /// Depending on their bank, customers confirm payments on giropay using a second factor of authentication or a PIN.
     /// giropay accounts for 10% of online checkouts in Germany.
     /// Check this [page](https://stripe.com/docs/payments/giropay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub giropay: Option<UpdatePaymentMethodConfigurationGiropay>,
+    pub fn giropay(mut self, giropay: CreatePaymentMethodConfigurationGiropay) -> Self {
+        self.inner.giropay = Some(giropay);
+        self
+    }
     /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
     /// Use the Google Pay API to request any credit or debit card stored in your customer's Google account.
     /// Check this [page](https://stripe.com/docs/google-pay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub google_pay: Option<UpdatePaymentMethodConfigurationGooglePay>,
+    pub fn google_pay(mut self, google_pay: CreatePaymentMethodConfigurationGooglePay) -> Self {
+        self.inner.google_pay = Some(google_pay);
+        self
+    }
     /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
     /// GrabPay is a digital wallet - customers maintain a balance in their wallets that they pay out with.
     /// Check this [page](https://stripe.com/docs/payments/grabpay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub grabpay: Option<UpdatePaymentMethodConfigurationGrabpay>,
+    pub fn grabpay(mut self, grabpay: CreatePaymentMethodConfigurationGrabpay) -> Self {
+        self.inner.grabpay = Some(grabpay);
+        self
+    }
     /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
     /// All major Dutch banks are members of Currence, the scheme that operates iDEAL, making it the most popular online payment method in the Netherlands with a share of online transactions close to 55%.
     /// Check this [page](https://stripe.com/docs/payments/ideal) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ideal: Option<UpdatePaymentMethodConfigurationIdeal>,
+    pub fn ideal(mut self, ideal: CreatePaymentMethodConfigurationIdeal) -> Self {
+        self.inner.ideal = Some(ideal);
+        self
+    }
     /// JCB is a credit card company based in Japan.
     /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
     /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub jcb: Option<UpdatePaymentMethodConfigurationJcb>,
+    pub fn jcb(mut self, jcb: CreatePaymentMethodConfigurationJcb) -> Self {
+        self.inner.jcb = Some(jcb);
+        self
+    }
     /// Klarna gives customers a range of [payment options](https://stripe.com/docs/payments/klarna#payment-options) during checkout.
     /// Available payment options vary depending on the customer's billing address and the transaction amount.
     /// These payment options make it convenient for customers to purchase items in all price ranges.
     /// Check this [page](https://stripe.com/docs/payments/klarna) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub klarna: Option<UpdatePaymentMethodConfigurationKlarna>,
+    pub fn klarna(mut self, klarna: CreatePaymentMethodConfigurationKlarna) -> Self {
+        self.inner.klarna = Some(klarna);
+        self
+    }
     /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
     /// Check this [page](https://stripe.com/docs/payments/konbini) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<UpdatePaymentMethodConfigurationKonbini>,
+    pub fn konbini(mut self, konbini: CreatePaymentMethodConfigurationKonbini) -> Self {
+        self.inner.konbini = Some(konbini);
+        self
+    }
     /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
     /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub link: Option<UpdatePaymentMethodConfigurationLink>,
+    pub fn link(mut self, link: CreatePaymentMethodConfigurationLink) -> Self {
+        self.inner.link = Some(link);
+        self
+    }
+    /// MobilePay is a [single-use](https://stripe.com/docs/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
+    /// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the MobilePay app.
+    /// Check this [page](https://stripe.com/docs/payments/mobilepay) for more details.
+    pub fn mobilepay(mut self, mobilepay: CreatePaymentMethodConfigurationMobilepay) -> Self {
+        self.inner.mobilepay = Some(mobilepay);
+        self
+    }
     /// Configuration name.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<&'a str>,
+    pub fn name(mut self, name: &'a str) -> Self {
+        self.inner.name = Some(name);
+        self
+    }
     /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
     /// OXXO allows customers to pay bills and online purchases in-store with cash.
     /// Check this [page](https://stripe.com/docs/payments/oxxo) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo: Option<UpdatePaymentMethodConfigurationOxxo>,
+    pub fn oxxo(mut self, oxxo: CreatePaymentMethodConfigurationOxxo) -> Self {
+        self.inner.oxxo = Some(oxxo);
+        self
+    }
     /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
     /// Bank transfers account for 30% of online payments in Poland and Przelewy24 provides a way for customers to pay with over 165 banks.
     /// Check this [page](https://stripe.com/docs/payments/p24) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub p24: Option<UpdatePaymentMethodConfigurationP24>,
+    pub fn p24(mut self, p24: CreatePaymentMethodConfigurationP24) -> Self {
+        self.inner.p24 = Some(p24);
+        self
+    }
+    /// Configuration's parent configuration. Specify to create a child configuration.
+    pub fn parent(mut self, parent: &'a str) -> Self {
+        self.inner.parent = Some(parent);
+        self
+    }
     /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
     /// Check this [page](https://stripe.com/docs/payments/paynow) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub paynow: Option<UpdatePaymentMethodConfigurationPaynow>,
+    pub fn paynow(mut self, paynow: CreatePaymentMethodConfigurationPaynow) -> Self {
+        self.inner.paynow = Some(paynow);
+        self
+    }
     /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
     /// Check this [page](https://stripe.com/docs/payments/paypal) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub paypal: Option<UpdatePaymentMethodConfigurationPaypal>,
+    pub fn paypal(mut self, paypal: CreatePaymentMethodConfigurationPaypal) -> Self {
+        self.inner.paypal = Some(paypal);
+        self
+    }
     /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
     /// Check this [page](https://stripe.com/docs/payments/promptpay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub promptpay: Option<UpdatePaymentMethodConfigurationPromptpay>,
+    pub fn promptpay(mut self, promptpay: CreatePaymentMethodConfigurationPromptpay) -> Self {
+        self.inner.promptpay = Some(promptpay);
+        self
+    }
     /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
     /// Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub revolut_pay: Option<UpdatePaymentMethodConfigurationRevolutPay>,
+    pub fn revolut_pay(mut self, revolut_pay: CreatePaymentMethodConfigurationRevolutPay) -> Self {
+        self.inner.revolut_pay = Some(revolut_pay);
+        self
+    }
     /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
     /// SEPA established and enforced banking standards to allow for the direct debiting of every EUR-denominated bank account within the SEPA region, check this [page](https://stripe.com/docs/payments/sepa-debit) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<UpdatePaymentMethodConfigurationSepaDebit>,
+    pub fn sepa_debit(mut self, sepa_debit: CreatePaymentMethodConfigurationSepaDebit) -> Self {
+        self.inner.sepa_debit = Some(sepa_debit);
+        self
+    }
     /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
     /// Check this [page](https://stripe.com/docs/payments/sofort) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sofort: Option<UpdatePaymentMethodConfigurationSofort>,
+    pub fn sofort(mut self, sofort: CreatePaymentMethodConfigurationSofort) -> Self {
+        self.inner.sofort = Some(sofort);
+        self
+    }
+    /// Swish is a [real-time](https://stripe.com/docs/payments/real-time) payment method popular in Sweden.
+    /// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
+    /// Check this [page](https://stripe.com/docs/payments/swish) for more details.
+    pub fn swish(mut self, swish: CreatePaymentMethodConfigurationSwish) -> Self {
+        self.inner.swish = Some(swish);
+        self
+    }
     /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
     /// Check this [page](https://stripe.com/docs/payments/ach-debit) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_bank_account: Option<UpdatePaymentMethodConfigurationUsBankAccount>,
+    pub fn us_bank_account(
+        mut self,
+        us_bank_account: CreatePaymentMethodConfigurationUsBankAccount,
+    ) -> Self {
+        self.inner.us_bank_account = Some(us_bank_account);
+        self
+    }
     /// WeChat, owned by Tencent, is China's leading mobile app with over 1 billion monthly active users.
     /// Chinese consumers can use WeChat Pay to pay for goods and services inside of businesses' apps and websites.
     /// WeChat Pay users buy most frequently in gaming, e-commerce, travel, online education, and food/nutrition.
     /// Check this [page](https://stripe.com/docs/payments/wechat-pay) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat_pay: Option<UpdatePaymentMethodConfigurationWechatPay>,
+    pub fn wechat_pay(mut self, wechat_pay: CreatePaymentMethodConfigurationWechatPay) -> Self {
+        self.inner.wechat_pay = Some(wechat_pay);
+        self
+    }
+    /// Zip gives your customers a way to split purchases over a series of payments.
+    /// Check this [page](https://stripe.com/docs/payments/zip) for more details like country availability.
+    pub fn zip(mut self, zip: CreatePaymentMethodConfigurationZip) -> Self {
+        self.inner.zip = Some(zip);
+        self
+    }
 }
-impl<'a> UpdatePaymentMethodConfiguration<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> Default for CreatePaymentMethodConfiguration<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl CreatePaymentMethodConfiguration<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreatePaymentMethodConfiguration<'_> {
+    type Output = stripe_payment::PaymentMethodConfiguration;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/payment_method_configurations").form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdatePaymentMethodConfigurationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    acss_debit: Option<UpdatePaymentMethodConfigurationAcssDebit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    active: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    affirm: Option<UpdatePaymentMethodConfigurationAffirm>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    afterpay_clearpay: Option<UpdatePaymentMethodConfigurationAfterpayClearpay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    alipay: Option<UpdatePaymentMethodConfigurationAlipay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    amazon_pay: Option<UpdatePaymentMethodConfigurationAmazonPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    apple_pay: Option<UpdatePaymentMethodConfigurationApplePay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    apple_pay_later: Option<UpdatePaymentMethodConfigurationApplePayLater>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    au_becs_debit: Option<UpdatePaymentMethodConfigurationAuBecsDebit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    bacs_debit: Option<UpdatePaymentMethodConfigurationBacsDebit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    bancontact: Option<UpdatePaymentMethodConfigurationBancontact>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    blik: Option<UpdatePaymentMethodConfigurationBlik>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    boleto: Option<UpdatePaymentMethodConfigurationBoleto>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    card: Option<UpdatePaymentMethodConfigurationCard>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cartes_bancaires: Option<UpdatePaymentMethodConfigurationCartesBancaires>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cashapp: Option<UpdatePaymentMethodConfigurationCashapp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_balance: Option<UpdatePaymentMethodConfigurationCustomerBalance>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    eps: Option<UpdatePaymentMethodConfigurationEps>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    fpx: Option<UpdatePaymentMethodConfigurationFpx>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    giropay: Option<UpdatePaymentMethodConfigurationGiropay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    google_pay: Option<UpdatePaymentMethodConfigurationGooglePay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    grabpay: Option<UpdatePaymentMethodConfigurationGrabpay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ideal: Option<UpdatePaymentMethodConfigurationIdeal>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    jcb: Option<UpdatePaymentMethodConfigurationJcb>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    klarna: Option<UpdatePaymentMethodConfigurationKlarna>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    konbini: Option<UpdatePaymentMethodConfigurationKonbini>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    link: Option<UpdatePaymentMethodConfigurationLink>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    mobilepay: Option<UpdatePaymentMethodConfigurationMobilepay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    oxxo: Option<UpdatePaymentMethodConfigurationOxxo>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    p24: Option<UpdatePaymentMethodConfigurationP24>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    paynow: Option<UpdatePaymentMethodConfigurationPaynow>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    paypal: Option<UpdatePaymentMethodConfigurationPaypal>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    promptpay: Option<UpdatePaymentMethodConfigurationPromptpay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    revolut_pay: Option<UpdatePaymentMethodConfigurationRevolutPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    sepa_debit: Option<UpdatePaymentMethodConfigurationSepaDebit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    sofort: Option<UpdatePaymentMethodConfigurationSofort>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    swish: Option<UpdatePaymentMethodConfigurationSwish>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    us_bank_account: Option<UpdatePaymentMethodConfigurationUsBankAccount>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    wechat_pay: Option<UpdatePaymentMethodConfigurationWechatPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    zip: Option<UpdatePaymentMethodConfigurationZip>,
+}
+impl<'a> UpdatePaymentMethodConfigurationBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            acss_debit: None,
+            active: None,
+            affirm: None,
+            afterpay_clearpay: None,
+            alipay: None,
+            amazon_pay: None,
+            apple_pay: None,
+            apple_pay_later: None,
+            au_becs_debit: None,
+            bacs_debit: None,
+            bancontact: None,
+            blik: None,
+            boleto: None,
+            card: None,
+            cartes_bancaires: None,
+            cashapp: None,
+            customer_balance: None,
+            eps: None,
+            expand: None,
+            fpx: None,
+            giropay: None,
+            google_pay: None,
+            grabpay: None,
+            ideal: None,
+            jcb: None,
+            klarna: None,
+            konbini: None,
+            link: None,
+            mobilepay: None,
+            name: None,
+            oxxo: None,
+            p24: None,
+            paynow: None,
+            paypal: None,
+            promptpay: None,
+            revolut_pay: None,
+            sepa_debit: None,
+            sofort: None,
+            swish: None,
+            us_bank_account: None,
+            wechat_pay: None,
+            zip: None,
+        }
     }
 }
 /// Canadian pre-authorized debit payments, check this [page](https://stripe.com/docs/payments/acss-debit) for more details like country availability.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAcssDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3454,11 +4535,16 @@ pub struct UpdatePaymentMethodConfigurationAcssDebit {
 }
 impl UpdatePaymentMethodConfigurationAcssDebit {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationAcssDebit {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAcssDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3466,7 +4552,12 @@ pub struct UpdatePaymentMethodConfigurationAcssDebitDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationAcssDebitDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationAcssDebitDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -3531,7 +4622,7 @@ impl<'de> serde::Deserialize<'de>
 /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
 /// Depending on the purchase, they can pay with four interest-free payments (Split Pay) or pay over a longer term (Installments), which might include interest.
 /// Check this [page](https://stripe.com/docs/payments/affirm) for more details like country availability.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAffirm {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3539,11 +4630,16 @@ pub struct UpdatePaymentMethodConfigurationAffirm {
 }
 impl UpdatePaymentMethodConfigurationAffirm {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationAffirm {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAffirmDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3551,7 +4647,12 @@ pub struct UpdatePaymentMethodConfigurationAffirmDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationAffirmDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationAffirmDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -3615,7 +4716,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://stripe.com/docs/payments/afterpay-clearpay) for more details like country availability.
 /// Afterpay is particularly popular among businesses selling fashion, beauty, and sports products.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAfterpayClearpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3624,11 +4725,16 @@ pub struct UpdatePaymentMethodConfigurationAfterpayClearpay {
 }
 impl UpdatePaymentMethodConfigurationAfterpayClearpay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationAfterpayClearpay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3637,7 +4743,12 @@ pub struct UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -3711,7 +4822,7 @@ impl<'de> serde::Deserialize<'de>
 /// Alipay users can pay on the web or on a mobile device using login credentials or their Alipay app.
 /// Alipay has a low dispute rate and reduces fraud by authenticating payments using the customer's login credentials.
 /// Check this [page](https://stripe.com/docs/payments/alipay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAlipay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3719,11 +4830,16 @@ pub struct UpdatePaymentMethodConfigurationAlipay {
 }
 impl UpdatePaymentMethodConfigurationAlipay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationAlipay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAlipayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3731,7 +4847,12 @@ pub struct UpdatePaymentMethodConfigurationAlipayDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationAlipayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationAlipayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -3793,10 +4914,103 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference"))
     }
 }
+/// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationAmazonPay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationAmazonPayDisplayPreference>,
+}
+impl UpdatePaymentMethodConfigurationAmazonPay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationAmazonPay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationAmazonPayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference>,
+}
+impl UpdatePaymentMethodConfigurationAmazonPayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationAmazonPayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference"))
+    }
+}
 /// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
 /// There are no additional fees to process Apple Pay payments, and the [pricing](/pricing) is the same as other card transactions.
 /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationApplePay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3804,11 +5018,16 @@ pub struct UpdatePaymentMethodConfigurationApplePay {
 }
 impl UpdatePaymentMethodConfigurationApplePay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationApplePay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationApplePayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3816,7 +5035,12 @@ pub struct UpdatePaymentMethodConfigurationApplePayDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationApplePayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationApplePayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -3879,7 +5103,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationApplePayLater {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3887,11 +5111,16 @@ pub struct UpdatePaymentMethodConfigurationApplePayLater {
 }
 impl UpdatePaymentMethodConfigurationApplePayLater {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationApplePayLater {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationApplePayLaterDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3900,7 +5129,12 @@ pub struct UpdatePaymentMethodConfigurationApplePayLaterDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationApplePayLaterDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationApplePayLaterDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -3968,7 +5202,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
 /// Check this [page](https://stripe.com/docs/payments/au-becs-debit) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAuBecsDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3976,11 +5210,16 @@ pub struct UpdatePaymentMethodConfigurationAuBecsDebit {
 }
 impl UpdatePaymentMethodConfigurationAuBecsDebit {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationAuBecsDebit {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3988,7 +5227,12 @@ pub struct UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -4051,7 +5295,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://stripe.com/docs/payments/payment-methods/bacs-debit) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBacsDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4059,11 +5303,16 @@ pub struct UpdatePaymentMethodConfigurationBacsDebit {
 }
 impl UpdatePaymentMethodConfigurationBacsDebit {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationBacsDebit {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBacsDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4071,7 +5320,12 @@ pub struct UpdatePaymentMethodConfigurationBacsDebitDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationBacsDebitDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationBacsDebitDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -4136,7 +5390,7 @@ impl<'de> serde::Deserialize<'de>
 /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
 /// [Customers](https://stripe.com/docs/api/customers) use a Bancontact card or mobile app linked to a Belgian bank account to make online payments that are secure, guaranteed, and confirmed immediately.
 /// Check this [page](https://stripe.com/docs/payments/bancontact) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBancontact {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4144,11 +5398,16 @@ pub struct UpdatePaymentMethodConfigurationBancontact {
 }
 impl UpdatePaymentMethodConfigurationBancontact {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationBancontact {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBancontactDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4156,7 +5415,12 @@ pub struct UpdatePaymentMethodConfigurationBancontactDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationBancontactDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationBancontactDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -4221,7 +5485,7 @@ impl<'de> serde::Deserialize<'de>
 /// BLIK is a [single use](https://stripe.com/docs/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
 /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
 /// Check this [page](https://stripe.com/docs/payments/blik) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBlik {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4229,11 +5493,16 @@ pub struct UpdatePaymentMethodConfigurationBlik {
 }
 impl UpdatePaymentMethodConfigurationBlik {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationBlik {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBlikDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4241,7 +5510,12 @@ pub struct UpdatePaymentMethodConfigurationBlikDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationBlikDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationBlikDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -4309,7 +5583,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
 /// Check this [page](https://stripe.com/docs/payments/boleto) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBoleto {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4317,11 +5591,16 @@ pub struct UpdatePaymentMethodConfigurationBoleto {
 }
 impl UpdatePaymentMethodConfigurationBoleto {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationBoleto {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBoletoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4329,7 +5608,12 @@ pub struct UpdatePaymentMethodConfigurationBoletoDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationBoletoDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationBoletoDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -4393,7 +5677,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Cards are a popular way for consumers and businesses to pay online or in person.
 /// Stripe supports global and local card networks.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCard {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4401,11 +5685,16 @@ pub struct UpdatePaymentMethodConfigurationCard {
 }
 impl UpdatePaymentMethodConfigurationCard {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationCard {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCardDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4413,7 +5702,12 @@ pub struct UpdatePaymentMethodConfigurationCardDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationCardDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationCardDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -4482,7 +5776,7 @@ impl<'de> serde::Deserialize<'de>
 /// Cartes Bancaires is France's local card network.
 /// More than 95% of these cards are co-branded with either Visa or Mastercard, meaning you can process these cards over either Cartes Bancaires or the Visa or Mastercard networks.
 /// Check this [page](https://stripe.com/docs/payments/cartes-bancaires) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCartesBancaires {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4491,11 +5785,16 @@ pub struct UpdatePaymentMethodConfigurationCartesBancaires {
 }
 impl UpdatePaymentMethodConfigurationCartesBancaires {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationCartesBancaires {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCartesBancairesDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4504,7 +5803,12 @@ pub struct UpdatePaymentMethodConfigurationCartesBancairesDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationCartesBancairesDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationCartesBancairesDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -4576,7 +5880,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
 /// Check this [page](https://stripe.com/docs/payments/cash-app-pay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCashapp {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4584,11 +5888,16 @@ pub struct UpdatePaymentMethodConfigurationCashapp {
 }
 impl UpdatePaymentMethodConfigurationCashapp {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationCashapp {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCashappDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4596,7 +5905,12 @@ pub struct UpdatePaymentMethodConfigurationCashappDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationCashappDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationCashappDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -4661,7 +5975,7 @@ impl<'de> serde::Deserialize<'de>
 /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
 /// The cash balance can be funded via a bank transfer.
 /// Check this [page](https://stripe.com/docs/payments/bank-transfers) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCustomerBalance {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4670,11 +5984,16 @@ pub struct UpdatePaymentMethodConfigurationCustomerBalance {
 }
 impl UpdatePaymentMethodConfigurationCustomerBalance {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationCustomerBalance {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4683,7 +6002,12 @@ pub struct UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -4756,7 +6080,7 @@ impl<'de> serde::Deserialize<'de>
 /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
 /// EPS is supported by all Austrian banks and is accepted by over 80% of Austrian online retailers.
 /// Check this [page](https://stripe.com/docs/payments/eps) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationEps {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4764,11 +6088,16 @@ pub struct UpdatePaymentMethodConfigurationEps {
 }
 impl UpdatePaymentMethodConfigurationEps {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationEps {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationEpsDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4776,7 +6105,12 @@ pub struct UpdatePaymentMethodConfigurationEpsDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationEpsDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationEpsDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -4846,7 +6180,7 @@ impl<'de> serde::Deserialize<'de>
 /// Bank Negara Malaysia (BNM), the Central Bank of Malaysia, and eleven other major Malaysian financial institutions are members of the PayNet Group, which owns and operates FPX.
 /// It is one of the most popular online payment methods in Malaysia, with nearly 90 million transactions in 2018 according to BNM.
 /// Check this [page](https://stripe.com/docs/payments/fpx) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationFpx {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4854,11 +6188,16 @@ pub struct UpdatePaymentMethodConfigurationFpx {
 }
 impl UpdatePaymentMethodConfigurationFpx {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationFpx {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationFpxDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4866,7 +6205,12 @@ pub struct UpdatePaymentMethodConfigurationFpxDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationFpxDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationFpxDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -4937,7 +6281,7 @@ impl<'de> serde::Deserialize<'de>
 /// Depending on their bank, customers confirm payments on giropay using a second factor of authentication or a PIN.
 /// giropay accounts for 10% of online checkouts in Germany.
 /// Check this [page](https://stripe.com/docs/payments/giropay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGiropay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4945,11 +6289,16 @@ pub struct UpdatePaymentMethodConfigurationGiropay {
 }
 impl UpdatePaymentMethodConfigurationGiropay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationGiropay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGiropayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4957,7 +6306,12 @@ pub struct UpdatePaymentMethodConfigurationGiropayDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationGiropayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationGiropayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -5022,7 +6376,7 @@ impl<'de> serde::Deserialize<'de>
 /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
 /// Use the Google Pay API to request any credit or debit card stored in your customer's Google account.
 /// Check this [page](https://stripe.com/docs/google-pay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGooglePay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5030,11 +6384,16 @@ pub struct UpdatePaymentMethodConfigurationGooglePay {
 }
 impl UpdatePaymentMethodConfigurationGooglePay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationGooglePay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGooglePayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5042,7 +6401,12 @@ pub struct UpdatePaymentMethodConfigurationGooglePayDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationGooglePayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationGooglePayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -5107,7 +6471,7 @@ impl<'de> serde::Deserialize<'de>
 /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
 /// GrabPay is a digital wallet - customers maintain a balance in their wallets that they pay out with.
 /// Check this [page](https://stripe.com/docs/payments/grabpay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGrabpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5115,11 +6479,16 @@ pub struct UpdatePaymentMethodConfigurationGrabpay {
 }
 impl UpdatePaymentMethodConfigurationGrabpay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationGrabpay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGrabpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5127,7 +6496,12 @@ pub struct UpdatePaymentMethodConfigurationGrabpayDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationGrabpayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationGrabpayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -5192,7 +6566,7 @@ impl<'de> serde::Deserialize<'de>
 /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
 /// All major Dutch banks are members of Currence, the scheme that operates iDEAL, making it the most popular online payment method in the Netherlands with a share of online transactions close to 55%.
 /// Check this [page](https://stripe.com/docs/payments/ideal) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationIdeal {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5200,11 +6574,16 @@ pub struct UpdatePaymentMethodConfigurationIdeal {
 }
 impl UpdatePaymentMethodConfigurationIdeal {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationIdeal {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationIdealDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5212,7 +6591,12 @@ pub struct UpdatePaymentMethodConfigurationIdealDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationIdealDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationIdealDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -5277,7 +6661,7 @@ impl<'de> serde::Deserialize<'de>
 /// JCB is a credit card company based in Japan.
 /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
 /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationJcb {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5285,11 +6669,16 @@ pub struct UpdatePaymentMethodConfigurationJcb {
 }
 impl UpdatePaymentMethodConfigurationJcb {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationJcb {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationJcbDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5297,7 +6686,12 @@ pub struct UpdatePaymentMethodConfigurationJcbDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationJcbDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationJcbDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -5367,7 +6761,7 @@ impl<'de> serde::Deserialize<'de>
 /// Available payment options vary depending on the customer's billing address and the transaction amount.
 /// These payment options make it convenient for customers to purchase items in all price ranges.
 /// Check this [page](https://stripe.com/docs/payments/klarna) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKlarna {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5375,11 +6769,16 @@ pub struct UpdatePaymentMethodConfigurationKlarna {
 }
 impl UpdatePaymentMethodConfigurationKlarna {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationKlarna {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKlarnaDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5387,7 +6786,12 @@ pub struct UpdatePaymentMethodConfigurationKlarnaDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationKlarnaDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationKlarnaDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -5451,7 +6855,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
 /// Check this [page](https://stripe.com/docs/payments/konbini) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKonbini {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5459,11 +6863,16 @@ pub struct UpdatePaymentMethodConfigurationKonbini {
 }
 impl UpdatePaymentMethodConfigurationKonbini {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationKonbini {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKonbiniDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5471,7 +6880,12 @@ pub struct UpdatePaymentMethodConfigurationKonbiniDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationKonbiniDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationKonbiniDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -5535,7 +6949,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
 /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationLink {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5543,11 +6957,16 @@ pub struct UpdatePaymentMethodConfigurationLink {
 }
 impl UpdatePaymentMethodConfigurationLink {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationLink {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationLinkDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5555,7 +6974,12 @@ pub struct UpdatePaymentMethodConfigurationLinkDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationLinkDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationLinkDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -5621,10 +7045,105 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
+/// MobilePay is a [single-use](https://stripe.com/docs/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
+/// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the MobilePay app.
+/// Check this [page](https://stripe.com/docs/payments/mobilepay) for more details.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationMobilepay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationMobilepayDisplayPreference>,
+}
+impl UpdatePaymentMethodConfigurationMobilepay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationMobilepay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationMobilepayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference>,
+}
+impl UpdatePaymentMethodConfigurationMobilepayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationMobilepayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference"))
+    }
+}
 /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
 /// OXXO allows customers to pay bills and online purchases in-store with cash.
 /// Check this [page](https://stripe.com/docs/payments/oxxo) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationOxxo {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5632,11 +7151,16 @@ pub struct UpdatePaymentMethodConfigurationOxxo {
 }
 impl UpdatePaymentMethodConfigurationOxxo {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationOxxo {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationOxxoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5644,7 +7168,12 @@ pub struct UpdatePaymentMethodConfigurationOxxoDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationOxxoDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationOxxoDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -5713,7 +7242,7 @@ impl<'de> serde::Deserialize<'de>
 /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
 /// Bank transfers account for 30% of online payments in Poland and Przelewy24 provides a way for customers to pay with over 165 banks.
 /// Check this [page](https://stripe.com/docs/payments/p24) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationP24 {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5721,11 +7250,16 @@ pub struct UpdatePaymentMethodConfigurationP24 {
 }
 impl UpdatePaymentMethodConfigurationP24 {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationP24 {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationP24DisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5733,7 +7267,12 @@ pub struct UpdatePaymentMethodConfigurationP24DisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationP24DisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationP24DisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -5801,7 +7340,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
 /// Check this [page](https://stripe.com/docs/payments/paynow) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaynow {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5809,11 +7348,16 @@ pub struct UpdatePaymentMethodConfigurationPaynow {
 }
 impl UpdatePaymentMethodConfigurationPaynow {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationPaynow {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaynowDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5821,7 +7365,12 @@ pub struct UpdatePaymentMethodConfigurationPaynowDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationPaynowDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationPaynowDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -5885,7 +7434,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
 /// Check this [page](https://stripe.com/docs/payments/paypal) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaypal {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5893,11 +7442,16 @@ pub struct UpdatePaymentMethodConfigurationPaypal {
 }
 impl UpdatePaymentMethodConfigurationPaypal {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationPaypal {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaypalDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5905,7 +7459,12 @@ pub struct UpdatePaymentMethodConfigurationPaypalDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationPaypalDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationPaypalDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -5969,7 +7528,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
 /// Check this [page](https://stripe.com/docs/payments/promptpay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPromptpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5977,11 +7536,16 @@ pub struct UpdatePaymentMethodConfigurationPromptpay {
 }
 impl UpdatePaymentMethodConfigurationPromptpay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationPromptpay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPromptpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5989,7 +7553,12 @@ pub struct UpdatePaymentMethodConfigurationPromptpayDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationPromptpayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationPromptpayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -6053,7 +7622,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
 /// Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationRevolutPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6061,11 +7630,16 @@ pub struct UpdatePaymentMethodConfigurationRevolutPay {
 }
 impl UpdatePaymentMethodConfigurationRevolutPay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationRevolutPay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationRevolutPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6073,7 +7647,12 @@ pub struct UpdatePaymentMethodConfigurationRevolutPayDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationRevolutPayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationRevolutPayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -6137,7 +7716,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
 /// SEPA established and enforced banking standards to allow for the direct debiting of every EUR-denominated bank account within the SEPA region, check this [page](https://stripe.com/docs/payments/sepa-debit) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSepaDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6145,11 +7724,16 @@ pub struct UpdatePaymentMethodConfigurationSepaDebit {
 }
 impl UpdatePaymentMethodConfigurationSepaDebit {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationSepaDebit {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSepaDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6157,7 +7741,12 @@ pub struct UpdatePaymentMethodConfigurationSepaDebitDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationSepaDebitDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationSepaDebitDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -6221,7 +7810,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
 /// Check this [page](https://stripe.com/docs/payments/sofort) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSofort {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6229,11 +7818,16 @@ pub struct UpdatePaymentMethodConfigurationSofort {
 }
 impl UpdatePaymentMethodConfigurationSofort {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationSofort {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSofortDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6241,7 +7835,12 @@ pub struct UpdatePaymentMethodConfigurationSofortDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationSofortDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationSofortDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -6303,9 +7902,104 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference"))
     }
 }
+/// Swish is a [real-time](https://stripe.com/docs/payments/real-time) payment method popular in Sweden.
+/// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
+/// Check this [page](https://stripe.com/docs/payments/swish) for more details.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationSwish {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationSwishDisplayPreference>,
+}
+impl UpdatePaymentMethodConfigurationSwish {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationSwish {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationSwishDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference>,
+}
+impl UpdatePaymentMethodConfigurationSwishDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationSwishDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference"))
+    }
+}
 /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
 /// Check this [page](https://stripe.com/docs/payments/ach-debit) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationUsBankAccount {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6313,11 +8007,16 @@ pub struct UpdatePaymentMethodConfigurationUsBankAccount {
 }
 impl UpdatePaymentMethodConfigurationUsBankAccount {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationUsBankAccount {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationUsBankAccountDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6326,7 +8025,12 @@ pub struct UpdatePaymentMethodConfigurationUsBankAccountDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationUsBankAccountDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationUsBankAccountDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -6396,7 +8100,7 @@ impl<'de> serde::Deserialize<'de>
 /// Chinese consumers can use WeChat Pay to pay for goods and services inside of businesses' apps and websites.
 /// WeChat Pay users buy most frequently in gaming, e-commerce, travel, online education, and food/nutrition.
 /// Check this [page](https://stripe.com/docs/payments/wechat-pay) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationWechatPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6404,11 +8108,16 @@ pub struct UpdatePaymentMethodConfigurationWechatPay {
 }
 impl UpdatePaymentMethodConfigurationWechatPay {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationWechatPay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationWechatPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6416,7 +8125,12 @@ pub struct UpdatePaymentMethodConfigurationWechatPayDisplayPreference {
 }
 impl UpdatePaymentMethodConfigurationWechatPayDisplayPreference {
     pub fn new() -> Self {
-        Self::default()
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationWechatPayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The account's preference for whether or not to display this payment method.
@@ -6478,17 +8192,432 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference"))
     }
 }
+/// Zip gives your customers a way to split purchases over a series of payments.
+/// Check this [page](https://stripe.com/docs/payments/zip) for more details like country availability.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationZip {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationZipDisplayPreference>,
+}
+impl UpdatePaymentMethodConfigurationZip {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationZip {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationZipDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationZipDisplayPreferencePreference>,
+}
+impl UpdatePaymentMethodConfigurationZipDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationZipDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentMethodConfigurationZipDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationZipDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference",
+            )
+        })
+    }
+}
+/// Update payment method configuration
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfiguration<'a> {
+    inner: UpdatePaymentMethodConfigurationBuilder<'a>,
+    configuration: &'a stripe_payment::PaymentMethodConfigurationId,
+}
 impl<'a> UpdatePaymentMethodConfiguration<'a> {
-    /// Update payment method configuration
-    pub fn send(
+    /// Construct a new `UpdatePaymentMethodConfiguration`.
+    pub fn new(configuration: &'a stripe_payment::PaymentMethodConfigurationId) -> Self {
+        Self { configuration, inner: UpdatePaymentMethodConfigurationBuilder::new() }
+    }
+    /// Canadian pre-authorized debit payments, check this [page](https://stripe.com/docs/payments/acss-debit) for more details like country availability.
+    pub fn acss_debit(mut self, acss_debit: UpdatePaymentMethodConfigurationAcssDebit) -> Self {
+        self.inner.acss_debit = Some(acss_debit);
+        self
+    }
+    /// Whether the configuration can be used for new payments.
+    pub fn active(mut self, active: bool) -> Self {
+        self.inner.active = Some(active);
+        self
+    }
+    /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
+    /// Depending on the purchase, they can pay with four interest-free payments (Split Pay) or pay over a longer term (Installments), which might include interest.
+    /// Check this [page](https://stripe.com/docs/payments/affirm) for more details like country availability.
+    pub fn affirm(mut self, affirm: UpdatePaymentMethodConfigurationAffirm) -> Self {
+        self.inner.affirm = Some(affirm);
+        self
+    }
+    /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://stripe.com/docs/payments/afterpay-clearpay) for more details like country availability.
+    /// Afterpay is particularly popular among businesses selling fashion, beauty, and sports products.
+    pub fn afterpay_clearpay(
+        mut self,
+        afterpay_clearpay: UpdatePaymentMethodConfigurationAfterpayClearpay,
+    ) -> Self {
+        self.inner.afterpay_clearpay = Some(afterpay_clearpay);
+        self
+    }
+    /// Alipay is a digital wallet in China that has more than a billion active users worldwide.
+    /// Alipay users can pay on the web or on a mobile device using login credentials or their Alipay app.
+    /// Alipay has a low dispute rate and reduces fraud by authenticating payments using the customer's login credentials.
+    /// Check this [page](https://stripe.com/docs/payments/alipay) for more details.
+    pub fn alipay(mut self, alipay: UpdatePaymentMethodConfigurationAlipay) -> Self {
+        self.inner.alipay = Some(alipay);
+        self
+    }
+    /// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
+    pub fn amazon_pay(mut self, amazon_pay: UpdatePaymentMethodConfigurationAmazonPay) -> Self {
+        self.inner.amazon_pay = Some(amazon_pay);
+        self
+    }
+    /// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
+    /// There are no additional fees to process Apple Pay payments, and the [pricing](/pricing) is the same as other card transactions.
+    /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
+    pub fn apple_pay(mut self, apple_pay: UpdatePaymentMethodConfigurationApplePay) -> Self {
+        self.inner.apple_pay = Some(apple_pay);
+        self
+    }
+    /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
+    pub fn apple_pay_later(
+        mut self,
+        apple_pay_later: UpdatePaymentMethodConfigurationApplePayLater,
+    ) -> Self {
+        self.inner.apple_pay_later = Some(apple_pay_later);
+        self
+    }
+    /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
+    /// Check this [page](https://stripe.com/docs/payments/au-becs-debit) for more details.
+    pub fn au_becs_debit(
+        mut self,
+        au_becs_debit: UpdatePaymentMethodConfigurationAuBecsDebit,
+    ) -> Self {
+        self.inner.au_becs_debit = Some(au_becs_debit);
+        self
+    }
+    /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://stripe.com/docs/payments/payment-methods/bacs-debit) for more details.
+    pub fn bacs_debit(mut self, bacs_debit: UpdatePaymentMethodConfigurationBacsDebit) -> Self {
+        self.inner.bacs_debit = Some(bacs_debit);
+        self
+    }
+    /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
+    /// [Customers](https://stripe.com/docs/api/customers) use a Bancontact card or mobile app linked to a Belgian bank account to make online payments that are secure, guaranteed, and confirmed immediately.
+    /// Check this [page](https://stripe.com/docs/payments/bancontact) for more details.
+    pub fn bancontact(mut self, bancontact: UpdatePaymentMethodConfigurationBancontact) -> Self {
+        self.inner.bancontact = Some(bancontact);
+        self
+    }
+    /// BLIK is a [single use](https://stripe.com/docs/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
+    /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
+    /// Check this [page](https://stripe.com/docs/payments/blik) for more details.
+    pub fn blik(mut self, blik: UpdatePaymentMethodConfigurationBlik) -> Self {
+        self.inner.blik = Some(blik);
+        self
+    }
+    /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
+    /// Check this [page](https://stripe.com/docs/payments/boleto) for more details.
+    pub fn boleto(mut self, boleto: UpdatePaymentMethodConfigurationBoleto) -> Self {
+        self.inner.boleto = Some(boleto);
+        self
+    }
+    /// Cards are a popular way for consumers and businesses to pay online or in person.
+    /// Stripe supports global and local card networks.
+    pub fn card(mut self, card: UpdatePaymentMethodConfigurationCard) -> Self {
+        self.inner.card = Some(card);
+        self
+    }
+    /// Cartes Bancaires is France's local card network.
+    /// More than 95% of these cards are co-branded with either Visa or Mastercard, meaning you can process these cards over either Cartes Bancaires or the Visa or Mastercard networks.
+    /// Check this [page](https://stripe.com/docs/payments/cartes-bancaires) for more details.
+    pub fn cartes_bancaires(
+        mut self,
+        cartes_bancaires: UpdatePaymentMethodConfigurationCartesBancaires,
+    ) -> Self {
+        self.inner.cartes_bancaires = Some(cartes_bancaires);
+        self
+    }
+    /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
+    /// Check this [page](https://stripe.com/docs/payments/cash-app-pay) for more details.
+    pub fn cashapp(mut self, cashapp: UpdatePaymentMethodConfigurationCashapp) -> Self {
+        self.inner.cashapp = Some(cashapp);
+        self
+    }
+    /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
+    /// The cash balance can be funded via a bank transfer.
+    /// Check this [page](https://stripe.com/docs/payments/bank-transfers) for more details.
+    pub fn customer_balance(
+        mut self,
+        customer_balance: UpdatePaymentMethodConfigurationCustomerBalance,
+    ) -> Self {
+        self.inner.customer_balance = Some(customer_balance);
+        self
+    }
+    /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
+    /// EPS is supported by all Austrian banks and is accepted by over 80% of Austrian online retailers.
+    /// Check this [page](https://stripe.com/docs/payments/eps) for more details.
+    pub fn eps(mut self, eps: UpdatePaymentMethodConfigurationEps) -> Self {
+        self.inner.eps = Some(eps);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Financial Process Exchange (FPX) is a Malaysia-based payment method that allows customers to complete transactions online using their bank credentials.
+    /// Bank Negara Malaysia (BNM), the Central Bank of Malaysia, and eleven other major Malaysian financial institutions are members of the PayNet Group, which owns and operates FPX.
+    /// It is one of the most popular online payment methods in Malaysia, with nearly 90 million transactions in 2018 according to BNM.
+    /// Check this [page](https://stripe.com/docs/payments/fpx) for more details.
+    pub fn fpx(mut self, fpx: UpdatePaymentMethodConfigurationFpx) -> Self {
+        self.inner.fpx = Some(fpx);
+        self
+    }
+    /// giropay is a German payment method based on online banking, introduced in 2006.
+    /// It allows customers to complete transactions online using their online banking environment, with funds debited from their bank account.
+    /// Depending on their bank, customers confirm payments on giropay using a second factor of authentication or a PIN.
+    /// giropay accounts for 10% of online checkouts in Germany.
+    /// Check this [page](https://stripe.com/docs/payments/giropay) for more details.
+    pub fn giropay(mut self, giropay: UpdatePaymentMethodConfigurationGiropay) -> Self {
+        self.inner.giropay = Some(giropay);
+        self
+    }
+    /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
+    /// Use the Google Pay API to request any credit or debit card stored in your customer's Google account.
+    /// Check this [page](https://stripe.com/docs/google-pay) for more details.
+    pub fn google_pay(mut self, google_pay: UpdatePaymentMethodConfigurationGooglePay) -> Self {
+        self.inner.google_pay = Some(google_pay);
+        self
+    }
+    /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
+    /// GrabPay is a digital wallet - customers maintain a balance in their wallets that they pay out with.
+    /// Check this [page](https://stripe.com/docs/payments/grabpay) for more details.
+    pub fn grabpay(mut self, grabpay: UpdatePaymentMethodConfigurationGrabpay) -> Self {
+        self.inner.grabpay = Some(grabpay);
+        self
+    }
+    /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
+    /// All major Dutch banks are members of Currence, the scheme that operates iDEAL, making it the most popular online payment method in the Netherlands with a share of online transactions close to 55%.
+    /// Check this [page](https://stripe.com/docs/payments/ideal) for more details.
+    pub fn ideal(mut self, ideal: UpdatePaymentMethodConfigurationIdeal) -> Self {
+        self.inner.ideal = Some(ideal);
+        self
+    }
+    /// JCB is a credit card company based in Japan.
+    /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
+    /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
+    pub fn jcb(mut self, jcb: UpdatePaymentMethodConfigurationJcb) -> Self {
+        self.inner.jcb = Some(jcb);
+        self
+    }
+    /// Klarna gives customers a range of [payment options](https://stripe.com/docs/payments/klarna#payment-options) during checkout.
+    /// Available payment options vary depending on the customer's billing address and the transaction amount.
+    /// These payment options make it convenient for customers to purchase items in all price ranges.
+    /// Check this [page](https://stripe.com/docs/payments/klarna) for more details.
+    pub fn klarna(mut self, klarna: UpdatePaymentMethodConfigurationKlarna) -> Self {
+        self.inner.klarna = Some(klarna);
+        self
+    }
+    /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
+    /// Check this [page](https://stripe.com/docs/payments/konbini) for more details.
+    pub fn konbini(mut self, konbini: UpdatePaymentMethodConfigurationKonbini) -> Self {
+        self.inner.konbini = Some(konbini);
+        self
+    }
+    /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
+    /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
+    pub fn link(mut self, link: UpdatePaymentMethodConfigurationLink) -> Self {
+        self.inner.link = Some(link);
+        self
+    }
+    /// MobilePay is a [single-use](https://stripe.com/docs/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
+    /// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the MobilePay app.
+    /// Check this [page](https://stripe.com/docs/payments/mobilepay) for more details.
+    pub fn mobilepay(mut self, mobilepay: UpdatePaymentMethodConfigurationMobilepay) -> Self {
+        self.inner.mobilepay = Some(mobilepay);
+        self
+    }
+    /// Configuration name.
+    pub fn name(mut self, name: &'a str) -> Self {
+        self.inner.name = Some(name);
+        self
+    }
+    /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
+    /// OXXO allows customers to pay bills and online purchases in-store with cash.
+    /// Check this [page](https://stripe.com/docs/payments/oxxo) for more details.
+    pub fn oxxo(mut self, oxxo: UpdatePaymentMethodConfigurationOxxo) -> Self {
+        self.inner.oxxo = Some(oxxo);
+        self
+    }
+    /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
+    /// Bank transfers account for 30% of online payments in Poland and Przelewy24 provides a way for customers to pay with over 165 banks.
+    /// Check this [page](https://stripe.com/docs/payments/p24) for more details.
+    pub fn p24(mut self, p24: UpdatePaymentMethodConfigurationP24) -> Self {
+        self.inner.p24 = Some(p24);
+        self
+    }
+    /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
+    /// Check this [page](https://stripe.com/docs/payments/paynow) for more details.
+    pub fn paynow(mut self, paynow: UpdatePaymentMethodConfigurationPaynow) -> Self {
+        self.inner.paynow = Some(paynow);
+        self
+    }
+    /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
+    /// Check this [page](https://stripe.com/docs/payments/paypal) for more details.
+    pub fn paypal(mut self, paypal: UpdatePaymentMethodConfigurationPaypal) -> Self {
+        self.inner.paypal = Some(paypal);
+        self
+    }
+    /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
+    /// Check this [page](https://stripe.com/docs/payments/promptpay) for more details.
+    pub fn promptpay(mut self, promptpay: UpdatePaymentMethodConfigurationPromptpay) -> Self {
+        self.inner.promptpay = Some(promptpay);
+        self
+    }
+    /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
+    /// Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
+    pub fn revolut_pay(mut self, revolut_pay: UpdatePaymentMethodConfigurationRevolutPay) -> Self {
+        self.inner.revolut_pay = Some(revolut_pay);
+        self
+    }
+    /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
+    /// SEPA established and enforced banking standards to allow for the direct debiting of every EUR-denominated bank account within the SEPA region, check this [page](https://stripe.com/docs/payments/sepa-debit) for more details.
+    pub fn sepa_debit(mut self, sepa_debit: UpdatePaymentMethodConfigurationSepaDebit) -> Self {
+        self.inner.sepa_debit = Some(sepa_debit);
+        self
+    }
+    /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
+    /// Check this [page](https://stripe.com/docs/payments/sofort) for more details.
+    pub fn sofort(mut self, sofort: UpdatePaymentMethodConfigurationSofort) -> Self {
+        self.inner.sofort = Some(sofort);
+        self
+    }
+    /// Swish is a [real-time](https://stripe.com/docs/payments/real-time) payment method popular in Sweden.
+    /// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
+    /// Check this [page](https://stripe.com/docs/payments/swish) for more details.
+    pub fn swish(mut self, swish: UpdatePaymentMethodConfigurationSwish) -> Self {
+        self.inner.swish = Some(swish);
+        self
+    }
+    /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
+    /// Check this [page](https://stripe.com/docs/payments/ach-debit) for more details.
+    pub fn us_bank_account(
+        mut self,
+        us_bank_account: UpdatePaymentMethodConfigurationUsBankAccount,
+    ) -> Self {
+        self.inner.us_bank_account = Some(us_bank_account);
+        self
+    }
+    /// WeChat, owned by Tencent, is China's leading mobile app with over 1 billion monthly active users.
+    /// Chinese consumers can use WeChat Pay to pay for goods and services inside of businesses' apps and websites.
+    /// WeChat Pay users buy most frequently in gaming, e-commerce, travel, online education, and food/nutrition.
+    /// Check this [page](https://stripe.com/docs/payments/wechat-pay) for more details.
+    pub fn wechat_pay(mut self, wechat_pay: UpdatePaymentMethodConfigurationWechatPay) -> Self {
+        self.inner.wechat_pay = Some(wechat_pay);
+        self
+    }
+    /// Zip gives your customers a way to split purchases over a series of payments.
+    /// Check this [page](https://stripe.com/docs/payments/zip) for more details like country availability.
+    pub fn zip(mut self, zip: UpdatePaymentMethodConfigurationZip) -> Self {
+        self.inner.zip = Some(zip);
+        self
+    }
+}
+impl UpdatePaymentMethodConfiguration<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        configuration: &stripe_payment::PaymentMethodConfigurationId,
-    ) -> stripe::Response<stripe_payment::PaymentMethodConfiguration> {
-        client.send_form(
-            &format!("/payment_method_configurations/{configuration}"),
-            self,
-            http_types::Method::Post,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdatePaymentMethodConfiguration<'_> {
+    type Output = stripe_payment::PaymentMethodConfiguration;
+
+    fn build(&self) -> RequestBuilder {
+        let configuration = self.configuration;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/payment_method_configurations/{configuration}"),
         )
+        .form(&self.inner)
     }
 }

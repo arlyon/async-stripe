@@ -1,14 +1,17 @@
 /// Represents a per-transaction override of a reader configuration
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceProcessConfig {
+    /// Enable customer initiated cancellation when processing this payment.
+    pub enable_customer_cancellation: Option<bool>,
     /// Override showing a tipping selection screen on this transaction.
     pub skip_tipping: Option<bool>,
     pub tipping: Option<stripe_terminal::TerminalReaderReaderResourceTippingConfig>,
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceProcessConfigBuilder {
+    enable_customer_cancellation: Option<Option<bool>>,
     skip_tipping: Option<Option<bool>>,
     tipping: Option<Option<stripe_terminal::TerminalReaderReaderResourceTippingConfig>>,
 }
@@ -47,6 +50,9 @@ const _: () = {
         type Out = TerminalReaderReaderResourceProcessConfig;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "enable_customer_cancellation" => {
+                    Deserialize::begin(&mut self.enable_customer_cancellation)
+                }
                 "skip_tipping" => Deserialize::begin(&mut self.skip_tipping),
                 "tipping" => Deserialize::begin(&mut self.tipping),
 
@@ -55,11 +61,19 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { skip_tipping: Deserialize::default(), tipping: Deserialize::default() }
+            Self {
+                enable_customer_cancellation: Deserialize::default(),
+                skip_tipping: Deserialize::default(),
+                tipping: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { skip_tipping: self.skip_tipping?, tipping: self.tipping? })
+            Some(Self::Out {
+                enable_customer_cancellation: self.enable_customer_cancellation?,
+                skip_tipping: self.skip_tipping?,
+                tipping: self.tipping?,
+            })
         }
     }
 
@@ -86,6 +100,9 @@ const _: () = {
             let mut b = TerminalReaderReaderResourceProcessConfigBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "enable_customer_cancellation" => {
+                        b.enable_customer_cancellation = Some(FromValueOpt::from_value(v)?)
+                    }
                     "skip_tipping" => b.skip_tipping = Some(FromValueOpt::from_value(v)?),
                     "tipping" => b.tipping = Some(FromValueOpt::from_value(v)?),
 

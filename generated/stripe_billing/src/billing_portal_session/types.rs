@@ -33,7 +33,7 @@ pub struct BillingPortalSession {
     pub locale: Option<stripe_billing::BillingPortalSessionLocale>,
     /// The account for which the session was created on behalf of.
     /// When specified, only subscriptions and invoices with this `on_behalf_of` account appear in the portal.
-    /// For more information, see the [docs](https://stripe.com/docs/connect/separate-charges-and-transfers#on-behalf-of).
+    /// For more information, see the [docs](https://stripe.com/docs/connect/separate-charges-and-transfers#settlement-merchant).
     /// Use the [Accounts API](https://stripe.com/docs/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
     pub on_behalf_of: Option<String>,
     /// The URL to redirect customers to when they click on the portal's link to return to your website.

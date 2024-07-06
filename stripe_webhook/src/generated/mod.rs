@@ -734,7 +734,7 @@ pub enum EventObject {
     /// Occurs whenever a customer disputes a charge with their bank.
     ChargeDisputeCreated(stripe_shared::Dispute),
     /// Occurs when funds are reinstated to your account after a dispute is closed.
-    /// This includes [partially refunded payments](/docs/disputes#disputes-on-partially-refunded-payments).
+    /// This includes [partially refunded payments](https://docs.stripe.com/disputes#disputes-on-partially-refunded-payments).
     ChargeDisputeFundsReinstated(stripe_shared::Dispute),
     /// Occurs when funds are removed from your account due to a dispute.
     ChargeDisputeFundsWithdrawn(stripe_shared::Dispute),
@@ -822,14 +822,14 @@ pub enum EventObject {
     /// Occurs whenever a customer's subscription ends.
     CustomerSubscriptionDeleted(stripe_shared::Subscription),
     /// Occurs whenever a customer's subscription is paused.
-    /// Only applies when subscriptions enter `status=paused`, not when [payment collection](/docs/billing/subscriptions/pause) is paused.
+    /// Only applies when subscriptions enter `status=paused`, not when [payment collection](https://docs.stripe.com/billing/subscriptions/pause) is paused.
     CustomerSubscriptionPaused(stripe_shared::Subscription),
     /// Occurs whenever a customer's subscription's pending update is applied, and the subscription is updated.
     CustomerSubscriptionPendingUpdateApplied(stripe_shared::Subscription),
     /// Occurs whenever a customer's subscription's pending update expires before the related invoice is paid.
     CustomerSubscriptionPendingUpdateExpired(stripe_shared::Subscription),
     /// Occurs whenever a customer's subscription is no longer paused.
-    /// Only applies when a `status=paused` subscription is [resumed](/docs/api/subscriptions/resume), not when [payment collection](/docs/billing/subscriptions/pause) is resumed.
+    /// Only applies when a `status=paused` subscription is [resumed](https://docs.stripe.com/api/subscriptions/resume), not when [payment collection](https://docs.stripe.com/billing/subscriptions/pause) is resumed.
     CustomerSubscriptionResumed(stripe_shared::Subscription),
     /// Occurs three days before a subscription's trial period is scheduled to end, or when a trial is ended immediately (using `trial_end=now`).
     CustomerSubscriptionTrialWillEnd(stripe_shared::Subscription),
@@ -845,6 +845,9 @@ pub enum EventObject {
     CustomerUpdated(stripe_shared::Customer),
     /// Occurs whenever a new customer cash balance transactions is created.
     CustomerCashBalanceTransactionCreated(stripe_shared::CustomerCashBalanceTransaction),
+    /// Occurs whenever a customer's entitlements change.
+    #[cfg(feature = "stripe_misc")]
+    EntitlementsActiveEntitlementSummaryUpdated(stripe_misc::EntitlementsActiveEntitlementSummary),
     /// Occurs whenever a new Stripe-generated file is available for your account.
     FileCreated(stripe_shared::File),
     /// Occurs when a new Financial Connections account is created.
@@ -862,6 +865,9 @@ pub enum EventObject {
     /// Occurs when an Account’s `balance_refresh` status transitions from `pending` to either `succeeded` or `failed`.
     #[cfg(feature = "stripe_misc")]
     FinancialConnectionsAccountRefreshedBalance(stripe_misc::FinancialConnectionsAccount),
+    /// Occurs when an Account’s `ownership_refresh` status transitions from `pending` to either `succeeded` or `failed`.
+    #[cfg(feature = "stripe_misc")]
+    FinancialConnectionsAccountRefreshedOwnership(stripe_misc::FinancialConnectionsAccount),
     /// Occurs when an Account’s `transaction_refresh` status transitions from `pending` to either `succeeded` or `failed`.
     #[cfg(feature = "stripe_misc")]
     FinancialConnectionsAccountRefreshedTransactions(stripe_misc::FinancialConnectionsAccount),
@@ -884,12 +890,13 @@ pub enum EventObject {
     #[cfg(feature = "stripe_misc")]
     IdentityVerificationSessionVerified(stripe_misc::IdentityVerificationSession),
     /// Occurs whenever a new invoice is created.
-    /// To learn how webhooks can be used with this event, and how they can affect it, see [Using Webhooks with Subscriptions](/docs/subscriptions/webhooks).
+    /// To learn how webhooks can be used with this event, and how they can affect it, see [Using Webhooks with Subscriptions](https://docs.stripe.com/subscriptions/webhooks).
     InvoiceCreated(stripe_shared::Invoice),
     /// Occurs whenever a draft invoice is deleted.
+    /// Note: This event is not sent for [invoice previews](https://docs.stripe.com/api/invoices/create_preview).
     InvoiceDeleted(stripe_shared::Invoice),
     /// Occurs whenever a draft invoice cannot be finalized.
-    /// See the invoice’s [last finalization error](/docs/api/invoices/object#invoice_object-last_finalization_error) for details.
+    /// See the invoice’s [last finalization error](https://docs.stripe.com/api/invoices/object#invoice_object-last_finalization_error) for details.
     InvoiceFinalizationFailed(stripe_shared::Invoice),
     /// Occurs whenever a draft invoice is finalized and updated to be an open invoice.
     InvoiceFinalized(stripe_shared::Invoice),
@@ -918,7 +925,7 @@ pub enum EventObject {
     InvoiceitemDeleted(stripe_shared::InvoiceItem),
     /// Occurs whenever an authorization is created.
     IssuingAuthorizationCreated(stripe_shared::IssuingAuthorization),
-    /// Represents a synchronous request for authorization, see [Using your integration to handle authorization requests](/docs/issuing/purchases/authorizations#authorization-handling).
+    /// Represents a synchronous request for authorization, see [Using your integration to handle authorization requests](https://docs.stripe.com/issuing/purchases/authorizations#authorization-handling).
     IssuingAuthorizationRequest(stripe_shared::IssuingAuthorization),
     /// Occurs whenever an authorization is updated.
     IssuingAuthorizationUpdated(stripe_shared::IssuingAuthorization),
@@ -953,7 +960,7 @@ pub enum EventObject {
     /// Occurs when a PaymentIntent has funds to be captured.
     /// Check the `amount_capturable` property on the PaymentIntent to determine the amount that can be captured.
     /// You may capture the PaymentIntent with an `amount_to_capture` value up to the specified amount.
-    /// [Learn more about capturing PaymentIntents.](https://stripe.com/docs/api/payment_intents/capture).
+    /// [Learn more about capturing PaymentIntents.](https://docs.stripe.com/api/payment_intents/capture).
     PaymentIntentAmountCapturableUpdated(stripe_shared::PaymentIntent),
     /// Occurs when a PaymentIntent is canceled.
     PaymentIntentCanceled(stripe_shared::PaymentIntent),
@@ -979,7 +986,7 @@ pub enum EventObject {
     PaymentMethodAutomaticallyUpdated(stripe_shared::PaymentMethod),
     /// Occurs whenever a payment method is detached from a customer.
     PaymentMethodDetached(stripe_shared::PaymentMethod),
-    /// Occurs whenever a payment method is updated via the [PaymentMethod update API](https://stripe.com/docs/api/payment_methods/update).
+    /// Occurs whenever a payment method is updated via the [PaymentMethod update API](https://docs.stripe.com/api/payment_methods/update).
     PaymentMethodUpdated(stripe_shared::PaymentMethod),
     /// Occurs whenever a payout is canceled.
     PayoutCanceled(stripe_shared::Payout),
@@ -1390,6 +1397,10 @@ impl EventObject {
             "customer_cash_balance_transaction.created" => {
                 Self::CustomerCashBalanceTransactionCreated(FromValueOpt::from_value(data)?)
             }
+            #[cfg(feature = "stripe_misc")]
+            "entitlements.active_entitlement_summary.updated" => {
+                Self::EntitlementsActiveEntitlementSummaryUpdated(FromValueOpt::from_value(data)?)
+            }
             "file.created" => Self::FileCreated(FromValueOpt::from_value(data)?),
             #[cfg(feature = "stripe_misc")]
             "financial_connections.account.created" => {
@@ -1410,6 +1421,10 @@ impl EventObject {
             #[cfg(feature = "stripe_misc")]
             "financial_connections.account.refreshed_balance" => {
                 Self::FinancialConnectionsAccountRefreshedBalance(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "stripe_misc")]
+            "financial_connections.account.refreshed_ownership" => {
+                Self::FinancialConnectionsAccountRefreshedOwnership(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "financial_connections.account.refreshed_transactions" => {

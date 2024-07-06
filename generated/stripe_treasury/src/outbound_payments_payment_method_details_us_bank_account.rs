@@ -14,7 +14,10 @@ pub struct OutboundPaymentsPaymentMethodDetailsUsBankAccount {
     pub fingerprint: Option<String>,
     /// Last four digits of the bank account number.
     pub last4: Option<String>,
-    /// The US bank account network used to send funds.
+    /// ID of the mandate used to make this payment.
+    pub mandate: Option<stripe_types::Expandable<stripe_shared::Mandate>>,
+    /// The network rails used.
+    /// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
     pub network: OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork,
     /// Routing number of the bank account.
     pub routing_number: Option<String>,
@@ -27,6 +30,7 @@ pub struct OutboundPaymentsPaymentMethodDetailsUsBankAccountBuilder {
     bank_name: Option<Option<String>>,
     fingerprint: Option<Option<String>>,
     last4: Option<Option<String>>,
+    mandate: Option<Option<stripe_types::Expandable<stripe_shared::Mandate>>>,
     network: Option<OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork>,
     routing_number: Option<Option<String>>,
 }
@@ -70,6 +74,7 @@ const _: () = {
                 "bank_name" => Deserialize::begin(&mut self.bank_name),
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
                 "last4" => Deserialize::begin(&mut self.last4),
+                "mandate" => Deserialize::begin(&mut self.mandate),
                 "network" => Deserialize::begin(&mut self.network),
                 "routing_number" => Deserialize::begin(&mut self.routing_number),
 
@@ -84,6 +89,7 @@ const _: () = {
                 bank_name: Deserialize::default(),
                 fingerprint: Deserialize::default(),
                 last4: Deserialize::default(),
+                mandate: Deserialize::default(),
                 network: Deserialize::default(),
                 routing_number: Deserialize::default(),
             }
@@ -96,6 +102,7 @@ const _: () = {
                 bank_name: self.bank_name.take()?,
                 fingerprint: self.fingerprint.take()?,
                 last4: self.last4.take()?,
+                mandate: self.mandate.take()?,
                 network: self.network?,
                 routing_number: self.routing_number.take()?,
             })
@@ -132,6 +139,7 @@ const _: () = {
                     "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
                     "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
                     "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
+                    "mandate" => b.mandate = Some(FromValueOpt::from_value(v)?),
                     "network" => b.network = Some(FromValueOpt::from_value(v)?),
                     "routing_number" => b.routing_number = Some(FromValueOpt::from_value(v)?),
 
@@ -302,7 +310,8 @@ impl<'de> serde::Deserialize<'de> for OutboundPaymentsPaymentMethodDetailsUsBank
         })
     }
 }
-/// The US bank account network used to send funds.
+/// The network rails used.
+/// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork {
     Ach,

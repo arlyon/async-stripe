@@ -19,10 +19,10 @@ pub struct Charge {
     /// ID of the Connect application that created the charge.
     pub application: Option<stripe_types::Expandable<stripe_shared::Application>>,
     /// The application fee (if any) for the charge.
-    /// [See the Connect documentation](https://stripe.com/docs/connect/direct-charges#collecting-fees) for details.
+    /// [See the Connect documentation](https://stripe.com/docs/connect/direct-charges#collect-fees) for details.
     pub application_fee: Option<stripe_types::Expandable<stripe_shared::ApplicationFee>>,
     /// The amount of the application fee (if any) requested for the charge.
-    /// [See the Connect documentation](https://stripe.com/docs/connect/direct-charges#collecting-fees) for details.
+    /// [See the Connect documentation](https://stripe.com/docs/connect/direct-charges#collect-fees) for details.
     pub application_fee_amount: Option<i64>,
     /// Authorization code on the charge.
     pub authorization_code: Option<String>,

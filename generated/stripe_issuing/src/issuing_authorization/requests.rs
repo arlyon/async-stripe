@@ -1,224 +1,427 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListIssuingAuthorizationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    card: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cardholder: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    created: Option<stripe_types::RangeQueryTs>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    status: Option<stripe_shared::IssuingAuthorizationStatus>,
+}
+impl<'a> ListIssuingAuthorizationBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            card: None,
+            cardholder: None,
+            created: None,
+            ending_before: None,
+            expand: None,
+            limit: None,
+            starting_after: None,
+            status: None,
+        }
+    }
+}
+/// Returns a list of Issuing `Authorization` objects.
+/// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ListIssuingAuthorization<'a> {
+    inner: ListIssuingAuthorizationBuilder<'a>,
+}
+impl<'a> ListIssuingAuthorization<'a> {
+    /// Construct a new `ListIssuingAuthorization`.
+    pub fn new() -> Self {
+        Self { inner: ListIssuingAuthorizationBuilder::new() }
+    }
     /// Only return authorizations that belong to the given card.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<&'a str>,
+    pub fn card(mut self, card: &'a str) -> Self {
+        self.inner.card = Some(card);
+        self
+    }
     /// Only return authorizations that belong to the given cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cardholder: Option<&'a str>,
+    pub fn cardholder(mut self, cardholder: &'a str) -> Self {
+        self.inner.cardholder = Some(cardholder);
+        self
+    }
     /// Only return authorizations that were created during the given date interval.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
+    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
+        self.inner.created = Some(created);
+        self
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
     /// Only return authorizations with the given status. One of `pending`, `closed`, or `reversed`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<stripe_shared::IssuingAuthorizationStatus>,
-}
-impl<'a> ListIssuingAuthorization<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn status(mut self, status: stripe_shared::IssuingAuthorizationStatus) -> Self {
+        self.inner.status = Some(status);
+        self
     }
 }
-impl<'a> ListIssuingAuthorization<'a> {
-    /// Returns a list of Issuing `Authorization` objects.
-    /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-    pub fn send(
+impl<'a> Default for ListIssuingAuthorization<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListIssuingAuthorization<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::IssuingAuthorization>> {
-        client.get_query("/issuing/authorizations", self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::IssuingAuthorization>> {
-        stripe::ListPaginator::from_list_params("/issuing/authorizations", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveIssuingAuthorization<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveIssuingAuthorization<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveIssuingAuthorization<'a> {
-    /// Retrieves an Issuing `Authorization` object.
-    pub fn send(
         &self,
-        client: &stripe::Client,
-        authorization: &stripe_shared::IssuingAuthorizationId,
-    ) -> stripe::Response<stripe_shared::IssuingAuthorization> {
-        client.get_query(&format!("/issuing/authorizations/{authorization}"), self)
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::IssuingAuthorization>>
+    {
+        stripe_client_core::ListPaginator::new_list("/issuing/authorizations", self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateIssuingAuthorization<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-}
-impl<'a> UpdateIssuingAuthorization<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> UpdateIssuingAuthorization<'a> {
-    /// Updates the specified Issuing `Authorization` object by setting the values of the parameters passed.
-    /// Any parameters not provided will be left unchanged.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        authorization: &stripe_shared::IssuingAuthorizationId,
-    ) -> stripe::Response<stripe_shared::IssuingAuthorization> {
-        client.send_form(
-            &format!("/issuing/authorizations/{authorization}"),
-            self,
-            http_types::Method::Post,
-        )
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ApproveIssuingAuthorization<'a> {
-    /// If the authorization's `pending_request.is_amount_controllable` property is `true`, you may provide this value to control how much to hold for the authorization.
-    /// Must be positive (use [`decline`](https://stripe.com/docs/api/issuing/authorizations/decline) to decline an authorization request).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-}
-impl<'a> ApproveIssuingAuthorization<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> ApproveIssuingAuthorization<'a> {
-    /// \[Deprecated\] Approves a pending Issuing `Authorization` object.
-    /// This request should be made within the timeout window of the [real-time authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations) flow.
-    ///
-    /// This method is deprecated.
-    /// Instead, [respond directly to the webhook request to approve an authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations#authorization-handling).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        authorization: &stripe_shared::IssuingAuthorizationId,
-    ) -> stripe::Response<stripe_shared::IssuingAuthorization> {
-        client.send_form(
-            &format!("/issuing/authorizations/{authorization}/approve"),
-            self,
-            http_types::Method::Post,
-        )
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeclineIssuingAuthorization<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-}
-impl<'a> DeclineIssuingAuthorization<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> DeclineIssuingAuthorization<'a> {
-    /// \[Deprecated\] Declines a pending Issuing `Authorization` object.
-    /// This request should be made within the timeout window of the [real time authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations) flow.
-    /// This method is deprecated.
-    /// Instead, [respond directly to the webhook request to decline an authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations#authorization-handling).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        authorization: &stripe_shared::IssuingAuthorizationId,
-    ) -> stripe::Response<stripe_shared::IssuingAuthorization> {
-        client.send_form(
-            &format!("/issuing/authorizations/{authorization}/decline"),
-            self,
-            http_types::Method::Post,
-        )
+
+impl StripeRequest for ListIssuingAuthorization<'_> {
+    type Output = stripe_types::List<stripe_shared::IssuingAuthorization>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/issuing/authorizations").query(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateIssuingAuthorization<'a> {
-    /// The total amount to attempt to authorize.
-    /// This amount is in the provided currency, or defaults to the card's currency, and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    pub amount: i64,
-    /// Detailed breakdown of amount components.
-    /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+struct RetrieveIssuingAuthorizationBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_details: Option<CreateIssuingAuthorizationAmountDetails>,
-    /// How the card details were provided. Defaults to online.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub authorization_method: Option<stripe_shared::IssuingAuthorizationAuthorizationMethod>,
-    /// Card associated with this authorization.
-    pub card: &'a str,
-    /// The currency of the authorization.
-    /// If not provided, defaults to the currency of the card.
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<stripe_types::Currency>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// If set `true`, you may provide [amount](https://stripe.com/docs/api/issuing/authorizations/approve#approve_issuing_authorization-amount) to control how much to hold for the authorization.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_amount_controllable: Option<bool>,
-    /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub merchant_data: Option<CreateIssuingAuthorizationMerchantData<'a>>,
-    /// Details about the authorization, such as identifiers, set by the card network.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub network_data: Option<CreateIssuingAuthorizationNetworkData<'a>>,
-    /// Verifications that Stripe performed on information that the cardholder provided to the merchant.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_data: Option<CreateIssuingAuthorizationVerificationData>,
-    /// The digital wallet used for this transaction.
-    /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
-    /// Will populate as `null` when no digital wallet was utilized.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub wallet: Option<CreateIssuingAuthorizationWallet>,
+    expand: Option<&'a [&'a str]>,
 }
-impl<'a> CreateIssuingAuthorization<'a> {
-    pub fn new(amount: i64, card: &'a str) -> Self {
+impl<'a> RetrieveIssuingAuthorizationBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves an Issuing `Authorization` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveIssuingAuthorization<'a> {
+    inner: RetrieveIssuingAuthorizationBuilder<'a>,
+    authorization: &'a stripe_shared::IssuingAuthorizationId,
+}
+impl<'a> RetrieveIssuingAuthorization<'a> {
+    /// Construct a new `RetrieveIssuingAuthorization`.
+    pub fn new(authorization: &'a stripe_shared::IssuingAuthorizationId) -> Self {
+        Self { authorization, inner: RetrieveIssuingAuthorizationBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveIssuingAuthorization<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveIssuingAuthorization<'_> {
+    type Output = stripe_shared::IssuingAuthorization;
+
+    fn build(&self) -> RequestBuilder {
+        let authorization = self.authorization;
+        RequestBuilder::new(StripeMethod::Get, format!("/issuing/authorizations/{authorization}"))
+            .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateIssuingAuthorizationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+}
+impl<'a> UpdateIssuingAuthorizationBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None, metadata: None }
+    }
+}
+/// Updates the specified Issuing `Authorization` object by setting the values of the parameters passed.
+/// Any parameters not provided will be left unchanged.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingAuthorization<'a> {
+    inner: UpdateIssuingAuthorizationBuilder<'a>,
+    authorization: &'a stripe_shared::IssuingAuthorizationId,
+}
+impl<'a> UpdateIssuingAuthorization<'a> {
+    /// Construct a new `UpdateIssuingAuthorization`.
+    pub fn new(authorization: &'a stripe_shared::IssuingAuthorizationId) -> Self {
+        Self { authorization, inner: UpdateIssuingAuthorizationBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+}
+impl UpdateIssuingAuthorization<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateIssuingAuthorization<'_> {
+    type Output = stripe_shared::IssuingAuthorization;
+
+    fn build(&self) -> RequestBuilder {
+        let authorization = self.authorization;
+        RequestBuilder::new(StripeMethod::Post, format!("/issuing/authorizations/{authorization}"))
+            .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ApproveIssuingAuthorizationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    amount: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+}
+impl<'a> ApproveIssuingAuthorizationBuilder<'a> {
+    fn new() -> Self {
+        Self { amount: None, expand: None, metadata: None }
+    }
+}
+/// \[Deprecated\] Approves a pending Issuing `Authorization` object.
+/// This request should be made within the timeout window of the [real-time authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations) flow.
+///
+/// This method is deprecated.
+/// Instead, [respond directly to the webhook request to approve an authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations#authorization-handling).
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ApproveIssuingAuthorization<'a> {
+    inner: ApproveIssuingAuthorizationBuilder<'a>,
+    authorization: &'a stripe_shared::IssuingAuthorizationId,
+}
+impl<'a> ApproveIssuingAuthorization<'a> {
+    /// Construct a new `ApproveIssuingAuthorization`.
+    pub fn new(authorization: &'a stripe_shared::IssuingAuthorizationId) -> Self {
+        Self { authorization, inner: ApproveIssuingAuthorizationBuilder::new() }
+    }
+    /// If the authorization's `pending_request.is_amount_controllable` property is `true`, you may provide this value to control how much to hold for the authorization.
+    /// Must be positive (use [`decline`](https://stripe.com/docs/api/issuing/authorizations/decline) to decline an authorization request).
+    pub fn amount(mut self, amount: i64) -> Self {
+        self.inner.amount = Some(amount);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+}
+impl ApproveIssuingAuthorization<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for ApproveIssuingAuthorization<'_> {
+    type Output = stripe_shared::IssuingAuthorization;
+
+    fn build(&self) -> RequestBuilder {
+        let authorization = self.authorization;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/issuing/authorizations/{authorization}/approve"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct DeclineIssuingAuthorizationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+}
+impl<'a> DeclineIssuingAuthorizationBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None, metadata: None }
+    }
+}
+/// \[Deprecated\] Declines a pending Issuing `Authorization` object.
+/// This request should be made within the timeout window of the [real time authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations) flow.
+/// This method is deprecated.
+/// Instead, [respond directly to the webhook request to decline an authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations#authorization-handling).
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DeclineIssuingAuthorization<'a> {
+    inner: DeclineIssuingAuthorizationBuilder<'a>,
+    authorization: &'a stripe_shared::IssuingAuthorizationId,
+}
+impl<'a> DeclineIssuingAuthorization<'a> {
+    /// Construct a new `DeclineIssuingAuthorization`.
+    pub fn new(authorization: &'a stripe_shared::IssuingAuthorizationId) -> Self {
+        Self { authorization, inner: DeclineIssuingAuthorizationBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+}
+impl DeclineIssuingAuthorization<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for DeclineIssuingAuthorization<'_> {
+    type Output = stripe_shared::IssuingAuthorization;
+
+    fn build(&self) -> RequestBuilder {
+        let authorization = self.authorization;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/issuing/authorizations/{authorization}/decline"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateIssuingAuthorizationBuilder<'a> {
+    amount: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    amount_details: Option<CreateIssuingAuthorizationAmountDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    authorization_method: Option<stripe_shared::IssuingAuthorizationAuthorizationMethod>,
+    card: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    currency: Option<stripe_types::Currency>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    is_amount_controllable: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    merchant_data: Option<CreateIssuingAuthorizationMerchantData<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    network_data: Option<CreateIssuingAuthorizationNetworkData<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    verification_data: Option<CreateIssuingAuthorizationVerificationData>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    wallet: Option<CreateIssuingAuthorizationWallet>,
+}
+impl<'a> CreateIssuingAuthorizationBuilder<'a> {
+    fn new(amount: i64, card: &'a str) -> Self {
         Self {
             amount,
             amount_details: None,
@@ -236,7 +439,7 @@ impl<'a> CreateIssuingAuthorization<'a> {
 }
 /// Detailed breakdown of amount components.
 /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingAuthorizationAmountDetails {
     /// The ATM withdrawal fee.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -247,11 +450,16 @@ pub struct CreateIssuingAuthorizationAmountDetails {
 }
 impl CreateIssuingAuthorizationAmountDetails {
     pub fn new() -> Self {
-        Self::default()
+        Self { atm_fee: None, cashback_amount: None }
+    }
+}
+impl Default for CreateIssuingAuthorizationAmountDetails {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingAuthorizationMerchantData<'a> {
     /// A categorization of the seller's type of business.
     /// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.
@@ -285,7 +493,22 @@ pub struct CreateIssuingAuthorizationMerchantData<'a> {
 }
 impl<'a> CreateIssuingAuthorizationMerchantData<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            category: None,
+            city: None,
+            country: None,
+            name: None,
+            network_id: None,
+            postal_code: None,
+            state: None,
+            terminal_id: None,
+            url: None,
+        }
+    }
+}
+impl<'a> Default for CreateIssuingAuthorizationMerchantData<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// A categorization of the seller's type of business.
@@ -1316,7 +1539,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationMerchantDataCate
     }
 }
 /// Details about the authorization, such as identifiers, set by the card network.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingAuthorizationNetworkData<'a> {
     /// Identifier assigned to the acquirer by the card network.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1324,11 +1547,16 @@ pub struct CreateIssuingAuthorizationNetworkData<'a> {
 }
 impl<'a> CreateIssuingAuthorizationNetworkData<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { acquiring_institution_id: None }
+    }
+}
+impl<'a> Default for CreateIssuingAuthorizationNetworkData<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Verifications that Stripe performed on information that the cardholder provided to the merchant.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingAuthorizationVerificationData {
     /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1353,7 +1581,19 @@ pub struct CreateIssuingAuthorizationVerificationData {
 }
 impl CreateIssuingAuthorizationVerificationData {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            address_line1_check: None,
+            address_postal_code_check: None,
+            authentication_exemption: None,
+            cvc_check: None,
+            expiry_check: None,
+            three_d_secure: None,
+        }
+    }
+}
+impl Default for CreateIssuingAuthorizationVerificationData {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
@@ -1874,41 +2114,129 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationWallet {
         })
     }
 }
+/// Create a test-mode authorization.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingAuthorization<'a> {
+    inner: CreateIssuingAuthorizationBuilder<'a>,
+}
 impl<'a> CreateIssuingAuthorization<'a> {
-    /// Create a test-mode authorization.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_shared::IssuingAuthorization> {
-        client.send_form("/test_helpers/issuing/authorizations", self, http_types::Method::Post)
+    /// Construct a new `CreateIssuingAuthorization`.
+    pub fn new(amount: i64, card: &'a str) -> Self {
+        Self { inner: CreateIssuingAuthorizationBuilder::new(amount, card) }
+    }
+    /// Detailed breakdown of amount components.
+    /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    pub fn amount_details(
+        mut self,
+        amount_details: CreateIssuingAuthorizationAmountDetails,
+    ) -> Self {
+        self.inner.amount_details = Some(amount_details);
+        self
+    }
+    /// How the card details were provided. Defaults to online.
+    pub fn authorization_method(
+        mut self,
+        authorization_method: stripe_shared::IssuingAuthorizationAuthorizationMethod,
+    ) -> Self {
+        self.inner.authorization_method = Some(authorization_method);
+        self
+    }
+    /// The currency of the authorization.
+    /// If not provided, defaults to the currency of the card.
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub fn currency(mut self, currency: stripe_types::Currency) -> Self {
+        self.inner.currency = Some(currency);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// If set `true`, you may provide [amount](https://stripe.com/docs/api/issuing/authorizations/approve#approve_issuing_authorization-amount) to control how much to hold for the authorization.
+    pub fn is_amount_controllable(mut self, is_amount_controllable: bool) -> Self {
+        self.inner.is_amount_controllable = Some(is_amount_controllable);
+        self
+    }
+    /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
+    pub fn merchant_data(
+        mut self,
+        merchant_data: CreateIssuingAuthorizationMerchantData<'a>,
+    ) -> Self {
+        self.inner.merchant_data = Some(merchant_data);
+        self
+    }
+    /// Details about the authorization, such as identifiers, set by the card network.
+    pub fn network_data(mut self, network_data: CreateIssuingAuthorizationNetworkData<'a>) -> Self {
+        self.inner.network_data = Some(network_data);
+        self
+    }
+    /// Verifications that Stripe performed on information that the cardholder provided to the merchant.
+    pub fn verification_data(
+        mut self,
+        verification_data: CreateIssuingAuthorizationVerificationData,
+    ) -> Self {
+        self.inner.verification_data = Some(verification_data);
+        self
+    }
+    /// The digital wallet used for this transaction.
+    /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
+    /// Will populate as `null` when no digital wallet was utilized.
+    pub fn wallet(mut self, wallet: CreateIssuingAuthorizationWallet) -> Self {
+        self.inner.wallet = Some(wallet);
+        self
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CaptureIssuingAuthorization<'a> {
-    /// The amount to capture from the authorization.
-    /// If not provided, the full amount of the authorization will be captured.
-    /// This amount is in the authorization currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_amount: Option<i64>,
-    /// Whether to close the authorization after capture.
-    /// Defaults to true.
-    /// Set to false to enable multi-capture flows.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub close_authorization: Option<bool>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Additional purchase information that is optionally provided by the merchant.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub purchase_details: Option<CaptureIssuingAuthorizationPurchaseDetails<'a>>,
+impl CreateIssuingAuthorization<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
 }
-impl<'a> CaptureIssuingAuthorization<'a> {
-    pub fn new() -> Self {
-        Self::default()
+
+impl StripeRequest for CreateIssuingAuthorization<'_> {
+    type Output = stripe_shared::IssuingAuthorization;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/test_helpers/issuing/authorizations")
+            .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CaptureIssuingAuthorizationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    capture_amount: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    close_authorization: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    purchase_details: Option<CaptureIssuingAuthorizationPurchaseDetails<'a>>,
+}
+impl<'a> CaptureIssuingAuthorizationBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            capture_amount: None,
+            close_authorization: None,
+            expand: None,
+            purchase_details: None,
+        }
     }
 }
 /// Additional purchase information that is optionally provided by the merchant.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetails<'a> {
     /// Information about the flight that was purchased with this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1928,11 +2256,16 @@ pub struct CaptureIssuingAuthorizationPurchaseDetails<'a> {
 }
 impl<'a> CaptureIssuingAuthorizationPurchaseDetails<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { flight: None, fuel: None, lodging: None, receipt: None, reference: None }
+    }
+}
+impl<'a> Default for CaptureIssuingAuthorizationPurchaseDetails<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Information about the flight that was purchased with this transaction.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsFlight<'a> {
     /// The time that the flight departed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1952,11 +2285,22 @@ pub struct CaptureIssuingAuthorizationPurchaseDetailsFlight<'a> {
 }
 impl<'a> CaptureIssuingAuthorizationPurchaseDetailsFlight<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            departure_at: None,
+            passenger_name: None,
+            refundable: None,
+            segments: None,
+            travel_agency: None,
+        }
+    }
+}
+impl<'a> Default for CaptureIssuingAuthorizationPurchaseDetailsFlight<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The legs of the trip.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsFlightSegments<'a> {
     /// The three-letter IATA airport code of the flight's destination.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1979,18 +2323,30 @@ pub struct CaptureIssuingAuthorizationPurchaseDetailsFlightSegments<'a> {
 }
 impl<'a> CaptureIssuingAuthorizationPurchaseDetailsFlightSegments<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            arrival_airport_code: None,
+            carrier: None,
+            departure_airport_code: None,
+            flight_number: None,
+            service_class: None,
+            stopover_allowed: None,
+        }
+    }
+}
+impl<'a> Default for CaptureIssuingAuthorizationPurchaseDetailsFlightSegments<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Information about fuel that was purchased with this transaction.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsFuel<'a> {
     /// The type of fuel that was purchased.
     /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CaptureIssuingAuthorizationPurchaseDetailsFuelType>,
-    /// The units for `volume_decimal`. One of `us_gallon` or `liter`.
+    /// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit: Option<CaptureIssuingAuthorizationPurchaseDetailsFuelUnit>,
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
@@ -2002,7 +2358,12 @@ pub struct CaptureIssuingAuthorizationPurchaseDetailsFuel<'a> {
 }
 impl<'a> CaptureIssuingAuthorizationPurchaseDetailsFuel<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { type_: None, unit: None, unit_cost_decimal: None, volume_decimal: None }
+    }
+}
+impl<'a> Default for CaptureIssuingAuthorizationPurchaseDetailsFuel<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The type of fuel that was purchased.
@@ -2073,10 +2434,11 @@ impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetails
         })
     }
 }
-/// The units for `volume_decimal`. One of `us_gallon` or `liter`.
+/// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
     Liter,
+    Other,
     UsGallon,
 }
 impl CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
@@ -2084,6 +2446,7 @@ impl CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
         use CaptureIssuingAuthorizationPurchaseDetailsFuelUnit::*;
         match self {
             Liter => "liter",
+            Other => "other",
             UsGallon => "us_gallon",
         }
     }
@@ -2095,6 +2458,7 @@ impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
         use CaptureIssuingAuthorizationPurchaseDetailsFuelUnit::*;
         match s {
             "liter" => Ok(Liter),
+            "other" => Ok(Other),
             "us_gallon" => Ok(UsGallon),
             _ => Err(stripe_types::StripeParseError),
         }
@@ -2132,7 +2496,7 @@ impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetails
     }
 }
 /// Information about lodging that was purchased with this transaction.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsLodging {
     /// The time of checking into the lodging.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2143,11 +2507,16 @@ pub struct CaptureIssuingAuthorizationPurchaseDetailsLodging {
 }
 impl CaptureIssuingAuthorizationPurchaseDetailsLodging {
     pub fn new() -> Self {
-        Self::default()
+        Self { check_in_at: None, nights: None }
+    }
+}
+impl Default for CaptureIssuingAuthorizationPurchaseDetailsLodging {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The line items in the purchase.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsReceipt<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
@@ -2160,106 +2529,268 @@ pub struct CaptureIssuingAuthorizationPurchaseDetailsReceipt<'a> {
 }
 impl<'a> CaptureIssuingAuthorizationPurchaseDetailsReceipt<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { description: None, quantity: None, total: None, unit_cost: None }
     }
+}
+impl<'a> Default for CaptureIssuingAuthorizationPurchaseDetailsReceipt<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Capture a test-mode authorization.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CaptureIssuingAuthorization<'a> {
+    inner: CaptureIssuingAuthorizationBuilder<'a>,
+    authorization: &'a str,
 }
 impl<'a> CaptureIssuingAuthorization<'a> {
-    /// Capture a test-mode authorization.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        authorization: &str,
-    ) -> stripe::Response<stripe_shared::IssuingAuthorization> {
-        client.send_form(
-            &format!("/test_helpers/issuing/authorizations/{authorization}/capture"),
-            self,
-            http_types::Method::Post,
-        )
+    /// Construct a new `CaptureIssuingAuthorization`.
+    pub fn new(authorization: &'a str) -> Self {
+        Self { authorization, inner: CaptureIssuingAuthorizationBuilder::new() }
     }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ExpireIssuingAuthorization<'a> {
+    /// The amount to capture from the authorization.
+    /// If not provided, the full amount of the authorization will be captured.
+    /// This amount is in the authorization currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    pub fn capture_amount(mut self, capture_amount: i64) -> Self {
+        self.inner.capture_amount = Some(capture_amount);
+        self
+    }
+    /// Whether to close the authorization after capture.
+    /// Defaults to true.
+    /// Set to false to enable multi-capture flows.
+    pub fn close_authorization(mut self, close_authorization: bool) -> Self {
+        self.inner.close_authorization = Some(close_authorization);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> ExpireIssuingAuthorization<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Additional purchase information that is optionally provided by the merchant.
+    pub fn purchase_details(
+        mut self,
+        purchase_details: CaptureIssuingAuthorizationPurchaseDetails<'a>,
+    ) -> Self {
+        self.inner.purchase_details = Some(purchase_details);
+        self
     }
 }
-impl<'a> ExpireIssuingAuthorization<'a> {
-    /// Expire a test-mode Authorization.
-    pub fn send(
+impl CaptureIssuingAuthorization<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        authorization: &str,
-    ) -> stripe::Response<stripe_shared::IssuingAuthorization> {
-        client.send_form(
-            &format!("/test_helpers/issuing/authorizations/{authorization}/expire"),
-            self,
-            http_types::Method::Post,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CaptureIssuingAuthorization<'_> {
+    type Output = stripe_shared::IssuingAuthorization;
+
+    fn build(&self) -> RequestBuilder {
+        let authorization = self.authorization;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/issuing/authorizations/{authorization}/capture"),
         )
+        .form(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct IncrementIssuingAuthorization<'a> {
-    /// Specifies which fields in the response should be expanded.
+struct ExpireIssuingAuthorizationBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The amount to increment the authorization by.
-    /// This amount is in the authorization currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    pub increment_amount: i64,
-    /// If set `true`, you may provide [amount](https://stripe.com/docs/api/issuing/authorizations/approve#approve_issuing_authorization-amount) to control how much to hold for the authorization.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_amount_controllable: Option<bool>,
+    expand: Option<&'a [&'a str]>,
 }
-impl<'a> IncrementIssuingAuthorization<'a> {
-    pub fn new(increment_amount: i64) -> Self {
+impl<'a> ExpireIssuingAuthorizationBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Expire a test-mode Authorization.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ExpireIssuingAuthorization<'a> {
+    inner: ExpireIssuingAuthorizationBuilder<'a>,
+    authorization: &'a str,
+}
+impl<'a> ExpireIssuingAuthorization<'a> {
+    /// Construct a new `ExpireIssuingAuthorization`.
+    pub fn new(authorization: &'a str) -> Self {
+        Self { authorization, inner: ExpireIssuingAuthorizationBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl ExpireIssuingAuthorization<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for ExpireIssuingAuthorization<'_> {
+    type Output = stripe_shared::IssuingAuthorization;
+
+    fn build(&self) -> RequestBuilder {
+        let authorization = self.authorization;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/issuing/authorizations/{authorization}/expire"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct IncrementIssuingAuthorizationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    increment_amount: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    is_amount_controllable: Option<bool>,
+}
+impl<'a> IncrementIssuingAuthorizationBuilder<'a> {
+    fn new(increment_amount: i64) -> Self {
         Self { expand: None, increment_amount, is_amount_controllable: None }
     }
 }
+/// Increment a test-mode Authorization.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct IncrementIssuingAuthorization<'a> {
+    inner: IncrementIssuingAuthorizationBuilder<'a>,
+    authorization: &'a str,
+}
 impl<'a> IncrementIssuingAuthorization<'a> {
-    /// Increment a test-mode Authorization.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        authorization: &str,
-    ) -> stripe::Response<stripe_shared::IssuingAuthorization> {
-        client.send_form(
-            &format!("/test_helpers/issuing/authorizations/{authorization}/increment"),
-            self,
-            http_types::Method::Post,
-        )
+    /// Construct a new `IncrementIssuingAuthorization`.
+    pub fn new(authorization: &'a str, increment_amount: i64) -> Self {
+        Self { authorization, inner: IncrementIssuingAuthorizationBuilder::new(increment_amount) }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// If set `true`, you may provide [amount](https://stripe.com/docs/api/issuing/authorizations/approve#approve_issuing_authorization-amount) to control how much to hold for the authorization.
+    pub fn is_amount_controllable(mut self, is_amount_controllable: bool) -> Self {
+        self.inner.is_amount_controllable = Some(is_amount_controllable);
+        self
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ReverseIssuingAuthorization<'a> {
-    /// Specifies which fields in the response should be expanded.
+impl IncrementIssuingAuthorization<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for IncrementIssuingAuthorization<'_> {
+    type Output = stripe_shared::IssuingAuthorization;
+
+    fn build(&self) -> RequestBuilder {
+        let authorization = self.authorization;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/issuing/authorizations/{authorization}/increment"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ReverseIssuingAuthorizationBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reverse_amount: Option<i64>,
+}
+impl<'a> ReverseIssuingAuthorizationBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None, reverse_amount: None }
+    }
+}
+/// Reverse a test-mode Authorization.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ReverseIssuingAuthorization<'a> {
+    inner: ReverseIssuingAuthorizationBuilder<'a>,
+    authorization: &'a str,
+}
+impl<'a> ReverseIssuingAuthorization<'a> {
+    /// Construct a new `ReverseIssuingAuthorization`.
+    pub fn new(authorization: &'a str) -> Self {
+        Self { authorization, inner: ReverseIssuingAuthorizationBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// The amount to reverse from the authorization.
     /// If not provided, the full amount of the authorization will be reversed.
     /// This amount is in the authorization currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reverse_amount: Option<i64>,
-}
-impl<'a> ReverseIssuingAuthorization<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn reverse_amount(mut self, reverse_amount: i64) -> Self {
+        self.inner.reverse_amount = Some(reverse_amount);
+        self
     }
 }
-impl<'a> ReverseIssuingAuthorization<'a> {
-    /// Reverse a test-mode Authorization.
-    pub fn send(
+impl ReverseIssuingAuthorization<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        authorization: &str,
-    ) -> stripe::Response<stripe_shared::IssuingAuthorization> {
-        client.send_form(
-            &format!("/test_helpers/issuing/authorizations/{authorization}/reverse"),
-            self,
-            http_types::Method::Post,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for ReverseIssuingAuthorization<'_> {
+    type Output = stripe_shared::IssuingAuthorization;
+
+    fn build(&self) -> RequestBuilder {
+        let authorization = self.authorization;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/issuing/authorizations/{authorization}/reverse"),
         )
+        .form(&self.inner)
     }
 }

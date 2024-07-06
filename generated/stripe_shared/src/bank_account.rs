@@ -1,10 +1,11 @@
 /// These bank accounts are payment methods on `Customer` objects.
 ///
-/// On the other hand [External Accounts](https://stripe.com/docs/api#external_accounts) are transfer
-/// destinations on `Account` objects for [Custom accounts](https://stripe.com/docs/connect/custom-accounts).
+/// On the other hand [External Accounts](/api#external_accounts) are transfer
+/// destinations on `Account` objects for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection).
+/// is `application`, which includes [Custom accounts](/connect/custom-accounts).
 /// They can be bank accounts or debit cards as well, and are documented in the links above.
 ///
-/// Related guide: [Bank debits and transfers](https://stripe.com/docs/payments/bank-debits-transfers)
+/// Related guide: [Bank debits and transfers](/payments/bank-debits-transfers)
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BankAccount {
@@ -56,8 +57,8 @@ pub struct BankAccount {
     /// If a payout sent to this bank account fails, we'll set the status to `errored` and will not continue to send [scheduled payouts](https://stripe.com/docs/payouts#payout-schedule) until the bank details are updated.
     ///
     /// For external accounts, possible values are `new`, `errored` and `verification_failed`.
-    /// If a payouts fails, the status is set to `errored` and scheduled payouts are stopped until account details are updated.
-    /// In India, if we can't [verify the owner of the bank account](https://support.stripe.com/questions/bank-account-ownership-verification), we'll set the status to `verification_failed`.
+    /// If a payout fails, the status is set to `errored` and scheduled payouts are stopped until account details are updated.
+    /// In the US and India, if we can't [verify the owner of the bank account](https://support.stripe.com/questions/bank-account-ownership-verification), we'll set the status to `verification_failed`.
     /// Other validations aren't run against external accounts because they're only used for payouts.
     /// This means the other statuses don't apply.
     pub status: String,

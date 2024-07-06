@@ -2,7 +2,6 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputePaymentMethodDetails {
-    /// Card specific dispute details.
     pub card: Option<stripe_shared::DisputePaymentMethodDetailsCard>,
     /// Payment method type.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]

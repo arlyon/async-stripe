@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountCapabilities {
@@ -8,6 +8,8 @@ pub struct AccountCapabilities {
     pub affirm_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the Afterpay Clearpay capability of the account, or whether the account can directly process Afterpay Clearpay charges.
     pub afterpay_clearpay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the AmazonPay capability of the account, or whether the account can directly process AmazonPay payments.
+    pub amazon_pay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the BECS Direct Debit (AU) payments capability of the account, or whether the account can directly process BECS Direct Debit (AU) charges.
     pub au_becs_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the Bacs Direct Debits payments capability of the account, or whether the account can directly process Bacs Direct Debits charges.
@@ -50,6 +52,8 @@ pub struct AccountCapabilities {
     pub legacy_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the link_payments capability of the account, or whether the account can directly process Link charges.
     pub link_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the MobilepPay capability of the account, or whether the account can directly process MobilePay charges.
+    pub mobilepay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the OXXO payments capability of the account, or whether the account can directly process OXXO charges.
     pub oxxo_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the P24 payments capability of the account, or whether the account can directly process P24 charges.
@@ -84,6 +88,7 @@ pub struct AccountCapabilitiesBuilder {
     acss_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     affirm_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     afterpay_clearpay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    amazon_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     au_becs_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     bacs_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     bancontact_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
@@ -105,6 +110,7 @@ pub struct AccountCapabilitiesBuilder {
     konbini_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     legacy_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     link_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    mobilepay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     oxxo_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     p24_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     paynow_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
@@ -160,6 +166,7 @@ const _: () = {
                 "afterpay_clearpay_payments" => {
                     Deserialize::begin(&mut self.afterpay_clearpay_payments)
                 }
+                "amazon_pay_payments" => Deserialize::begin(&mut self.amazon_pay_payments),
                 "au_becs_debit_payments" => Deserialize::begin(&mut self.au_becs_debit_payments),
                 "bacs_debit_payments" => Deserialize::begin(&mut self.bacs_debit_payments),
                 "bancontact_payments" => Deserialize::begin(&mut self.bancontact_payments),
@@ -185,6 +192,7 @@ const _: () = {
                 "konbini_payments" => Deserialize::begin(&mut self.konbini_payments),
                 "legacy_payments" => Deserialize::begin(&mut self.legacy_payments),
                 "link_payments" => Deserialize::begin(&mut self.link_payments),
+                "mobilepay_payments" => Deserialize::begin(&mut self.mobilepay_payments),
                 "oxxo_payments" => Deserialize::begin(&mut self.oxxo_payments),
                 "p24_payments" => Deserialize::begin(&mut self.p24_payments),
                 "paynow_payments" => Deserialize::begin(&mut self.paynow_payments),
@@ -213,6 +221,7 @@ const _: () = {
                 acss_debit_payments: Deserialize::default(),
                 affirm_payments: Deserialize::default(),
                 afterpay_clearpay_payments: Deserialize::default(),
+                amazon_pay_payments: Deserialize::default(),
                 au_becs_debit_payments: Deserialize::default(),
                 bacs_debit_payments: Deserialize::default(),
                 bancontact_payments: Deserialize::default(),
@@ -234,6 +243,7 @@ const _: () = {
                 konbini_payments: Deserialize::default(),
                 legacy_payments: Deserialize::default(),
                 link_payments: Deserialize::default(),
+                mobilepay_payments: Deserialize::default(),
                 oxxo_payments: Deserialize::default(),
                 p24_payments: Deserialize::default(),
                 paynow_payments: Deserialize::default(),
@@ -256,6 +266,7 @@ const _: () = {
                 acss_debit_payments: self.acss_debit_payments?,
                 affirm_payments: self.affirm_payments?,
                 afterpay_clearpay_payments: self.afterpay_clearpay_payments?,
+                amazon_pay_payments: self.amazon_pay_payments?,
                 au_becs_debit_payments: self.au_becs_debit_payments?,
                 bacs_debit_payments: self.bacs_debit_payments?,
                 bancontact_payments: self.bancontact_payments?,
@@ -277,6 +288,7 @@ const _: () = {
                 konbini_payments: self.konbini_payments?,
                 legacy_payments: self.legacy_payments?,
                 link_payments: self.link_payments?,
+                mobilepay_payments: self.mobilepay_payments?,
                 oxxo_payments: self.oxxo_payments?,
                 p24_payments: self.p24_payments?,
                 paynow_payments: self.paynow_payments?,
@@ -325,6 +337,9 @@ const _: () = {
                     "afterpay_clearpay_payments" => {
                         b.afterpay_clearpay_payments = Some(FromValueOpt::from_value(v)?)
                     }
+                    "amazon_pay_payments" => {
+                        b.amazon_pay_payments = Some(FromValueOpt::from_value(v)?)
+                    }
                     "au_becs_debit_payments" => {
                         b.au_becs_debit_payments = Some(FromValueOpt::from_value(v)?)
                     }
@@ -358,6 +373,9 @@ const _: () = {
                     "konbini_payments" => b.konbini_payments = Some(FromValueOpt::from_value(v)?),
                     "legacy_payments" => b.legacy_payments = Some(FromValueOpt::from_value(v)?),
                     "link_payments" => b.link_payments = Some(FromValueOpt::from_value(v)?),
+                    "mobilepay_payments" => {
+                        b.mobilepay_payments = Some(FromValueOpt::from_value(v)?)
+                    }
                     "oxxo_payments" => b.oxxo_payments = Some(FromValueOpt::from_value(v)?),
                     "p24_payments" => b.p24_payments = Some(FromValueOpt::from_value(v)?),
                     "paynow_payments" => b.paynow_payments = Some(FromValueOpt::from_value(v)?),

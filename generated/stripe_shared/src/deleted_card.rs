@@ -3,7 +3,6 @@
 pub struct DeletedCard {
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/payouts) paid out to the bank account.
     pub currency: Option<stripe_types::Currency>,
-    /// Always true for a deleted object
     #[allow(dead_code)]
     deleted: stripe_types::AlwaysTrue,
     /// Unique identifier for the object.

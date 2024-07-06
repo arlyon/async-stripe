@@ -1,34 +1,29 @@
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ListTreasuryOutboundPayment<'a> {
-    /// Only return OutboundPayments sent to this customer.
+struct ListTreasuryOutboundPaymentBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
+    customer: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Returns objects associated with this FinancialAccount.
-    pub financial_account: &'a str,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
+    ending_before: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    expand: Option<&'a [&'a str]>,
+    financial_account: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-    /// Only return OutboundPayments that have the given status: `processing`, `failed`, `posted`, `returned`, or `canceled`.
+    limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<stripe_treasury::TreasuryOutboundPaymentStatus>,
+    starting_after: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    status: Option<stripe_treasury::TreasuryOutboundPaymentStatus>,
 }
-impl<'a> ListTreasuryOutboundPayment<'a> {
-    pub fn new(financial_account: &'a str) -> Self {
+impl<'a> ListTreasuryOutboundPaymentBuilder<'a> {
+    fn new(financial_account: &'a str) -> Self {
         Self {
+            created: None,
             customer: None,
             ending_before: None,
             expand: None,
@@ -39,109 +34,274 @@ impl<'a> ListTreasuryOutboundPayment<'a> {
         }
     }
 }
+/// Returns a list of OutboundPayments sent from the specified FinancialAccount.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListTreasuryOutboundPayment<'a> {
+    inner: ListTreasuryOutboundPaymentBuilder<'a>,
+}
 impl<'a> ListTreasuryOutboundPayment<'a> {
-    /// Returns a list of OutboundPayments sent from the specified FinancialAccount.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryOutboundPayment>> {
-        client.get_query("/treasury/outbound_payments", self)
+    /// Construct a new `ListTreasuryOutboundPayment`.
+    pub fn new(financial_account: &'a str) -> Self {
+        Self { inner: ListTreasuryOutboundPaymentBuilder::new(financial_account) }
     }
+    /// Only return OutboundPayments that were created during the given date interval.
+    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
+        self.inner.created = Some(created);
+        self
+    }
+    /// Only return OutboundPayments sent to this customer.
+    pub fn customer(mut self, customer: &'a str) -> Self {
+        self.inner.customer = Some(customer);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
+    /// Only return OutboundPayments that have the given status: `processing`, `failed`, `posted`, `returned`, or `canceled`.
+    pub fn status(mut self, status: stripe_treasury::TreasuryOutboundPaymentStatus) -> Self {
+        self.inner.status = Some(status);
+        self
+    }
+}
+impl ListTreasuryOutboundPayment<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_treasury::TreasuryOutboundPayment>> {
-        stripe::ListPaginator::from_list_params("/treasury/outbound_payments", self)
+        &self,
+    ) -> stripe_client_core::ListPaginator<
+        stripe_types::List<stripe_treasury::TreasuryOutboundPayment>,
+    > {
+        stripe_client_core::ListPaginator::new_list("/treasury/outbound_payments", self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for ListTreasuryOutboundPayment<'_> {
+    type Output = stripe_types::List<stripe_treasury::TreasuryOutboundPayment>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/treasury/outbound_payments").query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveTreasuryOutboundPaymentBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveTreasuryOutboundPaymentBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves the details of an existing OutboundPayment by passing the unique OutboundPayment ID from either the OutboundPayment creation request or OutboundPayment list.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct RetrieveTreasuryOutboundPayment<'a> {
+    inner: RetrieveTreasuryOutboundPaymentBuilder<'a>,
+    id: &'a stripe_treasury::TreasuryOutboundPaymentId,
+}
+impl<'a> RetrieveTreasuryOutboundPayment<'a> {
+    /// Construct a new `RetrieveTreasuryOutboundPayment`.
+    pub fn new(id: &'a stripe_treasury::TreasuryOutboundPaymentId) -> Self {
+        Self { id, inner: RetrieveTreasuryOutboundPaymentBuilder::new() }
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTreasuryOutboundPayment<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
-impl<'a> RetrieveTreasuryOutboundPayment<'a> {
-    /// Retrieves the details of an existing OutboundPayment by passing the unique OutboundPayment ID from either the OutboundPayment creation request or OutboundPayment list.
-    pub fn send(
+impl RetrieveTreasuryOutboundPayment<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        id: &stripe_treasury::TreasuryOutboundPaymentId,
-    ) -> stripe::Response<stripe_treasury::TreasuryOutboundPayment> {
-        client.get_query(&format!("/treasury/outbound_payments/{id}"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for RetrieveTreasuryOutboundPayment<'_> {
+    type Output = stripe_treasury::TreasuryOutboundPayment;
+
+    fn build(&self) -> RequestBuilder {
+        let id = self.id;
+        RequestBuilder::new(StripeMethod::Get, format!("/treasury/outbound_payments/{id}"))
+            .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct FailTreasuryOutboundPaymentBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> FailTreasuryOutboundPaymentBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Transitions a test mode created OutboundPayment to the `failed` status.
+/// The OutboundPayment must already be in the `processing` state.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct FailTreasuryOutboundPayment<'a> {
+    inner: FailTreasuryOutboundPaymentBuilder<'a>,
+    id: &'a str,
+}
+impl<'a> FailTreasuryOutboundPayment<'a> {
+    /// Construct a new `FailTreasuryOutboundPayment`.
+    pub fn new(id: &'a str) -> Self {
+        Self { id, inner: FailTreasuryOutboundPaymentBuilder::new() }
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> FailTreasuryOutboundPayment<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
-impl<'a> FailTreasuryOutboundPayment<'a> {
-    /// Transitions a test mode created OutboundPayment to the `failed` status.
-    /// The OutboundPayment must already be in the `processing` state.
-    pub fn send(
+impl FailTreasuryOutboundPayment<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        id: &str,
-    ) -> stripe::Response<stripe_treasury::TreasuryOutboundPayment> {
-        client.send_form(
-            &format!("/test_helpers/treasury/outbound_payments/{id}/fail"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for FailTreasuryOutboundPayment<'_> {
+    type Output = stripe_treasury::TreasuryOutboundPayment;
+
+    fn build(&self) -> RequestBuilder {
+        let id = self.id;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/treasury/outbound_payments/{id}/fail"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct PostTreasuryOutboundPaymentBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> PostTreasuryOutboundPaymentBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Transitions a test mode created OutboundPayment to the `posted` status.
+/// The OutboundPayment must already be in the `processing` state.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct PostTreasuryOutboundPayment<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    inner: PostTreasuryOutboundPaymentBuilder<'a>,
+    id: &'a str,
 }
 impl<'a> PostTreasuryOutboundPayment<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    /// Construct a new `PostTreasuryOutboundPayment`.
+    pub fn new(id: &'a str) -> Self {
+        Self { id, inner: PostTreasuryOutboundPaymentBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
-impl<'a> PostTreasuryOutboundPayment<'a> {
-    /// Transitions a test mode created OutboundPayment to the `posted` status.
-    /// The OutboundPayment must already be in the `processing` state.
-    pub fn send(
+impl PostTreasuryOutboundPayment<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        id: &str,
-    ) -> stripe::Response<stripe_treasury::TreasuryOutboundPayment> {
-        client.send_form(
-            &format!("/test_helpers/treasury/outbound_payments/{id}/post"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ReturnOutboundPaymentTreasuryOutboundPayment<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Optional hash to set the the return code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub returned_details: Option<ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails>,
+
+impl StripeRequest for PostTreasuryOutboundPayment<'_> {
+    type Output = stripe_treasury::TreasuryOutboundPayment;
+
+    fn build(&self) -> RequestBuilder {
+        let id = self.id;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/treasury/outbound_payments/{id}/post"),
+        )
+        .form(&self.inner)
+    }
 }
-impl<'a> ReturnOutboundPaymentTreasuryOutboundPayment<'a> {
-    pub fn new() -> Self {
-        Self::default()
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ReturnOutboundPaymentTreasuryOutboundPaymentBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    returned_details: Option<ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails>,
+}
+impl<'a> ReturnOutboundPaymentTreasuryOutboundPaymentBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None, returned_details: None }
     }
 }
 /// Optional hash to set the the return code.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails {
     /// The return code to be set on the OutboundPayment object.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -149,7 +309,12 @@ pub struct ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails {
 }
 impl ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails {
     pub fn new() -> Self {
-        Self::default()
+        Self { code: None }
+    }
+}
+impl Default for ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The return code to be set on the OutboundPayment object.
@@ -236,70 +401,90 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
+/// Transitions a test mode created OutboundPayment to the `returned` status.
+/// The OutboundPayment must already be in the `processing` state.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ReturnOutboundPaymentTreasuryOutboundPayment<'a> {
+    inner: ReturnOutboundPaymentTreasuryOutboundPaymentBuilder<'a>,
+    id: &'a str,
+}
 impl<'a> ReturnOutboundPaymentTreasuryOutboundPayment<'a> {
-    /// Transitions a test mode created OutboundPayment to the `returned` status.
-    /// The OutboundPayment must already be in the `processing` state.
-    pub fn send(
+    /// Construct a new `ReturnOutboundPaymentTreasuryOutboundPayment`.
+    pub fn new(id: &'a str) -> Self {
+        Self { id, inner: ReturnOutboundPaymentTreasuryOutboundPaymentBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Optional hash to set the the return code.
+    pub fn returned_details(
+        mut self,
+        returned_details: ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails,
+    ) -> Self {
+        self.inner.returned_details = Some(returned_details);
+        self
+    }
+}
+impl ReturnOutboundPaymentTreasuryOutboundPayment<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        id: &str,
-    ) -> stripe::Response<stripe_treasury::TreasuryOutboundPayment> {
-        client.send_form(
-            &format!("/test_helpers/treasury/outbound_payments/{id}/return"),
-            self,
-            http_types::Method::Post,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for ReturnOutboundPaymentTreasuryOutboundPayment<'_> {
+    type Output = stripe_treasury::TreasuryOutboundPayment;
+
+    fn build(&self) -> RequestBuilder {
+        let id = self.id;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/treasury/outbound_payments/{id}/return"),
         )
+        .form(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTreasuryOutboundPayment<'a> {
-    /// Amount (in cents) to be transferred.
-    pub amount: i64,
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// ID of the customer to whom the OutboundPayment is sent.
-    /// Must match the Customer attached to the `destination_payment_method` passed in.
+struct CreateTreasuryOutboundPaymentBuilder<'a> {
+    amount: i64,
+    currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
-    /// An arbitrary string attached to the object. Often useful for displaying to users.
+    customer: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
-    /// The PaymentMethod to use as the payment instrument for the OutboundPayment.
-    /// Exclusive with `destination_payment_method_data`.
+    description: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub destination_payment_method: Option<&'a str>,
-    /// Hash used to generate the PaymentMethod to be used for this OutboundPayment.
-    /// Exclusive with `destination_payment_method`.
+    destination_payment_method: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub destination_payment_method_data:
+    destination_payment_method_data:
         Option<CreateTreasuryOutboundPaymentDestinationPaymentMethodData<'a>>,
-    /// Payment method-specific configuration for this OutboundPayment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub destination_payment_method_options:
+    destination_payment_method_options:
         Option<CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions>,
-    /// End user details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub end_user_details: Option<CreateTreasuryOutboundPaymentEndUserDetails<'a>>,
-    /// Specifies which fields in the response should be expanded.
+    end_user_details: Option<CreateTreasuryOutboundPaymentEndUserDetails<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The FinancialAccount to pull funds from.
-    pub financial_account: &'a str,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
+    expand: Option<&'a [&'a str]>,
+    financial_account: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The description that appears on the receiving end for this OutboundPayment (for example, bank statement for external bank transfer).
-    /// Maximum 10 characters for `ach` payments, 140 characters for `us_domestic_wire` payments, or 500 characters for `stripe` network transfers.
-    /// The default value is "payment".
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<&'a str>,
+    statement_descriptor: Option<&'a str>,
 }
-impl<'a> CreateTreasuryOutboundPayment<'a> {
-    pub fn new(amount: i64, currency: stripe_types::Currency, financial_account: &'a str) -> Self {
+impl<'a> CreateTreasuryOutboundPaymentBuilder<'a> {
+    fn new(amount: i64, currency: stripe_types::Currency, financial_account: &'a str) -> Self {
         Self {
             amount,
             currency,
@@ -355,7 +540,7 @@ impl<'a> CreateTreasuryOutboundPaymentDestinationPaymentMethodData<'a> {
     }
 }
 /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetails<'a> {
     /// Billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -373,11 +558,16 @@ pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetai
 }
 impl<'a> CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetails<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { address: None, email: None, name: None, phone: None }
+    }
+}
+impl<'a> Default for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetails<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Billing address.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetailsAddress<'a> {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -400,7 +590,14 @@ pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetai
 }
 impl<'a> CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetailsAddress<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl<'a> Default
+    for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetailsAddress<'a>
+{
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The type of the PaymentMethod.
@@ -466,7 +663,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Required hash if type is set to `us_bank_account`.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccount<'a> {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -489,7 +686,18 @@ pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccoun
 }
 impl<'a> CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccount<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            account_holder_type: None,
+            account_number: None,
+            account_type: None,
+            financial_connections_account: None,
+            routing_number: None,
+        }
+    }
+}
+impl<'a> Default for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccount<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Account holder type: individual or company.
@@ -621,7 +829,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Payment method-specific configuration for this OutboundPayment.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions {
     /// Optional fields for `us_bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -630,25 +838,37 @@ pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions {
 }
 impl CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions {
     pub fn new() -> Self {
-        Self::default()
+        Self { us_bank_account: None }
+    }
+}
+impl Default for CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Optional fields for `us_bank_account`.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccount {
-    /// The US bank account network that must be used for this OutboundPayment.
-    /// If not set, we will default to the PaymentMethod's preferred network.
+    /// Specifies the network rails to be used.
+    /// If not set, will default to the PaymentMethod's preferred network.
+    /// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network:
         Option<CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccountNetwork>,
 }
 impl CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccount {
     pub fn new() -> Self {
-        Self::default()
+        Self { network: None }
     }
 }
-/// The US bank account network that must be used for this OutboundPayment.
-/// If not set, we will default to the PaymentMethod's preferred network.
+impl Default for CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccount {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Specifies the network rails to be used.
+/// If not set, will default to the PaymentMethod's preferred network.
+/// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccountNetwork {
     Ach,
@@ -728,37 +948,159 @@ impl<'a> CreateTreasuryOutboundPaymentEndUserDetails<'a> {
         Self { ip_address: None, present }
     }
 }
+/// Creates an OutboundPayment.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTreasuryOutboundPayment<'a> {
+    inner: CreateTreasuryOutboundPaymentBuilder<'a>,
+}
 impl<'a> CreateTreasuryOutboundPayment<'a> {
-    /// Creates an OutboundPayment.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_treasury::TreasuryOutboundPayment> {
-        client.send_form("/treasury/outbound_payments", self, http_types::Method::Post)
+    /// Construct a new `CreateTreasuryOutboundPayment`.
+    pub fn new(amount: i64, currency: stripe_types::Currency, financial_account: &'a str) -> Self {
+        Self {
+            inner: CreateTreasuryOutboundPaymentBuilder::new(amount, currency, financial_account),
+        }
     }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CancelTreasuryOutboundPayment<'a> {
+    /// ID of the customer to whom the OutboundPayment is sent.
+    /// Must match the Customer attached to the `destination_payment_method` passed in.
+    pub fn customer(mut self, customer: &'a str) -> Self {
+        self.inner.customer = Some(customer);
+        self
+    }
+    /// An arbitrary string attached to the object. Often useful for displaying to users.
+    pub fn description(mut self, description: &'a str) -> Self {
+        self.inner.description = Some(description);
+        self
+    }
+    /// The PaymentMethod to use as the payment instrument for the OutboundPayment.
+    /// Exclusive with `destination_payment_method_data`.
+    pub fn destination_payment_method(mut self, destination_payment_method: &'a str) -> Self {
+        self.inner.destination_payment_method = Some(destination_payment_method);
+        self
+    }
+    /// Hash used to generate the PaymentMethod to be used for this OutboundPayment.
+    /// Exclusive with `destination_payment_method`.
+    pub fn destination_payment_method_data(
+        mut self,
+        destination_payment_method_data: CreateTreasuryOutboundPaymentDestinationPaymentMethodData<
+            'a,
+        >,
+    ) -> Self {
+        self.inner.destination_payment_method_data = Some(destination_payment_method_data);
+        self
+    }
+    /// Payment method-specific configuration for this OutboundPayment.
+    pub fn destination_payment_method_options(
+        mut self,
+        destination_payment_method_options: CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions,
+    ) -> Self {
+        self.inner.destination_payment_method_options = Some(destination_payment_method_options);
+        self
+    }
+    /// End user details.
+    pub fn end_user_details(
+        mut self,
+        end_user_details: CreateTreasuryOutboundPaymentEndUserDetails<'a>,
+    ) -> Self {
+        self.inner.end_user_details = Some(end_user_details);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> CancelTreasuryOutboundPayment<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+    /// The description that appears on the receiving end for this OutboundPayment (for example, bank statement for external bank transfer).
+    /// Maximum 10 characters for `ach` payments, 140 characters for `us_domestic_wire` payments, or 500 characters for `stripe` network transfers.
+    /// The default value is "payment".
+    pub fn statement_descriptor(mut self, statement_descriptor: &'a str) -> Self {
+        self.inner.statement_descriptor = Some(statement_descriptor);
+        self
     }
 }
-impl<'a> CancelTreasuryOutboundPayment<'a> {
-    /// Cancel an OutboundPayment.
-    pub fn send(
+impl CreateTreasuryOutboundPayment<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        id: &stripe_treasury::TreasuryOutboundPaymentId,
-    ) -> stripe::Response<stripe_treasury::TreasuryOutboundPayment> {
-        client.send_form(
-            &format!("/treasury/outbound_payments/{id}/cancel"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateTreasuryOutboundPayment<'_> {
+    type Output = stripe_treasury::TreasuryOutboundPayment;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/treasury/outbound_payments").form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CancelTreasuryOutboundPaymentBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> CancelTreasuryOutboundPaymentBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Cancel an OutboundPayment.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CancelTreasuryOutboundPayment<'a> {
+    inner: CancelTreasuryOutboundPaymentBuilder<'a>,
+    id: &'a stripe_treasury::TreasuryOutboundPaymentId,
+}
+impl<'a> CancelTreasuryOutboundPayment<'a> {
+    /// Construct a new `CancelTreasuryOutboundPayment`.
+    pub fn new(id: &'a stripe_treasury::TreasuryOutboundPaymentId) -> Self {
+        Self { id, inner: CancelTreasuryOutboundPaymentBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl CancelTreasuryOutboundPayment<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CancelTreasuryOutboundPayment<'_> {
+    type Output = stripe_treasury::TreasuryOutboundPayment;
+
+    fn build(&self) -> RequestBuilder {
+        let id = self.id;
+        RequestBuilder::new(StripeMethod::Post, format!("/treasury/outbound_payments/{id}/cancel"))
+            .form(&self.inner)
     }
 }

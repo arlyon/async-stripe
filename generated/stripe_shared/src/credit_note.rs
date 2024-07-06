@@ -52,7 +52,7 @@ pub struct CreditNote {
     /// Refund related to this credit note.
     pub refund: Option<stripe_types::Expandable<stripe_shared::Refund>>,
     /// The details of the cost of shipping, including the ShippingRate applied to the invoice.
-    pub shipping_cost: Option<stripe_shared::InvoicesShippingCost>,
+    pub shipping_cost: Option<stripe_shared::InvoicesResourceShippingCost>,
     /// Status of this credit note, one of `issued` or `void`.
     /// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
     pub status: CreditNoteStatus,
@@ -97,7 +97,7 @@ pub struct CreditNoteBuilder {
     pdf: Option<String>,
     reason: Option<Option<stripe_shared::CreditNoteReason>>,
     refund: Option<Option<stripe_types::Expandable<stripe_shared::Refund>>>,
-    shipping_cost: Option<Option<stripe_shared::InvoicesShippingCost>>,
+    shipping_cost: Option<Option<stripe_shared::InvoicesResourceShippingCost>>,
     status: Option<CreditNoteStatus>,
     subtotal: Option<i64>,
     subtotal_excluding_tax: Option<Option<i64>>,

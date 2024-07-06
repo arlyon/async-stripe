@@ -3,6 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupAttemptPaymentMethodDetails {
     pub acss_debit: Option<stripe_shared::SetupAttemptPaymentMethodDetailsAcssDebit>,
+    pub amazon_pay: Option<stripe_shared::SetupAttemptPaymentMethodDetailsAmazonPay>,
     pub au_becs_debit: Option<stripe_shared::SetupAttemptPaymentMethodDetailsAuBecsDebit>,
     pub bacs_debit: Option<stripe_shared::SetupAttemptPaymentMethodDetailsBacsDebit>,
     pub bancontact: Option<stripe_shared::SetupAttemptPaymentMethodDetailsBancontact>,
@@ -14,6 +15,7 @@ pub struct SetupAttemptPaymentMethodDetails {
     pub klarna: Option<stripe_shared::SetupAttemptPaymentMethodDetailsKlarna>,
     pub link: Option<stripe_shared::SetupAttemptPaymentMethodDetailsLink>,
     pub paypal: Option<stripe_shared::SetupAttemptPaymentMethodDetailsPaypal>,
+    pub revolut_pay: Option<stripe_shared::SetupAttemptPaymentMethodDetailsRevolutPay>,
     pub sepa_debit: Option<stripe_shared::SetupAttemptPaymentMethodDetailsSepaDebit>,
     pub sofort: Option<stripe_shared::SetupAttemptPaymentMethodDetailsSofort>,
     /// The type of the payment method used in the SetupIntent (e.g., `card`).
@@ -26,6 +28,7 @@ pub struct SetupAttemptPaymentMethodDetails {
 #[doc(hidden)]
 pub struct SetupAttemptPaymentMethodDetailsBuilder {
     acss_debit: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsAcssDebit>>,
+    amazon_pay: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsAmazonPay>>,
     au_becs_debit: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsAuBecsDebit>>,
     bacs_debit: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsBacsDebit>>,
     bancontact: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsBancontact>>,
@@ -37,6 +40,7 @@ pub struct SetupAttemptPaymentMethodDetailsBuilder {
     klarna: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsKlarna>>,
     link: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsLink>>,
     paypal: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsPaypal>>,
+    revolut_pay: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsRevolutPay>>,
     sepa_debit: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsSepaDebit>>,
     sofort: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsSofort>>,
     type_: Option<String>,
@@ -78,6 +82,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "acss_debit" => Deserialize::begin(&mut self.acss_debit),
+                "amazon_pay" => Deserialize::begin(&mut self.amazon_pay),
                 "au_becs_debit" => Deserialize::begin(&mut self.au_becs_debit),
                 "bacs_debit" => Deserialize::begin(&mut self.bacs_debit),
                 "bancontact" => Deserialize::begin(&mut self.bancontact),
@@ -89,6 +94,7 @@ const _: () = {
                 "klarna" => Deserialize::begin(&mut self.klarna),
                 "link" => Deserialize::begin(&mut self.link),
                 "paypal" => Deserialize::begin(&mut self.paypal),
+                "revolut_pay" => Deserialize::begin(&mut self.revolut_pay),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "sofort" => Deserialize::begin(&mut self.sofort),
                 "type" => Deserialize::begin(&mut self.type_),
@@ -101,6 +107,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 acss_debit: Deserialize::default(),
+                amazon_pay: Deserialize::default(),
                 au_becs_debit: Deserialize::default(),
                 bacs_debit: Deserialize::default(),
                 bancontact: Deserialize::default(),
@@ -112,6 +119,7 @@ const _: () = {
                 klarna: Deserialize::default(),
                 link: Deserialize::default(),
                 paypal: Deserialize::default(),
+                revolut_pay: Deserialize::default(),
                 sepa_debit: Deserialize::default(),
                 sofort: Deserialize::default(),
                 type_: Deserialize::default(),
@@ -122,6 +130,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             Some(Self::Out {
                 acss_debit: self.acss_debit?,
+                amazon_pay: self.amazon_pay?,
                 au_becs_debit: self.au_becs_debit?,
                 bacs_debit: self.bacs_debit?,
                 bancontact: self.bancontact.take()?,
@@ -133,6 +142,7 @@ const _: () = {
                 klarna: self.klarna?,
                 link: self.link?,
                 paypal: self.paypal?,
+                revolut_pay: self.revolut_pay?,
                 sepa_debit: self.sepa_debit?,
                 sofort: self.sofort.take()?,
                 type_: self.type_.take()?,
@@ -165,6 +175,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "acss_debit" => b.acss_debit = Some(FromValueOpt::from_value(v)?),
+                    "amazon_pay" => b.amazon_pay = Some(FromValueOpt::from_value(v)?),
                     "au_becs_debit" => b.au_becs_debit = Some(FromValueOpt::from_value(v)?),
                     "bacs_debit" => b.bacs_debit = Some(FromValueOpt::from_value(v)?),
                     "bancontact" => b.bancontact = Some(FromValueOpt::from_value(v)?),
@@ -176,6 +187,7 @@ const _: () = {
                     "klarna" => b.klarna = Some(FromValueOpt::from_value(v)?),
                     "link" => b.link = Some(FromValueOpt::from_value(v)?),
                     "paypal" => b.paypal = Some(FromValueOpt::from_value(v)?),
+                    "revolut_pay" => b.revolut_pay = Some(FromValueOpt::from_value(v)?),
                     "sepa_debit" => b.sepa_debit = Some(FromValueOpt::from_value(v)?),
                     "sofort" => b.sofort = Some(FromValueOpt::from_value(v)?),
                     "type" => b.type_ = Some(FromValueOpt::from_value(v)?),

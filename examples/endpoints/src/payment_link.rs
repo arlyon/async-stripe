@@ -17,21 +17,16 @@ pub async fn run_payment_link_example(client: &Client) -> Result<(), StripeError
     // create a new example project
     let meta =
         std::collections::HashMap::from([(String::from("async-stripe"), String::from("true"))]);
-    let product = {
-        let mut create_product = CreateProduct::new("T-Shirt");
-        create_product.metadata = Some(&meta);
-        create_product.send(client).await?
-    };
+    let product = CreateProduct::new("T-Shirt").metadata(&meta).send(client).await?;
 
     // and add a price for it in USD
-    let price = {
-        let mut create_price = CreatePrice::new(Currency::USD);
-        create_price.product = Some(product.id.as_str());
-        create_price.metadata = Some(&meta);
-        create_price.unit_amount = Some(1000);
-        create_price.expand = Some(&["product"]);
-        create_price.send(client).await?
-    };
+    let price = CreatePrice::new(Currency::USD)
+        .product(product.id.as_str())
+        .metadata(&meta)
+        .unit_amount(1000)
+        .expand(&["product"])
+        .send(client)
+        .await?;
 
     println!(
         "created a product {:?} at price {} {}",

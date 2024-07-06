@@ -7,6 +7,7 @@
 // except according to those terms.
 
 #![doc(html_root_url = "https://docs.rs/async-stripe/")]
+#![recursion_limit = "128"]
 
 //! This crate provides Rust bindings to the Stripe HTTP API.
 //!
@@ -51,25 +52,24 @@
 //! > Want to implement your own? If it is a common strategy, please consider opening a PR to add it to the library.
 //!   Otherwise, we are open to turning this into an open trait so that you can implement your own strategy.
 
-#![allow(clippy::map_clone, clippy::large_enum_variant)]
-#![warn(clippy::unwrap_used, clippy::missing_errors_doc)]
+#![warn(clippy::missing_errors_doc, clippy::missing_panics_doc)]
+#![deny(missing_docs, missing_debug_implementations)]
 #![forbid(unsafe_code)]
 
 mod client;
+mod client_builder;
 mod error;
-mod pagination;
 
-pub use pagination::{ListPaginator, PaginationExt};
-pub use stripe_shared::AccountId;
-pub use stripe_shared::ApiVersion;
-pub use stripe_shared::ApplicationId;
+pub use client_builder::ClientBuilder;
 
-// N.B. Ideally we would support both a blocking client and
-//      an async client without a feature flag, but the originally
-//      discussed solution requires Generic Associated Types--
-//      instead we provide an async client only a feature flag.
-//
-// See https://github.com/wyyerd/stripe-rs/issues/24#issuecomment-451514187
-// See https://github.com/rust-lang/rust/issues/44265
-pub use crate::client::*;
-pub use crate::error::StripeError;
+#[cfg(feature = "blocking")]
+pub mod blocking;
+mod connector;
+
+pub use client::Client;
+pub use error::StripeError;
+pub use stripe_client_core::{
+    CustomizedStripeRequest, ListPaginator, PaginationExt, RequestStrategy,
+};
+pub use stripe_shared::api_errors::*;
+pub use stripe_shared::{AccountId, ApplicationId};

@@ -23,11 +23,17 @@ pub struct Struct {
     /// A marker type which will never be included in the generated code. Signals
     /// that we must serialize a field "object": "{name}" when serializing this struct
     pub object_field: Option<String>,
+    pub vis: Visibility,
 }
 
 impl Struct {
     pub fn new(fields: Vec<StructField>) -> Self {
-        Self { fields, object_field: None }
+        Self { fields, object_field: None, vis: Visibility::Public }
+    }
+
+    pub fn vis(mut self, vis: Visibility) -> Self {
+        self.vis = vis;
+        self
     }
 }
 
@@ -177,6 +183,25 @@ pub enum Visibility {
     Private,
 }
 
+impl Visibility {
+    pub fn is_public(self) -> bool {
+        matches!(self, Visibility::Public)
+    }
+
+    pub fn is_private(self) -> bool {
+        matches!(self, Visibility::Private)
+    }
+}
+
+impl Display for Visibility {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Visibility::Public => f.write_str("pub"),
+            Visibility::Private => Ok(()),
+        }
+    }
+}
+
 /// Specification for a field in a struct
 #[derive(Clone, Eq, PartialEq, Hash)]
 pub struct StructField {
@@ -208,17 +233,13 @@ impl Debug for StructField {
 }
 
 impl StructField {
-    pub fn new<T: Display>(field_name: T, rust_type: RustType, required: bool) -> Self {
+    pub fn new<T: Display>(field_name: T, rust_type: RustType) -> Self {
         Self {
             field_name: field_name.to_string(),
             doc_comment: None,
             rename_as: None,
-            required,
-            vis: if rust_type.implies_private_field() {
-                Visibility::Private
-            } else {
-                Visibility::Public
-            },
+            required: false,
+            vis: Visibility::Public,
             rust_type,
         }
     }
@@ -238,6 +259,16 @@ impl StructField {
     /// Expected name of the field when (de)serializing
     pub fn wire_name(&self) -> &str {
         self.rename_as.as_ref().unwrap_or(&self.field_name)
+    }
+
+    pub fn vis(mut self, vis: Visibility) -> Self {
+        self.vis = vis;
+        self
+    }
+
+    pub fn required(mut self, required: bool) -> Self {
+        self.required = required;
+        self
     }
 }
 

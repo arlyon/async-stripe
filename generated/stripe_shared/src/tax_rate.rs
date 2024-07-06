@@ -330,7 +330,6 @@ impl stripe_types::Object for TaxRate {
 }
 stripe_types::def_id!(TaxRateId);
 #[derive(Copy, Clone, Eq, PartialEq)]
-#[non_exhaustive]
 pub enum TaxRateTaxType {
     AmusementTax,
     CommunicationsTax,
@@ -343,10 +342,7 @@ pub enum TaxRateTaxType {
     Qst,
     Rst,
     SalesTax,
-    ServiceTax,
     Vat,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
 }
 impl TaxRateTaxType {
     pub fn as_str(self) -> &'static str {
@@ -363,15 +359,13 @@ impl TaxRateTaxType {
             Qst => "qst",
             Rst => "rst",
             SalesTax => "sales_tax",
-            ServiceTax => "service_tax",
             Vat => "vat",
-            Unknown => "unknown",
         }
     }
 }
 
 impl std::str::FromStr for TaxRateTaxType {
-    type Err = std::convert::Infallible;
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxRateTaxType::*;
         match s {
@@ -386,9 +380,8 @@ impl std::str::FromStr for TaxRateTaxType {
             "qst" => Ok(Qst),
             "rst" => Ok(Rst),
             "sales_tax" => Ok(SalesTax),
-            "service_tax" => Ok(ServiceTax),
             "vat" => Ok(Vat),
-            _ => Ok(Self::Unknown),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -420,7 +413,7 @@ impl miniserde::Deserialize for TaxRateTaxType {
 impl miniserde::de::Visitor for crate::Place<TaxRateTaxType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TaxRateTaxType::from_str(s).unwrap());
+        self.out = Some(TaxRateTaxType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -431,6 +424,6 @@ impl<'de> serde::Deserialize<'de> for TaxRateTaxType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxRateTaxType"))
     }
 }

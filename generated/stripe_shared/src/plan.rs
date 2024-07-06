@@ -48,6 +48,8 @@ pub struct Plan {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The meter tracking the usage of a metered price
+    pub meter: Option<String>,
     /// A brief description of the plan, hidden from customers.
     pub nickname: Option<String>,
     /// The product whose pricing this plan determines.
@@ -86,6 +88,7 @@ pub struct PlanBuilder {
     interval_count: Option<u64>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    meter: Option<Option<String>>,
     nickname: Option<Option<String>>,
     product: Option<Option<stripe_types::Expandable<stripe_shared::Product>>>,
     tiers: Option<Option<Vec<stripe_shared::PlanTier>>>,
@@ -138,6 +141,7 @@ const _: () = {
                 "interval_count" => Deserialize::begin(&mut self.interval_count),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
+                "meter" => Deserialize::begin(&mut self.meter),
                 "nickname" => Deserialize::begin(&mut self.nickname),
                 "product" => Deserialize::begin(&mut self.product),
                 "tiers" => Deserialize::begin(&mut self.tiers),
@@ -164,6 +168,7 @@ const _: () = {
                 interval_count: Deserialize::default(),
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
+                meter: Deserialize::default(),
                 nickname: Deserialize::default(),
                 product: Deserialize::default(),
                 tiers: Deserialize::default(),
@@ -188,6 +193,7 @@ const _: () = {
                 interval_count: self.interval_count?,
                 livemode: self.livemode?,
                 metadata: self.metadata.take()?,
+                meter: self.meter.take()?,
                 nickname: self.nickname.take()?,
                 product: self.product.take()?,
                 tiers: self.tiers.take()?,
@@ -234,6 +240,7 @@ const _: () = {
                     "interval_count" => b.interval_count = Some(FromValueOpt::from_value(v)?),
                     "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
                     "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "meter" => b.meter = Some(FromValueOpt::from_value(v)?),
                     "nickname" => b.nickname = Some(FromValueOpt::from_value(v)?),
                     "product" => b.product = Some(FromValueOpt::from_value(v)?),
                     "tiers" => b.tiers = Some(FromValueOpt::from_value(v)?),
@@ -253,7 +260,7 @@ const _: () = {
 impl serde::Serialize for Plan {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Plan", 20)?;
+        let mut s = s.serialize_struct("Plan", 21)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("aggregate_usage", &self.aggregate_usage)?;
         s.serialize_field("amount", &self.amount)?;
@@ -266,6 +273,7 @@ impl serde::Serialize for Plan {
         s.serialize_field("interval_count", &self.interval_count)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("meter", &self.meter)?;
         s.serialize_field("nickname", &self.nickname)?;
         s.serialize_field("product", &self.product)?;
         s.serialize_field("tiers", &self.tiers)?;

@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryReceivedDebitsResourceLinkedFlows {
@@ -10,6 +10,8 @@ pub struct TreasuryReceivedDebitsResourceLinkedFlows {
     pub issuing_authorization: Option<String>,
     /// Set if the ReceivedDebit is also viewable as an [Issuing Dispute](https://stripe.com/docs/api#issuing_disputes) object.
     pub issuing_transaction: Option<String>,
+    /// Set if the ReceivedDebit was created due to a [Payout](https://stripe.com/docs/api#payouts) object.
+    pub payout: Option<String>,
 }
 #[doc(hidden)]
 pub struct TreasuryReceivedDebitsResourceLinkedFlowsBuilder {
@@ -17,6 +19,7 @@ pub struct TreasuryReceivedDebitsResourceLinkedFlowsBuilder {
     inbound_transfer: Option<Option<String>>,
     issuing_authorization: Option<Option<String>>,
     issuing_transaction: Option<Option<String>>,
+    payout: Option<Option<String>>,
 }
 
 #[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
@@ -57,6 +60,7 @@ const _: () = {
                 "inbound_transfer" => Deserialize::begin(&mut self.inbound_transfer),
                 "issuing_authorization" => Deserialize::begin(&mut self.issuing_authorization),
                 "issuing_transaction" => Deserialize::begin(&mut self.issuing_transaction),
+                "payout" => Deserialize::begin(&mut self.payout),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -68,6 +72,7 @@ const _: () = {
                 inbound_transfer: Deserialize::default(),
                 issuing_authorization: Deserialize::default(),
                 issuing_transaction: Deserialize::default(),
+                payout: Deserialize::default(),
             }
         }
 
@@ -77,6 +82,7 @@ const _: () = {
                 inbound_transfer: self.inbound_transfer.take()?,
                 issuing_authorization: self.issuing_authorization.take()?,
                 issuing_transaction: self.issuing_transaction.take()?,
+                payout: self.payout.take()?,
             })
         }
     }
@@ -112,6 +118,7 @@ const _: () = {
                     "issuing_transaction" => {
                         b.issuing_transaction = Some(FromValueOpt::from_value(v)?)
                     }
+                    "payout" => b.payout = Some(FromValueOpt::from_value(v)?),
 
                     _ => {}
                 }

@@ -19,10 +19,10 @@
 /// `Event` objects directly to an endpoint on your server. You can manage
 /// webhooks in your
 /// [account settings](https://dashboard.stripe.com/account/webhooks). Learn how
-/// to [listen for events](https://stripe.com/docs/webhooks)
+/// to [listen for events](https://docs.stripe.com/webhooks)
 /// so that your integration can automatically trigger reactions.
 ///
-/// When using [Connect](https://stripe.com/docs/connect), you can also receive event notifications
+/// When using [Connect](https://docs.stripe.com/connect), you can also receive event notifications
 /// that occur in connected accounts. For these events, there's an
 /// additional `account` attribute in the received `Event` object.
 ///
@@ -270,12 +270,14 @@ pub enum EventType {
     CustomerTaxIdUpdated,
     CustomerUpdated,
     CustomerCashBalanceTransactionCreated,
+    EntitlementsActiveEntitlementSummaryUpdated,
     FileCreated,
     FinancialConnectionsAccountCreated,
     FinancialConnectionsAccountDeactivated,
     FinancialConnectionsAccountDisconnected,
     FinancialConnectionsAccountReactivated,
     FinancialConnectionsAccountRefreshedBalance,
+    FinancialConnectionsAccountRefreshedOwnership,
     FinancialConnectionsAccountRefreshedTransactions,
     IdentityVerificationSessionCanceled,
     IdentityVerificationSessionCreated,
@@ -506,6 +508,9 @@ impl EventType {
             CustomerTaxIdUpdated => "customer.tax_id.updated",
             CustomerUpdated => "customer.updated",
             CustomerCashBalanceTransactionCreated => "customer_cash_balance_transaction.created",
+            EntitlementsActiveEntitlementSummaryUpdated => {
+                "entitlements.active_entitlement_summary.updated"
+            }
             FileCreated => "file.created",
             FinancialConnectionsAccountCreated => "financial_connections.account.created",
             FinancialConnectionsAccountDeactivated => "financial_connections.account.deactivated",
@@ -513,6 +518,9 @@ impl EventType {
             FinancialConnectionsAccountReactivated => "financial_connections.account.reactivated",
             FinancialConnectionsAccountRefreshedBalance => {
                 "financial_connections.account.refreshed_balance"
+            }
+            FinancialConnectionsAccountRefreshedOwnership => {
+                "financial_connections.account.refreshed_ownership"
             }
             FinancialConnectionsAccountRefreshedTransactions => {
                 "financial_connections.account.refreshed_transactions"
@@ -761,6 +769,9 @@ impl std::str::FromStr for EventType {
             "customer_cash_balance_transaction.created" => {
                 Ok(CustomerCashBalanceTransactionCreated)
             }
+            "entitlements.active_entitlement_summary.updated" => {
+                Ok(EntitlementsActiveEntitlementSummaryUpdated)
+            }
             "file.created" => Ok(FileCreated),
             "financial_connections.account.created" => Ok(FinancialConnectionsAccountCreated),
             "financial_connections.account.deactivated" => {
@@ -774,6 +785,9 @@ impl std::str::FromStr for EventType {
             }
             "financial_connections.account.refreshed_balance" => {
                 Ok(FinancialConnectionsAccountRefreshedBalance)
+            }
+            "financial_connections.account.refreshed_ownership" => {
+                Ok(FinancialConnectionsAccountRefreshedOwnership)
             }
             "financial_connections.account.refreshed_transactions" => {
                 Ok(FinancialConnectionsAccountRefreshedTransactions)

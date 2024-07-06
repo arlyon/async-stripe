@@ -1,5 +1,5 @@
 /// Represents a reader action to refund a payment
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceRefundPaymentAction {
@@ -21,6 +21,8 @@ pub struct TerminalReaderReaderResourceRefundPaymentAction {
     /// Otherwise, the application fee will be refunded in an amount proportional to the amount of the charge refunded.
     /// An application fee can be refunded only by the application that created the charge.
     pub refund_application_fee: Option<bool>,
+    pub refund_payment_config:
+        Option<stripe_terminal::TerminalReaderReaderResourceRefundPaymentConfig>,
     /// Boolean indicating whether the transfer should be reversed when refunding this charge.
     /// The transfer will be reversed proportionally to the amount being refunded (either the entire or partial amount).
     /// A transfer can be reversed only by the application that created the charge.
@@ -35,6 +37,8 @@ pub struct TerminalReaderReaderResourceRefundPaymentActionBuilder {
     reason: Option<Option<TerminalReaderReaderResourceRefundPaymentActionReason>>,
     refund: Option<Option<stripe_types::Expandable<stripe_shared::Refund>>>,
     refund_application_fee: Option<Option<bool>>,
+    refund_payment_config:
+        Option<Option<stripe_terminal::TerminalReaderReaderResourceRefundPaymentConfig>>,
     reverse_transfer: Option<Option<bool>>,
 }
 
@@ -79,6 +83,7 @@ const _: () = {
                 "reason" => Deserialize::begin(&mut self.reason),
                 "refund" => Deserialize::begin(&mut self.refund),
                 "refund_application_fee" => Deserialize::begin(&mut self.refund_application_fee),
+                "refund_payment_config" => Deserialize::begin(&mut self.refund_payment_config),
                 "reverse_transfer" => Deserialize::begin(&mut self.reverse_transfer),
 
                 _ => <dyn Visitor>::ignore(),
@@ -94,6 +99,7 @@ const _: () = {
                 reason: Deserialize::default(),
                 refund: Deserialize::default(),
                 refund_application_fee: Deserialize::default(),
+                refund_payment_config: Deserialize::default(),
                 reverse_transfer: Deserialize::default(),
             }
         }
@@ -107,6 +113,7 @@ const _: () = {
                 reason: self.reason?,
                 refund: self.refund.take()?,
                 refund_application_fee: self.refund_application_fee?,
+                refund_payment_config: self.refund_payment_config?,
                 reverse_transfer: self.reverse_transfer?,
             })
         }
@@ -143,6 +150,9 @@ const _: () = {
                     "refund" => b.refund = Some(FromValueOpt::from_value(v)?),
                     "refund_application_fee" => {
                         b.refund_application_fee = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "refund_payment_config" => {
+                        b.refund_payment_config = Some(FromValueOpt::from_value(v)?)
                     }
                     "reverse_transfer" => b.reverse_transfer = Some(FromValueOpt::from_value(v)?),
 

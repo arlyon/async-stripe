@@ -141,7 +141,7 @@ pub struct Invoice {
     /// The discounts applied to the invoice.
     /// Line item discounts are applied before invoice discounts.
     /// Use `expand[]=discounts` to expand each discount.
-    pub discounts: Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>,
+    pub discounts: Vec<stripe_types::Expandable<stripe_shared::Discount>>,
     /// The date on which payment for this invoice is due.
     /// This value will be `null` for invoices where `collection_method=charge_automatically`.
     pub due_date: Option<stripe_types::Timestamp>,
@@ -157,7 +157,7 @@ pub struct Invoice {
     pub footer: Option<String>,
     /// Details of the invoice that was cloned.
     /// See the [revision documentation](https://stripe.com/docs/invoicing/invoice-revisions) for more details.
-    pub from_invoice: Option<stripe_shared::InvoicesFromInvoice>,
+    pub from_invoice: Option<stripe_shared::InvoicesResourceFromInvoice>,
     /// The URL for the hosted invoice page, which allows customers to view and pay an invoice.
     /// If the invoice has not been finalized yet, this will be null.
     pub hosted_invoice_url: Option<String>,
@@ -203,8 +203,12 @@ pub struct Invoice {
     pub payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
     pub payment_settings: stripe_shared::InvoicesPaymentSettings,
     /// End of the usage period during which invoice items were added to this invoice.
+    /// This looks back one period for a subscription invoice.
+    /// Use the [line item period](/api/invoices/line_item#invoice_line_item_object-period) to get the service period for each price.
     pub period_end: stripe_types::Timestamp,
     /// Start of the usage period during which invoice items were added to this invoice.
+    /// This looks back one period for a subscription invoice.
+    /// Use the [line item period](/api/invoices/line_item#invoice_line_item_object-period) to get the service period for each price.
     pub period_start: stripe_types::Timestamp,
     /// Total amount of all post-payment credit notes issued for this invoice.
     pub post_payment_credit_notes_amount: i64,
@@ -215,13 +219,9 @@ pub struct Invoice {
     /// This is the transaction number that appears on email receipts sent for this invoice.
     pub receipt_number: Option<String>,
     /// The rendering-related settings that control how the invoice is displayed on customer-facing surfaces such as PDF and Hosted Invoice Page.
-    pub rendering: Option<stripe_shared::InvoicesInvoiceRendering>,
-    /// This is a legacy field that will be removed soon.
-    /// For details about `rendering_options`, refer to `rendering` instead.
-    /// Options for invoice PDF rendering.
-    pub rendering_options: Option<stripe_shared::InvoiceSettingRenderingOptions>,
+    pub rendering: Option<stripe_shared::InvoicesResourceInvoiceRendering>,
     /// The details of the cost of shipping, including the ShippingRate applied on the invoice.
-    pub shipping_cost: Option<stripe_shared::InvoicesShippingCost>,
+    pub shipping_cost: Option<stripe_shared::InvoicesResourceShippingCost>,
     /// Shipping details for the invoice.
     /// The Invoice PDF will use the `shipping_details` value if it is set, otherwise the PDF will render the shipping address from the customer.
     pub shipping_details: Option<stripe_shared::Shipping>,
@@ -234,7 +234,7 @@ pub struct Invoice {
     /// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
     /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
     pub status: Option<stripe_shared::InvoiceStatus>,
-    pub status_transitions: stripe_shared::InvoicesStatusTransitions,
+    pub status_transitions: stripe_shared::InvoicesResourceStatusTransitions,
     /// The subscription that this invoice was prepared for, if any.
     pub subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
     /// Details about the subscription that created this invoice.
@@ -301,12 +301,12 @@ pub struct InvoiceBuilder {
     default_tax_rates: Option<Vec<stripe_shared::TaxRate>>,
     description: Option<Option<String>>,
     discount: Option<Option<stripe_shared::Discount>>,
-    discounts: Option<Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>>,
+    discounts: Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>,
     due_date: Option<Option<stripe_types::Timestamp>>,
     effective_at: Option<Option<stripe_types::Timestamp>>,
     ending_balance: Option<Option<i64>>,
     footer: Option<Option<String>>,
-    from_invoice: Option<Option<stripe_shared::InvoicesFromInvoice>>,
+    from_invoice: Option<Option<stripe_shared::InvoicesResourceFromInvoice>>,
     hosted_invoice_url: Option<Option<String>>,
     id: Option<Option<stripe_shared::InvoiceId>>,
     invoice_pdf: Option<Option<String>>,
@@ -329,14 +329,13 @@ pub struct InvoiceBuilder {
     pre_payment_credit_notes_amount: Option<i64>,
     quote: Option<Option<stripe_types::Expandable<stripe_shared::Quote>>>,
     receipt_number: Option<Option<String>>,
-    rendering: Option<Option<stripe_shared::InvoicesInvoiceRendering>>,
-    rendering_options: Option<Option<stripe_shared::InvoiceSettingRenderingOptions>>,
-    shipping_cost: Option<Option<stripe_shared::InvoicesShippingCost>>,
+    rendering: Option<Option<stripe_shared::InvoicesResourceInvoiceRendering>>,
+    shipping_cost: Option<Option<stripe_shared::InvoicesResourceShippingCost>>,
     shipping_details: Option<Option<stripe_shared::Shipping>>,
     starting_balance: Option<i64>,
     statement_descriptor: Option<Option<String>>,
     status: Option<Option<stripe_shared::InvoiceStatus>>,
-    status_transitions: Option<stripe_shared::InvoicesStatusTransitions>,
+    status_transitions: Option<stripe_shared::InvoicesResourceStatusTransitions>,
     subscription: Option<Option<stripe_types::Expandable<stripe_shared::Subscription>>>,
     subscription_details: Option<Option<stripe_shared::SubscriptionDetailsData>>,
     subscription_proration_date: Option<Option<stripe_types::Timestamp>>,
@@ -449,7 +448,6 @@ const _: () = {
                 "quote" => Deserialize::begin(&mut self.quote),
                 "receipt_number" => Deserialize::begin(&mut self.receipt_number),
                 "rendering" => Deserialize::begin(&mut self.rendering),
-                "rendering_options" => Deserialize::begin(&mut self.rendering_options),
                 "shipping_cost" => Deserialize::begin(&mut self.shipping_cost),
                 "shipping_details" => Deserialize::begin(&mut self.shipping_details),
                 "starting_balance" => Deserialize::begin(&mut self.starting_balance),
@@ -540,7 +538,6 @@ const _: () = {
                 quote: Deserialize::default(),
                 receipt_number: Deserialize::default(),
                 rendering: Deserialize::default(),
-                rendering_options: Deserialize::default(),
                 shipping_cost: Deserialize::default(),
                 shipping_details: Deserialize::default(),
                 starting_balance: Deserialize::default(),
@@ -627,7 +624,6 @@ const _: () = {
                 quote: self.quote.take()?,
                 receipt_number: self.receipt_number.take()?,
                 rendering: self.rendering.take()?,
-                rendering_options: self.rendering_options.take()?,
                 shipping_cost: self.shipping_cost.take()?,
                 shipping_details: self.shipping_details.take()?,
                 starting_balance: self.starting_balance?,
@@ -752,7 +748,6 @@ const _: () = {
                     "quote" => b.quote = Some(FromValueOpt::from_value(v)?),
                     "receipt_number" => b.receipt_number = Some(FromValueOpt::from_value(v)?),
                     "rendering" => b.rendering = Some(FromValueOpt::from_value(v)?),
-                    "rendering_options" => b.rendering_options = Some(FromValueOpt::from_value(v)?),
                     "shipping_cost" => b.shipping_cost = Some(FromValueOpt::from_value(v)?),
                     "shipping_details" => b.shipping_details = Some(FromValueOpt::from_value(v)?),
                     "starting_balance" => b.starting_balance = Some(FromValueOpt::from_value(v)?),
@@ -801,7 +796,7 @@ const _: () = {
 impl serde::Serialize for Invoice {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Invoice", 83)?;
+        let mut s = s.serialize_struct("Invoice", 82)?;
         s.serialize_field("account_country", &self.account_country)?;
         s.serialize_field("account_name", &self.account_name)?;
         s.serialize_field("account_tax_ids", &self.account_tax_ids)?;
@@ -869,7 +864,6 @@ impl serde::Serialize for Invoice {
         s.serialize_field("quote", &self.quote)?;
         s.serialize_field("receipt_number", &self.receipt_number)?;
         s.serialize_field("rendering", &self.rendering)?;
-        s.serialize_field("rendering_options", &self.rendering_options)?;
         s.serialize_field("shipping_cost", &self.shipping_cost)?;
         s.serialize_field("shipping_details", &self.shipping_details)?;
         s.serialize_field("starting_balance", &self.starting_balance)?;

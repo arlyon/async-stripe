@@ -78,6 +78,10 @@ pub mod terminal_reader_reader_resource_refund_payment_action;
 #[doc(inline)]
 pub use terminal_reader_reader_resource_refund_payment_action::*;
 #[doc(hidden)]
+pub mod terminal_reader_reader_resource_refund_payment_config;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_refund_payment_config::*;
+#[doc(hidden)]
 pub mod terminal_reader_reader_resource_set_reader_display_action;
 #[doc(inline)]
 pub use terminal_reader_reader_resource_set_reader_display_action::*;

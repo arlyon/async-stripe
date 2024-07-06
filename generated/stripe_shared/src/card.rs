@@ -10,6 +10,7 @@
 pub struct Card {
     /// The account this card belongs to.
     /// This attribute will not be in the card object if the card belongs to a customer or recipient instead.
+    /// This property is only available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
     pub account: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// City/District/Suburb/Town/Village.
     pub address_city: Option<String>,
@@ -39,6 +40,7 @@ pub struct Card {
     /// Three-letter [ISO code for currency](https://stripe.com/docs/payouts).
     /// Only applicable on accounts (not customers or recipients).
     /// The card can be used as a transfer destination for funds in this currency.
+    /// This property is only available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
     pub currency: Option<stripe_types::Currency>,
     /// The customer that this card belongs to.
     /// This attribute will not be in the card object if the card belongs to an account or recipient instead.
@@ -49,6 +51,7 @@ pub struct Card {
     /// For more details, see [Check if a card is valid without a charge](https://support.stripe.com/questions/check-if-a-card-is-valid-without-a-charge).
     pub cvc_check: Option<String>,
     /// Whether this card is the default external account for its currency.
+    /// This property is only available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
     pub default_for_currency: Option<bool>,
     /// A high-level description of the type of cards issued in this range.
     /// (For internal use only and not typically available in standard API requests.).
@@ -82,6 +85,7 @@ pub struct Card {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Cardholder name.
     pub name: Option<String>,
+    pub networks: Option<stripe_shared::TokenCardNetworks>,
     /// For external accounts that are cards, possible values are `new` and `errored`.
     /// If a payout fails, the status is set to `errored` and [scheduled payouts](https://stripe.com/docs/payouts#payout-schedule) are stopped until account details are updated.
     pub status: Option<String>,
@@ -119,6 +123,7 @@ pub struct CardBuilder {
     last4: Option<String>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     name: Option<Option<String>>,
+    networks: Option<Option<stripe_shared::TokenCardNetworks>>,
     status: Option<Option<String>>,
     tokenization_method: Option<Option<String>>,
 }
@@ -184,6 +189,7 @@ const _: () = {
                 "last4" => Deserialize::begin(&mut self.last4),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "name" => Deserialize::begin(&mut self.name),
+                "networks" => Deserialize::begin(&mut self.networks),
                 "status" => Deserialize::begin(&mut self.status),
                 "tokenization_method" => Deserialize::begin(&mut self.tokenization_method),
 
@@ -221,6 +227,7 @@ const _: () = {
                 last4: Deserialize::default(),
                 metadata: Deserialize::default(),
                 name: Deserialize::default(),
+                networks: Deserialize::default(),
                 status: Deserialize::default(),
                 tokenization_method: Deserialize::default(),
             }
@@ -256,6 +263,7 @@ const _: () = {
                 last4: self.last4.take()?,
                 metadata: self.metadata.take()?,
                 name: self.name.take()?,
+                networks: self.networks.take()?,
                 status: self.status.take()?,
                 tokenization_method: self.tokenization_method.take()?,
             })
@@ -319,6 +327,7 @@ const _: () = {
                     "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
                     "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
                     "name" => b.name = Some(FromValueOpt::from_value(v)?),
+                    "networks" => b.networks = Some(FromValueOpt::from_value(v)?),
                     "status" => b.status = Some(FromValueOpt::from_value(v)?),
                     "tokenization_method" => {
                         b.tokenization_method = Some(FromValueOpt::from_value(v)?)
@@ -335,7 +344,7 @@ const _: () = {
 impl serde::Serialize for Card {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Card", 31)?;
+        let mut s = s.serialize_struct("Card", 32)?;
         s.serialize_field("account", &self.account)?;
         s.serialize_field("address_city", &self.address_city)?;
         s.serialize_field("address_country", &self.address_country)?;
@@ -364,6 +373,7 @@ impl serde::Serialize for Card {
         s.serialize_field("last4", &self.last4)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("name", &self.name)?;
+        s.serialize_field("networks", &self.networks)?;
         s.serialize_field("status", &self.status)?;
         s.serialize_field("tokenization_method", &self.tokenization_method)?;
 

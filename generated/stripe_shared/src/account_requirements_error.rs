@@ -193,6 +193,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedKeyedMatch,
     VerificationFailedNameMatch,
     VerificationFailedOther,
+    VerificationFailedRepresentativeAuthority,
     VerificationFailedResidentialAddress,
     VerificationFailedTaxIdMatch,
     VerificationFailedTaxIdNotIssued,
@@ -317,6 +318,9 @@ impl AccountRequirementsErrorCode {
             VerificationFailedKeyedMatch => "verification_failed_keyed_match",
             VerificationFailedNameMatch => "verification_failed_name_match",
             VerificationFailedOther => "verification_failed_other",
+            VerificationFailedRepresentativeAuthority => {
+                "verification_failed_representative_authority"
+            }
             VerificationFailedResidentialAddress => "verification_failed_residential_address",
             VerificationFailedTaxIdMatch => "verification_failed_tax_id_match",
             VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",
@@ -448,6 +452,9 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
             "verification_failed_keyed_match" => Ok(VerificationFailedKeyedMatch),
             "verification_failed_name_match" => Ok(VerificationFailedNameMatch),
             "verification_failed_other" => Ok(VerificationFailedOther),
+            "verification_failed_representative_authority" => {
+                Ok(VerificationFailedRepresentativeAuthority)
+            }
             "verification_failed_residential_address" => Ok(VerificationFailedResidentialAddress),
             "verification_failed_tax_id_match" => Ok(VerificationFailedTaxIdMatch),
             "verification_failed_tax_id_not_issued" => Ok(VerificationFailedTaxIdNotIssued),

@@ -1,7 +1,9 @@
-use std::collections::HashMap;
-
 use serde::{Serialize, Serializer};
 
+/// An implementation detail used for allowing `serde(untagged)` to distinguish
+/// between data that may be "deleted" or not. "deleted" data will always have the
+/// field `deleted: true`.
+#[doc(hidden)]
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
 pub struct AlwaysTrue;
 
@@ -67,14 +69,19 @@ mod miniserde_deser {
     }
 }
 
-pub type Metadata = HashMap<String, String>;
+/// An alias for Stripe data representing a UNIX timestamp.
 pub type Timestamp = i64;
 
+/// Specification of a date interval for use in filtering results by time.
 #[derive(Copy, Clone, Debug, Serialize, Default)]
 pub struct RangeBoundsTs {
+    /// Minimum value to filter by (exclusive)
     pub gt: Option<Timestamp>,
+    /// Minimum value to filter by (inclusive)
     pub gte: Option<Timestamp>,
+    /// Maximum value to filter by (exclusive)
     pub lt: Option<Timestamp>,
+    /// Maximum value to filter by (inclusive)
     pub lte: Option<Timestamp>,
 }
 
@@ -83,7 +90,9 @@ pub struct RangeBoundsTs {
 #[derive(Copy, Clone, Debug, Serialize)]
 #[serde(untagged)]
 pub enum RangeQueryTs {
+    /// Results matching a specific UNIX timestamp
     Exact(Timestamp),
+    /// Results falling with a date interval
     Bounds(RangeBoundsTs),
 }
 

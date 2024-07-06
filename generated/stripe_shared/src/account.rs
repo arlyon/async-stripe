@@ -2,12 +2,14 @@
 /// properties on the account like its current requirements or if the account is
 /// enabled to make live charges or receive payouts.
 ///
-/// For Custom accounts, the properties below are always returned.
-/// For other accounts, some properties are returned until that.
-/// account has started to go through Connect Onboarding.
-/// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions),.
-/// some properties are only returned for Custom accounts.
-/// Learn about the differences [between accounts](https://stripe.com/docs/connect/accounts).
+/// For accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection).
+/// is `application`, which includes Custom accounts, the properties below are always
+/// returned.
+///
+/// For accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection).
+/// is `stripe`, which includes Standard and Express accounts, some properties are only returned
+/// until you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions)
+/// to start Connect Onboarding. Learn about the [differences between accounts](/connect/accounts).
 ///
 /// For more details see <<https://stripe.com/docs/api/accounts/object>>.
 #[derive(Clone, Debug)]
@@ -16,7 +18,7 @@ pub struct Account {
     /// Business information about the account.
     pub business_profile: Option<stripe_shared::AccountBusinessProfile>,
     /// The business type.
-    /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property is only returned for Custom accounts.
+    /// After you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property is only returned for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
     pub business_type: Option<stripe_shared::AccountBusinessType>,
     pub capabilities: Option<stripe_shared::AccountCapabilities>,
     /// Whether the account can create live charges.
@@ -31,7 +33,7 @@ pub struct Account {
     /// This must be a currency that [Stripe supports in the account's country](https://stripe.com/docs/payouts).
     pub default_currency: Option<stripe_types::Currency>,
     /// Whether account details have been submitted.
-    /// Standard accounts cannot receive payouts before this is true.
+    /// Accounts with Stripe Dashboard access, which includes Standard accounts, cannot receive payouts before this is true.
     pub details_submitted: Option<bool>,
     /// An email address associated with the account.
     /// It's not used for authentication and Stripe doesn't market to this field without explicit approval from the platform.
@@ -52,9 +54,9 @@ pub struct Account {
     /// Options for customizing how the account functions within Stripe.
     pub settings: Option<stripe_shared::AccountSettings>,
     pub tos_acceptance: Option<stripe_shared::AccountTosAcceptance>,
-    /// The Stripe account type. Can be `standard`, `express`, or `custom`.
+    /// The Stripe account type. Can be `standard`, `express`, `custom`, or `none`.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
-    pub type_: Option<stripe_shared::AccountType>,
+    pub type_: Option<AccountType>,
 }
 #[doc(hidden)]
 pub struct AccountBuilder {
@@ -78,7 +80,7 @@ pub struct AccountBuilder {
     requirements: Option<Option<stripe_shared::AccountRequirements>>,
     settings: Option<Option<stripe_shared::AccountSettings>>,
     tos_acceptance: Option<Option<stripe_shared::AccountTosAcceptance>>,
-    type_: Option<Option<stripe_shared::AccountType>>,
+    type_: Option<Option<AccountType>>,
 }
 
 #[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
@@ -276,6 +278,82 @@ impl serde::Serialize for Account {
         s.end()
     }
 }
+/// The Stripe account type. Can be `standard`, `express`, `custom`, or `none`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum AccountType {
+    Custom,
+    Express,
+    None,
+    Standard,
+}
+impl AccountType {
+    pub fn as_str(self) -> &'static str {
+        use AccountType::*;
+        match self {
+            Custom => "custom",
+            Express => "express",
+            None => "none",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for AccountType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountType::*;
+        match s {
+            "custom" => Ok(Custom),
+            "express" => Ok(Express),
+            "none" => Ok(None),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for AccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for AccountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for AccountType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<AccountType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AccountType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(AccountType);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for AccountType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for AccountType"))
+    }
+}
 impl stripe_types::Object for Account {
     type Id = stripe_shared::AccountId;
     fn id(&self) -> &Self::Id {
@@ -360,76 +438,5 @@ impl<'de> serde::Deserialize<'de> for AccountBusinessType {
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AccountBusinessType"))
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum AccountType {
-    Custom,
-    Express,
-    Standard,
-}
-impl AccountType {
-    pub fn as_str(self) -> &'static str {
-        use AccountType::*;
-        match self {
-            Custom => "custom",
-            Express => "express",
-            Standard => "standard",
-        }
-    }
-}
-
-impl std::str::FromStr for AccountType {
-    type Err = stripe_types::StripeParseError;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use AccountType::*;
-        match s {
-            "custom" => Ok(Custom),
-            "express" => Ok(Express),
-            "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
-        }
-    }
-}
-impl std::fmt::Display for AccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for AccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for AccountType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for AccountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<AccountType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AccountType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(AccountType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for AccountType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for AccountType"))
     }
 }

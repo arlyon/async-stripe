@@ -1,39 +1,79 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveForMyAccountTaxSettingsBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveForMyAccountTaxSettingsBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves Tax `Settings` for a merchant.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct RetrieveForMyAccountTaxSettings<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    inner: RetrieveForMyAccountTaxSettingsBuilder<'a>,
 }
 impl<'a> RetrieveForMyAccountTaxSettings<'a> {
+    /// Construct a new `RetrieveForMyAccountTaxSettings`.
     pub fn new() -> Self {
-        Self::default()
+        Self { inner: RetrieveForMyAccountTaxSettingsBuilder::new() }
     }
-}
-impl<'a> RetrieveForMyAccountTaxSettings<'a> {
-    /// Retrieves Tax `Settings` for a merchant.
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_misc::TaxSettings> {
-        client.get_query("/tax/settings", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateTaxSettings<'a> {
-    /// Default configuration to be used on Stripe Tax calculations.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub defaults: Option<UpdateTaxSettingsDefaults<'a>>,
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The place where your business is located.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub head_office: Option<UpdateTaxSettingsHeadOffice<'a>>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
 }
-impl<'a> UpdateTaxSettings<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> Default for RetrieveForMyAccountTaxSettings<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl RetrieveForMyAccountTaxSettings<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveForMyAccountTaxSettings<'_> {
+    type Output = stripe_misc::TaxSettings;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/tax/settings").query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateTaxSettingsBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    defaults: Option<UpdateTaxSettingsDefaults<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    head_office: Option<UpdateTaxSettingsHeadOffice<'a>>,
+}
+impl<'a> UpdateTaxSettingsBuilder<'a> {
+    fn new() -> Self {
+        Self { defaults: None, expand: None, head_office: None }
     }
 }
 /// Default configuration to be used on Stripe Tax calculations.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateTaxSettingsDefaults<'a> {
     /// Specifies the default [tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#tax-behavior) to be used when the item's price has unspecified tax behavior.
     /// One of inclusive, exclusive, or inferred_by_currency.
@@ -46,7 +86,12 @@ pub struct UpdateTaxSettingsDefaults<'a> {
 }
 impl<'a> UpdateTaxSettingsDefaults<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { tax_behavior: None, tax_code: None }
+    }
+}
+impl<'a> Default for UpdateTaxSettingsDefaults<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Specifies the default [tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#tax-behavior) to be used when the item's price has unspecified tax behavior.
@@ -122,7 +167,7 @@ impl<'a> UpdateTaxSettingsHeadOffice<'a> {
     }
 }
 /// The location of the business for tax purposes.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateTaxSettingsHeadOfficeAddress<'a> {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -146,13 +191,68 @@ pub struct UpdateTaxSettingsHeadOfficeAddress<'a> {
 }
 impl<'a> UpdateTaxSettingsHeadOfficeAddress<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
     }
 }
+impl<'a> Default for UpdateTaxSettingsHeadOfficeAddress<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Updates Tax `Settings` parameters used in tax calculations.
+/// All parameters are editable but none can be removed once set.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTaxSettings<'a> {
+    inner: UpdateTaxSettingsBuilder<'a>,
+}
 impl<'a> UpdateTaxSettings<'a> {
-    /// Updates Tax `Settings` parameters used in tax calculations.
-    /// All parameters are editable but none can be removed once set.
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_misc::TaxSettings> {
-        client.send_form("/tax/settings", self, http_types::Method::Post)
+    /// Construct a new `UpdateTaxSettings`.
+    pub fn new() -> Self {
+        Self { inner: UpdateTaxSettingsBuilder::new() }
+    }
+    /// Default configuration to be used on Stripe Tax calculations.
+    pub fn defaults(mut self, defaults: UpdateTaxSettingsDefaults<'a>) -> Self {
+        self.inner.defaults = Some(defaults);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// The place where your business is located.
+    pub fn head_office(mut self, head_office: UpdateTaxSettingsHeadOffice<'a>) -> Self {
+        self.inner.head_office = Some(head_office);
+        self
+    }
+}
+impl<'a> Default for UpdateTaxSettings<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl UpdateTaxSettings<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateTaxSettings<'_> {
+    type Output = stripe_misc::TaxSettings;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/tax/settings").form(&self.inner)
     }
 }

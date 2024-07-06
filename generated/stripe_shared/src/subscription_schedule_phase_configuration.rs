@@ -34,6 +34,9 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// Subscription description, meant to be displayable to the customer.
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
+    /// The stackable discounts that will be applied to the subscription on this phase.
+    /// Subscription item discounts are applied before subscription discounts.
+    pub discounts: Vec<stripe_shared::DiscountsResourceStackableDiscount>,
     /// The end of this phase of the subscription schedule.
     pub end_date: stripe_types::Timestamp,
     /// The invoice settings applicable during this phase.
@@ -70,6 +73,7 @@ pub struct SubscriptionSchedulePhaseConfigurationBuilder {
     default_payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
     default_tax_rates: Option<Option<Vec<stripe_shared::TaxRate>>>,
     description: Option<Option<String>>,
+    discounts: Option<Vec<stripe_shared::DiscountsResourceStackableDiscount>>,
     end_date: Option<stripe_types::Timestamp>,
     invoice_settings: Option<Option<stripe_shared::InvoiceSettingSubscriptionSchedulePhaseSetting>>,
     items: Option<Vec<stripe_shared::SubscriptionScheduleConfigurationItem>>,
@@ -126,6 +130,7 @@ const _: () = {
                 "default_payment_method" => Deserialize::begin(&mut self.default_payment_method),
                 "default_tax_rates" => Deserialize::begin(&mut self.default_tax_rates),
                 "description" => Deserialize::begin(&mut self.description),
+                "discounts" => Deserialize::begin(&mut self.discounts),
                 "end_date" => Deserialize::begin(&mut self.end_date),
                 "invoice_settings" => Deserialize::begin(&mut self.invoice_settings),
                 "items" => Deserialize::begin(&mut self.items),
@@ -153,6 +158,7 @@ const _: () = {
                 default_payment_method: Deserialize::default(),
                 default_tax_rates: Deserialize::default(),
                 description: Deserialize::default(),
+                discounts: Deserialize::default(),
                 end_date: Deserialize::default(),
                 invoice_settings: Deserialize::default(),
                 items: Deserialize::default(),
@@ -178,6 +184,7 @@ const _: () = {
                 default_payment_method: self.default_payment_method.take()?,
                 default_tax_rates: self.default_tax_rates.take()?,
                 description: self.description.take()?,
+                discounts: self.discounts.take()?,
                 end_date: self.end_date?,
                 invoice_settings: self.invoice_settings.take()?,
                 items: self.items.take()?,
@@ -233,6 +240,7 @@ const _: () = {
                     }
                     "default_tax_rates" => b.default_tax_rates = Some(FromValueOpt::from_value(v)?),
                     "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
                     "end_date" => b.end_date = Some(FromValueOpt::from_value(v)?),
                     "invoice_settings" => b.invoice_settings = Some(FromValueOpt::from_value(v)?),
                     "items" => b.items = Some(FromValueOpt::from_value(v)?),

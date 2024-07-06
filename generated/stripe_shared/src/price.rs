@@ -192,7 +192,7 @@ const _: () = {
                 metadata: self.metadata.take()?,
                 nickname: self.nickname.take()?,
                 product: self.product.take()?,
-                recurring: self.recurring?,
+                recurring: self.recurring.take()?,
                 tax_behavior: self.tax_behavior?,
                 tiers: self.tiers.take()?,
                 tiers_mode: self.tiers_mode?,

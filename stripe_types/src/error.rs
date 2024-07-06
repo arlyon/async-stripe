@@ -1,5 +1,6 @@
 use std::fmt::{Display, Formatter};
 
+/// Error representing a failure to parse a Stripe enum
 #[derive(Debug)]
 pub struct StripeParseError;
 

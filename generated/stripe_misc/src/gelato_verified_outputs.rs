@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct GelatoVerifiedOutputs {
@@ -6,6 +6,8 @@ pub struct GelatoVerifiedOutputs {
     pub address: Option<stripe_shared::Address>,
     /// The user’s verified date of birth.
     pub dob: Option<stripe_misc::GelatoDataVerifiedOutputsDate>,
+    /// The user's verified email address
+    pub email: Option<String>,
     /// The user's verified first name.
     pub first_name: Option<String>,
     /// The user's verified id number.
@@ -14,15 +16,19 @@ pub struct GelatoVerifiedOutputs {
     pub id_number_type: Option<GelatoVerifiedOutputsIdNumberType>,
     /// The user's verified last name.
     pub last_name: Option<String>,
+    /// The user's verified phone number
+    pub phone: Option<String>,
 }
 #[doc(hidden)]
 pub struct GelatoVerifiedOutputsBuilder {
     address: Option<Option<stripe_shared::Address>>,
     dob: Option<Option<stripe_misc::GelatoDataVerifiedOutputsDate>>,
+    email: Option<Option<String>>,
     first_name: Option<Option<String>>,
     id_number: Option<Option<String>>,
     id_number_type: Option<Option<GelatoVerifiedOutputsIdNumberType>>,
     last_name: Option<Option<String>>,
+    phone: Option<Option<String>>,
 }
 
 #[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
@@ -61,10 +67,12 @@ const _: () = {
             Ok(match k {
                 "address" => Deserialize::begin(&mut self.address),
                 "dob" => Deserialize::begin(&mut self.dob),
+                "email" => Deserialize::begin(&mut self.email),
                 "first_name" => Deserialize::begin(&mut self.first_name),
                 "id_number" => Deserialize::begin(&mut self.id_number),
                 "id_number_type" => Deserialize::begin(&mut self.id_number_type),
                 "last_name" => Deserialize::begin(&mut self.last_name),
+                "phone" => Deserialize::begin(&mut self.phone),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -74,10 +82,12 @@ const _: () = {
             Self {
                 address: Deserialize::default(),
                 dob: Deserialize::default(),
+                email: Deserialize::default(),
                 first_name: Deserialize::default(),
                 id_number: Deserialize::default(),
                 id_number_type: Deserialize::default(),
                 last_name: Deserialize::default(),
+                phone: Deserialize::default(),
             }
         }
 
@@ -85,10 +95,12 @@ const _: () = {
             Some(Self::Out {
                 address: self.address.take()?,
                 dob: self.dob?,
+                email: self.email.take()?,
                 first_name: self.first_name.take()?,
                 id_number: self.id_number.take()?,
                 id_number_type: self.id_number_type?,
                 last_name: self.last_name.take()?,
+                phone: self.phone.take()?,
             })
         }
     }
@@ -118,10 +130,12 @@ const _: () = {
                 match k.as_str() {
                     "address" => b.address = Some(FromValueOpt::from_value(v)?),
                     "dob" => b.dob = Some(FromValueOpt::from_value(v)?),
+                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
                     "first_name" => b.first_name = Some(FromValueOpt::from_value(v)?),
                     "id_number" => b.id_number = Some(FromValueOpt::from_value(v)?),
                     "id_number_type" => b.id_number_type = Some(FromValueOpt::from_value(v)?),
                     "last_name" => b.last_name = Some(FromValueOpt::from_value(v)?),
+                    "phone" => b.phone = Some(FromValueOpt::from_value(v)?),
 
                     _ => {}
                 }

@@ -6,7 +6,6 @@ use crate::rust_object::{ObjectMetadata, ObjectUsage, RustObject};
 use crate::rust_type::{PathToType, RustType};
 use crate::stripe_object::OperationType;
 use crate::types::RustIdent;
-use crate::utils::get_request_param_field;
 use crate::visitor::VisitMut;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -56,7 +55,8 @@ fn get_override_object(
     data: &OverrideData,
 ) -> anyhow::Result<(RustObject, OverrideMetadata)> {
     let req = components.get_request_spec(data.source).context("Request source not found")?;
-    let (obj, _) = get_request_param_field(req, data.source.field_name)
+    let (obj, _) = req
+        .get_param_field(data.source.field_name)
         .context("Could not extract field")?
         .extract_object()
         .context("Not an object")?;

@@ -1,10 +1,15 @@
 /// Represents a per-setup override of a reader configuration
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct TerminalReaderReaderResourceProcessSetupConfig {}
+pub struct TerminalReaderReaderResourceProcessSetupConfig {
+    /// Enable customer initiated cancellation when processing this SetupIntent.
+    pub enable_customer_cancellation: Option<bool>,
+}
 #[doc(hidden)]
-pub struct TerminalReaderReaderResourceProcessSetupConfigBuilder {}
+pub struct TerminalReaderReaderResourceProcessSetupConfigBuilder {
+    enable_customer_cancellation: Option<Option<bool>>,
+}
 
 #[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
 const _: () = {
@@ -40,16 +45,20 @@ const _: () = {
         type Out = TerminalReaderReaderResourceProcessSetupConfig;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "enable_customer_cancellation" => {
+                    Deserialize::begin(&mut self.enable_customer_cancellation)
+                }
+
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { enable_customer_cancellation: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {})
+            Some(Self::Out { enable_customer_cancellation: self.enable_customer_cancellation? })
         }
     }
 
@@ -76,6 +85,10 @@ const _: () = {
             let mut b = TerminalReaderReaderResourceProcessSetupConfigBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "enable_customer_cancellation" => {
+                        b.enable_customer_cancellation = Some(FromValueOpt::from_value(v)?)
+                    }
+
                     _ => {}
                 }
             }

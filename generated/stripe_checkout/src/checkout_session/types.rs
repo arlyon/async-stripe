@@ -26,7 +26,7 @@ pub struct CheckoutSession {
     /// Total of all items after discounts and taxes are applied.
     pub amount_total: Option<i64>,
     pub automatic_tax: stripe_checkout::PaymentPagesCheckoutSessionAutomaticTax,
-    /// Describes whether Checkout should collect the customer's billing address.
+    /// Describes whether Checkout should collect the customer's billing address. Defaults to `auto`.
     pub billing_address_collection:
         Option<stripe_checkout::CheckoutSessionBillingAddressCollection>,
     /// If set, Checkout displays a back button and customers will be directed to this URL if they decide to cancel payment and return to your website.
@@ -61,7 +61,7 @@ pub struct CheckoutSession {
     /// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
     pub customer_creation: Option<CheckoutSessionCustomerCreation>,
     /// The customer details including the customer's tax exempt status and the customer's tax IDs.
-    /// Only the customer's email is present on Sessions in `setup` mode.
+    /// Customer's address details are not present on Sessions in `setup` mode.
     pub customer_details: Option<stripe_checkout::PaymentPagesCheckoutSessionCustomerDetails>,
     /// If provided, this value will be used when the Customer object is created.
     /// If not provided, customers will be asked to enter their email address.
@@ -93,7 +93,7 @@ pub struct CheckoutSession {
     pub payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
     /// The ID of the Payment Link that created this Session.
     pub payment_link: Option<stripe_types::Expandable<stripe_shared::PaymentLink>>,
-    /// Configure whether a Checkout Session should collect a payment method.
+    /// Configure whether a Checkout Session should collect a payment method. Defaults to `always`.
     pub payment_method_collection: Option<CheckoutSessionPaymentMethodCollection>,
     /// Information about the payment method configuration used for this Checkout session if using dynamic payment methods.
     pub payment_method_configuration_details:
@@ -110,13 +110,17 @@ pub struct CheckoutSession {
         Option<stripe_checkout::PaymentPagesCheckoutSessionPhoneNumberCollection>,
     /// The ID of the original expired Checkout Session that triggered the recovery flow.
     pub recovered_from: Option<String>,
-    /// Applies to Checkout Sessions with `ui_mode: embedded`.
-    /// By default, Stripe will always redirect to your return_url after a successful confirmation.
-    /// If you set `redirect_on_completion: 'if_required'`, then we will only redirect if your user chooses a redirect-based payment method.
+    /// This parameter applies to `ui_mode: embedded`.
+    /// Learn more about the [redirect behavior](https://stripe.com/docs/payments/checkout/custom-redirect-behavior) of embedded sessions.
+    /// Defaults to `always`.
     pub redirect_on_completion: Option<stripe_checkout::CheckoutSessionRedirectOnCompletion>,
     /// Applies to Checkout Sessions with `ui_mode: embedded`.
     /// The URL to redirect your customer back to after they authenticate or cancel their payment on the payment method's app or site.
     pub return_url: Option<String>,
+    /// Controls saved payment method settings for the session.
+    /// Only available in `payment` and `subscription` mode.
+    pub saved_payment_method_options:
+        Option<stripe_checkout::PaymentPagesCheckoutSessionSavedPaymentMethodOptions>,
     /// The ID of the SetupIntent for Checkout Sessions in `setup` mode.
     pub setup_intent: Option<stripe_types::Expandable<stripe_shared::SetupIntent>>,
     /// When set, provides configuration for Checkout to collect a shipping address from a customer.
@@ -142,7 +146,7 @@ pub struct CheckoutSession {
     pub tax_id_collection: Option<stripe_checkout::PaymentPagesCheckoutSessionTaxIdCollection>,
     /// Tax and discount details for the computed total amount.
     pub total_details: Option<stripe_checkout::PaymentPagesCheckoutSessionTotalDetails>,
-    /// The UI mode of the Session. Can be `hosted` (default) or `embedded`.
+    /// The UI mode of the Session. Defaults to `hosted`.
     pub ui_mode: Option<stripe_checkout::CheckoutSessionUiMode>,
     /// The URL to the Checkout Session.
     /// Redirect customers to this URL to take them to Checkout.
@@ -198,6 +202,8 @@ pub struct CheckoutSessionBuilder {
     recovered_from: Option<Option<String>>,
     redirect_on_completion: Option<Option<stripe_checkout::CheckoutSessionRedirectOnCompletion>>,
     return_url: Option<Option<String>>,
+    saved_payment_method_options:
+        Option<Option<stripe_checkout::PaymentPagesCheckoutSessionSavedPaymentMethodOptions>>,
     setup_intent: Option<Option<stripe_types::Expandable<stripe_shared::SetupIntent>>>,
     shipping_address_collection:
         Option<Option<stripe_checkout::PaymentPagesCheckoutSessionShippingAddressCollection>>,
@@ -294,6 +300,9 @@ const _: () = {
                 "recovered_from" => Deserialize::begin(&mut self.recovered_from),
                 "redirect_on_completion" => Deserialize::begin(&mut self.redirect_on_completion),
                 "return_url" => Deserialize::begin(&mut self.return_url),
+                "saved_payment_method_options" => {
+                    Deserialize::begin(&mut self.saved_payment_method_options)
+                }
                 "setup_intent" => Deserialize::begin(&mut self.setup_intent),
                 "shipping_address_collection" => {
                     Deserialize::begin(&mut self.shipping_address_collection)
@@ -356,6 +365,7 @@ const _: () = {
                 recovered_from: Deserialize::default(),
                 redirect_on_completion: Deserialize::default(),
                 return_url: Deserialize::default(),
+                saved_payment_method_options: Deserialize::default(),
                 setup_intent: Deserialize::default(),
                 shipping_address_collection: Deserialize::default(),
                 shipping_cost: Deserialize::default(),
@@ -416,6 +426,7 @@ const _: () = {
                 recovered_from: self.recovered_from.take()?,
                 redirect_on_completion: self.redirect_on_completion?,
                 return_url: self.return_url.take()?,
+                saved_payment_method_options: self.saved_payment_method_options.take()?,
                 setup_intent: self.setup_intent.take()?,
                 shipping_address_collection: self.shipping_address_collection.take()?,
                 shipping_cost: self.shipping_cost.take()?,
@@ -518,6 +529,9 @@ const _: () = {
                         b.redirect_on_completion = Some(FromValueOpt::from_value(v)?)
                     }
                     "return_url" => b.return_url = Some(FromValueOpt::from_value(v)?),
+                    "saved_payment_method_options" => {
+                        b.saved_payment_method_options = Some(FromValueOpt::from_value(v)?)
+                    }
                     "setup_intent" => b.setup_intent = Some(FromValueOpt::from_value(v)?),
                     "shipping_address_collection" => {
                         b.shipping_address_collection = Some(FromValueOpt::from_value(v)?)
@@ -545,7 +559,7 @@ const _: () = {
 impl serde::Serialize for CheckoutSession {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CheckoutSession", 54)?;
+        let mut s = s.serialize_struct("CheckoutSession", 55)?;
         s.serialize_field("after_expiration", &self.after_expiration)?;
         s.serialize_field("allow_promotion_codes", &self.allow_promotion_codes)?;
         s.serialize_field("amount_subtotal", &self.amount_subtotal)?;
@@ -589,6 +603,7 @@ impl serde::Serialize for CheckoutSession {
         s.serialize_field("recovered_from", &self.recovered_from)?;
         s.serialize_field("redirect_on_completion", &self.redirect_on_completion)?;
         s.serialize_field("return_url", &self.return_url)?;
+        s.serialize_field("saved_payment_method_options", &self.saved_payment_method_options)?;
         s.serialize_field("setup_intent", &self.setup_intent)?;
         s.serialize_field("shipping_address_collection", &self.shipping_address_collection)?;
         s.serialize_field("shipping_cost", &self.shipping_cost)?;
@@ -680,7 +695,7 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionCustomerCreation {
         })
     }
 }
-/// Configure whether a Checkout Session should collect a payment method.
+/// Configure whether a Checkout Session should collect a payment method. Defaults to `always`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CheckoutSessionPaymentMethodCollection {
     Always,

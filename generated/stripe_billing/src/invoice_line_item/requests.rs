@@ -1,110 +1,148 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListInvoiceInvoiceLineItemBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> ListInvoiceInvoiceLineItemBuilder<'a> {
+    fn new() -> Self {
+        Self { ending_before: None, expand: None, limit: None, starting_after: None }
+    }
+}
+/// When retrieving an invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
+/// There is also a URL where you can retrieve the full (paginated) list of line items.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ListInvoiceInvoiceLineItem<'a> {
+    inner: ListInvoiceInvoiceLineItemBuilder<'a>,
+    invoice: &'a stripe_shared::InvoiceId,
+}
+impl<'a> ListInvoiceInvoiceLineItem<'a> {
+    /// Construct a new `ListInvoiceInvoiceLineItem`.
+    pub fn new(invoice: &'a stripe_shared::InvoiceId) -> Self {
+        Self { invoice, inner: ListInvoiceInvoiceLineItemBuilder::new() }
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListInvoiceInvoiceLineItem<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
     }
 }
-impl<'a> ListInvoiceInvoiceLineItem<'a> {
-    /// When retrieving an invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
-    /// There is also a URL where you can retrieve the full (paginated) list of line items.
-    pub fn send(
+impl ListInvoiceInvoiceLineItem<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        invoice: &stripe_shared::InvoiceId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::InvoiceLineItem>> {
-        client.get_query(&format!("/invoices/{invoice}/lines"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-        invoice: &stripe_shared::InvoiceId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::InvoiceLineItem>> {
-        stripe::ListPaginator::from_list_params(&format!("/invoices/{invoice}/lines"), self)
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::InvoiceLineItem>> {
+        let invoice = self.invoice;
+
+        stripe_client_core::ListPaginator::new_list(
+            format!("/invoices/{invoice}/lines"),
+            self.inner,
+        )
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateInvoiceLineItem<'a> {
-    /// The integer amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
-    /// If you want to apply a credit to the customer's account, pass a negative amount.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// An arbitrary string which you can attach to the invoice item.
-    /// The description is displayed in the invoice for easy tracking.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
-    /// Controls whether discounts apply to this line item.
-    /// Defaults to false for prorations or negative line items, and true for all other line items.
-    /// Cannot be set to true for prorations.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub discountable: Option<bool>,
-    /// The coupons & existing discounts which apply to the line item.
-    /// Item discounts are applied before invoice discounts.
-    /// Pass an empty string to remove previously-defined discounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [UpdateInvoiceLineItemDiscounts<'a>]>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The period associated with this invoice item.
-    /// When set to different values, the period will be rendered on the invoice.
-    /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
-    /// See the [Revenue Recognition documentation](https://stripe.com/docs/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub period: Option<UpdateInvoiceLineItemPeriod>,
-    /// The ID of the price object.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpdateInvoiceLineItemPriceData<'a>>,
-    /// Non-negative integer. The quantity of units for the line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
-    /// A list of up to 10 tax amounts for this line item.
-    /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
-    /// You cannot set tax amounts if any line item has [tax_rates](https://stripe.com/docs/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://stripe.com/docs/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://stripe.com/docs/tax/invoicing).
-    /// Pass an empty string to remove previously defined tax amounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_amounts: Option<&'a [UpdateInvoiceLineItemTaxAmounts<'a>]>,
-    /// The tax rates which apply to the line item.
-    /// When set, the `default_tax_rates` on the invoice do not apply to this line item.
-    /// Pass an empty string to remove previously-defined tax rates.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
-}
-impl<'a> UpdateInvoiceLineItem<'a> {
-    pub fn new() -> Self {
-        Self::default()
+
+impl StripeRequest for ListInvoiceInvoiceLineItem<'_> {
+    type Output = stripe_types::List<stripe_shared::InvoiceLineItem>;
+
+    fn build(&self) -> RequestBuilder {
+        let invoice = self.invoice;
+        RequestBuilder::new(StripeMethod::Get, format!("/invoices/{invoice}/lines"))
+            .query(&self.inner)
     }
 }
-/// The coupons & existing discounts which apply to the line item.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateInvoiceLineItemBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    amount: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    discountable: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    discounts: Option<&'a [UpdateInvoiceLineItemDiscounts<'a>]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    period: Option<UpdateInvoiceLineItemPeriod>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    price: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    price_data: Option<UpdateInvoiceLineItemPriceData<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    quantity: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tax_amounts: Option<&'a [UpdateInvoiceLineItemTaxAmounts<'a>]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tax_rates: Option<&'a [&'a str]>,
+}
+impl<'a> UpdateInvoiceLineItemBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            amount: None,
+            description: None,
+            discountable: None,
+            discounts: None,
+            expand: None,
+            metadata: None,
+            period: None,
+            price: None,
+            price_data: None,
+            quantity: None,
+            tax_amounts: None,
+            tax_rates: None,
+        }
+    }
+}
+/// The coupons, promotion codes & existing discounts which apply to the line item.
 /// Item discounts are applied before invoice discounts.
 /// Pass an empty string to remove previously-defined discounts.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateInvoiceLineItemDiscounts<'a> {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -112,10 +150,18 @@ pub struct UpdateInvoiceLineItemDiscounts<'a> {
     /// ID of an existing discount on the object (or one of its ancestors) to reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<&'a str>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<&'a str>,
 }
 impl<'a> UpdateInvoiceLineItemDiscounts<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl<'a> Default for UpdateInvoiceLineItemDiscounts<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The period associated with this invoice item.
@@ -341,7 +387,6 @@ impl<'a> UpdateInvoiceLineItemTaxAmountsTaxRateData<'a> {
 }
 /// The high-level tax type, such as `vat` or `sales_tax`.
 #[derive(Copy, Clone, Eq, PartialEq)]
-#[non_exhaustive]
 pub enum UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
     AmusementTax,
     CommunicationsTax,
@@ -354,10 +399,7 @@ pub enum UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
     Qst,
     Rst,
     SalesTax,
-    ServiceTax,
     Vat,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
 }
 impl UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
     pub fn as_str(self) -> &'static str {
@@ -374,15 +416,13 @@ impl UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
             Qst => "qst",
             Rst => "rst",
             SalesTax => "sales_tax",
-            ServiceTax => "service_tax",
             Vat => "vat",
-            Unknown => "unknown",
         }
     }
 }
 
 impl std::str::FromStr for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
-    type Err = std::convert::Infallible;
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType::*;
         match s {
@@ -397,9 +437,8 @@ impl std::str::FromStr for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
             "qst" => Ok(Qst),
             "rst" => Ok(Rst),
             "sales_tax" => Ok(SalesTax),
-            "service_tax" => Ok(ServiceTax),
             "vat" => Ok(Vat),
-            _ => Ok(Self::Unknown),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -427,26 +466,134 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemTaxAmountsTaxRateData
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType",
+            )
+        })
     }
 }
+/// Updates an invoice’s line item.
+/// Some fields, such as `tax_amounts`, only live on the invoice line item,.
+/// so they can only be updated through this endpoint.
+/// Other fields, such as `amount`, live on both the invoice.
+/// item and the invoice line item, so updates on this endpoint will propagate to the invoice item as well.
+/// Updating an invoice’s line item is only possible before the invoice is finalized.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateInvoiceLineItem<'a> {
+    inner: UpdateInvoiceLineItemBuilder<'a>,
+    invoice: &'a stripe_shared::InvoiceId,
+    line_item_id: &'a str,
+}
 impl<'a> UpdateInvoiceLineItem<'a> {
-    /// Updates an invoice’s line item.
-    /// Some fields, such as `tax_amounts`, only live on the invoice line item,.
-    /// so they can only be updated through this endpoint.
-    /// Other fields, such as `amount`, live on both the invoice.
-    /// item and the invoice line item, so updates on this endpoint will propagate to the invoice item as well.
-    /// Updating an invoice’s line item is only possible before the invoice is finalized.
-    pub fn send(
+    /// Construct a new `UpdateInvoiceLineItem`.
+    pub fn new(invoice: &'a stripe_shared::InvoiceId, line_item_id: &'a str) -> Self {
+        Self { invoice, line_item_id, inner: UpdateInvoiceLineItemBuilder::new() }
+    }
+    /// The integer amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
+    /// If you want to apply a credit to the customer's account, pass a negative amount.
+    pub fn amount(mut self, amount: i64) -> Self {
+        self.inner.amount = Some(amount);
+        self
+    }
+    /// An arbitrary string which you can attach to the invoice item.
+    /// The description is displayed in the invoice for easy tracking.
+    pub fn description(mut self, description: &'a str) -> Self {
+        self.inner.description = Some(description);
+        self
+    }
+    /// Controls whether discounts apply to this line item.
+    /// Defaults to false for prorations or negative line items, and true for all other line items.
+    /// Cannot be set to true for prorations.
+    pub fn discountable(mut self, discountable: bool) -> Self {
+        self.inner.discountable = Some(discountable);
+        self
+    }
+    /// The coupons, promotion codes & existing discounts which apply to the line item.
+    /// Item discounts are applied before invoice discounts.
+    /// Pass an empty string to remove previously-defined discounts.
+    pub fn discounts(mut self, discounts: &'a [UpdateInvoiceLineItemDiscounts<'a>]) -> Self {
+        self.inner.discounts = Some(discounts);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    /// For `type=recurring` line items, the incoming metadata specified on the request is directly used to set this value, in contrast to `type=invoiceitem` line items, where any existing metadata on the invoice line is merged with the incoming data.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+    /// The period associated with this invoice item.
+    /// When set to different values, the period will be rendered on the invoice.
+    /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
+    /// See the [Revenue Recognition documentation](https://stripe.com/docs/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
+    pub fn period(mut self, period: UpdateInvoiceLineItemPeriod) -> Self {
+        self.inner.period = Some(period);
+        self
+    }
+    /// The ID of the price object.
+    pub fn price(mut self, price: &'a str) -> Self {
+        self.inner.price = Some(price);
+        self
+    }
+    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    pub fn price_data(mut self, price_data: UpdateInvoiceLineItemPriceData<'a>) -> Self {
+        self.inner.price_data = Some(price_data);
+        self
+    }
+    /// Non-negative integer. The quantity of units for the line item.
+    pub fn quantity(mut self, quantity: u64) -> Self {
+        self.inner.quantity = Some(quantity);
+        self
+    }
+    /// A list of up to 10 tax amounts for this line item.
+    /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
+    /// You cannot set tax amounts if any line item has [tax_rates](https://stripe.com/docs/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://stripe.com/docs/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://stripe.com/docs/tax/invoicing).
+    /// Pass an empty string to remove previously defined tax amounts.
+    pub fn tax_amounts(mut self, tax_amounts: &'a [UpdateInvoiceLineItemTaxAmounts<'a>]) -> Self {
+        self.inner.tax_amounts = Some(tax_amounts);
+        self
+    }
+    /// The tax rates which apply to the line item.
+    /// When set, the `default_tax_rates` on the invoice do not apply to this line item.
+    /// Pass an empty string to remove previously-defined tax rates.
+    pub fn tax_rates(mut self, tax_rates: &'a [&'a str]) -> Self {
+        self.inner.tax_rates = Some(tax_rates);
+        self
+    }
+}
+impl UpdateInvoiceLineItem<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        invoice: &stripe_shared::InvoiceId,
-        line_item_id: &str,
-    ) -> stripe::Response<stripe_shared::InvoiceLineItem> {
-        client.send_form(
-            &format!("/invoices/{invoice}/lines/{line_item_id}"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateInvoiceLineItem<'_> {
+    type Output = stripe_shared::InvoiceLineItem;
+
+    fn build(&self) -> RequestBuilder {
+        let invoice = self.invoice;
+        let line_item_id = self.line_item_id;
+        RequestBuilder::new(StripeMethod::Post, format!("/invoices/{invoice}/lines/{line_item_id}"))
+            .form(&self.inner)
     }
 }

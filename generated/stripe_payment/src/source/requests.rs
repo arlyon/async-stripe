@@ -1,27 +1,61 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DetachSource<'a> {
-    /// Specifies which fields in the response should be expanded.
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct DetachSourceBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    expand: Option<&'a [&'a str]>,
 }
-impl<'a> DetachSource<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> DetachSourceBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
     }
 }
+/// Delete a specified source for a given customer.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DetachSource<'a> {
+    inner: DetachSourceBuilder<'a>,
+    customer: &'a stripe_shared::CustomerId,
+    id: &'a str,
+}
 impl<'a> DetachSource<'a> {
-    /// Delete a specified source for a given customer.
-    pub fn send(
+    /// Construct a new `DetachSource`.
+    pub fn new(customer: &'a stripe_shared::CustomerId, id: &'a str) -> Self {
+        Self { customer, id, inner: DetachSourceBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl DetachSource<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        customer: &stripe_shared::CustomerId,
-        id: &str,
-    ) -> stripe::Response<DetachSourceReturned> {
-        client.send_form(
-            &format!("/customers/{customer}/sources/{id}"),
-            self,
-            http_types::Method::Delete,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for DetachSource<'_> {
+    type Output = DetachSourceReturned;
+
+    fn build(&self) -> RequestBuilder {
+        let customer = self.customer;
+        let id = self.id;
+        RequestBuilder::new(StripeMethod::Delete, format!("/customers/{customer}/sources/{id}"))
+            .form(&self.inner)
     }
 }
 #[derive(Clone, Debug)]
@@ -104,141 +138,215 @@ const _: () = {
     }
 };
 
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveSourceBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    client_secret: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveSourceBuilder<'a> {
+    fn new() -> Self {
+        Self { client_secret: None, expand: None }
+    }
+}
+/// Retrieves an existing source object.
+/// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct RetrieveSource<'a> {
+    inner: RetrieveSourceBuilder<'a>,
+    source: &'a stripe_shared::SourceId,
+}
+impl<'a> RetrieveSource<'a> {
+    /// Construct a new `RetrieveSource`.
+    pub fn new(source: &'a stripe_shared::SourceId) -> Self {
+        Self { source, inner: RetrieveSourceBuilder::new() }
+    }
     /// The client secret of the source. Required if a publishable key is used to retrieve the source.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub client_secret: Option<&'a str>,
+    pub fn client_secret(mut self, client_secret: &'a str) -> Self {
+        self.inner.client_secret = Some(client_secret);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveSource<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
-impl<'a> RetrieveSource<'a> {
-    /// Retrieves an existing source object.
-    /// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
-    pub fn send(
+impl RetrieveSource<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        source: &stripe_shared::SourceId,
-    ) -> stripe::Response<stripe_shared::Source> {
-        client.get_query(&format!("/sources/{source}"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for RetrieveSource<'_> {
+    type Output = stripe_shared::Source;
+
+    fn build(&self) -> RequestBuilder {
+        let source = self.source;
+        RequestBuilder::new(StripeMethod::Get, format!("/sources/{source}")).query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct SourceTransactionsSourceBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> SourceTransactionsSourceBuilder<'a> {
+    fn new() -> Self {
+        Self { ending_before: None, expand: None, limit: None, starting_after: None }
+    }
+}
+/// List source transactions for a given source.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct SourceTransactionsSource<'a> {
+    inner: SourceTransactionsSourceBuilder<'a>,
+    source: &'a stripe_shared::SourceId,
+}
+impl<'a> SourceTransactionsSource<'a> {
+    /// Construct a new `SourceTransactionsSource`.
+    pub fn new(source: &'a stripe_shared::SourceId) -> Self {
+        Self { source, inner: SourceTransactionsSourceBuilder::new() }
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> SourceTransactionsSource<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
     }
 }
-impl<'a> SourceTransactionsSource<'a> {
-    /// List source transactions for a given source.
-    pub fn send(
+impl SourceTransactionsSource<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        source: &stripe_shared::SourceId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::SourceTransaction>> {
-        client.get_query(&format!("/sources/{source}/source_transactions"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-        source: &stripe_shared::SourceId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::SourceTransaction>> {
-        stripe::ListPaginator::from_list_params(
-            &format!("/sources/{source}/source_transactions"),
-            self,
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::SourceTransaction>>
+    {
+        let source = self.source;
+
+        stripe_client_core::ListPaginator::new_list(
+            format!("/sources/{source}/source_transactions"),
+            self.inner,
         )
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateSource<'a> {
-    /// Amount associated with the source.
-    /// This is the amount for which the source will be chargeable once ready.
-    /// Required for `single_use` sources.
-    /// Not supported for `receiver` type sources, where charge amount may not be specified until funds land.
+
+impl StripeRequest for SourceTransactionsSource<'_> {
+    type Output = stripe_types::List<stripe_shared::SourceTransaction>;
+
+    fn build(&self) -> RequestBuilder {
+        let source = self.source;
+        RequestBuilder::new(StripeMethod::Get, format!("/sources/{source}/source_transactions"))
+            .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateSourceBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) associated with the source.
-    /// This is the currency for which the source will be chargeable once ready.
+    amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<stripe_types::Currency>,
-    /// The `Customer` to whom the original source is attached to.
-    /// Must be set when the original source is not a `Source` (e.g., `Card`).
+    currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
+    customer: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The authentication `flow` of the source to create.
-    /// `flow` is one of `redirect`, `receiver`, `code_verification`, `none`.
-    /// It is generally inferred unless a type supports multiple flows.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flow: Option<CreateSourceFlow>,
-    /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
+    flow: Option<CreateSourceFlow>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate: Option<CreateSourceMandate<'a>>,
+    mandate: Option<CreateSourceMandate<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The source to share.
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub original_source: Option<&'a str>,
-    /// Information about the owner of the payment instrument that may be used or required by particular source types.
+    original_source: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub owner: Option<Owner<'a>>,
-    /// Optional parameters for the receiver flow.
-    /// Can be set only if the source is a receiver (`flow` is `receiver`).
+    owner: Option<Owner<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub receiver: Option<CreateSourceReceiver>,
-    /// Parameters required for the redirect flow.
-    /// Required if the source is authenticated by a redirect (`flow` is `redirect`).
+    receiver: Option<CreateSourceReceiver>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub redirect: Option<CreateSourceRedirect<'a>>,
-    /// Information about the items and shipping associated with the source.
-    /// Required for transactional credit (for example Klarna) sources before you can charge it.
+    redirect: Option<CreateSourceRedirect<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_order: Option<CreateSourceSourceOrder<'a>>,
-    /// An arbitrary string to be displayed on your customer's statement.
-    /// As an example, if your website is `RunClub` and the item you're charging for is a race ticket, you may want to specify a `statement_descriptor` of `RunClub 5K race ticket.` While many payment types will display this information, some may not display it at all.
+    source_order: Option<CreateSourceSourceOrder<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<&'a str>,
-    /// An optional token used to create the source.
-    /// When passed, token properties will override source parameters.
+    statement_descriptor: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub token: Option<&'a str>,
-    /// The `type` of the source to create.
-    /// Required unless `customer` and `original_source` are specified (see the [Cloning card Sources](https://stripe.com/docs/sources/connect#cloning-card-sources) guide).
+    token: Option<&'a str>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<&'a str>,
+    type_: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub usage: Option<CreateSourceUsage>,
+    usage: Option<CreateSourceUsage>,
 }
-impl<'a> CreateSource<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> CreateSourceBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            amount: None,
+            currency: None,
+            customer: None,
+            expand: None,
+            flow: None,
+            mandate: None,
+            metadata: None,
+            original_source: None,
+            owner: None,
+            receiver: None,
+            redirect: None,
+            source_order: None,
+            statement_descriptor: None,
+            token: None,
+            type_: None,
+            usage: None,
+        }
     }
 }
 /// The authentication `flow` of the source to create.
@@ -305,7 +413,7 @@ impl<'de> serde::Deserialize<'de> for CreateSourceFlow {
     }
 }
 /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSourceMandate<'a> {
     /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -327,7 +435,18 @@ pub struct CreateSourceMandate<'a> {
 }
 impl<'a> CreateSourceMandate<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            acceptance: None,
+            amount: None,
+            currency: None,
+            interval: None,
+            notification_method: None,
+        }
+    }
+}
+impl<'a> Default for CreateSourceMandate<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
@@ -617,7 +736,7 @@ impl<'de> serde::Deserialize<'de> for CreateSourceMandateNotificationMethod {
 }
 /// Optional parameters for the receiver flow.
 /// Can be set only if the source is a receiver (`flow` is `receiver`).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSourceReceiver {
     /// The method Stripe should use to request information needed to process a refund or mispayment.
     /// Either `email` (an email is sent directly to the customer) or `manual` (a `source.refund_attributes_required` event is sent to your webhooks endpoint).
@@ -627,7 +746,12 @@ pub struct CreateSourceReceiver {
 }
 impl CreateSourceReceiver {
     pub fn new() -> Self {
-        Self::default()
+        Self { refund_attributes_method: None }
+    }
+}
+impl Default for CreateSourceReceiver {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The method Stripe should use to request information needed to process a refund or mispayment.
@@ -706,7 +830,7 @@ impl<'a> CreateSourceRedirect<'a> {
 }
 /// Information about the items and shipping associated with the source.
 /// Required for transactional credit (for example Klarna) sources before you can charge it.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSourceSourceOrder<'a> {
     /// List of items constituting the order.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -718,11 +842,16 @@ pub struct CreateSourceSourceOrder<'a> {
 }
 impl<'a> CreateSourceSourceOrder<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { items: None, shipping: None }
+    }
+}
+impl<'a> Default for CreateSourceSourceOrder<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// List of items constituting the order.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSourceSourceOrderItems<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -743,7 +872,19 @@ pub struct CreateSourceSourceOrderItems<'a> {
 }
 impl<'a> CreateSourceSourceOrderItems<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            amount: None,
+            currency: None,
+            description: None,
+            parent: None,
+            quantity: None,
+            type_: None,
+        }
+    }
+}
+impl<'a> Default for CreateSourceSourceOrderItems<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -861,44 +1002,167 @@ impl<'de> serde::Deserialize<'de> for CreateSourceUsage {
             .map_err(|_| serde::de::Error::custom("Unknown value for CreateSourceUsage"))
     }
 }
-impl<'a> CreateSource<'a> {
-    /// Creates a new source object.
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_shared::Source> {
-        client.send_form("/sources", self, http_types::Method::Post)
-    }
+/// Creates a new source object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateSource<'a> {
+    inner: CreateSourceBuilder<'a>,
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateSource<'a> {
+impl<'a> CreateSource<'a> {
+    /// Construct a new `CreateSource`.
+    pub fn new() -> Self {
+        Self { inner: CreateSourceBuilder::new() }
+    }
     /// Amount associated with the source.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
+    /// This is the amount for which the source will be chargeable once ready.
+    /// Required for `single_use` sources.
+    /// Not supported for `receiver` type sources, where charge amount may not be specified until funds land.
+    pub fn amount(mut self, amount: i64) -> Self {
+        self.inner.amount = Some(amount);
+        self
+    }
+    /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) associated with the source.
+    /// This is the currency for which the source will be chargeable once ready.
+    pub fn currency(mut self, currency: stripe_types::Currency) -> Self {
+        self.inner.currency = Some(currency);
+        self
+    }
+    /// The `Customer` to whom the original source is attached to.
+    /// Must be set when the original source is not a `Source` (e.g., `Card`).
+    pub fn customer(mut self, customer: &'a str) -> Self {
+        self.inner.customer = Some(customer);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// The authentication `flow` of the source to create.
+    /// `flow` is one of `redirect`, `receiver`, `code_verification`, `none`.
+    /// It is generally inferred unless a type supports multiple flows.
+    pub fn flow(mut self, flow: CreateSourceFlow) -> Self {
+        self.inner.flow = Some(flow);
+        self
+    }
     /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate: Option<UpdateSourceMandate<'a>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub fn mandate(mut self, mandate: CreateSourceMandate<'a>) -> Self {
+        self.inner.mandate = Some(mandate);
+        self
+    }
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+    /// The source to share.
+    pub fn original_source(mut self, original_source: &'a str) -> Self {
+        self.inner.original_source = Some(original_source);
+        self
+    }
     /// Information about the owner of the payment instrument that may be used or required by particular source types.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub owner: Option<Owner<'a>>,
+    pub fn owner(mut self, owner: Owner<'a>) -> Self {
+        self.inner.owner = Some(owner);
+        self
+    }
+    /// Optional parameters for the receiver flow.
+    /// Can be set only if the source is a receiver (`flow` is `receiver`).
+    pub fn receiver(mut self, receiver: CreateSourceReceiver) -> Self {
+        self.inner.receiver = Some(receiver);
+        self
+    }
+    /// Parameters required for the redirect flow.
+    /// Required if the source is authenticated by a redirect (`flow` is `redirect`).
+    pub fn redirect(mut self, redirect: CreateSourceRedirect<'a>) -> Self {
+        self.inner.redirect = Some(redirect);
+        self
+    }
     /// Information about the items and shipping associated with the source.
     /// Required for transactional credit (for example Klarna) sources before you can charge it.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_order: Option<UpdateSourceSourceOrder<'a>>,
+    pub fn source_order(mut self, source_order: CreateSourceSourceOrder<'a>) -> Self {
+        self.inner.source_order = Some(source_order);
+        self
+    }
+    /// An arbitrary string to be displayed on your customer's statement.
+    /// As an example, if your website is `RunClub` and the item you're charging for is a race ticket, you may want to specify a `statement_descriptor` of `RunClub 5K race ticket.` While many payment types will display this information, some may not display it at all.
+    pub fn statement_descriptor(mut self, statement_descriptor: &'a str) -> Self {
+        self.inner.statement_descriptor = Some(statement_descriptor);
+        self
+    }
+    /// An optional token used to create the source.
+    /// When passed, token properties will override source parameters.
+    pub fn token(mut self, token: &'a str) -> Self {
+        self.inner.token = Some(token);
+        self
+    }
+    /// The `type` of the source to create.
+    /// Required unless `customer` and `original_source` are specified (see the [Cloning card Sources](https://stripe.com/docs/sources/connect#cloning-card-sources) guide).
+    pub fn type_(mut self, type_: &'a str) -> Self {
+        self.inner.type_ = Some(type_);
+        self
+    }
+    pub fn usage(mut self, usage: CreateSourceUsage) -> Self {
+        self.inner.usage = Some(usage);
+        self
+    }
 }
-impl<'a> UpdateSource<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> Default for CreateSource<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl CreateSource<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateSource<'_> {
+    type Output = stripe_shared::Source;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/sources").form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateSourceBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    amount: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    mandate: Option<UpdateSourceMandate<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    owner: Option<Owner<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    source_order: Option<UpdateSourceSourceOrder<'a>>,
+}
+impl<'a> UpdateSourceBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            amount: None,
+            expand: None,
+            mandate: None,
+            metadata: None,
+            owner: None,
+            source_order: None,
+        }
     }
 }
 /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateSourceMandate<'a> {
     /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -920,7 +1184,18 @@ pub struct UpdateSourceMandate<'a> {
 }
 impl<'a> UpdateSourceMandate<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            acceptance: None,
+            amount: None,
+            currency: None,
+            interval: None,
+            notification_method: None,
+        }
+    }
+}
+impl<'a> Default for UpdateSourceMandate<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
@@ -1210,7 +1485,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceMandateNotificationMethod {
 }
 /// Information about the items and shipping associated with the source.
 /// Required for transactional credit (for example Klarna) sources before you can charge it.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateSourceSourceOrder<'a> {
     /// List of items constituting the order.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1222,11 +1497,16 @@ pub struct UpdateSourceSourceOrder<'a> {
 }
 impl<'a> UpdateSourceSourceOrder<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { items: None, shipping: None }
+    }
+}
+impl<'a> Default for UpdateSourceSourceOrder<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// List of items constituting the order.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateSourceSourceOrderItems<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -1247,7 +1527,19 @@ pub struct UpdateSourceSourceOrderItems<'a> {
 }
 impl<'a> UpdateSourceSourceOrderItems<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            amount: None,
+            currency: None,
+            description: None,
+            parent: None,
+            quantity: None,
+            type_: None,
+        }
+    }
+}
+impl<'a> Default for UpdateSourceSourceOrderItems<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -1311,44 +1603,139 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceSourceOrderItemsType {
         })
     }
 }
+/// Updates the specified source by setting the values of the parameters passed.
+/// Any parameters not provided will be left unchanged.
+///
+/// This request accepts the `metadata` and `owner` as arguments.
+/// It is also possible to update type specific information for selected payment methods.
+/// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateSource<'a> {
+    inner: UpdateSourceBuilder<'a>,
+    source: &'a stripe_shared::SourceId,
+}
 impl<'a> UpdateSource<'a> {
-    /// Updates the specified source by setting the values of the parameters passed.
-    /// Any parameters not provided will be left unchanged.
-    ///
-    /// This request accepts the `metadata` and `owner` as arguments.
-    /// It is also possible to update type specific information for selected payment methods.
-    /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
-    pub fn send(
+    /// Construct a new `UpdateSource`.
+    pub fn new(source: &'a stripe_shared::SourceId) -> Self {
+        Self { source, inner: UpdateSourceBuilder::new() }
+    }
+    /// Amount associated with the source.
+    pub fn amount(mut self, amount: i64) -> Self {
+        self.inner.amount = Some(amount);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
+    pub fn mandate(mut self, mandate: UpdateSourceMandate<'a>) -> Self {
+        self.inner.mandate = Some(mandate);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+    /// Information about the owner of the payment instrument that may be used or required by particular source types.
+    pub fn owner(mut self, owner: Owner<'a>) -> Self {
+        self.inner.owner = Some(owner);
+        self
+    }
+    /// Information about the items and shipping associated with the source.
+    /// Required for transactional credit (for example Klarna) sources before you can charge it.
+    pub fn source_order(mut self, source_order: UpdateSourceSourceOrder<'a>) -> Self {
+        self.inner.source_order = Some(source_order);
+        self
+    }
+}
+impl UpdateSource<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        source: &stripe_shared::SourceId,
-    ) -> stripe::Response<stripe_shared::Source> {
-        client.send_form(&format!("/sources/{source}"), self, http_types::Method::Post)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateSource<'_> {
+    type Output = stripe_shared::Source;
+
+    fn build(&self) -> RequestBuilder {
+        let source = self.source;
+        RequestBuilder::new(StripeMethod::Post, format!("/sources/{source}")).form(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct VerifySource<'a> {
-    /// Specifies which fields in the response should be expanded.
+struct VerifySourceBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The values needed to verify the source.
-    pub values: &'a [&'a str],
+    expand: Option<&'a [&'a str]>,
+    values: &'a [&'a str],
 }
-impl<'a> VerifySource<'a> {
-    pub fn new(values: &'a [&'a str]) -> Self {
+impl<'a> VerifySourceBuilder<'a> {
+    fn new(values: &'a [&'a str]) -> Self {
         Self { expand: None, values }
     }
 }
+/// Verify a given source.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct VerifySource<'a> {
+    inner: VerifySourceBuilder<'a>,
+    source: &'a stripe_shared::SourceId,
+}
 impl<'a> VerifySource<'a> {
-    /// Verify a given source.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        source: &stripe_shared::SourceId,
-    ) -> stripe::Response<stripe_shared::Source> {
-        client.send_form(&format!("/sources/{source}/verify"), self, http_types::Method::Post)
+    /// Construct a new `VerifySource`.
+    pub fn new(source: &'a stripe_shared::SourceId, values: &'a [&'a str]) -> Self {
+        Self { source, inner: VerifySourceBuilder::new(values) }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
+impl VerifySource<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for VerifySource<'_> {
+    type Output = stripe_shared::Source;
+
+    fn build(&self) -> RequestBuilder {
+        let source = self.source;
+        RequestBuilder::new(StripeMethod::Post, format!("/sources/{source}/verify"))
+            .form(&self.inner)
+    }
+}
+
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct MandateOfflineAcceptanceParams<'a> {
     /// An email to contact you with if a copy of the mandate is requested, required if `type` is `offline`.
@@ -1359,7 +1746,7 @@ impl<'a> MandateOfflineAcceptanceParams<'a> {
         Self { contact_email }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct MandateOnlineAcceptanceParams<'a> {
     /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1373,10 +1760,15 @@ pub struct MandateOnlineAcceptanceParams<'a> {
 }
 impl<'a> MandateOnlineAcceptanceParams<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { date: None, ip: None, user_agent: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for MandateOnlineAcceptanceParams<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct SourceAddress<'a> {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1399,7 +1791,12 @@ pub struct SourceAddress<'a> {
 }
 impl<'a> SourceAddress<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl<'a> Default for SourceAddress<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -1427,7 +1824,7 @@ impl<'a> Address<'a> {
         Self { city: None, country: None, line1, line2: None, postal_code: None, state: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct Owner<'a> {
     /// Owner's address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1444,7 +1841,12 @@ pub struct Owner<'a> {
 }
 impl<'a> Owner<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { address: None, email: None, name: None, phone: None }
+    }
+}
+impl<'a> Default for Owner<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

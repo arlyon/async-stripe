@@ -37,6 +37,9 @@ pub struct IssuingCard {
     /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://stripe.com/docs/api/expanding_objects).
     /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://stripe.com/docs/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
     pub number: Option<String>,
+    /// The personalization design object belonging to this card.
+    pub personalization_design:
+        Option<stripe_types::Expandable<stripe_shared::IssuingPersonalizationDesign>>,
     /// The latest card that replaces this card, if any.
     pub replaced_by: Option<stripe_types::Expandable<stripe_shared::IssuingCard>>,
     /// The card this card replaces, if any.
@@ -72,6 +75,8 @@ pub struct IssuingCardBuilder {
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
     number: Option<Option<String>>,
+    personalization_design:
+        Option<Option<stripe_types::Expandable<stripe_shared::IssuingPersonalizationDesign>>>,
     replaced_by: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCard>>>,
     replacement_for: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCard>>>,
     replacement_reason: Option<Option<stripe_shared::IssuingCardReplacementReason>>,
@@ -130,6 +135,7 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "number" => Deserialize::begin(&mut self.number),
+                "personalization_design" => Deserialize::begin(&mut self.personalization_design),
                 "replaced_by" => Deserialize::begin(&mut self.replaced_by),
                 "replacement_for" => Deserialize::begin(&mut self.replacement_for),
                 "replacement_reason" => Deserialize::begin(&mut self.replacement_reason),
@@ -159,6 +165,7 @@ const _: () = {
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
                 number: Deserialize::default(),
+                personalization_design: Deserialize::default(),
                 replaced_by: Deserialize::default(),
                 replacement_for: Deserialize::default(),
                 replacement_reason: Deserialize::default(),
@@ -186,6 +193,7 @@ const _: () = {
                 livemode: self.livemode?,
                 metadata: self.metadata.take()?,
                 number: self.number.take()?,
+                personalization_design: self.personalization_design.take()?,
                 replaced_by: self.replaced_by.take()?,
                 replacement_for: self.replacement_for.take()?,
                 replacement_reason: self.replacement_reason?,
@@ -237,6 +245,9 @@ const _: () = {
                     "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
                     "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
                     "number" => b.number = Some(FromValueOpt::from_value(v)?),
+                    "personalization_design" => {
+                        b.personalization_design = Some(FromValueOpt::from_value(v)?)
+                    }
                     "replaced_by" => b.replaced_by = Some(FromValueOpt::from_value(v)?),
                     "replacement_for" => b.replacement_for = Some(FromValueOpt::from_value(v)?),
                     "replacement_reason" => {
@@ -259,7 +270,7 @@ const _: () = {
 impl serde::Serialize for IssuingCard {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("IssuingCard", 23)?;
+        let mut s = s.serialize_struct("IssuingCard", 24)?;
         s.serialize_field("brand", &self.brand)?;
         s.serialize_field("cancellation_reason", &self.cancellation_reason)?;
         s.serialize_field("cardholder", &self.cardholder)?;
@@ -274,6 +285,7 @@ impl serde::Serialize for IssuingCard {
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("number", &self.number)?;
+        s.serialize_field("personalization_design", &self.personalization_design)?;
         s.serialize_field("replaced_by", &self.replaced_by)?;
         s.serialize_field("replacement_for", &self.replacement_for)?;
         s.serialize_field("replacement_reason", &self.replacement_reason)?;

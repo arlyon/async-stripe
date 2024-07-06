@@ -1,163 +1,334 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListIssuingTransactionBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    card: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cardholder: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    created: Option<stripe_types::RangeQueryTs>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    type_: Option<stripe_shared::IssuingTransactionType>,
+}
+impl<'a> ListIssuingTransactionBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            card: None,
+            cardholder: None,
+            created: None,
+            ending_before: None,
+            expand: None,
+            limit: None,
+            starting_after: None,
+            type_: None,
+        }
+    }
+}
+/// Returns a list of Issuing `Transaction` objects.
+/// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ListIssuingTransaction<'a> {
+    inner: ListIssuingTransactionBuilder<'a>,
+}
+impl<'a> ListIssuingTransaction<'a> {
+    /// Construct a new `ListIssuingTransaction`.
+    pub fn new() -> Self {
+        Self { inner: ListIssuingTransactionBuilder::new() }
+    }
     /// Only return transactions that belong to the given card.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<&'a str>,
+    pub fn card(mut self, card: &'a str) -> Self {
+        self.inner.card = Some(card);
+        self
+    }
     /// Only return transactions that belong to the given cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cardholder: Option<&'a str>,
+    pub fn cardholder(mut self, cardholder: &'a str) -> Self {
+        self.inner.cardholder = Some(cardholder);
+        self
+    }
     /// Only return transactions that were created during the given date interval.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
+    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
+        self.inner.created = Some(created);
+        self
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
     /// Only return transactions that have the given type. One of `capture` or `refund`.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<stripe_shared::IssuingTransactionType>,
-}
-impl<'a> ListIssuingTransaction<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn type_(mut self, type_: stripe_shared::IssuingTransactionType) -> Self {
+        self.inner.type_ = Some(type_);
+        self
     }
 }
-impl<'a> ListIssuingTransaction<'a> {
-    /// Returns a list of Issuing `Transaction` objects.
-    /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-    pub fn send(
+impl<'a> Default for ListIssuingTransaction<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListIssuingTransaction<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::IssuingTransaction>> {
-        client.get_query("/issuing/transactions", self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::IssuingTransaction>> {
-        stripe::ListPaginator::from_list_params("/issuing/transactions", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveIssuingTransaction<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveIssuingTransaction<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveIssuingTransaction<'a> {
-    /// Retrieves an Issuing `Transaction` object.
-    pub fn send(
         &self,
-        client: &stripe::Client,
-        transaction: &stripe_shared::IssuingTransactionId,
-    ) -> stripe::Response<stripe_shared::IssuingTransaction> {
-        client.get_query(&format!("/issuing/transactions/{transaction}"), self)
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::IssuingTransaction>>
+    {
+        stripe_client_core::ListPaginator::new_list("/issuing/transactions", self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateIssuingTransaction<'a> {
-    /// Specifies which fields in the response should be expanded.
+
+impl StripeRequest for ListIssuingTransaction<'_> {
+    type Output = stripe_types::List<stripe_shared::IssuingTransaction>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/issuing/transactions").query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveIssuingTransactionBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveIssuingTransactionBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves an Issuing `Transaction` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveIssuingTransaction<'a> {
+    inner: RetrieveIssuingTransactionBuilder<'a>,
+    transaction: &'a stripe_shared::IssuingTransactionId,
+}
+impl<'a> RetrieveIssuingTransaction<'a> {
+    /// Construct a new `RetrieveIssuingTransaction`.
+    pub fn new(transaction: &'a stripe_shared::IssuingTransactionId) -> Self {
+        Self { transaction, inner: RetrieveIssuingTransactionBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveIssuingTransaction<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveIssuingTransaction<'_> {
+    type Output = stripe_shared::IssuingTransaction;
+
+    fn build(&self) -> RequestBuilder {
+        let transaction = self.transaction;
+        RequestBuilder::new(StripeMethod::Get, format!("/issuing/transactions/{transaction}"))
+            .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateIssuingTransactionBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+}
+impl<'a> UpdateIssuingTransactionBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None, metadata: None }
+    }
+}
+/// Updates the specified Issuing `Transaction` object by setting the values of the parameters passed.
+/// Any parameters not provided will be left unchanged.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingTransaction<'a> {
+    inner: UpdateIssuingTransactionBuilder<'a>,
+    transaction: &'a stripe_shared::IssuingTransactionId,
+}
+impl<'a> UpdateIssuingTransaction<'a> {
+    /// Construct a new `UpdateIssuingTransaction`.
+    pub fn new(transaction: &'a stripe_shared::IssuingTransactionId) -> Self {
+        Self { transaction, inner: UpdateIssuingTransactionBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-}
-impl<'a> UpdateIssuingTransaction<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
     }
 }
-impl<'a> UpdateIssuingTransaction<'a> {
-    /// Updates the specified Issuing `Transaction` object by setting the values of the parameters passed.
-    /// Any parameters not provided will be left unchanged.
-    pub fn send(
+impl UpdateIssuingTransaction<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        transaction: &stripe_shared::IssuingTransactionId,
-    ) -> stripe::Response<stripe_shared::IssuingTransaction> {
-        client.send_form(
-            &format!("/issuing/transactions/{transaction}"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RefundIssuingTransaction<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The total amount to attempt to refund.
-    /// This amount is in the provided currency, or defaults to the cards currency, and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub refund_amount: Option<i64>,
-}
-impl<'a> RefundIssuingTransaction<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RefundIssuingTransaction<'a> {
-    /// Refund a test-mode Transaction.
-    pub fn send(
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
         &self,
-        client: &stripe::Client,
-        transaction: &str,
-    ) -> stripe::Response<stripe_shared::IssuingTransaction> {
-        client.send_form(
-            &format!("/test_helpers/issuing/transactions/{transaction}/refund"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateIssuingTransaction<'_> {
+    type Output = stripe_shared::IssuingTransaction;
+
+    fn build(&self) -> RequestBuilder {
+        let transaction = self.transaction;
+        RequestBuilder::new(StripeMethod::Post, format!("/issuing/transactions/{transaction}"))
+            .form(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateForceCaptureIssuingTransaction<'a> {
-    /// The total amount to attempt to capture.
-    /// This amount is in the provided currency, or defaults to the cards currency, and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    pub amount: i64,
-    /// Card associated with this transaction.
-    pub card: &'a str,
-    /// The currency of the capture.
-    /// If not provided, defaults to the currency of the card.
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+struct RefundIssuingTransactionBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<stripe_types::Currency>,
-    /// Specifies which fields in the response should be expanded.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub merchant_data: Option<CreateForceCaptureIssuingTransactionMerchantData<'a>>,
-    /// Additional purchase information that is optionally provided by the merchant.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub purchase_details: Option<CreateForceCaptureIssuingTransactionPurchaseDetails<'a>>,
+    refund_amount: Option<i64>,
 }
-impl<'a> CreateForceCaptureIssuingTransaction<'a> {
-    pub fn new(amount: i64, card: &'a str) -> Self {
+impl<'a> RefundIssuingTransactionBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None, refund_amount: None }
+    }
+}
+/// Refund a test-mode Transaction.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RefundIssuingTransaction<'a> {
+    inner: RefundIssuingTransactionBuilder<'a>,
+    transaction: &'a str,
+}
+impl<'a> RefundIssuingTransaction<'a> {
+    /// Construct a new `RefundIssuingTransaction`.
+    pub fn new(transaction: &'a str) -> Self {
+        Self { transaction, inner: RefundIssuingTransactionBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// The total amount to attempt to refund.
+    /// This amount is in the provided currency, or defaults to the cards currency, and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    pub fn refund_amount(mut self, refund_amount: i64) -> Self {
+        self.inner.refund_amount = Some(refund_amount);
+        self
+    }
+}
+impl RefundIssuingTransaction<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RefundIssuingTransaction<'_> {
+    type Output = stripe_shared::IssuingTransaction;
+
+    fn build(&self) -> RequestBuilder {
+        let transaction = self.transaction;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/issuing/transactions/{transaction}/refund"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateForceCaptureIssuingTransactionBuilder<'a> {
+    amount: i64,
+    card: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    currency: Option<stripe_types::Currency>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    merchant_data: Option<CreateForceCaptureIssuingTransactionMerchantData<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    purchase_details: Option<CreateForceCaptureIssuingTransactionPurchaseDetails<'a>>,
+}
+impl<'a> CreateForceCaptureIssuingTransactionBuilder<'a> {
+    fn new(amount: i64, card: &'a str) -> Self {
         Self {
             amount,
             card,
@@ -169,7 +340,7 @@ impl<'a> CreateForceCaptureIssuingTransaction<'a> {
     }
 }
 /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionMerchantData<'a> {
     /// A categorization of the seller's type of business.
     /// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.
@@ -203,7 +374,22 @@ pub struct CreateForceCaptureIssuingTransactionMerchantData<'a> {
 }
 impl<'a> CreateForceCaptureIssuingTransactionMerchantData<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            category: None,
+            city: None,
+            country: None,
+            name: None,
+            network_id: None,
+            postal_code: None,
+            state: None,
+            terminal_id: None,
+            url: None,
+        }
+    }
+}
+impl<'a> Default for CreateForceCaptureIssuingTransactionMerchantData<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// A categorization of the seller's type of business.
@@ -1234,7 +1420,7 @@ impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionMercha
     }
 }
 /// Additional purchase information that is optionally provided by the merchant.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionPurchaseDetails<'a> {
     /// Information about the flight that was purchased with this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1254,18 +1440,23 @@ pub struct CreateForceCaptureIssuingTransactionPurchaseDetails<'a> {
 }
 impl<'a> CreateForceCaptureIssuingTransactionPurchaseDetails<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { flight: None, fuel: None, lodging: None, receipt: None, reference: None }
+    }
+}
+impl<'a> Default for CreateForceCaptureIssuingTransactionPurchaseDetails<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Information about fuel that was purchased with this transaction.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionPurchaseDetailsFuel<'a> {
     /// The type of fuel that was purchased.
     /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType>,
-    /// The units for `volume_decimal`. One of `us_gallon` or `liter`.
+    /// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit: Option<CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit>,
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
@@ -1277,7 +1468,12 @@ pub struct CreateForceCaptureIssuingTransactionPurchaseDetailsFuel<'a> {
 }
 impl<'a> CreateForceCaptureIssuingTransactionPurchaseDetailsFuel<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { type_: None, unit: None, unit_cost_decimal: None, volume_decimal: None }
+    }
+}
+impl<'a> Default for CreateForceCaptureIssuingTransactionPurchaseDetailsFuel<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The type of fuel that was purchased.
@@ -1348,10 +1544,11 @@ impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionPurcha
         })
     }
 }
-/// The units for `volume_decimal`. One of `us_gallon` or `liter`.
+/// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
     Liter,
+    Other,
     UsGallon,
 }
 impl CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
@@ -1359,6 +1556,7 @@ impl CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit::*;
         match self {
             Liter => "liter",
+            Other => "other",
             UsGallon => "us_gallon",
         }
     }
@@ -1370,6 +1568,7 @@ impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFu
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit::*;
         match s {
             "liter" => Ok(Liter),
+            "other" => Ok(Other),
             "us_gallon" => Ok(UsGallon),
             _ => Err(stripe_types::StripeParseError),
         }
@@ -1406,44 +1605,90 @@ impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionPurcha
         })
     }
 }
-impl<'a> CreateForceCaptureIssuingTransaction<'a> {
-    /// Allows the user to capture an arbitrary amount, also known as a forced capture.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_shared::IssuingTransaction> {
-        client.send_form(
-            "/test_helpers/issuing/transactions/create_force_capture",
-            self,
-            http_types::Method::Post,
-        )
-    }
+/// Allows the user to capture an arbitrary amount, also known as a forced capture.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateForceCaptureIssuingTransaction<'a> {
+    inner: CreateForceCaptureIssuingTransactionBuilder<'a>,
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateUnlinkedRefundIssuingTransaction<'a> {
-    /// The total amount to attempt to refund.
-    /// This amount is in the provided currency, or defaults to the cards currency, and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    pub amount: i64,
-    /// Card associated with this unlinked refund transaction.
-    pub card: &'a str,
-    /// The currency of the unlinked refund.
+impl<'a> CreateForceCaptureIssuingTransaction<'a> {
+    /// Construct a new `CreateForceCaptureIssuingTransaction`.
+    pub fn new(amount: i64, card: &'a str) -> Self {
+        Self { inner: CreateForceCaptureIssuingTransactionBuilder::new(amount, card) }
+    }
+    /// The currency of the capture.
     /// If not provided, defaults to the currency of the card.
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<stripe_types::Currency>,
+    pub fn currency(mut self, currency: stripe_types::Currency) -> Self {
+        self.inner.currency = Some(currency);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub merchant_data: Option<CreateUnlinkedRefundIssuingTransactionMerchantData<'a>>,
+    pub fn merchant_data(
+        mut self,
+        merchant_data: CreateForceCaptureIssuingTransactionMerchantData<'a>,
+    ) -> Self {
+        self.inner.merchant_data = Some(merchant_data);
+        self
+    }
     /// Additional purchase information that is optionally provided by the merchant.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub purchase_details: Option<CreateUnlinkedRefundIssuingTransactionPurchaseDetails<'a>>,
+    pub fn purchase_details(
+        mut self,
+        purchase_details: CreateForceCaptureIssuingTransactionPurchaseDetails<'a>,
+    ) -> Self {
+        self.inner.purchase_details = Some(purchase_details);
+        self
+    }
 }
-impl<'a> CreateUnlinkedRefundIssuingTransaction<'a> {
-    pub fn new(amount: i64, card: &'a str) -> Self {
+impl CreateForceCaptureIssuingTransaction<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateForceCaptureIssuingTransaction<'_> {
+    type Output = stripe_shared::IssuingTransaction;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(
+            StripeMethod::Post,
+            "/test_helpers/issuing/transactions/create_force_capture",
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateUnlinkedRefundIssuingTransactionBuilder<'a> {
+    amount: i64,
+    card: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    currency: Option<stripe_types::Currency>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    merchant_data: Option<CreateUnlinkedRefundIssuingTransactionMerchantData<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    purchase_details: Option<CreateUnlinkedRefundIssuingTransactionPurchaseDetails<'a>>,
+}
+impl<'a> CreateUnlinkedRefundIssuingTransactionBuilder<'a> {
+    fn new(amount: i64, card: &'a str) -> Self {
         Self {
             amount,
             card,
@@ -1455,7 +1700,7 @@ impl<'a> CreateUnlinkedRefundIssuingTransaction<'a> {
     }
 }
 /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionMerchantData<'a> {
     /// A categorization of the seller's type of business.
     /// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.
@@ -1489,7 +1734,22 @@ pub struct CreateUnlinkedRefundIssuingTransactionMerchantData<'a> {
 }
 impl<'a> CreateUnlinkedRefundIssuingTransactionMerchantData<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            category: None,
+            city: None,
+            country: None,
+            name: None,
+            network_id: None,
+            postal_code: None,
+            state: None,
+            terminal_id: None,
+            url: None,
+        }
+    }
+}
+impl<'a> Default for CreateUnlinkedRefundIssuingTransactionMerchantData<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// A categorization of the seller's type of business.
@@ -2520,7 +2780,7 @@ impl<'de> serde::Deserialize<'de> for CreateUnlinkedRefundIssuingTransactionMerc
     }
 }
 /// Additional purchase information that is optionally provided by the merchant.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetails<'a> {
     /// Information about the flight that was purchased with this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2540,18 +2800,23 @@ pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetails<'a> {
 }
 impl<'a> CreateUnlinkedRefundIssuingTransactionPurchaseDetails<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { flight: None, fuel: None, lodging: None, receipt: None, reference: None }
+    }
+}
+impl<'a> Default for CreateUnlinkedRefundIssuingTransactionPurchaseDetails<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Information about fuel that was purchased with this transaction.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel<'a> {
     /// The type of fuel that was purchased.
     /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType>,
-    /// The units for `volume_decimal`. One of `us_gallon` or `liter`.
+    /// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit: Option<CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit>,
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
@@ -2563,7 +2828,12 @@ pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel<'a> {
 }
 impl<'a> CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { type_: None, unit: None, unit_cost_decimal: None, volume_decimal: None }
+    }
+}
+impl<'a> Default for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The type of fuel that was purchased.
@@ -2636,10 +2906,11 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
-/// The units for `volume_decimal`. One of `us_gallon` or `liter`.
+/// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
     Liter,
+    Other,
     UsGallon,
 }
 impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
@@ -2647,6 +2918,7 @@ impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit::*;
         match self {
             Liter => "liter",
+            Other => "other",
             UsGallon => "us_gallon",
         }
     }
@@ -2658,6 +2930,7 @@ impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetails
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit::*;
         match s {
             "liter" => Ok(Liter),
+            "other" => Ok(Other),
             "us_gallon" => Ok(UsGallon),
             _ => Err(stripe_types::StripeParseError),
         }
@@ -2696,20 +2969,77 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
+/// Allows the user to refund an arbitrary amount, also known as a unlinked refund.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateUnlinkedRefundIssuingTransaction<'a> {
+    inner: CreateUnlinkedRefundIssuingTransactionBuilder<'a>,
+}
 impl<'a> CreateUnlinkedRefundIssuingTransaction<'a> {
-    /// Allows the user to refund an arbitrary amount, also known as a unlinked refund.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_shared::IssuingTransaction> {
-        client.send_form(
-            "/test_helpers/issuing/transactions/create_unlinked_refund",
-            self,
-            http_types::Method::Post,
-        )
+    /// Construct a new `CreateUnlinkedRefundIssuingTransaction`.
+    pub fn new(amount: i64, card: &'a str) -> Self {
+        Self { inner: CreateUnlinkedRefundIssuingTransactionBuilder::new(amount, card) }
+    }
+    /// The currency of the unlinked refund.
+    /// If not provided, defaults to the currency of the card.
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub fn currency(mut self, currency: stripe_types::Currency) -> Self {
+        self.inner.currency = Some(currency);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
+    pub fn merchant_data(
+        mut self,
+        merchant_data: CreateUnlinkedRefundIssuingTransactionMerchantData<'a>,
+    ) -> Self {
+        self.inner.merchant_data = Some(merchant_data);
+        self
+    }
+    /// Additional purchase information that is optionally provided by the merchant.
+    pub fn purchase_details(
+        mut self,
+        purchase_details: CreateUnlinkedRefundIssuingTransactionPurchaseDetails<'a>,
+    ) -> Self {
+        self.inner.purchase_details = Some(purchase_details);
+        self
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl CreateUnlinkedRefundIssuingTransaction<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateUnlinkedRefundIssuingTransaction<'_> {
+    type Output = stripe_shared::IssuingTransaction;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(
+            StripeMethod::Post,
+            "/test_helpers/issuing/transactions/create_unlinked_refund",
+        )
+        .form(&self.inner)
+    }
+}
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct FlightSegmentSpecs<'a> {
     /// The three-letter IATA airport code of the flight's destination.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2732,10 +3062,22 @@ pub struct FlightSegmentSpecs<'a> {
 }
 impl<'a> FlightSegmentSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            arrival_airport_code: None,
+            carrier: None,
+            departure_airport_code: None,
+            flight_number: None,
+            service_class: None,
+            stopover_allowed: None,
+        }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for FlightSegmentSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct LodgingSpecs {
     /// The time of checking into the lodging.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2746,10 +3088,15 @@ pub struct LodgingSpecs {
 }
 impl LodgingSpecs {
     pub fn new() -> Self {
-        Self::default()
+        Self { check_in_at: None, nights: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl Default for LodgingSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ReceiptSpecs<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
@@ -2762,10 +3109,15 @@ pub struct ReceiptSpecs<'a> {
 }
 impl<'a> ReceiptSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { description: None, quantity: None, total: None, unit_cost: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for ReceiptSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct FlightSpecs<'a> {
     /// The time that the flight departed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2785,6 +3137,17 @@ pub struct FlightSpecs<'a> {
 }
 impl<'a> FlightSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            departure_at: None,
+            passenger_name: None,
+            refundable: None,
+            segments: None,
+            travel_agency: None,
+        }
+    }
+}
+impl<'a> Default for FlightSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }

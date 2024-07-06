@@ -1,7 +1,10 @@
 use std::fmt::{Display, Formatter, Write};
 
+use indoc::writedoc;
 use lazy_static::lazy_static;
 use regex_lite::Regex;
+
+use crate::types::RustIdent;
 
 lazy_static! {
     /// Regex for a period followed by 1 or 2 whitespaces
@@ -132,6 +135,18 @@ impl SerOrDeser {
             Self::Deser => "deserialize",
         }
     }
+}
+
+pub fn write_default_impl(ident: &RustIdent, lifetime_str: &str, out: &mut String) {
+    let _ = writedoc!(
+        out,
+        r"
+        impl{lifetime_str} Default for {ident}{lifetime_str} {{
+            fn default() -> Self {{
+                Self::new()
+            }}
+        }}"
+    );
 }
 
 impl Display for SerOrDeser {

@@ -5,6 +5,10 @@
 pub struct SubscriptionScheduleConfigurationItem {
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
     pub billing_thresholds: Option<stripe_shared::SubscriptionItemBillingThresholds>,
+    /// The discounts applied to the subscription item.
+    /// Subscription item discounts are applied before subscription discounts.
+    /// Use `expand[]=discounts` to expand each discount.
+    pub discounts: Vec<stripe_shared::DiscountsResourceStackableDiscount>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an item.
     /// Metadata on this item will update the underlying subscription item's `metadata` when the phase is entered.
     pub metadata: Option<std::collections::HashMap<String, String>>,
@@ -21,6 +25,7 @@ pub struct SubscriptionScheduleConfigurationItem {
 #[doc(hidden)]
 pub struct SubscriptionScheduleConfigurationItemBuilder {
     billing_thresholds: Option<Option<stripe_shared::SubscriptionItemBillingThresholds>>,
+    discounts: Option<Vec<stripe_shared::DiscountsResourceStackableDiscount>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     plan: Option<stripe_types::Expandable<stripe_shared::Plan>>,
     price: Option<stripe_types::Expandable<stripe_shared::Price>>,
@@ -63,6 +68,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
+                "discounts" => Deserialize::begin(&mut self.discounts),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "plan" => Deserialize::begin(&mut self.plan),
                 "price" => Deserialize::begin(&mut self.price),
@@ -76,6 +82,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 billing_thresholds: Deserialize::default(),
+                discounts: Deserialize::default(),
                 metadata: Deserialize::default(),
                 plan: Deserialize::default(),
                 price: Deserialize::default(),
@@ -87,6 +94,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             Some(Self::Out {
                 billing_thresholds: self.billing_thresholds?,
+                discounts: self.discounts.take()?,
                 metadata: self.metadata.take()?,
                 plan: self.plan.take()?,
                 price: self.price.take()?,
@@ -122,6 +130,7 @@ const _: () = {
                     "billing_thresholds" => {
                         b.billing_thresholds = Some(FromValueOpt::from_value(v)?)
                     }
+                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
                     "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
                     "plan" => b.plan = Some(FromValueOpt::from_value(v)?),
                     "price" => b.price = Some(FromValueOpt::from_value(v)?),

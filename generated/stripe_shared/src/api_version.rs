@@ -101,6 +101,7 @@ pub enum ApiVersion {
     V2022_11_15,
     V2023_08_16,
     V2023_10_16,
+    V2024_04_10,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown,
 }
@@ -208,6 +209,7 @@ impl ApiVersion {
             V2022_11_15 => "2022-11-15",
             V2023_08_16 => "2023-08-16",
             V2023_10_16 => "2023-10-16",
+            V2024_04_10 => "2024-04-10",
             Unknown => "unknown",
         }
     }
@@ -318,6 +320,7 @@ impl std::str::FromStr for ApiVersion {
             "2022-11-15" => Ok(V2022_11_15),
             "2023-08-16" => Ok(V2023_08_16),
             "2023-10-16" => Ok(V2023_10_16),
+            "2024-04-10" => Ok(V2024_04_10),
             _ => Ok(Self::Unknown),
         }
     }

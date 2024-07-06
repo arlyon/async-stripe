@@ -30,6 +30,8 @@ pub struct Discount {
     pub start: stripe_types::Timestamp,
     /// The subscription that this coupon is applied to, if it is applied to a particular subscription.
     pub subscription: Option<String>,
+    /// The subscription item that this coupon is applied to, if it is applied to a particular subscription item.
+    pub subscription_item: Option<String>,
 }
 #[doc(hidden)]
 pub struct DiscountBuilder {
@@ -43,6 +45,7 @@ pub struct DiscountBuilder {
     promotion_code: Option<Option<stripe_types::Expandable<stripe_shared::PromotionCode>>>,
     start: Option<stripe_types::Timestamp>,
     subscription: Option<Option<String>>,
+    subscription_item: Option<Option<String>>,
 }
 
 #[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
@@ -86,6 +89,7 @@ const _: () = {
                 "promotion_code" => Deserialize::begin(&mut self.promotion_code),
                 "start" => Deserialize::begin(&mut self.start),
                 "subscription" => Deserialize::begin(&mut self.subscription),
+                "subscription_item" => Deserialize::begin(&mut self.subscription_item),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -103,6 +107,7 @@ const _: () = {
                 promotion_code: Deserialize::default(),
                 start: Deserialize::default(),
                 subscription: Deserialize::default(),
+                subscription_item: Deserialize::default(),
             }
         }
 
@@ -118,6 +123,7 @@ const _: () = {
                 promotion_code: self.promotion_code.take()?,
                 start: self.start?,
                 subscription: self.subscription.take()?,
+                subscription_item: self.subscription_item.take()?,
             })
         }
     }
@@ -155,6 +161,7 @@ const _: () = {
                     "promotion_code" => b.promotion_code = Some(FromValueOpt::from_value(v)?),
                     "start" => b.start = Some(FromValueOpt::from_value(v)?),
                     "subscription" => b.subscription = Some(FromValueOpt::from_value(v)?),
+                    "subscription_item" => b.subscription_item = Some(FromValueOpt::from_value(v)?),
 
                     _ => {}
                 }
@@ -167,7 +174,7 @@ const _: () = {
 impl serde::Serialize for Discount {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Discount", 11)?;
+        let mut s = s.serialize_struct("Discount", 12)?;
         s.serialize_field("checkout_session", &self.checkout_session)?;
         s.serialize_field("coupon", &self.coupon)?;
         s.serialize_field("customer", &self.customer)?;
@@ -178,6 +185,7 @@ impl serde::Serialize for Discount {
         s.serialize_field("promotion_code", &self.promotion_code)?;
         s.serialize_field("start", &self.start)?;
         s.serialize_field("subscription", &self.subscription)?;
+        s.serialize_field("subscription_item", &self.subscription_item)?;
 
         s.serialize_field("object", "discount")?;
         s.end()

@@ -1,162 +1,348 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteAccount {}
-impl DeleteAccount {
-    pub fn new() -> Self {
-        Self::default()
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+/// With <a href="/connect">Connect</a>, you can delete accounts you manage.
+///
+/// Test-mode accounts can be deleted at any time.
+///
+/// Live-mode accounts where Stripe is responsible for negative account balances cannot be deleted, which includes Standard accounts.
+/// Live-mode accounts where your platform is liable for negative account balances, which includes Custom and Express accounts, can be deleted when all <a href="/api/balance/balanace_object">balances</a> are zero.
+///
+/// If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/settings/account) instead.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DeleteAccount<'a> {
+    account: &'a stripe_shared::AccountId,
+}
+impl<'a> DeleteAccount<'a> {
+    /// Construct a new `DeleteAccount`.
+    pub fn new(account: &'a stripe_shared::AccountId) -> Self {
+        Self { account }
     }
 }
-impl DeleteAccount {
-    /// With [Connect](https://stripe.com/docs/connect), you can delete accounts you manage.
-    ///
-    /// Accounts created using test-mode keys can be deleted at any time.
-    /// Standard accounts created using live-mode keys cannot be deleted.
-    /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.
-    ///
-    /// If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/settings/account) instead.
-    pub fn send(
+impl DeleteAccount<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-    ) -> stripe::Response<stripe_shared::DeletedAccount> {
-        client.send_form(&format!("/accounts/{account}"), self, http_types::Method::Delete)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for DeleteAccount<'_> {
+    type Output = stripe_shared::DeletedAccount;
+
+    fn build(&self) -> RequestBuilder {
+        let account = self.account;
+        RequestBuilder::new(StripeMethod::Delete, format!("/accounts/{account}"))
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveForMyAccountAccountBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveForMyAccountAccountBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves the details of an account.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct RetrieveForMyAccountAccount<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    inner: RetrieveForMyAccountAccountBuilder<'a>,
 }
 impl<'a> RetrieveForMyAccountAccount<'a> {
+    /// Construct a new `RetrieveForMyAccountAccount`.
     pub fn new() -> Self {
-        Self::default()
+        Self { inner: RetrieveForMyAccountAccountBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
-impl<'a> RetrieveForMyAccountAccount<'a> {
-    /// Retrieves the details of an account.
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_shared::Account> {
-        client.get_query("/account", self)
+impl<'a> Default for RetrieveForMyAccountAccount<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl RetrieveForMyAccountAccount<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveForMyAccountAccount<'_> {
+    type Output = stripe_shared::Account;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/account").query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListAccountBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    created: Option<stripe_types::RangeQueryTs>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> ListAccountBuilder<'a> {
+    fn new() -> Self {
+        Self { created: None, ending_before: None, expand: None, limit: None, starting_after: None }
+    }
+}
+/// Returns a list of accounts connected to your platform via [Connect](https://stripe.com/docs/connect).
+/// If you’re not a platform, the list is empty.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ListAccount<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
+    inner: ListAccountBuilder<'a>,
+}
+impl<'a> ListAccount<'a> {
+    /// Construct a new `ListAccount`.
+    pub fn new() -> Self {
+        Self { inner: ListAccountBuilder::new() }
+    }
+    /// Only return connected accounts that were created during the given date interval.
+    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
+        self.inner.created = Some(created);
+        self
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListAccount<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
     }
 }
-impl<'a> ListAccount<'a> {
-    /// Returns a list of accounts connected to your platform via [Connect](https://stripe.com/docs/connect).
-    /// If you’re not a platform, the list is empty.
-    pub fn send(
+impl<'a> Default for ListAccount<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListAccount<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Account>> {
-        client.get_query("/accounts", self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
-    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Account>> {
-        stripe::ListPaginator::from_list_params("/accounts", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveAccount<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveAccount<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveAccount<'a> {
-    /// Retrieves the details of an account.
-    pub fn send(
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
         &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-    ) -> stripe::Response<stripe_shared::Account> {
-        client.get_query(&format!("/accounts/{account}"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CapabilitiesAccount<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> CapabilitiesAccount<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> CapabilitiesAccount<'a> {
-    /// Returns a list of capabilities associated with the account.
-    /// The capabilities are returned sorted by creation date, with the most recent capability appearing first.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Capability>> {
-        client.get_query(&format!("/accounts/{account}/capabilities"), self)
-    }
+
     pub fn paginate(
-        self,
-        account: &stripe_shared::AccountId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Capability>> {
-        stripe::ListPaginator::from_list_params(&format!("/accounts/{account}/capabilities"), self)
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::Account>> {
+        stripe_client_core::ListPaginator::new_list("/accounts", self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct PersonsAccount<'a> {
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// Filters on the list of people returned based on the person's relationship to the account's company.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub relationship: Option<PersonsAccountRelationship>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
+
+impl StripeRequest for ListAccount<'_> {
+    type Output = stripe_types::List<stripe_shared::Account>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/accounts").query(&self.inner)
+    }
 }
-impl<'a> PersonsAccount<'a> {
-    pub fn new() -> Self {
-        Self::default()
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveAccountBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveAccountBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves the details of an account.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveAccount<'a> {
+    inner: RetrieveAccountBuilder<'a>,
+    account: &'a stripe_shared::AccountId,
+}
+impl<'a> RetrieveAccount<'a> {
+    /// Construct a new `RetrieveAccount`.
+    pub fn new(account: &'a stripe_shared::AccountId) -> Self {
+        Self { account, inner: RetrieveAccountBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveAccount<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveAccount<'_> {
+    type Output = stripe_shared::Account;
+
+    fn build(&self) -> RequestBuilder {
+        let account = self.account;
+        RequestBuilder::new(StripeMethod::Get, format!("/accounts/{account}")).query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CapabilitiesAccountBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> CapabilitiesAccountBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Returns a list of capabilities associated with the account.
+/// The capabilities are returned sorted by creation date, with the most recent capability appearing first.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CapabilitiesAccount<'a> {
+    inner: CapabilitiesAccountBuilder<'a>,
+    account: &'a stripe_shared::AccountId,
+}
+impl<'a> CapabilitiesAccount<'a> {
+    /// Construct a new `CapabilitiesAccount`.
+    pub fn new(account: &'a stripe_shared::AccountId) -> Self {
+        Self { account, inner: CapabilitiesAccountBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl CapabilitiesAccount<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
+    pub fn paginate(
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::Capability>> {
+        let account = self.account;
+
+        stripe_client_core::ListPaginator::new_list(
+            format!("/accounts/{account}/capabilities"),
+            self.inner,
+        )
+    }
+}
+
+impl StripeRequest for CapabilitiesAccount<'_> {
+    type Output = stripe_types::List<stripe_shared::Capability>;
+
+    fn build(&self) -> RequestBuilder {
+        let account = self.account;
+        RequestBuilder::new(StripeMethod::Get, format!("/accounts/{account}/capabilities"))
+            .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct PersonsAccountBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    relationship: Option<PersonsAccountRelationship>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> PersonsAccountBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            ending_before: None,
+            expand: None,
+            limit: None,
+            relationship: None,
+            starting_after: None,
+        }
     }
 }
 /// Filters on the list of people returned based on the person's relationship to the account's company.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct PersonsAccountRelationship {
     /// A filter on the list of people returned based on whether these people are directors of the account's company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -176,110 +362,166 @@ pub struct PersonsAccountRelationship {
 }
 impl PersonsAccountRelationship {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            director: None,
+            executive: None,
+            legal_guardian: None,
+            owner: None,
+            representative: None,
+        }
     }
+}
+impl Default for PersonsAccountRelationship {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Returns a list of people associated with the account’s legal entity.
+/// The people are returned sorted by creation date, with the most recent people appearing first.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct PersonsAccount<'a> {
+    inner: PersonsAccountBuilder<'a>,
+    account: &'a stripe_shared::AccountId,
 }
 impl<'a> PersonsAccount<'a> {
-    /// Returns a list of people associated with the account’s legal entity.
-    /// The people are returned sorted by creation date, with the most recent people appearing first.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Person>> {
-        client.get_query(&format!("/accounts/{account}/persons"), self)
+    /// Construct a new `PersonsAccount`.
+    pub fn new(account: &'a stripe_shared::AccountId) -> Self {
+        Self { account, inner: PersonsAccountBuilder::new() }
     }
-    pub fn paginate(
-        self,
-        account: &stripe_shared::AccountId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Person>> {
-        stripe::ListPaginator::from_list_params(&format!("/accounts/{account}/persons"), self)
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
+    /// Filters on the list of people returned based on the person's relationship to the account's company.
+    pub fn relationship(mut self, relationship: PersonsAccountRelationship) -> Self {
+        self.inner.relationship = Some(relationship);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateAccount<'a> {
-    /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
+impl PersonsAccount<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
+    pub fn paginate(
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::Person>> {
+        let account = self.account;
+
+        stripe_client_core::ListPaginator::new_list(
+            format!("/accounts/{account}/persons"),
+            self.inner,
+        )
+    }
+}
+
+impl StripeRequest for PersonsAccount<'_> {
+    type Output = stripe_types::List<stripe_shared::Person>;
+
+    fn build(&self) -> RequestBuilder {
+        let account = self.account;
+        RequestBuilder::new(StripeMethod::Get, format!("/accounts/{account}/persons"))
+            .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateAccountBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_token: Option<&'a str>,
-    /// Business information about the account.
+    account_token: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_profile: Option<BusinessProfileSpecs<'a>>,
-    /// The business type.
-    /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
+    business_profile: Option<BusinessProfileSpecs<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_type: Option<stripe_shared::AccountBusinessType>,
-    /// Each key of the dictionary represents a capability, and each capability maps to its settings (e.g.
-    /// whether it has been requested or not).
-    /// Each capability will be inactive until you have provided its specific requirements and Stripe has verified them.
-    /// An account may have some of its requested capabilities be active and some be inactive.
+    business_type: Option<stripe_shared::AccountBusinessType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<CapabilitiesParam>,
-    /// Information about the company or business.
-    /// This field is available for any `business_type`.
-    /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
+    capabilities: Option<CapabilitiesParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub company: Option<CreateAccountCompany<'a>>,
-    /// The country in which the account holder resides, or in which the business is legally established.
-    /// This should be an ISO 3166-1 alpha-2 country code.
-    /// For example, if you are in the United States and the business for which you're creating an account is legally represented in Canada, you would use `CA` as the country for the account being created.
-    /// Available countries include [Stripe's global markets](https://stripe.com/global) as well as countries where [cross-border payouts](https://stripe.com/docs/connect/cross-border-payouts) are supported.
+    company: Option<CreateAccountCompany<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Three-letter ISO currency code representing the default currency for the account.
-    /// This must be a currency that [Stripe supports in the account's country](https://stripe.com/docs/payouts).
+    controller: Option<CreateAccountController>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_currency: Option<stripe_types::Currency>,
-    /// Documents that may be submitted to satisfy various informational requests.
+    country: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub documents: Option<DocumentsSpecs<'a>>,
-    /// The email address of the account holder.
-    /// This is only to make the account easier to identify to you.
-    /// Stripe only emails Custom accounts with your consent.
+    default_currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
+    documents: Option<DocumentsSpecs<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A card or bank account to attach to the account for receiving [payouts](https://stripe.com/docs/connect/bank-debit-card-payouts) (you won’t be able to use it for top-ups).
-    /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
-    ///
-    ///
-    /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
-    /// To add additional external accounts without replacing the existing default for the currency, use the [bank account](https://stripe.com/docs/api#account_create_bank_account) or [card creation](https://stripe.com/docs/api#account_create_card) APIs.
-    /// After you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
+    email: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub external_account: Option<&'a str>,
-    /// Information about the person represented by the account.
-    /// This field is null unless `business_type` is set to `individual`.
-    /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub individual: Option<CreateAccountIndividual<'a>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
+    external_account: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// Options for customizing how the account functions within Stripe.
+    individual: Option<CreateAccountIndividual<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub settings: Option<CreateAccountSettings<'a>>,
-    /// Details on the account's acceptance of the [Stripe Services Agreement](https://stripe.com/docs/connect/updating-accounts#tos-acceptance) This property can only be updated for Custom accounts.
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tos_acceptance: Option<TosAcceptanceSpecs<'a>>,
-    /// The type of Stripe account to create. May be one of `custom`, `express` or `standard`.
+    settings: Option<CreateAccountSettings<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tos_acceptance: Option<TosAcceptanceSpecs<'a>>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<stripe_shared::AccountType>,
+    type_: Option<CreateAccountType>,
 }
-impl<'a> CreateAccount<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> CreateAccountBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            account_token: None,
+            business_profile: None,
+            business_type: None,
+            capabilities: None,
+            company: None,
+            controller: None,
+            country: None,
+            default_currency: None,
+            documents: None,
+            email: None,
+            expand: None,
+            external_account: None,
+            individual: None,
+            metadata: None,
+            settings: None,
+            tos_acceptance: None,
+            type_: None,
+        }
     }
 }
 /// Information about the company or business.
 /// This field is available for any `business_type`.
-/// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+/// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountCompany<'a> {
     /// The company's primary address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -291,12 +533,12 @@ pub struct CreateAccountCompany<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kanji: Option<CreateAccountCompanyAddressKanji<'a>>,
     /// Whether the company's directors have been provided.
-    /// Set this Boolean to `true` after creating all the company's directors with [the Persons API](https://stripe.com/docs/api/persons) for accounts with a `relationship.director` requirement.
+    /// Set this Boolean to `true` after creating all the company's directors with [the Persons API](https://docs.stripe.com/api/persons) for accounts with a `relationship.director` requirement.
     /// This value is not automatically set to `true` after creating directors, so it needs to be updated to indicate all directors have been provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub directors_provided: Option<bool>,
     /// Whether the company's executives have been provided.
-    /// Set this Boolean to `true` after creating all the company's executives with [the Persons API](https://stripe.com/docs/api/persons) for accounts with a `relationship.executive` requirement.
+    /// Set this Boolean to `true` after creating all the company's executives with [the Persons API](https://docs.stripe.com/api/persons) for accounts with a `relationship.executive` requirement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub executives_provided: Option<bool>,
     /// The export license ID number of the company, also referred as Import Export Code (India only).
@@ -315,7 +557,7 @@ pub struct CreateAccountCompany<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name_kanji: Option<&'a str>,
     /// Whether the company's owners have been provided.
-    /// Set this Boolean to `true` after creating all the company's owners with [the Persons API](https://stripe.com/docs/api/persons) for accounts with a `relationship.owner` requirement.
+    /// Set this Boolean to `true` after creating all the company's owners with [the Persons API](https://docs.stripe.com/api/persons) for accounts with a `relationship.owner` requirement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owners_provided: Option<bool>,
     /// This hash is used to attest that the beneficial owner information provided to Stripe is both current and correct.
@@ -329,7 +571,7 @@ pub struct CreateAccountCompany<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registration_number: Option<&'a str>,
     /// The category identifying the legal structure of the company or legal entity.
-    /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
+    /// See [Business structure](https://docs.stripe.com/connect/identity-verification#business-structure) for more details.
     /// Pass an empty string to unset this value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub structure: Option<CreateAccountCompanyStructure>,
@@ -349,11 +591,36 @@ pub struct CreateAccountCompany<'a> {
 }
 impl<'a> CreateAccountCompany<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            address: None,
+            address_kana: None,
+            address_kanji: None,
+            directors_provided: None,
+            executives_provided: None,
+            export_license_id: None,
+            export_purpose_code: None,
+            name: None,
+            name_kana: None,
+            name_kanji: None,
+            owners_provided: None,
+            ownership_declaration: None,
+            phone: None,
+            registration_number: None,
+            structure: None,
+            tax_id: None,
+            tax_id_registrar: None,
+            vat_id: None,
+            verification: None,
+        }
+    }
+}
+impl<'a> Default for CreateAccountCompany<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The Kana variation of the company's primary address (Japan only).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountCompanyAddressKana<'a> {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -379,11 +646,24 @@ pub struct CreateAccountCompanyAddressKana<'a> {
 }
 impl<'a> CreateAccountCompanyAddressKana<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            city: None,
+            country: None,
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+            town: None,
+        }
+    }
+}
+impl<'a> Default for CreateAccountCompanyAddressKana<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The Kanji variation of the company's primary address (Japan only).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountCompanyAddressKanji<'a> {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -409,11 +689,24 @@ pub struct CreateAccountCompanyAddressKanji<'a> {
 }
 impl<'a> CreateAccountCompanyAddressKanji<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            city: None,
+            country: None,
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+            town: None,
+        }
+    }
+}
+impl<'a> Default for CreateAccountCompanyAddressKanji<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The category identifying the legal structure of the company or legal entity.
-/// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
+/// See [Business structure](https://docs.stripe.com/connect/identity-verification#business-structure) for more details.
 /// Pass an empty string to unset this value.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -535,10 +828,327 @@ impl<'de> serde::Deserialize<'de> for CreateAccountCompanyStructure {
         Ok(Self::from_str(&s).unwrap())
     }
 }
+/// A hash of configuration describing the account controller's attributes.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountController {
+    /// A hash of configuration for who pays Stripe fees for product usage on this account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fees: Option<CreateAccountControllerFees>,
+    /// A hash of configuration for products that have negative balance liability, and whether Stripe or a Connect application is responsible for them.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub losses: Option<CreateAccountControllerLosses>,
+    /// A value indicating responsibility for collecting updated information when requirements on the account are due or change.
+    /// Defaults to `stripe`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requirement_collection: Option<CreateAccountControllerRequirementCollection>,
+    /// A hash of configuration for Stripe-hosted dashboards.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stripe_dashboard: Option<CreateAccountControllerStripeDashboard>,
+}
+impl CreateAccountController {
+    pub fn new() -> Self {
+        Self { fees: None, losses: None, requirement_collection: None, stripe_dashboard: None }
+    }
+}
+impl Default for CreateAccountController {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// A hash of configuration for who pays Stripe fees for product usage on this account.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountControllerFees {
+    /// A value indicating the responsible payer of Stripe fees on this account.
+    /// Defaults to `account`.
+    /// Learn more about [fee behavior on connected accounts](https://docs.stripe.com/connect/direct-charges-fee-payer-behavior).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payer: Option<CreateAccountControllerFeesPayer>,
+}
+impl CreateAccountControllerFees {
+    pub fn new() -> Self {
+        Self { payer: None }
+    }
+}
+impl Default for CreateAccountControllerFees {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// A value indicating the responsible payer of Stripe fees on this account.
+/// Defaults to `account`.
+/// Learn more about [fee behavior on connected accounts](https://docs.stripe.com/connect/direct-charges-fee-payer-behavior).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateAccountControllerFeesPayer {
+    Account,
+    Application,
+}
+impl CreateAccountControllerFeesPayer {
+    pub fn as_str(self) -> &'static str {
+        use CreateAccountControllerFeesPayer::*;
+        match self {
+            Account => "account",
+            Application => "application",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateAccountControllerFeesPayer {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateAccountControllerFeesPayer::*;
+        match s {
+            "account" => Ok(Account),
+            "application" => Ok(Application),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateAccountControllerFeesPayer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateAccountControllerFeesPayer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateAccountControllerFeesPayer {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountControllerFeesPayer {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateAccountControllerFeesPayer")
+        })
+    }
+}
+/// A hash of configuration for products that have negative balance liability, and whether Stripe or a Connect application is responsible for them.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountControllerLosses {
+    /// A value indicating who is liable when this account can't pay back negative balances resulting from payments.
+    /// Defaults to `stripe`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payments: Option<CreateAccountControllerLossesPayments>,
+}
+impl CreateAccountControllerLosses {
+    pub fn new() -> Self {
+        Self { payments: None }
+    }
+}
+impl Default for CreateAccountControllerLosses {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// A value indicating who is liable when this account can't pay back negative balances resulting from payments.
+/// Defaults to `stripe`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateAccountControllerLossesPayments {
+    Application,
+    Stripe,
+}
+impl CreateAccountControllerLossesPayments {
+    pub fn as_str(self) -> &'static str {
+        use CreateAccountControllerLossesPayments::*;
+        match self {
+            Application => "application",
+            Stripe => "stripe",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateAccountControllerLossesPayments {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateAccountControllerLossesPayments::*;
+        match s {
+            "application" => Ok(Application),
+            "stripe" => Ok(Stripe),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateAccountControllerLossesPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateAccountControllerLossesPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateAccountControllerLossesPayments {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountControllerLossesPayments {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateAccountControllerLossesPayments")
+        })
+    }
+}
+/// A value indicating responsibility for collecting updated information when requirements on the account are due or change.
+/// Defaults to `stripe`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateAccountControllerRequirementCollection {
+    Application,
+    Stripe,
+}
+impl CreateAccountControllerRequirementCollection {
+    pub fn as_str(self) -> &'static str {
+        use CreateAccountControllerRequirementCollection::*;
+        match self {
+            Application => "application",
+            Stripe => "stripe",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateAccountControllerRequirementCollection {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateAccountControllerRequirementCollection::*;
+        match s {
+            "application" => Ok(Application),
+            "stripe" => Ok(Stripe),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateAccountControllerRequirementCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateAccountControllerRequirementCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateAccountControllerRequirementCollection {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountControllerRequirementCollection {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateAccountControllerRequirementCollection",
+            )
+        })
+    }
+}
+/// A hash of configuration for Stripe-hosted dashboards.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountControllerStripeDashboard {
+    /// Whether this account should have access to the full Stripe Dashboard (`full`), to the Express Dashboard (`express`), or to no Stripe-hosted dashboard (`none`).
+    /// Defaults to `full`.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CreateAccountControllerStripeDashboardType>,
+}
+impl CreateAccountControllerStripeDashboard {
+    pub fn new() -> Self {
+        Self { type_: None }
+    }
+}
+impl Default for CreateAccountControllerStripeDashboard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether this account should have access to the full Stripe Dashboard (`full`), to the Express Dashboard (`express`), or to no Stripe-hosted dashboard (`none`).
+/// Defaults to `full`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateAccountControllerStripeDashboardType {
+    Express,
+    Full,
+    None,
+}
+impl CreateAccountControllerStripeDashboardType {
+    pub fn as_str(self) -> &'static str {
+        use CreateAccountControllerStripeDashboardType::*;
+        match self {
+            Express => "express",
+            Full => "full",
+            None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateAccountControllerStripeDashboardType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateAccountControllerStripeDashboardType::*;
+        match s {
+            "express" => Ok(Express),
+            "full" => Ok(Full),
+            "none" => Ok(None),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateAccountControllerStripeDashboardType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateAccountControllerStripeDashboardType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateAccountControllerStripeDashboardType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountControllerStripeDashboardType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateAccountControllerStripeDashboardType")
+        })
+    }
+}
 /// Information about the person represented by the account.
 /// This field is null unless `business_type` is set to `individual`.
-/// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+/// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountIndividual<'a> {
     /// The individual's primary address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -572,12 +1182,12 @@ pub struct CreateAccountIndividual<'a> {
     pub gender: Option<&'a str>,
     /// The government-issued ID number of the individual, as appropriate for the representative's country.
     /// (Examples are a Social Security Number in the U.S., or a Social Insurance Number in Canada).
-    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://docs.stripe.com/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<&'a str>,
     /// The government-issued secondary ID number of the individual, as appropriate for the representative's country, will be used for enhanced verification checks.
     /// In Thailand, this would be the laser code found on the back of an ID card.
-    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://docs.stripe.com/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_secondary: Option<&'a str>,
     /// The individual's last name.
@@ -619,11 +1229,40 @@ pub struct CreateAccountIndividual<'a> {
 }
 impl<'a> CreateAccountIndividual<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            address: None,
+            address_kana: None,
+            address_kanji: None,
+            dob: None,
+            email: None,
+            first_name: None,
+            first_name_kana: None,
+            first_name_kanji: None,
+            full_name_aliases: None,
+            gender: None,
+            id_number: None,
+            id_number_secondary: None,
+            last_name: None,
+            last_name_kana: None,
+            last_name_kanji: None,
+            maiden_name: None,
+            metadata: None,
+            phone: None,
+            political_exposure: None,
+            registered_address: None,
+            relationship: None,
+            ssn_last_4: None,
+            verification: None,
+        }
+    }
+}
+impl<'a> Default for CreateAccountIndividual<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The Kana variation of the the individual's primary address (Japan only).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountIndividualAddressKana<'a> {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -649,11 +1288,24 @@ pub struct CreateAccountIndividualAddressKana<'a> {
 }
 impl<'a> CreateAccountIndividualAddressKana<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            city: None,
+            country: None,
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+            town: None,
+        }
+    }
+}
+impl<'a> Default for CreateAccountIndividualAddressKana<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The Kanji variation of the the individual's primary address (Japan only).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountIndividualAddressKanji<'a> {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -679,7 +1331,20 @@ pub struct CreateAccountIndividualAddressKanji<'a> {
 }
 impl<'a> CreateAccountIndividualAddressKanji<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            city: None,
+            country: None,
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+            town: None,
+        }
+    }
+}
+impl<'a> Default for CreateAccountIndividualAddressKanji<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
@@ -739,7 +1404,7 @@ impl<'de> serde::Deserialize<'de> for CreateAccountIndividualPoliticalExposure {
     }
 }
 /// Options for customizing how the account functions within Stripe.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSettings<'a> {
     /// Settings specific to Bacs Direct Debit.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -765,18 +1430,31 @@ pub struct CreateAccountSettings<'a> {
 }
 impl<'a> CreateAccountSettings<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            bacs_debit_payments: None,
+            branding: None,
+            card_issuing: None,
+            card_payments: None,
+            payments: None,
+            payouts: None,
+            treasury: None,
+        }
+    }
+}
+impl<'a> Default for CreateAccountSettings<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Settings specific to the account's payouts.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSettingsPayouts<'a> {
     /// A Boolean indicating whether Stripe should try to reclaim negative balances from an attached bank account.
-    /// For details, see [Understanding Connect Account Balances](https://stripe.com/docs/connect/account-balances).
+    /// For details, see [Understanding Connect Account Balances](https://docs.stripe.com/connect/account-balances).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub debit_negative_balances: Option<bool>,
     /// Details on when funds from charges are available, and when they are paid out to an external account.
-    /// For details, see our [Setting Bank and Debit Card Payouts](https://stripe.com/docs/connect/bank-transfers#payout-information) documentation.
+    /// For details, see our [Setting Bank and Debit Card Payouts](https://docs.stripe.com/connect/bank-transfers#payout-information) documentation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub schedule: Option<CreateAccountSettingsPayoutsSchedule>,
     /// The text that appears on the bank account statement for payouts.
@@ -786,18 +1464,23 @@ pub struct CreateAccountSettingsPayouts<'a> {
 }
 impl<'a> CreateAccountSettingsPayouts<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { debit_negative_balances: None, schedule: None, statement_descriptor: None }
+    }
+}
+impl<'a> Default for CreateAccountSettingsPayouts<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Details on when funds from charges are available, and when they are paid out to an external account.
-/// For details, see our [Setting Bank and Debit Card Payouts](https://stripe.com/docs/connect/bank-transfers#payout-information) documentation.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+/// For details, see our [Setting Bank and Debit Card Payouts](https://docs.stripe.com/connect/bank-transfers#payout-information) documentation.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSettingsPayoutsSchedule {
     /// The number of days charge funds are held before being paid out.
     /// May also be set to `minimum`, representing the lowest available value for the account country.
     /// Default is `minimum`.
     /// The `delay_days` parameter remains at the last configured value if `interval` is `manual`.
-    /// [Learn more about controlling payout delay days](https://stripe.com/docs/connect/manage-payout-schedule).
+    /// [Learn more about controlling payout delay days](https://docs.stripe.com/connect/manage-payout-schedule).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delay_days: Option<CreateAccountSettingsPayoutsScheduleDelayDays>,
     /// How frequently available funds are paid out.
@@ -817,14 +1500,19 @@ pub struct CreateAccountSettingsPayoutsSchedule {
 }
 impl CreateAccountSettingsPayoutsSchedule {
     pub fn new() -> Self {
-        Self::default()
+        Self { delay_days: None, interval: None, monthly_anchor: None, weekly_anchor: None }
+    }
+}
+impl Default for CreateAccountSettingsPayoutsSchedule {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The number of days charge funds are held before being paid out.
 /// May also be set to `minimum`, representing the lowest available value for the account country.
 /// Default is `minimum`.
 /// The `delay_days` parameter remains at the last configured value if `interval` is `manual`.
-/// [Learn more about controlling payout delay days](https://stripe.com/docs/connect/manage-payout-schedule).
+/// [Learn more about controlling payout delay days](https://docs.stripe.com/connect/manage-payout-schedule).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 #[serde(untagged)]
 pub enum CreateAccountSettingsPayoutsScheduleDelayDays {
@@ -971,92 +1659,279 @@ impl<'de> serde::Deserialize<'de> for CreateAccountSettingsPayoutsScheduleWeekly
         })
     }
 }
-impl<'a> CreateAccount<'a> {
-    /// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
-    /// To do this, you’ll first need to [register your platform](https://dashboard.stripe.com/account/applications/settings).
-    ///
-    /// If you’ve already collected information for your connected accounts, you [can prefill that information](https://stripe.com/docs/connect/best-practices#onboarding) when.
-    /// creating the account.
-    /// Connect Onboarding won’t ask for the prefilled information during account onboarding.
-    /// You can prefill any information on the account.
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_shared::Account> {
-        client.send_form("/accounts", self, http_types::Method::Post)
+/// The type of Stripe account to create. May be one of `custom`, `express` or `standard`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateAccountType {
+    Custom,
+    Express,
+    Standard,
+}
+impl CreateAccountType {
+    pub fn as_str(self) -> &'static str {
+        use CreateAccountType::*;
+        match self {
+            Custom => "custom",
+            Express => "express",
+            Standard => "standard",
+        }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateAccount<'a> {
+
+impl std::str::FromStr for CreateAccountType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateAccountType::*;
+        match s {
+            "custom" => Ok(Custom),
+            "express" => Ok(Express),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateAccountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreateAccountType"))
+    }
+}
+/// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
+/// To do this, you’ll first need to [register your platform](https://dashboard.stripe.com/account/applications/settings).
+///
+/// If you’ve already collected information for your connected accounts, you [can prefill that information](https://stripe.com/docs/connect/best-practices#onboarding) when.
+/// creating the account.
+/// Connect Onboarding won’t ask for the prefilled information during account onboarding.
+/// You can prefill any information on the account.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateAccount<'a> {
+    inner: CreateAccountBuilder<'a>,
+}
+impl<'a> CreateAccount<'a> {
+    /// Construct a new `CreateAccount`.
+    pub fn new() -> Self {
+        Self { inner: CreateAccountBuilder::new() }
+    }
     /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_token: Option<&'a str>,
+    pub fn account_token(mut self, account_token: &'a str) -> Self {
+        self.inner.account_token = Some(account_token);
+        self
+    }
     /// Business information about the account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_profile: Option<BusinessProfileSpecs<'a>>,
+    pub fn business_profile(mut self, business_profile: BusinessProfileSpecs<'a>) -> Self {
+        self.inner.business_profile = Some(business_profile);
+        self
+    }
     /// The business type.
-    /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_type: Option<stripe_shared::AccountBusinessType>,
-    /// Each key of the dictionary represents a capability, and each capability maps to its settings (e.g.
-    /// whether it has been requested or not).
-    /// Each capability will be inactive until you have provided its specific requirements and Stripe has verified them.
-    /// An account may have some of its requested capabilities be active and some be inactive.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<CapabilitiesParam>,
+    /// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+    pub fn business_type(mut self, business_type: stripe_shared::AccountBusinessType) -> Self {
+        self.inner.business_type = Some(business_type);
+        self
+    }
+    /// Each key of the dictionary represents a capability, and each capability
+    /// maps to its settings (for example, whether it has been requested or not). Each
+    /// capability is inactive until you have provided its specific
+    /// requirements and Stripe has verified them. An account might have some
+    /// of its requested capabilities be active and some be inactive.
+    ///
+    /// Required when [account.controller.stripe_dashboard.type](/api/accounts/create#create_account-controller-dashboard-type).
+    /// is `none`, which includes Custom accounts.
+    pub fn capabilities(mut self, capabilities: CapabilitiesParam) -> Self {
+        self.inner.capabilities = Some(capabilities);
+        self
+    }
     /// Information about the company or business.
     /// This field is available for any `business_type`.
-    /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company: Option<UpdateAccountCompany<'a>>,
+    /// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+    pub fn company(mut self, company: CreateAccountCompany<'a>) -> Self {
+        self.inner.company = Some(company);
+        self
+    }
+    /// A hash of configuration describing the account controller's attributes.
+    pub fn controller(mut self, controller: CreateAccountController) -> Self {
+        self.inner.controller = Some(controller);
+        self
+    }
+    /// The country in which the account holder resides, or in which the business is legally established.
+    /// This should be an ISO 3166-1 alpha-2 country code.
+    /// For example, if you are in the United States and the business for which you're creating an account is legally represented in Canada, you would use `CA` as the country for the account being created.
+    /// Available countries include [Stripe's global markets](https://stripe.com/global) as well as countries where [cross-border payouts](https://stripe.com/docs/connect/cross-border-payouts) are supported.
+    pub fn country(mut self, country: &'a str) -> Self {
+        self.inner.country = Some(country);
+        self
+    }
     /// Three-letter ISO currency code representing the default currency for the account.
-    /// This must be a currency that [Stripe supports in the account's country](https://stripe.com/docs/payouts).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_currency: Option<stripe_types::Currency>,
+    /// This must be a currency that [Stripe supports in the account's country](https://docs.stripe.com/payouts).
+    pub fn default_currency(mut self, default_currency: stripe_types::Currency) -> Self {
+        self.inner.default_currency = Some(default_currency);
+        self
+    }
     /// Documents that may be submitted to satisfy various informational requests.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub documents: Option<DocumentsSpecs<'a>>,
+    pub fn documents(mut self, documents: DocumentsSpecs<'a>) -> Self {
+        self.inner.documents = Some(documents);
+        self
+    }
     /// The email address of the account holder.
     /// This is only to make the account easier to identify to you.
-    /// Stripe only emails Custom accounts with your consent.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<&'a str>,
+    /// If [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts, Stripe doesn't email the account without your consent.
+    pub fn email(mut self, email: &'a str) -> Self {
+        self.inner.email = Some(email);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A card or bank account to attach to the account for receiving [payouts](https://stripe.com/docs/connect/bank-debit-card-payouts) (you won’t be able to use it for top-ups).
-    /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A card or bank account to attach to the account for receiving [payouts](/connect/bank-debit-card-payouts) (you won’t be able to use it for top-ups).
+    /// You can provide either a token, like the ones returned by [Stripe.js](/js), or a dictionary, as documented in the `external_account` parameter for [bank account](/api#account_create_bank_account) creation.
     ///
     ///
     /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
-    /// To add additional external accounts without replacing the existing default for the currency, use the [bank account](https://stripe.com/docs/api#account_create_bank_account) or [card creation](https://stripe.com/docs/api#account_create_card) APIs.
-    /// After you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub external_account: Option<&'a str>,
+    /// To add additional external accounts without replacing the existing default for the currency, use the [bank account](/api#account_create_bank_account) or [card creation](/api#account_create_card) APIs.
+    /// After you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+    pub fn external_account(mut self, external_account: &'a str) -> Self {
+        self.inner.external_account = Some(external_account);
+        self
+    }
     /// Information about the person represented by the account.
     /// This field is null unless `business_type` is set to `individual`.
-    /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub individual: Option<UpdateAccountIndividual<'a>>,
+    /// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+    pub fn individual(mut self, individual: CreateAccountIndividual<'a>) -> Self {
+        self.inner.individual = Some(individual);
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
     /// Options for customizing how the account functions within Stripe.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub settings: Option<UpdateAccountSettings<'a>>,
-    /// Details on the account's acceptance of the [Stripe Services Agreement](https://stripe.com/docs/connect/updating-accounts#tos-acceptance) This property can only be updated for Custom accounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tos_acceptance: Option<TosAcceptanceSpecs<'a>>,
+    pub fn settings(mut self, settings: CreateAccountSettings<'a>) -> Self {
+        self.inner.settings = Some(settings);
+        self
+    }
+    /// Details on the account's acceptance of the [Stripe Services Agreement](/connect/updating-accounts#tos-acceptance).
+    /// This property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+    pub fn tos_acceptance(mut self, tos_acceptance: TosAcceptanceSpecs<'a>) -> Self {
+        self.inner.tos_acceptance = Some(tos_acceptance);
+        self
+    }
+    /// The type of Stripe account to create. May be one of `custom`, `express` or `standard`.
+    pub fn type_(mut self, type_: CreateAccountType) -> Self {
+        self.inner.type_ = Some(type_);
+        self
+    }
 }
-impl<'a> UpdateAccount<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> Default for CreateAccount<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl CreateAccount<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateAccount<'_> {
+    type Output = stripe_shared::Account;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/accounts").form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateAccountBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    account_token: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    business_profile: Option<BusinessProfileSpecs<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    business_type: Option<stripe_shared::AccountBusinessType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    capabilities: Option<CapabilitiesParam>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    company: Option<UpdateAccountCompany<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_currency: Option<stripe_types::Currency>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    documents: Option<DocumentsSpecs<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    email: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    external_account: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    individual: Option<UpdateAccountIndividual<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    settings: Option<UpdateAccountSettings<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tos_acceptance: Option<TosAcceptanceSpecs<'a>>,
+}
+impl<'a> UpdateAccountBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            account_token: None,
+            business_profile: None,
+            business_type: None,
+            capabilities: None,
+            company: None,
+            default_currency: None,
+            documents: None,
+            email: None,
+            expand: None,
+            external_account: None,
+            individual: None,
+            metadata: None,
+            settings: None,
+            tos_acceptance: None,
+        }
     }
 }
 /// Information about the company or business.
 /// This field is available for any `business_type`.
-/// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+/// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateAccountCompany<'a> {
     /// The company's primary address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1068,12 +1943,12 @@ pub struct UpdateAccountCompany<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kanji: Option<UpdateAccountCompanyAddressKanji<'a>>,
     /// Whether the company's directors have been provided.
-    /// Set this Boolean to `true` after creating all the company's directors with [the Persons API](https://stripe.com/docs/api/persons) for accounts with a `relationship.director` requirement.
+    /// Set this Boolean to `true` after creating all the company's directors with [the Persons API](https://docs.stripe.com/api/persons) for accounts with a `relationship.director` requirement.
     /// This value is not automatically set to `true` after creating directors, so it needs to be updated to indicate all directors have been provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub directors_provided: Option<bool>,
     /// Whether the company's executives have been provided.
-    /// Set this Boolean to `true` after creating all the company's executives with [the Persons API](https://stripe.com/docs/api/persons) for accounts with a `relationship.executive` requirement.
+    /// Set this Boolean to `true` after creating all the company's executives with [the Persons API](https://docs.stripe.com/api/persons) for accounts with a `relationship.executive` requirement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub executives_provided: Option<bool>,
     /// The export license ID number of the company, also referred as Import Export Code (India only).
@@ -1092,7 +1967,7 @@ pub struct UpdateAccountCompany<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name_kanji: Option<&'a str>,
     /// Whether the company's owners have been provided.
-    /// Set this Boolean to `true` after creating all the company's owners with [the Persons API](https://stripe.com/docs/api/persons) for accounts with a `relationship.owner` requirement.
+    /// Set this Boolean to `true` after creating all the company's owners with [the Persons API](https://docs.stripe.com/api/persons) for accounts with a `relationship.owner` requirement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owners_provided: Option<bool>,
     /// This hash is used to attest that the beneficial owner information provided to Stripe is both current and correct.
@@ -1106,7 +1981,7 @@ pub struct UpdateAccountCompany<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registration_number: Option<&'a str>,
     /// The category identifying the legal structure of the company or legal entity.
-    /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
+    /// See [Business structure](https://docs.stripe.com/connect/identity-verification#business-structure) for more details.
     /// Pass an empty string to unset this value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub structure: Option<UpdateAccountCompanyStructure>,
@@ -1126,11 +2001,36 @@ pub struct UpdateAccountCompany<'a> {
 }
 impl<'a> UpdateAccountCompany<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            address: None,
+            address_kana: None,
+            address_kanji: None,
+            directors_provided: None,
+            executives_provided: None,
+            export_license_id: None,
+            export_purpose_code: None,
+            name: None,
+            name_kana: None,
+            name_kanji: None,
+            owners_provided: None,
+            ownership_declaration: None,
+            phone: None,
+            registration_number: None,
+            structure: None,
+            tax_id: None,
+            tax_id_registrar: None,
+            vat_id: None,
+            verification: None,
+        }
+    }
+}
+impl<'a> Default for UpdateAccountCompany<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The Kana variation of the company's primary address (Japan only).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateAccountCompanyAddressKana<'a> {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1156,11 +2056,24 @@ pub struct UpdateAccountCompanyAddressKana<'a> {
 }
 impl<'a> UpdateAccountCompanyAddressKana<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            city: None,
+            country: None,
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+            town: None,
+        }
+    }
+}
+impl<'a> Default for UpdateAccountCompanyAddressKana<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The Kanji variation of the company's primary address (Japan only).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateAccountCompanyAddressKanji<'a> {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1186,11 +2099,24 @@ pub struct UpdateAccountCompanyAddressKanji<'a> {
 }
 impl<'a> UpdateAccountCompanyAddressKanji<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            city: None,
+            country: None,
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+            town: None,
+        }
+    }
+}
+impl<'a> Default for UpdateAccountCompanyAddressKanji<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The category identifying the legal structure of the company or legal entity.
-/// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
+/// See [Business structure](https://docs.stripe.com/connect/identity-verification#business-structure) for more details.
 /// Pass an empty string to unset this value.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -1314,8 +2240,8 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountCompanyStructure {
 }
 /// Information about the person represented by the account.
 /// This field is null unless `business_type` is set to `individual`.
-/// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+/// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateAccountIndividual<'a> {
     /// The individual's primary address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1349,12 +2275,12 @@ pub struct UpdateAccountIndividual<'a> {
     pub gender: Option<&'a str>,
     /// The government-issued ID number of the individual, as appropriate for the representative's country.
     /// (Examples are a Social Security Number in the U.S., or a Social Insurance Number in Canada).
-    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://docs.stripe.com/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<&'a str>,
     /// The government-issued secondary ID number of the individual, as appropriate for the representative's country, will be used for enhanced verification checks.
     /// In Thailand, this would be the laser code found on the back of an ID card.
-    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://docs.stripe.com/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_secondary: Option<&'a str>,
     /// The individual's last name.
@@ -1396,11 +2322,40 @@ pub struct UpdateAccountIndividual<'a> {
 }
 impl<'a> UpdateAccountIndividual<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            address: None,
+            address_kana: None,
+            address_kanji: None,
+            dob: None,
+            email: None,
+            first_name: None,
+            first_name_kana: None,
+            first_name_kanji: None,
+            full_name_aliases: None,
+            gender: None,
+            id_number: None,
+            id_number_secondary: None,
+            last_name: None,
+            last_name_kana: None,
+            last_name_kanji: None,
+            maiden_name: None,
+            metadata: None,
+            phone: None,
+            political_exposure: None,
+            registered_address: None,
+            relationship: None,
+            ssn_last_4: None,
+            verification: None,
+        }
+    }
+}
+impl<'a> Default for UpdateAccountIndividual<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The Kana variation of the the individual's primary address (Japan only).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateAccountIndividualAddressKana<'a> {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1426,11 +2381,24 @@ pub struct UpdateAccountIndividualAddressKana<'a> {
 }
 impl<'a> UpdateAccountIndividualAddressKana<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            city: None,
+            country: None,
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+            town: None,
+        }
+    }
+}
+impl<'a> Default for UpdateAccountIndividualAddressKana<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The Kanji variation of the the individual's primary address (Japan only).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateAccountIndividualAddressKanji<'a> {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1456,7 +2424,20 @@ pub struct UpdateAccountIndividualAddressKanji<'a> {
 }
 impl<'a> UpdateAccountIndividualAddressKanji<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            city: None,
+            country: None,
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+            town: None,
+        }
+    }
+}
+impl<'a> Default for UpdateAccountIndividualAddressKanji<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
@@ -1516,7 +2497,7 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountIndividualPoliticalExposure {
     }
 }
 /// Options for customizing how the account functions within Stripe.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateAccountSettings<'a> {
     /// Settings specific to Bacs Direct Debit payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1545,11 +2526,25 @@ pub struct UpdateAccountSettings<'a> {
 }
 impl<'a> UpdateAccountSettings<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            bacs_debit_payments: None,
+            branding: None,
+            card_issuing: None,
+            card_payments: None,
+            invoices: None,
+            payments: None,
+            payouts: None,
+            treasury: None,
+        }
+    }
+}
+impl<'a> Default for UpdateAccountSettings<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Settings specific to the account's use of Invoices.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateAccountSettingsInvoices<'a> {
     /// The list of default Account Tax IDs to automatically include on invoices.
     /// Account Tax IDs get added when an invoice is finalized.
@@ -1558,18 +2553,23 @@ pub struct UpdateAccountSettingsInvoices<'a> {
 }
 impl<'a> UpdateAccountSettingsInvoices<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { default_account_tax_ids: None }
+    }
+}
+impl<'a> Default for UpdateAccountSettingsInvoices<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Settings specific to the account's payouts.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateAccountSettingsPayouts<'a> {
     /// A Boolean indicating whether Stripe should try to reclaim negative balances from an attached bank account.
-    /// For details, see [Understanding Connect Account Balances](https://stripe.com/docs/connect/account-balances).
+    /// For details, see [Understanding Connect Account Balances](https://docs.stripe.com/connect/account-balances).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub debit_negative_balances: Option<bool>,
     /// Details on when funds from charges are available, and when they are paid out to an external account.
-    /// For details, see our [Setting Bank and Debit Card Payouts](https://stripe.com/docs/connect/bank-transfers#payout-information) documentation.
+    /// For details, see our [Setting Bank and Debit Card Payouts](https://docs.stripe.com/connect/bank-transfers#payout-information) documentation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub schedule: Option<UpdateAccountSettingsPayoutsSchedule>,
     /// The text that appears on the bank account statement for payouts.
@@ -1579,18 +2579,23 @@ pub struct UpdateAccountSettingsPayouts<'a> {
 }
 impl<'a> UpdateAccountSettingsPayouts<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { debit_negative_balances: None, schedule: None, statement_descriptor: None }
+    }
+}
+impl<'a> Default for UpdateAccountSettingsPayouts<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Details on when funds from charges are available, and when they are paid out to an external account.
-/// For details, see our [Setting Bank and Debit Card Payouts](https://stripe.com/docs/connect/bank-transfers#payout-information) documentation.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+/// For details, see our [Setting Bank and Debit Card Payouts](https://docs.stripe.com/connect/bank-transfers#payout-information) documentation.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateAccountSettingsPayoutsSchedule {
     /// The number of days charge funds are held before being paid out.
     /// May also be set to `minimum`, representing the lowest available value for the account country.
     /// Default is `minimum`.
     /// The `delay_days` parameter remains at the last configured value if `interval` is `manual`.
-    /// [Learn more about controlling payout delay days](https://stripe.com/docs/connect/manage-payout-schedule).
+    /// [Learn more about controlling payout delay days](https://docs.stripe.com/connect/manage-payout-schedule).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delay_days: Option<UpdateAccountSettingsPayoutsScheduleDelayDays>,
     /// How frequently available funds are paid out.
@@ -1610,14 +2615,19 @@ pub struct UpdateAccountSettingsPayoutsSchedule {
 }
 impl UpdateAccountSettingsPayoutsSchedule {
     pub fn new() -> Self {
-        Self::default()
+        Self { delay_days: None, interval: None, monthly_anchor: None, weekly_anchor: None }
+    }
+}
+impl Default for UpdateAccountSettingsPayoutsSchedule {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The number of days charge funds are held before being paid out.
 /// May also be set to `minimum`, representing the lowest available value for the account country.
 /// Default is `minimum`.
 /// The `delay_days` parameter remains at the last configured value if `interval` is `manual`.
-/// [Learn more about controlling payout delay days](https://stripe.com/docs/connect/manage-payout-schedule).
+/// [Learn more about controlling payout delay days](https://docs.stripe.com/connect/manage-payout-schedule).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 #[serde(untagged)]
 pub enum UpdateAccountSettingsPayoutsScheduleDelayDays {
@@ -1764,57 +2774,216 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountSettingsPayoutsScheduleWeekly
         })
     }
 }
+/// Updates a <a href="/connect/accounts">connected account</a> by setting the values of the parameters passed.
+/// Any parameters not provided are.
+/// left unchanged.
+///
+/// For accounts where <a href="/api/accounts/object#account_object-controller-requirement_collection">controller.requirement_collection</a>.
+/// is `application`, which includes Custom accounts, you can update any information on the account.
+///
+/// For accounts where <a href="/api/accounts/object#account_object-controller-requirement_collection">controller.requirement_collection</a>.
+/// is `stripe`, which includes Standard and Express accounts, you can update all information until you create.
+/// an <a href="/api/account_links">Account Link</a> or <a href="/api/account_sessions">Account Session</a> to start Connect onboarding,.
+/// after which some properties can no longer be updated.
+///
+/// To update your own account, use the [Dashboard](https://dashboard.stripe.com/settings/account).
+/// Refer to our.
+/// [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateAccount<'a> {
+    inner: UpdateAccountBuilder<'a>,
+    account: &'a stripe_shared::AccountId,
+}
 impl<'a> UpdateAccount<'a> {
-    /// Updates a [connected account](https://stripe.com/docs/connect/accounts) by setting the values of the parameters passed.
-    /// Any parameters not provided are.
-    /// left unchanged.
+    /// Construct a new `UpdateAccount`.
+    pub fn new(account: &'a stripe_shared::AccountId) -> Self {
+        Self { account, inner: UpdateAccountBuilder::new() }
+    }
+    /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
+    pub fn account_token(mut self, account_token: &'a str) -> Self {
+        self.inner.account_token = Some(account_token);
+        self
+    }
+    /// Business information about the account.
+    pub fn business_profile(mut self, business_profile: BusinessProfileSpecs<'a>) -> Self {
+        self.inner.business_profile = Some(business_profile);
+        self
+    }
+    /// The business type.
+    /// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+    pub fn business_type(mut self, business_type: stripe_shared::AccountBusinessType) -> Self {
+        self.inner.business_type = Some(business_type);
+        self
+    }
+    /// Each key of the dictionary represents a capability, and each capability
+    /// maps to its settings (for example, whether it has been requested or not). Each
+    /// capability is inactive until you have provided its specific
+    /// requirements and Stripe has verified them. An account might have some
+    /// of its requested capabilities be active and some be inactive.
     ///
-    /// For Custom accounts, you can update any information on the account.
-    /// For other accounts, you can update all information until that.
-    /// account has started to go through Connect Onboarding.
-    /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions),.
-    /// some properties can only be changed or updated for Custom accounts.
+    /// Required when [account.controller.stripe_dashboard.type](/api/accounts/create#create_account-controller-dashboard-type).
+    /// is `none`, which includes Custom accounts.
+    pub fn capabilities(mut self, capabilities: CapabilitiesParam) -> Self {
+        self.inner.capabilities = Some(capabilities);
+        self
+    }
+    /// Information about the company or business.
+    /// This field is available for any `business_type`.
+    /// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+    pub fn company(mut self, company: UpdateAccountCompany<'a>) -> Self {
+        self.inner.company = Some(company);
+        self
+    }
+    /// Three-letter ISO currency code representing the default currency for the account.
+    /// This must be a currency that [Stripe supports in the account's country](https://docs.stripe.com/payouts).
+    pub fn default_currency(mut self, default_currency: stripe_types::Currency) -> Self {
+        self.inner.default_currency = Some(default_currency);
+        self
+    }
+    /// Documents that may be submitted to satisfy various informational requests.
+    pub fn documents(mut self, documents: DocumentsSpecs<'a>) -> Self {
+        self.inner.documents = Some(documents);
+        self
+    }
+    /// The email address of the account holder.
+    /// This is only to make the account easier to identify to you.
+    /// If [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts, Stripe doesn't email the account without your consent.
+    pub fn email(mut self, email: &'a str) -> Self {
+        self.inner.email = Some(email);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A card or bank account to attach to the account for receiving [payouts](/connect/bank-debit-card-payouts) (you won’t be able to use it for top-ups).
+    /// You can provide either a token, like the ones returned by [Stripe.js](/js), or a dictionary, as documented in the `external_account` parameter for [bank account](/api#account_create_bank_account) creation.
     ///
-    /// To update your own account, use the [Dashboard](https://dashboard.stripe.com/settings/account).
-    /// Refer to our.
-    /// [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
-    pub fn send(
+    ///
+    /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
+    /// To add additional external accounts without replacing the existing default for the currency, use the [bank account](/api#account_create_bank_account) or [card creation](/api#account_create_card) APIs.
+    /// After you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+    pub fn external_account(mut self, external_account: &'a str) -> Self {
+        self.inner.external_account = Some(external_account);
+        self
+    }
+    /// Information about the person represented by the account.
+    /// This field is null unless `business_type` is set to `individual`.
+    /// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+    pub fn individual(mut self, individual: UpdateAccountIndividual<'a>) -> Self {
+        self.inner.individual = Some(individual);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+    /// Options for customizing how the account functions within Stripe.
+    pub fn settings(mut self, settings: UpdateAccountSettings<'a>) -> Self {
+        self.inner.settings = Some(settings);
+        self
+    }
+    /// Details on the account's acceptance of the [Stripe Services Agreement](/connect/updating-accounts#tos-acceptance).
+    /// This property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+    pub fn tos_acceptance(mut self, tos_acceptance: TosAcceptanceSpecs<'a>) -> Self {
+        self.inner.tos_acceptance = Some(tos_acceptance);
+        self
+    }
+}
+impl UpdateAccount<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-    ) -> stripe::Response<stripe_shared::Account> {
-        client.send_form(&format!("/accounts/{account}"), self, http_types::Method::Post)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateAccount<'_> {
+    type Output = stripe_shared::Account;
+
+    fn build(&self) -> RequestBuilder {
+        let account = self.account;
+        RequestBuilder::new(StripeMethod::Post, format!("/accounts/{account}")).form(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct RejectAccount<'a> {
-    /// Specifies which fields in the response should be expanded.
+struct RejectAccountBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The reason for rejecting the account. Can be `fraud`, `terms_of_service`, or `other`.
-    pub reason: &'a str,
+    expand: Option<&'a [&'a str]>,
+    reason: &'a str,
 }
-impl<'a> RejectAccount<'a> {
-    pub fn new(reason: &'a str) -> Self {
+impl<'a> RejectAccountBuilder<'a> {
+    fn new(reason: &'a str) -> Self {
         Self { expand: None, reason }
     }
 }
+/// With <a href="/connect">Connect</a>, you can reject accounts that you have flagged as suspicious.
+///
+/// Only accounts where your platform is liable for negative account balances, which includes Custom and Express accounts, can be rejected.
+/// Test-mode accounts can be rejected at any time.
+/// Live-mode accounts can only be rejected after all balances are zero.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RejectAccount<'a> {
+    inner: RejectAccountBuilder<'a>,
+    account: &'a stripe_shared::AccountId,
+}
 impl<'a> RejectAccount<'a> {
-    /// With [Connect](https://stripe.com/docs/connect), you may flag accounts as suspicious.
-    ///
-    /// Test-mode Custom and Express accounts can be rejected at any time.
-    /// Accounts created using live-mode keys may only be rejected once all balances are zero.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-    ) -> stripe::Response<stripe_shared::Account> {
-        client.send_form(&format!("/accounts/{account}/reject"), self, http_types::Method::Post)
+    /// Construct a new `RejectAccount`.
+    pub fn new(account: &'a stripe_shared::AccountId, reason: &'a str) -> Self {
+        Self { account, inner: RejectAccountBuilder::new(reason) }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
+impl RejectAccount<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RejectAccount<'_> {
+    type Output = stripe_shared::Account;
+
+    fn build(&self) -> RequestBuilder {
+        let account = self.account;
+        RequestBuilder::new(StripeMethod::Post, format!("/accounts/{account}/reject"))
+            .form(&self.inner)
+    }
+}
+
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct AnnualRevenueSpecs<'a> {
-    /// A non-negative integer representing the amount in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// A non-negative integer representing the amount in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub amount: i64,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1831,7 +3000,7 @@ impl<'a> AnnualRevenueSpecs<'a> {
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct MonthlyEstimatedRevenueSpecs {
-    /// A non-negative integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// A non-negative integer representing how much to charge in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub amount: i64,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1842,7 +3011,7 @@ impl MonthlyEstimatedRevenueSpecs {
         Self { amount, currency }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct AddressSpecs<'a> {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1865,10 +3034,15 @@ pub struct AddressSpecs<'a> {
 }
 impl<'a> AddressSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for AddressSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CapabilityParam {
     /// Passing true requests the capability for the account, if it is not already requested.
     /// A requested capability may not immediately become active.
@@ -1878,10 +3052,15 @@ pub struct CapabilityParam {
 }
 impl CapabilityParam {
     pub fn new() -> Self {
-        Self::default()
+        Self { requested: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl Default for CapabilityParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CompanyOwnershipDeclaration<'a> {
     /// The Unix timestamp marking when the beneficial owner attestation was made.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1895,10 +3074,15 @@ pub struct CompanyOwnershipDeclaration<'a> {
 }
 impl<'a> CompanyOwnershipDeclaration<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { date: None, ip: None, user_agent: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for CompanyOwnershipDeclaration<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct VerificationDocumentSpecs<'a> {
     /// The back of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `additional_verification`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
@@ -1911,10 +3095,15 @@ pub struct VerificationDocumentSpecs<'a> {
 }
 impl<'a> VerificationDocumentSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { back: None, front: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for VerificationDocumentSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct DocumentsParam<'a> {
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1922,7 +3111,12 @@ pub struct DocumentsParam<'a> {
 }
 impl<'a> DocumentsParam<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { files: None }
+    }
+}
+impl<'a> Default for DocumentsParam<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -1939,7 +3133,7 @@ impl DateOfBirthSpecs {
         Self { day, month, year }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct IndividualRelationshipSpecs<'a> {
     /// Whether the person is a director of the account's legal entity.
     /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
@@ -1960,10 +3154,15 @@ pub struct IndividualRelationshipSpecs<'a> {
 }
 impl<'a> IndividualRelationshipSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { director: None, executive: None, owner: None, percent_ownership: None, title: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for IndividualRelationshipSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct PersonVerificationDocumentSpecs<'a> {
     /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
@@ -1976,10 +3175,15 @@ pub struct PersonVerificationDocumentSpecs<'a> {
 }
 impl<'a> PersonVerificationDocumentSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { back: None, front: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for PersonVerificationDocumentSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct BacsDebitPaymentsSpecs<'a> {
     /// The Bacs Direct Debit Display Name for this account.
     /// For payments made with Bacs Direct Debit, this name appears on the mandate as the statement descriptor.
@@ -1992,10 +3196,15 @@ pub struct BacsDebitPaymentsSpecs<'a> {
 }
 impl<'a> BacsDebitPaymentsSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { display_name: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for BacsDebitPaymentsSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct BrandingSettingsSpecs<'a> {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) An icon for the account.
     /// Must be square and at least 128px x 128px.
@@ -2014,10 +3223,15 @@ pub struct BrandingSettingsSpecs<'a> {
 }
 impl<'a> BrandingSettingsSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { icon: None, logo: None, primary_color: None, secondary_color: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for BrandingSettingsSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct SettingsTermsOfServiceSpecs<'a> {
     /// The Unix timestamp marking when the account representative accepted the service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2031,10 +3245,15 @@ pub struct SettingsTermsOfServiceSpecs<'a> {
 }
 impl<'a> SettingsTermsOfServiceSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { date: None, ip: None, user_agent: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for SettingsTermsOfServiceSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct DeclineChargeOnSpecs {
     /// Whether Stripe automatically declines charges with an incorrect ZIP or postal code.
     /// This setting only applies when a ZIP or postal code is provided and they fail bank verification.
@@ -2047,10 +3266,15 @@ pub struct DeclineChargeOnSpecs {
 }
 impl DeclineChargeOnSpecs {
     pub fn new() -> Self {
-        Self::default()
+        Self { avs_failure: None, cvc_failure: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl Default for DeclineChargeOnSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct PaymentsSettingsSpecs<'a> {
     /// The default text that appears on credit card statements when a charge is made.
     /// This field prefixes any dynamic `statement_descriptor` specified on the charge.
@@ -2065,10 +3289,19 @@ pub struct PaymentsSettingsSpecs<'a> {
 }
 impl<'a> PaymentsSettingsSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            statement_descriptor: None,
+            statement_descriptor_kana: None,
+            statement_descriptor_kanji: None,
+        }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for PaymentsSettingsSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct TosAcceptanceSpecs<'a> {
     /// The Unix timestamp marking when the account representative accepted their service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2085,10 +3318,15 @@ pub struct TosAcceptanceSpecs<'a> {
 }
 impl<'a> TosAcceptanceSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { date: None, ip: None, service_agreement: None, user_agent: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for TosAcceptanceSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct BusinessProfileSpecs<'a> {
     /// The applicant's gross annual revenue for its preceding fiscal year.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2097,7 +3335,7 @@ pub struct BusinessProfileSpecs<'a> {
     /// currently working for the business.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub estimated_worker_count: Option<u64>,
-    /// [The merchant category code for the account](https://stripe.com/docs/connect/setting-mcc).
+    /// [The merchant category code for the account](https://docs.stripe.com/connect/setting-mcc).
     /// MCCs are used to classify businesses based on the goods or services they provide.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mcc: Option<&'a str>,
@@ -2129,10 +3367,27 @@ pub struct BusinessProfileSpecs<'a> {
 }
 impl<'a> BusinessProfileSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            annual_revenue: None,
+            estimated_worker_count: None,
+            mcc: None,
+            monthly_estimated_revenue: None,
+            name: None,
+            product_description: None,
+            support_address: None,
+            support_email: None,
+            support_phone: None,
+            support_url: None,
+            url: None,
+        }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for BusinessProfileSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CapabilitiesParam {
     /// The acss_debit_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2143,6 +3398,9 @@ pub struct CapabilitiesParam {
     /// The afterpay_clearpay_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay_payments: Option<CapabilityParam>,
+    /// The amazon_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amazon_pay_payments: Option<CapabilityParam>,
     /// The au_becs_debit_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit_payments: Option<CapabilityParam>,
@@ -2206,6 +3464,9 @@ pub struct CapabilitiesParam {
     /// The link_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link_payments: Option<CapabilityParam>,
+    /// The mobilepay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mobilepay_payments: Option<CapabilityParam>,
     /// The oxxo_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo_payments: Option<CapabilityParam>,
@@ -2251,10 +3512,56 @@ pub struct CapabilitiesParam {
 }
 impl CapabilitiesParam {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            acss_debit_payments: None,
+            affirm_payments: None,
+            afterpay_clearpay_payments: None,
+            amazon_pay_payments: None,
+            au_becs_debit_payments: None,
+            bacs_debit_payments: None,
+            bancontact_payments: None,
+            bank_transfer_payments: None,
+            blik_payments: None,
+            boleto_payments: None,
+            card_issuing: None,
+            card_payments: None,
+            cartes_bancaires_payments: None,
+            cashapp_payments: None,
+            eps_payments: None,
+            fpx_payments: None,
+            giropay_payments: None,
+            grabpay_payments: None,
+            ideal_payments: None,
+            india_international_payments: None,
+            jcb_payments: None,
+            klarna_payments: None,
+            konbini_payments: None,
+            legacy_payments: None,
+            link_payments: None,
+            mobilepay_payments: None,
+            oxxo_payments: None,
+            p24_payments: None,
+            paynow_payments: None,
+            promptpay_payments: None,
+            revolut_pay_payments: None,
+            sepa_debit_payments: None,
+            sofort_payments: None,
+            swish_payments: None,
+            tax_reporting_us_1099_k: None,
+            tax_reporting_us_1099_misc: None,
+            transfers: None,
+            treasury: None,
+            us_bank_account_ach_payments: None,
+            zip_payments: None,
+        }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl Default for CapabilitiesParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct VerificationSpecs<'a> {
     /// A document verifying the business.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2262,10 +3569,15 @@ pub struct VerificationSpecs<'a> {
 }
 impl<'a> VerificationSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { document: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for VerificationSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct DocumentsSpecs<'a> {
     /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
     /// Must be a document associated with the account’s primary active bank account that displays the last 4 digits of the account number, either a statement or a voided check.
@@ -2292,10 +3604,23 @@ pub struct DocumentsSpecs<'a> {
 }
 impl<'a> DocumentsSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            bank_account_ownership_verification: None,
+            company_license: None,
+            company_memorandum_of_association: None,
+            company_ministerial_decree: None,
+            company_registration_verification: None,
+            company_tax_id_verification: None,
+            proof_of_registration: None,
+        }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for DocumentsSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct PersonVerificationSpecs<'a> {
     /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2306,21 +3631,31 @@ pub struct PersonVerificationSpecs<'a> {
 }
 impl<'a> PersonVerificationSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { additional_document: None, document: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for PersonVerificationSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CardIssuingSettingsSpecs<'a> {
-    /// Details on the account's acceptance of the [Stripe Issuing Terms and Disclosures](https://stripe.com/docs/issuing/connect/tos_acceptance).
+    /// Details on the account's acceptance of the [Stripe Issuing Terms and Disclosures](https://docs.stripe.com/issuing/connect/tos_acceptance).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_acceptance: Option<SettingsTermsOfServiceSpecs<'a>>,
 }
 impl<'a> CardIssuingSettingsSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { tos_acceptance: None }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for CardIssuingSettingsSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CardPaymentsSettingsSpecs<'a> {
     /// Automatically declines certain charge types regardless of whether the card issuer accepted or declined the charge.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2343,10 +3678,20 @@ pub struct CardPaymentsSettingsSpecs<'a> {
 }
 impl<'a> CardPaymentsSettingsSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            decline_on: None,
+            statement_descriptor_prefix: None,
+            statement_descriptor_prefix_kana: None,
+            statement_descriptor_prefix_kanji: None,
+        }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl<'a> Default for CardPaymentsSettingsSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct TreasurySettingsSpecs<'a> {
     /// Details on the account's acceptance of the Stripe Treasury Services Agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2354,6 +3699,11 @@ pub struct TreasurySettingsSpecs<'a> {
 }
 impl<'a> TreasurySettingsSpecs<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { tos_acceptance: None }
+    }
+}
+impl<'a> Default for TreasurySettingsSpecs<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }

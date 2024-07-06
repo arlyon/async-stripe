@@ -23,7 +23,7 @@ pub struct PaymentLink {
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     pub application_fee_percent: Option<f64>,
     pub automatic_tax: stripe_shared::PaymentLinksResourceAutomaticTax,
-    /// Configuration for collecting the customer's billing address.
+    /// Configuration for collecting the customer's billing address. Defaults to `auto`.
     pub billing_address_collection: stripe_shared::PaymentLinkBillingAddressCollection,
     /// When set, provides configuration to gather active consent from customers.
     pub consent_collection: Option<stripe_shared::PaymentLinksResourceConsentCollection>,
@@ -54,7 +54,7 @@ pub struct PaymentLink {
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// Indicates the parameters to be passed to PaymentIntent creation during checkout.
     pub payment_intent_data: Option<stripe_shared::PaymentLinksResourcePaymentIntentData>,
-    /// Configuration for collecting a payment method during checkout.
+    /// Configuration for collecting a payment method during checkout. Defaults to `always`.
     pub payment_method_collection: PaymentLinkPaymentMethodCollection,
     /// The list of payment method types that customers can use.
     /// When `null`, Stripe will dynamically show relevant payment methods you've enabled in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
@@ -463,7 +463,7 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkCustomerCreation {
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkCustomerCreation"))
     }
 }
-/// Configuration for collecting a payment method during checkout.
+/// Configuration for collecting a payment method during checkout. Defaults to `always`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentLinkPaymentMethodCollection {
     Always,

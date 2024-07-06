@@ -20,15 +20,15 @@ pub struct Product {
     /// The product's description, meant to be displayable to the customer.
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
     pub description: Option<String>,
-    /// A list of up to 15 features for this product.
-    /// These are displayed in [pricing tables](https://stripe.com/docs/payments/checkout/pricing-table).
-    pub features: Vec<stripe_shared::ProductFeature>,
     /// Unique identifier for the object.
     pub id: stripe_shared::ProductId,
     /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
     pub images: Vec<String>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+    /// A list of up to 15 marketing features for this product.
+    /// These are displayed in [pricing tables](https://stripe.com/docs/payments/checkout/pricing-table).
+    pub marketing_features: Vec<stripe_shared::ProductMarketingFeature>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
@@ -61,10 +61,10 @@ pub struct ProductBuilder {
     created: Option<stripe_types::Timestamp>,
     default_price: Option<Option<stripe_types::Expandable<stripe_shared::Price>>>,
     description: Option<Option<String>>,
-    features: Option<Vec<stripe_shared::ProductFeature>>,
     id: Option<stripe_shared::ProductId>,
     images: Option<Vec<String>>,
     livemode: Option<bool>,
+    marketing_features: Option<Vec<stripe_shared::ProductMarketingFeature>>,
     metadata: Option<std::collections::HashMap<String, String>>,
     name: Option<String>,
     package_dimensions: Option<Option<stripe_shared::PackageDimensions>>,
@@ -112,10 +112,10 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "default_price" => Deserialize::begin(&mut self.default_price),
                 "description" => Deserialize::begin(&mut self.description),
-                "features" => Deserialize::begin(&mut self.features),
                 "id" => Deserialize::begin(&mut self.id),
                 "images" => Deserialize::begin(&mut self.images),
                 "livemode" => Deserialize::begin(&mut self.livemode),
+                "marketing_features" => Deserialize::begin(&mut self.marketing_features),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "name" => Deserialize::begin(&mut self.name),
                 "package_dimensions" => Deserialize::begin(&mut self.package_dimensions),
@@ -137,10 +137,10 @@ const _: () = {
                 created: Deserialize::default(),
                 default_price: Deserialize::default(),
                 description: Deserialize::default(),
-                features: Deserialize::default(),
                 id: Deserialize::default(),
                 images: Deserialize::default(),
                 livemode: Deserialize::default(),
+                marketing_features: Deserialize::default(),
                 metadata: Deserialize::default(),
                 name: Deserialize::default(),
                 package_dimensions: Deserialize::default(),
@@ -160,10 +160,10 @@ const _: () = {
                 created: self.created?,
                 default_price: self.default_price.take()?,
                 description: self.description.take()?,
-                features: self.features.take()?,
                 id: self.id.take()?,
                 images: self.images.take()?,
                 livemode: self.livemode?,
+                marketing_features: self.marketing_features.take()?,
                 metadata: self.metadata.take()?,
                 name: self.name.take()?,
                 package_dimensions: self.package_dimensions?,
@@ -205,10 +205,12 @@ const _: () = {
                     "created" => b.created = Some(FromValueOpt::from_value(v)?),
                     "default_price" => b.default_price = Some(FromValueOpt::from_value(v)?),
                     "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "features" => b.features = Some(FromValueOpt::from_value(v)?),
                     "id" => b.id = Some(FromValueOpt::from_value(v)?),
                     "images" => b.images = Some(FromValueOpt::from_value(v)?),
                     "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "marketing_features" => {
+                        b.marketing_features = Some(FromValueOpt::from_value(v)?)
+                    }
                     "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
                     "name" => b.name = Some(FromValueOpt::from_value(v)?),
                     "package_dimensions" => {
@@ -240,10 +242,10 @@ impl serde::Serialize for Product {
         s.serialize_field("created", &self.created)?;
         s.serialize_field("default_price", &self.default_price)?;
         s.serialize_field("description", &self.description)?;
-        s.serialize_field("features", &self.features)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("images", &self.images)?;
         s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("marketing_features", &self.marketing_features)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("name", &self.name)?;
         s.serialize_field("package_dimensions", &self.package_dimensions)?;

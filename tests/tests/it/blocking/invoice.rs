@@ -4,17 +4,17 @@ use stripe_billing::invoice::{
 };
 use stripe_core::ChargeId;
 
-use crate::mock::get_client;
+use super::get_client;
 
 // Smoke test, https://github.com/arlyon/async-stripe/issues/396
 #[test]
 fn is_invoice_retrievable() {
     let client = get_client();
-
-    let mut retriever = RetrieveInvoice::new();
-    retriever.expand = Some(&["charge.balance_transaction"]);
     let id = "in_123".parse().unwrap();
-    let result = retriever.send(&client, &id).unwrap();
+    let result = RetrieveInvoice::new(&id)
+        .expand(&["charge.balance_transaction"])
+        .send_blocking(&client)
+        .unwrap();
     let charge = result.charge.unwrap();
     let expected_id = ChargeId::from("ch_1OPoueJN5vQBdWEx5AWizjSY".to_string());
     assert!(charge.is_object());
@@ -28,14 +28,16 @@ fn is_invoice_retrievable() {
 fn is_invoice_payable() {
     let client = get_client();
 
-    let mut payer = PayInvoice::new();
-    payer.forgive = Some(true);
-    payer.off_session = Some(true);
-    payer.paid_out_of_band = Some(true);
     let id = "in_123".parse().unwrap();
-    let result = payer.send(&client, &id).unwrap();
+
+    let result = PayInvoice::new(&id)
+        .forgive(true)
+        .off_session(true)
+        .paid_out_of_band(true)
+        .send_blocking(&client)
+        .unwrap();
     assert_eq!(result.id, Some(id));
-    assert_eq!(result.paid_out_of_band, true);
+    assert!(result.paid_out_of_band);
 }
 
 #[test]
@@ -43,10 +45,9 @@ fn is_invoice_payable() {
 fn finalize_invoice() {
     let client = get_client();
 
-    let mut finalize = FinalizeInvoiceInvoice::new();
-    finalize.auto_advance = Some(true);
     let id = "in_123".parse().unwrap();
-    let result = finalize.send(&client, &id).unwrap();
+    let result =
+        FinalizeInvoiceInvoice::new(&id).auto_advance(true).send_blocking(&client).unwrap();
     assert_eq!(result.id, Some(id));
     assert_eq!(result.auto_advance, Some(true));
 }
@@ -56,10 +57,10 @@ fn finalize_invoice() {
 fn upcoming_invoice() {
     let client = get_client();
 
-    let mut upcoming = UpcomingInvoice::new();
-    let items = vec![UpcomingInvoiceSubscriptionItems::new()];
-    upcoming.subscription_items = Some(&items);
-    let result = upcoming.send(&client).unwrap();
+    let result = UpcomingInvoice::new()
+        .subscription_items(&[UpcomingInvoiceSubscriptionItems::new()])
+        .send_blocking(&client)
+        .unwrap();
     assert_eq!(result.subtotal, 1000);
     assert_eq!(result.amount_due, 1000);
 }

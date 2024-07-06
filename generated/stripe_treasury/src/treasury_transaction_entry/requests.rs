@@ -1,38 +1,29 @@
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ListTreasuryTransactionEntry<'a> {
+struct ListTreasuryTransactionEntryBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
+    created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub effective_at: Option<stripe_types::RangeQueryTs>,
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    effective_at: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
+    ending_before: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Returns objects associated with this FinancialAccount.
-    pub financial_account: &'a str,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
+    expand: Option<&'a [&'a str]>,
+    financial_account: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// The results are in reverse chronological order by `created` or `effective_at`.
-    /// The default is `created`.
+    limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub order_by: Option<ListTreasuryTransactionEntryOrderBy>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    order_by: Option<ListTreasuryTransactionEntryOrderBy>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-    /// Only return TransactionEntries associated with this Transaction.
+    starting_after: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction: Option<&'a str>,
+    transaction: Option<&'a str>,
 }
-impl<'a> ListTreasuryTransactionEntry<'a> {
-    pub fn new(financial_account: &'a str) -> Self {
+impl<'a> ListTreasuryTransactionEntryBuilder<'a> {
+    fn new(financial_account: &'a str) -> Self {
         Self {
             created: None,
             effective_at: None,
@@ -103,38 +94,146 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryTransactionEntryOrderBy {
         })
     }
 }
+/// Retrieves a list of TransactionEntry objects.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListTreasuryTransactionEntry<'a> {
+    inner: ListTreasuryTransactionEntryBuilder<'a>,
+}
 impl<'a> ListTreasuryTransactionEntry<'a> {
-    /// Retrieves a list of TransactionEntry objects.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryTransactionEntry>> {
-        client.get_query("/treasury/transaction_entries", self)
+    /// Construct a new `ListTreasuryTransactionEntry`.
+    pub fn new(financial_account: &'a str) -> Self {
+        Self { inner: ListTreasuryTransactionEntryBuilder::new(financial_account) }
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_treasury::TreasuryTransactionEntry>> {
-        stripe::ListPaginator::from_list_params("/treasury/transaction_entries", self)
+    /// Only return TransactionEntries that were created during the given date interval.
+    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
+        self.inner.created = Some(created);
+        self
     }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTreasuryTransactionEntry<'a> {
+    pub fn effective_at(mut self, effective_at: stripe_types::RangeQueryTs) -> Self {
+        self.inner.effective_at = Some(effective_at);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTreasuryTransactionEntry<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
+    /// The results are in reverse chronological order by `created` or `effective_at`.
+    /// The default is `created`.
+    pub fn order_by(mut self, order_by: ListTreasuryTransactionEntryOrderBy) -> Self {
+        self.inner.order_by = Some(order_by);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
+    /// Only return TransactionEntries associated with this Transaction.
+    pub fn transaction(mut self, transaction: &'a str) -> Self {
+        self.inner.transaction = Some(transaction);
+        self
     }
 }
-impl<'a> RetrieveTreasuryTransactionEntry<'a> {
-    /// Retrieves a TransactionEntry object.
-    pub fn send(
+impl ListTreasuryTransactionEntry<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        id: &stripe_treasury::TreasuryTransactionEntryId,
-    ) -> stripe::Response<stripe_treasury::TreasuryTransactionEntry> {
-        client.get_query(&format!("/treasury/transaction_entries/{id}"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
+    pub fn paginate(
+        &self,
+    ) -> stripe_client_core::ListPaginator<
+        stripe_types::List<stripe_treasury::TreasuryTransactionEntry>,
+    > {
+        stripe_client_core::ListPaginator::new_list("/treasury/transaction_entries", self.inner)
+    }
+}
+
+impl StripeRequest for ListTreasuryTransactionEntry<'_> {
+    type Output = stripe_types::List<stripe_treasury::TreasuryTransactionEntry>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/treasury/transaction_entries").query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveTreasuryTransactionEntryBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveTreasuryTransactionEntryBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves a TransactionEntry object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveTreasuryTransactionEntry<'a> {
+    inner: RetrieveTreasuryTransactionEntryBuilder<'a>,
+    id: &'a stripe_treasury::TreasuryTransactionEntryId,
+}
+impl<'a> RetrieveTreasuryTransactionEntry<'a> {
+    /// Construct a new `RetrieveTreasuryTransactionEntry`.
+    pub fn new(id: &'a stripe_treasury::TreasuryTransactionEntryId) -> Self {
+        Self { id, inner: RetrieveTreasuryTransactionEntryBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveTreasuryTransactionEntry<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveTreasuryTransactionEntry<'_> {
+    type Output = stripe_treasury::TreasuryTransactionEntry;
+
+    fn build(&self) -> RequestBuilder {
+        let id = self.id;
+        RequestBuilder::new(StripeMethod::Get, format!("/treasury/transaction_entries/{id}"))
+            .query(&self.inner)
     }
 }

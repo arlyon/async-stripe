@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicesPaymentMethodOptions {
@@ -12,6 +12,8 @@ pub struct InvoicesPaymentMethodOptions {
     pub customer_balance: Option<stripe_shared::InvoicePaymentMethodOptionsCustomerBalance>,
     /// If paying by `konbini`, this sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     pub konbini: Option<stripe_shared::InvoicePaymentMethodOptionsKonbini>,
+    /// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Direct Debit payment method options to pass to the invoice’s PaymentIntent.
+    pub sepa_debit: Option<stripe_shared::InvoicePaymentMethodOptionsSepaDebit>,
     /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     pub us_bank_account: Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccount>,
 }
@@ -22,6 +24,7 @@ pub struct InvoicesPaymentMethodOptionsBuilder {
     card: Option<Option<stripe_shared::InvoicePaymentMethodOptionsCard>>,
     customer_balance: Option<Option<stripe_shared::InvoicePaymentMethodOptionsCustomerBalance>>,
     konbini: Option<Option<stripe_shared::InvoicePaymentMethodOptionsKonbini>>,
+    sepa_debit: Option<Option<stripe_shared::InvoicePaymentMethodOptionsSepaDebit>>,
     us_bank_account: Option<Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccount>>,
 }
 
@@ -64,6 +67,7 @@ const _: () = {
                 "card" => Deserialize::begin(&mut self.card),
                 "customer_balance" => Deserialize::begin(&mut self.customer_balance),
                 "konbini" => Deserialize::begin(&mut self.konbini),
+                "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
 
                 _ => <dyn Visitor>::ignore(),
@@ -77,6 +81,7 @@ const _: () = {
                 card: Deserialize::default(),
                 customer_balance: Deserialize::default(),
                 konbini: Deserialize::default(),
+                sepa_debit: Deserialize::default(),
                 us_bank_account: Deserialize::default(),
             }
         }
@@ -88,6 +93,7 @@ const _: () = {
                 card: self.card?,
                 customer_balance: self.customer_balance.take()?,
                 konbini: self.konbini?,
+                sepa_debit: self.sepa_debit?,
                 us_bank_account: self.us_bank_account.take()?,
             })
         }
@@ -121,6 +127,7 @@ const _: () = {
                     "card" => b.card = Some(FromValueOpt::from_value(v)?),
                     "customer_balance" => b.customer_balance = Some(FromValueOpt::from_value(v)?),
                     "konbini" => b.konbini = Some(FromValueOpt::from_value(v)?),
+                    "sepa_debit" => b.sepa_debit = Some(FromValueOpt::from_value(v)?),
                     "us_bank_account" => b.us_bank_account = Some(FromValueOpt::from_value(v)?),
 
                     _ => {}

@@ -3,7 +3,6 @@ use std::path::PathBuf;
 
 use anyhow::Context;
 use indoc::formatdoc;
-use serde::Serialize;
 
 use crate::components::{get_components, Components};
 use crate::crate_table::write_crate_table;
@@ -51,8 +50,7 @@ impl CodeGen {
         write_to_file(version_file_content, base_path.join("version.rs"))?;
         let _ = writeln!(mod_rs_contents, "pub mod version;");
 
-        append_to_file(mod_rs_contents, mod_rs_path)?;
-        Ok(())
+        append_to_file(mod_rs_contents, mod_rs_path)
     }
 
     fn write_components(&self) -> anyhow::Result<()> {
@@ -134,7 +132,15 @@ impl CodeGen {
 
     fn write_component_requests(&self, comp: &StripeObject) -> anyhow::Result<()> {
         let req_content = gen_requests(&comp.requests, &self.components);
-        write_to_file(req_content, comp.get_requests_content_path())?;
+
+        let req_file_content = formatdoc! {
+            r#"
+            use stripe_client_core::{{StripeClient, StripeBlockingClient, StripeRequest, RequestBuilder, StripeMethod}};
+            
+            {req_content}
+            "#
+        };
+        write_to_file(req_file_content, comp.get_requests_content_path())?;
         let feature_gate = comp.mod_path();
         let new_mod_file_content = formatdoc! {
             r#"
@@ -214,11 +220,6 @@ impl CodeGen {
     }
 
     fn write_object_info_for_testing(&self) -> anyhow::Result<()> {
-        #[derive(Serialize)]
-        struct ObjectInfo {
-            path: String,
-            import_type: String,
-        }
         let mut checks = String::new();
         for (path, obj) in &self.components.components {
             if obj.object_name().is_none() {

@@ -9,6 +9,10 @@ pub struct SubscriptionItem {
     pub billing_thresholds: Option<stripe_shared::SubscriptionItemBillingThresholds>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: i64,
+    /// The discounts applied to the subscription item.
+    /// Subscription item discounts are applied before subscription discounts.
+    /// Use `expand[]=discounts` to expand each discount.
+    pub discounts: Vec<stripe_types::Expandable<stripe_shared::Discount>>,
     /// Unique identifier for the object.
     pub id: stripe_shared::SubscriptionItemId,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -28,6 +32,7 @@ pub struct SubscriptionItem {
 pub struct SubscriptionItemBuilder {
     billing_thresholds: Option<Option<stripe_shared::SubscriptionItemBillingThresholds>>,
     created: Option<i64>,
+    discounts: Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>,
     id: Option<stripe_shared::SubscriptionItemId>,
     metadata: Option<std::collections::HashMap<String, String>>,
     plan: Option<stripe_shared::Plan>,
@@ -73,6 +78,7 @@ const _: () = {
             Ok(match k {
                 "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
                 "created" => Deserialize::begin(&mut self.created),
+                "discounts" => Deserialize::begin(&mut self.discounts),
                 "id" => Deserialize::begin(&mut self.id),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "plan" => Deserialize::begin(&mut self.plan),
@@ -89,6 +95,7 @@ const _: () = {
             Self {
                 billing_thresholds: Deserialize::default(),
                 created: Deserialize::default(),
+                discounts: Deserialize::default(),
                 id: Deserialize::default(),
                 metadata: Deserialize::default(),
                 plan: Deserialize::default(),
@@ -103,6 +110,7 @@ const _: () = {
             Some(Self::Out {
                 billing_thresholds: self.billing_thresholds?,
                 created: self.created?,
+                discounts: self.discounts.take()?,
                 id: self.id.take()?,
                 metadata: self.metadata.take()?,
                 plan: self.plan.take()?,
@@ -141,6 +149,7 @@ const _: () = {
                         b.billing_thresholds = Some(FromValueOpt::from_value(v)?)
                     }
                     "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
                     "id" => b.id = Some(FromValueOpt::from_value(v)?),
                     "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
                     "plan" => b.plan = Some(FromValueOpt::from_value(v)?),
@@ -160,9 +169,10 @@ const _: () = {
 impl serde::Serialize for SubscriptionItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("SubscriptionItem", 10)?;
+        let mut s = s.serialize_struct("SubscriptionItem", 11)?;
         s.serialize_field("billing_thresholds", &self.billing_thresholds)?;
         s.serialize_field("created", &self.created)?;
+        s.serialize_field("discounts", &self.discounts)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("plan", &self.plan)?;

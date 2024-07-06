@@ -7,35 +7,35 @@ publish = false
 [dev-dependencies]
 serde.workspace = true
 miniserde.workspace = true
-serde_qs = "0.12.0"
+serde_qs.workspace = true
 serde_json.workspace = true
 chrono = "0.4.26"
-httpmock = "0.6.7"
+httpmock = { version = "0.7.0", default-features = false }
 wiremock = "0.5.22"
 futures-util = { version = "0.3.21" }
+bytes = "1.6.0"
 tokio = { version = "1.24.1", features = ["rt", "macros"] }
-stripe_types = { path = "../stripe_types", features = ["serialize", "deserialize"] }
-async-stripe = { path = "../async-stripe" }
+stripe_types = { path = "../stripe_types", features = ["serialize"] }
+stripe_client_core = { path = "../stripe_client_core" }
+stripe_async_std = { path = "../stripe_async_std" }
 stripe_connect = { path = "../generated/stripe_connect", features = ["account", "transfer_reversal", "serialize", "deserialize"] }
-stripe_billing = { path = "../generated/stripe_billing", features = ["invoice", "plan", "subscription", "subscription_item", "usage_record", "serialize", "deserialize"] }
-stripe_core = { path = "../generated/stripe_core", features = ["customer", "charge", "token", "serialize", "deserialize"] }
-stripe_checkout = { path = "../generated/stripe_checkout", features = ["checkout_session", "serialize", "deserialize"] }
-stripe_product = { path = "../generated/stripe_product", features = ["product", "price", "promotion_code", "serialize", "deserialize"] }
-stripe_payment = { path = "../generated/stripe_payment", features = ["serialize", "deserialize"] }
-stripe_treasury = { path = "../generated/stripe_treasury", features = ["serialize", "deserialize"] }
-stripe_terminal = { path = "../generated/stripe_terminal", features = ["serialize", "deserialize"] }
-stripe_fraud = { path = "../generated/stripe_fraud", features = ["serialize", "deserialize"] }
-stripe_issuing = { path = "../generated/stripe_issuing", features = ["serialize", "deserialize"] }
-stripe_misc = { path = "../generated/stripe_misc", features = ["serialize", "deserialize"] }
+stripe_billing = { path = "../generated/stripe_billing", features = ["invoice", "plan", "subscription", "subscription_item", "usage_record", "serialize"] }
+stripe_core = { path = "../generated/stripe_core", features = ["customer", "charge", "token", "serialize"] }
+stripe_checkout = { path = "../generated/stripe_checkout", features = ["checkout_session", "serialize"] }
+stripe_product = { path = "../generated/stripe_product", features = ["product", "price", "promotion_code", "serialize"] }
+stripe_payment = { path = "../generated/stripe_payment", features = ["serialize"] }
+stripe_treasury = { path = "../generated/stripe_treasury", features = ["serialize"] }
+stripe_terminal = { path = "../generated/stripe_terminal", features = ["serialize"] }
+stripe_fraud = { path = "../generated/stripe_fraud", features = ["serialize"] }
+stripe_issuing = { path = "../generated/stripe_issuing", features = ["serialize"] }
+stripe_misc = { path = "../generated/stripe_misc", features = ["serialize"] }
 
+async-stripe = { path = "../async-stripe", default-features = false, features = ["blocking"] }
+
+# Copied from async-stripe/Cargo.toml features so that we can run with all those features too
 [features]
-async = []
-blocking = []
-
-runtime-tokio-hyper = ["async-stripe/runtime-tokio-hyper", "async"]
-runtime-tokio-hyper-rustls = ["async-stripe/runtime-tokio-hyper-rustls", "async"]
-runtime-tokio-hyper-rustls-webpki = ["async-stripe/runtime-tokio-hyper-rustls-webpki", "async"]
-runtime-blocking = ["async-stripe/runtime-blocking", "blocking"]
-runtime-blocking-rustls = ["async-stripe/runtime-blocking-rustls", "blocking"]
-runtime-blocking-rustls-webpki = ["async-stripe/runtime-blocking-rustls-webpki", "blocking"]
-runtime-async-std-surf = ["async-stripe/runtime-async-std-surf", "async"]
+default = ["default-tls"]
+native-tls = ["default-tls"]
+default-tls = ["async-stripe/default-tls"]
+rustls-tls-webpki-roots = ["async-stripe/rustls-tls-webpki-roots"]
+rustls-tls-native = ["async-stripe/rustls-tls-native"]

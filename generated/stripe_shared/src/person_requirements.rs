@@ -15,9 +15,10 @@ pub struct PersonRequirements {
     /// Fields that weren't collected by the account's `current_deadline`.
     /// These fields need to be collected to enable the person's account.
     pub past_due: Vec<String>,
-    /// Fields that may become required depending on the results of verification or review.
-    /// Will be an empty array unless an asynchronous verification is pending.
+    /// Fields that might become required depending on the results of verification or review.
+    /// It's an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
+    /// Fields might appear in `eventually_due`, `currently_due`, or `past_due` and in `pending_verification` if verification fails but another verification is still pending.
     pub pending_verification: Vec<String>,
 }
 #[doc(hidden)]

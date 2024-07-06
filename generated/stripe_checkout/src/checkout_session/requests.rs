@@ -1,47 +1,47 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListCheckoutSession<'a> {
-    /// Only return the Checkout Sessions that were created during the given date interval.
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListCheckoutSessionBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
-    /// Only return the Checkout Sessions for the Customer specified.
+    created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
-    /// Only return the Checkout Sessions for the Customer details specified.
+    customer: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_details: Option<ListCheckoutSessionCustomerDetails<'a>>,
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    customer_details: Option<ListCheckoutSessionCustomerDetails<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
+    ending_before: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// Only return the Checkout Session for the PaymentIntent specified.
+    limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_intent: Option<&'a str>,
-    /// Only return the Checkout Sessions for the Payment Link specified.
+    payment_intent: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_link: Option<&'a str>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    payment_link: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-    /// Only return the Checkout Sessions matching the given status.
+    starting_after: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<stripe_checkout::CheckoutSessionStatus>,
-    /// Only return the Checkout Session for the subscription specified.
+    status: Option<stripe_checkout::CheckoutSessionStatus>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription: Option<&'a str>,
+    subscription: Option<&'a str>,
 }
-impl<'a> ListCheckoutSession<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> ListCheckoutSessionBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            created: None,
+            customer: None,
+            customer_details: None,
+            ending_before: None,
+            expand: None,
+            limit: None,
+            payment_intent: None,
+            payment_link: None,
+            starting_after: None,
+            status: None,
+            subscription: None,
+        }
     }
 }
 /// Only return the Checkout Sessions for the Customer details specified.
@@ -55,286 +55,395 @@ impl<'a> ListCheckoutSessionCustomerDetails<'a> {
         Self { email }
     }
 }
+/// Returns a list of Checkout Sessions.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListCheckoutSession<'a> {
+    inner: ListCheckoutSessionBuilder<'a>,
+}
 impl<'a> ListCheckoutSession<'a> {
-    /// Returns a list of Checkout Sessions.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_checkout::CheckoutSession>> {
-        client.get_query("/checkout/sessions", self)
-    }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_checkout::CheckoutSession>> {
-        stripe::ListPaginator::from_list_params("/checkout/sessions", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveCheckoutSession<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveCheckoutSession<'a> {
+    /// Construct a new `ListCheckoutSession`.
     pub fn new() -> Self {
-        Self::default()
+        Self { inner: ListCheckoutSessionBuilder::new() }
     }
-}
-impl<'a> RetrieveCheckoutSession<'a> {
-    /// Retrieves a Session object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        session: &stripe_checkout::CheckoutSessionId,
-    ) -> stripe::Response<stripe_checkout::CheckoutSession> {
-        client.get_query(&format!("/checkout/sessions/{session}"), self)
+    /// Only return Checkout Sessions that were created during the given date interval.
+    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
+        self.inner.created = Some(created);
+        self
     }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListLineItemsCheckoutSession<'a> {
+    /// Only return the Checkout Sessions for the Customer specified.
+    pub fn customer(mut self, customer: &'a str) -> Self {
+        self.inner.customer = Some(customer);
+        self
+    }
+    /// Only return the Checkout Sessions for the Customer details specified.
+    pub fn customer_details(
+        mut self,
+        customer_details: ListCheckoutSessionCustomerDetails<'a>,
+    ) -> Self {
+        self.inner.customer_details = Some(customer_details);
+        self
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
+    /// Only return the Checkout Session for the PaymentIntent specified.
+    pub fn payment_intent(mut self, payment_intent: &'a str) -> Self {
+        self.inner.payment_intent = Some(payment_intent);
+        self
+    }
+    /// Only return the Checkout Sessions for the Payment Link specified.
+    pub fn payment_link(mut self, payment_link: &'a str) -> Self {
+        self.inner.payment_link = Some(payment_link);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListLineItemsCheckoutSession<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
+    /// Only return the Checkout Sessions matching the given status.
+    pub fn status(mut self, status: stripe_checkout::CheckoutSessionStatus) -> Self {
+        self.inner.status = Some(status);
+        self
+    }
+    /// Only return the Checkout Session for the subscription specified.
+    pub fn subscription(mut self, subscription: &'a str) -> Self {
+        self.inner.subscription = Some(subscription);
+        self
     }
 }
-impl<'a> ListLineItemsCheckoutSession<'a> {
-    /// When retrieving a Checkout Session, there is an includable **line_items** property containing the first handful of those items.
-    /// There is also a URL where you can retrieve the full (paginated) list of line items.
-    pub fn send(
+impl<'a> Default for ListCheckoutSession<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListCheckoutSession<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        session: &stripe_checkout::CheckoutSessionId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::CheckoutSessionItem>> {
-        client.get_query(&format!("/checkout/sessions/{session}/line_items"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-        session: &stripe_checkout::CheckoutSessionId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::CheckoutSessionItem>> {
-        stripe::ListPaginator::from_list_params(
-            &format!("/checkout/sessions/{session}/line_items"),
-            self,
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_checkout::CheckoutSession>>
+    {
+        stripe_client_core::ListPaginator::new_list("/checkout/sessions", self.inner)
+    }
+}
+
+impl StripeRequest for ListCheckoutSession<'_> {
+    type Output = stripe_types::List<stripe_checkout::CheckoutSession>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/checkout/sessions").query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveCheckoutSessionBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveCheckoutSessionBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves a Session object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveCheckoutSession<'a> {
+    inner: RetrieveCheckoutSessionBuilder<'a>,
+    session: &'a stripe_checkout::CheckoutSessionId,
+}
+impl<'a> RetrieveCheckoutSession<'a> {
+    /// Construct a new `RetrieveCheckoutSession`.
+    pub fn new(session: &'a stripe_checkout::CheckoutSessionId) -> Self {
+        Self { session, inner: RetrieveCheckoutSessionBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveCheckoutSession<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveCheckoutSession<'_> {
+    type Output = stripe_checkout::CheckoutSession;
+
+    fn build(&self) -> RequestBuilder {
+        let session = self.session;
+        RequestBuilder::new(StripeMethod::Get, format!("/checkout/sessions/{session}"))
+            .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListLineItemsCheckoutSessionBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> ListLineItemsCheckoutSessionBuilder<'a> {
+    fn new() -> Self {
+        Self { ending_before: None, expand: None, limit: None, starting_after: None }
+    }
+}
+/// When retrieving a Checkout Session, there is an includable **line_items** property containing the first handful of those items.
+/// There is also a URL where you can retrieve the full (paginated) list of line items.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListLineItemsCheckoutSession<'a> {
+    inner: ListLineItemsCheckoutSessionBuilder<'a>,
+    session: &'a stripe_checkout::CheckoutSessionId,
+}
+impl<'a> ListLineItemsCheckoutSession<'a> {
+    /// Construct a new `ListLineItemsCheckoutSession`.
+    pub fn new(session: &'a stripe_checkout::CheckoutSessionId) -> Self {
+        Self { session, inner: ListLineItemsCheckoutSessionBuilder::new() }
+    }
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
+}
+impl ListLineItemsCheckoutSession<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
+    pub fn paginate(
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::CheckoutSessionItem>>
+    {
+        let session = self.session;
+
+        stripe_client_core::ListPaginator::new_list(
+            format!("/checkout/sessions/{session}/line_items"),
+            self.inner,
         )
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateCheckoutSession<'a> {
-    /// Configure actions after a Checkout Session has expired.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub after_expiration: Option<CreateCheckoutSessionAfterExpiration>,
-    /// Enables user redeemable promotion codes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub allow_promotion_codes: Option<bool>,
-    /// Settings for automatic tax lookup for this session and resulting payments, invoices, and subscriptions.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<CreateCheckoutSessionAutomaticTax<'a>>,
-    /// Specify whether Checkout should collect the customer's billing address.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_address_collection:
-        Option<stripe_checkout::CheckoutSessionBillingAddressCollection>,
-    /// If set, Checkout displays a back button and customers will be directed to this URL if they decide to cancel payment and return to your website.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancel_url: Option<&'a str>,
-    /// A unique string to reference the Checkout Session. This can be a
-    /// customer ID, a cart ID, or similar, and can be used to reconcile the
-    /// session with your internal systems.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub client_reference_id: Option<&'a str>,
-    /// Configure fields for the Checkout Session to gather active consent from customers.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub consent_collection: Option<CreateCheckoutSessionConsentCollection>,
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    /// Required in `setup` mode when `payment_method_types` is not set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<stripe_types::Currency>,
-    /// Collect additional information from your customer using custom fields.
-    /// Up to 3 fields are supported.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_fields: Option<&'a [CreateCheckoutSessionCustomFields<'a>]>,
-    /// Display additional text for your customers using custom text.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_text: Option<CreateCheckoutSessionCustomText<'a>>,
-    /// ID of an existing Customer, if one exists.
-    /// In `payment` mode, the customer’s most recently saved card.
-    /// payment method will be used to prefill the email, name, card details, and billing address
-    /// on the Checkout page.
-    /// In `subscription` mode, the customer’s [default payment method](https://stripe.com/docs/api/customers/update#update_customer-invoice_settings-default_payment_method).
-    /// will be used if it’s a card, otherwise the most recently saved card will be used.
-    /// A valid billing address, billing name and billing email are required on the payment method for Checkout to prefill the customer's card details.
-    ///
-    /// If the Customer already has a valid [email](https://stripe.com/docs/api/customers/object#customer_object-email) set, the email will be prefilled and not editable in Checkout.
-    /// If the Customer does not have a valid `email`, Checkout will set the email entered during the session on the Customer.
-    ///
-    /// If blank for Checkout Sessions in `subscription` mode or with `customer_creation` set as `always` in `payment` mode, Checkout will create a new Customer object based on information provided during the payment flow.
-    ///
-    /// You can set [`payment_intent_data.setup_future_usage`](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_intent_data-setup_future_usage) to have Checkout automatically attach the payment method to the Customer you pass in for future reuse.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
-    /// Configure whether a Checkout Session creates a [Customer](https://stripe.com/docs/api/customers) during Session confirmation.
-    ///
-    /// When a Customer is not created, you can still retrieve email, address, and other customer data entered in Checkout.
-    /// with [customer_details](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-customer_details).
-    ///
-    /// Sessions that don't create Customers instead are grouped by [guest customers](https://stripe.com/docs/payments/checkout/guest-customers).
-    /// in the Dashboard.
-    /// Promotion codes limited to first time customers will return invalid for these Sessions.
-    ///
-    /// Can only be set in `payment` and `setup` mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_creation: Option<CreateCheckoutSessionCustomerCreation>,
-    /// If provided, this value will be used when the Customer object is created.
-    /// If not provided, customers will be asked to enter their email address.
-    /// Use this parameter to prefill customer data if you already have an email
-    /// on file. To access information about the customer once a session is
-    /// complete, use the `customer` field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_email: Option<&'a str>,
-    /// Controls what fields on Customer can be updated by the Checkout Session.
-    /// Can only be provided when `customer` is provided.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_update: Option<CreateCheckoutSessionCustomerUpdate>,
-    /// The coupon or promotion code to apply to this Session. Currently, only up to one may be specified.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [CreateCheckoutSessionDiscounts<'a>]>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The Epoch time in seconds at which the Checkout Session will expire.
-    /// It can be anywhere from 30 minutes to 24 hours after Checkout Session creation.
-    /// By default, this value is 24 hours from creation.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<stripe_types::Timestamp>,
-    /// Generate a post-purchase Invoice for one-time payments.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_creation: Option<CreateCheckoutSessionInvoiceCreation<'a>>,
-    /// A list of items the customer is purchasing.
-    /// Use this parameter to pass one-time or recurring [Prices](https://stripe.com/docs/api/prices).
-    ///
-    /// For `payment` mode, there is a maximum of 100 line items, however it is recommended to consolidate line items if there are more than a few dozen.
-    ///
-    /// For `subscription` mode, there is a maximum of 20 line items with recurring Prices and 20 line items with one-time Prices.
-    /// Line items with one-time Prices will be on the initial invoice only.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line_items: Option<&'a [CreateCheckoutSessionLineItems<'a>]>,
-    /// The IETF language tag of the locale Checkout is displayed in.
-    /// If blank or `auto`, the browser's locale is used.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub locale: Option<stripe_checkout::CheckoutSessionLocale>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The mode of the Checkout Session.
-    /// Pass `subscription` if the Checkout Session includes at least one recurring item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mode: Option<stripe_checkout::CheckoutSessionMode>,
-    /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_intent_data: Option<CreateCheckoutSessionPaymentIntentData<'a>>,
-    /// Specify whether Checkout should collect a payment method.
-    /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.
-    /// This may occur if the Checkout Session includes a free trial or a discount.
-    ///
-    /// Can only be set in `subscription` mode.
-    ///
-    /// If you'd like information on how to collect a payment method outside of Checkout, read the guide on configuring [subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_collection: Option<CreateCheckoutSessionPaymentMethodCollection>,
-    /// The ID of the payment method configuration to use with this Checkout session.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_configuration: Option<&'a str>,
-    /// Payment-method-specific configuration.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_options: Option<CreateCheckoutSessionPaymentMethodOptions<'a>>,
-    /// A list of the types of payment methods (e.g., `card`) this Checkout Session can accept.
-    ///
-    /// You can omit this attribute to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
-    /// See [Dynamic Payment Methods](https://stripe.com/docs/payments/payment-methods/integration-options#using-dynamic-payment-methods) for more details.
-    ///
-    /// Read more about the supported payment methods and their requirements in our [payment
-    /// method details guide](/docs/payments/checkout/payment-methods).
-    ///
-    /// If multiple payment methods are passed, Checkout will dynamically reorder them to
-    /// prioritize the most relevant payment methods based on the customer's location and
-    /// other characteristics.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<&'a [CreateCheckoutSessionPaymentMethodTypes]>,
-    /// Controls phone number collection settings for the session.
-    ///
-    /// We recommend that you review your privacy policy and check with your legal contacts
-    /// before using this feature.
-    /// Learn more about [collecting phone numbers with Checkout](https://stripe.com/docs/payments/checkout/phone-numbers).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone_number_collection: Option<CreateCheckoutSessionPhoneNumberCollection>,
-    /// This parameter applies to `ui_mode: embedded`.
-    /// By default, Stripe will always redirect to your return_url after a successful confirmation.
-    /// If you set `redirect_on_completion: 'if_required'`, then we will only redirect if your user chooses a redirect-based payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub redirect_on_completion: Option<stripe_checkout::CheckoutSessionRedirectOnCompletion>,
-    /// The URL to redirect your customer back to after they authenticate or cancel their payment on the
-    /// payment method's app or site. This parameter is required if ui_mode is `embedded`
-    /// and redirect-based payment methods are enabled on the session.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub return_url: Option<&'a str>,
-    /// A subset of parameters to be passed to SetupIntent creation for Checkout Sessions in `setup` mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_intent_data: Option<CreateCheckoutSessionSetupIntentData<'a>>,
-    /// When set, provides configuration for Checkout to collect a shipping address from a customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_address_collection: Option<CreateCheckoutSessionShippingAddressCollection<'a>>,
-    /// The shipping rate options to apply to this Session. Up to a maximum of 5.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_options: Option<&'a [CreateCheckoutSessionShippingOptions<'a>]>,
-    /// Describes the type of transaction being performed by Checkout in order to customize
-    /// relevant text on the page, such as the submit button. `submit_type` can only be
-    /// specified on Checkout Sessions in `payment` mode. If blank or `auto`, `pay` is used.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub submit_type: Option<stripe_checkout::CheckoutSessionSubmitType>,
-    /// A subset of parameters to be passed to subscription creation for Checkout Sessions in `subscription` mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_data: Option<CreateCheckoutSessionSubscriptionData<'a>>,
-    /// The URL to which Stripe should send customers when payment or setup
-    /// is complete.
-    /// This parameter is not allowed if ui_mode is `embedded`. If you’d like to use
-    /// information from the successful Checkout Session on your page, read the
-    /// guide on [customizing your success page](https://stripe.com/docs/payments/checkout/custom-success-page).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub success_url: Option<&'a str>,
-    /// Controls tax ID collection settings for the session.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_id_collection: Option<CreateCheckoutSessionTaxIdCollection>,
-    /// `ui_mode` can be `hosted` or `embedded`. The default is `hosted`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ui_mode: Option<stripe_checkout::CheckoutSessionUiMode>,
+
+impl StripeRequest for ListLineItemsCheckoutSession<'_> {
+    type Output = stripe_types::List<stripe_shared::CheckoutSessionItem>;
+
+    fn build(&self) -> RequestBuilder {
+        let session = self.session;
+        RequestBuilder::new(StripeMethod::Get, format!("/checkout/sessions/{session}/line_items"))
+            .query(&self.inner)
+    }
 }
-impl<'a> CreateCheckoutSession<'a> {
-    pub fn new() -> Self {
-        Self::default()
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateCheckoutSessionBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    after_expiration: Option<CreateCheckoutSessionAfterExpiration>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    allow_promotion_codes: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    automatic_tax: Option<CreateCheckoutSessionAutomaticTax<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    billing_address_collection: Option<stripe_checkout::CheckoutSessionBillingAddressCollection>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cancel_url: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    client_reference_id: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    consent_collection: Option<CreateCheckoutSessionConsentCollection>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    currency: Option<stripe_types::Currency>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    custom_fields: Option<&'a [CreateCheckoutSessionCustomFields<'a>]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    custom_text: Option<CreateCheckoutSessionCustomText<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_creation: Option<CreateCheckoutSessionCustomerCreation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_email: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_update: Option<CreateCheckoutSessionCustomerUpdate>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    discounts: Option<&'a [CreateCheckoutSessionDiscounts<'a>]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expires_at: Option<stripe_types::Timestamp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    invoice_creation: Option<CreateCheckoutSessionInvoiceCreation<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    line_items: Option<&'a [CreateCheckoutSessionLineItems<'a>]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    locale: Option<stripe_checkout::CheckoutSessionLocale>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    mode: Option<stripe_checkout::CheckoutSessionMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_intent_data: Option<CreateCheckoutSessionPaymentIntentData<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_method_collection: Option<CreateCheckoutSessionPaymentMethodCollection>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_method_configuration: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_method_data: Option<CreateCheckoutSessionPaymentMethodData>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_method_options: Option<CreateCheckoutSessionPaymentMethodOptions<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_method_types: Option<&'a [CreateCheckoutSessionPaymentMethodTypes]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    phone_number_collection: Option<CreateCheckoutSessionPhoneNumberCollection>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    redirect_on_completion: Option<stripe_checkout::CheckoutSessionRedirectOnCompletion>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    return_url: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    saved_payment_method_options: Option<CreateCheckoutSessionSavedPaymentMethodOptions<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    setup_intent_data: Option<CreateCheckoutSessionSetupIntentData<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    shipping_address_collection: Option<CreateCheckoutSessionShippingAddressCollection<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    shipping_options: Option<&'a [CreateCheckoutSessionShippingOptions<'a>]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    submit_type: Option<stripe_checkout::CheckoutSessionSubmitType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    subscription_data: Option<CreateCheckoutSessionSubscriptionData<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    success_url: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tax_id_collection: Option<CreateCheckoutSessionTaxIdCollection>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ui_mode: Option<stripe_checkout::CheckoutSessionUiMode>,
+}
+impl<'a> CreateCheckoutSessionBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            after_expiration: None,
+            allow_promotion_codes: None,
+            automatic_tax: None,
+            billing_address_collection: None,
+            cancel_url: None,
+            client_reference_id: None,
+            consent_collection: None,
+            currency: None,
+            custom_fields: None,
+            custom_text: None,
+            customer: None,
+            customer_creation: None,
+            customer_email: None,
+            customer_update: None,
+            discounts: None,
+            expand: None,
+            expires_at: None,
+            invoice_creation: None,
+            line_items: None,
+            locale: None,
+            metadata: None,
+            mode: None,
+            payment_intent_data: None,
+            payment_method_collection: None,
+            payment_method_configuration: None,
+            payment_method_data: None,
+            payment_method_options: None,
+            payment_method_types: None,
+            phone_number_collection: None,
+            redirect_on_completion: None,
+            return_url: None,
+            saved_payment_method_options: None,
+            setup_intent_data: None,
+            shipping_address_collection: None,
+            shipping_options: None,
+            submit_type: None,
+            subscription_data: None,
+            success_url: None,
+            tax_id_collection: None,
+            ui_mode: None,
+        }
     }
 }
 /// Configure actions after a Checkout Session has expired.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionAfterExpiration {
     /// Configure a Checkout Session that can be used to recover an expired session.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -342,7 +451,12 @@ pub struct CreateCheckoutSessionAfterExpiration {
 }
 impl CreateCheckoutSessionAfterExpiration {
     pub fn new() -> Self {
-        Self::default()
+        Self { recovery: None }
+    }
+}
+impl Default for CreateCheckoutSessionAfterExpiration {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Configure a Checkout Session that can be used to recover an expired session.
@@ -453,7 +567,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionAutomaticTaxLiability
     }
 }
 /// Configure fields for the Checkout Session to gather active consent from customers.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionConsentCollection {
     /// Determines the display of payment method reuse agreement text in the UI.
     /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
@@ -473,7 +587,12 @@ pub struct CreateCheckoutSessionConsentCollection {
 }
 impl CreateCheckoutSessionConsentCollection {
     pub fn new() -> Self {
-        Self::default()
+        Self { payment_method_reuse_agreement: None, promotions: None, terms_of_service: None }
+    }
+}
+impl Default for CreateCheckoutSessionConsentCollection {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Determines the display of payment method reuse agreement text in the UI.
@@ -806,7 +925,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomFieldsLabelType
     }
 }
 /// Configuration for `type=numeric` fields.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsNumeric {
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -817,11 +936,16 @@ pub struct CreateCheckoutSessionCustomFieldsNumeric {
 }
 impl CreateCheckoutSessionCustomFieldsNumeric {
     pub fn new() -> Self {
-        Self::default()
+        Self { maximum_length: None, minimum_length: None }
+    }
+}
+impl Default for CreateCheckoutSessionCustomFieldsNumeric {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Configuration for `type=text` fields.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsText {
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -832,7 +956,12 @@ pub struct CreateCheckoutSessionCustomFieldsText {
 }
 impl CreateCheckoutSessionCustomFieldsText {
     pub fn new() -> Self {
-        Self::default()
+        Self { maximum_length: None, minimum_length: None }
+    }
+}
+impl Default for CreateCheckoutSessionCustomFieldsText {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The type of the field.
@@ -895,7 +1024,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomFieldsType {
     }
 }
 /// Display additional text for your customers using custom text.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionCustomText<'a> {
     /// Custom text that should be displayed after the payment confirmation button.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -912,7 +1041,17 @@ pub struct CreateCheckoutSessionCustomText<'a> {
 }
 impl<'a> CreateCheckoutSessionCustomText<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            after_submit: None,
+            shipping_address: None,
+            submit: None,
+            terms_of_service_acceptance: None,
+        }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionCustomText<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Configure whether a Checkout Session creates a [Customer](https://stripe.com/docs/api/customers) during Session confirmation.
@@ -982,7 +1121,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomerCreation {
 }
 /// Controls what fields on Customer can be updated by the Checkout Session.
 /// Can only be provided when `customer` is provided.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionCustomerUpdate {
     /// Describes whether Checkout saves the billing address onto `customer.address`.
     /// To always collect a full billing address, use `billing_address_collection`. Defaults to `never`.
@@ -998,7 +1137,12 @@ pub struct CreateCheckoutSessionCustomerUpdate {
 }
 impl CreateCheckoutSessionCustomerUpdate {
     pub fn new() -> Self {
-        Self::default()
+        Self { address: None, name: None, shipping: None }
+    }
+}
+impl Default for CreateCheckoutSessionCustomerUpdate {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Describes whether Checkout saves the billing address onto `customer.address`.
@@ -1174,7 +1318,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomerUpdateShippin
     }
 }
 /// The coupon or promotion code to apply to this Session. Currently, only up to one may be specified.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionDiscounts<'a> {
     /// The ID of the coupon to apply to this Session.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1185,7 +1329,12 @@ pub struct CreateCheckoutSessionDiscounts<'a> {
 }
 impl<'a> CreateCheckoutSessionDiscounts<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { coupon: None, promotion_code: None }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionDiscounts<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Generate a post-purchase Invoice for one-time payments.
@@ -1203,7 +1352,7 @@ impl<'a> CreateCheckoutSessionInvoiceCreation<'a> {
     }
 }
 /// Parameters passed when creating invoices for payment-mode Checkout Sessions.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceData<'a> {
     /// The account tax IDs associated with the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1234,15 +1383,28 @@ pub struct CreateCheckoutSessionInvoiceCreationInvoiceData<'a> {
 }
 impl<'a> CreateCheckoutSessionInvoiceCreationInvoiceData<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            account_tax_ids: None,
+            custom_fields: None,
+            description: None,
+            footer: None,
+            issuer: None,
+            metadata: None,
+            rendering_options: None,
+        }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionInvoiceCreationInvoiceData<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Default custom fields to be displayed on invoices for this customer.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields<'a> {
-    /// The name of the custom field. This may be up to 30 characters.
+    /// The name of the custom field. This may be up to 40 characters.
     pub name: &'a str,
-    /// The value of the custom field. This may be up to 30 characters.
+    /// The value of the custom field. This may be up to 140 characters.
     pub value: &'a str,
 }
 impl<'a> CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields<'a> {
@@ -1325,7 +1487,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionInvoiceCreationInvoic
     }
 }
 /// Default options for invoice PDF rendering for this customer.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -1337,7 +1499,12 @@ pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
 }
 impl CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
     pub fn new() -> Self {
-        Self::default()
+        Self { amount_tax_display: None }
+    }
+}
+impl Default for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
@@ -1414,7 +1581,7 @@ impl<'de> serde::Deserialize<'de>
 ///
 /// For `subscription` mode, there is a maximum of 20 line items with recurring Prices and 20 line items with one-time Prices.
 /// Line items with one-time Prices will be on the initial invoice only.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionLineItems<'a> {
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during Checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1441,7 +1608,19 @@ pub struct CreateCheckoutSessionLineItems<'a> {
 }
 impl<'a> CreateCheckoutSessionLineItems<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            adjustable_quantity: None,
+            dynamic_tax_rates: None,
+            price: None,
+            price_data: None,
+            quantity: None,
+            tax_rates: None,
+        }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionLineItems<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// When set, provides configuration for this item’s quantity to be adjusted by the customer during Checkout.
@@ -1682,7 +1861,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionLineItemsPriceDataTax
     }
 }
 /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentData<'a> {
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     /// The amount of the application fee collected will be capped at the total payment amount.
@@ -1755,7 +1934,25 @@ pub struct CreateCheckoutSessionPaymentIntentData<'a> {
 }
 impl<'a> CreateCheckoutSessionPaymentIntentData<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            application_fee_amount: None,
+            capture_method: None,
+            description: None,
+            metadata: None,
+            on_behalf_of: None,
+            receipt_email: None,
+            setup_future_usage: None,
+            shipping: None,
+            statement_descriptor: None,
+            statement_descriptor_suffix: None,
+            transfer_data: None,
+            transfer_group: None,
+        }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionPaymentIntentData<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Controls when the funds will be captured from the customer's account.
@@ -1970,7 +2167,7 @@ impl<'a> CreateCheckoutSessionPaymentIntentDataTransferData<'a> {
 /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.
 /// This may occur if the Checkout Session includes a free trial or a discount.
 ///
-/// Can only be set in `subscription` mode.
+/// Can only be set in `subscription` mode. Defaults to `always`.
 ///
 /// If you'd like information on how to collect a payment method outside of Checkout, read the guide on configuring [subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -2030,8 +2227,88 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodCollecti
         })
     }
 }
+/// This parameter allows you to set some attributes on the payment method created during a Checkout session.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodData {
+    /// Allow redisplay will be set on the payment method on confirmation and indicates whether this payment method can be shown again to the customer in a checkout flow.
+    /// Only set this field if you wish to override the allow_redisplay value determined by Checkout.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_redisplay: Option<CreateCheckoutSessionPaymentMethodDataAllowRedisplay>,
+}
+impl CreateCheckoutSessionPaymentMethodData {
+    pub fn new() -> Self {
+        Self { allow_redisplay: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodData {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Allow redisplay will be set on the payment method on confirmation and indicates whether this payment method can be shown again to the customer in a checkout flow.
+/// Only set this field if you wish to override the allow_redisplay value determined by Checkout.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCheckoutSessionPaymentMethodDataAllowRedisplay {
+    Always,
+    Limited,
+    Unspecified,
+}
+impl CreateCheckoutSessionPaymentMethodDataAllowRedisplay {
+    pub fn as_str(self) -> &'static str {
+        use CreateCheckoutSessionPaymentMethodDataAllowRedisplay::*;
+        match self {
+            Always => "always",
+            Limited => "limited",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodDataAllowRedisplay {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodDataAllowRedisplay::*;
+        match s {
+            "always" => Ok(Always),
+            "limited" => Ok(Limited),
+            "unspecified" => Ok(Unspecified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodDataAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodDataAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodDataAllowRedisplay {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodDataAllowRedisplay {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodDataAllowRedisplay",
+            )
+        })
+    }
+}
 /// Payment-method-specific configuration.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptions<'a> {
     /// contains details about the ACSS Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2045,6 +2322,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptions<'a> {
     /// contains details about the Alipay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<CreateCheckoutSessionPaymentMethodOptionsAlipay>,
+    /// contains details about the AmazonPay payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amazon_pay: Option<CreateCheckoutSessionPaymentMethodOptionsAmazonPay>,
     /// contains details about the AU Becs Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit: Option<CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit>,
@@ -2090,6 +2370,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptions<'a> {
     /// contains details about the Link payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<CreateCheckoutSessionPaymentMethodOptionsLink>,
+    /// contains details about the Mobilepay payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mobilepay: Option<CreateCheckoutSessionPaymentMethodOptionsMobilepay>,
     /// contains details about the OXXO payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<CreateCheckoutSessionPaymentMethodOptionsOxxo>,
@@ -2126,11 +2409,49 @@ pub struct CreateCheckoutSessionPaymentMethodOptions<'a> {
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptions<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            acss_debit: None,
+            affirm: None,
+            afterpay_clearpay: None,
+            alipay: None,
+            amazon_pay: None,
+            au_becs_debit: None,
+            bacs_debit: None,
+            bancontact: None,
+            boleto: None,
+            card: None,
+            cashapp: None,
+            customer_balance: None,
+            eps: None,
+            fpx: None,
+            giropay: None,
+            grabpay: None,
+            ideal: None,
+            klarna: None,
+            konbini: None,
+            link: None,
+            mobilepay: None,
+            oxxo: None,
+            p24: None,
+            paynow: None,
+            paypal: None,
+            pix: None,
+            revolut_pay: None,
+            sepa_debit: None,
+            sofort: None,
+            swish: None,
+            us_bank_account: None,
+            wechat_pay: None,
+        }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionPaymentMethodOptions<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// contains details about the ACSS Debit payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit<'a> {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -2157,7 +2478,17 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit<'a> {
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsAcssDebit<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            currency: None,
+            mandate_options: None,
+            setup_future_usage: None,
+            verification_method: None,
+        }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionPaymentMethodOptionsAcssDebit<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -2221,7 +2552,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsA
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     /// A URL for custom mandate text to render during confirmation step.
     /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,.
@@ -2248,7 +2579,18 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions<'a> 
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            custom_mandate_url: None,
+            default_for: None,
+            interval_description: None,
+            payment_schedule: None,
+            transaction_type: None,
+        }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// List of Stripe products where this mandate can be selected automatically.
@@ -2571,7 +2913,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Affirm payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAffirm {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -2584,7 +2926,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAffirm {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAffirm {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsAffirm {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -2650,7 +2997,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Afterpay Clearpay payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -2664,7 +3011,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -2732,7 +3084,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Alipay payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAlipay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -2745,7 +3097,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAlipay {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAlipay {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsAlipay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -2810,8 +3167,92 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
+/// contains details about the AmazonPay payment method options.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsAmazonPay {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.
+    ///
+    /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage:
+        Option<CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage>,
+}
+impl CreateCheckoutSessionPaymentMethodOptionsAmazonPay {
+    pub fn new() -> Self {
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsAmazonPay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+/// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.
+///
+/// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage {
+    None,
+    OffSession,
+}
+impl CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        use CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage::*;
+        match self {
+            None => "none",
+            OffSession => "off_session",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            "off_session" => Ok(OffSession),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage"))
+    }
+}
 /// contains details about the AU Becs Debit payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -2825,7 +3266,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -2887,7 +3333,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Bacs Debit payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -2901,7 +3347,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -2969,7 +3420,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Bancontact payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBancontact {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -2983,7 +3434,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsBancontact {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsBancontact {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -3045,7 +3501,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Boleto payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBoleto {
     /// The number of calendar days before a Boleto voucher expires.
     /// For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto invoice will expire on Wednesday at 23:59 America/Sao_Paulo time.
@@ -3062,7 +3518,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsBoleto {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsBoleto {
     pub fn new() -> Self {
-        Self::default()
+        Self { expires_after_days: None, setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsBoleto {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -3134,11 +3595,18 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Card payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCard<'a> {
     /// Installment options for card payments
     #[serde(skip_serializing_if = "Option::is_none")]
     pub installments: Option<CreateCheckoutSessionPaymentMethodOptionsCardInstallments>,
+    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+    /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
+    /// If not provided, this value defaults to `automatic`.
+    /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request_three_d_secure:
+        Option<CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -3162,11 +3630,22 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCard<'a> {
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsCard<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            installments: None,
+            request_three_d_secure: None,
+            setup_future_usage: None,
+            statement_descriptor_suffix_kana: None,
+            statement_descriptor_suffix_kanji: None,
+        }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionPaymentMethodOptionsCard<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Installment options for card payments
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCardInstallments {
     /// Setting to true enables installments for this Checkout Session.
     /// Setting to false will prevent any installment plan from applying to a payment.
@@ -3175,7 +3654,74 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCardInstallments {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsCardInstallments {
     pub fn new() -> Self {
-        Self::default()
+        Self { enabled: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsCardInstallments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+/// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
+/// If not provided, this value defaults to `automatic`.
+/// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure {
+    Any,
+    Automatic,
+    Challenge,
+}
+impl CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure {
+    pub fn as_str(self) -> &'static str {
+        use CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure::*;
+        match self {
+            Any => "any",
+            Automatic => "automatic",
+            Challenge => "challenge",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure::*;
+        match s {
+            "any" => Ok(Any),
+            "automatic" => Ok(Automatic),
+            "challenge" => Ok(Challenge),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -3244,7 +3790,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Cashapp Pay payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCashapp {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3258,7 +3804,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCashapp {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsCashapp {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsCashapp {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -3326,7 +3877,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Customer Balance payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalance<'a> {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3348,7 +3899,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalance<'a> {
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsCustomerBalance<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { bank_transfer: None, funding_type: None, setup_future_usage: None }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionPaymentMethodOptionsCustomerBalance<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
@@ -3655,7 +4211,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the EPS payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsEps {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3668,7 +4224,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsEps {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsEps {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsEps {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -3732,7 +4293,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsE
     }
 }
 /// contains details about the FPX payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsFpx {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3745,7 +4306,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsFpx {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsFpx {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsFpx {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -3809,7 +4375,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsF
     }
 }
 /// contains details about the Giropay payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsGiropay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3823,7 +4389,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsGiropay {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsGiropay {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsGiropay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -3885,7 +4456,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Grabpay payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsGrabpay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3899,7 +4470,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsGrabpay {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsGrabpay {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsGrabpay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -3961,7 +4537,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Ideal payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsIdeal {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3974,7 +4550,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsIdeal {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsIdeal {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsIdeal {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4040,7 +4621,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Klarna payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKlarna {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4053,7 +4634,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsKlarna {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsKlarna {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsKlarna {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4119,7 +4705,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Konbini payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKonbini {
     /// The number of calendar days (between 1 and 60) after which Konbini payment instructions will expire.
     /// For example, if a PaymentIntent is confirmed with Konbini and `expires_after_days` set to 2 on Monday JST, the instructions will expire on Wednesday 23:59:59 JST.
@@ -4138,7 +4724,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsKonbini {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsKonbini {
     pub fn new() -> Self {
-        Self::default()
+        Self { expires_after_days: None, setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsKonbini {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4200,7 +4791,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Link payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsLink {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4213,7 +4804,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsLink {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsLink {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsLink {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4281,8 +4877,89 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
+/// contains details about the Mobilepay payment method options.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsMobilepay {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.
+    ///
+    /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage:
+        Option<CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage>,
+}
+impl CreateCheckoutSessionPaymentMethodOptionsMobilepay {
+    pub fn new() -> Self {
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsMobilepay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+/// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.
+///
+/// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage {
+    None,
+}
+impl CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        use CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage::*;
+        match self {
+            None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage"))
+    }
+}
 /// contains details about the OXXO payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsOxxo {
     /// The number of calendar days before an OXXO voucher expires.
     /// For example, if you create an OXXO voucher on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
@@ -4299,7 +4976,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsOxxo {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsOxxo {
     pub fn new() -> Self {
-        Self::default()
+        Self { expires_after_days: None, setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsOxxo {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4365,7 +5047,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the P24 payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsP24 {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4381,7 +5063,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsP24 {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsP24 {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None, tos_shown_and_accepted: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsP24 {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4445,7 +5132,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsP
     }
 }
 /// contains details about the PayNow payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPaynow {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4458,7 +5145,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsPaynow {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsPaynow {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsPaynow {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4524,7 +5216,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the PayPal payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPaypal<'a> {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4552,7 +5244,18 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsPaypal<'a> {
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsPaypal<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            capture_method: None,
+            preferred_locale: None,
+            reference: None,
+            risk_correlation_id: None,
+            setup_future_usage: None,
+        }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionPaymentMethodOptionsPaypal<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Controls when the funds will be captured from the customer's account.
@@ -4795,7 +5498,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Pix payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPix {
     /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
     /// Defaults to 86400 seconds.
@@ -4804,11 +5507,16 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsPix {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsPix {
     pub fn new() -> Self {
-        Self::default()
+        Self { expires_after_seconds: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsPix {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// contains details about the RevolutPay payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsRevolutPay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4822,7 +5530,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsRevolutPay {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsRevolutPay {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsRevolutPay {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4887,7 +5600,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Sepa Debit payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4901,7 +5614,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4969,7 +5687,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Sofort payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSofort {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4982,7 +5700,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsSofort {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsSofort {
     pub fn new() -> Self {
-        Self::default()
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsSofort {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -5048,7 +5771,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Swish payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSwish<'a> {
     /// The order reference that will be displayed to customers in the Swish application.
     /// Defaults to the `id` of the Payment Intent.
@@ -5057,11 +5780,16 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsSwish<'a> {
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsSwish<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { reference: None }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionPaymentMethodOptionsSwish<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// contains details about the Us Bank Account payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccount<'a> {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5083,11 +5811,16 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccount<'a> {
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsUsBankAccount<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { financial_connections: None, setup_future_usage: None, verification_method: None }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionPaymentMethodOptionsUsBankAccount<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Additional fields for Financial Connections Session creation
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections<'a> {
         /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
@@ -5101,7 +5834,14 @@ pub prefetch: Option<&'a [CreateCheckoutSessionPaymentMethodOptionsUsBankAccount
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { permissions: None, prefetch: None }
+    }
+}
+impl<'a> Default
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections<'a>
+{
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The list of permissions to request.
@@ -5180,6 +5920,7 @@ impl<'de> serde::Deserialize<'de>
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     Balances,
+    Ownership,
     Transactions,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
@@ -5187,6 +5928,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsP
         use CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match self {
             Balances => "balances",
+            Ownership => "ownership",
             Transactions => "transactions",
         }
     }
@@ -5200,6 +5942,7 @@ impl std::str::FromStr
         use CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match s {
             "balances" => Ok(Balances),
+            "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
             _ => Err(stripe_types::StripeParseError),
         }
@@ -5524,6 +6267,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     Affirm,
     AfterpayClearpay,
     Alipay,
+    AmazonPay,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
@@ -5540,6 +6284,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     Klarna,
     Konbini,
     Link,
+    Mobilepay,
     Oxxo,
     P24,
     Paynow,
@@ -5564,6 +6309,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             Affirm => "affirm",
             AfterpayClearpay => "afterpay_clearpay",
             Alipay => "alipay",
+            AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
@@ -5580,6 +6326,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             Klarna => "klarna",
             Konbini => "konbini",
             Link => "link",
+            Mobilepay => "mobilepay",
             Oxxo => "oxxo",
             P24 => "p24",
             Paynow => "paynow",
@@ -5607,6 +6354,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodTypes {
             "affirm" => Ok(Affirm),
             "afterpay_clearpay" => Ok(AfterpayClearpay),
             "alipay" => Ok(Alipay),
+            "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
@@ -5623,6 +6371,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodTypes {
             "klarna" => Ok(Klarna),
             "konbini" => Ok(Konbini),
             "link" => Ok(Link),
+            "mobilepay" => Ok(Mobilepay),
             "oxxo" => Ok(Oxxo),
             "p24" => Ok(P24),
             "paynow" => Ok(Paynow),
@@ -5682,8 +6431,152 @@ impl CreateCheckoutSessionPhoneNumberCollection {
         Self { enabled }
     }
 }
+/// Controls saved payment method settings for the session.
+/// Only available in `payment` and `subscription` mode.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateCheckoutSessionSavedPaymentMethodOptions<'a> {
+    /// Controls which payment methods are eligible to be redisplayed to returning customers.
+    /// Corresponds to `allow_redisplay` on the payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_redisplay_filters:
+        Option<&'a [CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters]>,
+    /// Enable customers to choose if they wish to save their payment method for future use.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_save:
+        Option<CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave>,
+}
+impl<'a> CreateCheckoutSessionSavedPaymentMethodOptions<'a> {
+    pub fn new() -> Self {
+        Self { allow_redisplay_filters: None, payment_method_save: None }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionSavedPaymentMethodOptions<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls which payment methods are eligible to be redisplayed to returning customers.
+/// Corresponds to `allow_redisplay` on the payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
+    Always,
+    Limited,
+    Unspecified,
+}
+impl CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
+    pub fn as_str(self) -> &'static str {
+        use CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters::*;
+        match self {
+            Always => "always",
+            Limited => "limited",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters::*;
+        match s {
+            "always" => Ok(Always),
+            "limited" => Ok(Limited),
+            "unspecified" => Ok(Unspecified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters"))
+    }
+}
+/// Enable customers to choose if they wish to save their payment method for future use.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
+    Disabled,
+    Enabled,
+}
+impl CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
+    pub fn as_str(self) -> &'static str {
+        use CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave::*;
+        match self {
+            Disabled => "disabled",
+            Enabled => "enabled",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave::*;
+        match s {
+            "disabled" => Ok(Disabled),
+            "enabled" => Ok(Enabled),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave",
+            )
+        })
+    }
+}
 /// A subset of parameters to be passed to SetupIntent creation for Checkout Sessions in `setup` mode.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionSetupIntentData<'a> {
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5700,7 +6593,12 @@ pub struct CreateCheckoutSessionSetupIntentData<'a> {
 }
 impl<'a> CreateCheckoutSessionSetupIntentData<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { description: None, metadata: None, on_behalf_of: None }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionSetupIntentData<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// When set, provides configuration for Checkout to collect a shipping address from a customer.
@@ -6486,7 +7384,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// The shipping rate options to apply to this Session. Up to a maximum of 5.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionShippingOptions<'a> {
     /// The ID of the Shipping Rate to use for this shipping option.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6497,7 +7395,12 @@ pub struct CreateCheckoutSessionShippingOptions<'a> {
 }
 impl<'a> CreateCheckoutSessionShippingOptions<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { shipping_rate: None, shipping_rate_data: None }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionShippingOptions<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Parameters to be passed to Shipping Rate creation for this shipping option
@@ -6548,7 +7451,7 @@ impl<'a> CreateCheckoutSessionShippingOptionsShippingRateData<'a> {
 }
 /// The estimated range for how long shipping will take, meant to be displayable to the customer.
 /// This will appear on CheckoutSessions.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
     /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6561,7 +7464,12 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate 
 }
 impl CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
     pub fn new() -> Self {
-        Self::default()
+        Self { maximum: None, minimum: None }
+    }
+}
+impl Default for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
@@ -6971,7 +7879,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionShippingOptionsShippi
     }
 }
 /// A subset of parameters to be passed to subscription creation for Checkout Sessions in `subscription` mode.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionSubscriptionData<'a> {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
@@ -7026,11 +7934,29 @@ pub struct CreateCheckoutSessionSubscriptionData<'a> {
 }
 impl<'a> CreateCheckoutSessionSubscriptionData<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            application_fee_percent: None,
+            billing_cycle_anchor: None,
+            default_tax_rates: None,
+            description: None,
+            invoice_settings: None,
+            metadata: None,
+            on_behalf_of: None,
+            proration_behavior: None,
+            transfer_data: None,
+            trial_end: None,
+            trial_period_days: None,
+            trial_settings: None,
+        }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionSubscriptionData<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataInvoiceSettings<'a> {
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
@@ -7039,7 +7965,12 @@ pub struct CreateCheckoutSessionSubscriptionDataInvoiceSettings<'a> {
 }
 impl<'a> CreateCheckoutSessionSubscriptionDataInvoiceSettings<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { issuer: None }
+    }
+}
+impl<'a> Default for CreateCheckoutSessionSubscriptionDataInvoiceSettings<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The connected account that issues the invoice.
@@ -7298,42 +8229,437 @@ impl CreateCheckoutSessionTaxIdCollection {
         Self { enabled }
     }
 }
+/// Creates a Session object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateCheckoutSession<'a> {
+    inner: CreateCheckoutSessionBuilder<'a>,
+}
 impl<'a> CreateCheckoutSession<'a> {
-    /// Creates a Session object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_checkout::CheckoutSession> {
-        client.send_form("/checkout/sessions", self, http_types::Method::Post)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ExpireCheckoutSession<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> ExpireCheckoutSession<'a> {
+    /// Construct a new `CreateCheckoutSession`.
     pub fn new() -> Self {
-        Self::default()
+        Self { inner: CreateCheckoutSessionBuilder::new() }
     }
+    /// Configure actions after a Checkout Session has expired.
+    pub fn after_expiration(
+        mut self,
+        after_expiration: CreateCheckoutSessionAfterExpiration,
+    ) -> Self {
+        self.inner.after_expiration = Some(after_expiration);
+        self
+    }
+    /// Enables user redeemable promotion codes.
+    pub fn allow_promotion_codes(mut self, allow_promotion_codes: bool) -> Self {
+        self.inner.allow_promotion_codes = Some(allow_promotion_codes);
+        self
+    }
+    /// Settings for automatic tax lookup for this session and resulting payments, invoices, and subscriptions.
+    pub fn automatic_tax(mut self, automatic_tax: CreateCheckoutSessionAutomaticTax<'a>) -> Self {
+        self.inner.automatic_tax = Some(automatic_tax);
+        self
+    }
+    /// Specify whether Checkout should collect the customer's billing address. Defaults to `auto`.
+    pub fn billing_address_collection(
+        mut self,
+        billing_address_collection: stripe_checkout::CheckoutSessionBillingAddressCollection,
+    ) -> Self {
+        self.inner.billing_address_collection = Some(billing_address_collection);
+        self
+    }
+    /// If set, Checkout displays a back button and customers will be directed to this URL if they decide to cancel payment and return to your website.
+    pub fn cancel_url(mut self, cancel_url: &'a str) -> Self {
+        self.inner.cancel_url = Some(cancel_url);
+        self
+    }
+    /// A unique string to reference the Checkout Session. This can be a
+    /// customer ID, a cart ID, or similar, and can be used to reconcile the
+    /// session with your internal systems.
+    pub fn client_reference_id(mut self, client_reference_id: &'a str) -> Self {
+        self.inner.client_reference_id = Some(client_reference_id);
+        self
+    }
+    /// Configure fields for the Checkout Session to gather active consent from customers.
+    pub fn consent_collection(
+        mut self,
+        consent_collection: CreateCheckoutSessionConsentCollection,
+    ) -> Self {
+        self.inner.consent_collection = Some(consent_collection);
+        self
+    }
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    /// Required in `setup` mode when `payment_method_types` is not set.
+    pub fn currency(mut self, currency: stripe_types::Currency) -> Self {
+        self.inner.currency = Some(currency);
+        self
+    }
+    /// Collect additional information from your customer using custom fields.
+    /// Up to 3 fields are supported.
+    pub fn custom_fields(
+        mut self,
+        custom_fields: &'a [CreateCheckoutSessionCustomFields<'a>],
+    ) -> Self {
+        self.inner.custom_fields = Some(custom_fields);
+        self
+    }
+    /// Display additional text for your customers using custom text.
+    pub fn custom_text(mut self, custom_text: CreateCheckoutSessionCustomText<'a>) -> Self {
+        self.inner.custom_text = Some(custom_text);
+        self
+    }
+    /// ID of an existing Customer, if one exists.
+    /// In `payment` mode, the customer’s most recently saved card.
+    /// payment method will be used to prefill the email, name, card details, and billing address
+    /// on the Checkout page.
+    /// In `subscription` mode, the customer’s [default payment method](https://stripe.com/docs/api/customers/update#update_customer-invoice_settings-default_payment_method).
+    /// will be used if it’s a card, otherwise the most recently saved card will be used.
+    /// A valid billing address, billing name and billing email are required on the payment method for Checkout to prefill the customer's card details.
+    ///
+    /// If the Customer already has a valid [email](https://stripe.com/docs/api/customers/object#customer_object-email) set, the email will be prefilled and not editable in Checkout.
+    /// If the Customer does not have a valid `email`, Checkout will set the email entered during the session on the Customer.
+    ///
+    /// If blank for Checkout Sessions in `subscription` mode or with `customer_creation` set as `always` in `payment` mode, Checkout will create a new Customer object based on information provided during the payment flow.
+    ///
+    /// You can set [`payment_intent_data.setup_future_usage`](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_intent_data-setup_future_usage) to have Checkout automatically attach the payment method to the Customer you pass in for future reuse.
+    pub fn customer(mut self, customer: &'a str) -> Self {
+        self.inner.customer = Some(customer);
+        self
+    }
+    /// Configure whether a Checkout Session creates a [Customer](https://stripe.com/docs/api/customers) during Session confirmation.
+    ///
+    /// When a Customer is not created, you can still retrieve email, address, and other customer data entered in Checkout.
+    /// with [customer_details](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-customer_details).
+    ///
+    /// Sessions that don't create Customers instead are grouped by [guest customers](https://stripe.com/docs/payments/checkout/guest-customers).
+    /// in the Dashboard.
+    /// Promotion codes limited to first time customers will return invalid for these Sessions.
+    ///
+    /// Can only be set in `payment` and `setup` mode.
+    pub fn customer_creation(
+        mut self,
+        customer_creation: CreateCheckoutSessionCustomerCreation,
+    ) -> Self {
+        self.inner.customer_creation = Some(customer_creation);
+        self
+    }
+    /// If provided, this value will be used when the Customer object is created.
+    /// If not provided, customers will be asked to enter their email address.
+    /// Use this parameter to prefill customer data if you already have an email
+    /// on file. To access information about the customer once a session is
+    /// complete, use the `customer` field.
+    pub fn customer_email(mut self, customer_email: &'a str) -> Self {
+        self.inner.customer_email = Some(customer_email);
+        self
+    }
+    /// Controls what fields on Customer can be updated by the Checkout Session.
+    /// Can only be provided when `customer` is provided.
+    pub fn customer_update(mut self, customer_update: CreateCheckoutSessionCustomerUpdate) -> Self {
+        self.inner.customer_update = Some(customer_update);
+        self
+    }
+    /// The coupon or promotion code to apply to this Session. Currently, only up to one may be specified.
+    pub fn discounts(mut self, discounts: &'a [CreateCheckoutSessionDiscounts<'a>]) -> Self {
+        self.inner.discounts = Some(discounts);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// The Epoch time in seconds at which the Checkout Session will expire.
+    /// It can be anywhere from 30 minutes to 24 hours after Checkout Session creation.
+    /// By default, this value is 24 hours from creation.
+    pub fn expires_at(mut self, expires_at: stripe_types::Timestamp) -> Self {
+        self.inner.expires_at = Some(expires_at);
+        self
+    }
+    /// Generate a post-purchase Invoice for one-time payments.
+    pub fn invoice_creation(
+        mut self,
+        invoice_creation: CreateCheckoutSessionInvoiceCreation<'a>,
+    ) -> Self {
+        self.inner.invoice_creation = Some(invoice_creation);
+        self
+    }
+    /// A list of items the customer is purchasing.
+    /// Use this parameter to pass one-time or recurring [Prices](https://stripe.com/docs/api/prices).
+    ///
+    /// For `payment` mode, there is a maximum of 100 line items, however it is recommended to consolidate line items if there are more than a few dozen.
+    ///
+    /// For `subscription` mode, there is a maximum of 20 line items with recurring Prices and 20 line items with one-time Prices.
+    /// Line items with one-time Prices will be on the initial invoice only.
+    pub fn line_items(mut self, line_items: &'a [CreateCheckoutSessionLineItems<'a>]) -> Self {
+        self.inner.line_items = Some(line_items);
+        self
+    }
+    /// The IETF language tag of the locale Checkout is displayed in.
+    /// If blank or `auto`, the browser's locale is used.
+    pub fn locale(mut self, locale: stripe_checkout::CheckoutSessionLocale) -> Self {
+        self.inner.locale = Some(locale);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+    /// The mode of the Checkout Session.
+    /// Pass `subscription` if the Checkout Session includes at least one recurring item.
+    pub fn mode(mut self, mode: stripe_checkout::CheckoutSessionMode) -> Self {
+        self.inner.mode = Some(mode);
+        self
+    }
+    /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
+    pub fn payment_intent_data(
+        mut self,
+        payment_intent_data: CreateCheckoutSessionPaymentIntentData<'a>,
+    ) -> Self {
+        self.inner.payment_intent_data = Some(payment_intent_data);
+        self
+    }
+    /// Specify whether Checkout should collect a payment method.
+    /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.
+    /// This may occur if the Checkout Session includes a free trial or a discount.
+    ///
+    /// Can only be set in `subscription` mode. Defaults to `always`.
+    ///
+    /// If you'd like information on how to collect a payment method outside of Checkout, read the guide on configuring [subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
+    pub fn payment_method_collection(
+        mut self,
+        payment_method_collection: CreateCheckoutSessionPaymentMethodCollection,
+    ) -> Self {
+        self.inner.payment_method_collection = Some(payment_method_collection);
+        self
+    }
+    /// The ID of the payment method configuration to use with this Checkout session.
+    pub fn payment_method_configuration(mut self, payment_method_configuration: &'a str) -> Self {
+        self.inner.payment_method_configuration = Some(payment_method_configuration);
+        self
+    }
+    /// This parameter allows you to set some attributes on the payment method created during a Checkout session.
+    pub fn payment_method_data(
+        mut self,
+        payment_method_data: CreateCheckoutSessionPaymentMethodData,
+    ) -> Self {
+        self.inner.payment_method_data = Some(payment_method_data);
+        self
+    }
+    /// Payment-method-specific configuration.
+    pub fn payment_method_options(
+        mut self,
+        payment_method_options: CreateCheckoutSessionPaymentMethodOptions<'a>,
+    ) -> Self {
+        self.inner.payment_method_options = Some(payment_method_options);
+        self
+    }
+    /// A list of the types of payment methods (e.g., `card`) this Checkout Session can accept.
+    ///
+    /// You can omit this attribute to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
+    /// See [Dynamic Payment Methods](https://stripe.com/docs/payments/payment-methods/integration-options#using-dynamic-payment-methods) for more details.
+    ///
+    /// Read more about the supported payment methods and their requirements in our [payment
+    /// method details guide](/docs/payments/checkout/payment-methods).
+    ///
+    /// If multiple payment methods are passed, Checkout will dynamically reorder them to
+    /// prioritize the most relevant payment methods based on the customer's location and
+    /// other characteristics.
+    pub fn payment_method_types(
+        mut self,
+        payment_method_types: &'a [CreateCheckoutSessionPaymentMethodTypes],
+    ) -> Self {
+        self.inner.payment_method_types = Some(payment_method_types);
+        self
+    }
+    /// Controls phone number collection settings for the session.
+    ///
+    /// We recommend that you review your privacy policy and check with your legal contacts
+    /// before using this feature.
+    /// Learn more about [collecting phone numbers with Checkout](https://stripe.com/docs/payments/checkout/phone-numbers).
+    pub fn phone_number_collection(
+        mut self,
+        phone_number_collection: CreateCheckoutSessionPhoneNumberCollection,
+    ) -> Self {
+        self.inner.phone_number_collection = Some(phone_number_collection);
+        self
+    }
+    /// This parameter applies to `ui_mode: embedded`.
+    /// Learn more about the [redirect behavior](https://stripe.com/docs/payments/checkout/custom-redirect-behavior) of embedded sessions.
+    /// Defaults to `always`.
+    pub fn redirect_on_completion(
+        mut self,
+        redirect_on_completion: stripe_checkout::CheckoutSessionRedirectOnCompletion,
+    ) -> Self {
+        self.inner.redirect_on_completion = Some(redirect_on_completion);
+        self
+    }
+    /// The URL to redirect your customer back to after they authenticate or cancel their payment on the
+    /// payment method's app or site. This parameter is required if ui_mode is `embedded`
+    /// and redirect-based payment methods are enabled on the session.
+    pub fn return_url(mut self, return_url: &'a str) -> Self {
+        self.inner.return_url = Some(return_url);
+        self
+    }
+    /// Controls saved payment method settings for the session.
+    /// Only available in `payment` and `subscription` mode.
+    pub fn saved_payment_method_options(
+        mut self,
+        saved_payment_method_options: CreateCheckoutSessionSavedPaymentMethodOptions<'a>,
+    ) -> Self {
+        self.inner.saved_payment_method_options = Some(saved_payment_method_options);
+        self
+    }
+    /// A subset of parameters to be passed to SetupIntent creation for Checkout Sessions in `setup` mode.
+    pub fn setup_intent_data(
+        mut self,
+        setup_intent_data: CreateCheckoutSessionSetupIntentData<'a>,
+    ) -> Self {
+        self.inner.setup_intent_data = Some(setup_intent_data);
+        self
+    }
+    /// When set, provides configuration for Checkout to collect a shipping address from a customer.
+    pub fn shipping_address_collection(
+        mut self,
+        shipping_address_collection: CreateCheckoutSessionShippingAddressCollection<'a>,
+    ) -> Self {
+        self.inner.shipping_address_collection = Some(shipping_address_collection);
+        self
+    }
+    /// The shipping rate options to apply to this Session. Up to a maximum of 5.
+    pub fn shipping_options(
+        mut self,
+        shipping_options: &'a [CreateCheckoutSessionShippingOptions<'a>],
+    ) -> Self {
+        self.inner.shipping_options = Some(shipping_options);
+        self
+    }
+    /// Describes the type of transaction being performed by Checkout in order to customize
+    /// relevant text on the page, such as the submit button. `submit_type` can only be
+    /// specified on Checkout Sessions in `payment` mode. If blank or `auto`, `pay` is used.
+    pub fn submit_type(mut self, submit_type: stripe_checkout::CheckoutSessionSubmitType) -> Self {
+        self.inner.submit_type = Some(submit_type);
+        self
+    }
+    /// A subset of parameters to be passed to subscription creation for Checkout Sessions in `subscription` mode.
+    pub fn subscription_data(
+        mut self,
+        subscription_data: CreateCheckoutSessionSubscriptionData<'a>,
+    ) -> Self {
+        self.inner.subscription_data = Some(subscription_data);
+        self
+    }
+    /// The URL to which Stripe should send customers when payment or setup
+    /// is complete.
+    /// This parameter is not allowed if ui_mode is `embedded`. If you’d like to use
+    /// information from the successful Checkout Session on your page, read the
+    /// guide on [customizing your success page](https://stripe.com/docs/payments/checkout/custom-success-page).
+    pub fn success_url(mut self, success_url: &'a str) -> Self {
+        self.inner.success_url = Some(success_url);
+        self
+    }
+    /// Controls tax ID collection settings for the session.
+    pub fn tax_id_collection(
+        mut self,
+        tax_id_collection: CreateCheckoutSessionTaxIdCollection,
+    ) -> Self {
+        self.inner.tax_id_collection = Some(tax_id_collection);
+        self
+    }
+    /// The UI mode of the Session. Defaults to `hosted`.
+    pub fn ui_mode(mut self, ui_mode: stripe_checkout::CheckoutSessionUiMode) -> Self {
+        self.inner.ui_mode = Some(ui_mode);
+        self
+    }
+}
+impl<'a> Default for CreateCheckoutSession<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl CreateCheckoutSession<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateCheckoutSession<'_> {
+    type Output = stripe_checkout::CheckoutSession;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/checkout/sessions").form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ExpireCheckoutSessionBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> ExpireCheckoutSessionBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// A Session can be expired when it is in one of these statuses: `open`
+///
+/// After it expires, a customer can’t complete a Session and customers loading the Session see a message saying the Session is expired.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ExpireCheckoutSession<'a> {
+    inner: ExpireCheckoutSessionBuilder<'a>,
+    session: &'a stripe_checkout::CheckoutSessionId,
 }
 impl<'a> ExpireCheckoutSession<'a> {
-    /// A Session can be expired when it is in one of these statuses: `open`
-    ///
-    /// After it expires, a customer can’t complete a Session and customers loading the Session see a message saying the Session is expired.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        session: &stripe_checkout::CheckoutSessionId,
-    ) -> stripe::Response<stripe_checkout::CheckoutSession> {
-        client.send_form(
-            &format!("/checkout/sessions/{session}/expire"),
-            self,
-            http_types::Method::Post,
-        )
+    /// Construct a new `ExpireCheckoutSession`.
+    pub fn new(session: &'a stripe_checkout::CheckoutSessionId) -> Self {
+        Self { session, inner: ExpireCheckoutSessionBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
+impl ExpireCheckoutSession<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for ExpireCheckoutSession<'_> {
+    type Output = stripe_checkout::CheckoutSession;
+
+    fn build(&self) -> RequestBuilder {
+        let session = self.session;
+        RequestBuilder::new(StripeMethod::Post, format!("/checkout/sessions/{session}/expire"))
+            .form(&self.inner)
+    }
+}
+
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CustomTextPositionParam<'a> {
     /// Text may be up to 1200 characters in length.

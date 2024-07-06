@@ -68,7 +68,13 @@ pub struct Subscription {
     pub description: Option<String>,
     /// Describes the current discount applied to this subscription, if there is one.
     /// When billing, a discount applied to a subscription overrides a discount applied on a customer-wide basis.
+    /// This field has been deprecated and will be removed in a future API version.
+    /// Use `discounts` instead.
     pub discount: Option<stripe_shared::Discount>,
+    /// The discounts applied to the subscription.
+    /// Subscription item discounts are applied before subscription discounts.
+    /// Use `expand[]=discounts` to expand each discount.
+    pub discounts: Vec<stripe_types::Expandable<stripe_shared::Discount>>,
     /// If the subscription has ended, the date the subscription ended.
     pub ended_at: Option<stripe_types::Timestamp>,
     /// Unique identifier for the object.
@@ -88,6 +94,8 @@ pub struct Subscription {
     /// See the Connect documentation for details.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// If specified, payment collection for this subscription will be paused.
+    /// Note that the subscription status will be unchanged and will not be updated to `paused`.
+    /// Learn more about [pausing collection](/billing/subscriptions/pause-payment).
     pub pause_collection: Option<stripe_shared::SubscriptionsResourcePauseCollection>,
     /// Payment settings passed on to invoices created by the subscription.
     pub payment_settings: Option<stripe_shared::SubscriptionsResourcePaymentSettings>,
@@ -105,17 +113,22 @@ pub struct Subscription {
     /// Date when the subscription was first created.
     /// The date might differ from the `created` date due to backdating.
     pub start_date: stripe_types::Timestamp,
-    /// Possible values are `incomplete`, `incomplete_expired`, `trialing`, `active`, `past_due`, `canceled`, or `unpaid`.
+    /// Possible values are `incomplete`, `incomplete_expired`, `trialing`, `active`, `past_due`, `canceled`, `unpaid`, or `paused`.
     ///
     ///
     /// For `collection_method=charge_automatically` a subscription moves into `incomplete` if the initial payment attempt fails.
-    /// A subscription in this state can only have metadata and default_source updated.
-    /// Once the first invoice is paid, the subscription moves into an `active` state.
+    /// A subscription in this status can only have metadata and default_source updated.
+    /// Once the first invoice is paid, the subscription moves into an `active` status.
     /// If the first invoice is not paid within 23 hours, the subscription transitions to `incomplete_expired`.
-    /// This is a terminal state, the open invoice will be voided and no further invoices will be generated.
+    /// This is a terminal status, the open invoice will be voided and no further invoices will be generated.
     ///
     ///
     /// A subscription that is currently in a trial period is `trialing` and moves to `active` when the trial period is over.
+    ///
+    ///
+    /// A subscription can only enter a `paused` status [when a trial ends without a payment method](/billing/subscriptions/trials#create-free-trials-without-payment).
+    /// A `paused` subscription doesn't generate invoices and can be resumed after your customer adds their payment method.
+    /// The `paused` status is different from [pausing collection](/billing/subscriptions/pause-payment), which still generates invoices and leaves the subscription's status unchanged.
     ///
     ///
     /// If subscription `collection_method=charge_automatically`, it becomes `past_due` when payment is required but cannot be paid (due to failed payment or awaiting additional user actions).
@@ -162,6 +175,7 @@ pub struct SubscriptionBuilder {
     default_tax_rates: Option<Option<Vec<stripe_shared::TaxRate>>>,
     description: Option<Option<String>>,
     discount: Option<Option<stripe_shared::Discount>>,
+    discounts: Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>,
     ended_at: Option<Option<stripe_types::Timestamp>>,
     id: Option<stripe_shared::SubscriptionId>,
     items: Option<stripe_types::List<stripe_shared::SubscriptionItem>>,
@@ -244,6 +258,7 @@ const _: () = {
                 "default_tax_rates" => Deserialize::begin(&mut self.default_tax_rates),
                 "description" => Deserialize::begin(&mut self.description),
                 "discount" => Deserialize::begin(&mut self.discount),
+                "discounts" => Deserialize::begin(&mut self.discounts),
                 "ended_at" => Deserialize::begin(&mut self.ended_at),
                 "id" => Deserialize::begin(&mut self.id),
                 "items" => Deserialize::begin(&mut self.items),
@@ -298,6 +313,7 @@ const _: () = {
                 default_tax_rates: Deserialize::default(),
                 description: Deserialize::default(),
                 discount: Deserialize::default(),
+                discounts: Deserialize::default(),
                 ended_at: Deserialize::default(),
                 id: Deserialize::default(),
                 items: Deserialize::default(),
@@ -346,6 +362,7 @@ const _: () = {
                 default_tax_rates: self.default_tax_rates.take()?,
                 description: self.description.take()?,
                 discount: self.discount.take()?,
+                discounts: self.discounts.take()?,
                 ended_at: self.ended_at?,
                 id: self.id.take()?,
                 items: self.items.take()?,
@@ -434,6 +451,7 @@ const _: () = {
                     "default_tax_rates" => b.default_tax_rates = Some(FromValueOpt::from_value(v)?),
                     "description" => b.description = Some(FromValueOpt::from_value(v)?),
                     "discount" => b.discount = Some(FromValueOpt::from_value(v)?),
+                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
                     "ended_at" => b.ended_at = Some(FromValueOpt::from_value(v)?),
                     "id" => b.id = Some(FromValueOpt::from_value(v)?),
                     "items" => b.items = Some(FromValueOpt::from_value(v)?),
@@ -473,7 +491,7 @@ const _: () = {
 impl serde::Serialize for Subscription {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Subscription", 44)?;
+        let mut s = s.serialize_struct("Subscription", 45)?;
         s.serialize_field("application", &self.application)?;
         s.serialize_field("application_fee_percent", &self.application_fee_percent)?;
         s.serialize_field("automatic_tax", &self.automatic_tax)?;
@@ -496,6 +514,7 @@ impl serde::Serialize for Subscription {
         s.serialize_field("default_tax_rates", &self.default_tax_rates)?;
         s.serialize_field("description", &self.description)?;
         s.serialize_field("discount", &self.discount)?;
+        s.serialize_field("discounts", &self.discounts)?;
         s.serialize_field("ended_at", &self.ended_at)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("items", &self.items)?;
@@ -525,17 +544,22 @@ impl serde::Serialize for Subscription {
         s.end()
     }
 }
-/// Possible values are `incomplete`, `incomplete_expired`, `trialing`, `active`, `past_due`, `canceled`, or `unpaid`.
+/// Possible values are `incomplete`, `incomplete_expired`, `trialing`, `active`, `past_due`, `canceled`, `unpaid`, or `paused`.
 ///
 ///
 /// For `collection_method=charge_automatically` a subscription moves into `incomplete` if the initial payment attempt fails.
-/// A subscription in this state can only have metadata and default_source updated.
-/// Once the first invoice is paid, the subscription moves into an `active` state.
+/// A subscription in this status can only have metadata and default_source updated.
+/// Once the first invoice is paid, the subscription moves into an `active` status.
 /// If the first invoice is not paid within 23 hours, the subscription transitions to `incomplete_expired`.
-/// This is a terminal state, the open invoice will be voided and no further invoices will be generated.
+/// This is a terminal status, the open invoice will be voided and no further invoices will be generated.
 ///
 ///
 /// A subscription that is currently in a trial period is `trialing` and moves to `active` when the trial period is over.
+///
+///
+/// A subscription can only enter a `paused` status [when a trial ends without a payment method](/billing/subscriptions/trials#create-free-trials-without-payment).
+/// A `paused` subscription doesn't generate invoices and can be resumed after your customer adds their payment method.
+/// The `paused` status is different from [pausing collection](/billing/subscriptions/pause-payment), which still generates invoices and leaves the subscription's status unchanged.
 ///
 ///
 /// If subscription `collection_method=charge_automatically`, it becomes `past_due` when payment is required but cannot be paid (due to failed payment or awaiting additional user actions).

@@ -1,106 +1,47 @@
 [package]
 name = "async-stripe"
 version.workspace = true
-edition.workspace = true
+description.workspace = true
 rust-version.workspace = true
 authors.workspace = true
 license.workspace = true
+readme.workspace = true
 homepage.workspace = true
 repository.workspace = true
+documentation.workspace = true
 keywords.workspace = true
 categories.workspace = true
-
-[package.metadata.docs.rs]
-features = ["runtime-tokio-hyper"]
+edition.workspace = true
 
 [lib]
 name = "stripe"
 
-[features]
-default = ["uuid", "stream"]
-
-stream = []
-
-# runtimes
-async = ["futures-util"]
-blocking = []
-
-runtime-tokio-hyper = [
-    "tokio",
-    "hyper-client",
-    "hyper-tls",
-    "async",
-]
-runtime-tokio-hyper-rustls = [
-    "tokio",
-    "hyper-client",
-    "hyper-rustls",
-    "hyper-rustls-native",
-    "async",
-]
-runtime-tokio-hyper-rustls-webpki = [
-    "tokio",
-    "hyper-client",
-    "hyper-rustls-webpki",
-    "async",
-]
-runtime-blocking = [
-    "tokio",
-    "tokio/rt",
-    "hyper-client",
-    "hyper-tls",
-    "blocking",
-]
-runtime-blocking-rustls = [
-    "tokio",
-    "tokio/rt",
-    "hyper-client",
-    "hyper-rustls-native",
-    "blocking",
-]
-runtime-blocking-rustls-webpki = [
-    "tokio",
-    "tokio/rt",
-    "hyper-client",
-    "hyper-rustls-webpki",
-    "blocking",
-]
-runtime-async-std-surf = [
-    "async-std",
-    "surf",
-    "async",
-]
-
-# we need the compat crate if using hyper
-hyper-client = ["hyper", "http-types/hyperium_http"]
-
-hyper-rustls-native = ["hyper-rustls", "hyper-rustls/native-tokio"]
-hyper-rustls-webpki = ["hyper-rustls", "hyper-rustls/webpki-tokio"]
-
 [dependencies]
-stripe_types = { path = "../stripe_types" }
-stripe_shared = { path = "../generated/stripe_shared" }
-async-std = { version = "1.8,<1.11", optional = true }
-
-thiserror = "1.0.24"
-hyper = { version = "0.14", default-features = false, features = ["http1", "http2", "client", "tcp"], optional = true }
+hyper = { version = "0.14.28", default-features = false, features = ["http1", "http2", "client", "tcp"] }
 hyper-tls = { version = "0.5", optional = true }
 hyper-rustls = { version = "0.24", default-features = false, features = ["http1", "http2", "tls12", "logging"], optional = true }
-serde_qs = "0.12.0"
-surf = { version = "2.1", optional = true }
-tokio = { version = "1.2", optional = true }
-uuid = { version = "1.6.1", optional = true, features = ["v4"] }
-
-serde.workspace = true
-serde_json.workspace = true
-http-types.workspace = true
-smol_str.workspace = true
+thiserror = "1.0.58"
 miniserde.workspace = true
+tokio = { version = "1.24.1", features = ["rt", "macros"] }
 
-# stream for lists
-futures-util = { version = "0.3.21", optional = true }
+stripe_shared = { path = "../generated/stripe_shared" }
+stripe_client_core = { path = "../stripe_client_core" }
+
+[features]
+default = ["default-tls"]
+
+default-tls = ["dep:hyper-tls"]
+native-tls = ["default-tls"]
+rustls-tls-webpki-roots = ["__rustls", "hyper-rustls/webpki-tokio"]
+rustls-tls-native = ["__rustls", "hyper-rustls/native-tokio"]
+__rustls = ["dep:hyper-rustls"]
+
+blocking = []
+uuid = ["stripe_client_core/uuid"]
 
 [dev-dependencies]
-httpmock = "0.6.7"
-async-std = { version = "1.10.0", features = ["attributes"] }
-tokio = { version = "1.24.1", features = ["rt", "macros"] }
+serde.workspace = true
+serde_json.workspace = true
+httpmock = { version = "0.7.0", default-features = false }
+
+

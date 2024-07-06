@@ -9,8 +9,36 @@
 extern crate self as stripe_billing;
 
 miniserde::make_place!(Place);
-pub use billing_portal_configuration::types::*;
+pub use billing_meter::types::*;
 pub use stripe_shared::automatic_tax::*;
+pub mod billing_meter;
+pub use billing_meter_event::types::*;
+pub mod billing_meter_event;
+pub use billing_meter_event_adjustment::types::*;
+pub mod billing_meter_event_adjustment;
+pub use billing_meter_event_summary::types::*;
+pub mod billing_meter_event_summary;
+#[doc(hidden)]
+pub mod billing_meter_resource_aggregation_settings;
+#[doc(inline)]
+pub use billing_meter_resource_aggregation_settings::*;
+#[doc(hidden)]
+pub mod billing_meter_resource_billing_meter_event_adjustment_cancel;
+#[doc(inline)]
+pub use billing_meter_resource_billing_meter_event_adjustment_cancel::*;
+#[doc(hidden)]
+pub mod billing_meter_resource_billing_meter_status_transitions;
+#[doc(inline)]
+pub use billing_meter_resource_billing_meter_status_transitions::*;
+#[doc(hidden)]
+pub mod billing_meter_resource_billing_meter_value;
+#[doc(inline)]
+pub use billing_meter_resource_billing_meter_value::*;
+#[doc(hidden)]
+pub mod billing_meter_resource_customer_mapping_settings;
+#[doc(inline)]
+pub use billing_meter_resource_customer_mapping_settings::*;
+pub use billing_portal_configuration::types::*;
 pub mod billing_portal_configuration;
 pub use billing_portal_session::types::*;
 pub mod billing_portal_session;
@@ -27,20 +55,21 @@ pub use stripe_shared::deleted_subscription_item::*;
 pub use stripe_shared::deleted_tax_id::*;
 pub use stripe_shared::deleted_test_helpers_test_clock::*;
 pub use stripe_shared::discounts_resource_discount_amount::*;
+pub use stripe_shared::discounts_resource_stackable_discount::*;
 pub mod invoice;
-pub use stripe_shared::invoice::*;pub use stripe_shared::invoice_installments_card::*;pub use stripe_shared::invoice_item_threshold_reason::*;pub use stripe_shared::invoice_line_item_period::*;pub use stripe_shared::invoice_mandate_options_card::*;pub use stripe_shared::invoice_payment_method_options_acss_debit::*;pub use stripe_shared::invoice_payment_method_options_acss_debit_mandate_options::*;pub use stripe_shared::invoice_payment_method_options_bancontact::*;pub use stripe_shared::invoice_payment_method_options_card::*;pub use stripe_shared::invoice_payment_method_options_customer_balance::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer_eu_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_konbini::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account_linked_account_options::*;pub use stripe_shared::invoice_rendering_pdf::*;pub use stripe_shared::invoice_setting_custom_field::*;pub use stripe_shared::invoice_setting_customer_setting::*;pub use stripe_shared::invoice_setting_quote_setting::*;pub use stripe_shared::invoice_setting_rendering_options::*;pub use stripe_shared::invoice_setting_subscription_schedule_phase_setting::*;pub use stripe_shared::invoice_setting_subscription_schedule_setting::*;pub use stripe_shared::invoice_tax_amount::*;pub use stripe_shared::invoice_threshold_reason::*;pub use stripe_shared::invoice_transfer_data::*;
+pub use stripe_shared::invoice::*;pub use stripe_shared::invoice_installments_card::*;pub use stripe_shared::invoice_item_threshold_reason::*;pub use stripe_shared::invoice_line_item_period::*;pub use stripe_shared::invoice_mandate_options_card::*;pub use stripe_shared::invoice_payment_method_options_acss_debit::*;pub use stripe_shared::invoice_payment_method_options_acss_debit_mandate_options::*;pub use stripe_shared::invoice_payment_method_options_bancontact::*;pub use stripe_shared::invoice_payment_method_options_card::*;pub use stripe_shared::invoice_payment_method_options_customer_balance::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer_eu_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_konbini::*;pub use stripe_shared::invoice_payment_method_options_sepa_debit::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account_linked_account_options::*;pub use stripe_shared::invoice_rendering_pdf::*;pub use stripe_shared::invoice_setting_custom_field::*;pub use stripe_shared::invoice_setting_customer_rendering_options::*;pub use stripe_shared::invoice_setting_customer_setting::*;pub use stripe_shared::invoice_setting_quote_setting::*;pub use stripe_shared::invoice_setting_rendering_options::*;pub use stripe_shared::invoice_setting_subscription_schedule_phase_setting::*;pub use stripe_shared::invoice_setting_subscription_schedule_setting::*;pub use stripe_shared::invoice_tax_amount::*;pub use stripe_shared::invoice_threshold_reason::*;pub use stripe_shared::invoice_transfer_data::*;
 pub mod invoice_item;
 pub use stripe_shared::checkout_session_item::*;
 pub use stripe_shared::invoice_item::*;
-pub use stripe_shared::invoices_from_invoice::*;
-pub use stripe_shared::invoices_invoice_rendering::*;
 pub use stripe_shared::invoices_payment_method_options::*;
 pub use stripe_shared::invoices_payment_settings::*;
+pub use stripe_shared::invoices_resource_from_invoice::*;
+pub use stripe_shared::invoices_resource_invoice_rendering::*;
 pub use stripe_shared::invoices_resource_invoice_tax_id::*;
 pub use stripe_shared::invoices_resource_line_items_credited_items::*;
 pub use stripe_shared::invoices_resource_line_items_proration_details::*;
-pub use stripe_shared::invoices_shipping_cost::*;
-pub use stripe_shared::invoices_status_transitions::*;
+pub use stripe_shared::invoices_resource_shipping_cost::*;
+pub use stripe_shared::invoices_resource_status_transitions::*;
 pub mod invoice_line_item;
 pub use stripe_shared::invoice_line_item::*;
 pub use stripe_shared::period::*;
@@ -123,10 +152,6 @@ pub use portal_subscription_cancel::*;
 pub mod portal_subscription_cancellation_reason;
 #[doc(inline)]
 pub use portal_subscription_cancellation_reason::*;
-#[doc(hidden)]
-pub mod portal_subscription_pause;
-#[doc(inline)]
-pub use portal_subscription_pause::*;
 #[doc(hidden)]
 pub mod portal_subscription_update;
 #[doc(inline)]

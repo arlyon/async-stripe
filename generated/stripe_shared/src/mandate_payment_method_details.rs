@@ -3,12 +3,14 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct MandatePaymentMethodDetails {
     pub acss_debit: Option<stripe_shared::MandateAcssDebit>,
+    pub amazon_pay: Option<stripe_shared::MandateAmazonPay>,
     pub au_becs_debit: Option<stripe_shared::MandateAuBecsDebit>,
     pub bacs_debit: Option<stripe_shared::MandateBacsDebit>,
     pub card: Option<stripe_shared::CardMandatePaymentMethodDetails>,
     pub cashapp: Option<stripe_shared::MandateCashapp>,
     pub link: Option<stripe_shared::MandateLink>,
     pub paypal: Option<stripe_shared::MandatePaypal>,
+    pub revolut_pay: Option<stripe_shared::MandateRevolutPay>,
     pub sepa_debit: Option<stripe_shared::MandateSepaDebit>,
     /// This mandate corresponds with a specific payment method type.
     /// The `payment_method_details` includes an additional hash with the same name and contains mandate information that's specific to that payment method.
@@ -19,12 +21,14 @@ pub struct MandatePaymentMethodDetails {
 #[doc(hidden)]
 pub struct MandatePaymentMethodDetailsBuilder {
     acss_debit: Option<Option<stripe_shared::MandateAcssDebit>>,
+    amazon_pay: Option<Option<stripe_shared::MandateAmazonPay>>,
     au_becs_debit: Option<Option<stripe_shared::MandateAuBecsDebit>>,
     bacs_debit: Option<Option<stripe_shared::MandateBacsDebit>>,
     card: Option<Option<stripe_shared::CardMandatePaymentMethodDetails>>,
     cashapp: Option<Option<stripe_shared::MandateCashapp>>,
     link: Option<Option<stripe_shared::MandateLink>>,
     paypal: Option<Option<stripe_shared::MandatePaypal>>,
+    revolut_pay: Option<Option<stripe_shared::MandateRevolutPay>>,
     sepa_debit: Option<Option<stripe_shared::MandateSepaDebit>>,
     type_: Option<String>,
     us_bank_account: Option<Option<stripe_shared::MandateUsBankAccount>>,
@@ -65,12 +69,14 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "acss_debit" => Deserialize::begin(&mut self.acss_debit),
+                "amazon_pay" => Deserialize::begin(&mut self.amazon_pay),
                 "au_becs_debit" => Deserialize::begin(&mut self.au_becs_debit),
                 "bacs_debit" => Deserialize::begin(&mut self.bacs_debit),
                 "card" => Deserialize::begin(&mut self.card),
                 "cashapp" => Deserialize::begin(&mut self.cashapp),
                 "link" => Deserialize::begin(&mut self.link),
                 "paypal" => Deserialize::begin(&mut self.paypal),
+                "revolut_pay" => Deserialize::begin(&mut self.revolut_pay),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "type" => Deserialize::begin(&mut self.type_),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
@@ -82,12 +88,14 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 acss_debit: Deserialize::default(),
+                amazon_pay: Deserialize::default(),
                 au_becs_debit: Deserialize::default(),
                 bacs_debit: Deserialize::default(),
                 card: Deserialize::default(),
                 cashapp: Deserialize::default(),
                 link: Deserialize::default(),
                 paypal: Deserialize::default(),
+                revolut_pay: Deserialize::default(),
                 sepa_debit: Deserialize::default(),
                 type_: Deserialize::default(),
                 us_bank_account: Deserialize::default(),
@@ -97,12 +105,14 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             Some(Self::Out {
                 acss_debit: self.acss_debit.take()?,
+                amazon_pay: self.amazon_pay?,
                 au_becs_debit: self.au_becs_debit.take()?,
                 bacs_debit: self.bacs_debit.take()?,
                 card: self.card?,
                 cashapp: self.cashapp?,
                 link: self.link?,
                 paypal: self.paypal.take()?,
+                revolut_pay: self.revolut_pay?,
                 sepa_debit: self.sepa_debit.take()?,
                 type_: self.type_.take()?,
                 us_bank_account: self.us_bank_account?,
@@ -134,12 +144,14 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "acss_debit" => b.acss_debit = Some(FromValueOpt::from_value(v)?),
+                    "amazon_pay" => b.amazon_pay = Some(FromValueOpt::from_value(v)?),
                     "au_becs_debit" => b.au_becs_debit = Some(FromValueOpt::from_value(v)?),
                     "bacs_debit" => b.bacs_debit = Some(FromValueOpt::from_value(v)?),
                     "card" => b.card = Some(FromValueOpt::from_value(v)?),
                     "cashapp" => b.cashapp = Some(FromValueOpt::from_value(v)?),
                     "link" => b.link = Some(FromValueOpt::from_value(v)?),
                     "paypal" => b.paypal = Some(FromValueOpt::from_value(v)?),
+                    "revolut_pay" => b.revolut_pay = Some(FromValueOpt::from_value(v)?),
                     "sepa_debit" => b.sepa_debit = Some(FromValueOpt::from_value(v)?),
                     "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
                     "us_bank_account" => b.us_bank_account = Some(FromValueOpt::from_value(v)?),

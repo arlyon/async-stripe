@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardholderAuthorizationControls {
@@ -6,10 +6,23 @@ pub struct IssuingCardholderAuthorizationControls {
     /// All other categories will be blocked.
     /// Cannot be set with `blocked_categories`.
     pub allowed_categories: Option<Vec<IssuingCardholderAuthorizationControlsAllowedCategories>>,
+    /// Array of strings containing representing countries from which authorizations will be allowed.
+    /// Authorizations from merchants in all other countries will be declined.
+    /// Country codes should be ISO 3166 alpha-2 country codes (e.g.
+    /// `US`).
+    /// Cannot be set with `blocked_merchant_countries`.
+    /// Provide an empty value to unset this control.
+    pub allowed_merchant_countries: Option<Vec<String>>,
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
     /// All other categories will be allowed.
     /// Cannot be set with `allowed_categories`.
     pub blocked_categories: Option<Vec<IssuingCardholderAuthorizationControlsBlockedCategories>>,
+    /// Array of strings containing representing countries from which authorizations will be declined.
+    /// Country codes should be ISO 3166 alpha-2 country codes (e.g.
+    /// `US`).
+    /// Cannot be set with `allowed_merchant_countries`.
+    /// Provide an empty value to unset this control.
+    pub blocked_merchant_countries: Option<Vec<String>>,
     /// Limit spending with amount-based rules that apply across this cardholder's cards.
     pub spending_limits: Option<Vec<stripe_shared::IssuingCardholderSpendingLimit>>,
     /// Currency of the amounts within `spending_limits`.
@@ -19,8 +32,10 @@ pub struct IssuingCardholderAuthorizationControls {
 pub struct IssuingCardholderAuthorizationControlsBuilder {
     allowed_categories:
         Option<Option<Vec<IssuingCardholderAuthorizationControlsAllowedCategories>>>,
+    allowed_merchant_countries: Option<Option<Vec<String>>>,
     blocked_categories:
         Option<Option<Vec<IssuingCardholderAuthorizationControlsBlockedCategories>>>,
+    blocked_merchant_countries: Option<Option<Vec<String>>>,
     spending_limits: Option<Option<Vec<stripe_shared::IssuingCardholderSpendingLimit>>>,
     spending_limits_currency: Option<Option<stripe_types::Currency>>,
 }
@@ -60,7 +75,13 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "allowed_categories" => Deserialize::begin(&mut self.allowed_categories),
+                "allowed_merchant_countries" => {
+                    Deserialize::begin(&mut self.allowed_merchant_countries)
+                }
                 "blocked_categories" => Deserialize::begin(&mut self.blocked_categories),
+                "blocked_merchant_countries" => {
+                    Deserialize::begin(&mut self.blocked_merchant_countries)
+                }
                 "spending_limits" => Deserialize::begin(&mut self.spending_limits),
                 "spending_limits_currency" => {
                     Deserialize::begin(&mut self.spending_limits_currency)
@@ -73,7 +94,9 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 allowed_categories: Deserialize::default(),
+                allowed_merchant_countries: Deserialize::default(),
                 blocked_categories: Deserialize::default(),
+                blocked_merchant_countries: Deserialize::default(),
                 spending_limits: Deserialize::default(),
                 spending_limits_currency: Deserialize::default(),
             }
@@ -82,7 +105,9 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             Some(Self::Out {
                 allowed_categories: self.allowed_categories.take()?,
+                allowed_merchant_countries: self.allowed_merchant_countries.take()?,
                 blocked_categories: self.blocked_categories.take()?,
+                blocked_merchant_countries: self.blocked_merchant_countries.take()?,
                 spending_limits: self.spending_limits.take()?,
                 spending_limits_currency: self.spending_limits_currency?,
             })
@@ -115,8 +140,14 @@ const _: () = {
                     "allowed_categories" => {
                         b.allowed_categories = Some(FromValueOpt::from_value(v)?)
                     }
+                    "allowed_merchant_countries" => {
+                        b.allowed_merchant_countries = Some(FromValueOpt::from_value(v)?)
+                    }
                     "blocked_categories" => {
                         b.blocked_categories = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "blocked_merchant_countries" => {
+                        b.blocked_merchant_countries = Some(FromValueOpt::from_value(v)?)
                     }
                     "spending_limits" => b.spending_limits = Some(FromValueOpt::from_value(v)?),
                     "spending_limits_currency" => {

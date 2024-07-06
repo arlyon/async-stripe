@@ -15,7 +15,7 @@
 ///
 /// You can't store or use tokens more than once. To store card or bank account
 /// information for later use, create [Customer](https://stripe.com/docs/api#customers)
-/// objects or [Custom accounts](https://stripe.com/docs/api#external_accounts).
+/// objects or [External accounts](/api#external_accounts).
 /// [Radar](https://stripe.com/docs/radar), our integrated solution for automatic fraud protection,
 /// performs best with integrations that use client-side tokenization.
 ///

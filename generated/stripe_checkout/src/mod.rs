@@ -32,6 +32,10 @@ pub mod checkout_alipay_payment_method_options;
 #[doc(inline)]
 pub use checkout_alipay_payment_method_options::*;
 #[doc(hidden)]
+pub mod checkout_amazon_pay_payment_method_options;
+#[doc(inline)]
+pub use checkout_amazon_pay_payment_method_options::*;
+#[doc(hidden)]
 pub mod checkout_au_becs_debit_payment_method_options;
 #[doc(inline)]
 pub use checkout_au_becs_debit_payment_method_options::*;
@@ -99,6 +103,10 @@ pub use checkout_konbini_payment_method_options::*;
 pub mod checkout_link_payment_method_options;
 #[doc(inline)]
 pub use checkout_link_payment_method_options::*;
+#[doc(hidden)]
+pub mod checkout_mobilepay_payment_method_options;
+#[doc(inline)]
+pub use checkout_mobilepay_payment_method_options::*;
 #[doc(hidden)]
 pub mod checkout_oxxo_payment_method_options;
 #[doc(inline)]
@@ -219,6 +227,10 @@ pub use payment_pages_checkout_session_payment_method_reuse_agreement::*;
 pub mod payment_pages_checkout_session_phone_number_collection;
 #[doc(inline)]
 pub use payment_pages_checkout_session_phone_number_collection::*;
+#[doc(hidden)]
+pub mod payment_pages_checkout_session_saved_payment_method_options;
+#[doc(inline)]
+pub use payment_pages_checkout_session_saved_payment_method_options::*;
 #[doc(hidden)]
 pub mod payment_pages_checkout_session_shipping_address_collection;
 #[doc(inline)]

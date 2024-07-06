@@ -4,16 +4,6 @@ use indoc::formatdoc;
 
 use crate::crates::Crate;
 
-const CORE_FEATURES: &[&str] = &[
-    "runtime-tokio-hyper",
-    "runtime-tokio-hyper-rustls",
-    "runtime-tokio-hyper-rustls-webpki",
-    "runtime-blocking",
-    "runtime-blocking-rustls",
-    "runtime-blocking-rustls-webpki",
-    "runtime-async-std-surf",
-];
-
 fn get_serialization_feature(deps: &[Crate], kind: &str) -> String {
     let mut features = vec![format!("stripe_types/{kind}")];
     for dep in deps {
@@ -33,14 +23,9 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
 
     // Dependencies only needed for libraries which implement Stripe requests
     let request_deps = if krate == Crate::SHARED {
-        "".into()
+        ""
     } else {
-        formatdoc! {
-            r#"
-            http-types.workspace = true
-            async-stripe = {{path = "../../async-stripe"}}
-            "#
-        }
+        r#"stripe_client_core = {path = "../../stripe_client_core"}"#
     };
 
     let ser_features = get_serialization_feature(&crate_deps, "serialize");
@@ -68,58 +53,43 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
         
         [dependencies]
         serde.workspace = true
-        serde_json.workspace = true
+        serde_json = {{ workspace = true, optional = true }}
         smol_str.workspace = true
         miniserde.workspace = true
         stripe_types = {{path = "../../stripe_types"}}
-        
         {request_deps}
         
         {crate_dep_section}
 
         [features]
         serialize = [{ser_features}]
-        deserialize = [{deser_features}]
+        deserialize = [{deser_features}, "dep:serde_json"]
         {features}
         "#
     }
 }
 
 fn gen_feature_section(mut crate_features: Vec<String>) -> String {
+    assert!(!crate_features.is_empty(), "expected crate to have features");
     let mut feature_section = String::new();
-    for feature in CORE_FEATURES {
-        let _ = writeln!(feature_section, r#"{feature} = ["async-stripe/{feature}"]"#);
-    }
-    feature_section.push('\n');
 
     crate_features.sort_unstable();
     for feature in &crate_features {
         let _ = writeln!(feature_section, "{feature} = []");
     }
-    if !crate_features.is_empty() {
-        feature_section.push('\n');
-        let _ = writeln!(
-            feature_section,
-            "full = [{}]",
-            crate_features
-                .iter()
-                .map(|feat| format!(r#""{feat}""#))
-                .collect::<Vec<_>>()
-                .join(",\n")
-        );
-    }
+    feature_section.push('\n');
+    let _ = writeln!(
+        feature_section,
+        "full = [{}]",
+        crate_features.iter().map(|feat| format!(r#""{feat}""#)).collect::<Vec<_>>().join(",\n")
+    );
 
-    let mut docs_rs_features = String::from(r#"["runtime-tokio-hyper""#);
-    if !crate_features.is_empty() {
-        docs_rs_features.push_str(r#", "full""#);
-    }
-    docs_rs_features.push(']');
     formatdoc! {
         r#"
         {feature_section}
         
         [package.metadata.docs.rs]
-        features = {docs_rs_features}
+        features = ["full"]
         "#
     }
 }

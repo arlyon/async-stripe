@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions {
@@ -109,6 +109,7 @@ const _: () = {
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
     Balances,
+    Ownership,
     PaymentMethod,
     Transactions,
 }
@@ -117,6 +118,7 @@ impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
         use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::*;
         match self {
             Balances => "balances",
+            Ownership => "ownership",
             PaymentMethod => "payment_method",
             Transactions => "transactions",
         }
@@ -129,6 +131,7 @@ impl std::str::FromStr for InvoicePaymentMethodOptionsUsBankAccountLinkedAccount
         use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::*;
         match s {
             "balances" => Ok(Balances),
+            "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
             _ => Err(stripe_types::StripeParseError),
@@ -193,6 +196,7 @@ impl<'de> serde::Deserialize<'de>
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
     Balances,
+    Ownership,
     Transactions,
 }
 impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
@@ -200,6 +204,7 @@ impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
         use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::*;
         match self {
             Balances => "balances",
+            Ownership => "ownership",
             Transactions => "transactions",
         }
     }
@@ -211,6 +216,7 @@ impl std::str::FromStr for InvoicePaymentMethodOptionsUsBankAccountLinkedAccount
         use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::*;
         match s {
             "balances" => Ok(Balances),
+            "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
             _ => Err(stripe_types::StripeParseError),
         }

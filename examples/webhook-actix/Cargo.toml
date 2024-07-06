@@ -6,6 +6,6 @@ publish = false
 
 [dependencies]
 actix-web = "4.2.1"
-stripe_webhook = {path = "../../stripe_webhook", features = ["stripe_checkout"]}
-stripe_checkout = {path = "../../generated/stripe_checkout", features = ["runtime-tokio-hyper-rustls"]}
-stripe_connect = {path = "../../generated/stripe_connect", features = ["runtime-tokio-hyper-rustls"]}
+stripe_webhook = { path = "../../stripe_webhook", features = ["stripe_checkout"] }
+stripe_checkout = { path = "../../generated/stripe_checkout" }
+stripe_connect = { path = "../../generated/stripe_connect" }

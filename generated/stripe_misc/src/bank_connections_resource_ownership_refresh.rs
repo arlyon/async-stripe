@@ -4,12 +4,17 @@
 pub struct BankConnectionsResourceOwnershipRefresh {
     /// The time at which the last refresh attempt was initiated. Measured in seconds since the Unix epoch.
     pub last_attempted_at: stripe_types::Timestamp,
+    /// Time at which the next ownership refresh can be initiated.
+    /// This value will be `null` when `status` is `pending`.
+    /// Measured in seconds since the Unix epoch.
+    pub next_refresh_available_at: Option<stripe_types::Timestamp>,
     /// The status of the last refresh attempt.
     pub status: BankConnectionsResourceOwnershipRefreshStatus,
 }
 #[doc(hidden)]
 pub struct BankConnectionsResourceOwnershipRefreshBuilder {
     last_attempted_at: Option<stripe_types::Timestamp>,
+    next_refresh_available_at: Option<Option<stripe_types::Timestamp>>,
     status: Option<BankConnectionsResourceOwnershipRefreshStatus>,
 }
 
@@ -48,6 +53,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "last_attempted_at" => Deserialize::begin(&mut self.last_attempted_at),
+                "next_refresh_available_at" => {
+                    Deserialize::begin(&mut self.next_refresh_available_at)
+                }
                 "status" => Deserialize::begin(&mut self.status),
 
                 _ => <dyn Visitor>::ignore(),
@@ -55,11 +63,19 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { last_attempted_at: Deserialize::default(), status: Deserialize::default() }
+            Self {
+                last_attempted_at: Deserialize::default(),
+                next_refresh_available_at: Deserialize::default(),
+                status: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { last_attempted_at: self.last_attempted_at?, status: self.status? })
+            Some(Self::Out {
+                last_attempted_at: self.last_attempted_at?,
+                next_refresh_available_at: self.next_refresh_available_at?,
+                status: self.status?,
+            })
         }
     }
 
@@ -87,6 +103,9 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "last_attempted_at" => b.last_attempted_at = Some(FromValueOpt::from_value(v)?),
+                    "next_refresh_available_at" => {
+                        b.next_refresh_available_at = Some(FromValueOpt::from_value(v)?)
+                    }
                     "status" => b.status = Some(FromValueOpt::from_value(v)?),
 
                     _ => {}

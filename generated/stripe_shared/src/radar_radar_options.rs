@@ -1,6 +1,6 @@
 /// Options to configure Radar.
 /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct RadarRadarOptions {

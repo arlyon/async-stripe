@@ -16,33 +16,24 @@ path = "src/mod.rs"
 
 [dependencies]
 serde.workspace = true
-serde_json.workspace = true
+serde_json = { workspace = true, optional = true }
 smol_str.workspace = true
 miniserde.workspace = true
 stripe_types = {path = "../../stripe_types"}
-
-http-types.workspace = true
-async-stripe = {path = "../../async-stripe"}
-
+stripe_client_core = {path = "../../stripe_client_core"}
 
 stripe_shared = {path = "../../generated/stripe_shared"}
 
 
 [features]
 serialize = ["stripe_types/serialize","stripe_shared/serialize"]
-deserialize = ["stripe_types/deserialize","stripe_shared/deserialize"]
-runtime-tokio-hyper = ["async-stripe/runtime-tokio-hyper"]
-runtime-tokio-hyper-rustls = ["async-stripe/runtime-tokio-hyper-rustls"]
-runtime-tokio-hyper-rustls-webpki = ["async-stripe/runtime-tokio-hyper-rustls-webpki"]
-runtime-blocking = ["async-stripe/runtime-blocking"]
-runtime-blocking-rustls = ["async-stripe/runtime-blocking-rustls"]
-runtime-blocking-rustls-webpki = ["async-stripe/runtime-blocking-rustls-webpki"]
-runtime-async-std-surf = ["async-stripe/runtime-async-std-surf"]
-
+deserialize = ["stripe_types/deserialize","stripe_shared/deserialize", "dep:serde_json"]
 issuing_authorization = []
 issuing_card = []
 issuing_cardholder = []
 issuing_dispute = []
+issuing_personalization_design = []
+issuing_physical_bundle = []
 issuing_token = []
 issuing_transaction = []
 
@@ -50,10 +41,12 @@ full = ["issuing_authorization",
 "issuing_card",
 "issuing_cardholder",
 "issuing_dispute",
+"issuing_personalization_design",
+"issuing_physical_bundle",
 "issuing_token",
 "issuing_transaction"]
 
 
 [package.metadata.docs.rs]
-features = ["runtime-tokio-hyper", "full"]
+features = ["full"]
 

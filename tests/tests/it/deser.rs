@@ -386,7 +386,7 @@ fn deserialize_expandable_polymorphic() {
 
     let result: Customer = from_str(&cust.to_string()).unwrap();
     let payment_source = result.default_source.as_ref().unwrap().as_object().unwrap();
-    assert_payment_source_matches(&payment_source);
+    assert_payment_source_matches(payment_source);
 }
 
 #[test]

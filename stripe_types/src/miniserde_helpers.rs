@@ -1,3 +1,4 @@
+#![allow(missing_debug_implementations)]
 use std::collections::HashMap;
 use std::mem;
 use std::str::FromStr;

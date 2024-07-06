@@ -1,5 +1,5 @@
 /// Settings related to Outbound Payments features on a Financial Account
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountsResourceOutboundPayments {

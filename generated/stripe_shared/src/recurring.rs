@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Recurring {
@@ -9,6 +9,8 @@ pub struct Recurring {
     /// The number of intervals (specified in the `interval` attribute) between subscription billings.
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
     pub interval_count: u64,
+    /// The meter tracking the usage of a metered price
+    pub meter: Option<String>,
     /// Default number of trial days when subscribing a customer to this price using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
     pub trial_period_days: Option<u32>,
     /// Configures how the quantity per period should be determined.
@@ -23,6 +25,7 @@ pub struct RecurringBuilder {
     aggregate_usage: Option<Option<RecurringAggregateUsage>>,
     interval: Option<RecurringInterval>,
     interval_count: Option<u64>,
+    meter: Option<Option<String>>,
     trial_period_days: Option<Option<u32>>,
     usage_type: Option<RecurringUsageType>,
 }
@@ -61,6 +64,7 @@ const _: () = {
                 "aggregate_usage" => Deserialize::begin(&mut self.aggregate_usage),
                 "interval" => Deserialize::begin(&mut self.interval),
                 "interval_count" => Deserialize::begin(&mut self.interval_count),
+                "meter" => Deserialize::begin(&mut self.meter),
                 "trial_period_days" => Deserialize::begin(&mut self.trial_period_days),
                 "usage_type" => Deserialize::begin(&mut self.usage_type),
 
@@ -73,6 +77,7 @@ const _: () = {
                 aggregate_usage: Deserialize::default(),
                 interval: Deserialize::default(),
                 interval_count: Deserialize::default(),
+                meter: Deserialize::default(),
                 trial_period_days: Deserialize::default(),
                 usage_type: Deserialize::default(),
             }
@@ -83,6 +88,7 @@ const _: () = {
                 aggregate_usage: self.aggregate_usage?,
                 interval: self.interval?,
                 interval_count: self.interval_count?,
+                meter: self.meter.take()?,
                 trial_period_days: self.trial_period_days?,
                 usage_type: self.usage_type?,
             })
@@ -115,6 +121,7 @@ const _: () = {
                     "aggregate_usage" => b.aggregate_usage = Some(FromValueOpt::from_value(v)?),
                     "interval" => b.interval = Some(FromValueOpt::from_value(v)?),
                     "interval_count" => b.interval_count = Some(FromValueOpt::from_value(v)?),
+                    "meter" => b.meter = Some(FromValueOpt::from_value(v)?),
                     "trial_period_days" => b.trial_period_days = Some(FromValueOpt::from_value(v)?),
                     "usage_type" => b.usage_type = Some(FromValueOpt::from_value(v)?),
 

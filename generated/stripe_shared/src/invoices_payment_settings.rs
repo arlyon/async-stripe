@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicesPaymentSettings {
@@ -125,6 +125,7 @@ pub enum InvoicesPaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
     AchDebit,
     AcssDebit,
+    AmazonPay,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
@@ -143,6 +144,7 @@ pub enum InvoicesPaymentSettingsPaymentMethodTypes {
     Paynow,
     Paypal,
     Promptpay,
+    RevolutPay,
     SepaCreditTransfer,
     SepaDebit,
     Sofort,
@@ -158,6 +160,7 @@ impl InvoicesPaymentSettingsPaymentMethodTypes {
             AchCreditTransfer => "ach_credit_transfer",
             AchDebit => "ach_debit",
             AcssDebit => "acss_debit",
+            AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
@@ -176,6 +179,7 @@ impl InvoicesPaymentSettingsPaymentMethodTypes {
             Paynow => "paynow",
             Paypal => "paypal",
             Promptpay => "promptpay",
+            RevolutPay => "revolut_pay",
             SepaCreditTransfer => "sepa_credit_transfer",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
@@ -194,6 +198,7 @@ impl std::str::FromStr for InvoicesPaymentSettingsPaymentMethodTypes {
             "ach_credit_transfer" => Ok(AchCreditTransfer),
             "ach_debit" => Ok(AchDebit),
             "acss_debit" => Ok(AcssDebit),
+            "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
@@ -212,6 +217,7 @@ impl std::str::FromStr for InvoicesPaymentSettingsPaymentMethodTypes {
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
             "promptpay" => Ok(Promptpay),
+            "revolut_pay" => Ok(RevolutPay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),

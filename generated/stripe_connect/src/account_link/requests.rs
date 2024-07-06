@@ -1,31 +1,25 @@
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateAccountLink<'a> {
-    /// The identifier of the account to create an account link for.
-    pub account: &'a str,
-    /// The collect parameter is deprecated. Use `collection_options` instead.
+struct CreateAccountLinkBuilder<'a> {
+    account: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collect: Option<CreateAccountLinkCollect>,
-    /// Specifies the requirements that Stripe collects from connected accounts in the Connect Onboarding flow.
+    collect: Option<CreateAccountLinkCollect>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_options: Option<CreateAccountLinkCollectionOptions>,
-    /// Specifies which fields in the response should be expanded.
+    collection_options: Option<CreateAccountLinkCollectionOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The URL the user will be redirected to if the account link is expired, has been previously-visited, or is otherwise invalid.
-    /// The URL you specify should attempt to generate a new account link with the same parameters used to create the original account link, then redirect the user to the new account link's URL so they can continue with Connect Onboarding.
-    /// If a new account link cannot be generated or the redirect fails you should display a useful error to the user.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub refresh_url: Option<&'a str>,
-    /// The URL that the user will be redirected to upon leaving or completing the linked flow.
+    refresh_url: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub return_url: Option<&'a str>,
-    /// The type of account link the user is requesting.
-    /// Possible values are `account_onboarding` or `account_update`.
+    return_url: Option<&'a str>,
     #[serde(rename = "type")]
-    pub type_: CreateAccountLinkType,
+    type_: CreateAccountLinkType,
 }
-impl<'a> CreateAccountLink<'a> {
-    pub fn new(account: &'a str, type_: CreateAccountLinkType) -> Self {
+impl<'a> CreateAccountLinkBuilder<'a> {
+    fn new(account: &'a str, type_: CreateAccountLinkType) -> Self {
         Self {
             account,
             collect: None,
@@ -280,9 +274,69 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkType {
             .map_err(|_| serde::de::Error::custom("Unknown value for CreateAccountLinkType"))
     }
 }
+/// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateAccountLink<'a> {
+    inner: CreateAccountLinkBuilder<'a>,
+}
 impl<'a> CreateAccountLink<'a> {
-    /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_connect::AccountLink> {
-        client.send_form("/account_links", self, http_types::Method::Post)
+    /// Construct a new `CreateAccountLink`.
+    pub fn new(account: &'a str, type_: CreateAccountLinkType) -> Self {
+        Self { inner: CreateAccountLinkBuilder::new(account, type_) }
+    }
+    /// The collect parameter is deprecated. Use `collection_options` instead.
+    pub fn collect(mut self, collect: CreateAccountLinkCollect) -> Self {
+        self.inner.collect = Some(collect);
+        self
+    }
+    /// Specifies the requirements that Stripe collects from connected accounts in the Connect Onboarding flow.
+    pub fn collection_options(
+        mut self,
+        collection_options: CreateAccountLinkCollectionOptions,
+    ) -> Self {
+        self.inner.collection_options = Some(collection_options);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// The URL the user will be redirected to if the account link is expired, has been previously-visited, or is otherwise invalid.
+    /// The URL you specify should attempt to generate a new account link with the same parameters used to create the original account link, then redirect the user to the new account link's URL so they can continue with Connect Onboarding.
+    /// If a new account link cannot be generated or the redirect fails you should display a useful error to the user.
+    pub fn refresh_url(mut self, refresh_url: &'a str) -> Self {
+        self.inner.refresh_url = Some(refresh_url);
+        self
+    }
+    /// The URL that the user will be redirected to upon leaving or completing the linked flow.
+    pub fn return_url(mut self, return_url: &'a str) -> Self {
+        self.inner.return_url = Some(return_url);
+        self
+    }
+}
+impl CreateAccountLink<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateAccountLink<'_> {
+    type Output = stripe_connect::AccountLink;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/account_links").form(&self.inner)
     }
 }

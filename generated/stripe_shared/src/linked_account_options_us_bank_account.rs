@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct LinkedAccountOptionsUsBankAccount {
@@ -197,6 +197,7 @@ impl<'de> serde::Deserialize<'de> for LinkedAccountOptionsUsBankAccountPermissio
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum LinkedAccountOptionsUsBankAccountPrefetch {
     Balances,
+    Ownership,
     Transactions,
 }
 impl LinkedAccountOptionsUsBankAccountPrefetch {
@@ -204,6 +205,7 @@ impl LinkedAccountOptionsUsBankAccountPrefetch {
         use LinkedAccountOptionsUsBankAccountPrefetch::*;
         match self {
             Balances => "balances",
+            Ownership => "ownership",
             Transactions => "transactions",
         }
     }
@@ -215,6 +217,7 @@ impl std::str::FromStr for LinkedAccountOptionsUsBankAccountPrefetch {
         use LinkedAccountOptionsUsBankAccountPrefetch::*;
         match s {
             "balances" => Ok(Balances),
+            "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
             _ => Err(stripe_types::StripeParseError),
         }

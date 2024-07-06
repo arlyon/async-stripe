@@ -1,245 +1,434 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListQuote<'a> {
-    /// The ID of the customer whose quotes will be retrieved.
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListQuoteBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
+    customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    status: Option<stripe_shared::QuoteStatus>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    test_clock: Option<&'a str>,
+}
+impl<'a> ListQuoteBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            customer: None,
+            ending_before: None,
+            expand: None,
+            limit: None,
+            starting_after: None,
+            status: None,
+            test_clock: None,
+        }
+    }
+}
+/// Returns a list of your quotes.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListQuote<'a> {
+    inner: ListQuoteBuilder<'a>,
+}
+impl<'a> ListQuote<'a> {
+    /// Construct a new `ListQuote`.
+    pub fn new() -> Self {
+        Self { inner: ListQuoteBuilder::new() }
+    }
+    /// The ID of the customer whose quotes will be retrieved.
+    pub fn customer(mut self, customer: &'a str) -> Self {
+        self.inner.customer = Some(customer);
+        self
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
     /// The status of the quote.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<stripe_shared::QuoteStatus>,
+    pub fn status(mut self, status: stripe_shared::QuoteStatus) -> Self {
+        self.inner.status = Some(status);
+        self
+    }
     /// Provides a list of quotes that are associated with the specified test clock.
     /// The response will not include quotes with test clocks if this and the customer parameter is not set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub test_clock: Option<&'a str>,
-}
-impl<'a> ListQuote<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn test_clock(mut self, test_clock: &'a str) -> Self {
+        self.inner.test_clock = Some(test_clock);
+        self
     }
 }
-impl<'a> ListQuote<'a> {
-    /// Returns a list of your quotes.
-    pub fn send(
+impl<'a> Default for ListQuote<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListQuote<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Quote>> {
-        client.get_query("/quotes", self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
-    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Quote>> {
-        stripe::ListPaginator::from_list_params("/quotes", self)
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
+    pub fn paginate(
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::Quote>> {
+        stripe_client_core::ListPaginator::new_list("/quotes", self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for ListQuote<'_> {
+    type Output = stripe_types::List<stripe_shared::Quote>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/quotes").query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveQuoteBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveQuoteBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves the quote with the given ID.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct RetrieveQuote<'a> {
+    inner: RetrieveQuoteBuilder<'a>,
+    quote: &'a stripe_shared::QuoteId,
+}
+impl<'a> RetrieveQuote<'a> {
+    /// Construct a new `RetrieveQuote`.
+    pub fn new(quote: &'a stripe_shared::QuoteId) -> Self {
+        Self { quote, inner: RetrieveQuoteBuilder::new() }
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveQuote<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
-impl<'a> RetrieveQuote<'a> {
-    /// Retrieves the quote with the given ID.
-    pub fn send(
+impl RetrieveQuote<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        quote: &stripe_shared::QuoteId,
-    ) -> stripe::Response<stripe_shared::Quote> {
-        client.get_query(&format!("/quotes/{quote}"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for RetrieveQuote<'_> {
+    type Output = stripe_shared::Quote;
+
+    fn build(&self) -> RequestBuilder {
+        let quote = self.quote;
+        RequestBuilder::new(StripeMethod::Get, format!("/quotes/{quote}")).query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListComputedUpfrontLineItemsQuoteBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> ListComputedUpfrontLineItemsQuoteBuilder<'a> {
+    fn new() -> Self {
+        Self { ending_before: None, expand: None, limit: None, starting_after: None }
+    }
+}
+/// When retrieving a quote, there is an includable <a href="<https://stripe.com/docs/api/quotes/object#quote_object-computed-upfront-line_items>">**computed.upfront.line_items**</a> property containing the first handful of those items.
+/// There is also a URL where you can retrieve the full (paginated) list of upfront line items.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ListComputedUpfrontLineItemsQuote<'a> {
+    inner: ListComputedUpfrontLineItemsQuoteBuilder<'a>,
+    quote: &'a stripe_shared::QuoteId,
+}
+impl<'a> ListComputedUpfrontLineItemsQuote<'a> {
+    /// Construct a new `ListComputedUpfrontLineItemsQuote`.
+    pub fn new(quote: &'a stripe_shared::QuoteId) -> Self {
+        Self { quote, inner: ListComputedUpfrontLineItemsQuoteBuilder::new() }
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListComputedUpfrontLineItemsQuote<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
     }
 }
-impl<'a> ListComputedUpfrontLineItemsQuote<'a> {
-    /// When retrieving a quote, there is an includable <a href="<https://stripe.com/docs/api/quotes/object#quote_object-computed-upfront-line_items>">**computed.upfront.line_items**</a> property containing the first handful of those items.
-    /// There is also a URL where you can retrieve the full (paginated) list of upfront line items.
-    pub fn send(
+impl ListComputedUpfrontLineItemsQuote<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        quote: &stripe_shared::QuoteId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::CheckoutSessionItem>> {
-        client.get_query(&format!("/quotes/{quote}/computed_upfront_line_items"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-        quote: &stripe_shared::QuoteId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::CheckoutSessionItem>> {
-        stripe::ListPaginator::from_list_params(
-            &format!("/quotes/{quote}/computed_upfront_line_items"),
-            self,
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::CheckoutSessionItem>>
+    {
+        let quote = self.quote;
+
+        stripe_client_core::ListPaginator::new_list(
+            format!("/quotes/{quote}/computed_upfront_line_items"),
+            self.inner,
         )
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for ListComputedUpfrontLineItemsQuote<'_> {
+    type Output = stripe_types::List<stripe_shared::CheckoutSessionItem>;
+
+    fn build(&self) -> RequestBuilder {
+        let quote = self.quote;
+        RequestBuilder::new(
+            StripeMethod::Get,
+            format!("/quotes/{quote}/computed_upfront_line_items"),
+        )
+        .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListLineItemsQuoteBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> ListLineItemsQuoteBuilder<'a> {
+    fn new() -> Self {
+        Self { ending_before: None, expand: None, limit: None, starting_after: None }
+    }
+}
+/// When retrieving a quote, there is an includable **line_items** property containing the first handful of those items.
+/// There is also a URL where you can retrieve the full (paginated) list of line items.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ListLineItemsQuote<'a> {
+    inner: ListLineItemsQuoteBuilder<'a>,
+    quote: &'a stripe_shared::QuoteId,
+}
+impl<'a> ListLineItemsQuote<'a> {
+    /// Construct a new `ListLineItemsQuote`.
+    pub fn new(quote: &'a stripe_shared::QuoteId) -> Self {
+        Self { quote, inner: ListLineItemsQuoteBuilder::new() }
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListLineItemsQuote<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
     }
 }
-impl<'a> ListLineItemsQuote<'a> {
-    /// When retrieving a quote, there is an includable **line_items** property containing the first handful of those items.
-    /// There is also a URL where you can retrieve the full (paginated) list of line items.
-    pub fn send(
+impl ListLineItemsQuote<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        quote: &stripe_shared::QuoteId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::CheckoutSessionItem>> {
-        client.get_query(&format!("/quotes/{quote}/line_items"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-        quote: &stripe_shared::QuoteId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::CheckoutSessionItem>> {
-        stripe::ListPaginator::from_list_params(&format!("/quotes/{quote}/line_items"), self)
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::CheckoutSessionItem>>
+    {
+        let quote = self.quote;
+
+        stripe_client_core::ListPaginator::new_list(
+            format!("/quotes/{quote}/line_items"),
+            self.inner,
+        )
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateQuote<'a> {
-    /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
-    /// There cannot be any line items with recurring prices when using this field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_amount: Option<i64>,
-    /// A non-negative decimal between 0 and 100, with at most two decimal places.
-    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
-    /// There must be at least 1 line item with a recurring price to use this field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_percent: Option<f64>,
-    /// Settings for automatic tax lookup for this quote and resulting invoices and subscriptions.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<CreateQuoteAutomaticTax<'a>>,
-    /// Either `charge_automatically`, or `send_invoice`.
-    /// When charging automatically, Stripe will attempt to pay invoices at the end of the subscription cycle or at invoice finalization using the default payment method attached to the subscription or customer.
-    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
-    /// Defaults to `charge_automatically`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<stripe_shared::QuoteCollectionMethod>,
-    /// The customer for which this quote belongs to.
-    /// A customer is required before finalizing the quote.
-    /// Once specified, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
-    /// The tax rates that will apply to any line item that does not have `tax_rates` set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<&'a [&'a str]>,
-    /// A description that will be displayed on the quote PDF.
-    /// If no value is passed, the default description configured in your [quote template settings](https://dashboard.stripe.com/settings/billing/quote) will be used.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
-    /// The discounts applied to the quote. You can only set up to one discount.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A future timestamp on which the quote will be canceled if in `open` or `draft` status.
-    /// Measured in seconds since the Unix epoch.
-    /// If no value is passed, the default expiration date configured in your [quote template settings](https://dashboard.stripe.com/settings/billing/quote) will be used.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<stripe_types::Timestamp>,
-    /// A footer that will be displayed on the quote PDF.
-    /// If no value is passed, the default footer configured in your [quote template settings](https://dashboard.stripe.com/settings/billing/quote) will be used.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub footer: Option<&'a str>,
-    /// Clone an existing quote.
-    /// The new quote will be created in `status=draft`.
-    /// When using this parameter, you cannot specify any other parameters except for `expires_at`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub from_quote: Option<CreateQuoteFromQuote<'a>>,
-    /// A header that will be displayed on the quote PDF.
-    /// If no value is passed, the default header configured in your [quote template settings](https://dashboard.stripe.com/settings/billing/quote) will be used.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub header: Option<&'a str>,
-    /// All invoices will be billed using the specified settings.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<CreateQuoteInvoiceSettings<'a>>,
-    /// A list of line items the customer is being quoted for.
-    /// Each line item includes information about the product, the quantity, and the resulting cost.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line_items: Option<&'a [CreateQuoteLineItems<'a>]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The account on behalf of which to charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<&'a str>,
-    /// When creating a subscription or subscription schedule, the specified configuration data will be used.
-    /// There must be at least one line item with a recurring price for a subscription or subscription schedule to be created.
-    /// A subscription schedule is created if `subscription_data[effective_date]` is present and in the future, otherwise a subscription is created.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_data: Option<CreateQuoteSubscriptionData<'a>>,
-    /// ID of the test clock to attach to the quote.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub test_clock: Option<&'a str>,
-    /// The data with which to automatically create a Transfer for each of the invoices.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<TransferDataSpecs<'a>>,
+
+impl StripeRequest for ListLineItemsQuote<'_> {
+    type Output = stripe_types::List<stripe_shared::CheckoutSessionItem>;
+
+    fn build(&self) -> RequestBuilder {
+        let quote = self.quote;
+        RequestBuilder::new(StripeMethod::Get, format!("/quotes/{quote}/line_items"))
+            .query(&self.inner)
+    }
 }
-impl<'a> CreateQuote<'a> {
-    pub fn new() -> Self {
-        Self::default()
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateQuoteBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    application_fee_amount: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    application_fee_percent: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    automatic_tax: Option<CreateQuoteAutomaticTax<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    collection_method: Option<stripe_shared::QuoteCollectionMethod>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_tax_rates: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expires_at: Option<stripe_types::Timestamp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    footer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    from_quote: Option<CreateQuoteFromQuote<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    header: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    invoice_settings: Option<CreateQuoteInvoiceSettings<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    line_items: Option<&'a [CreateQuoteLineItems<'a>]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    on_behalf_of: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    subscription_data: Option<CreateQuoteSubscriptionData<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    test_clock: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    transfer_data: Option<TransferDataSpecs<'a>>,
+}
+impl<'a> CreateQuoteBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            application_fee_amount: None,
+            application_fee_percent: None,
+            automatic_tax: None,
+            collection_method: None,
+            customer: None,
+            default_tax_rates: None,
+            description: None,
+            discounts: None,
+            expand: None,
+            expires_at: None,
+            footer: None,
+            from_quote: None,
+            header: None,
+            invoice_settings: None,
+            line_items: None,
+            metadata: None,
+            on_behalf_of: None,
+            subscription_data: None,
+            test_clock: None,
+            transfer_data: None,
+        }
     }
 }
 /// Settings for automatic tax lookup for this quote and resulting invoices and subscriptions.
@@ -348,7 +537,7 @@ impl<'a> CreateQuoteFromQuote<'a> {
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateQuoteInvoiceSettings<'a> {
     /// Number of days within which a customer must pay the invoice generated by this quote.
     /// This value will be `null` for quotes where `collection_method=charge_automatically`.
@@ -361,7 +550,12 @@ pub struct CreateQuoteInvoiceSettings<'a> {
 }
 impl<'a> CreateQuoteInvoiceSettings<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { days_until_due: None, issuer: None }
+    }
+}
+impl<'a> Default for CreateQuoteInvoiceSettings<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The connected account that issues the invoice.
@@ -438,8 +632,11 @@ impl<'de> serde::Deserialize<'de> for CreateQuoteInvoiceSettingsIssuerType {
 }
 /// A list of line items the customer is being quoted for.
 /// Each line item includes information about the product, the quantity, and the resulting cost.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateQuoteLineItems<'a> {
+    /// The discounts applied to this line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<&'a str>,
@@ -457,7 +654,12 @@ pub struct CreateQuoteLineItems<'a> {
 }
 impl<'a> CreateQuoteLineItems<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { discounts: None, price: None, price_data: None, quantity: None, tax_rates: None }
+    }
+}
+impl<'a> Default for CreateQuoteLineItems<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
@@ -643,7 +845,7 @@ impl<'de> serde::Deserialize<'de> for CreateQuoteLineItemsPriceDataTaxBehavior {
 /// When creating a subscription or subscription schedule, the specified configuration data will be used.
 /// There must be at least one line item with a recurring price for a subscription or subscription schedule to be created.
 /// A subscription schedule is created if `subscription_data[effective_date]` is present and in the future, otherwise a subscription is created.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateQuoteSubscriptionData<'a> {
     /// The subscription's description, meant to be displayable to the customer.
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
@@ -668,7 +870,12 @@ pub struct CreateQuoteSubscriptionData<'a> {
 }
 impl<'a> CreateQuoteSubscriptionData<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { description: None, effective_date: None, metadata: None, trial_period_days: None }
+    }
+}
+impl<'a> Default for CreateQuoteSubscriptionData<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// When creating a new subscription, the date of which the subscription schedule will start after the quote is accepted.
@@ -681,88 +888,233 @@ pub enum CreateQuoteSubscriptionDataEffectiveDate {
     CurrentPeriodEnd,
     Timestamp(stripe_types::Timestamp),
 }
-impl<'a> CreateQuote<'a> {
-    /// A quote models prices and services for a customer.
-    /// Default options for `header`, `description`, `footer`, and `expires_at` can be set in the dashboard via the [quote template](https://dashboard.stripe.com/settings/billing/quote).
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_shared::Quote> {
-        client.send_form("/quotes", self, http_types::Method::Post)
-    }
+/// A quote models prices and services for a customer.
+/// Default options for `header`, `description`, `footer`, and `expires_at` can be set in the dashboard via the [quote template](https://dashboard.stripe.com/settings/billing/quote).
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateQuote<'a> {
+    inner: CreateQuoteBuilder<'a>,
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateQuote<'a> {
+impl<'a> CreateQuote<'a> {
+    /// Construct a new `CreateQuote`.
+    pub fn new() -> Self {
+        Self { inner: CreateQuoteBuilder::new() }
+    }
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     /// There cannot be any line items with recurring prices when using this field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_amount: Option<i64>,
+    pub fn application_fee_amount(mut self, application_fee_amount: i64) -> Self {
+        self.inner.application_fee_amount = Some(application_fee_amount);
+        self
+    }
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// There must be at least 1 line item with a recurring price to use this field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_percent: Option<f64>,
+    pub fn application_fee_percent(mut self, application_fee_percent: f64) -> Self {
+        self.inner.application_fee_percent = Some(application_fee_percent);
+        self
+    }
     /// Settings for automatic tax lookup for this quote and resulting invoices and subscriptions.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<UpdateQuoteAutomaticTax<'a>>,
+    pub fn automatic_tax(mut self, automatic_tax: CreateQuoteAutomaticTax<'a>) -> Self {
+        self.inner.automatic_tax = Some(automatic_tax);
+        self
+    }
     /// Either `charge_automatically`, or `send_invoice`.
     /// When charging automatically, Stripe will attempt to pay invoices at the end of the subscription cycle or at invoice finalization using the default payment method attached to the subscription or customer.
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     /// Defaults to `charge_automatically`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<stripe_shared::QuoteCollectionMethod>,
+    pub fn collection_method(
+        mut self,
+        collection_method: stripe_shared::QuoteCollectionMethod,
+    ) -> Self {
+        self.inner.collection_method = Some(collection_method);
+        self
+    }
     /// The customer for which this quote belongs to.
     /// A customer is required before finalizing the quote.
     /// Once specified, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
+    pub fn customer(mut self, customer: &'a str) -> Self {
+        self.inner.customer = Some(customer);
+        self
+    }
     /// The tax rates that will apply to any line item that does not have `tax_rates` set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<&'a [&'a str]>,
+    pub fn default_tax_rates(mut self, default_tax_rates: &'a [&'a str]) -> Self {
+        self.inner.default_tax_rates = Some(default_tax_rates);
+        self
+    }
     /// A description that will be displayed on the quote PDF.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    /// If no value is passed, the default description configured in your [quote template settings](https://dashboard.stripe.com/settings/billing/quote) will be used.
+    pub fn description(mut self, description: &'a str) -> Self {
+        self.inner.description = Some(description);
+        self
+    }
     /// The discounts applied to the quote. You can only set up to one discount.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub fn discounts(mut self, discounts: &'a [DiscountsDataParam<'a>]) -> Self {
+        self.inner.discounts = Some(discounts);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A future timestamp on which the quote will be canceled if in `open` or `draft` status.
     /// Measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<stripe_types::Timestamp>,
+    /// If no value is passed, the default expiration date configured in your [quote template settings](https://dashboard.stripe.com/settings/billing/quote) will be used.
+    pub fn expires_at(mut self, expires_at: stripe_types::Timestamp) -> Self {
+        self.inner.expires_at = Some(expires_at);
+        self
+    }
     /// A footer that will be displayed on the quote PDF.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub footer: Option<&'a str>,
+    /// If no value is passed, the default footer configured in your [quote template settings](https://dashboard.stripe.com/settings/billing/quote) will be used.
+    pub fn footer(mut self, footer: &'a str) -> Self {
+        self.inner.footer = Some(footer);
+        self
+    }
+    /// Clone an existing quote.
+    /// The new quote will be created in `status=draft`.
+    /// When using this parameter, you cannot specify any other parameters except for `expires_at`.
+    pub fn from_quote(mut self, from_quote: CreateQuoteFromQuote<'a>) -> Self {
+        self.inner.from_quote = Some(from_quote);
+        self
+    }
     /// A header that will be displayed on the quote PDF.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub header: Option<&'a str>,
+    /// If no value is passed, the default header configured in your [quote template settings](https://dashboard.stripe.com/settings/billing/quote) will be used.
+    pub fn header(mut self, header: &'a str) -> Self {
+        self.inner.header = Some(header);
+        self
+    }
     /// All invoices will be billed using the specified settings.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<UpdateQuoteInvoiceSettings<'a>>,
+    pub fn invoice_settings(mut self, invoice_settings: CreateQuoteInvoiceSettings<'a>) -> Self {
+        self.inner.invoice_settings = Some(invoice_settings);
+        self
+    }
     /// A list of line items the customer is being quoted for.
     /// Each line item includes information about the product, the quantity, and the resulting cost.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line_items: Option<&'a [UpdateQuoteLineItems<'a>]>,
+    pub fn line_items(mut self, line_items: &'a [CreateQuoteLineItems<'a>]) -> Self {
+        self.inner.line_items = Some(line_items);
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
     /// The account on behalf of which to charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<&'a str>,
+    pub fn on_behalf_of(mut self, on_behalf_of: &'a str) -> Self {
+        self.inner.on_behalf_of = Some(on_behalf_of);
+        self
+    }
     /// When creating a subscription or subscription schedule, the specified configuration data will be used.
     /// There must be at least one line item with a recurring price for a subscription or subscription schedule to be created.
     /// A subscription schedule is created if `subscription_data[effective_date]` is present and in the future, otherwise a subscription is created.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_data: Option<UpdateQuoteSubscriptionData<'a>>,
+    pub fn subscription_data(mut self, subscription_data: CreateQuoteSubscriptionData<'a>) -> Self {
+        self.inner.subscription_data = Some(subscription_data);
+        self
+    }
+    /// ID of the test clock to attach to the quote.
+    pub fn test_clock(mut self, test_clock: &'a str) -> Self {
+        self.inner.test_clock = Some(test_clock);
+        self
+    }
     /// The data with which to automatically create a Transfer for each of the invoices.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<TransferDataSpecs<'a>>,
+    pub fn transfer_data(mut self, transfer_data: TransferDataSpecs<'a>) -> Self {
+        self.inner.transfer_data = Some(transfer_data);
+        self
+    }
 }
-impl<'a> UpdateQuote<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> Default for CreateQuote<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl CreateQuote<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateQuote<'_> {
+    type Output = stripe_shared::Quote;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/quotes").form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateQuoteBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    application_fee_amount: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    application_fee_percent: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    automatic_tax: Option<UpdateQuoteAutomaticTax<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    collection_method: Option<stripe_shared::QuoteCollectionMethod>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_tax_rates: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expires_at: Option<stripe_types::Timestamp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    footer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    header: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    invoice_settings: Option<UpdateQuoteInvoiceSettings<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    line_items: Option<&'a [UpdateQuoteLineItems<'a>]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    on_behalf_of: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    subscription_data: Option<UpdateQuoteSubscriptionData<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    transfer_data: Option<TransferDataSpecs<'a>>,
+}
+impl<'a> UpdateQuoteBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            application_fee_amount: None,
+            application_fee_percent: None,
+            automatic_tax: None,
+            collection_method: None,
+            customer: None,
+            default_tax_rates: None,
+            description: None,
+            discounts: None,
+            expand: None,
+            expires_at: None,
+            footer: None,
+            header: None,
+            invoice_settings: None,
+            line_items: None,
+            metadata: None,
+            on_behalf_of: None,
+            subscription_data: None,
+            transfer_data: None,
+        }
     }
 }
 /// Settings for automatic tax lookup for this quote and resulting invoices and subscriptions.
@@ -855,7 +1207,7 @@ impl<'de> serde::Deserialize<'de> for UpdateQuoteAutomaticTaxLiabilityType {
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateQuoteInvoiceSettings<'a> {
     /// Number of days within which a customer must pay the invoice generated by this quote.
     /// This value will be `null` for quotes where `collection_method=charge_automatically`.
@@ -868,7 +1220,12 @@ pub struct UpdateQuoteInvoiceSettings<'a> {
 }
 impl<'a> UpdateQuoteInvoiceSettings<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { days_until_due: None, issuer: None }
+    }
+}
+impl<'a> Default for UpdateQuoteInvoiceSettings<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The connected account that issues the invoice.
@@ -945,8 +1302,11 @@ impl<'de> serde::Deserialize<'de> for UpdateQuoteInvoiceSettingsIssuerType {
 }
 /// A list of line items the customer is being quoted for.
 /// Each line item includes information about the product, the quantity, and the resulting cost.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateQuoteLineItems<'a> {
+    /// The discounts applied to this line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
     /// The ID of an existing line item on the quote.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<&'a str>,
@@ -967,7 +1327,19 @@ pub struct UpdateQuoteLineItems<'a> {
 }
 impl<'a> UpdateQuoteLineItems<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            discounts: None,
+            id: None,
+            price: None,
+            price_data: None,
+            quantity: None,
+            tax_rates: None,
+        }
+    }
+}
+impl<'a> Default for UpdateQuoteLineItems<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
@@ -1153,7 +1525,7 @@ impl<'de> serde::Deserialize<'de> for UpdateQuoteLineItemsPriceDataTaxBehavior {
 /// When creating a subscription or subscription schedule, the specified configuration data will be used.
 /// There must be at least one line item with a recurring price for a subscription or subscription schedule to be created.
 /// A subscription schedule is created if `subscription_data[effective_date]` is present and in the future, otherwise a subscription is created.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateQuoteSubscriptionData<'a> {
     /// The subscription's description, meant to be displayable to the customer.
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
@@ -1178,7 +1550,12 @@ pub struct UpdateQuoteSubscriptionData<'a> {
 }
 impl<'a> UpdateQuoteSubscriptionData<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { description: None, effective_date: None, metadata: None, trial_period_days: None }
+    }
+}
+impl<'a> Default for UpdateQuoteSubscriptionData<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// When creating a new subscription, the date of which the subscription schedule will start after the quote is accepted.
@@ -1191,84 +1568,322 @@ pub enum UpdateQuoteSubscriptionDataEffectiveDate {
     CurrentPeriodEnd,
     Timestamp(stripe_types::Timestamp),
 }
+/// A quote models prices and services for a customer.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateQuote<'a> {
+    inner: UpdateQuoteBuilder<'a>,
+    quote: &'a stripe_shared::QuoteId,
+}
 impl<'a> UpdateQuote<'a> {
-    /// A quote models prices and services for a customer.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        quote: &stripe_shared::QuoteId,
-    ) -> stripe::Response<stripe_shared::Quote> {
-        client.send_form(&format!("/quotes/{quote}"), self, http_types::Method::Post)
+    /// Construct a new `UpdateQuote`.
+    pub fn new(quote: &'a stripe_shared::QuoteId) -> Self {
+        Self { quote, inner: UpdateQuoteBuilder::new() }
     }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct AcceptQuote<'a> {
+    /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
+    /// There cannot be any line items with recurring prices when using this field.
+    pub fn application_fee_amount(mut self, application_fee_amount: i64) -> Self {
+        self.inner.application_fee_amount = Some(application_fee_amount);
+        self
+    }
+    /// A non-negative decimal between 0 and 100, with at most two decimal places.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
+    /// There must be at least 1 line item with a recurring price to use this field.
+    pub fn application_fee_percent(mut self, application_fee_percent: f64) -> Self {
+        self.inner.application_fee_percent = Some(application_fee_percent);
+        self
+    }
+    /// Settings for automatic tax lookup for this quote and resulting invoices and subscriptions.
+    pub fn automatic_tax(mut self, automatic_tax: UpdateQuoteAutomaticTax<'a>) -> Self {
+        self.inner.automatic_tax = Some(automatic_tax);
+        self
+    }
+    /// Either `charge_automatically`, or `send_invoice`.
+    /// When charging automatically, Stripe will attempt to pay invoices at the end of the subscription cycle or at invoice finalization using the default payment method attached to the subscription or customer.
+    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
+    /// Defaults to `charge_automatically`.
+    pub fn collection_method(
+        mut self,
+        collection_method: stripe_shared::QuoteCollectionMethod,
+    ) -> Self {
+        self.inner.collection_method = Some(collection_method);
+        self
+    }
+    /// The customer for which this quote belongs to.
+    /// A customer is required before finalizing the quote.
+    /// Once specified, it cannot be changed.
+    pub fn customer(mut self, customer: &'a str) -> Self {
+        self.inner.customer = Some(customer);
+        self
+    }
+    /// The tax rates that will apply to any line item that does not have `tax_rates` set.
+    pub fn default_tax_rates(mut self, default_tax_rates: &'a [&'a str]) -> Self {
+        self.inner.default_tax_rates = Some(default_tax_rates);
+        self
+    }
+    /// A description that will be displayed on the quote PDF.
+    pub fn description(mut self, description: &'a str) -> Self {
+        self.inner.description = Some(description);
+        self
+    }
+    /// The discounts applied to the quote. You can only set up to one discount.
+    pub fn discounts(mut self, discounts: &'a [DiscountsDataParam<'a>]) -> Self {
+        self.inner.discounts = Some(discounts);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> AcceptQuote<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
-}
-impl<'a> AcceptQuote<'a> {
-    /// Accepts the specified quote.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        quote: &stripe_shared::QuoteId,
-    ) -> stripe::Response<stripe_shared::Quote> {
-        client.send_form(&format!("/quotes/{quote}/accept"), self, http_types::Method::Post)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CancelQuote<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> CancelQuote<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> CancelQuote<'a> {
-    /// Cancels the quote.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        quote: &stripe_shared::QuoteId,
-    ) -> stripe::Response<stripe_shared::Quote> {
-        client.send_form(&format!("/quotes/{quote}/cancel"), self, http_types::Method::Post)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct FinalizeQuoteQuote<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
     /// A future timestamp on which the quote will be canceled if in `open` or `draft` status.
     /// Measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<stripe_types::Timestamp>,
-}
-impl<'a> FinalizeQuoteQuote<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expires_at(mut self, expires_at: stripe_types::Timestamp) -> Self {
+        self.inner.expires_at = Some(expires_at);
+        self
+    }
+    /// A footer that will be displayed on the quote PDF.
+    pub fn footer(mut self, footer: &'a str) -> Self {
+        self.inner.footer = Some(footer);
+        self
+    }
+    /// A header that will be displayed on the quote PDF.
+    pub fn header(mut self, header: &'a str) -> Self {
+        self.inner.header = Some(header);
+        self
+    }
+    /// All invoices will be billed using the specified settings.
+    pub fn invoice_settings(mut self, invoice_settings: UpdateQuoteInvoiceSettings<'a>) -> Self {
+        self.inner.invoice_settings = Some(invoice_settings);
+        self
+    }
+    /// A list of line items the customer is being quoted for.
+    /// Each line item includes information about the product, the quantity, and the resulting cost.
+    pub fn line_items(mut self, line_items: &'a [UpdateQuoteLineItems<'a>]) -> Self {
+        self.inner.line_items = Some(line_items);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+    /// The account on behalf of which to charge.
+    pub fn on_behalf_of(mut self, on_behalf_of: &'a str) -> Self {
+        self.inner.on_behalf_of = Some(on_behalf_of);
+        self
+    }
+    /// When creating a subscription or subscription schedule, the specified configuration data will be used.
+    /// There must be at least one line item with a recurring price for a subscription or subscription schedule to be created.
+    /// A subscription schedule is created if `subscription_data[effective_date]` is present and in the future, otherwise a subscription is created.
+    pub fn subscription_data(mut self, subscription_data: UpdateQuoteSubscriptionData<'a>) -> Self {
+        self.inner.subscription_data = Some(subscription_data);
+        self
+    }
+    /// The data with which to automatically create a Transfer for each of the invoices.
+    pub fn transfer_data(mut self, transfer_data: TransferDataSpecs<'a>) -> Self {
+        self.inner.transfer_data = Some(transfer_data);
+        self
     }
 }
-impl<'a> FinalizeQuoteQuote<'a> {
-    /// Finalizes the quote.
-    pub fn send(
+impl UpdateQuote<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        quote: &stripe_shared::QuoteId,
-    ) -> stripe::Response<stripe_shared::Quote> {
-        client.send_form(&format!("/quotes/{quote}/finalize"), self, http_types::Method::Post)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for UpdateQuote<'_> {
+    type Output = stripe_shared::Quote;
+
+    fn build(&self) -> RequestBuilder {
+        let quote = self.quote;
+        RequestBuilder::new(StripeMethod::Post, format!("/quotes/{quote}")).form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct AcceptQuoteBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> AcceptQuoteBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Accepts the specified quote.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct AcceptQuote<'a> {
+    inner: AcceptQuoteBuilder<'a>,
+    quote: &'a stripe_shared::QuoteId,
+}
+impl<'a> AcceptQuote<'a> {
+    /// Construct a new `AcceptQuote`.
+    pub fn new(quote: &'a stripe_shared::QuoteId) -> Self {
+        Self { quote, inner: AcceptQuoteBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl AcceptQuote<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for AcceptQuote<'_> {
+    type Output = stripe_shared::Quote;
+
+    fn build(&self) -> RequestBuilder {
+        let quote = self.quote;
+        RequestBuilder::new(StripeMethod::Post, format!("/quotes/{quote}/accept")).form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CancelQuoteBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> CancelQuoteBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Cancels the quote.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CancelQuote<'a> {
+    inner: CancelQuoteBuilder<'a>,
+    quote: &'a stripe_shared::QuoteId,
+}
+impl<'a> CancelQuote<'a> {
+    /// Construct a new `CancelQuote`.
+    pub fn new(quote: &'a stripe_shared::QuoteId) -> Self {
+        Self { quote, inner: CancelQuoteBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl CancelQuote<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CancelQuote<'_> {
+    type Output = stripe_shared::Quote;
+
+    fn build(&self) -> RequestBuilder {
+        let quote = self.quote;
+        RequestBuilder::new(StripeMethod::Post, format!("/quotes/{quote}/cancel")).form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct FinalizeQuoteQuoteBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expires_at: Option<stripe_types::Timestamp>,
+}
+impl<'a> FinalizeQuoteQuoteBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None, expires_at: None }
+    }
+}
+/// Finalizes the quote.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FinalizeQuoteQuote<'a> {
+    inner: FinalizeQuoteQuoteBuilder<'a>,
+    quote: &'a stripe_shared::QuoteId,
+}
+impl<'a> FinalizeQuoteQuote<'a> {
+    /// Construct a new `FinalizeQuoteQuote`.
+    pub fn new(quote: &'a stripe_shared::QuoteId) -> Self {
+        Self { quote, inner: FinalizeQuoteQuoteBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A future timestamp on which the quote will be canceled if in `open` or `draft` status.
+    /// Measured in seconds since the Unix epoch.
+    pub fn expires_at(mut self, expires_at: stripe_types::Timestamp) -> Self {
+        self.inner.expires_at = Some(expires_at);
+        self
+    }
+}
+impl FinalizeQuoteQuote<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for FinalizeQuoteQuote<'_> {
+    type Output = stripe_shared::Quote;
+
+    fn build(&self) -> RequestBuilder {
+        let quote = self.quote;
+        RequestBuilder::new(StripeMethod::Post, format!("/quotes/{quote}/finalize"))
+            .form(&self.inner)
+    }
+}
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct DiscountsDataParam<'a> {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1276,10 +1891,18 @@ pub struct DiscountsDataParam<'a> {
     /// ID of an existing discount on the object (or one of its ancestors) to reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<&'a str>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<&'a str>,
 }
 impl<'a> DiscountsDataParam<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl<'a> Default for DiscountsDataParam<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoiceSettingCustomerSetting {
@@ -9,14 +9,14 @@ pub struct InvoiceSettingCustomerSetting {
     /// Default footer to be displayed on invoices for this customer.
     pub footer: Option<String>,
     /// Default options for invoice PDF rendering for this customer.
-    pub rendering_options: Option<stripe_shared::InvoiceSettingRenderingOptions>,
+    pub rendering_options: Option<stripe_shared::InvoiceSettingCustomerRenderingOptions>,
 }
 #[doc(hidden)]
 pub struct InvoiceSettingCustomerSettingBuilder {
     custom_fields: Option<Option<Vec<stripe_shared::InvoiceSettingCustomField>>>,
     default_payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
     footer: Option<Option<String>>,
-    rendering_options: Option<Option<stripe_shared::InvoiceSettingRenderingOptions>>,
+    rendering_options: Option<Option<stripe_shared::InvoiceSettingCustomerRenderingOptions>>,
 }
 
 #[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]

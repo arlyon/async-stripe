@@ -1,131 +1,246 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteCustomerTaxId {}
-impl DeleteCustomerTaxId {
-    pub fn new() -> Self {
-        Self::default()
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+/// Deletes an existing `tax_id` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DeleteCustomerTaxId<'a> {
+    customer: &'a stripe_shared::CustomerId,
+    id: &'a str,
+}
+impl<'a> DeleteCustomerTaxId<'a> {
+    /// Construct a new `DeleteCustomerTaxId`.
+    pub fn new(customer: &'a stripe_shared::CustomerId, id: &'a str) -> Self {
+        Self { customer, id }
     }
 }
-impl DeleteCustomerTaxId {
-    /// Deletes an existing `tax_id` object.
-    pub fn send(
+impl DeleteCustomerTaxId<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        customer: &stripe_shared::CustomerId,
-        id: &str,
-    ) -> stripe::Response<stripe_shared::DeletedTaxId> {
-        client.send_form(
-            &format!("/customers/{customer}/tax_ids/{id}"),
-            self,
-            http_types::Method::Delete,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for DeleteCustomerTaxId<'_> {
+    type Output = stripe_shared::DeletedTaxId;
+
+    fn build(&self) -> RequestBuilder {
+        let customer = self.customer;
+        let id = self.id;
+        RequestBuilder::new(StripeMethod::Delete, format!("/customers/{customer}/tax_ids/{id}"))
+    }
+}
+/// Deletes an existing account or customer `tax_id` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DeleteIdTaxId<'a> {
+    id: &'a stripe_shared::TaxIdId,
+}
+impl<'a> DeleteIdTaxId<'a> {
+    /// Construct a new `DeleteIdTaxId`.
+    pub fn new(id: &'a stripe_shared::TaxIdId) -> Self {
+        Self { id }
+    }
+}
+impl DeleteIdTaxId<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for DeleteIdTaxId<'_> {
+    type Output = stripe_shared::DeletedTaxId;
+
+    fn build(&self) -> RequestBuilder {
+        let id = self.id;
+        RequestBuilder::new(StripeMethod::Delete, format!("/tax_ids/{id}"))
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListCustomerTaxIdBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> ListCustomerTaxIdBuilder<'a> {
+    fn new() -> Self {
+        Self { ending_before: None, expand: None, limit: None, starting_after: None }
+    }
+}
+/// Returns a list of tax IDs for a customer.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListCustomerTaxId<'a> {
+    inner: ListCustomerTaxIdBuilder<'a>,
+    customer: &'a stripe_shared::CustomerId,
+}
+impl<'a> ListCustomerTaxId<'a> {
+    /// Construct a new `ListCustomerTaxId`.
+    pub fn new(customer: &'a stripe_shared::CustomerId) -> Self {
+        Self { customer, inner: ListCustomerTaxIdBuilder::new() }
+    }
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
+}
+impl ListCustomerTaxId<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
+    pub fn paginate(
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::TaxId>> {
+        let customer = self.customer;
+
+        stripe_client_core::ListPaginator::new_list(
+            format!("/customers/{customer}/tax_ids"),
+            self.inner,
         )
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteIdTaxId {}
-impl DeleteIdTaxId {
-    pub fn new() -> Self {
-        Self::default()
+
+impl StripeRequest for ListCustomerTaxId<'_> {
+    type Output = stripe_types::List<stripe_shared::TaxId>;
+
+    fn build(&self) -> RequestBuilder {
+        let customer = self.customer;
+        RequestBuilder::new(StripeMethod::Get, format!("/customers/{customer}/tax_ids"))
+            .query(&self.inner)
     }
 }
-impl DeleteIdTaxId {
-    /// Deletes an existing account or customer `tax_id` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_shared::TaxIdId,
-    ) -> stripe::Response<stripe_shared::DeletedTaxId> {
-        client.send_form(&format!("/tax_ids/{id}"), self, http_types::Method::Delete)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListCustomerTaxId<'a> {
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveCustomerTaxIdBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
+    expand: Option<&'a [&'a str]>,
 }
-impl<'a> ListCustomerTaxId<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> RetrieveCustomerTaxIdBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
     }
 }
-impl<'a> ListCustomerTaxId<'a> {
-    /// Returns a list of tax IDs for a customer.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        customer: &stripe_shared::CustomerId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::TaxId>> {
-        client.get_query(&format!("/customers/{customer}/tax_ids"), self)
-    }
-    pub fn paginate(
-        self,
-        customer: &stripe_shared::CustomerId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::TaxId>> {
-        stripe::ListPaginator::from_list_params(&format!("/customers/{customer}/tax_ids"), self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+/// Retrieves the `tax_id` object with the given identifier.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct RetrieveCustomerTaxId<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    inner: RetrieveCustomerTaxIdBuilder<'a>,
+    customer: &'a stripe_shared::CustomerId,
+    id: &'a str,
 }
 impl<'a> RetrieveCustomerTaxId<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    /// Construct a new `RetrieveCustomerTaxId`.
+    pub fn new(customer: &'a stripe_shared::CustomerId, id: &'a str) -> Self {
+        Self { customer, id, inner: RetrieveCustomerTaxIdBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
-impl<'a> RetrieveCustomerTaxId<'a> {
-    /// Retrieves the `tax_id` object with the given identifier.
-    pub fn send(
+impl RetrieveCustomerTaxId<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        customer: &stripe_shared::CustomerId,
-        id: &str,
-    ) -> stripe::Response<stripe_shared::TaxId> {
-        client.get_query(&format!("/customers/{customer}/tax_ids/{id}"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListTaxId<'a> {
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// The account or customer the tax ID belongs to. Defaults to `owner[type]=self`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub owner: Option<ListTaxIdOwner<'a>>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
+
+impl StripeRequest for RetrieveCustomerTaxId<'_> {
+    type Output = stripe_shared::TaxId;
+
+    fn build(&self) -> RequestBuilder {
+        let customer = self.customer;
+        let id = self.id;
+        RequestBuilder::new(StripeMethod::Get, format!("/customers/{customer}/tax_ids/{id}"))
+            .query(&self.inner)
+    }
 }
-impl<'a> ListTaxId<'a> {
-    pub fn new() -> Self {
-        Self::default()
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListTaxIdBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    owner: Option<ListTaxIdOwner<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> ListTaxIdBuilder<'a> {
+    fn new() -> Self {
+        Self { ending_before: None, expand: None, limit: None, owner: None, starting_after: None }
     }
 }
 /// The account or customer the tax ID belongs to. Defaults to `owner[type]=self`.
@@ -207,56 +322,150 @@ impl<'de> serde::Deserialize<'de> for ListTaxIdOwnerType {
             .map_err(|_| serde::de::Error::custom("Unknown value for ListTaxIdOwnerType"))
     }
 }
+/// Returns a list of tax IDs.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListTaxId<'a> {
+    inner: ListTaxIdBuilder<'a>,
+}
 impl<'a> ListTaxId<'a> {
-    /// Returns a list of tax IDs.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::TaxId>> {
-        client.get_query("/tax_ids", self)
-    }
-    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::TaxId>> {
-        stripe::ListPaginator::from_list_params("/tax_ids", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveIdTaxId<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveIdTaxId<'a> {
+    /// Construct a new `ListTaxId`.
     pub fn new() -> Self {
-        Self::default()
+        Self { inner: ListTaxIdBuilder::new() }
+    }
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
+    /// The account or customer the tax ID belongs to. Defaults to `owner[type]=self`.
+    pub fn owner(mut self, owner: ListTaxIdOwner<'a>) -> Self {
+        self.inner.owner = Some(owner);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
     }
 }
-impl<'a> RetrieveIdTaxId<'a> {
-    /// Retrieves an account or customer `tax_id` object.
-    pub fn send(
+impl<'a> Default for ListTaxId<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListTaxId<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        id: &stripe_shared::TaxIdId,
-    ) -> stripe::Response<stripe_shared::TaxId> {
-        client.get_query(&format!("/tax_ids/{id}"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
+    pub fn paginate(
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::TaxId>> {
+        stripe_client_core::ListPaginator::new_list("/tax_ids", self.inner)
+    }
+}
+
+impl StripeRequest for ListTaxId<'_> {
+    type Output = stripe_types::List<stripe_shared::TaxId>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/tax_ids").query(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateCustomerTaxId<'a> {
-    /// Specifies which fields in the response should be expanded.
+struct RetrieveIdTaxIdBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
-    #[serde(rename = "type")]
-    pub type_: CreateCustomerTaxIdType,
-    /// Value of the tax ID.
-    pub value: &'a str,
+    expand: Option<&'a [&'a str]>,
 }
-impl<'a> CreateCustomerTaxId<'a> {
-    pub fn new(type_: CreateCustomerTaxIdType, value: &'a str) -> Self {
+impl<'a> RetrieveIdTaxIdBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves an account or customer `tax_id` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveIdTaxId<'a> {
+    inner: RetrieveIdTaxIdBuilder<'a>,
+    id: &'a stripe_shared::TaxIdId,
+}
+impl<'a> RetrieveIdTaxId<'a> {
+    /// Construct a new `RetrieveIdTaxId`.
+    pub fn new(id: &'a stripe_shared::TaxIdId) -> Self {
+        Self { id, inner: RetrieveIdTaxIdBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveIdTaxId<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveIdTaxId<'_> {
+    type Output = stripe_shared::TaxId;
+
+    fn build(&self) -> RequestBuilder {
+        let id = self.id;
+        RequestBuilder::new(StripeMethod::Get, format!("/tax_ids/{id}")).query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateCustomerTaxIdBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(rename = "type")]
+    type_: CreateCustomerTaxIdType,
+    value: &'a str,
+}
+impl<'a> CreateCustomerTaxIdBuilder<'a> {
+    fn new(type_: CreateCustomerTaxIdType, value: &'a str) -> Self {
         Self { expand: None, type_, value }
     }
 }
-/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
+/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateCustomerTaxIdType {
@@ -266,6 +475,7 @@ pub enum CreateCustomerTaxIdType {
     AuAbn,
     AuArn,
     BgUic,
+    BhVat,
     BoTin,
     BrCnpj,
     BrCpf,
@@ -299,13 +509,17 @@ pub enum CreateCustomerTaxIdType {
     JpTrn,
     KePin,
     KrBrn,
+    KzBin,
     LiUid,
     MxRfc,
     MyFrp,
     MyItn,
     MySst,
+    NgTin,
     NoVat,
+    NoVoec,
     NzGst,
+    OmVat,
     PeRuc,
     PhTin,
     RoTin,
@@ -339,6 +553,7 @@ impl CreateCustomerTaxIdType {
             AuAbn => "au_abn",
             AuArn => "au_arn",
             BgUic => "bg_uic",
+            BhVat => "bh_vat",
             BoTin => "bo_tin",
             BrCnpj => "br_cnpj",
             BrCpf => "br_cpf",
@@ -372,13 +587,17 @@ impl CreateCustomerTaxIdType {
             JpTrn => "jp_trn",
             KePin => "ke_pin",
             KrBrn => "kr_brn",
+            KzBin => "kz_bin",
             LiUid => "li_uid",
             MxRfc => "mx_rfc",
             MyFrp => "my_frp",
             MyItn => "my_itn",
             MySst => "my_sst",
+            NgTin => "ng_tin",
             NoVat => "no_vat",
+            NoVoec => "no_voec",
             NzGst => "nz_gst",
+            OmVat => "om_vat",
             PeRuc => "pe_ruc",
             PhTin => "ph_tin",
             RoTin => "ro_tin",
@@ -415,6 +634,7 @@ impl std::str::FromStr for CreateCustomerTaxIdType {
             "au_abn" => Ok(AuAbn),
             "au_arn" => Ok(AuArn),
             "bg_uic" => Ok(BgUic),
+            "bh_vat" => Ok(BhVat),
             "bo_tin" => Ok(BoTin),
             "br_cnpj" => Ok(BrCnpj),
             "br_cpf" => Ok(BrCpf),
@@ -448,13 +668,17 @@ impl std::str::FromStr for CreateCustomerTaxIdType {
             "jp_trn" => Ok(JpTrn),
             "ke_pin" => Ok(KePin),
             "kr_brn" => Ok(KrBrn),
+            "kz_bin" => Ok(KzBin),
             "li_uid" => Ok(LiUid),
             "mx_rfc" => Ok(MxRfc),
             "my_frp" => Ok(MyFrp),
             "my_itn" => Ok(MyItn),
             "my_sst" => Ok(MySst),
+            "ng_tin" => Ok(NgTin),
             "no_vat" => Ok(NoVat),
+            "no_voec" => Ok(NoVoec),
             "nz_gst" => Ok(NzGst),
+            "om_vat" => Ok(OmVat),
             "pe_ruc" => Ok(PeRuc),
             "ph_tin" => Ok(PhTin),
             "ro_tin" => Ok(RoTin),
@@ -506,32 +730,66 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxIdType {
         Ok(Self::from_str(&s).unwrap())
     }
 }
+/// Creates a new `tax_id` object for a customer.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateCustomerTaxId<'a> {
+    inner: CreateCustomerTaxIdBuilder<'a>,
+    customer: &'a stripe_shared::CustomerId,
+}
 impl<'a> CreateCustomerTaxId<'a> {
-    /// Creates a new `tax_id` object for a customer.
-    pub fn send(
+    /// Construct a new `CreateCustomerTaxId`.
+    pub fn new(
+        customer: &'a stripe_shared::CustomerId,
+        type_: CreateCustomerTaxIdType,
+        value: &'a str,
+    ) -> Self {
+        Self { customer, inner: CreateCustomerTaxIdBuilder::new(type_, value) }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl CreateCustomerTaxId<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        customer: &stripe_shared::CustomerId,
-    ) -> stripe::Response<stripe_shared::TaxId> {
-        client.send_form(&format!("/customers/{customer}/tax_ids"), self, http_types::Method::Post)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateCustomerTaxId<'_> {
+    type Output = stripe_shared::TaxId;
+
+    fn build(&self) -> RequestBuilder {
+        let customer = self.customer;
+        RequestBuilder::new(StripeMethod::Post, format!("/customers/{customer}/tax_ids"))
+            .form(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTaxId<'a> {
-    /// Specifies which fields in the response should be expanded.
+struct CreateTaxIdBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The account or customer the tax ID belongs to. Defaults to `owner[type]=self`.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub owner: Option<CreateTaxIdOwner<'a>>,
-    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
+    owner: Option<CreateTaxIdOwner<'a>>,
     #[serde(rename = "type")]
-    pub type_: CreateTaxIdType,
-    /// Value of the tax ID.
-    pub value: &'a str,
+    type_: CreateTaxIdType,
+    value: &'a str,
 }
-impl<'a> CreateTaxId<'a> {
-    pub fn new(type_: CreateTaxIdType, value: &'a str) -> Self {
+impl<'a> CreateTaxIdBuilder<'a> {
+    fn new(type_: CreateTaxIdType, value: &'a str) -> Self {
         Self { expand: None, owner: None, type_, value }
     }
 }
@@ -614,7 +872,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxIdOwnerType {
             .map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxIdOwnerType"))
     }
 }
-/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
+/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateTaxIdType {
@@ -624,6 +882,7 @@ pub enum CreateTaxIdType {
     AuAbn,
     AuArn,
     BgUic,
+    BhVat,
     BoTin,
     BrCnpj,
     BrCpf,
@@ -657,13 +916,17 @@ pub enum CreateTaxIdType {
     JpTrn,
     KePin,
     KrBrn,
+    KzBin,
     LiUid,
     MxRfc,
     MyFrp,
     MyItn,
     MySst,
+    NgTin,
     NoVat,
+    NoVoec,
     NzGst,
+    OmVat,
     PeRuc,
     PhTin,
     RoTin,
@@ -697,6 +960,7 @@ impl CreateTaxIdType {
             AuAbn => "au_abn",
             AuArn => "au_arn",
             BgUic => "bg_uic",
+            BhVat => "bh_vat",
             BoTin => "bo_tin",
             BrCnpj => "br_cnpj",
             BrCpf => "br_cpf",
@@ -730,13 +994,17 @@ impl CreateTaxIdType {
             JpTrn => "jp_trn",
             KePin => "ke_pin",
             KrBrn => "kr_brn",
+            KzBin => "kz_bin",
             LiUid => "li_uid",
             MxRfc => "mx_rfc",
             MyFrp => "my_frp",
             MyItn => "my_itn",
             MySst => "my_sst",
+            NgTin => "ng_tin",
             NoVat => "no_vat",
+            NoVoec => "no_voec",
             NzGst => "nz_gst",
+            OmVat => "om_vat",
             PeRuc => "pe_ruc",
             PhTin => "ph_tin",
             RoTin => "ro_tin",
@@ -773,6 +1041,7 @@ impl std::str::FromStr for CreateTaxIdType {
             "au_abn" => Ok(AuAbn),
             "au_arn" => Ok(AuArn),
             "bg_uic" => Ok(BgUic),
+            "bh_vat" => Ok(BhVat),
             "bo_tin" => Ok(BoTin),
             "br_cnpj" => Ok(BrCnpj),
             "br_cpf" => Ok(BrCpf),
@@ -806,13 +1075,17 @@ impl std::str::FromStr for CreateTaxIdType {
             "jp_trn" => Ok(JpTrn),
             "ke_pin" => Ok(KePin),
             "kr_brn" => Ok(KrBrn),
+            "kz_bin" => Ok(KzBin),
             "li_uid" => Ok(LiUid),
             "mx_rfc" => Ok(MxRfc),
             "my_frp" => Ok(MyFrp),
             "my_itn" => Ok(MyItn),
             "my_sst" => Ok(MySst),
+            "ng_tin" => Ok(NgTin),
             "no_vat" => Ok(NoVat),
+            "no_voec" => Ok(NoVoec),
             "nz_gst" => Ok(NzGst),
+            "om_vat" => Ok(OmVat),
             "pe_ruc" => Ok(PeRuc),
             "ph_tin" => Ok(PhTin),
             "ro_tin" => Ok(RoTin),
@@ -864,9 +1137,49 @@ impl<'de> serde::Deserialize<'de> for CreateTaxIdType {
         Ok(Self::from_str(&s).unwrap())
     }
 }
+/// Creates a new account or customer `tax_id` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTaxId<'a> {
+    inner: CreateTaxIdBuilder<'a>,
+}
 impl<'a> CreateTaxId<'a> {
-    /// Creates a new account or customer `tax_id` object.
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_shared::TaxId> {
-        client.send_form("/tax_ids", self, http_types::Method::Post)
+    /// Construct a new `CreateTaxId`.
+    pub fn new(type_: CreateTaxIdType, value: &'a str) -> Self {
+        Self { inner: CreateTaxIdBuilder::new(type_, value) }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// The account or customer the tax ID belongs to. Defaults to `owner[type]=self`.
+    pub fn owner(mut self, owner: CreateTaxIdOwner<'a>) -> Self {
+        self.inner.owner = Some(owner);
+        self
+    }
+}
+impl CreateTaxId<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateTaxId<'_> {
+    type Output = stripe_shared::TaxId;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/tax_ids").form(&self.inner)
     }
 }

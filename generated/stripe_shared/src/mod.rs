@@ -115,6 +115,18 @@ pub mod account_unification_account_controller;
 #[doc(inline)]
 pub use account_unification_account_controller::*;
 #[doc(hidden)]
+pub mod account_unification_account_controller_fees;
+#[doc(inline)]
+pub use account_unification_account_controller_fees::*;
+#[doc(hidden)]
+pub mod account_unification_account_controller_losses;
+#[doc(inline)]
+pub use account_unification_account_controller_losses::*;
+#[doc(hidden)]
+pub mod account_unification_account_controller_stripe_dashboard;
+#[doc(inline)]
+pub use account_unification_account_controller_stripe_dashboard::*;
+#[doc(hidden)]
 pub mod address;
 #[doc(inline)]
 pub use address::*;
@@ -379,6 +391,10 @@ pub mod discounts_resource_discount_amount;
 #[doc(inline)]
 pub use discounts_resource_discount_amount::*;
 #[doc(hidden)]
+pub mod discounts_resource_stackable_discount;
+#[doc(inline)]
+pub use discounts_resource_stackable_discount::*;
+#[doc(hidden)]
 pub mod dispute;
 #[doc(inline)]
 pub use dispute::*;
@@ -402,6 +418,10 @@ pub use dispute_payment_method_details_card::*;
 pub mod email_sent;
 #[doc(inline)]
 pub use email_sent::*;
+#[doc(hidden)]
+pub mod entitlements_feature;
+#[doc(inline)]
+pub use entitlements_feature::*;
 #[doc(hidden)]
 pub mod error;
 #[doc(inline)]
@@ -471,6 +491,10 @@ pub mod funding_instructions_bank_transfer_zengin_record;
 #[doc(inline)]
 pub use funding_instructions_bank_transfer_zengin_record::*;
 #[doc(hidden)]
+pub mod internal_card;
+#[doc(inline)]
+pub use internal_card::*;
+#[doc(hidden)]
 pub mod invoice;
 #[doc(inline)]
 pub use invoice::*;
@@ -523,6 +547,10 @@ pub mod invoice_payment_method_options_konbini;
 #[doc(inline)]
 pub use invoice_payment_method_options_konbini::*;
 #[doc(hidden)]
+pub mod invoice_payment_method_options_sepa_debit;
+#[doc(inline)]
+pub use invoice_payment_method_options_sepa_debit::*;
+#[doc(hidden)]
 pub mod invoice_payment_method_options_us_bank_account;
 #[doc(inline)]
 pub use invoice_payment_method_options_us_bank_account::*;
@@ -538,6 +566,10 @@ pub use invoice_rendering_pdf::*;
 pub mod invoice_setting_custom_field;
 #[doc(inline)]
 pub use invoice_setting_custom_field::*;
+#[doc(hidden)]
+pub mod invoice_setting_customer_rendering_options;
+#[doc(inline)]
+pub use invoice_setting_customer_rendering_options::*;
 #[doc(hidden)]
 pub mod invoice_setting_customer_setting;
 #[doc(inline)]
@@ -575,14 +607,6 @@ pub mod invoice_item;
 #[doc(inline)]
 pub use invoice_item::*;
 #[doc(hidden)]
-pub mod invoices_from_invoice;
-#[doc(inline)]
-pub use invoices_from_invoice::*;
-#[doc(hidden)]
-pub mod invoices_invoice_rendering;
-#[doc(inline)]
-pub use invoices_invoice_rendering::*;
-#[doc(hidden)]
 pub mod invoices_payment_method_options;
 #[doc(inline)]
 pub use invoices_payment_method_options::*;
@@ -590,6 +614,14 @@ pub use invoices_payment_method_options::*;
 pub mod invoices_payment_settings;
 #[doc(inline)]
 pub use invoices_payment_settings::*;
+#[doc(hidden)]
+pub mod invoices_resource_from_invoice;
+#[doc(inline)]
+pub use invoices_resource_from_invoice::*;
+#[doc(hidden)]
+pub mod invoices_resource_invoice_rendering;
+#[doc(inline)]
+pub use invoices_resource_invoice_rendering::*;
 #[doc(hidden)]
 pub mod invoices_resource_invoice_tax_id;
 #[doc(inline)]
@@ -603,13 +635,13 @@ pub mod invoices_resource_line_items_proration_details;
 #[doc(inline)]
 pub use invoices_resource_line_items_proration_details::*;
 #[doc(hidden)]
-pub mod invoices_shipping_cost;
+pub mod invoices_resource_shipping_cost;
 #[doc(inline)]
-pub use invoices_shipping_cost::*;
+pub use invoices_resource_shipping_cost::*;
 #[doc(hidden)]
-pub mod invoices_status_transitions;
+pub mod invoices_resource_status_transitions;
 #[doc(inline)]
-pub use invoices_status_transitions::*;
+pub use invoices_resource_status_transitions::*;
 #[doc(hidden)]
 pub mod issuing_authorization;
 #[doc(inline)]
@@ -626,6 +658,14 @@ pub use issuing_cardholder::*;
 pub mod issuing_dispute;
 #[doc(inline)]
 pub use issuing_dispute::*;
+#[doc(hidden)]
+pub mod issuing_personalization_design;
+#[doc(inline)]
+pub use issuing_personalization_design::*;
+#[doc(hidden)]
+pub mod issuing_physical_bundle;
+#[doc(inline)]
+pub use issuing_physical_bundle::*;
 #[doc(hidden)]
 pub mod issuing_token;
 #[doc(inline)]
@@ -803,6 +843,22 @@ pub mod issuing_network_token_wallet_provider;
 #[doc(inline)]
 pub use issuing_network_token_wallet_provider::*;
 #[doc(hidden)]
+pub mod issuing_personalization_design_carrier_text;
+#[doc(inline)]
+pub use issuing_personalization_design_carrier_text::*;
+#[doc(hidden)]
+pub mod issuing_personalization_design_preferences;
+#[doc(inline)]
+pub use issuing_personalization_design_preferences::*;
+#[doc(hidden)]
+pub mod issuing_personalization_design_rejection_reasons;
+#[doc(inline)]
+pub use issuing_personalization_design_rejection_reasons::*;
+#[doc(hidden)]
+pub mod issuing_physical_bundle_features;
+#[doc(inline)]
+pub use issuing_physical_bundle_features::*;
+#[doc(hidden)]
 pub mod issuing_transaction_amount_details;
 #[doc(inline)]
 pub use issuing_transaction_amount_details::*;
@@ -907,6 +963,10 @@ pub mod mandate_acss_debit;
 #[doc(inline)]
 pub use mandate_acss_debit::*;
 #[doc(hidden)]
+pub mod mandate_amazon_pay;
+#[doc(inline)]
+pub use mandate_amazon_pay::*;
+#[doc(hidden)]
 pub mod mandate_au_becs_debit;
 #[doc(inline)]
 pub use mandate_au_becs_debit::*;
@@ -934,6 +994,10 @@ pub use mandate_payment_method_details::*;
 pub mod mandate_paypal;
 #[doc(inline)]
 pub use mandate_paypal::*;
+#[doc(hidden)]
+pub mod mandate_revolut_pay;
+#[doc(inline)]
+pub use mandate_revolut_pay::*;
 #[doc(hidden)]
 pub mod mandate_sepa_debit;
 #[doc(inline)]
@@ -1155,6 +1219,10 @@ pub mod payment_intent_payment_method_options_mandate_options_sepa_debit;
 #[doc(inline)]
 pub use payment_intent_payment_method_options_mandate_options_sepa_debit::*;
 #[doc(hidden)]
+pub mod payment_intent_payment_method_options_mobilepay;
+#[doc(inline)]
+pub use payment_intent_payment_method_options_mobilepay::*;
+#[doc(hidden)]
 pub mod payment_intent_payment_method_options_sepa_debit;
 #[doc(inline)]
 pub use payment_intent_payment_method_options_sepa_debit::*;
@@ -1299,6 +1367,10 @@ pub mod payment_method_afterpay_clearpay;
 #[doc(inline)]
 pub use payment_method_afterpay_clearpay::*;
 #[doc(hidden)]
+pub mod payment_method_amazon_pay;
+#[doc(inline)]
+pub use payment_method_amazon_pay::*;
+#[doc(hidden)]
 pub mod payment_method_au_becs_debit;
 #[doc(inline)]
 pub use payment_method_au_becs_debit::*;
@@ -1402,6 +1474,10 @@ pub use payment_method_details_affirm::*;
 pub mod payment_method_details_afterpay_clearpay;
 #[doc(inline)]
 pub use payment_method_details_afterpay_clearpay::*;
+#[doc(hidden)]
+pub mod payment_method_details_amazon_pay;
+#[doc(inline)]
+pub use payment_method_details_amazon_pay::*;
 #[doc(hidden)]
 pub mod payment_method_details_au_becs_debit;
 #[doc(inline)]
@@ -1539,6 +1615,10 @@ pub mod payment_method_details_link;
 #[doc(inline)]
 pub use payment_method_details_link::*;
 #[doc(hidden)]
+pub mod payment_method_details_mobilepay;
+#[doc(inline)]
+pub use payment_method_details_mobilepay::*;
+#[doc(hidden)]
 pub mod payment_method_details_multibanco;
 #[doc(inline)]
 pub use payment_method_details_multibanco::*;
@@ -1643,6 +1723,10 @@ pub mod payment_method_link;
 #[doc(inline)]
 pub use payment_method_link::*;
 #[doc(hidden)]
+pub mod payment_method_mobilepay;
+#[doc(inline)]
+pub use payment_method_mobilepay::*;
+#[doc(hidden)]
 pub mod payment_method_options_affirm;
 #[doc(inline)]
 pub use payment_method_options_affirm::*;
@@ -1654,6 +1738,10 @@ pub use payment_method_options_afterpay_clearpay::*;
 pub mod payment_method_options_alipay;
 #[doc(inline)]
 pub use payment_method_options_alipay::*;
+#[doc(hidden)]
+pub mod payment_method_options_amazon_pay;
+#[doc(inline)]
+pub use payment_method_options_amazon_pay::*;
 #[doc(hidden)]
 pub mod payment_method_options_bacs_debit;
 #[doc(inline)]
@@ -1891,9 +1979,9 @@ pub mod product;
 #[doc(inline)]
 pub use product::*;
 #[doc(hidden)]
-pub mod product_feature;
+pub mod product_marketing_feature;
 #[doc(inline)]
-pub use product_feature::*;
+pub use product_marketing_feature::*;
 #[doc(hidden)]
 pub mod promotion_code;
 #[doc(inline)]
@@ -2023,6 +2111,10 @@ pub mod setup_attempt_payment_method_details_acss_debit;
 #[doc(inline)]
 pub use setup_attempt_payment_method_details_acss_debit::*;
 #[doc(hidden)]
+pub mod setup_attempt_payment_method_details_amazon_pay;
+#[doc(inline)]
+pub use setup_attempt_payment_method_details_amazon_pay::*;
+#[doc(hidden)]
 pub mod setup_attempt_payment_method_details_au_becs_debit;
 #[doc(inline)]
 pub use setup_attempt_payment_method_details_au_becs_debit::*;
@@ -2075,6 +2167,10 @@ pub mod setup_attempt_payment_method_details_paypal;
 #[doc(inline)]
 pub use setup_attempt_payment_method_details_paypal::*;
 #[doc(hidden)]
+pub mod setup_attempt_payment_method_details_revolut_pay;
+#[doc(inline)]
+pub use setup_attempt_payment_method_details_revolut_pay::*;
+#[doc(hidden)]
 pub mod setup_attempt_payment_method_details_sepa_debit;
 #[doc(inline)]
 pub use setup_attempt_payment_method_details_sepa_debit::*;
@@ -2111,6 +2207,10 @@ pub mod setup_intent_payment_method_options_acss_debit;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_acss_debit::*;
 #[doc(hidden)]
+pub mod setup_intent_payment_method_options_amazon_pay;
+#[doc(inline)]
+pub use setup_intent_payment_method_options_amazon_pay::*;
+#[doc(hidden)]
 pub mod setup_intent_payment_method_options_card;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_card::*;
@@ -2118,6 +2218,10 @@ pub use setup_intent_payment_method_options_card::*;
 pub mod setup_intent_payment_method_options_card_mandate_options;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_card_mandate_options::*;
+#[doc(hidden)]
+pub mod setup_intent_payment_method_options_card_present;
+#[doc(inline)]
+pub use setup_intent_payment_method_options_card_present::*;
 #[doc(hidden)]
 pub mod setup_intent_payment_method_options_link;
 #[doc(inline)]
@@ -2426,6 +2530,10 @@ pub use three_d_secure_details_charge::*;
 pub mod three_d_secure_usage;
 #[doc(inline)]
 pub use three_d_secure_usage::*;
+#[doc(hidden)]
+pub mod token_card_networks;
+#[doc(inline)]
+pub use token_card_networks::*;
 #[doc(hidden)]
 pub mod topup;
 #[doc(inline)]

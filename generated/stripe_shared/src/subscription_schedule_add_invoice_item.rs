@@ -3,6 +3,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionScheduleAddInvoiceItem {
+    /// The stackable discounts that will be applied to the item.
+    pub discounts: Vec<stripe_shared::DiscountsResourceStackableDiscount>,
     /// ID of the price used to generate the invoice item.
     pub price: stripe_types::Expandable<stripe_shared::Price>,
     /// The quantity of the invoice item.
@@ -12,6 +14,7 @@ pub struct SubscriptionScheduleAddInvoiceItem {
 }
 #[doc(hidden)]
 pub struct SubscriptionScheduleAddInvoiceItemBuilder {
+    discounts: Option<Vec<stripe_shared::DiscountsResourceStackableDiscount>>,
     price: Option<stripe_types::Expandable<stripe_shared::Price>>,
     quantity: Option<Option<u64>>,
     tax_rates: Option<Option<Vec<stripe_shared::TaxRate>>>,
@@ -51,6 +54,7 @@ const _: () = {
         type Out = SubscriptionScheduleAddInvoiceItem;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "discounts" => Deserialize::begin(&mut self.discounts),
                 "price" => Deserialize::begin(&mut self.price),
                 "quantity" => Deserialize::begin(&mut self.quantity),
                 "tax_rates" => Deserialize::begin(&mut self.tax_rates),
@@ -61,6 +65,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                discounts: Deserialize::default(),
                 price: Deserialize::default(),
                 quantity: Deserialize::default(),
                 tax_rates: Deserialize::default(),
@@ -69,6 +74,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             Some(Self::Out {
+                discounts: self.discounts.take()?,
                 price: self.price.take()?,
                 quantity: self.quantity?,
                 tax_rates: self.tax_rates.take()?,
@@ -99,6 +105,7 @@ const _: () = {
             let mut b = SubscriptionScheduleAddInvoiceItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
                     "price" => b.price = Some(FromValueOpt::from_value(v)?),
                     "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
                     "tax_rates" => b.tax_rates = Some(FromValueOpt::from_value(v)?),

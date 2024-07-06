@@ -1,5 +1,5 @@
 /// Shows last VerificationSession error
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct GelatoSessionLastError {
@@ -108,9 +108,13 @@ pub enum GelatoSessionLastErrorCode {
     DocumentExpired,
     DocumentTypeNotSupported,
     DocumentUnverifiedOther,
+    EmailUnverifiedOther,
+    EmailVerificationDeclined,
     IdNumberInsufficientDocumentData,
     IdNumberMismatch,
     IdNumberUnverifiedOther,
+    PhoneUnverifiedOther,
+    PhoneVerificationDeclined,
     SelfieDocumentMissingPhoto,
     SelfieFaceMismatch,
     SelfieManipulated,
@@ -130,9 +134,13 @@ impl GelatoSessionLastErrorCode {
             DocumentExpired => "document_expired",
             DocumentTypeNotSupported => "document_type_not_supported",
             DocumentUnverifiedOther => "document_unverified_other",
+            EmailUnverifiedOther => "email_unverified_other",
+            EmailVerificationDeclined => "email_verification_declined",
             IdNumberInsufficientDocumentData => "id_number_insufficient_document_data",
             IdNumberMismatch => "id_number_mismatch",
             IdNumberUnverifiedOther => "id_number_unverified_other",
+            PhoneUnverifiedOther => "phone_unverified_other",
+            PhoneVerificationDeclined => "phone_verification_declined",
             SelfieDocumentMissingPhoto => "selfie_document_missing_photo",
             SelfieFaceMismatch => "selfie_face_mismatch",
             SelfieManipulated => "selfie_manipulated",
@@ -155,9 +163,13 @@ impl std::str::FromStr for GelatoSessionLastErrorCode {
             "document_expired" => Ok(DocumentExpired),
             "document_type_not_supported" => Ok(DocumentTypeNotSupported),
             "document_unverified_other" => Ok(DocumentUnverifiedOther),
+            "email_unverified_other" => Ok(EmailUnverifiedOther),
+            "email_verification_declined" => Ok(EmailVerificationDeclined),
             "id_number_insufficient_document_data" => Ok(IdNumberInsufficientDocumentData),
             "id_number_mismatch" => Ok(IdNumberMismatch),
             "id_number_unverified_other" => Ok(IdNumberUnverifiedOther),
+            "phone_unverified_other" => Ok(PhoneUnverifiedOther),
+            "phone_verification_declined" => Ok(PhoneVerificationDeclined),
             "selfie_document_missing_photo" => Ok(SelfieDocumentMissingPhoto),
             "selfie_face_mismatch" => Ok(SelfieFaceMismatch),
             "selfie_manipulated" => Ok(SelfieManipulated),

@@ -1,82 +1,185 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteTerminalLocation {}
-impl DeleteTerminalLocation {
-    pub fn new() -> Self {
-        Self::default()
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+/// Deletes a `Location` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DeleteTerminalLocation<'a> {
+    location: &'a stripe_terminal::TerminalLocationId,
+}
+impl<'a> DeleteTerminalLocation<'a> {
+    /// Construct a new `DeleteTerminalLocation`.
+    pub fn new(location: &'a stripe_terminal::TerminalLocationId) -> Self {
+        Self { location }
     }
 }
-impl DeleteTerminalLocation {
-    /// Deletes a `Location` object.
-    pub fn send(
+impl DeleteTerminalLocation<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        location: &stripe_terminal::TerminalLocationId,
-    ) -> stripe::Response<stripe_terminal::DeletedTerminalLocation> {
-        client.send_form(
-            &format!("/terminal/locations/{location}"),
-            self,
-            http_types::Method::Delete,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for DeleteTerminalLocation<'_> {
+    type Output = stripe_terminal::DeletedTerminalLocation;
+
+    fn build(&self) -> RequestBuilder {
+        let location = self.location;
+        RequestBuilder::new(StripeMethod::Delete, format!("/terminal/locations/{location}"))
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListTerminalLocationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> ListTerminalLocationBuilder<'a> {
+    fn new() -> Self {
+        Self { ending_before: None, expand: None, limit: None, starting_after: None }
+    }
+}
+/// Returns a list of `Location` objects.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ListTerminalLocation<'a> {
+    inner: ListTerminalLocationBuilder<'a>,
+}
+impl<'a> ListTerminalLocation<'a> {
+    /// Construct a new `ListTerminalLocation`.
+    pub fn new() -> Self {
+        Self { inner: ListTerminalLocationBuilder::new() }
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListTerminalLocation<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
     }
 }
-impl<'a> ListTerminalLocation<'a> {
-    /// Returns a list of `Location` objects.
-    pub fn send(
+impl<'a> Default for ListTerminalLocation<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListTerminalLocation<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalLocation>> {
-        client.get_query("/terminal/locations", self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_terminal::TerminalLocation>> {
-        stripe::ListPaginator::from_list_params("/terminal/locations", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTerminalLocation<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTerminalLocation<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveTerminalLocation<'a> {
-    /// Retrieves a `Location` object.
-    pub fn send(
         &self,
-        client: &stripe::Client,
-        location: &stripe_terminal::TerminalLocationId,
-    ) -> stripe::Response<RetrieveTerminalLocationReturned> {
-        client.get_query(&format!("/terminal/locations/{location}"), self)
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_terminal::TerminalLocation>>
+    {
+        stripe_client_core::ListPaginator::new_list("/terminal/locations", self.inner)
+    }
+}
+
+impl StripeRequest for ListTerminalLocation<'_> {
+    type Output = stripe_types::List<stripe_terminal::TerminalLocation>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/terminal/locations").query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveTerminalLocationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveTerminalLocationBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves a `Location` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveTerminalLocation<'a> {
+    inner: RetrieveTerminalLocationBuilder<'a>,
+    location: &'a stripe_terminal::TerminalLocationId,
+}
+impl<'a> RetrieveTerminalLocation<'a> {
+    /// Construct a new `RetrieveTerminalLocation`.
+    pub fn new(location: &'a stripe_terminal::TerminalLocationId) -> Self {
+        Self { location, inner: RetrieveTerminalLocationBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveTerminalLocation<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveTerminalLocation<'_> {
+    type Output = RetrieveTerminalLocationReturned;
+
+    fn build(&self) -> RequestBuilder {
+        let location = self.location;
+        RequestBuilder::new(StripeMethod::Get, format!("/terminal/locations/{location}"))
+            .query(&self.inner)
     }
 }
 #[derive(Clone, Debug)]
@@ -162,26 +265,18 @@ const _: () = {
 };
 
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTerminalLocation<'a> {
-    /// The full address of the location.
-    pub address: CreateTerminalLocationAddress<'a>,
-    /// The ID of a configuration that will be used to customize all readers in this location.
+struct CreateTerminalLocationBuilder<'a> {
+    address: CreateTerminalLocationAddress<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub configuration_overrides: Option<&'a str>,
-    /// A name for the location.
-    pub display_name: &'a str,
-    /// Specifies which fields in the response should be expanded.
+    configuration_overrides: Option<&'a str>,
+    display_name: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
-impl<'a> CreateTerminalLocation<'a> {
-    pub fn new(address: CreateTerminalLocationAddress<'a>, display_name: &'a str) -> Self {
+impl<'a> CreateTerminalLocationBuilder<'a> {
+    fn new(address: CreateTerminalLocationAddress<'a>, display_name: &'a str) -> Self {
         Self { address, configuration_overrides: None, display_name, expand: None, metadata: None }
     }
 }
@@ -211,44 +306,87 @@ impl<'a> CreateTerminalLocationAddress<'a> {
         Self { city: None, country, line1: None, line2: None, postal_code: None, state: None }
     }
 }
-impl<'a> CreateTerminalLocation<'a> {
-    /// Creates a new `Location` object.
-    /// For further details, including which address fields are required in each country, see the [Manage locations](https://stripe.com/docs/terminal/fleet/locations) guide.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_terminal::TerminalLocation> {
-        client.send_form("/terminal/locations", self, http_types::Method::Post)
-    }
+/// Creates a new `Location` object.
+/// For further details, including which address fields are required in each country, see the [Manage locations](https://stripe.com/docs/terminal/fleet/locations) guide.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTerminalLocation<'a> {
+    inner: CreateTerminalLocationBuilder<'a>,
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateTerminalLocation<'a> {
-    /// The full address of the location.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<UpdateTerminalLocationAddress<'a>>,
+impl<'a> CreateTerminalLocation<'a> {
+    /// Construct a new `CreateTerminalLocation`.
+    pub fn new(address: CreateTerminalLocationAddress<'a>, display_name: &'a str) -> Self {
+        Self { inner: CreateTerminalLocationBuilder::new(address, display_name) }
+    }
     /// The ID of a configuration that will be used to customize all readers in this location.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub configuration_overrides: Option<&'a str>,
-    /// A name for the location.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub display_name: Option<&'a str>,
+    pub fn configuration_overrides(mut self, configuration_overrides: &'a str) -> Self {
+        self.inner.configuration_overrides = Some(configuration_overrides);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
 }
-impl<'a> UpdateTerminalLocation<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl CreateTerminalLocation<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateTerminalLocation<'_> {
+    type Output = stripe_terminal::TerminalLocation;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/terminal/locations").form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateTerminalLocationBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    address: Option<UpdateTerminalLocationAddress<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    configuration_overrides: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    display_name: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+}
+impl<'a> UpdateTerminalLocationBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            address: None,
+            configuration_overrides: None,
+            display_name: None,
+            expand: None,
+            metadata: None,
+        }
     }
 }
 /// The full address of the location.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateTerminalLocationAddress<'a> {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -271,18 +409,80 @@ pub struct UpdateTerminalLocationAddress<'a> {
 }
 impl<'a> UpdateTerminalLocationAddress<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
     }
 }
+impl<'a> Default for UpdateTerminalLocationAddress<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Updates a `Location` object by setting the values of the parameters passed.
+/// Any parameters not provided will be left unchanged.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTerminalLocation<'a> {
+    inner: UpdateTerminalLocationBuilder<'a>,
+    location: &'a stripe_terminal::TerminalLocationId,
+}
 impl<'a> UpdateTerminalLocation<'a> {
-    /// Updates a `Location` object by setting the values of the parameters passed.
-    /// Any parameters not provided will be left unchanged.
-    pub fn send(
+    /// Construct a new `UpdateTerminalLocation`.
+    pub fn new(location: &'a stripe_terminal::TerminalLocationId) -> Self {
+        Self { location, inner: UpdateTerminalLocationBuilder::new() }
+    }
+    /// The full address of the location.
+    pub fn address(mut self, address: UpdateTerminalLocationAddress<'a>) -> Self {
+        self.inner.address = Some(address);
+        self
+    }
+    /// The ID of a configuration that will be used to customize all readers in this location.
+    pub fn configuration_overrides(mut self, configuration_overrides: &'a str) -> Self {
+        self.inner.configuration_overrides = Some(configuration_overrides);
+        self
+    }
+    /// A name for the location.
+    pub fn display_name(mut self, display_name: &'a str) -> Self {
+        self.inner.display_name = Some(display_name);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+}
+impl UpdateTerminalLocation<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        location: &stripe_terminal::TerminalLocationId,
-    ) -> stripe::Response<UpdateTerminalLocationReturned> {
-        client.send_form(&format!("/terminal/locations/{location}"), self, http_types::Method::Post)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateTerminalLocation<'_> {
+    type Output = UpdateTerminalLocationReturned;
+
+    fn build(&self) -> RequestBuilder {
+        let location = self.location;
+        RequestBuilder::new(StripeMethod::Post, format!("/terminal/locations/{location}"))
+            .form(&self.inner)
     }
 }
 #[derive(Clone, Debug)]

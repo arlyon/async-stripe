@@ -1,53 +1,62 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteRadarValueListItem {}
-impl DeleteRadarValueListItem {
-    pub fn new() -> Self {
-        Self::default()
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+/// Deletes a `ValueListItem` object, removing it from its parent value list.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DeleteRadarValueListItem<'a> {
+    item: &'a stripe_fraud::RadarValueListItemId,
+}
+impl<'a> DeleteRadarValueListItem<'a> {
+    /// Construct a new `DeleteRadarValueListItem`.
+    pub fn new(item: &'a stripe_fraud::RadarValueListItemId) -> Self {
+        Self { item }
     }
 }
-impl DeleteRadarValueListItem {
-    /// Deletes a `ValueListItem` object, removing it from its parent value list.
-    pub fn send(
+impl DeleteRadarValueListItem<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        item: &stripe_fraud::RadarValueListItemId,
-    ) -> stripe::Response<stripe_fraud::DeletedRadarValueListItem> {
-        client.send_form(
-            &format!("/radar/value_list_items/{item}"),
-            self,
-            http_types::Method::Delete,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for DeleteRadarValueListItem<'_> {
+    type Output = stripe_fraud::DeletedRadarValueListItem;
+
+    fn build(&self) -> RequestBuilder {
+        let item = self.item;
+        RequestBuilder::new(StripeMethod::Delete, format!("/radar/value_list_items/{item}"))
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ListRadarValueListItem<'a> {
+struct ListRadarValueListItemBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
+    ending_before: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-    /// Return items belonging to the parent list whose value matches the specified value (using an "is like" match).
+    starting_after: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub value: Option<&'a str>,
-    /// Identifier for the parent value list this item belongs to.
-    pub value_list: &'a str,
+    value: Option<&'a str>,
+    value_list: &'a str,
 }
-impl<'a> ListRadarValueListItem<'a> {
-    pub fn new(value_list: &'a str) -> Self {
+impl<'a> ListRadarValueListItemBuilder<'a> {
+    fn new(value_list: &'a str) -> Self {
         Self {
             created: None,
             ending_before: None,
@@ -59,63 +68,189 @@ impl<'a> ListRadarValueListItem<'a> {
         }
     }
 }
+/// Returns a list of `ValueListItem` objects.
+/// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListRadarValueListItem<'a> {
+    inner: ListRadarValueListItemBuilder<'a>,
+}
 impl<'a> ListRadarValueListItem<'a> {
-    /// Returns a list of `ValueListItem` objects.
-    /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_fraud::RadarValueListItem>> {
-        client.get_query("/radar/value_list_items", self)
+    /// Construct a new `ListRadarValueListItem`.
+    pub fn new(value_list: &'a str) -> Self {
+        Self { inner: ListRadarValueListItemBuilder::new(value_list) }
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_fraud::RadarValueListItem>> {
-        stripe::ListPaginator::from_list_params("/radar/value_list_items", self)
+    /// Only return items that were created during the given date interval.
+    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
+        self.inner.created = Some(created);
+        self
     }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveRadarValueListItem<'a> {
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveRadarValueListItem<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
+    /// Return items belonging to the parent list whose value matches the specified value (using an "is like" match).
+    pub fn value(mut self, value: &'a str) -> Self {
+        self.inner.value = Some(value);
+        self
     }
 }
-impl<'a> RetrieveRadarValueListItem<'a> {
-    /// Retrieves a `ValueListItem` object.
-    pub fn send(
+impl ListRadarValueListItem<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        item: &stripe_fraud::RadarValueListItemId,
-    ) -> stripe::Response<stripe_fraud::RadarValueListItem> {
-        client.get_query(&format!("/radar/value_list_items/{item}"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
+    pub fn paginate(
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_fraud::RadarValueListItem>>
+    {
+        stripe_client_core::ListPaginator::new_list("/radar/value_list_items", self.inner)
+    }
+}
+
+impl StripeRequest for ListRadarValueListItem<'_> {
+    type Output = stripe_types::List<stripe_fraud::RadarValueListItem>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/radar/value_list_items").query(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateRadarValueListItem<'a> {
-    /// Specifies which fields in the response should be expanded.
+struct RetrieveRadarValueListItemBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The value of the item (whose type must match the type of the parent value list).
-    pub value: &'a str,
-    /// The identifier of the value list which the created item will be added to.
-    pub value_list: &'a str,
+    expand: Option<&'a [&'a str]>,
 }
-impl<'a> CreateRadarValueListItem<'a> {
-    pub fn new(value: &'a str, value_list: &'a str) -> Self {
+impl<'a> RetrieveRadarValueListItemBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves a `ValueListItem` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveRadarValueListItem<'a> {
+    inner: RetrieveRadarValueListItemBuilder<'a>,
+    item: &'a stripe_fraud::RadarValueListItemId,
+}
+impl<'a> RetrieveRadarValueListItem<'a> {
+    /// Construct a new `RetrieveRadarValueListItem`.
+    pub fn new(item: &'a stripe_fraud::RadarValueListItemId) -> Self {
+        Self { item, inner: RetrieveRadarValueListItemBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveRadarValueListItem<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveRadarValueListItem<'_> {
+    type Output = stripe_fraud::RadarValueListItem;
+
+    fn build(&self) -> RequestBuilder {
+        let item = self.item;
+        RequestBuilder::new(StripeMethod::Get, format!("/radar/value_list_items/{item}"))
+            .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateRadarValueListItemBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    value: &'a str,
+    value_list: &'a str,
+}
+impl<'a> CreateRadarValueListItemBuilder<'a> {
+    fn new(value: &'a str, value_list: &'a str) -> Self {
         Self { expand: None, value, value_list }
     }
 }
+/// Creates a new `ValueListItem` object, which is added to the specified parent value list.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateRadarValueListItem<'a> {
+    inner: CreateRadarValueListItemBuilder<'a>,
+}
 impl<'a> CreateRadarValueListItem<'a> {
-    /// Creates a new `ValueListItem` object, which is added to the specified parent value list.
-    pub fn send(
+    /// Construct a new `CreateRadarValueListItem`.
+    pub fn new(value: &'a str, value_list: &'a str) -> Self {
+        Self { inner: CreateRadarValueListItemBuilder::new(value, value_list) }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl CreateRadarValueListItem<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_fraud::RadarValueListItem> {
-        client.send_form("/radar/value_list_items", self, http_types::Method::Post)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateRadarValueListItem<'_> {
+    type Output = stripe_fraud::RadarValueListItem;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/radar/value_list_items").form(&self.inner)
     }
 }

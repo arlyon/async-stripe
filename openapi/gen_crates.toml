@@ -1,6 +1,6 @@
 [[crates]]
 name = "stripe_billing"
-packages = ["test_helpers", "billing_portal"]
+packages = ["test_helpers", "billing_portal", "billing"]
 paths = [
     "credit_note",
     "tax_id",
@@ -8,7 +8,7 @@ paths = [
     "item",
     "plan",
     "quote",
-    "subscription"
+    "subscription",
 ]
 description = '''This crate provides Rust bindings to the Stripe HTTP API, specifically
 for requests mentioned in the `Billing` section of the [Stripe API docs](https://stripe.com/docs/api)
@@ -74,7 +74,8 @@ paths = [
     "payment_method",
     "source",
     "bank_account",
-    "payment_link"
+    "payment_link",
+    "confirmation_token",
 ]
 description = '''This crate provides Rust bindings to the Stripe HTTP API, specifically
 for requests mentioned in the `Payment Methods` and `Payment Links` sections
@@ -91,7 +92,7 @@ paths = [
     "discount",
     "tax_code",
     "tax_rate",
-    "shipping_rate"
+    "shipping_rate",
 ]
 description = '''This crate provides Rust bindings to the Stripe HTTP API, specifically
 for requests mentioned in the `Products` section of the [Stripe API docs](https://stripe.com/docs/api)
@@ -117,7 +118,7 @@ paths = [
     "apple_pay_domain",
     "ephemeral_key",
     "exchange_rate",
-    "webhook_endpoint"
+    "webhook_endpoint",
 ]
 packages = [
     "tax",
@@ -125,7 +126,9 @@ packages = [
     "reporting",
     "sigma",
     "financial_connections",
-    "climate"
+    "climate",
+    "entitlements",
+    "forwarding"
 ]
 description = '''This crate provides Rust bindings to the Stripe HTTP API, specifically
 for requests mentioned in the `Tax`, `Identity`, `Reporting`, `Sigma`, `Financial Connections`

@@ -1,19 +1,19 @@
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentNextActionSwishQrCode {
     /// The raw data string used to generate QR code, it should be used together with QR code library.
-    pub data: Option<String>,
+    pub data: String,
     /// The image_url_png string used to render QR code
-    pub image_url_png: Option<String>,
+    pub image_url_png: String,
     /// The image_url_svg string used to render QR code
-    pub image_url_svg: Option<String>,
+    pub image_url_svg: String,
 }
 #[doc(hidden)]
 pub struct PaymentIntentNextActionSwishQrCodeBuilder {
-    data: Option<Option<String>>,
-    image_url_png: Option<Option<String>>,
-    image_url_svg: Option<Option<String>>,
+    data: Option<String>,
+    image_url_png: Option<String>,
+    image_url_svg: Option<String>,
 }
 
 #[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]

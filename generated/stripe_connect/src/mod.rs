@@ -40,6 +40,9 @@ pub use stripe_shared::account_terms_of_service::*;
 pub use stripe_shared::account_tos_acceptance::*;
 pub use stripe_shared::account_treasury_settings::*;
 pub use stripe_shared::account_unification_account_controller::*;
+pub use stripe_shared::account_unification_account_controller_fees::*;
+pub use stripe_shared::account_unification_account_controller_losses::*;
+pub use stripe_shared::account_unification_account_controller_stripe_dashboard::*;
 pub use stripe_shared::application::*;
 pub mod application_fee;
 pub use apps_secret::types::*;
@@ -48,6 +51,14 @@ pub mod apps_secret;
 pub mod capability;
 pub use stripe_shared::capability::*;
 pub use stripe_shared::connect_account_reference::*;
+#[doc(hidden)]
+pub mod connect_embedded_account_config_claim;
+#[doc(inline)]
+pub use connect_embedded_account_config_claim::*;
+#[doc(hidden)]
+pub mod connect_embedded_account_features_claim;
+#[doc(inline)]
+pub use connect_embedded_account_features_claim::*;
 #[doc(hidden)]
 pub mod connect_embedded_account_session_create_components;
 #[doc(inline)]
@@ -61,17 +72,17 @@ pub mod connect_embedded_base_features;
 #[doc(inline)]
 pub use connect_embedded_base_features::*;
 #[doc(hidden)]
-pub mod connect_embedded_payments_config;
+pub mod connect_embedded_payments_config_claim;
 #[doc(inline)]
-pub use connect_embedded_payments_config::*;
+pub use connect_embedded_payments_config_claim::*;
 #[doc(hidden)]
 pub mod connect_embedded_payments_features;
 #[doc(inline)]
 pub use connect_embedded_payments_features::*;
 #[doc(hidden)]
-pub mod connect_embedded_payouts_config;
+pub mod connect_embedded_payouts_config_claim;
 #[doc(inline)]
-pub use connect_embedded_payouts_config::*;
+pub use connect_embedded_payouts_config_claim::*;
 #[doc(hidden)]
 pub mod connect_embedded_payouts_features;
 #[doc(inline)]

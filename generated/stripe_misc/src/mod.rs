@@ -78,7 +78,15 @@ pub use deleted_apple_pay_domain::*;
 pub mod deleted_webhook_endpoint;
 #[doc(inline)]
 pub use deleted_webhook_endpoint::*;
+pub use entitlements_active_entitlement::types::*;
+pub mod entitlements_active_entitlement;
+#[doc(hidden)]
+pub mod entitlements_active_entitlement_summary;
+#[doc(inline)]
+pub use entitlements_active_entitlement_summary::*;
+pub mod entitlements_feature;
 pub use ephemeral_key::types::*;
+pub use stripe_shared::entitlements_feature::*;
 pub mod ephemeral_key;
 pub use exchange_rate::types::*;
 pub mod exchange_rate;
@@ -100,6 +108,24 @@ pub mod financial_connections_transaction;
 pub mod financial_reporting_finance_report_run_run_parameters;
 #[doc(inline)]
 pub use financial_reporting_finance_report_run_run_parameters::*;
+#[doc(hidden)]
+pub mod forwarded_request_context;
+#[doc(inline)]
+pub use forwarded_request_context::*;
+#[doc(hidden)]
+pub mod forwarded_request_details;
+#[doc(inline)]
+pub use forwarded_request_details::*;
+#[doc(hidden)]
+pub mod forwarded_request_header;
+#[doc(inline)]
+pub use forwarded_request_header::*;
+#[doc(hidden)]
+pub mod forwarded_response_details;
+#[doc(inline)]
+pub use forwarded_response_details::*;
+pub use forwarding_request::types::*;
+pub mod forwarding_request;
 #[doc(hidden)]
 pub mod gelato_data_document_report_date_of_birth;
 #[doc(inline)]
@@ -129,6 +155,14 @@ pub mod gelato_document_report_error;
 #[doc(inline)]
 pub use gelato_document_report_error::*;
 #[doc(hidden)]
+pub mod gelato_email_report;
+#[doc(inline)]
+pub use gelato_email_report::*;
+#[doc(hidden)]
+pub mod gelato_email_report_error;
+#[doc(inline)]
+pub use gelato_email_report_error::*;
+#[doc(hidden)]
 pub mod gelato_id_number_report;
 #[doc(inline)]
 pub use gelato_id_number_report::*;
@@ -136,6 +170,18 @@ pub use gelato_id_number_report::*;
 pub mod gelato_id_number_report_error;
 #[doc(inline)]
 pub use gelato_id_number_report_error::*;
+#[doc(hidden)]
+pub mod gelato_phone_report;
+#[doc(inline)]
+pub use gelato_phone_report::*;
+#[doc(hidden)]
+pub mod gelato_phone_report_error;
+#[doc(inline)]
+pub use gelato_phone_report_error::*;
+#[doc(hidden)]
+pub mod gelato_provided_details;
+#[doc(inline)]
+pub use gelato_provided_details::*;
 #[doc(hidden)]
 pub mod gelato_report_document_options;
 #[doc(inline)]
@@ -157,6 +203,10 @@ pub mod gelato_session_document_options;
 #[doc(inline)]
 pub use gelato_session_document_options::*;
 #[doc(hidden)]
+pub mod gelato_session_email_options;
+#[doc(inline)]
+pub use gelato_session_email_options::*;
+#[doc(hidden)]
 pub mod gelato_session_id_number_options;
 #[doc(inline)]
 pub use gelato_session_id_number_options::*;
@@ -164,6 +214,10 @@ pub use gelato_session_id_number_options::*;
 pub mod gelato_session_last_error;
 #[doc(inline)]
 pub use gelato_session_last_error::*;
+#[doc(hidden)]
+pub mod gelato_session_phone_options;
+#[doc(inline)]
+pub use gelato_session_phone_options::*;
 #[doc(hidden)]
 pub mod gelato_verification_report_options;
 #[doc(inline)]
@@ -270,6 +324,10 @@ pub use tax_product_resource_line_item_tax_rate_details::*;
 pub mod tax_product_resource_postal_address;
 #[doc(inline)]
 pub use tax_product_resource_postal_address::*;
+#[doc(hidden)]
+pub mod tax_product_resource_ship_from_details;
+#[doc(inline)]
+pub use tax_product_resource_ship_from_details::*;
 #[doc(hidden)]
 pub mod tax_product_resource_tax_breakdown;
 #[doc(inline)]

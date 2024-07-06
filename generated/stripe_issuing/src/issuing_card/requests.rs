@@ -1,138 +1,261 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListIssuingCardBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cardholder: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    created: Option<stripe_types::RangeQueryTs>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    exp_month: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    exp_year: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    last4: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    personalization_design: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    status: Option<stripe_shared::IssuingCardStatus>,
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    type_: Option<stripe_shared::IssuingCardType>,
+}
+impl<'a> ListIssuingCardBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            cardholder: None,
+            created: None,
+            ending_before: None,
+            exp_month: None,
+            exp_year: None,
+            expand: None,
+            last4: None,
+            limit: None,
+            personalization_design: None,
+            starting_after: None,
+            status: None,
+            type_: None,
+        }
+    }
+}
+/// Returns a list of Issuing `Card` objects.
+/// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ListIssuingCard<'a> {
+    inner: ListIssuingCardBuilder<'a>,
+}
+impl<'a> ListIssuingCard<'a> {
+    /// Construct a new `ListIssuingCard`.
+    pub fn new() -> Self {
+        Self { inner: ListIssuingCardBuilder::new() }
+    }
     /// Only return cards belonging to the Cardholder with the provided ID.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cardholder: Option<&'a str>,
+    pub fn cardholder(mut self, cardholder: &'a str) -> Self {
+        self.inner.cardholder = Some(cardholder);
+        self
+    }
     /// Only return cards that were issued during the given date interval.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
+    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
+        self.inner.created = Some(created);
+        self
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Only return cards that have the given expiration month.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub exp_month: Option<i64>,
+    pub fn exp_month(mut self, exp_month: i64) -> Self {
+        self.inner.exp_month = Some(exp_month);
+        self
+    }
     /// Only return cards that have the given expiration year.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub exp_year: Option<i64>,
+    pub fn exp_year(mut self, exp_year: i64) -> Self {
+        self.inner.exp_year = Some(exp_year);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// Only return cards that have the given last four digits.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub last4: Option<&'a str>,
+    pub fn last4(mut self, last4: &'a str) -> Self {
+        self.inner.last4 = Some(last4);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
+    pub fn personalization_design(mut self, personalization_design: &'a str) -> Self {
+        self.inner.personalization_design = Some(personalization_design);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
     /// Only return cards that have the given status. One of `active`, `inactive`, or `canceled`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<stripe_shared::IssuingCardStatus>,
+    pub fn status(mut self, status: stripe_shared::IssuingCardStatus) -> Self {
+        self.inner.status = Some(status);
+        self
+    }
     /// Only return cards that have the given type. One of `virtual` or `physical`.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<stripe_shared::IssuingCardType>,
-}
-impl<'a> ListIssuingCard<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn type_(mut self, type_: stripe_shared::IssuingCardType) -> Self {
+        self.inner.type_ = Some(type_);
+        self
     }
 }
-impl<'a> ListIssuingCard<'a> {
-    /// Returns a list of Issuing `Card` objects.
-    /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-    pub fn send(
+impl<'a> Default for ListIssuingCard<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListIssuingCard<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::IssuingCard>> {
-        client.get_query("/issuing/cards", self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
-    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::IssuingCard>> {
-        stripe::ListPaginator::from_list_params("/issuing/cards", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveIssuingCard<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveIssuingCard<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveIssuingCard<'a> {
-    /// Retrieves an Issuing `Card` object.
-    pub fn send(
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
         &self,
-        client: &stripe::Client,
-        card: &stripe_shared::IssuingCardId,
-    ) -> stripe::Response<stripe_shared::IssuingCard> {
-        client.get_query(&format!("/issuing/cards/{card}"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
+    pub fn paginate(
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::IssuingCard>> {
+        stripe_client_core::ListPaginator::new_list("/issuing/cards", self.inner)
+    }
+}
+
+impl StripeRequest for ListIssuingCard<'_> {
+    type Output = stripe_types::List<stripe_shared::IssuingCard>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/issuing/cards").query(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateIssuingCard<'a> {
-    /// The [Cardholder](https://stripe.com/docs/api#issuing_cardholder_object) object with which the card will be associated.
+struct RetrieveIssuingCardBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cardholder: Option<&'a str>,
-    /// The currency for the card.
-    pub currency: stripe_types::Currency,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub financial_account: Option<&'a str>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The desired PIN for this card.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub pin: Option<EncryptedPinParam<'a>>,
-    /// The card this is meant to be a replacement for (if any).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub replacement_for: Option<&'a str>,
-    /// If `replacement_for` is specified, this should indicate why that card is being replaced.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub replacement_reason: Option<stripe_shared::IssuingCardReplacementReason>,
-    /// The address where the card will be shipped.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<CreateIssuingCardShipping<'a>>,
-    /// Rules that control spending for this card.
-    /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub spending_controls: Option<CreateIssuingCardSpendingControls<'a>>,
-    /// Whether authorizations can be approved on this card.
-    /// May be blocked from activating cards depending on past-due Cardholder requirements.
-    /// Defaults to `inactive`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<CreateIssuingCardStatus>,
-    /// The type of card to issue. Possible values are `physical` or `virtual`.
-    #[serde(rename = "type")]
-    pub type_: stripe_shared::IssuingCardType,
+    expand: Option<&'a [&'a str]>,
 }
-impl<'a> CreateIssuingCard<'a> {
-    pub fn new(currency: stripe_types::Currency, type_: stripe_shared::IssuingCardType) -> Self {
+impl<'a> RetrieveIssuingCardBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves an Issuing `Card` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveIssuingCard<'a> {
+    inner: RetrieveIssuingCardBuilder<'a>,
+    card: &'a stripe_shared::IssuingCardId,
+}
+impl<'a> RetrieveIssuingCard<'a> {
+    /// Construct a new `RetrieveIssuingCard`.
+    pub fn new(card: &'a stripe_shared::IssuingCardId) -> Self {
+        Self { card, inner: RetrieveIssuingCardBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveIssuingCard<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveIssuingCard<'_> {
+    type Output = stripe_shared::IssuingCard;
+
+    fn build(&self) -> RequestBuilder {
+        let card = self.card;
+        RequestBuilder::new(StripeMethod::Get, format!("/issuing/cards/{card}")).query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateIssuingCardBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cardholder: Option<&'a str>,
+    currency: stripe_types::Currency,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    financial_account: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    personalization_design: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pin: Option<EncryptedPinParam<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    replacement_for: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    replacement_reason: Option<stripe_shared::IssuingCardReplacementReason>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    second_line: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    shipping: Option<CreateIssuingCardShipping<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    spending_controls: Option<CreateIssuingCardSpendingControls<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    status: Option<CreateIssuingCardStatus>,
+    #[serde(rename = "type")]
+    type_: stripe_shared::IssuingCardType,
+}
+impl<'a> CreateIssuingCardBuilder<'a> {
+    fn new(currency: stripe_types::Currency, type_: stripe_shared::IssuingCardType) -> Self {
         Self {
             cardholder: None,
             currency,
             expand: None,
             financial_account: None,
             metadata: None,
+            personalization_design: None,
             pin: None,
             replacement_for: None,
             replacement_reason: None,
+            second_line: None,
             shipping: None,
             spending_controls: None,
             status: None,
@@ -201,7 +324,7 @@ impl<'a> CreateIssuingCardShippingAddress<'a> {
     }
 }
 /// Customs information for the shipment.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingCardShippingCustoms<'a> {
     /// The Economic Operators Registration and Identification (EORI) number to use for Customs.
     /// Required for bulk shipments to Europe.
@@ -210,7 +333,12 @@ pub struct CreateIssuingCardShippingCustoms<'a> {
 }
 impl<'a> CreateIssuingCardShippingCustoms<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { eori_number: None }
+    }
+}
+impl<'a> Default for CreateIssuingCardShippingCustoms<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Shipment service.
@@ -330,25 +458,51 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardShippingType {
 }
 /// Rules that control spending for this card.
 /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingCardSpendingControls<'a> {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
     /// Cannot be set with `blocked_categories`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_categories: Option<&'a [CreateIssuingCardSpendingControlsAllowedCategories]>,
+    /// Array of strings containing representing countries from which authorizations will be allowed.
+    /// Authorizations from merchants in all other countries will be declined.
+    /// Country codes should be ISO 3166 alpha-2 country codes (e.g.
+    /// `US`).
+    /// Cannot be set with `blocked_merchant_countries`.
+    /// Provide an empty value to unset this control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allowed_merchant_countries: Option<&'a [&'a str]>,
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
     /// All other categories will be allowed.
     /// Cannot be set with `allowed_categories`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blocked_categories: Option<&'a [CreateIssuingCardSpendingControlsBlockedCategories]>,
+    /// Array of strings containing representing countries from which authorizations will be declined.
+    /// Country codes should be ISO 3166 alpha-2 country codes (e.g.
+    /// `US`).
+    /// Cannot be set with `allowed_merchant_countries`.
+    /// Provide an empty value to unset this control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blocked_merchant_countries: Option<&'a [&'a str]>,
     /// Limit spending with amount-based rules that apply across any cards this card replaced (i.e., its `replacement_for` card and _that_ card's `replacement_for` card, up the chain).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits: Option<&'a [CreateIssuingCardSpendingControlsSpendingLimits<'a>]>,
 }
 impl<'a> CreateIssuingCardSpendingControls<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            allowed_categories: None,
+            allowed_merchant_countries: None,
+            blocked_categories: None,
+            blocked_merchant_countries: None,
+            spending_limits: None,
+        }
+    }
+}
+impl<'a> Default for CreateIssuingCardSpendingControls<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
@@ -3590,43 +3744,141 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardStatus {
             .map_err(|_| serde::de::Error::custom("Unknown value for CreateIssuingCardStatus"))
     }
 }
-impl<'a> CreateIssuingCard<'a> {
-    /// Creates an Issuing `Card` object.
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_shared::IssuingCard> {
-        client.send_form("/issuing/cards", self, http_types::Method::Post)
-    }
+/// Creates an Issuing `Card` object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingCard<'a> {
+    inner: CreateIssuingCardBuilder<'a>,
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateIssuingCard<'a> {
-    /// Reason why the `status` of this card is `canceled`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason: Option<UpdateIssuingCardCancellationReason>,
+impl<'a> CreateIssuingCard<'a> {
+    /// Construct a new `CreateIssuingCard`.
+    pub fn new(currency: stripe_types::Currency, type_: stripe_shared::IssuingCardType) -> Self {
+        Self { inner: CreateIssuingCardBuilder::new(currency, type_) }
+    }
+    /// The [Cardholder](https://stripe.com/docs/api#issuing_cardholder_object) object with which the card will be associated.
+    pub fn cardholder(mut self, cardholder: &'a str) -> Self {
+        self.inner.cardholder = Some(cardholder);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    pub fn financial_account(mut self, financial_account: &'a str) -> Self {
+        self.inner.financial_account = Some(financial_account);
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The desired new PIN for this card.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub pin: Option<EncryptedPinParam<'a>>,
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+    /// The personalization design object belonging to this card.
+    pub fn personalization_design(mut self, personalization_design: &'a str) -> Self {
+        self.inner.personalization_design = Some(personalization_design);
+        self
+    }
+    /// The desired PIN for this card.
+    pub fn pin(mut self, pin: EncryptedPinParam<'a>) -> Self {
+        self.inner.pin = Some(pin);
+        self
+    }
+    /// The card this is meant to be a replacement for (if any).
+    pub fn replacement_for(mut self, replacement_for: &'a str) -> Self {
+        self.inner.replacement_for = Some(replacement_for);
+        self
+    }
+    /// If `replacement_for` is specified, this should indicate why that card is being replaced.
+    pub fn replacement_reason(
+        mut self,
+        replacement_reason: stripe_shared::IssuingCardReplacementReason,
+    ) -> Self {
+        self.inner.replacement_reason = Some(replacement_reason);
+        self
+    }
+    /// The second line to print on the card.
+    pub fn second_line(mut self, second_line: &'a str) -> Self {
+        self.inner.second_line = Some(second_line);
+        self
+    }
+    /// The address where the card will be shipped.
+    pub fn shipping(mut self, shipping: CreateIssuingCardShipping<'a>) -> Self {
+        self.inner.shipping = Some(shipping);
+        self
+    }
     /// Rules that control spending for this card.
     /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub spending_controls: Option<UpdateIssuingCardSpendingControls<'a>>,
-    /// Dictates whether authorizations can be approved on this card.
+    pub fn spending_controls(
+        mut self,
+        spending_controls: CreateIssuingCardSpendingControls<'a>,
+    ) -> Self {
+        self.inner.spending_controls = Some(spending_controls);
+        self
+    }
+    /// Whether authorizations can be approved on this card.
     /// May be blocked from activating cards depending on past-due Cardholder requirements.
     /// Defaults to `inactive`.
-    /// If this card is being canceled because it was lost or stolen, this information should be provided as `cancellation_reason`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<stripe_shared::IssuingCardStatus>,
+    pub fn status(mut self, status: CreateIssuingCardStatus) -> Self {
+        self.inner.status = Some(status);
+        self
+    }
 }
-impl<'a> UpdateIssuingCard<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl CreateIssuingCard<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateIssuingCard<'_> {
+    type Output = stripe_shared::IssuingCard;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/issuing/cards").form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateIssuingCardBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cancellation_reason: Option<UpdateIssuingCardCancellationReason>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    personalization_design: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pin: Option<EncryptedPinParam<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    spending_controls: Option<UpdateIssuingCardSpendingControls<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    status: Option<stripe_shared::IssuingCardStatus>,
+}
+impl<'a> UpdateIssuingCardBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            cancellation_reason: None,
+            expand: None,
+            metadata: None,
+            personalization_design: None,
+            pin: None,
+            spending_controls: None,
+            status: None,
+        }
     }
 }
 /// Reason why the `status` of this card is `canceled`.
@@ -3687,25 +3939,51 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardCancellationReason {
 }
 /// Rules that control spending for this card.
 /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateIssuingCardSpendingControls<'a> {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
     /// Cannot be set with `blocked_categories`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_categories: Option<&'a [UpdateIssuingCardSpendingControlsAllowedCategories]>,
+    /// Array of strings containing representing countries from which authorizations will be allowed.
+    /// Authorizations from merchants in all other countries will be declined.
+    /// Country codes should be ISO 3166 alpha-2 country codes (e.g.
+    /// `US`).
+    /// Cannot be set with `blocked_merchant_countries`.
+    /// Provide an empty value to unset this control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allowed_merchant_countries: Option<&'a [&'a str]>,
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
     /// All other categories will be allowed.
     /// Cannot be set with `allowed_categories`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blocked_categories: Option<&'a [UpdateIssuingCardSpendingControlsBlockedCategories]>,
+    /// Array of strings containing representing countries from which authorizations will be declined.
+    /// Country codes should be ISO 3166 alpha-2 country codes (e.g.
+    /// `US`).
+    /// Cannot be set with `allowed_merchant_countries`.
+    /// Provide an empty value to unset this control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blocked_merchant_countries: Option<&'a [&'a str]>,
     /// Limit spending with amount-based rules that apply across any cards this card replaced (i.e., its `replacement_for` card and _that_ card's `replacement_for` card, up the chain).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits: Option<&'a [UpdateIssuingCardSpendingControlsSpendingLimits<'a>]>,
 }
 impl<'a> UpdateIssuingCardSpendingControls<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            allowed_categories: None,
+            allowed_merchant_countries: None,
+            blocked_categories: None,
+            blocked_merchant_countries: None,
+            spending_limits: None,
+        }
+    }
+}
+impl<'a> Default for UpdateIssuingCardSpendingControls<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
@@ -6890,118 +7168,322 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardSpendingControlsSpendingL
         })
     }
 }
+/// Updates the specified Issuing `Card` object by setting the values of the parameters passed.
+/// Any parameters not provided will be left unchanged.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingCard<'a> {
+    inner: UpdateIssuingCardBuilder<'a>,
+    card: &'a stripe_shared::IssuingCardId,
+}
 impl<'a> UpdateIssuingCard<'a> {
-    /// Updates the specified Issuing `Card` object by setting the values of the parameters passed.
-    /// Any parameters not provided will be left unchanged.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        card: &stripe_shared::IssuingCardId,
-    ) -> stripe::Response<stripe_shared::IssuingCard> {
-        client.send_form(&format!("/issuing/cards/{card}"), self, http_types::Method::Post)
+    /// Construct a new `UpdateIssuingCard`.
+    pub fn new(card: &'a stripe_shared::IssuingCardId) -> Self {
+        Self { card, inner: UpdateIssuingCardBuilder::new() }
+    }
+    /// Reason why the `status` of this card is `canceled`.
+    pub fn cancellation_reason(
+        mut self,
+        cancellation_reason: UpdateIssuingCardCancellationReason,
+    ) -> Self {
+        self.inner.cancellation_reason = Some(cancellation_reason);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+    pub fn personalization_design(mut self, personalization_design: &'a str) -> Self {
+        self.inner.personalization_design = Some(personalization_design);
+        self
+    }
+    /// The desired new PIN for this card.
+    pub fn pin(mut self, pin: EncryptedPinParam<'a>) -> Self {
+        self.inner.pin = Some(pin);
+        self
+    }
+    /// Rules that control spending for this card.
+    /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
+    pub fn spending_controls(
+        mut self,
+        spending_controls: UpdateIssuingCardSpendingControls<'a>,
+    ) -> Self {
+        self.inner.spending_controls = Some(spending_controls);
+        self
+    }
+    /// Dictates whether authorizations can be approved on this card.
+    /// May be blocked from activating cards depending on past-due Cardholder requirements.
+    /// Defaults to `inactive`.
+    /// If this card is being canceled because it was lost or stolen, this information should be provided as `cancellation_reason`.
+    pub fn status(mut self, status: stripe_shared::IssuingCardStatus) -> Self {
+        self.inner.status = Some(status);
+        self
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+impl UpdateIssuingCard<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateIssuingCard<'_> {
+    type Output = stripe_shared::IssuingCard;
+
+    fn build(&self) -> RequestBuilder {
+        let card = self.card;
+        RequestBuilder::new(StripeMethod::Post, format!("/issuing/cards/{card}")).form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct DeliverCardIssuingCardBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> DeliverCardIssuingCardBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Updates the shipping status of the specified Issuing `Card` object to `delivered`.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct DeliverCardIssuingCard<'a> {
+    inner: DeliverCardIssuingCardBuilder<'a>,
+    card: &'a str,
+}
+impl<'a> DeliverCardIssuingCard<'a> {
+    /// Construct a new `DeliverCardIssuingCard`.
+    pub fn new(card: &'a str) -> Self {
+        Self { card, inner: DeliverCardIssuingCardBuilder::new() }
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> DeliverCardIssuingCard<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
-impl<'a> DeliverCardIssuingCard<'a> {
-    /// Updates the shipping status of the specified Issuing `Card` object to `delivered`.
-    pub fn send(
+impl DeliverCardIssuingCard<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        card: &str,
-    ) -> stripe::Response<stripe_shared::IssuingCard> {
-        client.send_form(
-            &format!("/test_helpers/issuing/cards/{card}/shipping/deliver"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for DeliverCardIssuingCard<'_> {
+    type Output = stripe_shared::IssuingCard;
+
+    fn build(&self) -> RequestBuilder {
+        let card = self.card;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/issuing/cards/{card}/shipping/deliver"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct FailCardIssuingCardBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> FailCardIssuingCardBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Updates the shipping status of the specified Issuing `Card` object to `failure`.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct FailCardIssuingCard<'a> {
+    inner: FailCardIssuingCardBuilder<'a>,
+    card: &'a str,
+}
+impl<'a> FailCardIssuingCard<'a> {
+    /// Construct a new `FailCardIssuingCard`.
+    pub fn new(card: &'a str) -> Self {
+        Self { card, inner: FailCardIssuingCardBuilder::new() }
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> FailCardIssuingCard<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
-impl<'a> FailCardIssuingCard<'a> {
-    /// Updates the shipping status of the specified Issuing `Card` object to `failure`.
-    pub fn send(
+impl FailCardIssuingCard<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        card: &str,
-    ) -> stripe::Response<stripe_shared::IssuingCard> {
-        client.send_form(
-            &format!("/test_helpers/issuing/cards/{card}/shipping/fail"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for FailCardIssuingCard<'_> {
+    type Output = stripe_shared::IssuingCard;
+
+    fn build(&self) -> RequestBuilder {
+        let card = self.card;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/issuing/cards/{card}/shipping/fail"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ReturnCardIssuingCardBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> ReturnCardIssuingCardBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Updates the shipping status of the specified Issuing `Card` object to `returned`.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ReturnCardIssuingCard<'a> {
+    inner: ReturnCardIssuingCardBuilder<'a>,
+    card: &'a str,
+}
+impl<'a> ReturnCardIssuingCard<'a> {
+    /// Construct a new `ReturnCardIssuingCard`.
+    pub fn new(card: &'a str) -> Self {
+        Self { card, inner: ReturnCardIssuingCardBuilder::new() }
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> ReturnCardIssuingCard<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
-impl<'a> ReturnCardIssuingCard<'a> {
-    /// Updates the shipping status of the specified Issuing `Card` object to `returned`.
-    pub fn send(
+impl ReturnCardIssuingCard<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        card: &str,
-    ) -> stripe::Response<stripe_shared::IssuingCard> {
-        client.send_form(
-            &format!("/test_helpers/issuing/cards/{card}/shipping/return"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for ReturnCardIssuingCard<'_> {
+    type Output = stripe_shared::IssuingCard;
+
+    fn build(&self) -> RequestBuilder {
+        let card = self.card;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/issuing/cards/{card}/shipping/return"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ShipCardIssuingCardBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> ShipCardIssuingCardBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Updates the shipping status of the specified Issuing `Card` object to `shipped`.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ShipCardIssuingCard<'a> {
+    inner: ShipCardIssuingCardBuilder<'a>,
+    card: &'a str,
+}
+impl<'a> ShipCardIssuingCard<'a> {
+    /// Construct a new `ShipCardIssuingCard`.
+    pub fn new(card: &'a str) -> Self {
+        Self { card, inner: ShipCardIssuingCardBuilder::new() }
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> ShipCardIssuingCard<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
-impl<'a> ShipCardIssuingCard<'a> {
-    /// Updates the shipping status of the specified Issuing `Card` object to `shipped`.
-    pub fn send(
+impl ShipCardIssuingCard<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        card: &str,
-    ) -> stripe::Response<stripe_shared::IssuingCard> {
-        client.send_form(
-            &format!("/test_helpers/issuing/cards/{card}/shipping/ship"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for ShipCardIssuingCard<'_> {
+    type Output = stripe_shared::IssuingCard;
+
+    fn build(&self) -> RequestBuilder {
+        let card = self.card;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/issuing/cards/{card}/shipping/ship"),
+        )
+        .form(&self.inner)
+    }
+}
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct EncryptedPinParam<'a> {
     /// The card's desired new PIN, encrypted under Stripe's public key.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7009,6 +7491,11 @@ pub struct EncryptedPinParam<'a> {
 }
 impl<'a> EncryptedPinParam<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { encrypted_number: None }
+    }
+}
+impl<'a> Default for EncryptedPinParam<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }

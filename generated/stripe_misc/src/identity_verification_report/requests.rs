@@ -1,70 +1,244 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListIdentityVerificationReport<'a> {
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListIdentityVerificationReportBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
+    client_reference_id: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    created: Option<stripe_types::RangeQueryTs>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    type_: Option<ListIdentityVerificationReportType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    verification_session: Option<&'a str>,
+}
+impl<'a> ListIdentityVerificationReportBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            client_reference_id: None,
+            created: None,
+            ending_before: None,
+            expand: None,
+            limit: None,
+            starting_after: None,
+            type_: None,
+            verification_session: None,
+        }
+    }
+}
+/// Only return VerificationReports of this type
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ListIdentityVerificationReportType {
+    Document,
+    IdNumber,
+}
+impl ListIdentityVerificationReportType {
+    pub fn as_str(self) -> &'static str {
+        use ListIdentityVerificationReportType::*;
+        match self {
+            Document => "document",
+            IdNumber => "id_number",
+        }
+    }
+}
+
+impl std::str::FromStr for ListIdentityVerificationReportType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ListIdentityVerificationReportType::*;
+        match s {
+            "document" => Ok(Document),
+            "id_number" => Ok(IdNumber),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for ListIdentityVerificationReportType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ListIdentityVerificationReportType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ListIdentityVerificationReportType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ListIdentityVerificationReportType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for ListIdentityVerificationReportType")
+        })
+    }
+}
+/// List all verification reports.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListIdentityVerificationReport<'a> {
+    inner: ListIdentityVerificationReportBuilder<'a>,
+}
+impl<'a> ListIdentityVerificationReport<'a> {
+    /// Construct a new `ListIdentityVerificationReport`.
+    pub fn new() -> Self {
+        Self { inner: ListIdentityVerificationReportBuilder::new() }
+    }
+    /// A string to reference this user.
+    /// This can be a customer ID, a session ID, or similar, and can be used to reconcile this verification with your internal systems.
+    pub fn client_reference_id(mut self, client_reference_id: &'a str) -> Self {
+        self.inner.client_reference_id = Some(client_reference_id);
+        self
+    }
+    /// Only return VerificationReports that were created during the given date interval.
+    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
+        self.inner.created = Some(created);
+        self
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
     /// Only return VerificationReports of this type
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<stripe_misc::IdentityVerificationReportType>,
+    pub fn type_(mut self, type_: ListIdentityVerificationReportType) -> Self {
+        self.inner.type_ = Some(type_);
+        self
+    }
     /// Only return VerificationReports created by this VerificationSession ID.
     /// It is allowed to provide a VerificationIntent ID.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_session: Option<&'a str>,
-}
-impl<'a> ListIdentityVerificationReport<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn verification_session(mut self, verification_session: &'a str) -> Self {
+        self.inner.verification_session = Some(verification_session);
+        self
     }
 }
-impl<'a> ListIdentityVerificationReport<'a> {
-    /// List all verification reports.
-    pub fn send(
+impl<'a> Default for ListIdentityVerificationReport<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListIdentityVerificationReport<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_misc::IdentityVerificationReport>> {
-        client.get_query("/identity/verification_reports", self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_misc::IdentityVerificationReport>> {
-        stripe::ListPaginator::from_list_params("/identity/verification_reports", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveIdentityVerificationReport<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveIdentityVerificationReport<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveIdentityVerificationReport<'a> {
-    /// Retrieves an existing VerificationReport
-    pub fn send(
         &self,
-        client: &stripe::Client,
-        report: &stripe_misc::IdentityVerificationReportId,
-    ) -> stripe::Response<stripe_misc::IdentityVerificationReport> {
-        client.get_query(&format!("/identity/verification_reports/{report}"), self)
+    ) -> stripe_client_core::ListPaginator<
+        stripe_types::List<stripe_misc::IdentityVerificationReport>,
+    > {
+        stripe_client_core::ListPaginator::new_list("/identity/verification_reports", self.inner)
+    }
+}
+
+impl StripeRequest for ListIdentityVerificationReport<'_> {
+    type Output = stripe_types::List<stripe_misc::IdentityVerificationReport>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/identity/verification_reports").query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveIdentityVerificationReportBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveIdentityVerificationReportBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves an existing VerificationReport
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveIdentityVerificationReport<'a> {
+    inner: RetrieveIdentityVerificationReportBuilder<'a>,
+    report: &'a stripe_misc::IdentityVerificationReportId,
+}
+impl<'a> RetrieveIdentityVerificationReport<'a> {
+    /// Construct a new `RetrieveIdentityVerificationReport`.
+    pub fn new(report: &'a stripe_misc::IdentityVerificationReportId) -> Self {
+        Self { report, inner: RetrieveIdentityVerificationReportBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveIdentityVerificationReport<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveIdentityVerificationReport<'_> {
+    type Output = stripe_misc::IdentityVerificationReport;
+
+    fn build(&self) -> RequestBuilder {
+        let report = self.report;
+        RequestBuilder::new(StripeMethod::Get, format!("/identity/verification_reports/{report}"))
+            .query(&self.inner)
     }
 }

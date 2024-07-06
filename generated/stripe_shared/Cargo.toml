@@ -16,7 +16,7 @@ path = "src/mod.rs"
 
 [dependencies]
 serde.workspace = true
-serde_json.workspace = true
+serde_json = { workspace = true, optional = true }
 smol_str.workspace = true
 miniserde.workspace = true
 stripe_types = {path = "../../stripe_types"}
@@ -24,8 +24,7 @@ stripe_types = {path = "../../stripe_types"}
 
 
 
-
 [features]
 serialize = ["stripe_types/serialize"]
-deserialize = ["stripe_types/deserialize"]
+deserialize = ["stripe_types/deserialize", "dep:serde_json"]
 

@@ -1,8 +1,13 @@
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutCardPaymentMethodOptions {
     pub installments: Option<stripe_checkout::CheckoutCardInstallmentsOptions>,
+    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+    /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
+    /// If not provided, this value defaults to `automatic`.
+    /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+    pub request_three_d_secure: CheckoutCardPaymentMethodOptionsRequestThreeDSecure,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -24,6 +29,7 @@ pub struct CheckoutCardPaymentMethodOptions {
 #[doc(hidden)]
 pub struct CheckoutCardPaymentMethodOptionsBuilder {
     installments: Option<Option<stripe_checkout::CheckoutCardInstallmentsOptions>>,
+    request_three_d_secure: Option<CheckoutCardPaymentMethodOptionsRequestThreeDSecure>,
     setup_future_usage: Option<Option<CheckoutCardPaymentMethodOptionsSetupFutureUsage>>,
     statement_descriptor_suffix_kana: Option<Option<String>>,
     statement_descriptor_suffix_kanji: Option<Option<String>>,
@@ -64,6 +70,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "installments" => Deserialize::begin(&mut self.installments),
+                "request_three_d_secure" => Deserialize::begin(&mut self.request_three_d_secure),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
                 "statement_descriptor_suffix_kana" => {
                     Deserialize::begin(&mut self.statement_descriptor_suffix_kana)
@@ -79,6 +86,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 installments: Deserialize::default(),
+                request_three_d_secure: Deserialize::default(),
                 setup_future_usage: Deserialize::default(),
                 statement_descriptor_suffix_kana: Deserialize::default(),
                 statement_descriptor_suffix_kanji: Deserialize::default(),
@@ -88,6 +96,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             Some(Self::Out {
                 installments: self.installments?,
+                request_three_d_secure: self.request_three_d_secure?,
                 setup_future_usage: self.setup_future_usage?,
                 statement_descriptor_suffix_kana: self.statement_descriptor_suffix_kana.take()?,
                 statement_descriptor_suffix_kanji: self.statement_descriptor_suffix_kanji.take()?,
@@ -119,6 +128,9 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "installments" => b.installments = Some(FromValueOpt::from_value(v)?),
+                    "request_three_d_secure" => {
+                        b.request_three_d_secure = Some(FromValueOpt::from_value(v)?)
+                    }
                     "setup_future_usage" => {
                         b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
                     }
@@ -136,6 +148,89 @@ const _: () = {
         }
     }
 };
+/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+/// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
+/// If not provided, this value defaults to `automatic`.
+/// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CheckoutCardPaymentMethodOptionsRequestThreeDSecure {
+    Any,
+    Automatic,
+    Challenge,
+}
+impl CheckoutCardPaymentMethodOptionsRequestThreeDSecure {
+    pub fn as_str(self) -> &'static str {
+        use CheckoutCardPaymentMethodOptionsRequestThreeDSecure::*;
+        match self {
+            Any => "any",
+            Automatic => "automatic",
+            Challenge => "challenge",
+        }
+    }
+}
+
+impl std::str::FromStr for CheckoutCardPaymentMethodOptionsRequestThreeDSecure {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CheckoutCardPaymentMethodOptionsRequestThreeDSecure::*;
+        match s {
+            "any" => Ok(Any),
+            "automatic" => Ok(Automatic),
+            "challenge" => Ok(Challenge),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CheckoutCardPaymentMethodOptionsRequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsRequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for CheckoutCardPaymentMethodOptionsRequestThreeDSecure {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for CheckoutCardPaymentMethodOptionsRequestThreeDSecure {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CheckoutCardPaymentMethodOptionsRequestThreeDSecure> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            CheckoutCardPaymentMethodOptionsRequestThreeDSecure::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CheckoutCardPaymentMethodOptionsRequestThreeDSecure);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CheckoutCardPaymentMethodOptionsRequestThreeDSecure {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CheckoutCardPaymentMethodOptionsRequestThreeDSecure",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.

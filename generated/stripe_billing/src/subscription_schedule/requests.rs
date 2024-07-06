@@ -1,129 +1,239 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ListSubscriptionScheduleBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    canceled_at: Option<stripe_types::RangeQueryTs>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    completed_at: Option<stripe_types::RangeQueryTs>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    created: Option<stripe_types::RangeQueryTs>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    released_at: Option<stripe_types::RangeQueryTs>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    scheduled: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a str>,
+}
+impl<'a> ListSubscriptionScheduleBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            canceled_at: None,
+            completed_at: None,
+            created: None,
+            customer: None,
+            ending_before: None,
+            expand: None,
+            limit: None,
+            released_at: None,
+            scheduled: None,
+            starting_after: None,
+        }
+    }
+}
+/// Retrieves the list of your subscription schedules.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ListSubscriptionSchedule<'a> {
+    inner: ListSubscriptionScheduleBuilder<'a>,
+}
+impl<'a> ListSubscriptionSchedule<'a> {
+    /// Construct a new `ListSubscriptionSchedule`.
+    pub fn new() -> Self {
+        Self { inner: ListSubscriptionScheduleBuilder::new() }
+    }
     /// Only return subscription schedules that were created canceled the given date interval.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<stripe_types::RangeQueryTs>,
+    pub fn canceled_at(mut self, canceled_at: stripe_types::RangeQueryTs) -> Self {
+        self.inner.canceled_at = Some(canceled_at);
+        self
+    }
     /// Only return subscription schedules that completed during the given date interval.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub completed_at: Option<stripe_types::RangeQueryTs>,
+    pub fn completed_at(mut self, completed_at: stripe_types::RangeQueryTs) -> Self {
+        self.inner.completed_at = Some(completed_at);
+        self
+    }
     /// Only return subscription schedules that were created during the given date interval.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
+    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
+        self.inner.created = Some(created);
+        self
+    }
     /// Only return subscription schedules for the given customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
+    pub fn customer(mut self, customer: &'a str) -> Self {
+        self.inner.customer = Some(customer);
+        self
+    }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
     /// Only return subscription schedules that were released during the given date interval.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub released_at: Option<stripe_types::RangeQueryTs>,
+    pub fn released_at(mut self, released_at: stripe_types::RangeQueryTs) -> Self {
+        self.inner.released_at = Some(released_at);
+        self
+    }
     /// Only return subscription schedules that have not started yet.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub scheduled: Option<bool>,
+    pub fn scheduled(mut self, scheduled: bool) -> Self {
+        self.inner.scheduled = Some(scheduled);
+        self
+    }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListSubscriptionSchedule<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
     }
 }
-impl<'a> ListSubscriptionSchedule<'a> {
-    /// Retrieves the list of your subscription schedules.
-    pub fn send(
+impl<'a> Default for ListSubscriptionSchedule<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListSubscriptionSchedule<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::SubscriptionSchedule>> {
-        client.get_query("/subscription_schedules", self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
     pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::SubscriptionSchedule>> {
-        stripe::ListPaginator::from_list_params("/subscription_schedules", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveSubscriptionSchedule<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveSubscriptionSchedule<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveSubscriptionSchedule<'a> {
-    /// Retrieves the details of an existing subscription schedule.
-    /// You only need to supply the unique subscription schedule identifier that was returned upon subscription schedule creation.
-    pub fn send(
         &self,
-        client: &stripe::Client,
-        schedule: &stripe_shared::SubscriptionScheduleId,
-    ) -> stripe::Response<stripe_shared::SubscriptionSchedule> {
-        client.get_query(&format!("/subscription_schedules/{schedule}"), self)
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::SubscriptionSchedule>>
+    {
+        stripe_client_core::ListPaginator::new_list("/subscription_schedules", self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateSubscriptionSchedule<'a> {
-    /// The identifier of the customer to create the subscription schedule for.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
-    /// Object representing the subscription schedule's default settings.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_settings: Option<CreateSubscriptionScheduleDefaultSettings<'a>>,
-    /// Behavior of the subscription schedule and underlying subscription when it ends.
-    /// Possible values are `release` or `cancel` with the default being `release`.
-    /// `release` will end the subscription schedule and keep the underlying subscription running.
-    /// `cancel` will end the subscription schedule and cancel the underlying subscription.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub end_behavior: Option<stripe_shared::SubscriptionScheduleEndBehavior>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Migrate an existing subscription to be managed by a subscription schedule.
-    /// If this parameter is set, a subscription schedule will be created using the subscription's item(s), set to auto-renew using the subscription's interval.
-    /// When using this parameter, other parameters (such as phase values) cannot be set.
-    /// To create a subscription schedule with other modifications, we recommend making two separate API calls.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub from_subscription: Option<&'a str>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// List representing phases of the subscription schedule.
-    /// Each phase can be customized to have different durations, plans, and coupons.
-    /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phases: Option<&'a [CreateSubscriptionSchedulePhases<'a>]>,
-    /// When the subscription schedule starts.
-    /// We recommend using `now` so that it starts the subscription immediately.
-    /// You can also use a Unix timestamp to backdate the subscription so that it starts on a past date, or set a future date for the subscription to start on.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub start_date: Option<CreateSubscriptionScheduleStartDate>,
+
+impl StripeRequest for ListSubscriptionSchedule<'_> {
+    type Output = stripe_types::List<stripe_shared::SubscriptionSchedule>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/subscription_schedules").query(&self.inner)
+    }
 }
-impl<'a> CreateSubscriptionSchedule<'a> {
-    pub fn new() -> Self {
-        Self::default()
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveSubscriptionScheduleBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveSubscriptionScheduleBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves the details of an existing subscription schedule.
+/// You only need to supply the unique subscription schedule identifier that was returned upon subscription schedule creation.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveSubscriptionSchedule<'a> {
+    inner: RetrieveSubscriptionScheduleBuilder<'a>,
+    schedule: &'a stripe_shared::SubscriptionScheduleId,
+}
+impl<'a> RetrieveSubscriptionSchedule<'a> {
+    /// Construct a new `RetrieveSubscriptionSchedule`.
+    pub fn new(schedule: &'a stripe_shared::SubscriptionScheduleId) -> Self {
+        Self { schedule, inner: RetrieveSubscriptionScheduleBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveSubscriptionSchedule<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveSubscriptionSchedule<'_> {
+    type Output = stripe_shared::SubscriptionSchedule;
+
+    fn build(&self) -> RequestBuilder {
+        let schedule = self.schedule;
+        RequestBuilder::new(StripeMethod::Get, format!("/subscription_schedules/{schedule}"))
+            .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateSubscriptionScheduleBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_settings: Option<CreateSubscriptionScheduleDefaultSettings<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    end_behavior: Option<stripe_shared::SubscriptionScheduleEndBehavior>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    from_subscription: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    phases: Option<&'a [CreateSubscriptionSchedulePhases<'a>]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    start_date: Option<CreateSubscriptionScheduleStartDate>,
+}
+impl<'a> CreateSubscriptionScheduleBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            customer: None,
+            default_settings: None,
+            end_behavior: None,
+            expand: None,
+            from_subscription: None,
+            metadata: None,
+            phases: None,
+            start_date: None,
+        }
     }
 }
 /// Object representing the subscription schedule's default settings.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionScheduleDefaultSettings<'a> {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
@@ -170,7 +280,23 @@ pub struct CreateSubscriptionScheduleDefaultSettings<'a> {
 }
 impl<'a> CreateSubscriptionScheduleDefaultSettings<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            application_fee_percent: None,
+            automatic_tax: None,
+            billing_cycle_anchor: None,
+            billing_thresholds: None,
+            collection_method: None,
+            default_payment_method: None,
+            description: None,
+            invoice_settings: None,
+            on_behalf_of: None,
+            transfer_data: None,
+        }
+    }
+}
+impl<'a> Default for CreateSubscriptionScheduleDefaultSettings<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Default settings for automatic tax computation.
@@ -384,7 +510,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionScheduleDefaultSettingsC
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionScheduleDefaultSettingsInvoiceSettings<'a> {
     /// The account tax IDs associated with the subscription schedule.
     /// Will be set on invoices generated by the subscription schedule.
@@ -401,7 +527,12 @@ pub struct CreateSubscriptionScheduleDefaultSettingsInvoiceSettings<'a> {
 }
 impl<'a> CreateSubscriptionScheduleDefaultSettingsInvoiceSettings<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { account_tax_ids: None, days_until_due: None, issuer: None }
+    }
+}
+impl<'a> Default for CreateSubscriptionScheduleDefaultSettingsInvoiceSettings<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The connected account that issues the invoice.
@@ -509,7 +640,9 @@ pub struct CreateSubscriptionSchedulePhases<'a> {
     /// Defaults to `charge_automatically` on creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method: Option<CreateSubscriptionSchedulePhasesCollectionMethod>,
-    /// The identifier of the coupon to apply to this phase of the subscription schedule.
+    /// The ID of the coupon to apply to this phase of the subscription schedule.
+    /// This field has been deprecated and will be removed in a future API version.
+    /// Use `discounts` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<&'a str>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -529,6 +662,11 @@ pub struct CreateSubscriptionSchedulePhases<'a> {
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
+    /// The coupons to redeem into discounts for the schedule phase.
+    /// If not specified, inherits the discount from the subscription's customer.
+    /// Pass an empty string to avoid inheriting any discounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
     /// The date at which this phase of the subscription schedule ends.
     /// If set, `iterations` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -583,6 +721,7 @@ impl<'a> CreateSubscriptionSchedulePhases<'a> {
             default_payment_method: None,
             default_tax_rates: None,
             description: None,
+            discounts: None,
             end_date: None,
             invoice_settings: None,
             items,
@@ -598,8 +737,11 @@ impl<'a> CreateSubscriptionSchedulePhases<'a> {
 }
 /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
 /// You may pass up to 20 items.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAddInvoiceItems<'a> {
+    /// The coupons to redeem into discounts for the item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<&'a str>,
@@ -615,7 +757,12 @@ pub struct CreateSubscriptionSchedulePhasesAddInvoiceItems<'a> {
 }
 impl<'a> CreateSubscriptionSchedulePhasesAddInvoiceItems<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { discounts: None, price: None, price_data: None, quantity: None, tax_rates: None }
+    }
+}
+impl<'a> Default for CreateSubscriptionSchedulePhasesAddInvoiceItems<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
@@ -920,7 +1067,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesCollection
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesInvoiceSettings<'a> {
     /// The account tax IDs associated with this phase of the subscription schedule.
     /// Will be set on invoices generated by this phase of the subscription schedule.
@@ -937,7 +1084,12 @@ pub struct CreateSubscriptionSchedulePhasesInvoiceSettings<'a> {
 }
 impl<'a> CreateSubscriptionSchedulePhasesInvoiceSettings<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { account_tax_ids: None, days_until_due: None, issuer: None }
+    }
+}
+impl<'a> Default for CreateSubscriptionSchedulePhasesInvoiceSettings<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The connected account that issues the invoice.
@@ -1015,12 +1167,15 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesInvoiceSet
     }
 }
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItems<'a> {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<ItemBillingThresholdsParam>,
+    /// The coupons to redeem into discounts for the subscription item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
@@ -1048,7 +1203,21 @@ pub struct CreateSubscriptionSchedulePhasesItems<'a> {
 }
 impl<'a> CreateSubscriptionSchedulePhasesItems<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            billing_thresholds: None,
+            discounts: None,
+            metadata: None,
+            plan: None,
+            price: None,
+            price_data: None,
+            quantity: None,
+            tax_rates: None,
+        }
+    }
+}
+impl<'a> Default for CreateSubscriptionSchedulePhasesItems<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
@@ -1310,54 +1479,136 @@ pub enum CreateSubscriptionScheduleStartDate {
     Timestamp(stripe_types::Timestamp),
     Now,
 }
-impl<'a> CreateSubscriptionSchedule<'a> {
-    /// Creates a new subscription schedule object.
-    /// Each customer can have up to 500 active or scheduled subscriptions.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_shared::SubscriptionSchedule> {
-        client.send_form("/subscription_schedules", self, http_types::Method::Post)
-    }
+/// Creates a new subscription schedule object.
+/// Each customer can have up to 500 active or scheduled subscriptions.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionSchedule<'a> {
+    inner: CreateSubscriptionScheduleBuilder<'a>,
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateSubscriptionSchedule<'a> {
+impl<'a> CreateSubscriptionSchedule<'a> {
+    /// Construct a new `CreateSubscriptionSchedule`.
+    pub fn new() -> Self {
+        Self { inner: CreateSubscriptionScheduleBuilder::new() }
+    }
+    /// The identifier of the customer to create the subscription schedule for.
+    pub fn customer(mut self, customer: &'a str) -> Self {
+        self.inner.customer = Some(customer);
+        self
+    }
     /// Object representing the subscription schedule's default settings.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_settings: Option<UpdateSubscriptionScheduleDefaultSettings<'a>>,
+    pub fn default_settings(
+        mut self,
+        default_settings: CreateSubscriptionScheduleDefaultSettings<'a>,
+    ) -> Self {
+        self.inner.default_settings = Some(default_settings);
+        self
+    }
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     /// Possible values are `release` or `cancel` with the default being `release`.
     /// `release` will end the subscription schedule and keep the underlying subscription running.
     /// `cancel` will end the subscription schedule and cancel the underlying subscription.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub end_behavior: Option<stripe_shared::SubscriptionScheduleEndBehavior>,
+    pub fn end_behavior(
+        mut self,
+        end_behavior: stripe_shared::SubscriptionScheduleEndBehavior,
+    ) -> Self {
+        self.inner.end_behavior = Some(end_behavior);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Migrate an existing subscription to be managed by a subscription schedule.
+    /// If this parameter is set, a subscription schedule will be created using the subscription's item(s), set to auto-renew using the subscription's interval.
+    /// When using this parameter, other parameters (such as phase values) cannot be set.
+    /// To create a subscription schedule with other modifications, we recommend making two separate API calls.
+    pub fn from_subscription(mut self, from_subscription: &'a str) -> Self {
+        self.inner.from_subscription = Some(from_subscription);
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
     /// List representing phases of the subscription schedule.
     /// Each phase can be customized to have different durations, plans, and coupons.
     /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
-    /// Note that past phases can be omitted.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phases: Option<&'a [UpdateSubscriptionSchedulePhases<'a>]>,
-    /// If the update changes the current phase, indicates whether the changes should be prorated.
-    /// The default value is `create_prorations`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior: Option<UpdateSubscriptionScheduleProrationBehavior>,
+    pub fn phases(mut self, phases: &'a [CreateSubscriptionSchedulePhases<'a>]) -> Self {
+        self.inner.phases = Some(phases);
+        self
+    }
+    /// When the subscription schedule starts.
+    /// We recommend using `now` so that it starts the subscription immediately.
+    /// You can also use a Unix timestamp to backdate the subscription so that it starts on a past date, or set a future date for the subscription to start on.
+    pub fn start_date(mut self, start_date: CreateSubscriptionScheduleStartDate) -> Self {
+        self.inner.start_date = Some(start_date);
+        self
+    }
 }
-impl<'a> UpdateSubscriptionSchedule<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl<'a> Default for CreateSubscriptionSchedule<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl CreateSubscriptionSchedule<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateSubscriptionSchedule<'_> {
+    type Output = stripe_shared::SubscriptionSchedule;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/subscription_schedules").form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateSubscriptionScheduleBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_settings: Option<UpdateSubscriptionScheduleDefaultSettings<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    end_behavior: Option<stripe_shared::SubscriptionScheduleEndBehavior>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    phases: Option<&'a [UpdateSubscriptionSchedulePhases<'a>]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    proration_behavior: Option<UpdateSubscriptionScheduleProrationBehavior>,
+}
+impl<'a> UpdateSubscriptionScheduleBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            default_settings: None,
+            end_behavior: None,
+            expand: None,
+            metadata: None,
+            phases: None,
+            proration_behavior: None,
+        }
     }
 }
 /// Object representing the subscription schedule's default settings.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionScheduleDefaultSettings<'a> {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
@@ -1404,7 +1655,23 @@ pub struct UpdateSubscriptionScheduleDefaultSettings<'a> {
 }
 impl<'a> UpdateSubscriptionScheduleDefaultSettings<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            application_fee_percent: None,
+            automatic_tax: None,
+            billing_cycle_anchor: None,
+            billing_thresholds: None,
+            collection_method: None,
+            default_payment_method: None,
+            description: None,
+            invoice_settings: None,
+            on_behalf_of: None,
+            transfer_data: None,
+        }
+    }
+}
+impl<'a> Default for UpdateSubscriptionScheduleDefaultSettings<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Default settings for automatic tax computation.
@@ -1618,7 +1885,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionScheduleDefaultSettingsC
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionScheduleDefaultSettingsInvoiceSettings<'a> {
     /// The account tax IDs associated with the subscription schedule.
     /// Will be set on invoices generated by the subscription schedule.
@@ -1635,7 +1902,12 @@ pub struct UpdateSubscriptionScheduleDefaultSettingsInvoiceSettings<'a> {
 }
 impl<'a> UpdateSubscriptionScheduleDefaultSettingsInvoiceSettings<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { account_tax_ids: None, days_until_due: None, issuer: None }
+    }
+}
+impl<'a> Default for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettings<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The connected account that issues the invoice.
@@ -1744,7 +2016,9 @@ pub struct UpdateSubscriptionSchedulePhases<'a> {
     /// Defaults to `charge_automatically` on creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method: Option<UpdateSubscriptionSchedulePhasesCollectionMethod>,
-    /// The identifier of the coupon to apply to this phase of the subscription schedule.
+    /// The ID of the coupon to apply to this phase of the subscription schedule.
+    /// This field has been deprecated and will be removed in a future API version.
+    /// Use `discounts` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<&'a str>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -1764,6 +2038,11 @@ pub struct UpdateSubscriptionSchedulePhases<'a> {
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
+    /// The coupons to redeem into discounts for the schedule phase.
+    /// If not specified, inherits the discount from the subscription's customer.
+    /// Pass an empty string to avoid inheriting any discounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
     /// The date at which this phase of the subscription schedule ends.
     /// If set, `iterations` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1822,6 +2101,7 @@ impl<'a> UpdateSubscriptionSchedulePhases<'a> {
             default_payment_method: None,
             default_tax_rates: None,
             description: None,
+            discounts: None,
             end_date: None,
             invoice_settings: None,
             items,
@@ -1838,8 +2118,11 @@ impl<'a> UpdateSubscriptionSchedulePhases<'a> {
 }
 /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
 /// You may pass up to 20 items.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItems<'a> {
+    /// The coupons to redeem into discounts for the item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<&'a str>,
@@ -1855,7 +2138,12 @@ pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItems<'a> {
 }
 impl<'a> UpdateSubscriptionSchedulePhasesAddInvoiceItems<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { discounts: None, price: None, price_data: None, quantity: None, tax_rates: None }
+    }
+}
+impl<'a> Default for UpdateSubscriptionSchedulePhasesAddInvoiceItems<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
@@ -2168,7 +2456,7 @@ pub enum UpdateSubscriptionSchedulePhasesEndDate {
     Now,
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesInvoiceSettings<'a> {
     /// The account tax IDs associated with this phase of the subscription schedule.
     /// Will be set on invoices generated by this phase of the subscription schedule.
@@ -2185,7 +2473,12 @@ pub struct UpdateSubscriptionSchedulePhasesInvoiceSettings<'a> {
 }
 impl<'a> UpdateSubscriptionSchedulePhasesInvoiceSettings<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self { account_tax_ids: None, days_until_due: None, issuer: None }
+    }
+}
+impl<'a> Default for UpdateSubscriptionSchedulePhasesInvoiceSettings<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The connected account that issues the invoice.
@@ -2263,12 +2556,15 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesInvoiceSet
     }
 }
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItems<'a> {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<ItemBillingThresholdsParam>,
+    /// The coupons to redeem into discounts for the subscription item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
@@ -2296,7 +2592,21 @@ pub struct UpdateSubscriptionSchedulePhasesItems<'a> {
 }
 impl<'a> UpdateSubscriptionSchedulePhasesItems<'a> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            billing_thresholds: None,
+            discounts: None,
+            metadata: None,
+            plan: None,
+            price: None,
+            price_data: None,
+            quantity: None,
+            tax_rates: None,
+        }
+    }
+}
+impl<'a> Default for UpdateSubscriptionSchedulePhasesItems<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
@@ -2627,85 +2937,236 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionScheduleProrationBehavio
         })
     }
 }
+/// Updates an existing subscription schedule.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionSchedule<'a> {
+    inner: UpdateSubscriptionScheduleBuilder<'a>,
+    schedule: &'a stripe_shared::SubscriptionScheduleId,
+}
 impl<'a> UpdateSubscriptionSchedule<'a> {
-    /// Updates an existing subscription schedule.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        schedule: &stripe_shared::SubscriptionScheduleId,
-    ) -> stripe::Response<stripe_shared::SubscriptionSchedule> {
-        client.send_form(
-            &format!("/subscription_schedules/{schedule}"),
-            self,
-            http_types::Method::Post,
-        )
+    /// Construct a new `UpdateSubscriptionSchedule`.
+    pub fn new(schedule: &'a stripe_shared::SubscriptionScheduleId) -> Self {
+        Self { schedule, inner: UpdateSubscriptionScheduleBuilder::new() }
+    }
+    /// Object representing the subscription schedule's default settings.
+    pub fn default_settings(
+        mut self,
+        default_settings: UpdateSubscriptionScheduleDefaultSettings<'a>,
+    ) -> Self {
+        self.inner.default_settings = Some(default_settings);
+        self
+    }
+    /// Behavior of the subscription schedule and underlying subscription when it ends.
+    /// Possible values are `release` or `cancel` with the default being `release`.
+    /// `release` will end the subscription schedule and keep the underlying subscription running.
+    /// `cancel` will end the subscription schedule and cancel the underlying subscription.
+    pub fn end_behavior(
+        mut self,
+        end_behavior: stripe_shared::SubscriptionScheduleEndBehavior,
+    ) -> Self {
+        self.inner.end_behavior = Some(end_behavior);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+    /// List representing phases of the subscription schedule.
+    /// Each phase can be customized to have different durations, plans, and coupons.
+    /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
+    /// Note that past phases can be omitted.
+    pub fn phases(mut self, phases: &'a [UpdateSubscriptionSchedulePhases<'a>]) -> Self {
+        self.inner.phases = Some(phases);
+        self
+    }
+    /// If the update changes the current phase, indicates whether the changes should be prorated.
+    /// The default value is `create_prorations`.
+    pub fn proration_behavior(
+        mut self,
+        proration_behavior: UpdateSubscriptionScheduleProrationBehavior,
+    ) -> Self {
+        self.inner.proration_behavior = Some(proration_behavior);
+        self
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CancelSubscriptionSchedule<'a> {
-    /// Specifies which fields in the response should be expanded.
+impl UpdateSubscriptionSchedule<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateSubscriptionSchedule<'_> {
+    type Output = stripe_shared::SubscriptionSchedule;
+
+    fn build(&self) -> RequestBuilder {
+        let schedule = self.schedule;
+        RequestBuilder::new(StripeMethod::Post, format!("/subscription_schedules/{schedule}"))
+            .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CancelSubscriptionScheduleBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    invoice_now: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    prorate: Option<bool>,
+}
+impl<'a> CancelSubscriptionScheduleBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None, invoice_now: None, prorate: None }
+    }
+}
+/// Cancels a subscription schedule and its associated subscription immediately (if the subscription schedule has an active subscription).
+/// A subscription schedule can only be canceled if its status is `not_started` or `active`.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CancelSubscriptionSchedule<'a> {
+    inner: CancelSubscriptionScheduleBuilder<'a>,
+    schedule: &'a stripe_shared::SubscriptionScheduleId,
+}
+impl<'a> CancelSubscriptionSchedule<'a> {
+    /// Construct a new `CancelSubscriptionSchedule`.
+    pub fn new(schedule: &'a stripe_shared::SubscriptionScheduleId) -> Self {
+        Self { schedule, inner: CancelSubscriptionScheduleBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// If the subscription schedule is `active`, indicates if a final invoice will be generated that contains any un-invoiced metered usage and new/pending proration invoice items.
     /// Defaults to `true`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_now: Option<bool>,
+    pub fn invoice_now(mut self, invoice_now: bool) -> Self {
+        self.inner.invoice_now = Some(invoice_now);
+        self
+    }
     /// If the subscription schedule is `active`, indicates if the cancellation should be prorated.
     /// Defaults to `true`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub prorate: Option<bool>,
-}
-impl<'a> CancelSubscriptionSchedule<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn prorate(mut self, prorate: bool) -> Self {
+        self.inner.prorate = Some(prorate);
+        self
     }
 }
-impl<'a> CancelSubscriptionSchedule<'a> {
-    /// Cancels a subscription schedule and its associated subscription immediately (if the subscription schedule has an active subscription).
-    /// A subscription schedule can only be canceled if its status is `not_started` or `active`.
-    pub fn send(
+impl CancelSubscriptionSchedule<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        schedule: &stripe_shared::SubscriptionScheduleId,
-    ) -> stripe::Response<stripe_shared::SubscriptionSchedule> {
-        client.send_form(
-            &format!("/subscription_schedules/{schedule}/cancel"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for CancelSubscriptionSchedule<'_> {
+    type Output = stripe_shared::SubscriptionSchedule;
+
+    fn build(&self) -> RequestBuilder {
+        let schedule = self.schedule;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/subscription_schedules/{schedule}/cancel"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct ReleaseSubscriptionScheduleBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    preserve_cancel_date: Option<bool>,
+}
+impl<'a> ReleaseSubscriptionScheduleBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None, preserve_cancel_date: None }
+    }
+}
+/// Releases the subscription schedule immediately, which will stop scheduling of its phases, but leave any existing subscription in place.
+/// A schedule can only be released if its status is `not_started` or `active`.
+/// If the subscription schedule is currently associated with a subscription, releasing it will remove its `subscription` property and set the subscription’s ID to the `released_subscription` property.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ReleaseSubscriptionSchedule<'a> {
+    inner: ReleaseSubscriptionScheduleBuilder<'a>,
+    schedule: &'a stripe_shared::SubscriptionScheduleId,
+}
+impl<'a> ReleaseSubscriptionSchedule<'a> {
+    /// Construct a new `ReleaseSubscriptionSchedule`.
+    pub fn new(schedule: &'a stripe_shared::SubscriptionScheduleId) -> Self {
+        Self { schedule, inner: ReleaseSubscriptionScheduleBuilder::new() }
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// Keep any cancellation on the subscription that the schedule has set
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub preserve_cancel_date: Option<bool>,
-}
-impl<'a> ReleaseSubscriptionSchedule<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn preserve_cancel_date(mut self, preserve_cancel_date: bool) -> Self {
+        self.inner.preserve_cancel_date = Some(preserve_cancel_date);
+        self
     }
 }
-impl<'a> ReleaseSubscriptionSchedule<'a> {
-    /// Releases the subscription schedule immediately, which will stop scheduling of its phases, but leave any existing subscription in place.
-    /// A schedule can only be released if its status is `not_started` or `active`.
-    /// If the subscription schedule is currently associated with a subscription, releasing it will remove its `subscription` property and set the subscription’s ID to the `released_subscription` property.
-    pub fn send(
+impl ReleaseSubscriptionSchedule<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        schedule: &stripe_shared::SubscriptionScheduleId,
-    ) -> stripe::Response<stripe_shared::SubscriptionSchedule> {
-        client.send_form(
-            &format!("/subscription_schedules/{schedule}/release"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+
+impl StripeRequest for ReleaseSubscriptionSchedule<'_> {
+    type Output = stripe_shared::SubscriptionSchedule;
+
+    fn build(&self) -> RequestBuilder {
+        let schedule = self.schedule;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/subscription_schedules/{schedule}/release"),
+        )
+        .form(&self.inner)
+    }
+}
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct BillingThresholdsParam {
     /// Monetary threshold that triggers the subscription to advance to a new billing period
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2717,7 +3178,12 @@ pub struct BillingThresholdsParam {
 }
 impl BillingThresholdsParam {
     pub fn new() -> Self {
-        Self::default()
+        Self { amount_gte: None, reset_billing_cycle_anchor: None }
+    }
+}
+impl Default for BillingThresholdsParam {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -2733,6 +3199,28 @@ pub struct TransferDataSpecs<'a> {
 impl<'a> TransferDataSpecs<'a> {
     pub fn new(destination: &'a str) -> Self {
         Self { amount_percent: None, destination }
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct DiscountsDataParam<'a> {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<&'a str>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<&'a str>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<&'a str>,
+}
+impl<'a> DiscountsDataParam<'a> {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl<'a> Default for DiscountsDataParam<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

@@ -10,7 +10,7 @@ pub struct TerminalReader {
     pub action: Option<stripe_terminal::TerminalReaderReaderResourceReaderAction>,
     /// The current software version of the reader.
     pub device_sw_version: Option<String>,
-    /// Type of reader, one of `bbpos_wisepad3`, `stripe_m2`, `bbpos_chipper2x`, `bbpos_wisepos_e`, `verifone_P400`, or `simulated_wisepos_e`.
+    /// Type of reader, one of `bbpos_wisepad3`, `stripe_m2`, `bbpos_chipper2x`, `bbpos_wisepos_e`, `verifone_P400`, `simulated_wisepos_e`, or `mobile_phone_reader`.
     pub device_type: stripe_terminal::TerminalReaderDeviceType,
     /// Unique identifier for the object.
     pub id: stripe_terminal::TerminalReaderId,
@@ -207,6 +207,7 @@ pub enum TerminalReaderDeviceType {
     BbposChipper2x,
     BbposWisepad3,
     BbposWiseposE,
+    MobilePhoneReader,
     SimulatedWiseposE,
     StripeM2,
     VerifoneP400,
@@ -218,6 +219,7 @@ impl TerminalReaderDeviceType {
             BbposChipper2x => "bbpos_chipper2x",
             BbposWisepad3 => "bbpos_wisepad3",
             BbposWiseposE => "bbpos_wisepos_e",
+            MobilePhoneReader => "mobile_phone_reader",
             SimulatedWiseposE => "simulated_wisepos_e",
             StripeM2 => "stripe_m2",
             VerifoneP400 => "verifone_P400",
@@ -233,6 +235,7 @@ impl std::str::FromStr for TerminalReaderDeviceType {
             "bbpos_chipper2x" => Ok(BbposChipper2x),
             "bbpos_wisepad3" => Ok(BbposWisepad3),
             "bbpos_wisepos_e" => Ok(BbposWiseposE),
+            "mobile_phone_reader" => Ok(MobilePhoneReader),
             "simulated_wisepos_e" => Ok(SimulatedWiseposE),
             "stripe_m2" => Ok(StripeM2),
             "verifone_P400" => Ok(VerifoneP400),

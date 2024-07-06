@@ -1,113 +1,203 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteWebhookEndpoint {}
-impl DeleteWebhookEndpoint {
-    pub fn new() -> Self {
-        Self::default()
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+/// You can also delete webhook endpoints via the [webhook endpoint management](https://dashboard.stripe.com/account/webhooks) page of the Stripe dashboard.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DeleteWebhookEndpoint<'a> {
+    webhook_endpoint: &'a stripe_misc::WebhookEndpointId,
+}
+impl<'a> DeleteWebhookEndpoint<'a> {
+    /// Construct a new `DeleteWebhookEndpoint`.
+    pub fn new(webhook_endpoint: &'a stripe_misc::WebhookEndpointId) -> Self {
+        Self { webhook_endpoint }
     }
 }
-impl DeleteWebhookEndpoint {
-    /// You can also delete webhook endpoints via the [webhook endpoint management](https://dashboard.stripe.com/account/webhooks) page of the Stripe dashboard.
-    pub fn send(
+impl DeleteWebhookEndpoint<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        webhook_endpoint: &stripe_misc::WebhookEndpointId,
-    ) -> stripe::Response<stripe_misc::DeletedWebhookEndpoint> {
-        client.send_form(
-            &format!("/webhook_endpoints/{webhook_endpoint}"),
-            self,
-            http_types::Method::Delete,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
     }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListWebhookEndpoint<'a> {
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListWebhookEndpoint<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> ListWebhookEndpoint<'a> {
-    /// Returns a list of your webhook endpoints.
-    pub fn send(
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_misc::WebhookEndpoint>> {
-        client.get_query("/webhook_endpoints", self)
-    }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_misc::WebhookEndpoint>> {
-        stripe::ListPaginator::from_list_params("/webhook_endpoints", self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveWebhookEndpoint<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveWebhookEndpoint<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveWebhookEndpoint<'a> {
-    /// Retrieves the webhook endpoint with the given ID.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        webhook_endpoint: &stripe_misc::WebhookEndpointId,
-    ) -> stripe::Response<stripe_misc::WebhookEndpoint> {
-        client.get_query(&format!("/webhook_endpoints/{webhook_endpoint}"), self)
+
+impl StripeRequest for DeleteWebhookEndpoint<'_> {
+    type Output = stripe_misc::DeletedWebhookEndpoint;
+
+    fn build(&self) -> RequestBuilder {
+        let webhook_endpoint = self.webhook_endpoint;
+        RequestBuilder::new(StripeMethod::Delete, format!("/webhook_endpoints/{webhook_endpoint}"))
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateWebhookEndpoint<'a> {
-    /// Events sent to this endpoint will be generated with this Stripe Version instead of your account's default Stripe Version.
+struct ListWebhookEndpointBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub api_version: Option<stripe_shared::ApiVersion>,
-    /// Whether this endpoint should receive events from connected accounts (`true`), or from your account (`false`).
-    /// Defaults to `false`.
+    ending_before: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub connect: Option<bool>,
-    /// An optional description of what the webhook is used for.
+    expand: Option<&'a [&'a str]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
-    /// The list of events to enable for this endpoint.
-    /// You may specify `['*']` to enable all events, except those that require explicit selection.
-    pub enabled_events: &'a [CreateWebhookEndpointEnabledEvents],
-    /// Specifies which fields in the response should be expanded.
+    limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The URL of the webhook endpoint.
-    pub url: &'a str,
+    starting_after: Option<&'a str>,
 }
-impl<'a> CreateWebhookEndpoint<'a> {
-    pub fn new(enabled_events: &'a [CreateWebhookEndpointEnabledEvents], url: &'a str) -> Self {
+impl<'a> ListWebhookEndpointBuilder<'a> {
+    fn new() -> Self {
+        Self { ending_before: None, expand: None, limit: None, starting_after: None }
+    }
+}
+/// Returns a list of your webhook endpoints.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListWebhookEndpoint<'a> {
+    inner: ListWebhookEndpointBuilder<'a>,
+}
+impl<'a> ListWebhookEndpoint<'a> {
+    /// Construct a new `ListWebhookEndpoint`.
+    pub fn new() -> Self {
+        Self { inner: ListWebhookEndpointBuilder::new() }
+    }
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
+}
+impl<'a> Default for ListWebhookEndpoint<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl ListWebhookEndpoint<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
+    pub fn paginate(
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_misc::WebhookEndpoint>> {
+        stripe_client_core::ListPaginator::new_list("/webhook_endpoints", self.inner)
+    }
+}
+
+impl StripeRequest for ListWebhookEndpoint<'_> {
+    type Output = stripe_types::List<stripe_misc::WebhookEndpoint>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/webhook_endpoints").query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveWebhookEndpointBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveWebhookEndpointBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves the webhook endpoint with the given ID.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveWebhookEndpoint<'a> {
+    inner: RetrieveWebhookEndpointBuilder<'a>,
+    webhook_endpoint: &'a stripe_misc::WebhookEndpointId,
+}
+impl<'a> RetrieveWebhookEndpoint<'a> {
+    /// Construct a new `RetrieveWebhookEndpoint`.
+    pub fn new(webhook_endpoint: &'a stripe_misc::WebhookEndpointId) -> Self {
+        Self { webhook_endpoint, inner: RetrieveWebhookEndpointBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveWebhookEndpoint<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveWebhookEndpoint<'_> {
+    type Output = stripe_misc::WebhookEndpoint;
+
+    fn build(&self) -> RequestBuilder {
+        let webhook_endpoint = self.webhook_endpoint;
+        RequestBuilder::new(StripeMethod::Get, format!("/webhook_endpoints/{webhook_endpoint}"))
+            .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateWebhookEndpointBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    api_version: Option<stripe_shared::ApiVersion>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    connect: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+    enabled_events: &'a [CreateWebhookEndpointEnabledEvents],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    url: &'a str,
+}
+impl<'a> CreateWebhookEndpointBuilder<'a> {
+    fn new(enabled_events: &'a [CreateWebhookEndpointEnabledEvents], url: &'a str) -> Self {
         Self {
             api_version: None,
             connect: None,
@@ -192,12 +282,14 @@ pub enum CreateWebhookEndpointEnabledEvents {
     CustomerTaxIdUpdated,
     CustomerUpdated,
     CustomerCashBalanceTransactionCreated,
+    EntitlementsActiveEntitlementSummaryUpdated,
     FileCreated,
     FinancialConnectionsAccountCreated,
     FinancialConnectionsAccountDeactivated,
     FinancialConnectionsAccountDisconnected,
     FinancialConnectionsAccountReactivated,
     FinancialConnectionsAccountRefreshedBalance,
+    FinancialConnectionsAccountRefreshedOwnership,
     FinancialConnectionsAccountRefreshedTransactions,
     IdentityVerificationSessionCanceled,
     IdentityVerificationSessionCreated,
@@ -429,6 +521,9 @@ impl CreateWebhookEndpointEnabledEvents {
             CustomerTaxIdUpdated => "customer.tax_id.updated",
             CustomerUpdated => "customer.updated",
             CustomerCashBalanceTransactionCreated => "customer_cash_balance_transaction.created",
+            EntitlementsActiveEntitlementSummaryUpdated => {
+                "entitlements.active_entitlement_summary.updated"
+            }
             FileCreated => "file.created",
             FinancialConnectionsAccountCreated => "financial_connections.account.created",
             FinancialConnectionsAccountDeactivated => "financial_connections.account.deactivated",
@@ -436,6 +531,9 @@ impl CreateWebhookEndpointEnabledEvents {
             FinancialConnectionsAccountReactivated => "financial_connections.account.reactivated",
             FinancialConnectionsAccountRefreshedBalance => {
                 "financial_connections.account.refreshed_balance"
+            }
+            FinancialConnectionsAccountRefreshedOwnership => {
+                "financial_connections.account.refreshed_ownership"
             }
             FinancialConnectionsAccountRefreshedTransactions => {
                 "financial_connections.account.refreshed_transactions"
@@ -685,6 +783,9 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "customer_cash_balance_transaction.created" => {
                 Ok(CustomerCashBalanceTransactionCreated)
             }
+            "entitlements.active_entitlement_summary.updated" => {
+                Ok(EntitlementsActiveEntitlementSummaryUpdated)
+            }
             "file.created" => Ok(FileCreated),
             "financial_connections.account.created" => Ok(FinancialConnectionsAccountCreated),
             "financial_connections.account.deactivated" => {
@@ -698,6 +799,9 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             }
             "financial_connections.account.refreshed_balance" => {
                 Ok(FinancialConnectionsAccountRefreshedBalance)
+            }
+            "financial_connections.account.refreshed_ownership" => {
+                Ok(FinancialConnectionsAccountRefreshedOwnership)
             }
             "financial_connections.account.refreshed_transactions" => {
                 Ok(FinancialConnectionsAccountRefreshedTransactions)
@@ -894,43 +998,99 @@ impl<'de> serde::Deserialize<'de> for CreateWebhookEndpointEnabledEvents {
         Ok(Self::from_str(&s).unwrap())
     }
 }
-impl<'a> CreateWebhookEndpoint<'a> {
-    /// A webhook endpoint must have a `url` and a list of `enabled_events`.
-    /// You may optionally specify the Boolean `connect` parameter.
-    /// If set to true, then a Connect webhook endpoint that notifies the specified `url` about events from all connected accounts is created; otherwise an account webhook endpoint that notifies the specified `url` only about events from your account is created.
-    /// You can also create webhook endpoints in the [webhooks settings](https://dashboard.stripe.com/account/webhooks) section of the Dashboard.
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_misc::WebhookEndpoint> {
-        client.send_form("/webhook_endpoints", self, http_types::Method::Post)
-    }
+/// A webhook endpoint must have a `url` and a list of `enabled_events`.
+/// You may optionally specify the Boolean `connect` parameter.
+/// If set to true, then a Connect webhook endpoint that notifies the specified `url` about events from all connected accounts is created; otherwise an account webhook endpoint that notifies the specified `url` only about events from your account is created.
+/// You can also create webhook endpoints in the [webhooks settings](https://dashboard.stripe.com/account/webhooks) section of the Dashboard.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateWebhookEndpoint<'a> {
+    inner: CreateWebhookEndpointBuilder<'a>,
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateWebhookEndpoint<'a> {
+impl<'a> CreateWebhookEndpoint<'a> {
+    /// Construct a new `CreateWebhookEndpoint`.
+    pub fn new(enabled_events: &'a [CreateWebhookEndpointEnabledEvents], url: &'a str) -> Self {
+        Self { inner: CreateWebhookEndpointBuilder::new(enabled_events, url) }
+    }
+    /// Events sent to this endpoint will be generated with this Stripe Version instead of your account's default Stripe Version.
+    pub fn api_version(mut self, api_version: stripe_shared::ApiVersion) -> Self {
+        self.inner.api_version = Some(api_version);
+        self
+    }
+    /// Whether this endpoint should receive events from connected accounts (`true`), or from your account (`false`).
+    /// Defaults to `false`.
+    pub fn connect(mut self, connect: bool) -> Self {
+        self.inner.connect = Some(connect);
+        self
+    }
     /// An optional description of what the webhook is used for.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
-    /// Disable the webhook endpoint if set to true.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub disabled: Option<bool>,
-    /// The list of events to enable for this endpoint.
-    /// You may specify `['*']` to enable all events, except those that require explicit selection.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub enabled_events: Option<&'a [UpdateWebhookEndpointEnabledEvents]>,
+    pub fn description(mut self, description: &'a str) -> Self {
+        self.inner.description = Some(description);
+        self
+    }
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The URL of the webhook endpoint.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<&'a str>,
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
 }
-impl<'a> UpdateWebhookEndpoint<'a> {
-    pub fn new() -> Self {
-        Self::default()
+impl CreateWebhookEndpoint<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateWebhookEndpoint<'_> {
+    type Output = stripe_misc::WebhookEndpoint;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/webhook_endpoints").form(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateWebhookEndpointBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    disabled: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    enabled_events: Option<&'a [UpdateWebhookEndpointEnabledEvents]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    url: Option<&'a str>,
+}
+impl<'a> UpdateWebhookEndpointBuilder<'a> {
+    fn new() -> Self {
+        Self {
+            description: None,
+            disabled: None,
+            enabled_events: None,
+            expand: None,
+            metadata: None,
+            url: None,
+        }
     }
 }
 /// The list of events to enable for this endpoint.
@@ -1006,12 +1166,14 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     CustomerTaxIdUpdated,
     CustomerUpdated,
     CustomerCashBalanceTransactionCreated,
+    EntitlementsActiveEntitlementSummaryUpdated,
     FileCreated,
     FinancialConnectionsAccountCreated,
     FinancialConnectionsAccountDeactivated,
     FinancialConnectionsAccountDisconnected,
     FinancialConnectionsAccountReactivated,
     FinancialConnectionsAccountRefreshedBalance,
+    FinancialConnectionsAccountRefreshedOwnership,
     FinancialConnectionsAccountRefreshedTransactions,
     IdentityVerificationSessionCanceled,
     IdentityVerificationSessionCreated,
@@ -1243,6 +1405,9 @@ impl UpdateWebhookEndpointEnabledEvents {
             CustomerTaxIdUpdated => "customer.tax_id.updated",
             CustomerUpdated => "customer.updated",
             CustomerCashBalanceTransactionCreated => "customer_cash_balance_transaction.created",
+            EntitlementsActiveEntitlementSummaryUpdated => {
+                "entitlements.active_entitlement_summary.updated"
+            }
             FileCreated => "file.created",
             FinancialConnectionsAccountCreated => "financial_connections.account.created",
             FinancialConnectionsAccountDeactivated => "financial_connections.account.deactivated",
@@ -1250,6 +1415,9 @@ impl UpdateWebhookEndpointEnabledEvents {
             FinancialConnectionsAccountReactivated => "financial_connections.account.reactivated",
             FinancialConnectionsAccountRefreshedBalance => {
                 "financial_connections.account.refreshed_balance"
+            }
+            FinancialConnectionsAccountRefreshedOwnership => {
+                "financial_connections.account.refreshed_ownership"
             }
             FinancialConnectionsAccountRefreshedTransactions => {
                 "financial_connections.account.refreshed_transactions"
@@ -1499,6 +1667,9 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "customer_cash_balance_transaction.created" => {
                 Ok(CustomerCashBalanceTransactionCreated)
             }
+            "entitlements.active_entitlement_summary.updated" => {
+                Ok(EntitlementsActiveEntitlementSummaryUpdated)
+            }
             "file.created" => Ok(FileCreated),
             "financial_connections.account.created" => Ok(FinancialConnectionsAccountCreated),
             "financial_connections.account.deactivated" => {
@@ -1512,6 +1683,9 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             }
             "financial_connections.account.refreshed_balance" => {
                 Ok(FinancialConnectionsAccountRefreshedBalance)
+            }
+            "financial_connections.account.refreshed_ownership" => {
+                Ok(FinancialConnectionsAccountRefreshedOwnership)
             }
             "financial_connections.account.refreshed_transactions" => {
                 Ok(FinancialConnectionsAccountRefreshedTransactions)
@@ -1708,18 +1882,80 @@ impl<'de> serde::Deserialize<'de> for UpdateWebhookEndpointEnabledEvents {
         Ok(Self::from_str(&s).unwrap())
     }
 }
+/// Updates the webhook endpoint.
+/// You may edit the `url`, the list of `enabled_events`, and the status of your endpoint.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateWebhookEndpoint<'a> {
+    inner: UpdateWebhookEndpointBuilder<'a>,
+    webhook_endpoint: &'a stripe_misc::WebhookEndpointId,
+}
 impl<'a> UpdateWebhookEndpoint<'a> {
-    /// Updates the webhook endpoint.
-    /// You may edit the `url`, the list of `enabled_events`, and the status of your endpoint.
-    pub fn send(
+    /// Construct a new `UpdateWebhookEndpoint`.
+    pub fn new(webhook_endpoint: &'a stripe_misc::WebhookEndpointId) -> Self {
+        Self { webhook_endpoint, inner: UpdateWebhookEndpointBuilder::new() }
+    }
+    /// An optional description of what the webhook is used for.
+    pub fn description(mut self, description: &'a str) -> Self {
+        self.inner.description = Some(description);
+        self
+    }
+    /// Disable the webhook endpoint if set to true.
+    pub fn disabled(mut self, disabled: bool) -> Self {
+        self.inner.disabled = Some(disabled);
+        self
+    }
+    /// The list of events to enable for this endpoint.
+    /// You may specify `['*']` to enable all events, except those that require explicit selection.
+    pub fn enabled_events(
+        mut self,
+        enabled_events: &'a [UpdateWebhookEndpointEnabledEvents],
+    ) -> Self {
+        self.inner.enabled_events = Some(enabled_events);
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
+    }
+    /// The URL of the webhook endpoint.
+    pub fn url(mut self, url: &'a str) -> Self {
+        self.inner.url = Some(url);
+        self
+    }
+}
+impl UpdateWebhookEndpoint<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        webhook_endpoint: &stripe_misc::WebhookEndpointId,
-    ) -> stripe::Response<stripe_misc::WebhookEndpoint> {
-        client.send_form(
-            &format!("/webhook_endpoints/{webhook_endpoint}"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateWebhookEndpoint<'_> {
+    type Output = stripe_misc::WebhookEndpoint;
+
+    fn build(&self) -> RequestBuilder {
+        let webhook_endpoint = self.webhook_endpoint;
+        RequestBuilder::new(StripeMethod::Post, format!("/webhook_endpoints/{webhook_endpoint}"))
+            .form(&self.inner)
     }
 }

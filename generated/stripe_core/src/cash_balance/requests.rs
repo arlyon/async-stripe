@@ -1,40 +1,75 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct RetrieveCashBalanceBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveCashBalanceBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves a customer’s cash balance.
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct RetrieveCashBalance<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    inner: RetrieveCashBalanceBuilder<'a>,
+    customer: &'a stripe_shared::CustomerId,
 }
 impl<'a> RetrieveCashBalance<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    /// Construct a new `RetrieveCashBalance`.
+    pub fn new(customer: &'a stripe_shared::CustomerId) -> Self {
+        Self { customer, inner: RetrieveCashBalanceBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
     }
 }
-impl<'a> RetrieveCashBalance<'a> {
-    /// Retrieves a customer’s cash balance.
-    pub fn send(
+impl RetrieveCashBalance<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        customer: &stripe_shared::CustomerId,
-    ) -> stripe::Response<stripe_shared::CashBalance> {
-        client.get_query(&format!("/customers/{customer}/cash_balance"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateCashBalance<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A hash of settings for this cash balance.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub settings: Option<UpdateCashBalanceSettings>,
+
+impl StripeRequest for RetrieveCashBalance<'_> {
+    type Output = stripe_shared::CashBalance;
+
+    fn build(&self) -> RequestBuilder {
+        let customer = self.customer;
+        RequestBuilder::new(StripeMethod::Get, format!("/customers/{customer}/cash_balance"))
+            .query(&self.inner)
+    }
 }
-impl<'a> UpdateCashBalance<'a> {
-    pub fn new() -> Self {
-        Self::default()
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct UpdateCashBalanceBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    settings: Option<UpdateCashBalanceSettings>,
+}
+impl<'a> UpdateCashBalanceBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None, settings: None }
     }
 }
 /// A hash of settings for this cash balance.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     /// Valid options are `automatic`, `manual`, or `merchant_default`.
@@ -44,7 +79,12 @@ pub struct UpdateCashBalanceSettings {
 }
 impl UpdateCashBalanceSettings {
     pub fn new() -> Self {
-        Self::default()
+        Self { reconciliation_mode: None }
+    }
+}
+impl Default for UpdateCashBalanceSettings {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Controls how funds transferred by the customer are applied to payment intents and invoices.
@@ -110,17 +150,52 @@ impl<'de> serde::Deserialize<'de> for UpdateCashBalanceSettingsReconciliationMod
         })
     }
 }
+/// Changes the settings on a customer’s cash balance.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateCashBalance<'a> {
+    inner: UpdateCashBalanceBuilder<'a>,
+    customer: &'a stripe_shared::CustomerId,
+}
 impl<'a> UpdateCashBalance<'a> {
-    /// Changes the settings on a customer’s cash balance.
-    pub fn send(
+    /// Construct a new `UpdateCashBalance`.
+    pub fn new(customer: &'a stripe_shared::CustomerId) -> Self {
+        Self { customer, inner: UpdateCashBalanceBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A hash of settings for this cash balance.
+    pub fn settings(mut self, settings: UpdateCashBalanceSettings) -> Self {
+        self.inner.settings = Some(settings);
+        self
+    }
+}
+impl UpdateCashBalance<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        customer: &stripe_shared::CustomerId,
-    ) -> stripe::Response<stripe_shared::CashBalance> {
-        client.send_form(
-            &format!("/customers/{customer}/cash_balance"),
-            self,
-            http_types::Method::Post,
-        )
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateCashBalance<'_> {
+    type Output = stripe_shared::CashBalance;
+
+    fn build(&self) -> RequestBuilder {
+        let customer = self.customer;
+        RequestBuilder::new(StripeMethod::Post, format!("/customers/{customer}/cash_balance"))
+            .form(&self.inner)
     }
 }

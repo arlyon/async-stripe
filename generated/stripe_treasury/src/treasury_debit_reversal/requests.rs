@@ -1,36 +1,27 @@
+use stripe_client_core::{
+    RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
+};
+
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ListTreasuryDebitReversal<'a> {
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+struct ListTreasuryDebitReversalBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
+    ending_before: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Returns objects associated with this FinancialAccount.
-    pub financial_account: &'a str,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
+    expand: Option<&'a [&'a str]>,
+    financial_account: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// Only return DebitReversals for the ReceivedDebit ID.
+    limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub received_debit: Option<&'a str>,
-    /// Only return DebitReversals for a given resolution.
+    received_debit: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub resolution: Option<ListTreasuryDebitReversalResolution>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    resolution: Option<ListTreasuryDebitReversalResolution>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-    /// Only return DebitReversals for a given status.
+    starting_after: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<ListTreasuryDebitReversalStatus>,
+    status: Option<ListTreasuryDebitReversalStatus>,
 }
-impl<'a> ListTreasuryDebitReversal<'a> {
-    pub fn new(financial_account: &'a str) -> Self {
+impl<'a> ListTreasuryDebitReversalBuilder<'a> {
+    fn new(financial_account: &'a str) -> Self {
         Self {
             ending_before: None,
             expand: None,
@@ -158,66 +149,205 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryDebitReversalStatus {
         })
     }
 }
+/// Returns a list of DebitReversals.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListTreasuryDebitReversal<'a> {
+    inner: ListTreasuryDebitReversalBuilder<'a>,
+}
 impl<'a> ListTreasuryDebitReversal<'a> {
-    /// Returns a list of DebitReversals.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryDebitReversal>> {
-        client.get_query("/treasury/debit_reversals", self)
+    /// Construct a new `ListTreasuryDebitReversal`.
+    pub fn new(financial_account: &'a str) -> Self {
+        Self { inner: ListTreasuryDebitReversalBuilder::new(financial_account) }
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_treasury::TreasuryDebitReversal>> {
-        stripe::ListPaginator::from_list_params("/treasury/debit_reversals", self)
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
+        self.inner.ending_before = Some(ending_before);
+        self
     }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTreasuryDebitReversal<'a> {
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTreasuryDebitReversal<'a> {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    pub fn limit(mut self, limit: i64) -> Self {
+        self.inner.limit = Some(limit);
+        self
+    }
+    /// Only return DebitReversals for the ReceivedDebit ID.
+    pub fn received_debit(mut self, received_debit: &'a str) -> Self {
+        self.inner.received_debit = Some(received_debit);
+        self
+    }
+    /// Only return DebitReversals for a given resolution.
+    pub fn resolution(mut self, resolution: ListTreasuryDebitReversalResolution) -> Self {
+        self.inner.resolution = Some(resolution);
+        self
+    }
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
+        self.inner.starting_after = Some(starting_after);
+        self
+    }
+    /// Only return DebitReversals for a given status.
+    pub fn status(mut self, status: ListTreasuryDebitReversalStatus) -> Self {
+        self.inner.status = Some(status);
+        self
     }
 }
-impl<'a> RetrieveTreasuryDebitReversal<'a> {
-    /// Retrieves a DebitReversal object.
-    pub fn send(
+impl ListTreasuryDebitReversal<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-        debit_reversal: &stripe_treasury::TreasuryDebitReversalId,
-    ) -> stripe::Response<stripe_treasury::TreasuryDebitReversal> {
-        client.get_query(&format!("/treasury/debit_reversals/{debit_reversal}"), self)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+
+    pub fn paginate(
+        &self,
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_treasury::TreasuryDebitReversal>>
+    {
+        stripe_client_core::ListPaginator::new_list("/treasury/debit_reversals", self.inner)
+    }
+}
+
+impl StripeRequest for ListTreasuryDebitReversal<'_> {
+    type Output = stripe_types::List<stripe_treasury::TreasuryDebitReversal>;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Get, "/treasury/debit_reversals").query(&self.inner)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTreasuryDebitReversal<'a> {
-    /// Specifies which fields in the response should be expanded.
+struct RetrieveTreasuryDebitReversalBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
+    expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveTreasuryDebitReversalBuilder<'a> {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Retrieves a DebitReversal object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RetrieveTreasuryDebitReversal<'a> {
+    inner: RetrieveTreasuryDebitReversalBuilder<'a>,
+    debit_reversal: &'a stripe_treasury::TreasuryDebitReversalId,
+}
+impl<'a> RetrieveTreasuryDebitReversal<'a> {
+    /// Construct a new `RetrieveTreasuryDebitReversal`.
+    pub fn new(debit_reversal: &'a stripe_treasury::TreasuryDebitReversalId) -> Self {
+        Self { debit_reversal, inner: RetrieveTreasuryDebitReversalBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
+}
+impl RetrieveTreasuryDebitReversal<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RetrieveTreasuryDebitReversal<'_> {
+    type Output = stripe_treasury::TreasuryDebitReversal;
+
+    fn build(&self) -> RequestBuilder {
+        let debit_reversal = self.debit_reversal;
+        RequestBuilder::new(
+            StripeMethod::Get,
+            format!("/treasury/debit_reversals/{debit_reversal}"),
+        )
+        .query(&self.inner)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+struct CreateTreasuryDebitReversalBuilder<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<&'a [&'a str]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    received_debit: &'a str,
+}
+impl<'a> CreateTreasuryDebitReversalBuilder<'a> {
+    fn new(received_debit: &'a str) -> Self {
+        Self { expand: None, metadata: None, received_debit }
+    }
+}
+/// Reverses a ReceivedDebit and creates a DebitReversal object.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTreasuryDebitReversal<'a> {
+    inner: CreateTreasuryDebitReversalBuilder<'a>,
+}
+impl<'a> CreateTreasuryDebitReversal<'a> {
+    /// Construct a new `CreateTreasuryDebitReversal`.
+    pub fn new(received_debit: &'a str) -> Self {
+        Self { inner: CreateTreasuryDebitReversalBuilder::new(received_debit) }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
+        self.inner.expand = Some(expand);
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The ReceivedDebit to reverse.
-    pub received_debit: &'a str,
-}
-impl<'a> CreateTreasuryDebitReversal<'a> {
-    pub fn new(received_debit: &'a str) -> Self {
-        Self { expand: None, metadata: None, received_debit }
+    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
+        self.inner.metadata = Some(metadata);
+        self
     }
 }
-impl<'a> CreateTreasuryDebitReversal<'a> {
-    /// Reverses a ReceivedDebit and creates a DebitReversal object.
-    pub fn send(
+impl CreateTreasuryDebitReversal<'_> {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
         &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_treasury::TreasuryDebitReversal> {
-        client.send_form("/treasury/debit_reversals", self, http_types::Method::Post)
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CreateTreasuryDebitReversal<'_> {
+    type Output = stripe_treasury::TreasuryDebitReversal;
+
+    fn build(&self) -> RequestBuilder {
+        RequestBuilder::new(StripeMethod::Post, "/treasury/debit_reversals").form(&self.inner)
     }
 }

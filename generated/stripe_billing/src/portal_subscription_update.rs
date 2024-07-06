@@ -11,6 +11,7 @@ pub struct PortalSubscriptionUpdate {
     pub products: Option<Vec<stripe_billing::PortalSubscriptionUpdateProduct>>,
     /// Determines how to handle prorations resulting from subscription updates.
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
+    /// Defaults to a value of `none` if you don't set it during creation.
     pub proration_behavior: PortalSubscriptionUpdateProrationBehavior,
 }
 #[doc(hidden)]
@@ -205,6 +206,7 @@ impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateDefaultAllowedUpda
 }
 /// Determines how to handle prorations resulting from subscription updates.
 /// Valid values are `none`, `create_prorations`, and `always_invoice`.
+/// Defaults to a value of `none` if you don't set it during creation.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PortalSubscriptionUpdateProrationBehavior {
     AlwaysInvoice,
