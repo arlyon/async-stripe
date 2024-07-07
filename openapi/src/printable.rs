@@ -202,7 +202,7 @@ impl<'a> PathWithIdent<'a> {
 impl<'a> Display for PathWithIdent<'a> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         if let Some(path) = self.path {
-            write!(f, "{}::", path.krate.name())?;
+            write!(f, "{}::", path.krate.lib_name())?;
             if let Some(path) = &path.path {
                 write!(f, "{path}::")?;
             }

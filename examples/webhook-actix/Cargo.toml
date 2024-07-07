@@ -6,6 +6,6 @@ publish = false
 
 [dependencies]
 actix-web = "4.2.1"
-stripe_webhook = { path = "../../stripe_webhook", features = ["stripe_checkout"] }
-stripe_checkout = { path = "../../generated/stripe_checkout" }
-stripe_connect = { path = "../../generated/stripe_connect" }
+async-stripe-webhook = { path = "../../async-stripe-webhook", features = ["async-stripe-checkout"] }
+async-stripe-checkout = { path = "../../generated/async-stripe-checkout" }
+async-stripe-connect = { path = "../../generated/async-stripe-connect" }

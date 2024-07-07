@@ -126,7 +126,7 @@ impl Components {
     }
 
     fn assign_paths_required_to_share_types(&mut self) {
-        // Paths for components required to live in the `stripe_shared` crate. Adding `event` is
+        // Paths for components required to live in the `async-stripe-shared` crate. Adding `event` is
         // used for webhooks
         const PATHS_IN_TYPES: &[&str] = &["event"];
 

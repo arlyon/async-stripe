@@ -6,5 +6,5 @@ publish = false
 
 [dependencies]
 rocket = "0.5.0"
-stripe_webhook = { path = "../../stripe_webhook", features = ["stripe_checkout"] }
-stripe_checkout = { path = "../../generated/stripe_checkout" }
+async-stripe-webhook = { path = "../../async-stripe-webhook", features = ["async-stripe-checkout"] }
+async-stripe-checkout = { path = "../../generated/async-stripe-checkout" }

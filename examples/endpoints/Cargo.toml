@@ -9,10 +9,10 @@ publish = false
 futures-util = "0.3.28"
 tokio = { version = "1.24.1", features = ["rt-multi-thread", "macros"] }
 async-stripe = { path = "../../async-stripe", features = ["uuid"] }
-stripe_types = { path = "../../stripe_types" }
-stripe_billing = { path = "../../generated/stripe_billing", features = ["subscription"] }
-stripe_core = { path = "../../generated/stripe_core", features = ["customer", "payment_intent"] }
-stripe_product = { path = "../../generated/stripe_product", features = ["product", "price"] }
-stripe_payment = { path = "../../generated/stripe_payment", features = ["payment_method", "payment_link"] }
-stripe_checkout = { path = "../../generated/stripe_checkout", features = ["checkout_session"] }
-stripe_connect = { path = "../../generated/stripe_connect", features = ["account", "account_link"] }
+async-stripe-types = { path = "../../async-stripe-types" }
+async-stripe-billing = { path = "../../generated/async-stripe-billing", features = ["subscription"] }
+async-stripe-core = { path = "../../generated/async-stripe-core", features = ["customer", "payment_intent"] }
+async-stripe-product = { path = "../../generated/async-stripe-product", features = ["product", "price"] }
+async-stripe-payment = { path = "../../generated/async-stripe-payment", features = ["payment_method", "payment_link"] }
+async-stripe-checkout = { path = "../../generated/async-stripe-checkout", features = ["checkout_session"] }
+async-stripe-connect = { path = "../../generated/async-stripe-connect", features = ["account", "account_link"] }

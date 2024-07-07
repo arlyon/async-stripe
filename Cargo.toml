@@ -1,18 +1,18 @@
 [workspace]
 members = [
-    "stripe_types",
-    "stripe_webhook",
+    "async-stripe-types",
+    "async-stripe-webhook",
     "tests",
     "generated/*",
     "examples/*",
-    "stripe_client_core",
+    "async-stripe-client-core",
     "async-stripe",
-    "stripe_async_std"
+    "async-stripe-async-std"
 ]
 
 # Skip "examples/*" when running default commands since that adds a bunch of deps that makes
 # development feedback loop slower.
-default-members = ["async-stripe", "stripe_types", "stripe_webhook", "stripe_client_core", "generated/*", "stripe_async_std"]
+default-members = ["async-stripe", "async-stripe-types", "async-stripe-webhook", "async-stripe-client-core", "generated/*", "async-stripe-async-std"]
 resolver = "2"
 # Makes dependency management simpler to allow codegen crate to use whichever dep versions
 # it wants without affecting dependency resolution of the user-facing library crates

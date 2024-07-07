@@ -92,7 +92,7 @@ impl StripeObject {
         self.types_are_shared() && self.krate_unwrapped().base() != Crate::SHARED
     }
 
-    /// Do schema definitions live in `stripe_shared`?
+    /// Do schema definitions live in `async-stripe-shared`?
     pub fn types_are_shared(&self) -> bool {
         let krate = self.krate_unwrapped();
         krate.for_types() == Crate::SHARED

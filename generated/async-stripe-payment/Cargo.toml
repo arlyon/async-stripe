@@ -1,0 +1,53 @@
+[package]
+name = "async-stripe-payment"
+version.workspace = true
+description.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[lib]
+path = "src/mod.rs"
+name = "stripe_payment"
+
+[dependencies]
+serde.workspace = true
+serde_json = { workspace = true, optional = true }
+smol_str.workspace = true
+miniserde.workspace = true
+async-stripe-types = {path = "../../async-stripe-types"}
+async-stripe-client-core = {path = "../../async-stripe-client-core"}
+
+async-stripe-shared = {path = "../../generated/async-stripe-shared"}
+
+
+[features]
+serialize = ["async-stripe-types/serialize","async-stripe-shared/serialize"]
+deserialize = ["async-stripe-types/deserialize","async-stripe-shared/deserialize", "dep:serde_json"]
+bank_account = []
+card = []
+confirmation_token = []
+payment_link = []
+payment_method = []
+payment_method_configuration = []
+payment_method_domain = []
+source = []
+
+full = ["bank_account",
+"card",
+"confirmation_token",
+"payment_link",
+"payment_method",
+"payment_method_configuration",
+"payment_method_domain",
+"source"]
+
+
+[package.metadata.docs.rs]
+features = ["full"]
+

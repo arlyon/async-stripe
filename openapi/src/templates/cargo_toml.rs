@@ -5,9 +5,9 @@ use indoc::formatdoc;
 use crate::crates::Crate;
 
 fn get_serialization_feature(deps: &[Crate], kind: &str) -> String {
-    let mut features = vec![format!("stripe_types/{kind}")];
+    let mut features = vec![format!("async-stripe-types/{kind}")];
     for dep in deps {
-        features.push(format!("{}/{kind}", dep.name()));
+        features.push(format!("{}/{kind}", dep.crate_name()));
     }
     features.into_iter().map(|f| format!(r#""{f}""#)).collect::<Vec<_>>().join(",")
 }
@@ -16,7 +16,7 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
     let mut crate_dep_section = String::new();
 
     for dep in &crate_deps {
-        let dep_name = dep.name();
+        let dep_name = dep.crate_name();
         let dep_path = format!("../../generated/{dep_name}");
         let _ = writeln!(crate_dep_section, r#"{dep_name} = {{path = "{dep_path}"}}"#);
     }
@@ -25,7 +25,7 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
     let request_deps = if krate == Crate::SHARED {
         ""
     } else {
-        r#"stripe_client_core = {path = "../../stripe_client_core"}"#
+        r#"async-stripe-client-core = {path = "../../async-stripe-client-core"}"#
     };
 
     let ser_features = get_serialization_feature(&crate_deps, "serialize");
@@ -33,10 +33,13 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
 
     let features =
         if krate == Crate::SHARED { "".into() } else { gen_feature_section(crate_features) };
+
+    let crate_name = krate.crate_name();
+    let lib_name = krate.lib_name();
     formatdoc! {
         r#"
         [package]
-        name = "{krate}"
+        name = "{crate_name}"
         version.workspace = true
         description.workspace = true
         edition.workspace = true
@@ -50,13 +53,14 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
         
         [lib]
         path = "src/mod.rs"
+        name = "{lib_name}"
         
         [dependencies]
         serde.workspace = true
         serde_json = {{ workspace = true, optional = true }}
         smol_str.workspace = true
         miniserde.workspace = true
-        stripe_types = {{path = "../../stripe_types"}}
+        async-stripe-types = {{path = "../../async-stripe-types"}}
         {request_deps}
         
         {crate_dep_section}

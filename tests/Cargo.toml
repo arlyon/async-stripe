@@ -15,20 +15,20 @@ wiremock = "0.5.22"
 futures-util = { version = "0.3.21" }
 bytes = "1.6.0"
 tokio = { version = "1.24.1", features = ["rt", "macros"] }
-stripe_types = { path = "../stripe_types", features = ["serialize"] }
-stripe_client_core = { path = "../stripe_client_core" }
-stripe_async_std = { path = "../stripe_async_std" }
-stripe_connect = { path = "../generated/stripe_connect", features = ["account", "transfer_reversal", "serialize", "deserialize"] }
-stripe_billing = { path = "../generated/stripe_billing", features = ["invoice", "plan", "subscription", "subscription_item", "usage_record", "serialize"] }
-stripe_core = { path = "../generated/stripe_core", features = ["customer", "charge", "token", "serialize"] }
-stripe_checkout = { path = "../generated/stripe_checkout", features = ["checkout_session", "serialize"] }
-stripe_product = { path = "../generated/stripe_product", features = ["product", "price", "promotion_code", "serialize"] }
-stripe_payment = { path = "../generated/stripe_payment", features = ["serialize"] }
-stripe_treasury = { path = "../generated/stripe_treasury", features = ["serialize"] }
-stripe_terminal = { path = "../generated/stripe_terminal", features = ["serialize"] }
-stripe_fraud = { path = "../generated/stripe_fraud", features = ["serialize"] }
-stripe_issuing = { path = "../generated/stripe_issuing", features = ["serialize"] }
-stripe_misc = { path = "../generated/stripe_misc", features = ["serialize"] }
+async-stripe-types = { path = "../async-stripe-types", features = ["serialize"] }
+async-stripe-client-core = { path = "../async-stripe-client-core" }
+async-stripe-async-std = { path = "../async-stripe-async-std" }
+async-stripe-connect = { path = "../generated/async-stripe-connect", features = ["account", "transfer_reversal", "serialize", "deserialize"] }
+async-stripe-billing = { path = "../generated/async-stripe-billing", features = ["invoice", "plan", "subscription", "subscription_item", "usage_record", "serialize"] }
+async-stripe-core = { path = "../generated/async-stripe-core", features = ["customer", "charge", "token", "serialize"] }
+async-stripe-checkout = { path = "../generated/async-stripe-checkout", features = ["checkout_session", "serialize"] }
+async-stripe-product = { path = "../generated/async-stripe-product", features = ["product", "price", "promotion_code", "serialize"] }
+async-stripe-payment = { path = "../generated/async-stripe-payment", features = ["serialize"] }
+async-stripe-treasury = { path = "../generated/async-stripe-treasury", features = ["serialize"] }
+async-stripe-terminal = { path = "../generated/async-stripe-terminal", features = ["serialize"] }
+async-stripe-fraud = { path = "../generated/async-stripe-fraud", features = ["serialize"] }
+async-stripe-issuing = { path = "../generated/async-stripe-issuing", features = ["serialize"] }
+async-stripe-misc = { path = "../generated/async-stripe-misc", features = ["serialize"] }
 
 async-stripe = { path = "../async-stripe", default-features = false, features = ["blocking"] }
 
