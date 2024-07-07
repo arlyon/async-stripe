@@ -79,6 +79,7 @@ jobs:
             default-tls,
             rustls-tls-webpki-roots,
             rustls-tls-native,
+            async-std-surf,
           ]
 
     steps:
@@ -106,6 +107,7 @@ jobs:
             default-tls,
             rustls-tls-webpki-roots,
             rustls-tls-native,
+            async-std-surf,
           ]
 
     steps:
