@@ -10,13 +10,13 @@ use stripe_client_core::{CustomizedStripeRequest, RequestBuilder, StripeMethod};
 use stripe_client_core::{Outcome, RequestStrategy};
 use stripe_shared::AccountId;
 
-use crate::client_builder::{ClientBuilder, ClientConfig};
+use crate::hyper::client_builder::{ClientBuilder, ClientConfig};
 use crate::StripeError;
 
 /// A client for making Stripe API requests.
 #[derive(Clone, Debug)]
 pub struct Client {
-    client: hyper::Client<crate::connector::Connector, Body>,
+    client: hyper::Client<crate::hyper::connector::Connector, Body>,
     config: ClientConfig,
 }
 
@@ -36,7 +36,7 @@ impl Client {
         Self {
             client: hyper::Client::builder()
                 .pool_max_idle_per_host(0)
-                .build(crate::connector::create()),
+                .build(crate::hyper::connector::create()),
             config,
         }
     }

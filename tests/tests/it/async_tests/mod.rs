@@ -15,7 +15,7 @@ mod pagination;
 #[derive(Clone)]
 pub enum StripeClient {
     Hyper(stripe::Client),
-    AsyncStd(Box<stripe_async_std::Client>),
+    AsyncStd(Box<stripe::async_std::Client>),
 }
 
 #[derive(Debug)]
@@ -56,7 +56,7 @@ impl StripeClient {
 
     fn async_std() -> Self {
         Self::AsyncStd(Box::new(
-            stripe_async_std::ClientBuilder::new(SECRET).url(STRIPE_MOCK_LINK).build().unwrap(),
+            stripe::async_std::ClientBuilder::new(SECRET).url(STRIPE_MOCK_LINK).build().unwrap(),
         ))
     }
 }

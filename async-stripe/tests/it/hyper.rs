@@ -82,15 +82,15 @@ async fn user_error() {
     let client = get_client_for(&server);
 
     let mock = server.mock(|when, then| {
-            when.method(GET).path("/v1/missing");
-            then.status(404).body("{
+        when.method(GET).path("/v1/missing");
+        then.status(404).body("{
                 \"error\": {
                   \"message\": \"Unrecognized request URL (GET: /v1/missing). Please see https://stripe.com/docs or we can help at https://support.stripe.com/.\",
                   \"type\": \"invalid_request_error\"
                 }
               }
               ");
-        });
+    });
 
     let res = RequestBuilder::new(StripeMethod::Get, "/missing")
         .customize::<TestData>()

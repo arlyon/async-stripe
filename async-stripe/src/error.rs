@@ -30,14 +30,23 @@ impl StripeClientErr for StripeError {
     }
 }
 
+#[cfg(feature = "__hyper")]
 impl From<hyper::Error> for StripeError {
     fn from(err: hyper::Error) -> StripeError {
         StripeError::ClientError(err.to_string())
     }
 }
 
+#[cfg(feature = "__hyper")]
 impl From<hyper::http::Error> for StripeError {
     fn from(err: hyper::http::Error) -> StripeError {
+        StripeError::ClientError(err.to_string())
+    }
+}
+
+#[cfg(feature = "async-std-surf")]
+impl From<http_types::Error> for StripeError {
+    fn from(err: http_types::Error) -> StripeError {
         StripeError::ClientError(err.to_string())
     }
 }

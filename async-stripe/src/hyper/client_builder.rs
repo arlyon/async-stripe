@@ -1,11 +1,9 @@
-use std::fmt::{Debug, Formatter};
-use std::str::FromStr;
-
-use http_types::Url;
+use hyper::http::{HeaderValue, Uri};
 use stripe_client_core::{RequestStrategy, SharedConfigBuilder};
-use stripe_shared::{AccountId, ApiVersion, ApplicationId};
+use stripe_shared::{AccountId, ApplicationId};
 
-use crate::{Client, StripeError};
+use crate::hyper::client::Client;
+use crate::StripeError;
 
 static DEFAULT_USER_AGENT: &str = concat!("Stripe/v1 RustBindings/", env!("CARGO_PKG_VERSION"));
 const DEFAULT_API_BASE: &str = "https://api.stripe.com/";
@@ -69,26 +67,41 @@ impl ClientBuilder {
 
     fn try_into_config(self) -> Result<ClientConfig, StripeError> {
         let api_base = if let Some(url) = self.inner.api_base {
-            Url::from_str(&url).map_err(|err| {
+            Uri::try_from(url).map_err(|err| {
                 StripeError::ConfigError(format!("user-provided Stripe url is invalid: {err}"))
             })?
         } else {
-            Url::from_str(DEFAULT_API_BASE).expect("is valid URL")
+            Uri::from_static(DEFAULT_API_BASE)
         };
 
-        let user_agent = if let Some(app_info_str) = self.inner.app_info_str {
-            format!("{DEFAULT_USER_AGENT} {app_info_str}")
+        let user_agent_header = if let Some(app_info_str) = self.inner.app_info_str {
+            HeaderValue::try_from(format!("{DEFAULT_USER_AGENT} {app_info_str}"))
+                .map_err(|_| cons_header_err("app_info"))?
         } else {
-            DEFAULT_USER_AGENT.into()
+            HeaderValue::from_static(DEFAULT_USER_AGENT)
         };
 
+        let mut secret = HeaderValue::try_from(format!("Bearer {}", self.inner.secret))
+            .map_err(|_| cons_header_err("secret"))?;
+        secret.set_sensitive(true);
         Ok(ClientConfig {
-            stripe_version: self.inner.stripe_version,
-            user_agent,
-            client_id: self.inner.client_id,
-            account_id: self.inner.account_id,
+            stripe_version: HeaderValue::from_str(self.inner.stripe_version.as_str())
+                .expect("all stripe versions produce valid header values"),
+            user_agent: user_agent_header,
+            client_id: self
+                .inner
+                .client_id
+                .map(|id| HeaderValue::try_from(id.to_string()))
+                .transpose()
+                .map_err(|_| cons_header_err("client_id"))?,
+            account_id: self
+                .inner
+                .account_id
+                .map(|id| HeaderValue::try_from(id.to_string()))
+                .transpose()
+                .map_err(|_| cons_header_err("account_id"))?,
             request_strategy: self.inner.request_strategy.unwrap_or(RequestStrategy::Once),
-            secret: self.inner.secret,
+            secret,
             api_base,
         })
     }
@@ -100,41 +113,34 @@ impl ClientBuilder {
     pub fn build(self) -> Result<Client, StripeError> {
         Ok(Client::from_config(self.try_into_config()?))
     }
+
+    /// Builds a Stripe `client` for making blocking API calls.
+    ///
+    /// # Errors
+    /// This method errors if any of the specified configuration is invalid.
+    ///
+    /// # Panics
+    /// This method panics if called from within an async runtime.
+    #[cfg(feature = "blocking")]
+    pub fn build_sync(self) -> Result<crate::hyper::blocking::Client, StripeError> {
+        Ok(crate::hyper::blocking::Client::from_async(self.build()?))
+    }
 }
 
-/// A finalized client configuration.
-#[derive(Clone)]
+fn cons_header_err(config_name: &'static str) -> StripeError {
+    StripeError::ClientError(format!("`{config_name}` can only include visible ASCII characters"))
+}
+
+/// A validated client configuration. All configuration types are carefully chosen to be
+/// cheaply clonable so that the client can be cheaply cloned.
+#[derive(Clone, Debug)]
 pub struct ClientConfig {
-    pub stripe_version: ApiVersion,
-    pub user_agent: String,
-    pub client_id: Option<ApplicationId>,
-    pub account_id: Option<AccountId>,
+    pub stripe_version: HeaderValue,
+    pub user_agent: HeaderValue,
+    pub client_id: Option<HeaderValue>,
+    pub account_id: Option<HeaderValue>,
     pub request_strategy: RequestStrategy,
-    pub secret: String,
-    pub api_base: Url,
-}
-
-impl ClientConfig {
-    pub fn to_headers_array(&self) -> [(&str, Option<&str>); 4] {
-        [
-            ("Client-Id", self.client_id.as_deref()),
-            ("Stripe-Account", self.account_id.as_deref()),
-            ("Stripe-Version", Some(self.stripe_version.as_str())),
-            ("User-Agent", Some(&self.user_agent)),
-        ]
-    }
-}
-
-// Don't print the secret!
-impl Debug for ClientConfig {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let mut s = f.debug_struct("ClientConfig");
-        s.field("request_strategy", &self.request_strategy);
-        s.field("client_id", &self.client_id);
-        s.field("account_id", &self.account_id);
-        s.field("api_base", &self.api_base);
-        s.field("user_agent", &self.user_agent);
-        s.field("stripe_version", &self.stripe_version);
-        s.finish()
-    }
+    // NB: This `HeaderValue` is marked as sensitive, so it won't be debug printed.
+    pub secret: HeaderValue,
+    pub api_base: Uri,
 }

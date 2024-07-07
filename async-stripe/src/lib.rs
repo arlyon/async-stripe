@@ -16,6 +16,7 @@
 //! To get started, we need to create a [Client]:
 //!
 //! ```
+//! # #[cfg(feature = "__hyper")]
 //! let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
 //! ```
 //!
@@ -56,18 +57,16 @@
 #![deny(missing_docs, missing_debug_implementations)]
 #![forbid(unsafe_code)]
 
-mod client;
-mod client_builder;
 mod error;
 
-pub use client_builder::ClientBuilder;
+#[cfg(feature = "async-std-surf")]
+pub mod async_std;
 
-#[cfg(feature = "blocking")]
-pub mod blocking;
-mod connector;
-
-pub use client::Client;
+#[cfg(feature = "__hyper")]
+mod hyper;
 pub use error::StripeError;
+#[cfg(feature = "__hyper")]
+pub use hyper::*;
 pub use stripe_client_core::{
     CustomizedStripeRequest, ListPaginator, PaginationExt, RequestStrategy,
 };

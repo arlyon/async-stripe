@@ -17,7 +17,6 @@ bytes = "1.6.0"
 tokio = { version = "1.24.1", features = ["rt", "macros"] }
 async-stripe-types = { path = "../async-stripe-types", features = ["serialize"] }
 async-stripe-client-core = { path = "../async-stripe-client-core" }
-async-stripe-async-std = { path = "../async-stripe-async-std" }
 async-stripe-connect = { path = "../generated/async-stripe-connect", features = ["account", "transfer_reversal", "serialize", "deserialize"] }
 async-stripe-billing = { path = "../generated/async-stripe-billing", features = ["invoice", "plan", "subscription", "subscription_item", "usage_record", "serialize"] }
 async-stripe-core = { path = "../generated/async-stripe-core", features = ["customer", "charge", "token", "serialize"] }
@@ -30,7 +29,7 @@ async-stripe-fraud = { path = "../generated/async-stripe-fraud", features = ["se
 async-stripe-issuing = { path = "../generated/async-stripe-issuing", features = ["serialize"] }
 async-stripe-misc = { path = "../generated/async-stripe-misc", features = ["serialize"] }
 
-async-stripe = { path = "../async-stripe", default-features = false, features = ["blocking"] }
+async-stripe = { path = "../async-stripe", default-features = false, features = ["blocking", "async-std-surf"] }
 
 # Copied from async-stripe/Cargo.toml features so that we can run with all those features too
 [features]
