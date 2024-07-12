@@ -94,6 +94,7 @@ pub struct TreasuryReceivedCreditsResourceLinkedFlows {
     pub source_flow: Option<String>,
 
     /// The expandable object of the source flow.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub source_flow_details: Option<TreasuryReceivedCreditsResourceSourceFlowsDetails>,
 
     /// The type of flow that originated the ReceivedCredit (for example, `outbound_payment`).
