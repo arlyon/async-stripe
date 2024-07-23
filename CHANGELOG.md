@@ -1,3 +1,10 @@
+## [0.37.2](https://github.com/arlyon/async-stripe/compare/v0.37.1...v0.37.2) (2024-07-23)
+
+
+### Bug Fixes
+
+* rtx id prefix ([67ea232](https://github.com/arlyon/async-stripe/commit/67ea2325ba10fd0bc1b5c9e3a3436738caf4a98c))
+
 ## [0.37.1](https://github.com/arlyon/async-stripe/compare/v0.37.0...v0.37.1) (2024-05-24)
 
 
