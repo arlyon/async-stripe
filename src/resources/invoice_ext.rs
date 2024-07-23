@@ -40,6 +40,13 @@ impl Invoice {
     pub fn search(client: &Client, params: InvoiceSearchParams) -> Response<SearchList<Invoice>> {
         client.get_query("/invoices/search", params)
     }
+
+    /// Voids an invoice.
+    ///
+    /// For more details see <https://stripe.com/docs/api/invoices/void>.
+    pub fn void(client: &Client, invoice_id: &InvoiceId) -> Response<Invoice> {
+        client.post(&format!("/invoices/{}/void", invoice_id))
+    }
 }
 
 #[derive(Clone, Debug, Serialize)]
