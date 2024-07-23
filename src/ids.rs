@@ -561,7 +561,7 @@ def_id!(PromotionCodeId, "promo_");
 def_id!(QuoteId, "qt_");
 def_id!(RecipientId: String); // FIXME: This doesn't seem to be documented yet
 def_id!(RefundId, "re_" | "pyr_");
-def_id!(ReserveTransactionId, "rtx");
+def_id!(ReserveTransactionId, "rtx_");
 def_id!(ReviewId, "prv_");
 def_id!(ScheduledQueryRunId, "sqr_");
 def_id!(SetupAttemptId, "setatt_");
