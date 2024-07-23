@@ -35,13 +35,21 @@ pub struct SharedConfigBuilder {
 impl SharedConfigBuilder {
     /// Create a new `SharedConfigBuilder` with the given secret key.
     pub fn new(secret: impl Into<String>) -> Self {
+        let secret = secret.into();
+
+        // some basic sanity checks
+        // TODO: maybe a full-blown type here rather than a warning?
+        if secret.trim() != secret || !secret.starts_with("sk_") {
+            tracing::warn!("suspiciously formatted secret key")
+        }
+
         Self {
             stripe_version: VERSION,
             app_info_str: None,
             client_id: None,
             account_id: None,
             request_strategy: None,
-            secret: secret.into(),
+            secret,
             api_base: None,
         }
     }
