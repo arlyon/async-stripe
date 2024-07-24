@@ -2,12 +2,12 @@ use stripe_core::customer::{
     CreateCustomer, DeleteCustomer, RetrieveCustomer, RetrieveCustomerReturned,
 };
 
-use crate::mock::get_client;
+use super::{get_base_test_config, get_client};
 
-fn customer_create_and_delete(client: &stripe::Client) {
+fn customer_create_and_delete(client: &stripe::blocking::Client) {
     // NB: the create step is not required for deletion to work since the stripe mock is stateless
-    let customer = CreateCustomer::new().send(client).unwrap();
-    let result = DeleteCustomer::new().send(client, &customer.id).unwrap();
+    let customer = CreateCustomer::new().send_blocking(client).unwrap();
+    let result = DeleteCustomer::new(&customer.id).send_blocking(client).unwrap();
     assert_eq!(result.id, customer.id);
 }
 
@@ -19,9 +19,11 @@ fn customer_create_and_delete_without_account() {
 
 #[test]
 fn customer_create_and_delete_with_account() {
-    let client = get_client()
-        .with_client_id("ca_123".parse().unwrap())
-        .with_stripe_account("acct_123".parse().unwrap());
+    let client = get_base_test_config()
+        .client_id("ca_123".parse().unwrap())
+        .account_id("acct_123".parse().unwrap())
+        .build_sync()
+        .unwrap();
     customer_create_and_delete(&client);
 }
 
@@ -29,7 +31,7 @@ fn customer_create_and_delete_with_account() {
 fn retrieve_customer() {
     let client = get_client();
     let id = "cus_123".parse().unwrap();
-    let ret = RetrieveCustomer::new().send(&client, &id).unwrap();
+    let ret = RetrieveCustomer::new(&id).send_blocking(&client).unwrap();
     match ret {
         RetrieveCustomerReturned::Customer(cust) => {
             assert_eq!(cust.id, id);

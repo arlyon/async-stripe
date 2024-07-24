@@ -43,11 +43,6 @@ impl<'a> ObjectWriter<'a> {
         self
     }
 
-    pub fn derive_default(&mut self, derive_default: bool) -> &mut Self {
-        self.derives = self.derives.derive_default(derive_default);
-        self
-    }
-
     pub fn get_printable(&self, typ: &RustType) -> PrintableType {
         self.components.construct_printable_type(typ)
     }
@@ -71,9 +66,6 @@ pub fn write_derives_line(out: &mut String, derives: Derives) {
     let _ = write!(out, "Clone,");
     if derives.debug {
         let _ = write!(out, "Debug,");
-    }
-    if derives.default {
-        let _ = write!(out, "Default,");
     }
     if derives.eq {
         let _ = write!(out, "Eq, PartialEq,");
@@ -101,11 +93,6 @@ impl Derives {
 
     pub fn copy(mut self, copy: bool) -> Self {
         self.copy = copy;
-        self
-    }
-
-    pub fn derive_default(mut self, default: bool) -> Self {
-        self.default = default;
         self
     }
 

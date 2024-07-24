@@ -51,9 +51,9 @@ to run `cargo fmt` to make sure it conforms to the standard.
 This library is (mostly) authored via code generation by parsing the OpenAPI specification for Stripe.
 It consists of 3 main pieces:
 - `async-stripe`: The definition of the `Stripe` client
-- `stripe_types`: Core type definitions, used a ton in generated code
+- `async-stripe-types`: Core type definitions, used a ton in generated code
 - `generated/*`: Generated crates which implement `Stripe` API requests and related types.
-- `stripe_webhook`: Glue code for parsing and validating `Stripe` webhook events and generated
+- `async-stripe-webhook`: Glue code for parsing and validating `Stripe` webhook events and generated
 code for deserializing the events themselves.
 
 No changes should be made to code in a `generated/*` folder. If you'd like to change that

@@ -5,11 +5,11 @@ use heck::ToSnakeCase;
 use openapiv3::{Parameter, ParameterData, ParameterSchemaOrContent, ReferenceOr, Schema};
 use tracing::debug;
 
-use crate::rust_object::{ObjectMetadata, RustObject, Struct};
+use crate::rust_object::{ObjectMetadata, RustObject, Struct, Visibility};
 use crate::rust_type::{RustType, SimpleType};
 use crate::spec::{get_ok_response_schema, get_request_form_parameters, Spec};
 use crate::spec_inference::Inference;
-use crate::stripe_object::{OperationType, PathParam, RequestSpec, StripeOperation};
+use crate::stripe_object::{OperationType, PathParam, RequestParam, RequestSpec, StripeOperation};
 use crate::types::{ComponentPath, RustIdent};
 
 /// Should we skip a currently unsupported request?
@@ -190,15 +190,38 @@ fn build_request(
     method_name: &str,
     path_id_map: &HashMap<String, ComponentPath>,
 ) -> anyhow::Result<RequestSpec> {
-    let params_ident = RustIdent::joined(method_name, parent_ident);
-    let return_ident = RustIdent::joined(&params_ident, "returned");
+    let req_ident = RustIdent::joined(method_name, parent_ident);
+    let return_ident = RustIdent::joined(&req_ident, "returned");
     let return_type =
         Inference::new(&return_ident).required(true).infer_schema_or_ref_type(req.returned);
 
-    let param_inference = Inference::new(&params_ident).can_borrow(true).required(true);
+    let builder_ident = RustIdent::joined(&req_ident, "Builder");
+    let param_inference = Inference::new(&req_ident).can_borrow(true).required(true);
 
     let param_typ = match &req.params {
-        RequestParams::Form(schema) => schema.map(|s| param_inference.infer_schema_or_ref_type(s)),
+        RequestParams::Form(schema) => {
+            // We have a bit of a special case here - we're constructing a builder, not the object
+            // itself. Modifying after the inference is complete is messy, but works for this one off
+            // case.
+            if let Some(mut inferred) = schema.map(|s| param_inference.infer_schema_or_ref_type(s))
+            {
+                // Make sure the struct is named "...Builder"
+                let (obj, meta) = inferred
+                    .as_object_mut()
+                    .context("expected form or query parameter to be an object")?;
+                meta.ident = builder_ident.clone();
+
+                // Make sure the struct and its fields are private
+                let RustObject::Struct(struct_) = obj else {
+                    bail!("expected form or query parameter to be a struct");
+                };
+                struct_.vis = Visibility::Private;
+                struct_.fields.iter_mut().for_each(|f| f.vis = Visibility::Private);
+                Some(inferred)
+            } else {
+                None
+            }
+        }
         RequestParams::Query(params) => match params {
             None => None,
             Some(params) => {
@@ -212,22 +235,17 @@ fn build_request(
                         .field_name(&param.name)
                         .maybe_description(param.description.as_deref())
                         .required(param.required)
-                        .build_struct_field(&param.name, schema);
+                        .build_struct_field(&param.name, schema)
+                        .vis(Visibility::Private);
                     struct_fields.push(struct_field);
                 }
                 Some(RustType::Object(
-                    RustObject::Struct(Struct::new(struct_fields)),
-                    ObjectMetadata::new(params_ident.clone()),
+                    RustObject::Struct(Struct::new(struct_fields).vis(Visibility::Private)),
+                    ObjectMetadata::new(builder_ident.clone()),
                 ))
             }
         },
-    }
-    .unwrap_or_else(|| {
-        RustType::Object(
-            RustObject::Struct(Struct::new(vec![])),
-            ObjectMetadata::new(params_ident.clone()),
-        )
-    });
+    };
 
     let req_path = req.path.trim_start_matches("/v1");
 
@@ -236,7 +254,7 @@ fn build_request(
         let ParameterSchemaOrContent::Schema(schema) = &param.format else {
             bail!("Expected path parameter to follow schema format");
         };
-        let base_param_typ = Inference::new(&params_ident)
+        let base_param_typ = Inference::new(&req_ident)
             .can_borrow(true)
             .required(param.required)
             .maybe_description(param.description.as_deref())
@@ -257,8 +275,9 @@ fn build_request(
         path_params.push(PathParam { name: param.name.clone(), rust_type })
     }
     Ok(RequestSpec {
+        ident: req_ident,
         path_params,
-        params: param_typ,
+        params: param_typ.map(|t| RequestParam { ident: builder_ident, typ: t }),
         doc_comment: req.description.map(|d| d.to_string()),
         req_path: req_path.to_string(),
         returned: return_type,

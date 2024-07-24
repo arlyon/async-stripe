@@ -12,34 +12,27 @@
 //! brand color. See more: <https://dashboard.stripe.com/connect/accounts/overview>
 
 use stripe::StripeError;
-use stripe_connect::account::{CapabilitiesParam, CapabilityParam, CreateAccount};
+use stripe_connect::account::{
+    CapabilitiesParam, CapabilityParam, CreateAccount, CreateAccountType,
+};
 use stripe_connect::account_link::{CreateAccountLink, CreateAccountLinkType};
-use stripe_connect::AccountType;
 
 pub async fn run_connect_example(client: &stripe::Client) -> Result<(), StripeError> {
-    let account = CreateAccount {
-        type_: Some(AccountType::Express),
-        capabilities: Some(CapabilitiesParam {
+    let account = CreateAccount::new()
+        .type_(CreateAccountType::Express)
+        .capabilities(CapabilitiesParam {
             card_payments: Some(CapabilityParam { requested: Some(true) }),
             transfers: Some(CapabilityParam { requested: Some(true) }),
             ..Default::default()
-        }),
-        ..Default::default()
-    }
-    .send(client)
-    .await?;
+        })
+        .send(client)
+        .await?;
 
-    let link = CreateAccountLink {
-        account: &account.id,
-        type_: CreateAccountLinkType::AccountOnboarding,
-        refresh_url: Some("https://test.com/refresh"),
-        return_url: Some("https://test.com/return"),
-        expand: None,
-        collect: None,
-        collection_options: None,
-    }
-    .send(client)
-    .await?;
+    let link = CreateAccountLink::new(&account.id, CreateAccountLinkType::AccountOnboarding)
+        .refresh_url("https://test.com/refresh")
+        .return_url("https://test.com/return")
+        .send(client)
+        .await?;
 
     println!("created a stripe connect link at {}", link.url);
     Ok(())

@@ -7,7 +7,7 @@ use petgraph::Direction;
 use tracing::{debug, info};
 
 use crate::crate_inference::validate_crate_info;
-use crate::crates::{infer_crate_by_package, maybe_infer_crate_by_path, Crate};
+use crate::crates::{get_crate_for_package, maybe_use_hardcoded_crate_assignment, Crate};
 use crate::deduplication::{deduplicate_types, DeduppedObject};
 use crate::overrides::Overrides;
 use crate::printable::{PrintableContainer, PrintableType};
@@ -257,6 +257,7 @@ impl Components {
     }
 }
 
+#[tracing::instrument(skip_all)]
 pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
     let mut webhook_objs = vec![];
     let mut components = IndexMap::with_capacity(spec.component_schemas().len());
@@ -300,11 +301,18 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
                 vec![]
             };
 
-        let inferred_krate = if let Some(package) = &resource.in_package {
-            Some(infer_crate_by_package(package))
-        } else {
-            maybe_infer_crate_by_path(&path)
-        };
+        if resource.in_package.is_none() {
+            tracing::debug!("No package for {path}. Using path name for inference instead");
+        }
+
+        let inferred_crate = resource
+            .in_package
+            .as_ref()
+            .map(|package| get_crate_for_package(package))
+            .transpose()?
+            .or_else(|| maybe_use_hardcoded_crate_assignment(&path))
+            .map(CrateInfo::new);
+
         let reqs = parse_requests(stripe_reqs, spec, resource.ident(), &id_map)?;
         components.insert(
             path,
@@ -312,7 +320,7 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
                 requests: reqs,
                 resource: resource.clone(),
                 data,
-                krate: inferred_krate.map(CrateInfo::new),
+                krate: inferred_crate,
                 stripe_doc_url: None,
                 deduplicated_objects: IndexMap::default(),
             },

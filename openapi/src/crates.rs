@@ -1,22 +1,32 @@
-use std::fmt::{Display, Formatter};
 use std::fs::read_to_string;
 use std::path::PathBuf;
 
+use anyhow::anyhow;
 use lazy_static::lazy_static;
 use serde::Deserialize;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct Crate(&'static str);
+pub struct Crate {
+    base_name: &'static str,
+}
 
 impl Crate {
-    pub const SHARED: Self = Self("stripe_shared");
+    pub const SHARED: Self = Self { base_name: "shared" };
 
     pub fn generated_out_path(self) -> String {
-        format!("crates/{}", self.name())
+        format!("crates/{}", self.crate_name())
     }
 
-    pub fn name(self) -> &'static str {
-        self.0
+    pub fn base_name(self) -> &'static str {
+        self.base_name
+    }
+
+    pub fn lib_name(self) -> String {
+        format!("stripe_{}", self.base_name)
+    }
+
+    pub fn crate_name(self) -> String {
+        format!("async-stripe-{}", self.base_name)
     }
 
     fn generate_to(self) -> String {
@@ -30,12 +40,6 @@ impl Crate {
 
     pub fn get_path_to_mod(self) -> PathBuf {
         self.get_path().join("mod.rs")
-    }
-}
-
-impl Display for Crate {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.0)
     }
 }
 
@@ -70,12 +74,12 @@ lazy_static! {
     pub static ref CRATE_INFO: CrateInfo = load_crate_info().expect("Could not load crate info");
     /// All crate names
     pub static ref ALL_CRATES: Vec<Crate> =
-        CRATE_INFO.crates.iter().map(|c| Crate(&c.name)).collect();
+        CRATE_INFO.crates.iter().map(|c| Crate {base_name: &c.name}).collect();
 }
 
 #[track_caller]
 fn crate_info_unwrapped(krate: Crate) -> &'static CrateGen {
-    CRATE_INFO.crates.iter().find(|k| k.name == krate.0).expect("Crate not found")
+    CRATE_INFO.crates.iter().find(|k| k.name == krate.base_name).expect("Crate not found")
 }
 
 pub fn get_crate_doc_comment(krate: Crate) -> &'static str {
@@ -84,24 +88,29 @@ pub fn get_crate_doc_comment(krate: Crate) -> &'static str {
 
 /// Assign the crate a package should live in. Each package is expected to be
 /// specified in `gen_crates.toml`, so the assignment is hardcoded.
-pub fn infer_crate_by_package(package: &str) -> Crate {
+#[tracing::instrument]
+pub fn get_crate_for_package(package: &str) -> anyhow::Result<Crate> {
     for krate in &CRATE_INFO.crates {
         if krate.packages.iter().any(|p| p == package) {
-            return Crate(&krate.name);
+            return Ok(Crate { base_name: &krate.name });
         }
     }
-    panic!("Package {} requires a mapping in gen_crates.toml", package);
+    Err(anyhow!("no crate mapping found for package {package}. please add it to gen_crates.toml"))
 }
 
 /// Use a hardcoded assignment if available to determine the crate we should assign
 /// to this component.
-pub fn maybe_infer_crate_by_path(path: &str) -> Option<Crate> {
+#[tracing::instrument]
+pub fn maybe_use_hardcoded_crate_assignment(path: &str) -> Option<Crate> {
     // Make sure deleted variants end up in the same place as the non-deleted version
     let path = path.trim_start_matches("deleted_");
     for krate in &CRATE_INFO.crates {
         if krate.paths.iter().any(|p| p == path) {
-            return Some(Crate(&krate.name));
+            return Some(Crate { base_name: &krate.name });
         }
     }
+    // No mapping here is expected in most cases since can infer crates using
+    // dependency graphs
+    tracing::trace!("no crate mapping found for path {path}");
     None
 }

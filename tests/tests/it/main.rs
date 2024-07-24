@@ -1,17 +1,22 @@
 // Needed for `json!` usage in tests
 #![recursion_limit = "256"]
+
+use stripe::ClientBuilder;
+
 mod deser;
 mod enums;
 pub mod generated;
-mod mock;
 mod price;
 
-#[cfg(feature = "async")]
 mod async_tests;
-#[cfg(feature = "blocking")]
 mod blocking;
-// NB: pagination utils ideally could be used for blocking tests as well, but tricky because the `MockServer` is async
-// and the blocking client unconditionally creates its own runtime already
+
 mod deserialization_fixture;
-#[cfg(feature = "async")]
 mod pagination_utils;
+
+pub const STRIPE_MOCK_LINK: &str = "http://localhost:12111";
+pub const SECRET: &str = "sk_test_123";
+
+pub fn get_base_test_config() -> ClientBuilder {
+    ClientBuilder::new(SECRET).url(STRIPE_MOCK_LINK)
+}

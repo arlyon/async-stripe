@@ -11,7 +11,7 @@ on:
 
 env:
   RUSTFLAGS: -Dwarnings
-  rust_min: 1.73
+  rust_min: 1.75
 
 jobs:
   format:
@@ -74,16 +74,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        runtime:
+        features:
           [
+            default-tls,
+            rustls-tls-webpki-roots,
+            rustls-tls-native,
             async-std-surf,
-            tokio-hyper,
-            tokio-hyper-rustls,
-            tokio-hyper-rustls-webpki,
-            blocking,
-            blocking-rustls,
-            blocking-rustls-webpki,
           ]
+
     steps:
       - name: Checkout sources
         uses: actions/checkout@v3
@@ -97,21 +95,46 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Run clippy
-        run: cargo clippy --features "runtime-${{ matrix.runtime }} full serialize deserialize"
+        run: cargo clippy --no-default-features --features "full serialize deserialize ${{ matrix.features }}"
 
-  test:
+  test-clients:
+    name: Test Clients
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        runtime:
+        features:
           [
+            default-tls,
+            rustls-tls-webpki-roots,
+            rustls-tls-native,
             async-std-surf,
-            tokio-hyper,
-            tokio-hyper-rustls,
-            tokio-hyper-rustls-webpki,
-            blocking,
-            blocking-rustls,
-            blocking-rustls-webpki,
+          ]
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ env.rust_min }}
+          components: clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Run tests
+        run: cargo test --no-default-features --features "full serialize deserialize ${{ matrix.features }}"
+
+  stripe-mock-tests:
+    name: Stripe Mock Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        features:
+          [
+            default-tls,
+            rustls-tls-webpki-roots,
+            rustls-tls-native,
           ]
     services:
       stripe-mock:
@@ -128,20 +151,9 @@ jobs:
           toolchain: ${{ env.rust_min }}
 
       - uses: Swatinem/rust-cache@v2
+      - name: Run stripe mock tests
+        run: cargo test -p async-stripe-tests --no-default-features --features ${{ matrix.features }}
 
-      - uses: taiki-e/install-action@cargo-llvm-cov
-      - name: Test and gather coverage
-        run: cargo llvm-cov --lcov --output-path lcov.info --features "runtime-${{ matrix.runtime }} serialize deserialize"
-      - name: Upload to codecov.io
-        uses: codecov/codecov-action@v2.1.0
-        with:
-          token: ${{secrets.CODECOV_TOKEN}}
-          files: lcov.info
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v1
-        with:
-          name: code-coverage-report
-          path: lcov.info
 
   docs:
     name: Docs
@@ -155,7 +167,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Build Documentation
-        run: cargo doc --lib --no-deps --features "runtime-tokio-hyper full"
+        run: cargo doc --lib --no-deps --features "full serialize deserialize"
 
   # Examples tested separately so that we can use crates which don't match our MSRV
   examples:
@@ -170,4 +182,4 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Check examples
-        run: cargo clippy --features "runtime-tokio-hyper-rustls" --workspace
+        run: cargo clippy --workspace

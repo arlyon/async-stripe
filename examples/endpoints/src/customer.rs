@@ -13,31 +13,23 @@ use stripe_core::customer::{CreateCustomer, ListCustomer};
 pub async fn run_customer_example(client: &Client) -> Result<(), StripeError> {
     let meta =
         std::collections::HashMap::from([(String::from("async-stripe"), String::from("true"))]);
-    let customer = CreateCustomer {
-        name: Some("Alexander Lyon"),
-        email: Some("test@async-stripe.com"),
-        description: Some(
-            "A fake customer that is used to illustrate the examples in async-stripe.",
-        ),
-        metadata: Some(&meta),
-        ..Default::default()
-    }
-    .send(client)
-    .await?;
+    let customer = CreateCustomer::new()
+        .name("Alexander Lyon")
+        .email("test@async-stripe.com")
+        .description("A fake customer that is used to illustrate the examples in async-stripe.")
+        .metadata(&meta)
+        .send(client)
+        .await?;
 
     println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
 
-    let customer = CreateCustomer {
-        name: Some("Someone Else"),
-        email: Some("test@async-stripe.com"),
-        description: Some(
-            "A fake customer that is used to illustrate the examples in async-stripe.",
-        ),
-        metadata: Some(&meta),
-        ..Default::default()
-    }
-    .send(client)
-    .await?;
+    let customer = CreateCustomer::new()
+        .name("Someone Else")
+        .email("test@async-stripe.com")
+        .description("A fake customer that is used to illustrate the examples in async-stripe.")
+        .metadata(&meta)
+        .send(client)
+        .await?;
 
     println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
 

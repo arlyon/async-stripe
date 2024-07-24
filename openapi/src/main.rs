@@ -91,7 +91,7 @@ fn main() -> Result<()> {
     for krate in &*ALL_CRATES {
         fmt_cmd.arg(format!("out/{}/src/mod.rs", krate.generated_out_path()));
     }
-    fmt_cmd.arg("out/stripe_webhook/mod.rs");
+    fmt_cmd.arg("out/async-stripe-webhook/mod.rs");
     fmt_cmd.arg("out/tests/mod.rs");
 
     if !args.dry_run {
@@ -103,7 +103,7 @@ fn main() -> Result<()> {
 
         info!("Copying generated files");
         run_rsync("out/crates/", "../generated/")?;
-        run_rsync("out/stripe_webhook/", "../stripe_webhook/src/generated/")?;
+        run_rsync("out/async-stripe-webhook/", "../async-stripe-webhook/src/generated/")?;
         run_rsync("out/tests/", "../tests/tests/it/generated/")?;
 
         std::process::Command::new("cp")

@@ -1,6 +1,6 @@
 use stripe_product::product::{CreateProduct, Features};
 
-use crate::mock::get_client;
+use super::get_client;
 
 #[test]
 // FIXME: stripe-mock is missing required `type` field
@@ -9,10 +9,10 @@ use crate::mock::get_client;
 fn create_product() {
     let client = get_client();
 
-    let mut create = CreateProduct::new("my product");
     let features = vec![Features::new("great feature")];
-    create.features = Some(&features);
-
-    let product = create.send(&client).unwrap();
-    assert_eq!(product.features.first().unwrap().name, Some("great feature".into()));
+    let product = CreateProduct::new("my product")
+        .marketing_features(&features)
+        .send_blocking(&client)
+        .unwrap();
+    assert_eq!(product.marketing_features.first().unwrap().name, Some("great feature".into()));
 }

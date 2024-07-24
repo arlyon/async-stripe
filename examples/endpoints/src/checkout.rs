@@ -15,41 +15,32 @@ use stripe_checkout::CheckoutSessionMode;
 use stripe_core::customer::CreateCustomer;
 use stripe_product::price::CreatePrice;
 use stripe_product::product::CreateProduct;
-use stripe_types::Expandable;
+use stripe_types::{Currency, Expandable};
 
 pub async fn run_checkout_session_example(client: &stripe::Client) -> Result<(), StripeError> {
     let metadata =
         std::collections::HashMap::from([(String::from("async-stripe"), String::from("true"))]);
-    let customer = CreateCustomer {
-        name: Some("Alexander Lyon"),
-        email: Some("test@async-stripe.com"),
-        description: Some(
-            "A fake customer that is used to illustrate the examples in async-stripe.",
-        ),
-        metadata: Some(&metadata),
-        ..Default::default()
-    }
-    .send(client)
-    .await?;
+    let customer = CreateCustomer::new()
+        .name("Alexander Lyon")
+        .email("test@async-stripe.com")
+        .description("A fake customer that is used to illustrate the examples in async-stripe.")
+        .metadata(&metadata)
+        .send(client)
+        .await?;
 
     println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
 
     // create a new example product
-    let product = {
-        let mut create_product = CreateProduct::new("T-Shirt");
-        create_product.metadata = Some(&metadata);
-        create_product.send(client).await?
-    };
+    let product = CreateProduct::new("T-Shirt").metadata(&metadata).send(client).await?;
 
     // and add a price for it in USD
-    let price = {
-        let mut create_price = CreatePrice::new(stripe_types::Currency::USD);
-        create_price.product = Some(product.id.as_str());
-        create_price.metadata = Some(&metadata);
-        create_price.unit_amount = Some(1000);
-        create_price.expand = Some(&["product"]);
-        create_price.send(client).await?
-    };
+    let price = CreatePrice::new(Currency::USD)
+        .product(product.id.as_str())
+        .metadata(&metadata)
+        .unit_amount(1000)
+        .expand(&["product"])
+        .send(client)
+        .await?;
 
     println!(
         "created a product {:?} at price {} {}",
@@ -64,15 +55,14 @@ pub async fn run_checkout_session_example(client: &stripe::Client) -> Result<(),
         price: Some(&price.id),
         ..Default::default()
     }];
-    let checkout_session = {
-        let mut params = CreateCheckoutSession::new();
-        params.cancel_url = Some("http://test.com/cancel");
-        params.customer = Some(customer.id.as_str());
-        params.mode = Some(CheckoutSessionMode::Payment);
-        params.line_items = Some(&line_items);
-        params.expand = Some(&["line_items", "line_items.data.price.product"]);
-        params.send(client).await?
-    };
+    let checkout_session = CreateCheckoutSession::new()
+        .cancel_url("http://test.com/cancel")
+        .customer(customer.id.as_str())
+        .mode(CheckoutSessionMode::Payment)
+        .line_items(&line_items)
+        .expand(&["line_items", "line_items.data.price.product"])
+        .send(client)
+        .await?;
 
     let created_item = &checkout_session.line_items.expect("line items were created").data[0];
     println!(

@@ -12,19 +12,16 @@ fn fixtures() {
 }
 
 const SKIP_PATHS: &[&str] = &[
-    // Fixture data includes "id": "" and we don't deserialize the empty string to a valid id
-    "deleted_discount",
-    // https://github.com/stripe/openapi/issues/68
-    "product",
     // We expect the "plan" field to be required when deserializing the `SubscriptionItem` at the path
     // `subscription.items.data`, but the field is not included in the provided fixture. See
     // https://github.com/stripe/openapi/issues/138 and linked issue for some context.
     "subscription",
     "subscription_item",
     "subscription_schedule",
-    // We expect a "billing_details" field at the path `treasury.outbound_payment.destination_payment_method_details`,
-    // but it is not present
-    "treasury.outbound_payment",
+    // `entitlements` is not marked optional in the spec, but is `null` in the fixture data
+    "entitlements.active_entitlement_summary",
+    // `owners` is not marked optional in the spec, but is `null` in the fixture data
+    "financial_connections.account_ownership",
 ];
 
 pub fn check_object<T: miniserde::Deserialize + serde::Serialize>(resources: &Value, key: &str) {
