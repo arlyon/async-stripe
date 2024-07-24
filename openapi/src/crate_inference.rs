@@ -23,6 +23,7 @@ pub fn validate_crate_info(components: &Components) -> anyhow::Result<()> {
 }
 
 impl Components {
+    #[tracing::instrument(skip_all)]
     pub fn infer_all_crate_assignments(&mut self) -> anyhow::Result<()> {
         // If a component includes requests that have URLs building off another component,
         // place with that component. This automates determinations like `external_account`
@@ -70,26 +71,29 @@ impl Components {
 
     /// If we find a component with no assigned crate, return an error with some
     /// additional dependency graph information to help determine why.
+    #[tracing::instrument(skip_all)]
     fn ensure_no_missing_crates(&self) -> anyhow::Result<()> {
-        let missing_crates = self
+        let components_without_crates = self
             .components
             .iter()
             .filter(|(_, comp)| comp.krate().is_none())
-            .map(|(name, _)| name)
+            .map(|(p, _)| p)
             .collect::<Vec<_>>();
 
         // If we've got missing crates, also look at the dep graph to dump some
         // helpful info
-        if !missing_crates.is_empty() {
+        if !components_without_crates.is_empty() {
             let graph = self.gen_component_dep_graph();
-            for missing in &missing_crates {
+            for missing in &components_without_crates {
                 let depended_on =
                     graph.neighbors_directed(missing, Direction::Incoming).collect::<Vec<_>>();
                 let depended_crates =
                     depended_on.iter().map(|m| self.get(m).krate()).collect::<IndexSet<_>>();
-                error!("Could not infer crate for {missing}. Depended on by components {depended_on:?}, crates {depended_crates:?}")
+                error!("Could not infer crate for component {missing}. Depended on by components {depended_on:?}, crates {depended_crates:?}. Perhaps add a path entry for it?")
             }
-            bail!("Some components could not have their crate inferred: {:#?}", missing_crates);
+            bail!(
+                "Some components could not have their crate inferred: {components_without_crates:#?}",
+            );
         }
 
         Ok(())
@@ -122,7 +126,7 @@ impl Components {
     }
 
     fn assign_paths_required_to_share_types(&mut self) {
-        // Paths for components required to live in the `stripe_shared` crate. Adding `event` is
+        // Paths for components required to live in the `async-stripe-shared` crate. Adding `event` is
         // used for webhooks
         const PATHS_IN_TYPES: &[&str] = &["event"];
 

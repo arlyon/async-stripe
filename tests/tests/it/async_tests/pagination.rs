@@ -1,63 +1,64 @@
 use futures_util::StreamExt;
 use futures_util::TryStreamExt;
-use stripe::PaginationExt;
-use stripe::{AccountId, Client};
+use stripe::{AccountId, ClientBuilder, PaginationExt};
 use stripe_connect::account::ListAccount;
 use stripe_core::customer::{ListCustomer, SearchCustomer};
 use stripe_core::{Customer, CustomerId};
 
-use crate::mock::get_client;
+use super::test_with_all_clients;
 use crate::pagination_utils::{cons_cus_id, parse_cus_id, PaginationMock, PaginationMockKind};
 
 const PAGINATION_KINDS: [PaginationMockKind; 2] =
     [PaginationMockKind::List, PaginationMockKind::Search];
 
-#[tokio::test]
-async fn is_account_listable() {
-    let client = get_client();
-    let expected_id: AccountId = "acct_1OPouMJN5vQBdWEx".parse().unwrap();
+#[test]
+fn is_account_listable() {
+    test_with_all_clients(|client| async move {
+        let expected_id: AccountId = "acct_1OPouMJN5vQBdWEx".parse().unwrap();
 
-    // Paginating from nothing
-    let result =
-        ListAccount::new().paginate().stream(&client).try_collect::<Vec<_>>().await.unwrap();
-    assert_eq!(result.len(), 1);
-    assert_eq!(result.first().unwrap().id, expected_id);
+        // Paginating from nothing
+        let result =
+            ListAccount::new().paginate().stream(&client).try_collect::<Vec<_>>().await.unwrap();
+        assert_eq!(result.len(), 1);
+        assert_eq!(result.first().unwrap().id, expected_id);
 
-    // Should be same result making a single request, then paginating that returned list since there's no
-    // additional data
-    let result = ListAccount::new().send(&client).await.unwrap();
-    assert_eq!(result.data.len(), 1);
-    assert_eq!(result.data.first().unwrap().id, expected_id);
+        // Should be same result making a single request, then paginating that returned list since there's no
+        // additional data
+        let result = ListAccount::new().send(&client).await.unwrap();
+        assert_eq!(result.data.len(), 1);
+        assert_eq!(result.data.first().unwrap().id, expected_id);
 
-    let result = result.into_paginator().stream(&client).try_collect::<Vec<_>>().await.unwrap();
-    assert_eq!(result.len(), 1);
-    assert_eq!(result.first().unwrap().id, expected_id);
+        let result = result.into_paginator().stream(&client).try_collect::<Vec<_>>().await.unwrap();
+        assert_eq!(result.len(), 1);
+        assert_eq!(result.first().unwrap().id, expected_id);
+    });
 }
 
-#[tokio::test]
-async fn is_customer_searchable() {
-    let client = get_client();
-    let expected_id: CustomerId = "cus_PEHTtYpY7elppN".parse().unwrap();
+#[test]
+fn is_customer_searchable() {
+    test_with_all_clients(|client| async move {
+        let expected_id: CustomerId = "cus_PEHTtYpY7elppN".parse().unwrap();
 
-    // Paginating from nothing
-    let result = SearchCustomer::new("unused_query")
-        .paginate()
-        .stream(&client)
-        .try_collect::<Vec<_>>()
-        .await
-        .unwrap();
-    assert_eq!(result.len(), 1);
-    assert_eq!(result.first().unwrap().id, expected_id);
+        // Paginating from nothing
+        let result = SearchCustomer::new("unused_query")
+            .paginate()
+            .stream(&client)
+            .try_collect::<Vec<_>>()
+            .await
+            .unwrap();
+        assert_eq!(result.len(), 1);
+        assert_eq!(result.first().unwrap().id, expected_id);
 
-    // Should be same result making a single request, then paginating that returned list since there's no
-    // additional data
-    let result = SearchCustomer::new("unused_query").send(&client).await.unwrap();
-    assert_eq!(result.data.len(), 1);
-    assert_eq!(result.data.first().unwrap().id, expected_id);
+        // Should be same result making a single request, then paginating that returned list since there's no
+        // additional data
+        let result = SearchCustomer::new("unused_query").send(&client).await.unwrap();
+        assert_eq!(result.data.len(), 1);
+        assert_eq!(result.data.first().unwrap().id, expected_id);
 
-    let result = result.into_paginator().stream(&client).try_collect::<Vec<_>>().await.unwrap();
-    assert_eq!(result.len(), 1);
-    assert_eq!(result.first().unwrap().id, expected_id);
+        let result = result.into_paginator().stream(&client).try_collect::<Vec<_>>().await.unwrap();
+        assert_eq!(result.len(), 1);
+        assert_eq!(result.first().unwrap().id, expected_id);
+    })
 }
 
 /// `PaginationMock` docs best explain how the mock pagination works. This function ensures
@@ -74,24 +75,28 @@ async fn check_get_all(
     expected_cursors: Vec<Option<usize>>,
 ) {
     let mocker = PaginationMock::new(customer_count, kind).await;
-    let client = Client::from_url(&*mocker.url(), "fake_key");
+    let client = ClientBuilder::new("fake_key").url(mocker.url()).build().unwrap();
+
     let initial_cursor_str = initial_cursor.map(cons_cus_id);
     let items: Vec<Customer> = match kind {
         PaginationMockKind::List => {
-            let params = ListCustomer {
-                limit,
-                starting_after: initial_cursor_str.as_deref(),
-                ..Default::default()
-            };
+            let mut params = ListCustomer::new();
+            if let Some(limit) = limit {
+                params = params.limit(limit);
+            }
+            if let Some(starting_after) = &initial_cursor_str {
+                params = params.starting_after(starting_after);
+            }
             params.paginate().stream(&client).try_collect().await.unwrap()
         }
         PaginationMockKind::Search => {
-            let params = SearchCustomer {
-                limit,
-                page: initial_cursor_str.as_deref(),
-                query: "unused",
-                expand: None,
-            };
+            let mut params = SearchCustomer::new("unused");
+            if let Some(limit) = limit {
+                params = params.limit(limit);
+            }
+            if let Some(starting_after) = &initial_cursor_str {
+                params = params.page(starting_after);
+            }
             params.paginate().stream(&client).try_collect().await.unwrap()
         }
     };
@@ -120,24 +125,22 @@ async fn check_partial(
     expected_ids_received: Vec<usize>,
 ) {
     let mocker = PaginationMock::new(10, kind).await;
-    let client = Client::from_url(&*mocker.url(), "fake_key");
+    let client = ClientBuilder::new("fake_key").url(mocker.url()).build().unwrap();
     let initial_cursor_str = initial_cursor.map(cons_cus_id);
     let items: Vec<Customer> = match kind {
         PaginationMockKind::List => {
-            let params = ListCustomer {
-                limit: Some(5),
-                starting_after: initial_cursor_str.as_deref(),
-                ..Default::default()
-            };
+            let mut params = ListCustomer::new().limit(5);
+            if let Some(starting_after) = &initial_cursor_str {
+                params = params.starting_after(starting_after);
+            }
             params.paginate().stream(&client).take(count_to_get).try_collect().await.unwrap()
         }
         PaginationMockKind::Search => {
-            let params = SearchCustomer {
-                limit: Some(5),
-                page: initial_cursor_str.as_deref(),
-                query: "unused",
-                expand: None,
-            };
+            let mut params = SearchCustomer::new("unused").limit(5);
+            if let Some(starting_after) = &initial_cursor_str {
+                params = params.page(starting_after);
+            }
+
             params.paginate().stream(&client).take(count_to_get).try_collect().await.unwrap()
         }
     };

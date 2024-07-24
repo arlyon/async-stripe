@@ -100,8 +100,7 @@ impl<'a> ObjectWriter<'a> {
         );
     }
 
-    /// Generate the enum definition, along with the methods `as_str`, `as_ref`, `impl Display`,
-    /// and `impl Default`.
+    /// Generate the enum definition and core methods
     pub fn write_fieldless_enum_variants(&self, out: &mut String, variants: &[FieldlessVariant]) {
         let enum_name = self.ident;
         // Build the body of the enum definition

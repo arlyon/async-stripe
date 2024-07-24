@@ -1,0 +1,77 @@
+[package]
+name = "async-stripe-billing"
+version.workspace = true
+description.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[lib]
+path = "src/mod.rs"
+name = "stripe_billing"
+
+[dependencies]
+serde.workspace = true
+serde_json = { workspace = true, optional = true }
+smol_str.workspace = true
+miniserde.workspace = true
+async-stripe-types = {path = "../../async-stripe-types"}
+async-stripe-client-core = {path = "../../async-stripe-client-core"}
+
+async-stripe-shared = {path = "../../generated/async-stripe-shared"}
+
+
+[features]
+serialize = ["async-stripe-types/serialize","async-stripe-shared/serialize"]
+deserialize = ["async-stripe-types/deserialize","async-stripe-shared/deserialize", "dep:serde_json"]
+billing_meter = []
+billing_meter_event = []
+billing_meter_event_adjustment = []
+billing_meter_event_summary = []
+billing_portal_configuration = []
+billing_portal_session = []
+credit_note = []
+credit_note_line_item = []
+invoice = []
+invoice_item = []
+invoice_line_item = []
+plan = []
+quote = []
+subscription = []
+subscription_item = []
+subscription_schedule = []
+tax_id = []
+test_helpers_test_clock = []
+usage_record = []
+usage_record_summary = []
+
+full = ["billing_meter",
+"billing_meter_event",
+"billing_meter_event_adjustment",
+"billing_meter_event_summary",
+"billing_portal_configuration",
+"billing_portal_session",
+"credit_note",
+"credit_note_line_item",
+"invoice",
+"invoice_item",
+"invoice_line_item",
+"plan",
+"quote",
+"subscription",
+"subscription_item",
+"subscription_schedule",
+"tax_id",
+"test_helpers_test_clock",
+"usage_record",
+"usage_record_summary"]
+
+
+[package.metadata.docs.rs]
+features = ["full"]
+

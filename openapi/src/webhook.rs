@@ -18,7 +18,7 @@ use crate::types::RustIdent;
 use crate::utils::append_to_file;
 
 pub fn write_generated_for_webhooks(components: &Components) -> anyhow::Result<()> {
-    let base = Path::new("stripe_webhook");
+    let base = Path::new("async-stripe-webhook");
     write_event_object(components, base)?;
     Ok(())
 }
@@ -30,42 +30,45 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
     for webhook_obj in &components.webhook_objs {
         let ident = RustIdent::create(&webhook_obj.event_type);
 
-        let (printable, feature_gate) = if let Some(enum_objs) =
-            webhook_obj.typ.as_rust_object().and_then(|o| match o {
+        let (printable, feature_gate) =
+            if let Some(enum_objs) = webhook_obj.typ.as_rust_object().and_then(|o| match o {
                 RustObject::Enum(variants) => as_enum_of_objects(components, variants),
                 _ => None,
             }) {
-            ObjectWriter::new(components, &ident, ObjectUsage::type_def())
-                .write_enum_of_objects(&mut out, &enum_objs);
-            (
-                PrintableType::QualifiedPath {
-                    path: None,
-                    ident: ident.clone(),
-                    has_ref: false,
-                    is_ref: false,
-                },
-                None,
-            )
-        } else {
-            let path = webhook_obj
-                .typ
-                .as_component_path()
-                .context("expected webhook data type to be enum of objects or component path")?;
-            let belonging_crate = components.get(path).krate_unwrapped().for_types();
-            (
-                components.construct_printable_type_from_path(path),
-                if belonging_crate != Crate::SHARED { Some(belonging_crate.name()) } else { None },
-            )
-        };
+                ObjectWriter::new(components, &ident, ObjectUsage::type_def())
+                    .write_enum_of_objects(&mut out, &enum_objs);
+                (
+                    PrintableType::QualifiedPath {
+                        path: None,
+                        ident: ident.clone(),
+                        has_ref: false,
+                        is_ref: false,
+                    },
+                    None,
+                )
+            } else {
+                let path = webhook_obj.typ.as_component_path().context(
+                    "expected webhook data type to be enum of objects or component path",
+                )?;
+                let belonging_crate = components.get(path).krate_unwrapped().for_types();
+                (
+                    components.construct_printable_type_from_path(path),
+                    if belonging_crate != Crate::SHARED {
+                        Some(belonging_crate.crate_name())
+                    } else {
+                        None
+                    },
+                )
+            };
 
         let comment = write_doc_comment(&webhook_obj.doc, 1);
         let _ = write!(enum_body, "{comment}");
-        if let Some(gate) = feature_gate {
+        if let Some(gate) = &feature_gate {
             let _ = writeln!(enum_body, r#"#[cfg(feature = "{gate}")]"#);
         }
         let _ = writeln!(enum_body, "{ident}({printable}),");
 
-        if let Some(gate) = feature_gate {
+        if let Some(gate) = &feature_gate {
             let _ = writeln!(match_inner, r#"#[cfg(feature = "{gate}")]"#);
         }
         let evt_type = &webhook_obj.event_type;

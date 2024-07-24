@@ -34,7 +34,7 @@ impl Components {
         for krate in &*ALL_CRATES {
             graph.add_node(*krate);
             if *krate != Crate::SHARED {
-                // Everybody depends on `stripe_shared` because of reexports
+                // Everybody depends on `async-stripe-shared` because of reexports
                 graph.add_edge(*krate, Crate::SHARED, ());
             }
         }

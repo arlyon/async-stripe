@@ -150,10 +150,6 @@ impl RustType {
         }
     }
 
-    pub fn implies_private_field(&self) -> bool {
-        matches!(self, Self::Simple(SimpleType::Ext(ExtType::AlwaysTrue)))
-    }
-
     /// Is this type `Option<>`?
     pub const fn is_option(&self) -> bool {
         matches!(self, Self::Container(Container::Option(_)))
@@ -233,7 +229,7 @@ impl RustType {
         }
     }
 
-    pub fn as_object_mut(&mut self) -> Option<(&mut RustObject, &ObjectMetadata)> {
+    pub fn as_object_mut(&mut self) -> Option<(&mut RustObject, &mut ObjectMetadata)> {
         match self {
             Self::Object(obj, meta) => Some((obj, meta)),
             _ => None,

@@ -2,7 +2,7 @@ use stripe_billing::subscription::{
     CancelSubscription, CancelSubscriptionCancellationDetails, RetrieveSubscription,
 };
 
-use crate::mock::get_client;
+use super::get_client;
 
 #[test]
 // Test ignored because the spec implies `plan` is required, but stripe-mock does not
@@ -12,7 +12,7 @@ fn is_subscription_retrievable() {
     let client = get_client();
 
     let id = "sub_123".parse().unwrap();
-    let subscription = RetrieveSubscription::new().send(&client, &id).unwrap();
+    let subscription = RetrieveSubscription::new(&id).send_blocking(&client).unwrap();
     assert_eq!(subscription.id, "sub_123");
     assert!(!subscription.customer.is_object());
 }
@@ -23,9 +23,8 @@ fn is_subscription_expandable() {
     let client = get_client();
 
     let id = "sub_123".parse().unwrap();
-    let mut retrieve = RetrieveSubscription::new();
-    retrieve.expand = Some(&["customer"]);
-    let subscription = retrieve.send(&client, &id).unwrap();
+    let subscription =
+        RetrieveSubscription::new(&id).expand(&["customer"]).send_blocking(&client).unwrap();
     assert_eq!(subscription.id, "sub_123");
     assert!(subscription.customer.is_object());
 }
@@ -37,10 +36,12 @@ fn is_subscription_expandable() {
 fn can_prorate_when_cancelling_subscription() {
     let client = get_client();
 
+    let details = CancelSubscriptionCancellationDetails::new();
     let id = "sub_123".parse().unwrap();
-    let mut cancel = CancelSubscription::new();
-    cancel.cancellation_details = Some(CancelSubscriptionCancellationDetails::new());
-    cancel.prorate = Some(true);
-    let result = cancel.send(&client, &id).unwrap();
+    let result = CancelSubscription::new(&id)
+        .prorate(true)
+        .cancellation_details(details)
+        .send_blocking(&client)
+        .unwrap();
     assert_eq!(result.id, id);
 }

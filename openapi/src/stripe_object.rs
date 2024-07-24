@@ -7,9 +7,10 @@ use lazy_static::lazy_static;
 use openapiv3::Schema;
 use serde::{Deserialize, Serialize};
 
+use crate::components::Components;
 use crate::crates::Crate;
 use crate::deduplication::DeduppedObject;
-use crate::rust_object::{ObjectUsage, RustObject};
+use crate::rust_object::{ObjectUsage, RustObject, StructField};
 use crate::rust_type::RustType;
 use crate::spec_inference::Inference;
 use crate::types::{ComponentPath, RustIdent};
@@ -91,7 +92,7 @@ impl StripeObject {
         self.types_are_shared() && self.krate_unwrapped().base() != Crate::SHARED
     }
 
-    /// Do schema definitions live in `stripe_shared`?
+    /// Do schema definitions live in `async-stripe-shared`?
     pub fn types_are_shared(&self) -> bool {
         let krate = self.krate_unwrapped();
         krate.for_types() == Crate::SHARED
@@ -335,8 +336,9 @@ fn infer_object_ident(path: &ComponentPath) -> RustIdent {
 
 #[derive(Debug, Clone)]
 pub struct RequestSpec {
+    pub ident: RustIdent,
     pub path_params: Vec<PathParam>,
-    pub params: RustType,
+    pub params: Option<RequestParam>,
     pub method_type: OperationType,
     pub returned: RustType,
     pub doc_comment: Option<String>,
@@ -344,15 +346,47 @@ pub struct RequestSpec {
     pub method_name: String,
 }
 
+#[derive(Debug, Clone)]
+pub struct RequestParam {
+    pub ident: RustIdent,
+    pub typ: RustType,
+}
+
 impl RequestSpec {
     pub fn visit<'a, V: Visit<'a>>(&'a self, visitor: &mut V) {
         visitor.visit_typ(&self.returned, ObjectUsage::return_type());
-        visitor.visit_typ(&self.params, ObjectUsage::request_param());
+        if let Some(params) = &self.params {
+            visitor.visit_typ(&params.typ, ObjectUsage::request_param());
+        }
     }
 
     pub fn visit_mut<V: VisitMut>(&mut self, visitor: &mut V) {
         visitor.visit_typ_mut(&mut self.returned, ObjectUsage::return_type());
-        visitor.visit_typ_mut(&mut self.params, ObjectUsage::request_param());
+        if let Some(params) = &mut self.params {
+            visitor.visit_typ_mut(&mut params.typ, ObjectUsage::request_param());
+        }
+    }
+
+    pub fn has_reference(&self, components: &Components) -> bool {
+        if !self.path_params.is_empty() {
+            return true;
+        }
+        let Some(params) = &self.params else {
+            return false;
+        };
+        params.typ.has_reference(components)
+    }
+
+    pub fn param_struct_fields(&self) -> Option<&[StructField]> {
+        let params = self.params.as_ref()?;
+        match &params.typ.as_rust_object()? {
+            RustObject::Struct(struct_) => Some(&struct_.fields),
+            _ => None,
+        }
+    }
+
+    pub fn get_param_field(&self, field: &str) -> Option<&RustType> {
+        self.params.as_ref()?.typ.as_rust_object()?.get_struct_field(field)
     }
 }
 

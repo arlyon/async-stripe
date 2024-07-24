@@ -18,8 +18,8 @@ Skipping the `--fetch` argument expects an already downloaded spec, useful for q
 
 ## Generated Files
 - `generated/*`: Crates including both type definitions and API requests
-- `stripe_types/generated/*`: Type definitions which are required by `generated/*` crates
-- `stripe_webhook/generated/*`: Type definitions related to Stripe webhook event deserialization
+- `async-stripe-types/generated/*`: Type definitions which are required by `generated/*` crates
+- `async-stripe-webhook/generated/*`: Type definitions related to Stripe webhook event deserialization
 - `crate_info.md`: A Markdown table explaining which crate contains each Stripe API object
 
 ## Generated Crate Organization
@@ -49,19 +49,19 @@ to live in the same crate.
 
 The solution to avoiding one giant crate was to separate the OpenAPI type definitions from the request
 definitions. Every type definition that would result in a cyclic dependency is contained in the
-`stripe_types` crate, which contains only type definitions (which also allows it to start 
+`async-stripe-types` crate, which contains only type definitions (which also allows it to start 
 much earlier in a compilation pipeline since it does not depend on the client)
 
-Each of the crates in `generated/*` depends on `stripe_types`. Request definitions do not
+Each of the crates in `generated/*` depends on `async-stripe-types`. Request definitions do not
 depend on each other, so each request can live behind its own feature gate, avoiding compilation 
 time scaling with the size of the OpenAPI spec.
 
 For a concrete example with `Account`:
-- The type definition for `Account` is part of many cycles, so it is defined in `stripe_types`.
-- The requests related to `Account` (`CreateAccount`, `UpdateAccount`, etc.) are defined in `generated/stripe_connect` and gated by the feature `account`.
+- The type definition for `Account` is part of many cycles, so it is defined in `async-stripe-types`.
+- The requests related to `Account` (`CreateAccount`, `UpdateAccount`, etc.) are defined in `generated/async-stripe-connect` and gated by the feature `account`.
   - Users not needing those requests can just skip that feature or skip the entire crate if they need nothing from it.
-  - `Account` is also reexported in `stripe_connect` so that a user does not need to know about crate
-  structure, they just need to know everything related to `Account` lives in `stripe_connect`
+  - `Account` is also reexported in `async-stripe-connect` so that a user does not need to know about crate
+  structure, they just need to know everything related to `Account` lives in `async-stripe-connect`
 
 ### Special Files
 Where possible, keeping hardcoded logic in configuration files read by the code instead of the code

@@ -1,4 +1,3 @@
-#[cfg(feature = "async")]
 #[tokio::main]
 async fn main() -> Result<(), stripe::StripeError> {
     use futures_util::TryStreamExt;
@@ -19,6 +18,3 @@ async fn main() -> Result<(), stripe::StripeError> {
     let _ = stream.try_collect::<Vec<_>>().await?;
     Ok(())
 }
-
-#[cfg(not(feature = "async"))]
-fn main() {}

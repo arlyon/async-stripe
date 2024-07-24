@@ -7,15 +7,16 @@ use stripe_billing::subscription_item::{
     CreateSubscriptionItemPriceDataRecurring, CreateSubscriptionItemPriceDataRecurringInterval,
 };
 use stripe_billing::PlanInterval;
+use stripe_types::Currency;
 
-use crate::mock::get_client;
+use super::get_client;
 
 #[test]
 fn can_create_plan() {
     let client = get_client();
 
     let id = "price_123".parse().unwrap();
-    let plan = RetrievePlan::new().send(&client, &id).unwrap();
+    let plan = RetrievePlan::new(&id).send_blocking(&client).unwrap();
     assert_eq!(plan.interval, PlanInterval::Month);
     assert_eq!(plan.amount, Some(2000));
 }
@@ -26,14 +27,15 @@ fn can_create_plan() {
 fn can_create_subscription_plan_interval() {
     let client = get_client();
 
-    let id = "sub_123";
-    let mut create = CreateSubscriptionItem::new(id);
-    create.price_data = Some(CreateSubscriptionItemPriceData::new(
-        stripe_types::Currency::USD,
+    let price_data = CreateSubscriptionItemPriceData::new(
+        Currency::USD,
         "My Product",
         CreateSubscriptionItemPriceDataRecurring::new(
             CreateSubscriptionItemPriceDataRecurringInterval::Day,
         ),
-    ));
-    let _result = create.send(&client).unwrap();
+    );
+
+    let id = "sub_123";
+    let _result =
+        CreateSubscriptionItem::new(id).price_data(price_data).send_blocking(&client).unwrap();
 }

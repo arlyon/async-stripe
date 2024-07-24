@@ -1,0 +1,45 @@
+[package]
+name = "async-stripe-terminal"
+version.workspace = true
+description.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[lib]
+path = "src/mod.rs"
+name = "stripe_terminal"
+
+[dependencies]
+serde.workspace = true
+serde_json = { workspace = true, optional = true }
+smol_str.workspace = true
+miniserde.workspace = true
+async-stripe-types = {path = "../../async-stripe-types"}
+async-stripe-client-core = {path = "../../async-stripe-client-core"}
+
+async-stripe-shared = {path = "../../generated/async-stripe-shared"}
+
+
+[features]
+serialize = ["async-stripe-types/serialize","async-stripe-shared/serialize"]
+deserialize = ["async-stripe-types/deserialize","async-stripe-shared/deserialize", "dep:serde_json"]
+terminal_configuration = []
+terminal_connection_token = []
+terminal_location = []
+terminal_reader = []
+
+full = ["terminal_configuration",
+"terminal_connection_token",
+"terminal_location",
+"terminal_reader"]
+
+
+[package.metadata.docs.rs]
+features = ["full"]
+

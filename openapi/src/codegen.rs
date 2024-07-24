@@ -3,7 +3,6 @@ use std::path::PathBuf;
 
 use anyhow::Context;
 use indoc::formatdoc;
-use serde::Serialize;
 
 use crate::components::{get_components, Components};
 use crate::crate_table::write_crate_table;
@@ -51,8 +50,7 @@ impl CodeGen {
         write_to_file(version_file_content, base_path.join("version.rs"))?;
         let _ = writeln!(mod_rs_contents, "pub mod version;");
 
-        append_to_file(mod_rs_contents, mod_rs_path)?;
-        Ok(())
+        append_to_file(mod_rs_contents, mod_rs_path)
     }
 
     fn write_components(&self) -> anyhow::Result<()> {
@@ -102,7 +100,7 @@ impl CodeGen {
             let toml = gen_crate_toml(*krate, neighbors.collect(), request_features);
             write_to_file(toml, base_path.join("Cargo.toml"))?;
 
-            let crate_name = krate.name();
+            let lib_name = krate.lib_name();
             let doc_comment = write_top_level_doc_comment(get_crate_doc_comment(*krate));
 
             // We set up some things in the base `mod.rs` file:
@@ -117,7 +115,7 @@ impl CodeGen {
             #![allow(rustdoc::invalid_html_tags)]
             
             {doc_comment}
-            extern crate self as {crate_name};
+            extern crate self as {lib_name};
 
             miniserde::make_place!(Place);
             "#
@@ -134,7 +132,15 @@ impl CodeGen {
 
     fn write_component_requests(&self, comp: &StripeObject) -> anyhow::Result<()> {
         let req_content = gen_requests(&comp.requests, &self.components);
-        write_to_file(req_content, comp.get_requests_content_path())?;
+
+        let req_file_content = formatdoc! {
+            r#"
+            use stripe_client_core::{{StripeClient, StripeBlockingClient, StripeRequest, RequestBuilder, StripeMethod}};
+            
+            {req_content}
+            "#
+        };
+        write_to_file(req_file_content, comp.get_requests_content_path())?;
         let feature_gate = comp.mod_path();
         let new_mod_file_content = formatdoc! {
             r#"
@@ -183,7 +189,7 @@ impl CodeGen {
         // component's base crate.
         if comp.types_split_from_requests() {
             append_to_file(
-                format!("pub use {}::{}::*;", Crate::SHARED, comp.mod_path()),
+                format!("pub use {}::{}::*;", Crate::SHARED.lib_name(), comp.mod_path()),
                 comp.req_crate().get_path_to_mod(),
             )?;
         }
@@ -214,18 +220,13 @@ impl CodeGen {
     }
 
     fn write_object_info_for_testing(&self) -> anyhow::Result<()> {
-        #[derive(Serialize)]
-        struct ObjectInfo {
-            path: String,
-            import_type: String,
-        }
         let mut checks = String::new();
         for (path, obj) in &self.components.components {
             if obj.object_name().is_none() {
                 continue;
             }
             let krate = obj.krate().unwrap().base();
-            let import_path = format!("{krate}::{}", obj.ident());
+            let import_path = format!("{}::{}", krate.lib_name(), obj.ident());
             let _ = writeln!(checks, r#"check_object::<{import_path}>(resources, "{path}");"#);
         }
         let content = formatdoc! {
