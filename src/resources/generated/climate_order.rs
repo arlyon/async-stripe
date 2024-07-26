@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "ClimateRemovalsOrders".
 ///
-/// For more details see <https://stripe.com/docs/api/climate/order/object>
+/// For more details see <https://stripe.com/api/climate/order/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ClimateOrder {
     /// Unique identifier for the object.

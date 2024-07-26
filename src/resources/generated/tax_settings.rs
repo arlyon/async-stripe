@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TaxProductResourceTaxSettings".
 ///
-/// For more details see <https://stripe.com/docs/api/tax/settings/object>
+/// For more details see <https://stripe.com/api/tax/settings/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxSettings {
 
