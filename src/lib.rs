@@ -28,9 +28,9 @@
 //! to determine which fields are required for either request.
 //!
 //! > **Note:** We have an extensive collection of examples which are interspersed in
-//!   the documentation. Any time an API is used in an example it is highlighted in the
-//!   docs for that item. You can also find all the raw examples in the `examples` directory.
-//!   Please have a look at those for inspiration or ideas on how to get started.
+//! > the documentation. Any time an API is used in an example it is highlighted in the
+//! > docs for that item. You can also find all the raw examples in the `examples` directory.
+//! > Please have a look at those for inspiration or ideas on how to get started.
 //!
 //! ## Idempotency / Request Strategies
 //!
@@ -50,7 +50,7 @@
 //!                                            generated automatically and is stable across retries.
 //!
 //! > Want to implement your own? If it is a common strategy, please consider opening a PR to add it to the library.
-//!   Otherwise, we are open to turning this into an open trait so that you can implement your own strategy.
+//! > Otherwise, we are open to turning this into an open trait so that you can implement your own strategy.
 
 #![allow(clippy::large_enum_variant)]
 #![warn(clippy::missing_panics_doc)]
