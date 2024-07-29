@@ -184,12 +184,20 @@ pub fn write_doc_comment(description: &str, depth: u8) -> String {
             out.push_str(line);
             // If an unreasonable line, inject newlines after each sentence
         } else {
+            let is_list_item = line.starts_with("* ");
+
             for (i, part) in PERIOD_THEN_WHITESPACE.split(line).enumerate() {
                 if i > 0 {
                     out.push('\n');
                 }
                 print_indent(&mut out, depth);
-                out.push_str("/// ");
+
+                if is_list_item && i > 0 {
+                    out.push_str("///   ");
+                } else {
+                    out.push_str("/// ");
+                }
+
                 out.push_str(part.trim());
                 if !part.is_empty() && !out.ends_with('.') {
                     out.push('.');
