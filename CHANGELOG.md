@@ -1,3 +1,10 @@
+## [0.37.3](https://github.com/arlyon/async-stripe/compare/v0.37.2...v0.37.3) (2024-07-29)
+
+
+### Bug Fixes
+
+* linting issue for Rust 1.80 ([9232213](https://github.com/arlyon/async-stripe/commit/9232213c0665622c91b328d1b2ff20e7f9ff7357))
+
 ## [0.37.2](https://github.com/arlyon/async-stripe/compare/v0.37.1...v0.37.2) (2024-07-23)
 
 
