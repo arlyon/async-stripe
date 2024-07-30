@@ -279,7 +279,7 @@ mod tests {
         assert_eq!(invoice.quantity, 3);
     }
 
-    #[cfg(feature = "stripe_billing")]
+    #[cfg(feature = "async-stripe-billing")]
     #[test]
     // https://github.com/arlyon/async-stripe/issues/455
     fn test_billing_portal_session() {
