@@ -1,3 +1,10 @@
+# [0.38.0](https://github.com/arlyon/async-stripe/compare/v0.37.3...v0.38.0) (2024-07-31)
+
+
+### Features
+
+* add support for TestClock operations ([d792798](https://github.com/arlyon/async-stripe/commit/d792798c3f027e0c57b132ddf168dbd03fcdd926)), closes [#574](https://github.com/arlyon/async-stripe/issues/574)
+
 ## [0.37.3](https://github.com/arlyon/async-stripe/compare/v0.37.2...v0.37.3) (2024-07-29)
 
 
