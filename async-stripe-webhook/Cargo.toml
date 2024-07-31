@@ -24,13 +24,34 @@ chrono = { version = "0.4", default-features = false, features = ["clock"] }
 thiserror = "1.0.24"
 miniserde.workspace = true
 serde.workspace = true
+serde_json = { workspace = true, optional = true }
 
-async-stripe-core = { path = "../generated/async-stripe-core", optional = true }
-async-stripe-checkout = { path = "../generated/async-stripe-checkout", optional = true }
 async-stripe-billing = { path = "../generated/async-stripe-billing", optional = true }
+async-stripe-checkout = { path = "../generated/async-stripe-checkout", optional = true }
+async-stripe-core = { path = "../generated/async-stripe-core", optional = true }
+async-stripe-fraud = { path = "../generated/async-stripe-fraud", optional = true }
+async-stripe-misc = { path = "../generated/async-stripe-misc", optional = true }
+async-stripe-payment = { path = "../generated/async-stripe-payment", optional = true }
+async-stripe-terminal = { path = "../generated/async-stripe-terminal", optional = true }
+async-stripe-treasury = { path = "../generated/async-stripe-treasury", optional = true }
 
 [dev-dependencies]
 serde_json.workspace = true
 
+[features]
+serialize = ["async-stripe-types/serialize", "async-stripe-shared/serialize"]
+deserialize = ["async-stripe-types/deserialize", "async-stripe-shared/deserialize", "dep:serde_json"]
+
+full = [
+    "async-stripe-billing",
+    "async-stripe-checkout",
+    "async-stripe-core",
+    "async-stripe-fraud",
+    "async-stripe-misc",
+    "async-stripe-payment",
+    "async-stripe-terminal",
+    "async-stripe-treasury",
+]
+
 [package.metadata.docs.rs]
-features = ["async-stripe-core", "async-stripe-checkout", "async-stripe-billing"]
+features = ["full"]

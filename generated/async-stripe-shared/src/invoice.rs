@@ -71,7 +71,7 @@ pub struct Invoice {
     ///
     /// * `manual`: Unrelated to a subscription, for example, created via the invoice editor.
     /// * `subscription`: No longer in use.
-    /// Applies to subscriptions from before May 2018 where no distinction was made between updates, cycles, and thresholds.
+    ///   Applies to subscriptions from before May 2018 where no distinction was made between updates, cycles, and thresholds.
     /// * `subscription_create`: A new subscription was created.
     /// * `subscription_cycle`: A subscription advanced into a new period.
     /// * `subscription_threshold`: A subscription reached a billing threshold.
@@ -893,7 +893,7 @@ impl serde::Serialize for Invoice {
 ///
 /// * `manual`: Unrelated to a subscription, for example, created via the invoice editor.
 /// * `subscription`: No longer in use.
-/// Applies to subscriptions from before May 2018 where no distinction was made between updates, cycles, and thresholds.
+///   Applies to subscriptions from before May 2018 where no distinction was made between updates, cycles, and thresholds.
 /// * `subscription_create`: A new subscription was created.
 /// * `subscription_cycle`: A subscription advanced into a new period.
 /// * `subscription_threshold`: A subscription reached a billing threshold.
