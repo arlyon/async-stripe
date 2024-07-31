@@ -193,6 +193,10 @@ name = "subscriptions"
 required-features = ["async"]
 
 [[example]]
+name = "test-clocks"
+required-features = ["async"]
+
+[[example]]
 name = "webhook-axum"
 required-features = ["async"]
 
