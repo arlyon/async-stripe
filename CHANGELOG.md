@@ -1,3 +1,10 @@
+## [0.38.1](https://github.com/arlyon/async-stripe/compare/v0.38.0...v0.38.1) (2024-08-06)
+
+
+### Bug Fixes
+
+* [#578](https://github.com/arlyon/async-stripe/issues/578) allow arbitrary strings for priceId ([a16bc6e](https://github.com/arlyon/async-stripe/commit/a16bc6e80c1a5e87bf376cbfd6b1f2a8caef992e))
+
 # [0.38.0](https://github.com/arlyon/async-stripe/compare/v0.37.3...v0.38.0) (2024-07-31)
 
 
