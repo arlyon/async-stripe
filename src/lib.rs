@@ -57,6 +57,7 @@
 #![forbid(unsafe_code)]
 // Workaround
 #![allow(ambiguous_glob_reexports)]
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 
 // Give a clear error when a required runtime error is not present. Would be better for this
 // to be a fatal error preventing emission of further compile errors relating to lack of
