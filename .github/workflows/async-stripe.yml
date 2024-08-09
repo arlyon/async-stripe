@@ -147,7 +147,7 @@ jobs:
       #     name: code-coverage-report
       #     path: lcov.info
 
-  public-api:
+  generate-public-api:
     continue-on-error: true
     runs-on: ubuntu-20.04
     steps:
@@ -162,31 +162,21 @@ jobs:
         uses: baptiste0928/cargo-install@v3
         with:
           crate: cargo-public-api
+      - name: Save PR number
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const util = require('util');
+            fs.mkdirSync("./public-api", { recursive: true });
+            const payload = context.payload;
+            const number = (payload.issue || payload.pull_request || payload).number;
+            const text = number === undefined ? "" : String(number);
+            core.info("Pr number is " + number + ", writing \"" + text + "\"");
+            fs.writeFileSync("./public-api/pr_number", text);
       - name: Compare with latest version published on crates.io
-        run: |
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "diff<<$EOF" >> $GITHUB_OUTPUT
-          echo "$(cargo public-api diff latest --features runtime-tokio-hyper)" >> $GITHUB_OUTPUT
-          echo "$EOF" >> $GITHUB_OUTPUT
-        id: diff
-      - name: Find Comment
-        uses: peter-evans/find-comment@v1
-        id: fc
+        run: cargo public-api diff latest --features runtime-tokio-hyper >> "public-api/diff"
+      - uses: actions/upload-artifact@v3
         with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: "github-actions[bot]"
-          body-includes: Removed items from the public API
-      - name: Create comment
-        if: steps.fc.outputs.comment-id == ''
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ${{ steps.diff.outputs.diff }}
-      - name: Update comment
-        if: steps.fc.outputs.comment-id != ''
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          body: |
-            ${{ steps.diff.outputs.diff }}
+          name: public-api
+          path: public-api/
