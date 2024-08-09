@@ -2,13 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::InvoiceLineItemId;
+use crate::ids::{InvoiceLineItemId};
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{
-    Currency, Discount, InvoiceItem, Period, Plan, Price, Subscription, SubscriptionItem, TaxRate,
-};
+use crate::resources::{Currency, Discount, InvoiceItem, Period, Plan, Price, Subscription, SubscriptionItem, TaxRate};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "InvoiceLineItem".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -44,7 +41,10 @@ pub struct InvoiceLineItem {
     ///
     /// Line item discounts are applied before invoice discounts.
     /// Use `expand[]=discounts` to expand each discount.
-    pub discounts: Option<Vec<Expandable<Discount>>>,
+    pub discounts: Vec<Expandable<Discount>>,
+
+    /// The ID of the invoice that contains this line item.
+    pub invoice: Option<String>,
 
     /// The ID of the [invoice item](https://stripe.com/docs/api/invoiceitems) associated with this line item if any.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -56,7 +56,7 @@ pub struct InvoiceLineItem {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    /// Note that for line items with `type=subscription` this will reflect the metadata of the subscription that caused the line item to be created.
+    /// Note that for line items with `type=subscription`, `metadata` reflects the current metadata from the subscription associated with the line item, unless the invoice line was directly updated with different metadata after creation.
     pub metadata: Metadata,
 
     pub period: Option<Period>,
@@ -113,6 +113,7 @@ impl Object for InvoiceLineItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
+
     /// The amount, in cents (or local equivalent), of the discount.
     pub amount: i64,
 
@@ -122,6 +123,7 @@ pub struct DiscountsResourceDiscountAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxAmount {
+
     /// The amount, in cents (or local equivalent), of the tax.
     pub amount: i64,
 
@@ -142,12 +144,14 @@ pub struct TaxAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesResourceLineItemsProrationDetails {
+
     /// For a credit proration `line_item`, the original debit line_items to which the credit proration applies.
     pub credited_items: Option<InvoicesResourceLineItemsCreditedItems>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesResourceLineItemsCreditedItems {
+
     /// Invoice containing the credited invoice line items.
     pub invoice: String,
 

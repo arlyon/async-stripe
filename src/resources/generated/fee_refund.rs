@@ -2,15 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::ApplicationFeeRefundId;
+use crate::ids::{ApplicationFeeRefundId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{ApplicationFee, BalanceTransaction, Currency};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "FeeRefund".
 ///
-/// For more details see <https://stripe.com/docs/api/fee_refunds/object>
+/// For more details see <https://stripe.com/api/fee_refunds/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ApplicationFeeRefund {
     /// Unique identifier for the object.

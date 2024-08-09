@@ -2,15 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::TransferReversalId;
+use crate::ids::{TransferReversalId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{BalanceTransaction, Currency, Refund, Transfer};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TransferReversal".
 ///
-/// For more details see <https://stripe.com/docs/api/transfer_reversals/object>
+/// For more details see <https://stripe.com/api/transfer_reversals/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TransferReversal {
     /// Unique identifier for the object.

@@ -2,10 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
+use crate::ids::{TaxCalculationLineItemId};
+use crate::params::{Object};
 use serde::{Deserialize, Serialize};
-
-use crate::ids::TaxCalculationLineItemId;
-use crate::params::Object;
 
 /// The resource representing a Stripe "TaxProductResourceTaxCalculationLineItem".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -42,6 +41,7 @@ pub struct TaxCalculationLineItem {
     pub tax_behavior: TaxCalculationLineItemTaxBehavior,
 
     /// Detailed account of taxes relevant to this line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_breakdown: Option<Vec<TaxProductResourceLineItemTaxBreakdown>>,
 
     /// The [tax code](https://stripe.com/docs/tax/tax-categories) ID used for this resource.
@@ -60,6 +60,7 @@ impl Object for TaxCalculationLineItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceLineItemTaxBreakdown {
+
     /// The amount of tax, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
 
@@ -84,6 +85,7 @@ pub struct TaxProductResourceLineItemTaxBreakdown {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceJurisdiction {
+
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     pub country: String,
 
@@ -101,6 +103,7 @@ pub struct TaxProductResourceJurisdiction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceLineItemTaxRateDetails {
+
     /// A localized display name for tax type, intended to be human-readable.
     ///
     /// For example, "Local Sales and Use Tax", "Value-added tax (VAT)", or "Umsatzsteuer (USt.)".
@@ -247,44 +250,20 @@ pub enum TaxProductResourceLineItemTaxBreakdownTaxabilityReason {
 impl TaxProductResourceLineItemTaxBreakdownTaxabilityReason {
     pub fn as_str(self) -> &'static str {
         match self {
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::CustomerExempt => {
-                "customer_exempt"
-            }
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::NotCollecting => {
-                "not_collecting"
-            }
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::NotSubjectToTax => {
-                "not_subject_to_tax"
-            }
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::CustomerExempt => "customer_exempt",
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::NotCollecting => "not_collecting",
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::NotSubjectToTax => "not_subject_to_tax",
             TaxProductResourceLineItemTaxBreakdownTaxabilityReason::NotSupported => "not_supported",
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::PortionProductExempt => {
-                "portion_product_exempt"
-            }
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::PortionReducedRated => {
-                "portion_reduced_rated"
-            }
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::PortionStandardRated => {
-                "portion_standard_rated"
-            }
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ProductExempt => {
-                "product_exempt"
-            }
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ProductExemptHoliday => {
-                "product_exempt_holiday"
-            }
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ProportionallyRated => {
-                "proportionally_rated"
-            }
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::PortionProductExempt => "portion_product_exempt",
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::PortionReducedRated => "portion_reduced_rated",
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::PortionStandardRated => "portion_standard_rated",
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ProductExempt => "product_exempt",
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ProductExemptHoliday => "product_exempt_holiday",
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ProportionallyRated => "proportionally_rated",
             TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ReducedRated => "reduced_rated",
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ReverseCharge => {
-                "reverse_charge"
-            }
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::StandardRated => {
-                "standard_rated"
-            }
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::TaxableBasisReduced => {
-                "taxable_basis_reduced"
-            }
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ReverseCharge => "reverse_charge",
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::StandardRated => "standard_rated",
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::TaxableBasisReduced => "taxable_basis_reduced",
             TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ZeroRated => "zero_rated",
         }
     }
@@ -329,9 +308,7 @@ impl TaxProductResourceLineItemTaxRateDetailsTaxType {
     pub fn as_str(self) -> &'static str {
         match self {
             TaxProductResourceLineItemTaxRateDetailsTaxType::AmusementTax => "amusement_tax",
-            TaxProductResourceLineItemTaxRateDetailsTaxType::CommunicationsTax => {
-                "communications_tax"
-            }
+            TaxProductResourceLineItemTaxRateDetailsTaxType::CommunicationsTax => "communications_tax",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Gst => "gst",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Hst => "hst",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Igst => "igst",

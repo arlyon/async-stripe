@@ -2,16 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{FileId, FileLinkId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{File, Scheduled};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "FileLink".
 ///
-/// For more details see <https://stripe.com/docs/api/file_links/object>
+/// For more details see <https://stripe.com/api/file_links/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FileLink {
     /// Unique identifier for the object.
@@ -44,10 +43,12 @@ pub struct FileLink {
 }
 
 impl FileLink {
+
     /// Returns a list of file links.
-    pub fn list(client: &Client, params: &ListFileLinks<'_>) -> Response<List<FileLink>> {
-        client.get_query("/file_links", params)
-    }
+pub fn list(client: &Client, params: &ListFileLinks<'_>) -> Response<List<FileLink>> {
+   client.get_query("/file_links", params)
+}
+
 
     /// Creates a new file link object.
     pub fn create(client: &Client, params: CreateFileLink<'_>) -> Response<FileLink> {
@@ -63,11 +64,7 @@ impl FileLink {
     /// Updates an existing file link object.
     ///
     /// Expired links can no longer be updated.
-    pub fn update(
-        client: &Client,
-        id: &FileLinkId,
-        params: UpdateFileLink<'_>,
-    ) -> Response<FileLink> {
+    pub fn update(client: &Client, id: &FileLinkId, params: UpdateFileLink<'_>) -> Response<FileLink> {
         #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/file_links/{}", id), &params)
     }
@@ -86,6 +83,7 @@ impl Object for FileLink {
 /// The parameters for `FileLink::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateFileLink<'a> {
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -122,6 +120,8 @@ impl<'a> CreateFileLink<'a> {
 /// The parameters for `FileLink::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListFileLinks<'a> {
+
+    /// Only return links that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -176,12 +176,12 @@ impl<'a> ListFileLinks<'a> {
 impl Paginable for ListFileLinks<'_> {
     type O = FileLink;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `FileLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateFileLink<'a> {
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
