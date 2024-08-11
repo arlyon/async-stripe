@@ -66,10 +66,7 @@ pub struct CreatePromotionCodeRestrictions<'a> {
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<
-        &'a std::collections::HashMap<
-            Currency,
-            CreatePromotionCodeRestrictionsCurrencyOptions,
-        >,
+        &'a std::collections::HashMap<Currency, CreatePromotionCodeRestrictionsCurrencyOptions>,
     >,
     /// A Boolean indicating if the Promotion Code should only be redeemed for Customers without any successful payments or invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
