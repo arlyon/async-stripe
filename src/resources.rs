@@ -56,13 +56,13 @@ mod billing {
 mod products {
     pub mod price_ext;
     pub mod product_ext;
+    pub mod promotion_code_ext;
 }
 
 #[path = "resources"]
 #[cfg(feature = "checkout")]
 mod checkout {
     pub mod checkout_session_ext;
-    pub mod promotion_code_ext;
 }
 
 #[path = "resources"]
@@ -187,8 +187,6 @@ pub use {
 #[rustfmt::skip]
 #[cfg(feature = "checkout")]
 pub use {
-    checkout::checkout_session_ext::*,
-    checkout::promotion_code_ext::*,
     generated::checkout::{
         checkout_session::*,
         payment_link::*,
@@ -202,6 +200,7 @@ pub use {
     products::{
         product_ext::*,
         price_ext::*,
+        promotion_code_ext::*,
     }
 };
 
