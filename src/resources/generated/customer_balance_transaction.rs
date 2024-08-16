@@ -2,15 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::CustomerBalanceTransactionId;
+use crate::ids::{CustomerBalanceTransactionId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{CreditNote, Currency, Customer, Invoice};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CustomerBalanceTransaction".
 ///
-/// For more details see <https://stripe.com/docs/api/customer_balance_transactions/object>
+/// For more details see <https://stripe.com/api/customer_balance_transactions/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerBalanceTransaction {
     /// Unique identifier for the object.
