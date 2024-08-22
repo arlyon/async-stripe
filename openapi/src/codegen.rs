@@ -46,7 +46,7 @@ pub fn gen_struct(
     let obj = as_object_type(schema).expect("Expected object type");
     let schema_title = schema.schema_data.title.as_ref().unwrap_or_else(|| {
         tracing::warn!("{} has no title", object);
-        &object
+        object
     });
 
     let deleted_schema = meta.spec.component_schemas().get(&format!("deleted_{}", object));
@@ -575,7 +575,7 @@ pub fn gen_inferred_params(
                 self.starting_after = Some(item.id());
             }",
             );
-            out.push_str("}");
+            out.push('}');
         }
     }
 }
@@ -716,8 +716,8 @@ pub fn gen_variant_name(wire_name: &str, meta: &Metadata) -> String {
         "*" => "All".to_string(),
         "self" => "Self_".to_string(),
         n => {
-            if n.chars().next().unwrap().is_digit(10) {
-                format!("V{}", n.to_string().replace('-', "_").replace('.', "_"))
+            if n.chars().next().unwrap().is_ascii_digit() {
+                format!("V{}", n.to_string().replace(['-', '.'], "_"))
             } else {
                 meta.schema_to_rust_type(wire_name)
             }
@@ -1341,7 +1341,7 @@ pub fn gen_impl_requests(
         // from the spec already
         let request = meta
             .spec
-            .get_request_unwrapped(*path)
+            .get_request_unwrapped(path)
             .as_item()
             .expect("Expected item, not path reference");
         let segments = path.trim_start_matches("/v1/").split('/').collect::<Vec<_>>();

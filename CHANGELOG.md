@@ -1,3 +1,39 @@
+## [0.38.1](https://github.com/arlyon/async-stripe/compare/v0.38.0...v0.38.1) (2024-08-06)
+
+
+### Bug Fixes
+
+* [#578](https://github.com/arlyon/async-stripe/issues/578) allow arbitrary strings for priceId ([a16bc6e](https://github.com/arlyon/async-stripe/commit/a16bc6e80c1a5e87bf376cbfd6b1f2a8caef992e))
+
+# [0.38.0](https://github.com/arlyon/async-stripe/compare/v0.37.3...v0.38.0) (2024-07-31)
+
+
+### Features
+
+* add support for TestClock operations ([d792798](https://github.com/arlyon/async-stripe/commit/d792798c3f027e0c57b132ddf168dbd03fcdd926)), closes [#574](https://github.com/arlyon/async-stripe/issues/574)
+
+## [0.37.3](https://github.com/arlyon/async-stripe/compare/v0.37.2...v0.37.3) (2024-07-29)
+
+
+### Bug Fixes
+
+* linting issue for Rust 1.80 ([9232213](https://github.com/arlyon/async-stripe/commit/9232213c0665622c91b328d1b2ff20e7f9ff7357))
+
+## [0.37.2](https://github.com/arlyon/async-stripe/compare/v0.37.1...v0.37.2) (2024-07-23)
+
+
+### Bug Fixes
+
+* rtx id prefix ([67ea232](https://github.com/arlyon/async-stripe/commit/67ea2325ba10fd0bc1b5c9e3a3436738caf4a98c))
+
+## [0.37.1](https://github.com/arlyon/async-stripe/compare/v0.37.0...v0.37.1) (2024-05-24)
+
+
+### Bug Fixes
+
+* Leftover clippy warnings ([888307d](https://github.com/arlyon/async-stripe/commit/888307d23d852ebc2f453e788e7fd682efb9dd6f))
+* Run clippy on openapi generator ([c63c197](https://github.com/arlyon/async-stripe/commit/c63c197e7cd6f73c0183345c82be77ef2a4c06f5))
+
 # [0.37.0](https://github.com/arlyon/async-stripe/compare/v0.36.0...v0.37.0) (2024-04-30)
 
 

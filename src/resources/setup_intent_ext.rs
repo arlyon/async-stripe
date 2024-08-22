@@ -81,6 +81,7 @@ impl SetupIntent {
         setup_id: &SetupIntentId,
         params: VerifyMicrodeposits,
     ) -> Response<SetupIntent> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/setup_intents/{}/verify_microdeposits", setup_id), &params)
     }
 

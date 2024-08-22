@@ -24,6 +24,7 @@ mod core {
     pub mod payout_ext;
     pub mod placeholders;
     pub mod setup_intent_ext;
+    pub mod test_clock_ext;
     pub mod token_ext;
     pub mod transfer_reversal_ext;
 }
@@ -112,6 +113,7 @@ pub use {
         payment_source::*,
         placeholders::*,
         payout_ext::*,
+        test_clock_ext::*,
         token_ext::*,
         setup_intent_ext::*,
     },
