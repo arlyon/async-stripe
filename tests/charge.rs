@@ -60,14 +60,15 @@ fn try_charge() {
     use std::path::Path;
 
     // let path_str = "./files/problem-trx.json";
-    let path_str = "./files/problem-invoice.json";
+    // let path_str = "./files/problem-invoice.json";
+    let path_str = "./files/problem-source.json";
     let path = Path::new(path_str);
     let bytes = fs::read(path).expect("should have read file");
     let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
 
     // try deserialize
-    // let result: Result<stripe::Invoice, serde_path_to_error::Error<serde_json::Error>> =
-    //     serde_path_to_error::deserialize(json_deserializer);
+    let result: Result<stripe::BalanceTransaction, serde_path_to_error::Error<serde_json::Error>> =
+        serde_path_to_error::deserialize(json_deserializer);
 
     match result {
         Ok(de) => Ok(de),

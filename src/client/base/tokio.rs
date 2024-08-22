@@ -119,8 +119,8 @@ impl TokioClient {
                     // let lines: Vec<&str> = response_string.lines().collect();
                     // if error_line > 0 && error_line <= lines.len() {
                     //     // Calculate range for context lines
-                    //     let start_line = (error_line as isize - 11).max(0) as usize; // 10 lines before the error
-                    //     let end_line = std::cmp::min(lines.len(), error_line + 10); // 10 lines after the error
+                    //     let start_line = (error_line as isize - 40).max(0) as usize; // 10 lines before the error
+                    //     let end_line = std::cmp::min(lines.len(), error_line + 40); // 10 lines after the error
 
                     //     // Collect context lines
                     //     let context_lines = &lines[start_line..end_line];

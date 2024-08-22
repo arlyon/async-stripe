@@ -544,7 +544,8 @@ def_id!(
         Source(SourceId),
     }
 );
-def_id!(PayoutId, "po_");
+// n.b. tr_ is the same as TransferId
+def_id!(PayoutId, "po_" | "tr_");
 def_id!(
     enum PayoutDestinationId {
         #[default]
