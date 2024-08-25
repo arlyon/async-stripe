@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListIdentityVerificationReportBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     client_reference_id: Option<String>,
@@ -94,6 +95,7 @@ impl<'de> serde::Deserialize<'de> for ListIdentityVerificationReportType {
 }
 /// List all verification reports.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListIdentityVerificationReport {
     inner: ListIdentityVerificationReportBuilder,
 }
@@ -189,6 +191,7 @@ impl StripeRequest for ListIdentityVerificationReport {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveIdentityVerificationReportBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -200,6 +203,7 @@ impl RetrieveIdentityVerificationReportBuilder {
 }
 /// Retrieves an existing VerificationReport
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveIdentityVerificationReport {
     inner: RetrieveIdentityVerificationReportBuilder,
     report: stripe_misc::IdentityVerificationReportId,

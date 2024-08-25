@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -46,6 +47,7 @@ impl ListCheckoutSessionBuilder {
 }
 /// Only return the Checkout Sessions for the Customer details specified.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListCheckoutSessionCustomerDetails {
     /// Customer's email address.
     pub email: String,
@@ -57,6 +59,7 @@ impl ListCheckoutSessionCustomerDetails {
 }
 /// Returns a list of Checkout Sessions.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListCheckoutSession {
     inner: ListCheckoutSessionBuilder,
 }
@@ -167,6 +170,7 @@ impl StripeRequest for ListCheckoutSession {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -178,6 +182,7 @@ impl RetrieveCheckoutSessionBuilder {
 }
 /// Retrieves a Session object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveCheckoutSession {
     inner: RetrieveCheckoutSessionBuilder,
     session: stripe_checkout::CheckoutSessionId,
@@ -221,6 +226,7 @@ impl StripeRequest for RetrieveCheckoutSession {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListLineItemsCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -239,6 +245,7 @@ impl ListLineItemsCheckoutSessionBuilder {
 /// When retrieving a Checkout Session, there is an includable **line_items** property containing the first handful of those items.
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListLineItemsCheckoutSession {
     inner: ListLineItemsCheckoutSessionBuilder,
     session: stripe_checkout::CheckoutSessionId,
@@ -314,6 +321,7 @@ impl StripeRequest for ListLineItemsCheckoutSession {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     after_expiration: Option<CreateCheckoutSessionAfterExpiration>,
@@ -444,6 +452,7 @@ impl CreateCheckoutSessionBuilder {
 }
 /// Configure actions after a Checkout Session has expired.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionAfterExpiration {
     /// Configure a Checkout Session that can be used to recover an expired session.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -461,6 +470,7 @@ impl Default for CreateCheckoutSessionAfterExpiration {
 }
 /// Configure a Checkout Session that can be used to recover an expired session.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionAfterExpirationRecovery {
     /// Enables user redeemable promotion codes on the recovered Checkout Sessions. Defaults to `false`
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -477,6 +487,7 @@ impl CreateCheckoutSessionAfterExpirationRecovery {
 }
 /// Settings for automatic tax lookup for this session and resulting payments, invoices, and subscriptions.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionAutomaticTax {
     /// Set to true to enable automatic taxes.
     pub enabled: bool,
@@ -495,6 +506,7 @@ impl CreateCheckoutSessionAutomaticTax {
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -568,6 +580,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionAutomaticTaxLiability
 }
 /// Configure fields for the Checkout Session to gather active consent from customers.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionConsentCollection {
     /// Determines the display of payment method reuse agreement text in the UI.
     /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
@@ -598,6 +611,7 @@ impl Default for CreateCheckoutSessionConsentCollection {
 /// Determines the display of payment method reuse agreement text in the UI.
 /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreement {
     /// Determines the position and visibility of the payment method reuse agreement in the UI.
     /// When set to `auto`, Stripe's.
@@ -800,6 +814,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionConsentCollectionTerm
 /// Collect additional information from your customer using custom fields.
 /// Up to 3 fields are supported.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionCustomFields {
     /// Configuration for `type=dropdown` fields.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -842,6 +857,7 @@ impl CreateCheckoutSessionCustomFields {
 }
 /// Configuration for `type=dropdown` fields.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionCustomFieldsDropdown {
     /// The options available for the customer to select. Up to 200 options allowed.
     pub options: Vec<CreateCheckoutSessionCustomFieldsDropdownOptions>,
@@ -853,6 +869,7 @@ impl CreateCheckoutSessionCustomFieldsDropdown {
 }
 /// The options available for the customer to select. Up to 200 options allowed.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionCustomFieldsDropdownOptions {
     /// The label for the option, displayed to the customer. Up to 100 characters.
     pub label: String,
@@ -867,6 +884,7 @@ impl CreateCheckoutSessionCustomFieldsDropdownOptions {
 }
 /// The label for the field, displayed to the customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionCustomFieldsLabel {
     /// Custom text for the label, displayed to the customer. Up to 50 characters.
     pub custom: String,
@@ -937,6 +955,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomFieldsLabelType
 }
 /// Configuration for `type=numeric` fields.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionCustomFieldsNumeric {
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -957,6 +976,7 @@ impl Default for CreateCheckoutSessionCustomFieldsNumeric {
 }
 /// Configuration for `type=text` fields.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionCustomFieldsText {
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1036,6 +1056,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomFieldsType {
 }
 /// Display additional text for your customers using custom text.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionCustomText {
     /// Custom text that should be displayed after the payment confirmation button.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1133,6 +1154,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomerCreation {
 /// Controls what fields on Customer can be updated by the Checkout Session.
 /// Can only be provided when `customer` is provided.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionCustomerUpdate {
     /// Describes whether Checkout saves the billing address onto `customer.address`.
     /// To always collect a full billing address, use `billing_address_collection`. Defaults to `never`.
@@ -1330,6 +1352,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomerUpdateShippin
 }
 /// The coupon or promotion code to apply to this Session. Currently, only up to one may be specified.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionDiscounts {
     /// The ID of the coupon to apply to this Session.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1350,6 +1373,7 @@ impl Default for CreateCheckoutSessionDiscounts {
 }
 /// Generate a post-purchase Invoice for one-time payments.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionInvoiceCreation {
     /// Set to `true` to enable invoice creation.
     pub enabled: bool,
@@ -1364,6 +1388,7 @@ impl CreateCheckoutSessionInvoiceCreation {
 }
 /// Parameters passed when creating invoices for payment-mode Checkout Sessions.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceData {
     /// The account tax IDs associated with the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1411,6 +1436,7 @@ impl Default for CreateCheckoutSessionInvoiceCreationInvoiceData {
 }
 /// Default custom fields to be displayed on invoices for this customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields {
     /// The name of the custom field. This may be up to 40 characters.
     pub name: String,
@@ -1425,6 +1451,7 @@ impl CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields {
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1500,6 +1527,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionInvoiceCreationInvoic
 }
 /// Default options for invoice PDF rendering for this customer.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -1594,6 +1622,7 @@ impl<'de> serde::Deserialize<'de>
 /// For `subscription` mode, there is a maximum of 20 line items with recurring Prices and 20 line items with one-time Prices.
 /// Line items with one-time Prices will be on the initial invoice only.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionLineItems {
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during Checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1637,6 +1666,7 @@ impl Default for CreateCheckoutSessionLineItems {
 }
 /// When set, provides configuration for this item’s quantity to be adjusted by the customer during Checkout.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionLineItemsAdjustableQuantity {
     /// Set to true if the quantity can be adjusted to any non-negative integer.
     /// By default customers will be able to remove the line item by setting the quantity to 0.
@@ -1659,6 +1689,7 @@ impl CreateCheckoutSessionLineItemsAdjustableQuantity {
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
 /// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionLineItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1703,6 +1734,7 @@ impl CreateCheckoutSessionLineItemsPriceData {
 }
 /// Data used to generate a new product object inline. One of `product` or `product_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionLineItemsPriceDataProductData {
     /// The product's description, meant to be displayable to the customer.
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
@@ -1730,6 +1762,7 @@ impl CreateCheckoutSessionLineItemsPriceDataProductData {
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionLineItemsPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreateCheckoutSessionLineItemsPriceDataRecurringInterval,
@@ -1876,6 +1909,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionLineItemsPriceDataTax
 }
 /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentIntentData {
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     /// The amount of the application fee collected will be capped at the total payment amount.
@@ -2109,6 +2143,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentIntentDataSetu
 }
 /// Shipping information for this payment.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentIntentDataShipping {
     /// Shipping address.
     pub address: CreateCheckoutSessionPaymentIntentDataShippingAddress,
@@ -2141,6 +2176,7 @@ impl CreateCheckoutSessionPaymentIntentDataShipping {
 }
 /// Shipping address.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentIntentDataShippingAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2175,6 +2211,7 @@ impl CreateCheckoutSessionPaymentIntentDataShippingAddress {
 /// The parameters used to automatically create a Transfer when the payment succeeds.
 /// For more information, see the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentIntentDataTransferData {
     /// The amount that will be transferred automatically when a charge succeeds.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2256,6 +2293,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodCollecti
 }
 /// This parameter allows you to set some attributes on the payment method created during a Checkout session.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodData {
     /// Allow redisplay will be set on the payment method on confirmation and indicates whether this payment method can be shown again to the customer in a checkout flow.
     /// Only set this field if you wish to override the allow_redisplay value determined by Checkout.
@@ -2336,6 +2374,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodDataAllo
 }
 /// Payment-method-specific configuration.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptions {
     /// contains details about the ACSS Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2479,6 +2518,7 @@ impl Default for CreateCheckoutSessionPaymentMethodOptions {
 }
 /// contains details about the ACSS Debit payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -2579,6 +2619,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsA
 }
 /// Additional fields for Mandate creation
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
     /// A URL for custom mandate text to render during confirmation step.
     /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,.
@@ -2940,6 +2981,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Affirm payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAffirm {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3024,6 +3066,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Afterpay Clearpay payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3111,6 +3154,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Alipay payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAlipay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3195,6 +3239,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the AmazonPay payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAmazonPay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3279,6 +3324,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the AU Becs Debit payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3360,6 +3406,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Bacs Debit payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3447,6 +3494,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Bancontact payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBancontact {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3528,6 +3576,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Boleto payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBoleto {
     /// The number of calendar days before a Boleto voucher expires.
     /// For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto invoice will expire on Wednesday at 23:59 America/Sao_Paulo time.
@@ -3622,6 +3671,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Card payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCard {
     /// Installment options for card payments
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3672,6 +3722,7 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsCard {
 }
 /// Installment options for card payments
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCardInstallments {
     /// Setting to true enables installments for this Checkout Session.
     /// Setting to false will prevent any installment plan from applying to a payment.
@@ -3817,6 +3868,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Cashapp Pay payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCashapp {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3904,6 +3956,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Customer Balance payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalance {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3934,6 +3987,7 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsCustomerBalance {
 }
 /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer {
     /// Configuration for eu_bank_transfer funding type.
 #[serde(skip_serializing_if = "Option::is_none")]
@@ -3958,6 +4012,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer {
 }
 /// Configuration for eu_bank_transfer funding type.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
     /// The desired country code of the bank account information.
     /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
@@ -4237,6 +4292,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the EPS payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsEps {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4319,6 +4375,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsE
 }
 /// contains details about the FPX payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsFpx {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4401,6 +4458,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsF
 }
 /// contains details about the Giropay payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsGiropay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4482,6 +4540,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Grabpay payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsGrabpay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4563,6 +4622,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Ideal payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsIdeal {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4647,6 +4707,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Klarna payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKlarna {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4731,6 +4792,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Konbini payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKonbini {
     /// The number of calendar days (between 1 and 60) after which Konbini payment instructions will expire.
     /// For example, if a PaymentIntent is confirmed with Konbini and `expires_after_days` set to 2 on Monday JST, the instructions will expire on Wednesday 23:59:59 JST.
@@ -4817,6 +4879,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Link payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsLink {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4904,6 +4967,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Mobilepay payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsMobilepay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4985,6 +5049,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the OXXO payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsOxxo {
     /// The number of calendar days before an OXXO voucher expires.
     /// For example, if you create an OXXO voucher on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
@@ -5073,6 +5138,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the P24 payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsP24 {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -5158,6 +5224,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsP
 }
 /// contains details about the PayNow payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPaynow {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -5242,6 +5309,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the PayPal payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPaypal {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5524,6 +5592,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Pix payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPix {
     /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
     /// Defaults to 86400 seconds.
@@ -5542,6 +5611,7 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsPix {
 }
 /// contains details about the RevolutPay payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsRevolutPay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -5626,6 +5696,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Sepa Debit payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -5713,6 +5784,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Sofort payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSofort {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -5797,6 +5869,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the Swish payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSwish {
     /// The order reference that will be displayed to customers in the Swish application.
     /// Defaults to the `id` of the Payment Intent.
@@ -5815,6 +5888,7 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsSwish {
 }
 /// contains details about the Us Bank Account payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccount {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5846,6 +5920,7 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsUsBankAccount {
 }
 /// Additional fields for Financial Connections Session creation
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections {
     /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
@@ -6135,6 +6210,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// contains details about the WeChat Pay payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPaymentMethodOptionsWechatPay {
     /// The app ID registered with WeChat Pay. Only required when client is ios or android.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6450,6 +6526,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodTypes {
 /// before using this feature.
 /// Learn more about [collecting phone numbers with Checkout](https://stripe.com/docs/payments/checkout/phone-numbers).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionPhoneNumberCollection {
     /// Set to `true` to enable phone number collection.
     pub enabled: bool,
@@ -6462,6 +6539,7 @@ impl CreateCheckoutSessionPhoneNumberCollection {
 /// Controls saved payment method settings for the session.
 /// Only available in `payment` and `subscription` mode.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionSavedPaymentMethodOptions {
     /// Controls which payment methods are eligible to be redisplayed to returning customers.
     /// Corresponds to `allow_redisplay` on the payment method.
@@ -6605,6 +6683,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// A subset of parameters to be passed to SetupIntent creation for Checkout Sessions in `setup` mode.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionSetupIntentData {
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6631,6 +6710,7 @@ impl Default for CreateCheckoutSessionSetupIntentData {
 }
 /// When set, provides configuration for Checkout to collect a shipping address from a customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionShippingAddressCollection {
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
     /// shipping locations.
@@ -7415,6 +7495,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// The shipping rate options to apply to this Session. Up to a maximum of 5.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionShippingOptions {
     /// The ID of the Shipping Rate to use for this shipping option.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7435,6 +7516,7 @@ impl Default for CreateCheckoutSessionShippingOptions {
 }
 /// Parameters to be passed to Shipping Rate creation for this shipping option
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateData {
     /// The estimated range for how long shipping will take, meant to be displayable to the customer.
     /// This will appear on CheckoutSessions.
@@ -7482,6 +7564,7 @@ impl CreateCheckoutSessionShippingOptionsShippingRateData {
 /// The estimated range for how long shipping will take, meant to be displayable to the customer.
 /// This will appear on CheckoutSessions.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
     /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7504,6 +7587,7 @@ impl Default for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEst
 }
 /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum {
     /// A unit of time.
     pub unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit,
@@ -7593,6 +7677,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// The lower bound of the estimated range. If empty, represents no lower bound.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum {
     /// A unit of time.
     pub unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit,
@@ -7682,6 +7767,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -7706,6 +7792,7 @@ impl CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
 /// Shipping rates defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -7910,6 +7997,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionShippingOptionsShippi
 }
 /// A subset of parameters to be passed to subscription creation for Checkout Sessions in `subscription` mode.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionSubscriptionData {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
@@ -7987,6 +8075,7 @@ impl Default for CreateCheckoutSessionSubscriptionData {
 }
 /// All invoices will be billed using the specified settings.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionSubscriptionDataInvoiceSettings {
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
@@ -8006,6 +8095,7 @@ impl Default for CreateCheckoutSessionSubscriptionDataInvoiceSettings {
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8142,6 +8232,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionSubscriptionDataProra
 }
 /// If specified, the funds from the subscription's invoices will be transferred to the destination and the ID of the resulting transfers will be found on the resulting charges.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionSubscriptionDataTransferData {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
@@ -8158,6 +8249,7 @@ impl CreateCheckoutSessionSubscriptionDataTransferData {
 }
 /// Settings related to subscription trials.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionSubscriptionDataTrialSettings {
     /// Defines how the subscription should behave when the user's free trial ends.
     pub end_behavior: CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior,
@@ -8171,6 +8263,7 @@ impl CreateCheckoutSessionSubscriptionDataTrialSettings {
 }
 /// Defines how the subscription should behave when the user's free trial ends.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior {
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
     pub missing_payment_method:
@@ -8254,6 +8347,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Controls tax ID collection settings for the session.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSessionTaxIdCollection {
     /// Set to true to enable Tax ID collection.
     pub enabled: bool,
@@ -8265,6 +8359,7 @@ impl CreateCheckoutSessionTaxIdCollection {
 }
 /// Creates a Session object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCheckoutSession {
     inner: CreateCheckoutSessionBuilder,
 }
@@ -8656,6 +8751,7 @@ impl StripeRequest for CreateCheckoutSession {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ExpireCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -8669,6 +8765,7 @@ impl ExpireCheckoutSessionBuilder {
 ///
 /// After it expires, a customer can’t complete a Session and customers loading the Session see a message saying the Session is expired.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ExpireCheckoutSession {
     inner: ExpireCheckoutSessionBuilder,
     session: stripe_checkout::CheckoutSessionId,
@@ -8713,6 +8810,7 @@ impl StripeRequest for ExpireCheckoutSession {
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CustomTextPositionParam {
     /// Text may be up to 1200 characters in length.
     pub message: String,

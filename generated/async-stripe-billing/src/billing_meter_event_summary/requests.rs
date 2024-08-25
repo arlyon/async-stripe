@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListIdBillingMeterEventSummaryBuilder {
     customer: String,
     end_time: stripe_types::Timestamp,
@@ -94,6 +95,7 @@ impl<'de> serde::Deserialize<'de> for ListIdBillingMeterEventSummaryValueGroupin
 }
 /// Retrieve a list of billing meter event summaries.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListIdBillingMeterEventSummary {
     inner: ListIdBillingMeterEventSummaryBuilder,
     id: stripe_billing::BillingMeterId,

@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateAccountLinkBuilder {
     account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -88,6 +89,7 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollect {
 }
 /// Specifies the requirements that Stripe collects from connected accounts in the Connect Onboarding flow.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateAccountLinkCollectionOptions {
     /// Specifies whether the platform collects only currently_due requirements (`currently_due`) or both currently_due and eventually_due requirements (`eventually_due`).
     /// If you don't specify `collection_options`, the default value is `currently_due`.
@@ -276,6 +278,7 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkType {
 }
 /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateAccountLink {
     inner: CreateAccountLinkBuilder,
 }

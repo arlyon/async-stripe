@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListPromotionCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -40,6 +41,7 @@ impl ListPromotionCodeBuilder {
 }
 /// Returns a list of your promotion codes.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListPromotionCode {
     inner: ListPromotionCodeBuilder,
 }
@@ -137,6 +139,7 @@ impl StripeRequest for ListPromotionCode {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrievePromotionCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -149,6 +152,7 @@ impl RetrievePromotionCodeBuilder {
 /// Retrieves the promotion code with the given ID.
 /// In order to retrieve a promotion code by the customer-facing `code` use [list](https://stripe.com/docs/api/promotion_codes/list) with the desired `code`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrievePromotionCode {
     inner: RetrievePromotionCodeBuilder,
     promotion_code: stripe_shared::PromotionCodeId,
@@ -192,6 +196,7 @@ impl StripeRequest for RetrievePromotionCode {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreatePromotionCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -228,6 +233,7 @@ impl CreatePromotionCodeBuilder {
 }
 /// Settings that restrict the redemption of the promotion code.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePromotionCodeRestrictions {
     /// Promotion codes defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
@@ -261,6 +267,7 @@ impl Default for CreatePromotionCodeRestrictions {
 /// A promotion code points to a coupon.
 /// You can optionally restrict the code to a specific customer, redemption limit, and expiration date.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePromotionCode {
     inner: CreatePromotionCodeBuilder,
 }
@@ -350,6 +357,7 @@ impl StripeRequest for CreatePromotionCode {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdatePromotionCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -367,6 +375,7 @@ impl UpdatePromotionCodeBuilder {
 }
 /// Settings that restrict the redemption of the promotion code.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePromotionCodeRestrictions {
     /// Promotion codes defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
@@ -386,6 +395,7 @@ impl Default for UpdatePromotionCodeRestrictions {
 /// Updates the specified promotion code by setting the values of the parameters passed.
 /// Most fields are, by design, not editable.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePromotionCode {
     inner: UpdatePromotionCodeBuilder,
     promotion_code: stripe_shared::PromotionCodeId,
@@ -455,6 +465,7 @@ impl StripeRequest for UpdatePromotionCode {
 }
 
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CurrencyOption {
     /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
     #[serde(skip_serializing_if = "Option::is_none")]

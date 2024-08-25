@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveForMyAccountBalanceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -15,6 +16,7 @@ impl RetrieveForMyAccountBalanceBuilder {
 /// Retrieves the current account balance, based on the authentication that was used to make the request.
 /// For a sample request, see [Accounting for negative balances](https://stripe.com/docs/connect/account-balances#accounting-for-negative-balances).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveForMyAccountBalance {
     inner: RetrieveForMyAccountBalanceBuilder,
 }

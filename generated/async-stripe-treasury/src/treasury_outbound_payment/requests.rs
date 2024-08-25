@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -36,6 +37,7 @@ impl ListTreasuryOutboundPaymentBuilder {
 }
 /// Returns a list of OutboundPayments sent from the specified FinancialAccount.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListTreasuryOutboundPayment {
     inner: ListTreasuryOutboundPaymentBuilder,
 }
@@ -122,6 +124,7 @@ impl StripeRequest for ListTreasuryOutboundPayment {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -133,6 +136,7 @@ impl RetrieveTreasuryOutboundPaymentBuilder {
 }
 /// Retrieves the details of an existing OutboundPayment by passing the unique OutboundPayment ID from either the OutboundPayment creation request or OutboundPayment list.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveTreasuryOutboundPayment {
     inner: RetrieveTreasuryOutboundPaymentBuilder,
     id: stripe_treasury::TreasuryOutboundPaymentId,
@@ -176,6 +180,7 @@ impl StripeRequest for RetrieveTreasuryOutboundPayment {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct FailTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -188,6 +193,7 @@ impl FailTreasuryOutboundPaymentBuilder {
 /// Transitions a test mode created OutboundPayment to the `failed` status.
 /// The OutboundPayment must already be in the `processing` state.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct FailTreasuryOutboundPayment {
     inner: FailTreasuryOutboundPaymentBuilder,
     id: String,
@@ -234,6 +240,7 @@ impl StripeRequest for FailTreasuryOutboundPayment {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct PostTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -246,6 +253,7 @@ impl PostTreasuryOutboundPaymentBuilder {
 /// Transitions a test mode created OutboundPayment to the `posted` status.
 /// The OutboundPayment must already be in the `processing` state.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct PostTreasuryOutboundPayment {
     inner: PostTreasuryOutboundPaymentBuilder,
     id: String,
@@ -292,6 +300,7 @@ impl StripeRequest for PostTreasuryOutboundPayment {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ReturnOutboundPaymentTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -305,6 +314,7 @@ impl ReturnOutboundPaymentTreasuryOutboundPaymentBuilder {
 }
 /// Optional hash to set the the return code.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails {
     /// The return code to be set on the OutboundPayment object.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -407,6 +417,7 @@ impl<'de> serde::Deserialize<'de>
 /// Transitions a test mode created OutboundPayment to the `returned` status.
 /// The OutboundPayment must already be in the `processing` state.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ReturnOutboundPaymentTreasuryOutboundPayment {
     inner: ReturnOutboundPaymentTreasuryOutboundPaymentBuilder,
     id: String,
@@ -461,6 +472,7 @@ impl StripeRequest for ReturnOutboundPaymentTreasuryOutboundPayment {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateTreasuryOutboundPaymentBuilder {
     amount: i64,
     currency: stripe_types::Currency,
@@ -511,6 +523,7 @@ impl CreateTreasuryOutboundPaymentBuilder {
 /// Hash used to generate the PaymentMethod to be used for this OutboundPayment.
 /// Exclusive with `destination_payment_method`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodData {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -550,6 +563,7 @@ impl CreateTreasuryOutboundPaymentDestinationPaymentMethodData {
 }
 /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetails {
     /// Billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -577,6 +591,7 @@ impl Default for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillin
 }
 /// Billing address.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -671,6 +686,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Required hash if type is set to `us_bank_account`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccount {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -837,6 +853,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Payment method-specific configuration for this OutboundPayment.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions {
     /// Optional fields for `us_bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -855,6 +872,7 @@ impl Default for CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions {
 }
 /// Optional fields for `us_bank_account`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccount {
     /// Specifies the network rails to be used.
     /// If not set, will default to the PaymentMethod's preferred network.
@@ -941,6 +959,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// End user details.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryOutboundPaymentEndUserDetails {
     /// IP address of the user initiating the OutboundPayment.
     /// Must be supplied if `present` is set to `true`.
@@ -957,6 +976,7 @@ impl CreateTreasuryOutboundPaymentEndUserDetails {
 }
 /// Creates an OutboundPayment.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryOutboundPayment {
     inner: CreateTreasuryOutboundPaymentBuilder,
 }
@@ -1075,6 +1095,7 @@ impl StripeRequest for CreateTreasuryOutboundPayment {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CancelTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -1086,6 +1107,7 @@ impl CancelTreasuryOutboundPaymentBuilder {
 }
 /// Cancel an OutboundPayment.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CancelTreasuryOutboundPayment {
     inner: CancelTreasuryOutboundPaymentBuilder,
     id: stripe_treasury::TreasuryOutboundPaymentId,

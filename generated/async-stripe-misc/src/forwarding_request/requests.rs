@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListForwardingRequestBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<ListForwardingRequestCreated>,
@@ -23,6 +24,7 @@ impl ListForwardingRequestBuilder {
 /// Similar to other List endpoints, filters results based on created timestamp.
 /// You can pass gt, gte, lt, and lte timestamp values.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListForwardingRequestCreated {
     /// Return results where the `created` field is greater than this value.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -49,6 +51,7 @@ impl Default for ListForwardingRequestCreated {
 }
 /// Lists all ForwardingRequest objects.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListForwardingRequest {
     inner: ListForwardingRequestBuilder,
 }
@@ -123,6 +126,7 @@ impl StripeRequest for ListForwardingRequest {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveForwardingRequestBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -134,6 +138,7 @@ impl RetrieveForwardingRequestBuilder {
 }
 /// Retrieves a ForwardingRequest object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveForwardingRequest {
     inner: RetrieveForwardingRequestBuilder,
     id: stripe_misc::ForwardingRequestId,
@@ -177,6 +182,7 @@ impl StripeRequest for RetrieveForwardingRequest {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateForwardingRequestBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -203,6 +209,7 @@ impl CreateForwardingRequestBuilder {
 }
 /// The request body and headers to be sent to the destination endpoint.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateForwardingRequestRequest {
     /// The body payload to send to the destination endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -225,6 +232,7 @@ impl Default for CreateForwardingRequestRequest {
 /// The headers to include in the forwarded request.
 /// Can be omitted if no additional headers (excluding Stripe-generated ones such as the Content-Type header) should be included.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateForwardingRequestRequestHeaders {
     /// The header name.
     pub name: String,
@@ -238,6 +246,7 @@ impl CreateForwardingRequestRequestHeaders {
 }
 /// Creates a ForwardingRequest object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateForwardingRequest {
     inner: CreateForwardingRequestBuilder,
 }

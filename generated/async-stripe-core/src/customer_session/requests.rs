@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateCustomerSessionBuilder {
     components: CreateCustomerSessionComponents,
     customer: String,
@@ -19,6 +20,7 @@ impl CreateCustomerSessionBuilder {
 }
 /// Configuration for each component. Exactly 1 component must be enabled.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomerSessionComponents {
     /// Configuration for buy button.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39,6 +41,7 @@ impl Default for CreateCustomerSessionComponents {
 }
 /// Configuration for buy button.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomerSessionComponentsBuyButton {
     /// Whether the buy button is enabled.
     pub enabled: bool,
@@ -50,6 +53,7 @@ impl CreateCustomerSessionComponentsBuyButton {
 }
 /// Configuration for the pricing table.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomerSessionComponentsPricingTable {
     /// Whether the pricing table is enabled.
     pub enabled: bool,
@@ -61,6 +65,7 @@ impl CreateCustomerSessionComponentsPricingTable {
 }
 /// Creates a customer session object that includes a single-use client secret that you can use on your front-end to grant client-side API access for certain customer resources.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomerSession {
     inner: CreateCustomerSessionBuilder,
 }

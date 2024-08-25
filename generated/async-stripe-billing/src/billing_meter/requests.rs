@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -22,6 +23,7 @@ impl ListBillingMeterBuilder {
 }
 /// Retrieve a list of billing meters.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListBillingMeter {
     inner: ListBillingMeterBuilder,
 }
@@ -98,6 +100,7 @@ impl StripeRequest for ListBillingMeter {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -109,6 +112,7 @@ impl RetrieveBillingMeterBuilder {
 }
 /// Retrieves a billing meter given an ID
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveBillingMeter {
     inner: RetrieveBillingMeterBuilder,
     id: stripe_billing::BillingMeterId,
@@ -151,6 +155,7 @@ impl StripeRequest for RetrieveBillingMeter {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer_mapping: Option<CreateBillingMeterCustomerMapping>,
@@ -183,6 +188,7 @@ impl CreateBillingMeterBuilder {
 }
 /// Fields that specify how to map a meter event to a customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateBillingMeterCustomerMapping {
     /// The key in the usage event payload to use for mapping the event to a customer.
     pub event_payload_key: String,
@@ -253,6 +259,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterCustomerMappingType {
 }
 /// The default settings to aggregate a meter's events with.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateBillingMeterDefaultAggregation {
     /// Specifies how events are aggregated.
     /// Allowed values are `count` to count the number of events and `sum` to sum each event's value.
@@ -324,6 +331,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterDefaultAggregationFormul
 }
 /// Fields that specify how to calculate a meter event's value.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateBillingMeterValueSettings {
     /// The key in the usage event payload to use as the value for this meter.
     /// For example, if the event payload contains usage on a `bytes_used` field, then set the event_payload_key to "bytes_used".
@@ -336,6 +344,7 @@ impl CreateBillingMeterValueSettings {
 }
 /// Creates a billing meter
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateBillingMeter {
     inner: CreateBillingMeterBuilder,
 }
@@ -410,6 +419,7 @@ impl StripeRequest for CreateBillingMeter {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     display_name: Option<String>,
@@ -423,6 +433,7 @@ impl UpdateBillingMeterBuilder {
 }
 /// Updates a billing meter
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateBillingMeter {
     inner: UpdateBillingMeterBuilder,
     id: stripe_billing::BillingMeterId,
@@ -470,6 +481,7 @@ impl StripeRequest for UpdateBillingMeter {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct DeactivateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -481,6 +493,7 @@ impl DeactivateBillingMeterBuilder {
 }
 /// Deactivates a billing meter
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeactivateBillingMeter {
     inner: DeactivateBillingMeterBuilder,
     id: stripe_billing::BillingMeterId,
@@ -524,6 +537,7 @@ impl StripeRequest for DeactivateBillingMeter {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ReactivateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -535,6 +549,7 @@ impl ReactivateBillingMeterBuilder {
 }
 /// Reactivates a billing meter
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ReactivateBillingMeter {
     inner: ReactivateBillingMeterBuilder,
     id: stripe_billing::BillingMeterId,

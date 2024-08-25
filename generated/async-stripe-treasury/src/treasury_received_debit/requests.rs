@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListTreasuryReceivedDebitBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -30,6 +31,7 @@ impl ListTreasuryReceivedDebitBuilder {
 }
 /// Returns a list of ReceivedDebits.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListTreasuryReceivedDebit {
     inner: ListTreasuryReceivedDebitBuilder,
 }
@@ -105,6 +107,7 @@ impl StripeRequest for ListTreasuryReceivedDebit {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveTreasuryReceivedDebitBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -116,6 +119,7 @@ impl RetrieveTreasuryReceivedDebitBuilder {
 }
 /// Retrieves the details of an existing ReceivedDebit by passing the unique ReceivedDebit ID from the ReceivedDebit list.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveTreasuryReceivedDebit {
     inner: RetrieveTreasuryReceivedDebitBuilder,
     id: stripe_treasury::TreasuryReceivedDebitId,
@@ -159,6 +163,7 @@ impl StripeRequest for RetrieveTreasuryReceivedDebit {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateTreasuryReceivedDebitBuilder {
     amount: i64,
     currency: stripe_types::Currency,
@@ -192,6 +197,7 @@ impl CreateTreasuryReceivedDebitBuilder {
 }
 /// Initiating payment method details for the object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails {
     /// The source type.
     #[serde(rename = "type")]
@@ -267,6 +273,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Optional fields for `us_bank_account`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount {
     /// The bank account holder's name.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -346,6 +353,7 @@ impl<'de> serde::Deserialize<'de> for CreateTreasuryReceivedDebitNetwork {
 /// Use this endpoint to simulate a test mode ReceivedDebit initiated by a third party.
 /// In live mode, you can’t directly create ReceivedDebits initiated by third parties.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryReceivedDebit {
     inner: CreateTreasuryReceivedDebitBuilder,
 }

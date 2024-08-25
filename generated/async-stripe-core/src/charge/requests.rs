@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -38,6 +39,7 @@ impl ListChargeBuilder {
 /// Returns a list of charges you’ve previously created.
 /// The charges are returned in sorted order, with the most recent charges appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListCharge {
     inner: ListChargeBuilder,
 }
@@ -129,6 +131,7 @@ impl StripeRequest for ListCharge {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -142,6 +145,7 @@ impl RetrieveChargeBuilder {
 /// Supply the unique charge ID that was returned from your previous request, and Stripe will return the corresponding charge information.
 /// The same information is returned when creating or refunding the charge.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveCharge {
     inner: RetrieveChargeBuilder,
     charge: stripe_shared::ChargeId,
@@ -184,6 +188,7 @@ impl StripeRequest for RetrieveCharge {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct SearchChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -205,6 +210,7 @@ impl SearchChargeBuilder {
 /// Occasionally, propagation of new or updated data can be up.
 /// to an hour behind during outages. Search functionality is not available to merchants in India.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct SearchCharge {
     inner: SearchChargeBuilder,
 }
@@ -264,6 +270,7 @@ impl StripeRequest for SearchCharge {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -330,6 +337,7 @@ impl CreateChargeBuilder {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateChargeDestination {
     /// ID of an existing, connected Stripe account.
     pub account: String,
@@ -347,6 +355,7 @@ impl CreateChargeDestination {
 /// Options to configure Radar.
 /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateChargeRadarOptions {
     /// A [Radar Session](https://stripe.com/docs/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -365,6 +374,7 @@ impl Default for CreateChargeRadarOptions {
 /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
 /// [See the Connect documentation](https://stripe.com/docs/connect/destination-charges) for details.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateChargeTransferData {
     /// The amount transferred to the destination account, if specified.
     /// By default, the entire charge amount is transferred to the destination account.
@@ -382,6 +392,7 @@ impl CreateChargeTransferData {
 /// to initiate a new payment instead. Confirmation of the PaymentIntent creates the `Charge`
 /// object used to request payment.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCharge {
     inner: CreateChargeBuilder,
 }
@@ -550,6 +561,7 @@ impl StripeRequest for CreateCharge {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
@@ -587,6 +599,7 @@ impl UpdateChargeBuilder {
 /// If you believe a charge is safe, include a `user_report` key with a value of `safe`.
 /// Stripe will use the information you send to improve our fraud detection algorithms.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateChargeFraudDetails {
     /// Either `safe` or `fraudulent`.
     pub user_report: UpdateChargeFraudDetailsUserReport,
@@ -655,6 +668,7 @@ impl<'de> serde::Deserialize<'de> for UpdateChargeFraudDetailsUserReport {
 /// Updates the specified charge by setting the values of the parameters passed.
 /// Any parameters not provided will be left unchanged.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateCharge {
     inner: UpdateChargeBuilder,
     charge: stripe_shared::ChargeId,
@@ -747,6 +761,7 @@ impl StripeRequest for UpdateCharge {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CaptureChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -785,6 +800,7 @@ impl CaptureChargeBuilder {
 /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
 /// [See the Connect documentation](https://stripe.com/docs/connect/destination-charges) for details.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CaptureChargeTransferData {
     /// The amount transferred to the destination account, if specified.
     /// By default, the entire charge amount is transferred to the destination account.
@@ -808,6 +824,7 @@ impl Default for CaptureChargeTransferData {
 /// Don’t use this method to capture a PaymentIntent-initiated charge.
 /// Use [Capture a PaymentIntent](https://stripe.com/docs/api/payment_intents/capture).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CaptureCharge {
     inner: CaptureChargeBuilder,
     charge: stripe_shared::ChargeId,
@@ -905,6 +922,7 @@ impl StripeRequest for CaptureCharge {
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct OptionalFieldsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -936,6 +954,7 @@ impl Default for OptionalFieldsAddress {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct OptionalFieldsShipping {
     /// Shipping address.
     pub address: OptionalFieldsAddress,

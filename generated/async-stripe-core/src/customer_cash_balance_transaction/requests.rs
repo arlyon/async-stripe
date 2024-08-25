@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListCustomerCustomerCashBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -20,6 +21,7 @@ impl ListCustomerCustomerCashBalanceTransactionBuilder {
 }
 /// Returns a list of transactions that modified the customer’s [cash balance](https://stripe.com/docs/payments/customer-balance).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListCustomerCustomerCashBalanceTransaction {
     inner: ListCustomerCustomerCashBalanceTransactionBuilder,
     customer: stripe_shared::CustomerId,
@@ -102,6 +104,7 @@ impl StripeRequest for ListCustomerCustomerCashBalanceTransaction {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveCustomerCashBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -113,6 +116,7 @@ impl RetrieveCustomerCashBalanceTransactionBuilder {
 }
 /// Retrieves a specific cash balance transaction, which updated the customer’s [cash balance](https://stripe.com/docs/payments/customer-balance).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveCustomerCashBalanceTransaction {
     inner: RetrieveCustomerCashBalanceTransactionBuilder,
     customer: stripe_shared::CustomerId,

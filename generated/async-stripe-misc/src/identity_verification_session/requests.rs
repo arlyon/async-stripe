@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     client_reference_id: Option<String>,
@@ -34,6 +35,7 @@ impl ListIdentityVerificationSessionBuilder {
 }
 /// Returns a list of VerificationSessions
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListIdentityVerificationSession {
     inner: ListIdentityVerificationSessionBuilder,
 }
@@ -127,6 +129,7 @@ impl StripeRequest for ListIdentityVerificationSession {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -141,6 +144,7 @@ impl RetrieveIdentityVerificationSessionBuilder {
 /// When the session status is `requires_input`, you can use this method to retrieve a valid
 /// `client_secret` or `url` to allow re-submission.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveIdentityVerificationSession {
     inner: RetrieveIdentityVerificationSessionBuilder,
     session: stripe_misc::IdentityVerificationSessionId,
@@ -184,6 +188,7 @@ impl StripeRequest for RetrieveIdentityVerificationSession {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     client_reference_id: Option<String>,
@@ -219,6 +224,7 @@ impl CreateIdentityVerificationSessionBuilder {
 }
 /// A set of options for the session’s verification checks.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateIdentityVerificationSessionOptions {
     /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -236,6 +242,7 @@ impl Default for CreateIdentityVerificationSessionOptions {
 }
 /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateIdentityVerificationSessionOptionsDocument {
     /// Array of strings of allowed identity document types.
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
@@ -394,6 +401,7 @@ impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionType {
 ///
 /// Related guide: [Verify your users’ identity documents](https://stripe.com/docs/identity/verify-identity-documents).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateIdentityVerificationSession {
     inner: CreateIdentityVerificationSessionBuilder,
 }
@@ -483,6 +491,7 @@ impl StripeRequest for CreateIdentityVerificationSession {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -503,6 +512,7 @@ impl UpdateIdentityVerificationSessionBuilder {
 }
 /// A set of options for the session’s verification checks.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateIdentityVerificationSessionOptions {
     /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -520,6 +530,7 @@ impl Default for UpdateIdentityVerificationSessionOptions {
 }
 /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateIdentityVerificationSessionOptionsDocument {
     /// Array of strings of allowed identity document types.
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
@@ -674,6 +685,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIdentityVerificationSessionType {
 /// When the session status is `requires_input`, you can use this method to update the
 /// verification check and options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateIdentityVerificationSession {
     inner: UpdateIdentityVerificationSessionBuilder,
     session: stripe_misc::IdentityVerificationSessionId,
@@ -746,6 +758,7 @@ impl StripeRequest for UpdateIdentityVerificationSession {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CancelIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -761,6 +774,7 @@ impl CancelIdentityVerificationSessionBuilder {
 /// This cannot be undone.
 /// [Learn more](https://stripe.com/docs/identity/verification-sessions#cancel).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CancelIdentityVerificationSession {
     inner: CancelIdentityVerificationSessionBuilder,
     session: stripe_misc::IdentityVerificationSessionId,
@@ -807,6 +821,7 @@ impl StripeRequest for CancelIdentityVerificationSession {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RedactIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -837,6 +852,7 @@ impl RedactIdentityVerificationSessionBuilder {
 ///
 /// [Learn more](https://stripe.com/docs/identity/verification-sessions#redact).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RedactIdentityVerificationSession {
     inner: RedactIdentityVerificationSessionBuilder,
     session: stripe_misc::IdentityVerificationSessionId,
@@ -884,6 +900,7 @@ impl StripeRequest for RedactIdentityVerificationSession {
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ProvidedDetailsParam {
     /// Email of user being verified
     #[serde(skip_serializing_if = "Option::is_none")]

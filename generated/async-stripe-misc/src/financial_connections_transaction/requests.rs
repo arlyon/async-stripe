@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListFinancialConnectionsTransactionBuilder {
     account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -34,6 +35,7 @@ impl ListFinancialConnectionsTransactionBuilder {
 /// A filter on the list based on the object `transaction_refresh` field.
 /// The value can be a dictionary with the following options:.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListFinancialConnectionsTransactionTransactionRefresh {
     /// Return results where the transactions were created or updated by a refresh that took place after this refresh (non-inclusive).
     pub after: String,
@@ -45,6 +47,7 @@ impl ListFinancialConnectionsTransactionTransactionRefresh {
 }
 /// Returns a list of Financial Connections `Transaction` objects.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListFinancialConnectionsTransaction {
     inner: ListFinancialConnectionsTransactionBuilder,
 }
@@ -132,6 +135,7 @@ impl StripeRequest for ListFinancialConnectionsTransaction {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveFinancialConnectionsTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -143,6 +147,7 @@ impl RetrieveFinancialConnectionsTransactionBuilder {
 }
 /// Retrieves the details of a Financial Connections `Transaction`
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveFinancialConnectionsTransaction {
     inner: RetrieveFinancialConnectionsTransactionBuilder,
     transaction: stripe_misc::FinancialConnectionsTransactionId,

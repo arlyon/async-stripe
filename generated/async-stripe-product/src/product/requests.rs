@@ -6,6 +6,7 @@ use stripe_client_core::{
 /// Deleting a product is only possible if it has no prices associated with it.
 /// Additionally, deleting a product with `type=good` is only possible if it has no SKUs associated with it.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteProduct {
     id: stripe_shared::ProductId,
 }
@@ -42,6 +43,7 @@ impl StripeRequest for DeleteProduct {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -84,6 +86,7 @@ impl ListProductBuilder {
 /// Returns a list of your products.
 /// The products are returned sorted by creation date, with the most recently created products appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListProduct {
     inner: ListProductBuilder,
 }
@@ -186,6 +189,7 @@ impl StripeRequest for ListProduct {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -198,6 +202,7 @@ impl RetrieveProductBuilder {
 /// Retrieves the details of an existing product.
 /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveProduct {
     inner: RetrieveProductBuilder,
     id: stripe_shared::ProductId,
@@ -240,6 +245,7 @@ impl StripeRequest for RetrieveProduct {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct SearchProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -261,6 +267,7 @@ impl SearchProductBuilder {
 /// Occasionally, propagation of new or updated data can be up.
 /// to an hour behind during outages. Search functionality is not available to merchants in India.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct SearchProduct {
     inner: SearchProductBuilder,
 }
@@ -320,6 +327,7 @@ impl StripeRequest for SearchProduct {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -379,6 +387,7 @@ impl CreateProductBuilder {
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object.
 /// This Price will be set as the default price for this product.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateProductDefaultPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -425,6 +434,7 @@ impl CreateProductDefaultPriceData {
 /// Prices defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateProductDefaultPriceDataCurrencyOptions {
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -466,6 +476,7 @@ impl Default for CreateProductDefaultPriceDataCurrencyOptions {
 }
 /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
     /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
     pub enabled: bool,
@@ -553,6 +564,7 @@ impl<'de> serde::Deserialize<'de> for CreateProductDefaultPriceDataCurrencyOptio
 /// This parameter requires `billing_scheme` to be set to `tiered`.
 /// See also the documentation for `billing_scheme`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateProductDefaultPriceDataCurrencyOptionsTiers {
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -588,6 +600,7 @@ impl CreateProductDefaultPriceDataCurrencyOptionsTiers {
 /// The lower bound of a tier is the upper bound of the previous tier adding one.
 /// Use `inf` to define a fallback tier.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 #[serde(rename_all = "snake_case")]
 pub enum CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo {
     Inf,
@@ -596,6 +609,7 @@ pub enum CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo {
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateProductDefaultPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreateProductDefaultPriceDataRecurringInterval,
@@ -738,6 +752,7 @@ impl<'de> serde::Deserialize<'de> for CreateProductDefaultPriceDataTaxBehavior {
 }
 /// Creates a new product object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateProduct {
     inner: CreateProductBuilder,
 }
@@ -874,6 +889,7 @@ impl StripeRequest for CreateProduct {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -927,6 +943,7 @@ impl UpdateProductBuilder {
 /// Updates the specific product by setting the values of the parameters passed.
 /// Any parameters not provided will be left unchanged.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateProduct {
     inner: UpdateProductBuilder,
     id: stripe_shared::ProductId,
@@ -1054,6 +1071,7 @@ impl StripeRequest for UpdateProduct {
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct Features {
     /// The marketing feature name. Up to 80 characters long.
     pub name: String,
@@ -1064,6 +1082,7 @@ impl Features {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct PackageDimensionsSpecs {
     /// Height, in inches. Maximum precision is 2 decimal places.
     pub height: f64,

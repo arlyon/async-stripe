@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateBillingMeterEventAdjustmentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     cancel: Option<CreateBillingMeterEventAdjustmentCancel>,
@@ -22,6 +23,7 @@ impl CreateBillingMeterEventAdjustmentBuilder {
 }
 /// Specifies which event to cancel.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateBillingMeterEventAdjustmentCancel {
     /// Unique identifier for the event.
     /// You can only cancel events within 24 hours of Stripe receiving them.
@@ -40,6 +42,7 @@ impl Default for CreateBillingMeterEventAdjustmentCancel {
 }
 /// Creates a billing meter event adjustment
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateBillingMeterEventAdjustment {
     inner: CreateBillingMeterEventAdjustmentBuilder,
 }

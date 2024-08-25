@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListPriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -47,6 +48,7 @@ impl ListPriceBuilder {
 }
 /// Only return prices with these recurring fields.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListPriceRecurring {
     /// Filter by billing frequency. Either `day`, `week`, `month` or `year`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -187,6 +189,7 @@ impl<'de> serde::Deserialize<'de> for ListPriceRecurringUsageType {
 /// Returns a list of your active prices, excluding [inline prices](https://stripe.com/docs/products-prices/pricing-models#inline-pricing).
 /// For the list of inactive prices, set `active` to false.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListPrice {
     inner: ListPriceBuilder,
 }
@@ -294,6 +297,7 @@ impl StripeRequest for ListPrice {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrievePriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -305,6 +309,7 @@ impl RetrievePriceBuilder {
 }
 /// Retrieves the price with the given ID.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrievePrice {
     inner: RetrievePriceBuilder,
     price: stripe_shared::PriceId,
@@ -347,6 +352,7 @@ impl StripeRequest for RetrievePrice {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct SearchPriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -368,6 +374,7 @@ impl SearchPriceBuilder {
 /// Occasionally, propagation of new or updated data can be up.
 /// to an hour behind during outages. Search functionality is not available to merchants in India.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct SearchPrice {
     inner: SearchPriceBuilder,
 }
@@ -427,6 +434,7 @@ impl StripeRequest for SearchPrice {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreatePriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -495,6 +503,7 @@ impl CreatePriceBuilder {
 /// Prices defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePriceCurrencyOptions {
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -538,6 +547,7 @@ impl Default for CreatePriceCurrencyOptions {
 /// This parameter requires `billing_scheme` to be set to `tiered`.
 /// See also the documentation for `billing_scheme`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePriceCurrencyOptionsTiers {
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -573,6 +583,7 @@ impl CreatePriceCurrencyOptionsTiers {
 /// The lower bound of a tier is the upper bound of the previous tier adding one.
 /// Use `inf` to define a fallback tier.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePriceCurrencyOptionsTiersUpTo {
     Inf,
@@ -581,6 +592,7 @@ pub enum CreatePriceCurrencyOptionsTiersUpTo {
 }
 /// These fields can be used to create a new product that this price will belong to.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePriceProductData {
     /// Whether the product is currently available for purchase. Defaults to `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -629,6 +641,7 @@ impl CreatePriceProductData {
 }
 /// The recurring components of a price such as `interval` and `usage_type`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePriceRecurring {
     /// Specifies a usage aggregation strategy for prices of `usage_type=metered`. Defaults to `sum`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -853,6 +866,7 @@ impl<'de> serde::Deserialize<'de> for CreatePriceRecurringUsageType {
 /// This parameter requires `billing_scheme` to be set to `tiered`.
 /// See also the documentation for `billing_scheme`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePriceTiers {
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -888,6 +902,7 @@ impl CreatePriceTiers {
 /// The lower bound of a tier is the upper bound of the previous tier adding one.
 /// Use `inf` to define a fallback tier.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePriceTiersUpTo {
     Inf,
@@ -897,6 +912,7 @@ pub enum CreatePriceTiersUpTo {
 /// Apply a transformation to the reported usage or set quantity before computing the billed price.
 /// Cannot be combined with `tiers`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePriceTransformQuantity {
     /// Divide usage by this number.
     pub divide_by: i64,
@@ -969,6 +985,7 @@ impl<'de> serde::Deserialize<'de> for CreatePriceTransformQuantityRound {
 }
 /// Creates a new price for an existing product. The price can be recurring or one-time.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePrice {
     inner: CreatePriceBuilder,
 }
@@ -1128,6 +1145,7 @@ impl StripeRequest for CreatePrice {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdatePriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -1164,6 +1182,7 @@ impl UpdatePriceBuilder {
 /// Prices defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePriceCurrencyOptions {
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1207,6 +1226,7 @@ impl Default for UpdatePriceCurrencyOptions {
 /// This parameter requires `billing_scheme` to be set to `tiered`.
 /// See also the documentation for `billing_scheme`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePriceCurrencyOptionsTiers {
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1242,6 +1262,7 @@ impl UpdatePriceCurrencyOptionsTiers {
 /// The lower bound of a tier is the upper bound of the previous tier adding one.
 /// Use `inf` to define a fallback tier.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 #[serde(rename_all = "snake_case")]
 pub enum UpdatePriceCurrencyOptionsTiersUpTo {
     Inf,
@@ -1251,6 +1272,7 @@ pub enum UpdatePriceCurrencyOptionsTiersUpTo {
 /// Updates the specified price by setting the values of the parameters passed.
 /// Any parameters not provided are left unchanged.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePrice {
     inner: UpdatePriceBuilder,
     price: stripe_shared::PriceId,
@@ -1348,6 +1370,7 @@ impl StripeRequest for UpdatePrice {
 }
 
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CustomUnitAmount {
     /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
     pub enabled: bool,

@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<String>,
@@ -34,6 +35,7 @@ impl ListDisputeBuilder {
 }
 /// Returns a list of your disputes.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListDispute {
     inner: ListDisputeBuilder,
 }
@@ -119,6 +121,7 @@ impl StripeRequest for ListDispute {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -130,6 +133,7 @@ impl RetrieveDisputeBuilder {
 }
 /// Retrieves the dispute with the given ID.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveDispute {
     inner: RetrieveDisputeBuilder,
     dispute: stripe_shared::DisputeId,
@@ -172,6 +176,7 @@ impl StripeRequest for RetrieveDispute {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     evidence: Option<UpdateDisputeEvidence>,
@@ -191,6 +196,7 @@ impl UpdateDisputeBuilder {
 /// Updating any field in the hash will submit all fields in the hash for review.
 /// The combined character count of all fields is limited to 150,000.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateDisputeEvidence {
     /// Any server or activity logs showing proof that the customer accessed or downloaded the purchased digital product.
     /// This information should include IP addresses, corresponding timestamps, and any detailed recorded activity.
@@ -334,6 +340,7 @@ impl Default for UpdateDisputeEvidence {
 /// Depending on your dispute type, different evidence fields will give you a better chance of winning your dispute.
 /// To figure out which evidence fields to provide, see our [guide to dispute types](https://stripe.com/docs/disputes/categories).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateDispute {
     inner: UpdateDisputeBuilder,
     dispute: stripe_shared::DisputeId,
@@ -401,6 +408,7 @@ impl StripeRequest for UpdateDispute {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CloseDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -415,6 +423,7 @@ impl CloseDisputeBuilder {
 /// The status of the dispute will change from `needs_response` to `lost`.
 /// _Closing a dispute is irreversible_.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CloseDispute {
     inner: CloseDisputeBuilder,
     dispute: stripe_shared::DisputeId,

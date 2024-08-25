@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListEntitlementsActiveEntitlementBuilder {
     customer: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -27,6 +28,7 @@ impl ListEntitlementsActiveEntitlementBuilder {
 }
 /// Retrieve a list of active entitlements for a customer
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListEntitlementsActiveEntitlement {
     inner: ListEntitlementsActiveEntitlementBuilder,
 }
@@ -99,6 +101,7 @@ impl StripeRequest for ListEntitlementsActiveEntitlement {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveEntitlementsActiveEntitlementBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -110,6 +113,7 @@ impl RetrieveEntitlementsActiveEntitlementBuilder {
 }
 /// Retrieve an active entitlement
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveEntitlementsActiveEntitlement {
     inner: RetrieveEntitlementsActiveEntitlementBuilder,
     id: stripe_misc::EntitlementsActiveEntitlementId,

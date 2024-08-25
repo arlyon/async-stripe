@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListExchangeRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -21,6 +22,7 @@ impl ListExchangeRateBuilder {
 /// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
 /// Only shows the currencies for which Stripe supports.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListExchangeRate {
     inner: ListExchangeRateBuilder,
 }
@@ -92,6 +94,7 @@ impl StripeRequest for ListExchangeRate {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveExchangeRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -103,6 +106,7 @@ impl RetrieveExchangeRateBuilder {
 }
 /// Retrieves the exchange rates from the given currency to every supported currency.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveExchangeRate {
     inner: RetrieveExchangeRateBuilder,
     rate_id: stripe_misc::ExchangeRateId,

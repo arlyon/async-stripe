@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListIdTransferReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -22,6 +23,7 @@ impl ListIdTransferReversalBuilder {
 /// Note that the 10 most recent reversals are always available by default on the transfer object.
 /// If you need more than those 10, you can use this API method and the `limit` and `starting_after` parameters to page through additional reversals.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListIdTransferReversal {
     inner: ListIdTransferReversalBuilder,
     id: stripe_shared::TransferId,
@@ -97,6 +99,7 @@ impl StripeRequest for ListIdTransferReversal {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveTransferReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -108,6 +111,7 @@ impl RetrieveTransferReversalBuilder {
 }
 /// By default, you can see the 10 most recent reversals stored directly on the transfer object, but you can also retrieve details about a specific reversal stored on the transfer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveTransferReversal {
     inner: RetrieveTransferReversalBuilder,
     id: String,
@@ -157,6 +161,7 @@ impl StripeRequest for RetrieveTransferReversal {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateIdTransferReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -188,6 +193,7 @@ impl CreateIdTransferReversalBuilder {
 /// Once entirely reversed, a transfer can’t be reversed again.
 /// This method will return an error when called on an already-reversed transfer, or when trying to reverse more money than is left on a transfer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateIdTransferReversal {
     inner: CreateIdTransferReversalBuilder,
     id: stripe_shared::TransferId,
@@ -264,6 +270,7 @@ impl StripeRequest for CreateIdTransferReversal {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateTransferReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -280,6 +287,7 @@ impl UpdateTransferReversalBuilder {
 ///
 /// This request only accepts metadata and description as arguments.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateTransferReversal {
     inner: UpdateTransferReversalBuilder,
     id: String,

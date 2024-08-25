@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateSubscriptionItemUsageRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     action: Option<CreateSubscriptionItemUsageRecordAction>,
@@ -81,6 +82,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemUsageRecordAction {
 /// When passing `"now"`, Stripe records usage for the current time.
 /// Default is `"now"` if a value is not provided.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 #[serde(rename_all = "snake_case")]
 pub enum CreateSubscriptionItemUsageRecordTimestamp {
     Now,
@@ -100,6 +102,7 @@ pub enum CreateSubscriptionItemUsageRecordTimestamp {
 /// The default pricing model for metered billing is [per-unit pricing](https://stripe.com/docs/api/plans/object#plan_object-billing_scheme).
 /// For finer granularity, you can configure metered billing to have a [tiered pricing](https://stripe.com/docs/billing/subscriptions/tiers) model.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSubscriptionItemUsageRecord {
     inner: CreateSubscriptionItemUsageRecordBuilder,
     subscription_item: stripe_shared::SubscriptionItemId,

@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListTaxCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -20,6 +21,7 @@ impl ListTaxCodeBuilder {
 }
 /// A list of [all tax codes available](https://stripe.com/docs/tax/tax-categories) to add to Products in order to allow specific tax calculations.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListTaxCode {
     inner: ListTaxCodeBuilder,
 }
@@ -91,6 +93,7 @@ impl StripeRequest for ListTaxCode {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveTaxCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -103,6 +106,7 @@ impl RetrieveTaxCodeBuilder {
 /// Retrieves the details of an existing tax code.
 /// Supply the unique tax code ID and Stripe will return the corresponding tax code information.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveTaxCode {
     inner: RetrieveTaxCodeBuilder,
     id: stripe_shared::TaxCodeId,

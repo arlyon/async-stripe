@@ -4,6 +4,7 @@ use stripe_client_core::{
 
 /// Deletes the feature attachment to a product
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteProductFeature {
     id: String,
     product: stripe_shared::ProductId,
@@ -42,6 +43,7 @@ impl StripeRequest for DeleteProductFeature {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListProductProductFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -59,6 +61,7 @@ impl ListProductProductFeatureBuilder {
 }
 /// Retrieve a list of features for a product
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListProductProductFeature {
     inner: ListProductProductFeatureBuilder,
     product: stripe_shared::ProductId,
@@ -133,6 +136,7 @@ impl StripeRequest for ListProductProductFeature {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveProductFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -144,6 +148,7 @@ impl RetrieveProductFeatureBuilder {
 }
 /// Retrieves a product_feature, which represents a feature attachment to a product
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveProductFeature {
     inner: RetrieveProductFeatureBuilder,
     id: String,
@@ -189,6 +194,7 @@ impl StripeRequest for RetrieveProductFeature {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateProductProductFeatureBuilder {
     entitlement_feature: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -201,6 +207,7 @@ impl CreateProductProductFeatureBuilder {
 }
 /// Creates a product_feature, which represents a feature attachment to a product
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateProductProductFeature {
     inner: CreateProductProductFeatureBuilder,
     product: stripe_shared::ProductId,

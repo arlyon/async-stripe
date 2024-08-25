@@ -4,6 +4,7 @@ use stripe_client_core::{
 
 /// Deletes a `ValueListItem` object, removing it from its parent value list.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteRadarValueListItem {
     item: stripe_fraud::RadarValueListItemId,
 }
@@ -40,6 +41,7 @@ impl StripeRequest for DeleteRadarValueListItem {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListRadarValueListItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -71,6 +73,7 @@ impl ListRadarValueListItemBuilder {
 /// Returns a list of `ValueListItem` objects.
 /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListRadarValueListItem {
     inner: ListRadarValueListItemBuilder,
 }
@@ -148,6 +151,7 @@ impl StripeRequest for ListRadarValueListItem {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveRadarValueListItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -159,6 +163,7 @@ impl RetrieveRadarValueListItemBuilder {
 }
 /// Retrieves a `ValueListItem` object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveRadarValueListItem {
     inner: RetrieveRadarValueListItemBuilder,
     item: stripe_fraud::RadarValueListItemId,
@@ -202,6 +207,7 @@ impl StripeRequest for RetrieveRadarValueListItem {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateRadarValueListItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -215,6 +221,7 @@ impl CreateRadarValueListItemBuilder {
 }
 /// Creates a new `ValueListItem` object, which is added to the specified parent value list.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateRadarValueListItem {
     inner: CreateRadarValueListItemBuilder,
 }

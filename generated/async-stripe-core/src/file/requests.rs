@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListFileBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -32,6 +33,7 @@ impl ListFileBuilder {
 /// Returns a list of the files that your account has access to.
 /// Stripe sorts and returns the files by their creation dates, placing the most recently created files at the top.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListFile {
     inner: ListFileBuilder,
 }
@@ -114,6 +116,7 @@ impl StripeRequest for ListFile {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveFileBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -127,6 +130,7 @@ impl RetrieveFileBuilder {
 /// After you supply a unique file ID, Stripe returns the corresponding file object.
 /// Learn how to [access file contents](https://stripe.com/docs/file-upload#download-file-contents).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveFile {
     inner: RetrieveFileBuilder,
     file: stripe_shared::FileId,

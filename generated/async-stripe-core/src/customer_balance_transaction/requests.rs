@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListCustomerCustomerBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -20,6 +21,7 @@ impl ListCustomerCustomerBalanceTransactionBuilder {
 }
 /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListCustomerCustomerBalanceTransaction {
     inner: ListCustomerCustomerBalanceTransactionBuilder,
     customer: stripe_shared::CustomerId,
@@ -102,6 +104,7 @@ impl StripeRequest for ListCustomerCustomerBalanceTransaction {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveCustomerBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -113,6 +116,7 @@ impl RetrieveCustomerBalanceTransactionBuilder {
 }
 /// Retrieves a specific customer balance transaction that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveCustomerBalanceTransaction {
     inner: RetrieveCustomerBalanceTransactionBuilder,
     customer: stripe_shared::CustomerId,
@@ -168,6 +172,7 @@ impl StripeRequest for RetrieveCustomerBalanceTransaction {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateCustomerCustomerBalanceTransactionBuilder {
     amount: i64,
     currency: stripe_types::Currency,
@@ -191,6 +196,7 @@ impl CreateCustomerCustomerBalanceTransactionBuilder {
 }
 /// Creates an immutable transaction that updates the customer’s credit [balance](https://stripe.com/docs/billing/customer/balance).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomerCustomerBalanceTransaction {
     inner: CreateCustomerCustomerBalanceTransactionBuilder,
     customer: stripe_shared::CustomerId,
@@ -263,6 +269,7 @@ impl StripeRequest for CreateCustomerCustomerBalanceTransaction {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateCustomerBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
@@ -278,6 +285,7 @@ impl UpdateCustomerBalanceTransactionBuilder {
 }
 /// Most credit balance transaction fields are immutable, but you may update its `description` and `metadata`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateCustomerBalanceTransaction {
     inner: UpdateCustomerBalanceTransactionBuilder,
     customer: stripe_shared::CustomerId,

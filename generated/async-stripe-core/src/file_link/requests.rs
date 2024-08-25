@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListFileLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -34,6 +35,7 @@ impl ListFileLinkBuilder {
 }
 /// Returns a list of file links.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListFileLink {
     inner: ListFileLinkBuilder,
 }
@@ -120,6 +122,7 @@ impl StripeRequest for ListFileLink {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveFileLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -131,6 +134,7 @@ impl RetrieveFileLinkBuilder {
 }
 /// Retrieves the file link with the given ID.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveFileLink {
     inner: RetrieveFileLinkBuilder,
     link: stripe_shared::FileLinkId,
@@ -173,6 +177,7 @@ impl StripeRequest for RetrieveFileLink {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateFileLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -189,6 +194,7 @@ impl CreateFileLinkBuilder {
 }
 /// Creates a new file link object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateFileLink {
     inner: CreateFileLinkBuilder,
 }
@@ -245,6 +251,7 @@ impl StripeRequest for CreateFileLink {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateFileLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -260,6 +267,7 @@ impl UpdateFileLinkBuilder {
 }
 /// A future timestamp after which the link will no longer be usable, or `now` to expire the link immediately.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateFileLinkExpiresAt {
     Now,
@@ -268,6 +276,7 @@ pub enum UpdateFileLinkExpiresAt {
 }
 /// Updates an existing file link object. Expired links can no longer be updated.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateFileLink {
     inner: UpdateFileLinkBuilder,
     link: stripe_shared::FileLinkId,

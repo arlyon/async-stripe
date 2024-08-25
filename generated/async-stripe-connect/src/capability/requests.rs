@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListAccountCapabilityBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -15,6 +16,7 @@ impl ListAccountCapabilityBuilder {
 /// Returns a list of capabilities associated with the account.
 /// The capabilities are returned sorted by creation date, with the most recent capability appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListAccountCapability {
     inner: ListAccountCapabilityBuilder,
     account: stripe_shared::AccountId,
@@ -69,6 +71,7 @@ impl StripeRequest for ListAccountCapability {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveCapabilityBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -80,6 +83,7 @@ impl RetrieveCapabilityBuilder {
 }
 /// Retrieves information about the specified Account Capability.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveCapability {
     inner: RetrieveCapabilityBuilder,
     account: stripe_shared::AccountId,
@@ -135,6 +139,7 @@ impl StripeRequest for RetrieveCapability {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateCapabilityBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -149,6 +154,7 @@ impl UpdateCapabilityBuilder {
 /// Updates an existing Account Capability.
 /// Request or remove a capability by updating its `requested` parameter.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateCapability {
     inner: UpdateCapabilityBuilder,
     account: stripe_shared::AccountId,

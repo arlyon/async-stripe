@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListTreasuryOutboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -30,6 +31,7 @@ impl ListTreasuryOutboundTransferBuilder {
 }
 /// Returns a list of OutboundTransfers sent from the specified FinancialAccount.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListTreasuryOutboundTransfer {
     inner: ListTreasuryOutboundTransferBuilder,
 }
@@ -106,6 +108,7 @@ impl StripeRequest for ListTreasuryOutboundTransfer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveTreasuryOutboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -117,6 +120,7 @@ impl RetrieveTreasuryOutboundTransferBuilder {
 }
 /// Retrieves the details of an existing OutboundTransfer by passing the unique OutboundTransfer ID from either the OutboundTransfer creation request or OutboundTransfer list.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveTreasuryOutboundTransfer {
     inner: RetrieveTreasuryOutboundTransferBuilder,
     outbound_transfer: stripe_treasury::TreasuryOutboundTransferId,
@@ -166,6 +170,7 @@ impl StripeRequest for RetrieveTreasuryOutboundTransfer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct FailTreasuryOutboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -178,6 +183,7 @@ impl FailTreasuryOutboundTransferBuilder {
 /// Transitions a test mode created OutboundTransfer to the `failed` status.
 /// The OutboundTransfer must already be in the `processing` state.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct FailTreasuryOutboundTransfer {
     inner: FailTreasuryOutboundTransferBuilder,
     outbound_transfer: String,
@@ -227,6 +233,7 @@ impl StripeRequest for FailTreasuryOutboundTransfer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct PostTreasuryOutboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -239,6 +246,7 @@ impl PostTreasuryOutboundTransferBuilder {
 /// Transitions a test mode created OutboundTransfer to the `posted` status.
 /// The OutboundTransfer must already be in the `processing` state.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct PostTreasuryOutboundTransfer {
     inner: PostTreasuryOutboundTransferBuilder,
     outbound_transfer: String,
@@ -288,6 +296,7 @@ impl StripeRequest for PostTreasuryOutboundTransfer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ReturnOutboundTransferTreasuryOutboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -301,6 +310,7 @@ impl ReturnOutboundTransferTreasuryOutboundTransferBuilder {
 }
 /// Details about a returned OutboundTransfer.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ReturnOutboundTransferTreasuryOutboundTransferReturnedDetails {
     /// Reason for the return.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -399,6 +409,7 @@ impl<'de> serde::Deserialize<'de>
 /// Transitions a test mode created OutboundTransfer to the `returned` status.
 /// The OutboundTransfer must already be in the `processing` state.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ReturnOutboundTransferTreasuryOutboundTransfer {
     inner: ReturnOutboundTransferTreasuryOutboundTransferBuilder,
     outbound_transfer: String,
@@ -456,6 +467,7 @@ impl StripeRequest for ReturnOutboundTransferTreasuryOutboundTransfer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateTreasuryOutboundTransferBuilder {
     amount: i64,
     currency: stripe_types::Currency,
@@ -495,6 +507,7 @@ impl CreateTreasuryOutboundTransferBuilder {
 }
 /// Hash describing payment method configuration details.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryOutboundTransferDestinationPaymentMethodOptions {
     /// Optional fields for `us_bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -513,6 +526,7 @@ impl Default for CreateTreasuryOutboundTransferDestinationPaymentMethodOptions {
 }
 /// Optional fields for `us_bank_account`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccount {
     /// Specifies the network rails to be used.
     /// If not set, will default to the PaymentMethod's preferred network.
@@ -599,6 +613,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Creates an OutboundTransfer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryOutboundTransfer {
     inner: CreateTreasuryOutboundTransferBuilder,
 }
@@ -691,6 +706,7 @@ impl StripeRequest for CreateTreasuryOutboundTransfer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CancelTreasuryOutboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -702,6 +718,7 @@ impl CancelTreasuryOutboundTransferBuilder {
 }
 /// An OutboundTransfer can be canceled if the funds have not yet been paid out.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CancelTreasuryOutboundTransfer {
     inner: CancelTreasuryOutboundTransferBuilder,
     outbound_transfer: stripe_treasury::TreasuryOutboundTransferId,

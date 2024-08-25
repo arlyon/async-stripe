@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -34,6 +35,7 @@ impl ListShippingRateBuilder {
 }
 /// Returns a list of your shipping rates.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListShippingRate {
     inner: ListShippingRateBuilder,
 }
@@ -121,6 +123,7 @@ impl StripeRequest for ListShippingRate {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -132,6 +135,7 @@ impl RetrieveShippingRateBuilder {
 }
 /// Returns the shipping rate object with the given ID.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveShippingRate {
     inner: RetrieveShippingRateBuilder,
     shipping_rate_token: stripe_shared::ShippingRateId,
@@ -178,6 +182,7 @@ impl StripeRequest for RetrieveShippingRate {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     delivery_estimate: Option<CreateShippingRateDeliveryEstimate>,
@@ -213,6 +218,7 @@ impl CreateShippingRateBuilder {
 /// The estimated range for how long shipping will take, meant to be displayable to the customer.
 /// This will appear on CheckoutSessions.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateShippingRateDeliveryEstimate {
     /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -233,6 +239,7 @@ impl Default for CreateShippingRateDeliveryEstimate {
 }
 /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateShippingRateDeliveryEstimateMaximum {
     /// A unit of time.
     pub unit: CreateShippingRateDeliveryEstimateMaximumUnit,
@@ -316,6 +323,7 @@ impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMaximumU
 }
 /// The lower bound of the estimated range. If empty, represents no lower bound.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateShippingRateDeliveryEstimateMinimum {
     /// A unit of time.
     pub unit: CreateShippingRateDeliveryEstimateMinimumUnit,
@@ -399,6 +407,7 @@ impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMinimumU
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateShippingRateFixedAmount {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -423,6 +432,7 @@ impl CreateShippingRateFixedAmount {
 /// Shipping rates defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateShippingRateFixedAmountCurrencyOptions {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -438,6 +448,7 @@ impl CreateShippingRateFixedAmountCurrencyOptions {
 }
 /// Creates a new shipping rate object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateShippingRate {
     inner: CreateShippingRateBuilder,
 }
@@ -523,6 +534,7 @@ impl StripeRequest for CreateShippingRate {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -542,6 +554,7 @@ impl UpdateShippingRateBuilder {
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateShippingRateFixedAmount {
     /// Shipping rates defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
@@ -566,6 +579,7 @@ impl Default for UpdateShippingRateFixedAmount {
 /// Shipping rates defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateShippingRateFixedAmountCurrencyOptions {
     /// A non-negative integer in cents representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -587,6 +601,7 @@ impl Default for UpdateShippingRateFixedAmountCurrencyOptions {
 }
 /// Updates an existing shipping rate object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateShippingRate {
     inner: UpdateShippingRateBuilder,
     shipping_rate_token: stripe_shared::ShippingRateId,

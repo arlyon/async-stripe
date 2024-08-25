@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListTreasuryDebitReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -151,6 +152,7 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryDebitReversalStatus {
 }
 /// Returns a list of DebitReversals.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListTreasuryDebitReversal {
     inner: ListTreasuryDebitReversalBuilder,
 }
@@ -236,6 +238,7 @@ impl StripeRequest for ListTreasuryDebitReversal {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveTreasuryDebitReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -247,6 +250,7 @@ impl RetrieveTreasuryDebitReversalBuilder {
 }
 /// Retrieves a DebitReversal object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveTreasuryDebitReversal {
     inner: RetrieveTreasuryDebitReversalBuilder,
     debit_reversal: stripe_treasury::TreasuryDebitReversalId,
@@ -296,6 +300,7 @@ impl StripeRequest for RetrieveTreasuryDebitReversal {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateTreasuryDebitReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -310,6 +315,7 @@ impl CreateTreasuryDebitReversalBuilder {
 }
 /// Reverses a ReceivedDebit and creates a DebitReversal object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryDebitReversal {
     inner: CreateTreasuryDebitReversalBuilder,
 }

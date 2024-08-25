@@ -29,7 +29,9 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
     };
 
     let ser_features = get_serialization_feature(&crate_deps, "serialize");
+    let ser_extra_features = get_serialization_feature(&crate_deps, "serialize_extra");
     let deser_features = get_serialization_feature(&crate_deps, "deserialize");
+    let deser_extra_features = get_serialization_feature(&crate_deps, "deserialize_extra");
 
     let features =
         if krate == Crate::SHARED { "".into() } else { gen_feature_section(crate_features) };
@@ -67,7 +69,9 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
 
         [features]
         serialize = [{ser_features}]
+        serialize_extra = ["serialize", {ser_extra_features}]
         deserialize = [{deser_features}, "dep:serde_json"]
+        deserialize_extra = ["deserialize", {deser_extra_features}, "dep:serde_json"]
         {features}
         "#
     }

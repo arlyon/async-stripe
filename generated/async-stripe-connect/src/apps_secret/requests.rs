@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -28,6 +29,7 @@ impl ListAppsSecretBuilder {
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
@@ -99,6 +101,7 @@ impl<'de> serde::Deserialize<'de> for ListAppsSecretScopeType {
 }
 /// List all secrets stored on the given scope.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListAppsSecret {
     inner: ListAppsSecretBuilder,
 }
@@ -165,6 +168,7 @@ impl StripeRequest for ListAppsSecret {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct FindAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -179,6 +183,7 @@ impl FindAppsSecretBuilder {
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct FindAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
@@ -250,6 +255,7 @@ impl<'de> serde::Deserialize<'de> for FindAppsSecretScopeType {
 }
 /// Finds a secret in the secret store by name and scope.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct FindAppsSecret {
     inner: FindAppsSecretBuilder,
 }
@@ -290,6 +296,7 @@ impl StripeRequest for FindAppsSecret {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -317,6 +324,7 @@ impl CreateAppsSecretBuilder {
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
@@ -388,6 +396,7 @@ impl<'de> serde::Deserialize<'de> for CreateAppsSecretScopeType {
 }
 /// Create or replace a secret in the secret store.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateAppsSecret {
     inner: CreateAppsSecretBuilder,
 }
@@ -437,6 +446,7 @@ impl StripeRequest for CreateAppsSecret {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct DeleteWhereAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -451,6 +461,7 @@ impl DeleteWhereAppsSecretBuilder {
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteWhereAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
@@ -523,6 +534,7 @@ impl<'de> serde::Deserialize<'de> for DeleteWhereAppsSecretScopeType {
 }
 /// Deletes a secret from the secret store by name and scope.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteWhereAppsSecret {
     inner: DeleteWhereAppsSecretBuilder,
 }

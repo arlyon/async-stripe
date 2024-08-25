@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListTreasuryCreditReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -33,6 +34,7 @@ impl ListTreasuryCreditReversalBuilder {
 }
 /// Returns a list of CreditReversals.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListTreasuryCreditReversal {
     inner: ListTreasuryCreditReversalBuilder,
 }
@@ -114,6 +116,7 @@ impl StripeRequest for ListTreasuryCreditReversal {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveTreasuryCreditReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -125,6 +128,7 @@ impl RetrieveTreasuryCreditReversalBuilder {
 }
 /// Retrieves the details of an existing CreditReversal by passing the unique CreditReversal ID from either the CreditReversal creation request or CreditReversal list.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveTreasuryCreditReversal {
     inner: RetrieveTreasuryCreditReversalBuilder,
     credit_reversal: stripe_treasury::TreasuryCreditReversalId,
@@ -174,6 +178,7 @@ impl StripeRequest for RetrieveTreasuryCreditReversal {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateTreasuryCreditReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -188,6 +193,7 @@ impl CreateTreasuryCreditReversalBuilder {
 }
 /// Reverses a ReceivedCredit and creates a CreditReversal object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTreasuryCreditReversal {
     inner: CreateTreasuryCreditReversalBuilder,
 }

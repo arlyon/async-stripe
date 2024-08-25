@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -35,6 +36,7 @@ impl ListTransferBuilder {
 /// Returns a list of existing transfers sent to connected accounts.
 /// The transfers are returned in sorted order, with the most recently created transfers appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListTransfer {
     inner: ListTransferBuilder,
 }
@@ -121,6 +123,7 @@ impl StripeRequest for ListTransfer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -133,6 +136,7 @@ impl RetrieveTransferBuilder {
 /// Retrieves the details of an existing transfer.
 /// Supply the unique transfer ID from either a transfer creation request or the transfer list, and Stripe will return the corresponding transfer information.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveTransfer {
     inner: RetrieveTransferBuilder,
     transfer: stripe_shared::TransferId,
@@ -175,6 +179,7 @@ impl StripeRequest for RetrieveTransfer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -271,6 +276,7 @@ impl<'de> serde::Deserialize<'de> for CreateTransferSourceType {
 /// To send funds from your Stripe account to a connected account, you create a new transfer object.
 /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the transfer amount, or you’ll receive an “Insufficient Funds” error.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTransfer {
     inner: CreateTransferBuilder,
 }
@@ -355,6 +361,7 @@ impl StripeRequest for CreateTransfer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
@@ -373,6 +380,7 @@ impl UpdateTransferBuilder {
 ///
 /// This request accepts only metadata as an argument.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateTransfer {
     inner: UpdateTransferBuilder,
     transfer: stripe_shared::TransferId,

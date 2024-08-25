@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -44,6 +45,7 @@ impl ListBalanceTransactionBuilder {
 ///
 /// Note that this endpoint was previously called “Balance history” and used the path `/v1/balance/history`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListBalanceTransaction {
     inner: ListBalanceTransactionBuilder,
 }
@@ -144,6 +146,7 @@ impl StripeRequest for ListBalanceTransaction {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -157,6 +160,7 @@ impl RetrieveBalanceTransactionBuilder {
 ///
 /// Note that this endpoint previously used the path `/v1/balance/history/:id`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveBalanceTransaction {
     inner: RetrieveBalanceTransactionBuilder,
     id: stripe_shared::BalanceTransactionId,

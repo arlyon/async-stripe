@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListInvoiceInvoiceLineItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -21,6 +22,7 @@ impl ListInvoiceInvoiceLineItemBuilder {
 /// When retrieving an invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListInvoiceInvoiceLineItem {
     inner: ListInvoiceInvoiceLineItemBuilder,
     invoice: stripe_shared::InvoiceId,
@@ -95,6 +97,7 @@ impl StripeRequest for ListInvoiceInvoiceLineItem {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateInvoiceLineItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -143,6 +146,7 @@ impl UpdateInvoiceLineItemBuilder {
 /// Item discounts are applied before invoice discounts.
 /// Pass an empty string to remove previously-defined discounts.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateInvoiceLineItemDiscounts {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -169,6 +173,7 @@ impl Default for UpdateInvoiceLineItemDiscounts {
 /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
 /// See the [Revenue Recognition documentation](https://stripe.com/docs/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateInvoiceLineItemPeriod {
     /// The end of the period, which must be greater than or equal to the start. This value is inclusive.
     pub end: stripe_types::Timestamp,
@@ -185,6 +190,7 @@ impl UpdateInvoiceLineItemPeriod {
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateInvoiceLineItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -225,6 +231,7 @@ impl UpdateInvoiceLineItemPriceData {
 }
 /// Data used to generate a new product object inline. One of `product` or `product_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateInvoiceLineItemPriceDataProductData {
     /// The product's description, meant to be displayable to the customer.
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
@@ -317,6 +324,7 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemPriceDataTaxBehavior 
 /// You cannot set tax amounts if any line item has [tax_rates](https://stripe.com/docs/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://stripe.com/docs/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://stripe.com/docs/tax/invoicing).
 /// Pass an empty string to remove previously defined tax amounts.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateInvoiceLineItemTaxAmounts {
     /// The amount, in cents (or local equivalent), of the tax.
     pub amount: i64,
@@ -348,6 +356,7 @@ impl UpdateInvoiceLineItemTaxAmounts {
 /// If the `tax_rate_data` exactly matches a previous value, Stripe will reuse the TaxRate object.
 /// TaxRate objects created automatically by Stripe are immediately archived, do not appear in the line item’s `tax_rates`, and cannot be directly added to invoices, payments, or line items.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateInvoiceLineItemTaxAmountsTaxRateData {
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -491,6 +500,7 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemTaxAmountsTaxRateData
 /// item and the invoice line item, so updates on this endpoint will propagate to the invoice item as well.
 /// Updating an invoice’s line item is only possible before the invoice is finalized.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateInvoiceLineItem {
     inner: UpdateInvoiceLineItemBuilder,
     invoice: stripe_shared::InvoiceId,

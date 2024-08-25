@@ -4,6 +4,7 @@ use stripe_client_core::{
 
 /// You can also delete webhook endpoints via the [webhook endpoint management](https://dashboard.stripe.com/account/webhooks) page of the Stripe dashboard.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteWebhookEndpoint {
     webhook_endpoint: stripe_misc::WebhookEndpointId,
 }
@@ -40,6 +41,7 @@ impl StripeRequest for DeleteWebhookEndpoint {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListWebhookEndpointBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -57,6 +59,7 @@ impl ListWebhookEndpointBuilder {
 }
 /// Returns a list of your webhook endpoints.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListWebhookEndpoint {
     inner: ListWebhookEndpointBuilder,
 }
@@ -128,6 +131,7 @@ impl StripeRequest for ListWebhookEndpoint {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveWebhookEndpointBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -139,6 +143,7 @@ impl RetrieveWebhookEndpointBuilder {
 }
 /// Retrieves the webhook endpoint with the given ID.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveWebhookEndpoint {
     inner: RetrieveWebhookEndpointBuilder,
     webhook_endpoint: stripe_misc::WebhookEndpointId,
@@ -185,6 +190,7 @@ impl StripeRequest for RetrieveWebhookEndpoint {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateWebhookEndpointBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     api_version: Option<stripe_shared::ApiVersion>,
@@ -1009,6 +1015,7 @@ impl<'de> serde::Deserialize<'de> for CreateWebhookEndpointEnabledEvents {
 /// If set to true, then a Connect webhook endpoint that notifies the specified `url` about events from all connected accounts is created; otherwise an account webhook endpoint that notifies the specified `url` only about events from your account is created.
 /// You can also create webhook endpoints in the [webhooks settings](https://dashboard.stripe.com/account/webhooks) section of the Dashboard.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateWebhookEndpoint {
     inner: CreateWebhookEndpointBuilder,
 }
@@ -1079,6 +1086,7 @@ impl StripeRequest for CreateWebhookEndpoint {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateWebhookEndpointBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
@@ -1897,6 +1905,7 @@ impl<'de> serde::Deserialize<'de> for UpdateWebhookEndpointEnabledEvents {
 /// Updates the webhook endpoint.
 /// You may edit the `url`, the list of `enabled_events`, and the status of your endpoint.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateWebhookEndpoint {
     inner: UpdateWebhookEndpointBuilder,
     webhook_endpoint: stripe_misc::WebhookEndpointId,

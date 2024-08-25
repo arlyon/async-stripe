@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListLineItemsTaxCalculationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -20,6 +21,7 @@ impl ListLineItemsTaxCalculationBuilder {
 }
 /// Retrieves the line items of a persisted tax calculation as a collection.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListLineItemsTaxCalculation {
     inner: ListLineItemsTaxCalculationBuilder,
     calculation: stripe_misc::TaxCalculationId,
@@ -98,6 +100,7 @@ impl StripeRequest for ListLineItemsTaxCalculation {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateTaxCalculationBuilder {
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -133,6 +136,7 @@ impl CreateTaxCalculationBuilder {
 }
 /// Details about the customer, including address and tax IDs.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTaxCalculationCustomerDetails {
     /// The customer's postal address (for example, home or business location).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -172,6 +176,7 @@ impl Default for CreateTaxCalculationCustomerDetails {
 }
 /// The customer's postal address (for example, home or business location).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTaxCalculationCustomerDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -266,6 +271,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationCustomerDetailsAddress
 /// Stripe Tax might consider a transaction with applicable tax IDs to be B2B, which might affect the tax calculation result.
 /// Stripe Tax doesn't validate tax IDs for correctness.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTaxCalculationCustomerDetailsTaxIds {
     /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
     #[serde(rename = "type")]
@@ -611,6 +617,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationCustomerDetailsTaxabil
 }
 /// A list of items the customer is purchasing.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTaxCalculationLineItems {
     /// A positive integer representing the line item's total price in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
     /// The minimum amount is $0.0 US or [equivalent in charge currency](https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts).
@@ -709,6 +716,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationLineItemsTaxBehavior {
 }
 /// Details about the address from which the goods are being shipped.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTaxCalculationShipFromDetails {
     /// The address from which the goods are being shipped from.
     pub address: CreateTaxCalculationShipFromDetailsAddress,
@@ -720,6 +728,7 @@ impl CreateTaxCalculationShipFromDetails {
 }
 /// The address from which the goods are being shipped from.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTaxCalculationShipFromDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -754,6 +763,7 @@ impl CreateTaxCalculationShipFromDetailsAddress {
 }
 /// Shipping cost details to be used for the calculation.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTaxCalculationShippingCost {
     /// A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) representing the shipping charge.
     /// If `tax_behavior=inclusive`, then this amount includes taxes.
@@ -846,6 +856,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationShippingCostTaxBehavio
 }
 /// Calculates tax based on input and returns a Tax `Calculation` object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTaxCalculation {
     inner: CreateTaxCalculationBuilder,
 }

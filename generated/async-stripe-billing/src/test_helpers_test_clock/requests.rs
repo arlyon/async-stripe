@@ -4,6 +4,7 @@ use stripe_client_core::{
 
 /// Deletes a test clock.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteTestHelpersTestClock {
     test_clock: stripe_shared::TestHelpersTestClockId,
 }
@@ -40,6 +41,7 @@ impl StripeRequest for DeleteTestHelpersTestClock {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -57,6 +59,7 @@ impl ListTestHelpersTestClockBuilder {
 }
 /// Returns a list of your test clocks.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListTestHelpersTestClock {
     inner: ListTestHelpersTestClockBuilder,
 }
@@ -129,6 +132,7 @@ impl StripeRequest for ListTestHelpersTestClock {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -140,6 +144,7 @@ impl RetrieveTestHelpersTestClockBuilder {
 }
 /// Retrieves a test clock.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveTestHelpersTestClock {
     inner: RetrieveTestHelpersTestClockBuilder,
     test_clock: stripe_shared::TestHelpersTestClockId,
@@ -183,6 +188,7 @@ impl StripeRequest for RetrieveTestHelpersTestClock {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -197,6 +203,7 @@ impl CreateTestHelpersTestClockBuilder {
 }
 /// Creates a new test clock that can be attached to new customers and quotes.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTestHelpersTestClock {
     inner: CreateTestHelpersTestClockBuilder,
 }
@@ -242,6 +249,7 @@ impl StripeRequest for CreateTestHelpersTestClock {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct AdvanceTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -255,6 +263,7 @@ impl AdvanceTestHelpersTestClockBuilder {
 /// Starts advancing a test clock to a specified time in the future.
 /// Advancement is done when status changes to `Ready`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct AdvanceTestHelpersTestClock {
     inner: AdvanceTestHelpersTestClockBuilder,
     test_clock: stripe_shared::TestHelpersTestClockId,

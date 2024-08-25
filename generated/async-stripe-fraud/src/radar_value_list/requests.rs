@@ -5,6 +5,7 @@ use stripe_client_core::{
 /// Deletes a `ValueList` object, also deleting any items contained within the value list.
 /// To be deleted, a value list must not be referenced in any rules.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteRadarValueList {
     value_list: stripe_fraud::RadarValueListId,
 }
@@ -41,6 +42,7 @@ impl StripeRequest for DeleteRadarValueList {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListRadarValueListBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     alias: Option<String>,
@@ -73,6 +75,7 @@ impl ListRadarValueListBuilder {
 /// Returns a list of `ValueList` objects.
 /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListRadarValueList {
     inner: ListRadarValueListBuilder,
 }
@@ -159,6 +162,7 @@ impl StripeRequest for ListRadarValueList {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveRadarValueListBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -170,6 +174,7 @@ impl RetrieveRadarValueListBuilder {
 }
 /// Retrieves a `ValueList` object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveRadarValueList {
     inner: RetrieveRadarValueListBuilder,
     value_list: stripe_fraud::RadarValueListId,
@@ -213,6 +218,7 @@ impl StripeRequest for RetrieveRadarValueList {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateRadarValueListBuilder {
     alias: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -236,6 +242,7 @@ impl CreateRadarValueListBuilder {
 }
 /// Creates a new `ValueList` object, which can then be referenced in rules.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateRadarValueList {
     inner: CreateRadarValueListBuilder,
 }
@@ -294,6 +301,7 @@ impl StripeRequest for CreateRadarValueList {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateRadarValueListBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     alias: Option<String>,
@@ -313,6 +321,7 @@ impl UpdateRadarValueListBuilder {
 /// Any parameters not provided will be left unchanged.
 /// Note that `item_type` is immutable.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateRadarValueList {
     inner: UpdateRadarValueListBuilder,
     value_list: stripe_fraud::RadarValueListId,

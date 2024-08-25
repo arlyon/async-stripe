@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct DeleteEphemeralKeyBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -14,6 +15,7 @@ impl DeleteEphemeralKeyBuilder {
 }
 /// Invalidates a short-lived API key for a given resource.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteEphemeralKey {
     inner: DeleteEphemeralKeyBuilder,
     key: stripe_misc::EphemeralKeyId,
@@ -57,6 +59,7 @@ impl StripeRequest for DeleteEphemeralKey {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateEphemeralKeyBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
@@ -82,6 +85,7 @@ impl CreateEphemeralKeyBuilder {
 }
 /// Creates a short-lived API key for a given resource.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateEphemeralKey {
     inner: CreateEphemeralKeyBuilder,
 }

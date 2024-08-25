@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListSetupIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     attach_to_self: Option<bool>,
@@ -37,6 +38,7 @@ impl ListSetupIntentBuilder {
 }
 /// Returns a list of SetupIntents.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListSetupIntent {
     inner: ListSetupIntentBuilder,
 }
@@ -132,6 +134,7 @@ impl StripeRequest for ListSetupIntent {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveSetupIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     client_secret: Option<String>,
@@ -151,6 +154,7 @@ impl RetrieveSetupIntentBuilder {
 /// When retrieved with a publishable key, only a subset of properties will be returned.
 /// Please refer to the [SetupIntent](https://stripe.com/docs/api#setup_intent_object) object reference for more details.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveSetupIntent {
     inner: RetrieveSetupIntentBuilder,
     intent: stripe_shared::SetupIntentId,
@@ -200,6 +204,7 @@ impl StripeRequest for RetrieveSetupIntent {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateSetupIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     attach_to_self: Option<bool>,
@@ -270,6 +275,7 @@ impl CreateSetupIntentBuilder {
 }
 /// When you enable this parameter, this SetupIntent accepts payment methods that you enable in the Dashboard and that are compatible with its other parameters.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentAutomaticPaymentMethods {
     /// Controls whether this SetupIntent will accept redirect-based payment methods.
     ///
@@ -349,6 +355,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentAutomaticPaymentMethodsAl
 /// This hash contains details about the mandate to create.
 /// This parameter can only be used with [`confirm=true`](https://stripe.com/docs/api/setup_intents/create#create_setup_intent-confirm).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentMandateData {
     /// This hash contains details about the customer acceptance of the Mandate.
     pub customer_acceptance: CreateSetupIntentMandateDataCustomerAcceptance,
@@ -362,6 +369,7 @@ impl CreateSetupIntentMandateData {
 }
 /// This hash contains details about the customer acceptance of the Mandate.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentMandateDataCustomerAcceptance {
     /// The time at which the customer accepted the Mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -445,6 +453,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentMandateDataCustomerAccept
 /// When included, this hash creates a PaymentMethod that is set as the [`payment_method`](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-payment_method).
 /// value in the SetupIntent.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodData {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -709,6 +718,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodDataAllowRed
 }
 /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodDataAuBecsDebit {
     /// The account number for the bank account.
     pub account_number: String,
@@ -722,6 +732,7 @@ impl CreateSetupIntentPaymentMethodDataAuBecsDebit {
 }
 /// If this is a `bacs_debit` PaymentMethod, this hash contains details about the Bacs Direct Debit bank account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodDataBacsDebit {
     /// Account number of the bank account that the funds will be debited from.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -742,6 +753,7 @@ impl Default for CreateSetupIntentPaymentMethodDataBacsDebit {
 }
 /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodDataBoleto {
     /// The tax ID of the customer (CPF for individual consumers or CNPJ for businesses consumers)
     pub tax_id: String,
@@ -753,6 +765,7 @@ impl CreateSetupIntentPaymentMethodDataBoleto {
 }
 /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodDataEps {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -906,6 +919,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodDataEpsBank 
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodDataFpx {
     /// Account holder type for FPX transaction
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1096,6 +1110,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodDataFpxBank 
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodDataIdeal {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1213,6 +1228,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodDataIdealBan
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodDataKlarna {
     /// Customer's date of birth
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1230,6 +1246,7 @@ impl Default for CreateSetupIntentPaymentMethodDataKlarna {
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodDataP24 {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1377,6 +1394,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodDataP24Bank 
 }
 /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodDataSepaDebit {
     /// IBAN of the bank account.
     pub iban: String,
@@ -1388,6 +1406,7 @@ impl CreateSetupIntentPaymentMethodDataSepaDebit {
 }
 /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodDataSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     pub country: CreateSetupIntentPaymentMethodDataSofortCountry,
@@ -1625,6 +1644,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodDataType {
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodDataUsBankAccount {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1775,6 +1795,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodDataUsBankAc
 }
 /// Payment method-specific configuration for this SetupIntent.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodOptions {
     /// If this is a `acss_debit` SetupIntent, this sub-hash contains details about the ACSS Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1824,6 +1845,7 @@ impl Default for CreateSetupIntentPaymentMethodOptions {
 }
 /// If this is a `acss_debit` SetupIntent, this sub-hash contains details about the ACSS Debit payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodOptionsAcssDebit {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1908,6 +1930,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodOptionsAcssD
 }
 /// Additional fields for Mandate creation
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
     /// A URL for custom mandate text to render during confirmation step.
     /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,.
@@ -2195,6 +2218,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Configuration for any card setup attempted on this SetupIntent.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodOptionsCard {
     /// Configuration options for setting up an eMandate for cards issued in India.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2239,6 +2263,7 @@ impl Default for CreateSetupIntentPaymentMethodOptionsCard {
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodOptionsCardMandateOptions {
     /// Amount to be charged for future payments.
     pub amount: i64,
@@ -2632,6 +2657,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodOptionsCardR
 /// If 3D Secure authentication was performed with a third-party provider,
 /// the authentication details to use for this setup.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodOptionsCardThreeDSecure {
     /// The `transStatus` returned from the card Issuer’s ACS in the ARes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2833,6 +2859,7 @@ impl<'de> serde::Deserialize<'de>
 /// explicit card brand choice. The parameter `payment_method_options.card.network``
 /// must be populated accordingly
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions {
     /// Cartes Bancaires-specific 3DS fields.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2851,6 +2878,7 @@ impl Default for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOpt
 }
 /// Cartes Bancaires-specific 3DS fields.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires {
     /// The cryptogram calculation algorithm used by the card Issuer's ACS
     /// to calculate the Authentication cryptogram. Also known as `cavvAlgorithm`.
@@ -3017,6 +3045,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodOptionsCardT
 }
 /// If this is a `sepa_debit` SetupIntent, this sub-hash contains details about the SEPA Debit payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodOptionsSepaDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3035,6 +3064,7 @@ impl Default for CreateSetupIntentPaymentMethodOptionsSepaDebit {
 }
 /// If this is a `us_bank_account` SetupIntent, this sub-hash contains details about the US bank account payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccount {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3068,6 +3098,7 @@ impl Default for CreateSetupIntentPaymentMethodOptionsUsBankAccount {
 }
 /// Additional fields for Financial Connections Session creation
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
@@ -3236,6 +3267,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Additional fields for Mandate creation
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptions {
     /// The method used to collect offline mandate customer acceptance.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3315,6 +3347,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Additional fields for network related functions
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccountNetworks {
     /// Triggers validations to run across the selected networks
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3447,6 +3480,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// If you populate this hash, this SetupIntent generates a `single_use` mandate after successful completion.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntentSingleUse {
     /// Amount the customer is granting permission to collect later.
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
@@ -3523,6 +3557,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentUsage {
 /// After you create the SetupIntent, attach a payment method and [confirm](https://stripe.com/docs/api/setup_intents/confirm).
 /// it to collect any required permissions to charge the payment method later.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateSetupIntent {
     inner: CreateSetupIntentBuilder,
 }
@@ -3704,6 +3739,7 @@ impl StripeRequest for CreateSetupIntent {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateSetupIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     attach_to_self: Option<bool>,
@@ -3748,6 +3784,7 @@ impl UpdateSetupIntentBuilder {
 /// When included, this hash creates a PaymentMethod that is set as the [`payment_method`](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-payment_method).
 /// value in the SetupIntent.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodData {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4012,6 +4049,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodDataAllowRed
 }
 /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodDataAuBecsDebit {
     /// The account number for the bank account.
     pub account_number: String,
@@ -4025,6 +4063,7 @@ impl UpdateSetupIntentPaymentMethodDataAuBecsDebit {
 }
 /// If this is a `bacs_debit` PaymentMethod, this hash contains details about the Bacs Direct Debit bank account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodDataBacsDebit {
     /// Account number of the bank account that the funds will be debited from.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4045,6 +4084,7 @@ impl Default for UpdateSetupIntentPaymentMethodDataBacsDebit {
 }
 /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodDataBoleto {
     /// The tax ID of the customer (CPF for individual consumers or CNPJ for businesses consumers)
     pub tax_id: String,
@@ -4056,6 +4096,7 @@ impl UpdateSetupIntentPaymentMethodDataBoleto {
 }
 /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodDataEps {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4209,6 +4250,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodDataEpsBank 
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodDataFpx {
     /// Account holder type for FPX transaction
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4399,6 +4441,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodDataFpxBank 
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodDataIdeal {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4516,6 +4559,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodDataIdealBan
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodDataKlarna {
     /// Customer's date of birth
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4533,6 +4577,7 @@ impl Default for UpdateSetupIntentPaymentMethodDataKlarna {
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodDataP24 {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4680,6 +4725,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodDataP24Bank 
 }
 /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodDataSepaDebit {
     /// IBAN of the bank account.
     pub iban: String,
@@ -4691,6 +4737,7 @@ impl UpdateSetupIntentPaymentMethodDataSepaDebit {
 }
 /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodDataSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     pub country: UpdateSetupIntentPaymentMethodDataSofortCountry,
@@ -4928,6 +4975,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodDataType {
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodDataUsBankAccount {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5078,6 +5126,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodDataUsBankAc
 }
 /// Payment method-specific configuration for this SetupIntent.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodOptions {
     /// If this is a `acss_debit` SetupIntent, this sub-hash contains details about the ACSS Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5127,6 +5176,7 @@ impl Default for UpdateSetupIntentPaymentMethodOptions {
 }
 /// If this is a `acss_debit` SetupIntent, this sub-hash contains details about the ACSS Debit payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebit {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -5211,6 +5261,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodOptionsAcssD
 }
 /// Additional fields for Mandate creation
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
     /// A URL for custom mandate text to render during confirmation step.
     /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,.
@@ -5498,6 +5549,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Configuration for any card setup attempted on this SetupIntent.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodOptionsCard {
     /// Configuration options for setting up an eMandate for cards issued in India.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5542,6 +5594,7 @@ impl Default for UpdateSetupIntentPaymentMethodOptionsCard {
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodOptionsCardMandateOptions {
     /// Amount to be charged for future payments.
     pub amount: i64,
@@ -5935,6 +5988,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodOptionsCardR
 /// If 3D Secure authentication was performed with a third-party provider,
 /// the authentication details to use for this setup.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodOptionsCardThreeDSecure {
     /// The `transStatus` returned from the card Issuer’s ACS in the ARes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6136,6 +6190,7 @@ impl<'de> serde::Deserialize<'de>
 /// explicit card brand choice. The parameter `payment_method_options.card.network``
 /// must be populated accordingly
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions {
     /// Cartes Bancaires-specific 3DS fields.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6154,6 +6209,7 @@ impl Default for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOpt
 }
 /// Cartes Bancaires-specific 3DS fields.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires {
     /// The cryptogram calculation algorithm used by the card Issuer's ACS
     /// to calculate the Authentication cryptogram. Also known as `cavvAlgorithm`.
@@ -6320,6 +6376,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodOptionsCardT
 }
 /// If this is a `sepa_debit` SetupIntent, this sub-hash contains details about the SEPA Debit payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodOptionsSepaDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6338,6 +6395,7 @@ impl Default for UpdateSetupIntentPaymentMethodOptionsSepaDebit {
 }
 /// If this is a `us_bank_account` SetupIntent, this sub-hash contains details about the US bank account payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccount {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6371,6 +6429,7 @@ impl Default for UpdateSetupIntentPaymentMethodOptionsUsBankAccount {
 }
 /// Additional fields for Financial Connections Session creation
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
@@ -6539,6 +6598,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Additional fields for Mandate creation
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptions {
     /// The method used to collect offline mandate customer acceptance.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6618,6 +6678,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Additional fields for network related functions
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccountNetworks {
     /// Triggers validations to run across the selected networks
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6750,6 +6811,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Updates a SetupIntent object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateSetupIntent {
     inner: UpdateSetupIntentBuilder,
     intent: stripe_shared::SetupIntentId,
@@ -6873,6 +6935,7 @@ impl StripeRequest for UpdateSetupIntent {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CancelSetupIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     cancellation_reason: Option<stripe_shared::SetupIntentCancellationReason>,
@@ -6889,6 +6952,7 @@ impl CancelSetupIntentBuilder {
 ///
 /// After you cancel it, setup is abandoned and any operations on the SetupIntent fail with an error.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CancelSetupIntent {
     inner: CancelSetupIntentBuilder,
     intent: stripe_shared::SetupIntentId,
@@ -6941,6 +7005,7 @@ impl StripeRequest for CancelSetupIntent {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ConfirmSetupIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     confirmation_token: Option<String>,
@@ -6974,6 +7039,7 @@ impl ConfirmSetupIntentBuilder {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 #[serde(rename_all = "snake_case")]
 pub enum ConfirmSetupIntentMandateData {
     #[serde(untagged)]
@@ -6982,6 +7048,7 @@ pub enum ConfirmSetupIntentMandateData {
     ClientKeyParam(ConfirmSetupIntentClientKeyParam),
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentSecretKeyParam {
     /// This hash contains details about the customer acceptance of the Mandate.
     pub customer_acceptance: ConfirmSetupIntentSecretKeyParamCustomerAcceptance,
@@ -6995,6 +7062,7 @@ impl ConfirmSetupIntentSecretKeyParam {
 }
 /// This hash contains details about the customer acceptance of the Mandate.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentSecretKeyParamCustomerAcceptance {
     /// The time at which the customer accepted the Mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7076,6 +7144,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentSecretKeyParamCustomerAc
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentClientKeyParam {
     /// This hash contains details about the customer acceptance of the Mandate.
     pub customer_acceptance: ConfirmSetupIntentClientKeyParamCustomerAcceptance,
@@ -7089,6 +7158,7 @@ impl ConfirmSetupIntentClientKeyParam {
 }
 /// This hash contains details about the customer acceptance of the Mandate.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentClientKeyParamCustomerAcceptance {
     /// If this is a Mandate accepted online, this hash contains details about the online acceptance.
     pub online: ConfirmSetupIntentClientKeyParamCustomerAcceptanceOnline,
@@ -7106,6 +7176,7 @@ impl ConfirmSetupIntentClientKeyParamCustomerAcceptance {
 }
 /// If this is a Mandate accepted online, this hash contains details about the online acceptance.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentClientKeyParamCustomerAcceptanceOnline {
     /// The IP address from which the Mandate was accepted by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7182,6 +7253,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentClientKeyParamCustomerAc
 /// When included, this hash creates a PaymentMethod that is set as the [`payment_method`](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-payment_method).
 /// value in the SetupIntent.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodData {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7446,6 +7518,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodDataAllowRe
 }
 /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodDataAuBecsDebit {
     /// The account number for the bank account.
     pub account_number: String,
@@ -7459,6 +7532,7 @@ impl ConfirmSetupIntentPaymentMethodDataAuBecsDebit {
 }
 /// If this is a `bacs_debit` PaymentMethod, this hash contains details about the Bacs Direct Debit bank account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodDataBacsDebit {
     /// Account number of the bank account that the funds will be debited from.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7479,6 +7553,7 @@ impl Default for ConfirmSetupIntentPaymentMethodDataBacsDebit {
 }
 /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodDataBoleto {
     /// The tax ID of the customer (CPF for individual consumers or CNPJ for businesses consumers)
     pub tax_id: String,
@@ -7490,6 +7565,7 @@ impl ConfirmSetupIntentPaymentMethodDataBoleto {
 }
 /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodDataEps {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7643,6 +7719,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodDataEpsBank
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodDataFpx {
     /// Account holder type for FPX transaction
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7833,6 +7910,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodDataFpxBank
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodDataIdeal {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7950,6 +8028,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodDataIdealBa
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodDataKlarna {
     /// Customer's date of birth
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7967,6 +8046,7 @@ impl Default for ConfirmSetupIntentPaymentMethodDataKlarna {
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodDataP24 {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8114,6 +8194,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodDataP24Bank
 }
 /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodDataSepaDebit {
     /// IBAN of the bank account.
     pub iban: String,
@@ -8125,6 +8206,7 @@ impl ConfirmSetupIntentPaymentMethodDataSepaDebit {
 }
 /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodDataSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     pub country: ConfirmSetupIntentPaymentMethodDataSofortCountry,
@@ -8362,6 +8444,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodDataType {
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodDataUsBankAccount {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8512,6 +8595,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodDataUsBankA
 }
 /// Payment method-specific configuration for this SetupIntent.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodOptions {
     /// If this is a `acss_debit` SetupIntent, this sub-hash contains details about the ACSS Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8561,6 +8645,7 @@ impl Default for ConfirmSetupIntentPaymentMethodOptions {
 }
 /// If this is a `acss_debit` SetupIntent, this sub-hash contains details about the ACSS Debit payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodOptionsAcssDebit {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -8645,6 +8730,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodOptionsAcss
 }
 /// Additional fields for Mandate creation
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
     /// A URL for custom mandate text to render during confirmation step.
     /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,.
@@ -8932,6 +9018,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Configuration for any card setup attempted on this SetupIntent.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodOptionsCard {
     /// Configuration options for setting up an eMandate for cards issued in India.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8976,6 +9063,7 @@ impl Default for ConfirmSetupIntentPaymentMethodOptionsCard {
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodOptionsCardMandateOptions {
     /// Amount to be charged for future payments.
     pub amount: i64,
@@ -9367,6 +9455,7 @@ impl<'de> serde::Deserialize<'de>
 /// If 3D Secure authentication was performed with a third-party provider,
 /// the authentication details to use for this setup.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecure {
     /// The `transStatus` returned from the card Issuer’s ACS in the ARes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9568,6 +9657,7 @@ impl<'de> serde::Deserialize<'de>
 /// explicit card brand choice. The parameter `payment_method_options.card.network``
 /// must be populated accordingly
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions {
     /// Cartes Bancaires-specific 3DS fields.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9586,6 +9676,7 @@ impl Default for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOp
 }
 /// Cartes Bancaires-specific 3DS fields.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires {
     /// The cryptogram calculation algorithm used by the card Issuer's ACS
     /// to calculate the Authentication cryptogram. Also known as `cavvAlgorithm`.
@@ -9754,6 +9845,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// If this is a `sepa_debit` SetupIntent, this sub-hash contains details about the SEPA Debit payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodOptionsSepaDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9772,6 +9864,7 @@ impl Default for ConfirmSetupIntentPaymentMethodOptionsSepaDebit {
 }
 /// If this is a `us_bank_account` SetupIntent, this sub-hash contains details about the US bank account payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodOptionsUsBankAccount {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9805,6 +9898,7 @@ impl Default for ConfirmSetupIntentPaymentMethodOptionsUsBankAccount {
 }
 /// Additional fields for Financial Connections Session creation
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
@@ -9974,6 +10068,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Additional fields for Mandate creation
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodOptionsUsBankAccountMandateOptions {
     /// The method used to collect offline mandate customer acceptance.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10053,6 +10148,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Additional fields for network related functions
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntentPaymentMethodOptionsUsBankAccountNetworks {
     /// Triggers validations to run across the selected networks
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10199,6 +10295,7 @@ impl<'de> serde::Deserialize<'de>
 /// `requires_payment_method` status or the `canceled` status if the
 /// confirmation limit is reached.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ConfirmSetupIntent {
     inner: ConfirmSetupIntentBuilder,
     intent: stripe_shared::SetupIntentId,
@@ -10287,6 +10384,7 @@ impl StripeRequest for ConfirmSetupIntent {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct VerifyMicrodepositsSetupIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amounts: Option<Vec<i64>>,
@@ -10302,6 +10400,7 @@ impl VerifyMicrodepositsSetupIntentBuilder {
 }
 /// Verifies microdeposits on a SetupIntent object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct VerifyMicrodepositsSetupIntent {
     inner: VerifyMicrodepositsSetupIntentBuilder,
     intent: stripe_shared::SetupIntentId,
@@ -10359,6 +10458,7 @@ impl StripeRequest for VerifyMicrodepositsSetupIntent {
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct OnlineParam {
     /// The IP address from which the Mandate was accepted by the customer.
     pub ip_address: String,
@@ -10371,6 +10471,7 @@ impl OnlineParam {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct PaymentMethodParam {
     /// Customer's bank account number.
     pub account_number: String,
@@ -10393,6 +10494,7 @@ impl PaymentMethodParam {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct BillingDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10424,6 +10526,7 @@ impl Default for BillingDetailsAddress {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DateOfBirth {
     /// The day of birth, between 1 and 31.
     pub day: i64,
@@ -10438,6 +10541,7 @@ impl DateOfBirth {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RadarOptionsWithHiddenOptions {
     /// A [Radar Session](https://stripe.com/docs/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10454,6 +10558,7 @@ impl Default for RadarOptionsWithHiddenOptions {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct SetupIntentPaymentMethodOptionsParam {
     /// \[Deprecated\] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10470,6 +10575,7 @@ impl Default for SetupIntentPaymentMethodOptionsParam {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct PaymentMethodOptionsParam {
     /// The PayPal Billing Agreement ID (BAID).
     /// This is an ID generated by PayPal which represents the mandate between the merchant and the customer.
@@ -10487,6 +10593,7 @@ impl Default for PaymentMethodOptionsParam {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct BillingDetailsInnerParams {
     /// Billing address.
     #[serde(skip_serializing_if = "Option::is_none")]

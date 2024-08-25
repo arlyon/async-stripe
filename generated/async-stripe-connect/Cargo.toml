@@ -28,7 +28,9 @@ async-stripe-shared = {path = "../../generated/async-stripe-shared"}
 
 [features]
 serialize = ["async-stripe-types/serialize","async-stripe-shared/serialize"]
+serialize_extra = ["serialize", "async-stripe-types/serialize_extra","async-stripe-shared/serialize_extra"]
 deserialize = ["async-stripe-types/deserialize","async-stripe-shared/deserialize", "dep:serde_json"]
+deserialize_extra = ["deserialize", "async-stripe-types/deserialize_extra","async-stripe-shared/deserialize_extra", "dep:serde_json"]
 account = []
 account_link = []
 account_session = []

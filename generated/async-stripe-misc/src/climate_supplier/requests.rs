@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListClimateSupplierBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -20,6 +21,7 @@ impl ListClimateSupplierBuilder {
 }
 /// Lists all available Climate supplier objects.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListClimateSupplier {
     inner: ListClimateSupplierBuilder,
 }
@@ -91,6 +93,7 @@ impl StripeRequest for ListClimateSupplier {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveClimateSupplierBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -102,6 +105,7 @@ impl RetrieveClimateSupplierBuilder {
 }
 /// Retrieves a Climate supplier object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveClimateSupplier {
     inner: RetrieveClimateSupplierBuilder,
     supplier: stripe_misc::ClimateSupplierId,

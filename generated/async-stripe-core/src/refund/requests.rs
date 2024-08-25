@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<String>,
@@ -35,6 +36,7 @@ impl ListRefundBuilder {
 /// Returns a list of all refunds you created.
 /// We return the refunds in sorted order, with the most recent refunds appearing first The 10 most recent refunds are always available by default on the Charge object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListRefund {
     inner: ListRefundBuilder,
 }
@@ -121,6 +123,7 @@ impl StripeRequest for ListRefund {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -132,6 +135,7 @@ impl RetrieveRefundBuilder {
 }
 /// Retrieves the details of an existing refund.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveRefund {
     inner: RetrieveRefundBuilder,
     refund: stripe_shared::RefundId,
@@ -174,6 +178,7 @@ impl StripeRequest for RetrieveRefund {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -342,6 +347,7 @@ impl<'de> serde::Deserialize<'de> for CreateRefundReason {
 /// This method will raise an error when called on an already-refunded charge,
 /// or when trying to refund more money than is left on a charge.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateRefund {
     inner: CreateRefundBuilder,
 }
@@ -456,6 +462,7 @@ impl StripeRequest for CreateRefund {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -472,6 +479,7 @@ impl UpdateRefundBuilder {
 ///
 /// This request only accepts `metadata` as an argument.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateRefund {
     inner: UpdateRefundBuilder,
     refund: stripe_shared::RefundId,
@@ -525,6 +533,7 @@ impl StripeRequest for UpdateRefund {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CancelRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -539,6 +548,7 @@ impl CancelRefundBuilder {
 /// You can’t cancel refunds in other states.
 /// Only refunds for payment methods that require customer action can enter the `requires_action` state.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CancelRefund {
     inner: CancelRefundBuilder,
     refund: stripe_shared::RefundId,
@@ -582,6 +592,7 @@ impl StripeRequest for CancelRefund {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ExpireRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -593,6 +604,7 @@ impl ExpireRefundBuilder {
 }
 /// Expire a refund with a status of `requires_action`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ExpireRefund {
     inner: ExpireRefundBuilder,
     refund: String,

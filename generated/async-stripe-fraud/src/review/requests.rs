@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListReviewBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -23,6 +24,7 @@ impl ListReviewBuilder {
 /// Returns a list of `Review` objects that have `open` set to `true`.
 /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListReview {
     inner: ListReviewBuilder,
 }
@@ -99,6 +101,7 @@ impl StripeRequest for ListReview {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveReviewBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -110,6 +113,7 @@ impl RetrieveReviewBuilder {
 }
 /// Retrieves a `Review` object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveReview {
     inner: RetrieveReviewBuilder,
     review: stripe_shared::ReviewId,
@@ -152,6 +156,7 @@ impl StripeRequest for RetrieveReview {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ApproveReviewBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -163,6 +168,7 @@ impl ApproveReviewBuilder {
 }
 /// Approves a `Review` object, closing it and removing it from the list of reviews.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ApproveReview {
     inner: ApproveReviewBuilder,
     review: stripe_shared::ReviewId,

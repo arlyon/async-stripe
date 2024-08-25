@@ -23,7 +23,9 @@ serde_json = { workspace = true, optional = true }
 
 [features]
 serialize = []
+serialize_extra = ["serialize"]
 deserialize = ["dep:serde_json"]
+deserialize_extra = ["deserialize"]
 
 [dev-dependencies]
 serde_qs.workspace = true

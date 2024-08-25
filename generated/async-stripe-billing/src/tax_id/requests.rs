@@ -4,6 +4,7 @@ use stripe_client_core::{
 
 /// Deletes an existing `tax_id` object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteCustomerTaxId {
     customer: stripe_shared::CustomerId,
     id: String,
@@ -43,6 +44,7 @@ impl StripeRequest for DeleteCustomerTaxId {
 }
 /// Deletes an existing account or customer `tax_id` object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteIdTaxId {
     id: stripe_shared::TaxIdId,
 }
@@ -79,6 +81,7 @@ impl StripeRequest for DeleteIdTaxId {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListCustomerTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -96,6 +99,7 @@ impl ListCustomerTaxIdBuilder {
 }
 /// Returns a list of tax IDs for a customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListCustomerTaxId {
     inner: ListCustomerTaxIdBuilder,
     customer: stripe_shared::CustomerId,
@@ -170,6 +174,7 @@ impl StripeRequest for ListCustomerTaxId {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveCustomerTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -181,6 +186,7 @@ impl RetrieveCustomerTaxIdBuilder {
 }
 /// Retrieves the `tax_id` object with the given identifier.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveCustomerTaxId {
     inner: RetrieveCustomerTaxIdBuilder,
     customer: stripe_shared::CustomerId,
@@ -230,6 +236,7 @@ impl StripeRequest for RetrieveCustomerTaxId {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -249,6 +256,7 @@ impl ListTaxIdBuilder {
 }
 /// The account or customer the tax ID belongs to. Defaults to `owner[type]=self`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListTaxIdOwner {
     /// Account the tax ID belongs to. Required when `type=account`
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -328,6 +336,7 @@ impl<'de> serde::Deserialize<'de> for ListTaxIdOwnerType {
 }
 /// Returns a list of tax IDs.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListTaxId {
     inner: ListTaxIdBuilder,
 }
@@ -404,6 +413,7 @@ impl StripeRequest for ListTaxId {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveIdTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -415,6 +425,7 @@ impl RetrieveIdTaxIdBuilder {
 }
 /// Retrieves an account or customer `tax_id` object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveIdTaxId {
     inner: RetrieveIdTaxIdBuilder,
     id: stripe_shared::TaxIdId,
@@ -457,6 +468,7 @@ impl StripeRequest for RetrieveIdTaxId {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateCustomerTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -736,6 +748,7 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxIdType {
 }
 /// Creates a new `tax_id` object for a customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomerTaxId {
     inner: CreateCustomerTaxIdBuilder,
     customer: stripe_shared::CustomerId,
@@ -786,6 +799,7 @@ impl StripeRequest for CreateCustomerTaxId {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -802,6 +816,7 @@ impl CreateTaxIdBuilder {
 }
 /// The account or customer the tax ID belongs to. Defaults to `owner[type]=self`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTaxIdOwner {
     /// Account the tax ID belongs to. Required when `type=account`
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1146,6 +1161,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxIdType {
 }
 /// Creates a new account or customer `tax_id` object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateTaxId {
     inner: CreateTaxIdBuilder,
 }

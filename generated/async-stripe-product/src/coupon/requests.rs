@@ -6,6 +6,7 @@ use stripe_client_core::{
 /// However, deleting a coupon does not affect any customers who have already applied the coupon; it means that new customers can’t redeem the coupon.
 /// You can also delete coupons via the API.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteCoupon {
     coupon: stripe_shared::CouponId,
 }
@@ -42,6 +43,7 @@ impl StripeRequest for DeleteCoupon {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -61,6 +63,7 @@ impl ListCouponBuilder {
 }
 /// Returns a list of your coupons.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListCoupon {
     inner: ListCouponBuilder,
 }
@@ -138,6 +141,7 @@ impl StripeRequest for ListCoupon {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -149,6 +153,7 @@ impl RetrieveCouponBuilder {
 }
 /// Retrieves the coupon with the given ID.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveCoupon {
     inner: RetrieveCouponBuilder,
     coupon: stripe_shared::CouponId,
@@ -191,6 +196,7 @@ impl StripeRequest for RetrieveCoupon {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount_off: Option<i64>,
@@ -240,6 +246,7 @@ impl CreateCouponBuilder {
 }
 /// A hash containing directions for what this Coupon will apply discounts to.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCouponAppliesTo {
     /// An array of Product IDs that this Coupon will apply to.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -262,6 +269,7 @@ impl Default for CreateCouponAppliesTo {
 /// If you set an `amount_off`, that amount will be subtracted from any invoice’s subtotal.
 /// For example, an invoice with a subtotal of $100 will have a final total of $0 if a coupon with an `amount_off` of 20000 is applied to it and an invoice with a subtotal of $300 will have a final total of $100 if a coupon with an `amount_off` of 20000 is applied to it.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCoupon {
     inner: CreateCouponBuilder,
 }
@@ -381,6 +389,7 @@ impl StripeRequest for CreateCoupon {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     currency_options: Option<std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
@@ -399,6 +408,7 @@ impl UpdateCouponBuilder {
 /// Updates the metadata of a coupon.
 /// Other coupon details (currency, duration, amount_off) are, by design, not editable.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateCoupon {
     inner: UpdateCouponBuilder,
     coupon: stripe_shared::CouponId,
@@ -468,6 +478,7 @@ impl StripeRequest for UpdateCoupon {
 }
 
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CurrencyOption {
     /// A positive integer representing the amount to subtract from an invoice total.
     pub amount_off: i64,

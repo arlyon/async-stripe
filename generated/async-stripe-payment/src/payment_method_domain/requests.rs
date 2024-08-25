@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListPaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     domain_name: Option<String>,
@@ -31,6 +32,7 @@ impl ListPaymentMethodDomainBuilder {
 }
 /// Lists the details of existing payment method domains.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListPaymentMethodDomain {
     inner: ListPaymentMethodDomainBuilder,
 }
@@ -114,6 +116,7 @@ impl StripeRequest for ListPaymentMethodDomain {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrievePaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -125,6 +128,7 @@ impl RetrievePaymentMethodDomainBuilder {
 }
 /// Retrieves the details of an existing payment method domain.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrievePaymentMethodDomain {
     inner: RetrievePaymentMethodDomainBuilder,
     payment_method_domain: stripe_payment::PaymentMethodDomainId,
@@ -174,6 +178,7 @@ impl StripeRequest for RetrievePaymentMethodDomain {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreatePaymentMethodDomainBuilder {
     domain_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -188,6 +193,7 @@ impl CreatePaymentMethodDomainBuilder {
 }
 /// Creates a payment method domain.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentMethodDomain {
     inner: CreatePaymentMethodDomainBuilder,
 }
@@ -234,6 +240,7 @@ impl StripeRequest for CreatePaymentMethodDomain {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdatePaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     enabled: Option<bool>,
@@ -247,6 +254,7 @@ impl UpdatePaymentMethodDomainBuilder {
 }
 /// Updates an existing payment method domain.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentMethodDomain {
     inner: UpdatePaymentMethodDomainBuilder,
     payment_method_domain: stripe_payment::PaymentMethodDomainId,
@@ -302,6 +310,7 @@ impl StripeRequest for UpdatePaymentMethodDomain {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ValidatePaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -319,6 +328,7 @@ impl ValidatePaymentMethodDomainBuilder {
 ///
 /// Related guides: [Payment method domains](https://stripe.com/docs/payments/payment-methods/pmd-registration).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ValidatePaymentMethodDomain {
     inner: ValidatePaymentMethodDomainBuilder,
     payment_method_domain: stripe_payment::PaymentMethodDomainId,

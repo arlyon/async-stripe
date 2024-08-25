@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListApplicationFeeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<String>,
@@ -32,6 +33,7 @@ impl ListApplicationFeeBuilder {
 /// Returns a list of application fees you’ve previously collected.
 /// The application fees are returned in sorted order, with the most recent fees appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListApplicationFee {
     inner: ListApplicationFeeBuilder,
 }
@@ -113,6 +115,7 @@ impl StripeRequest for ListApplicationFee {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveApplicationFeeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -125,6 +128,7 @@ impl RetrieveApplicationFeeBuilder {
 /// Retrieves the details of an application fee that your account has collected.
 /// The same information is returned when refunding the application fee.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveApplicationFee {
     inner: RetrieveApplicationFeeBuilder,
     id: stripe_shared::ApplicationFeeId,

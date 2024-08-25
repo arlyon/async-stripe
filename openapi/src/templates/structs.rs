@@ -26,6 +26,8 @@ impl<'a> ObjectWriter<'a> {
         } else if struct_.object_field.is_none() {
             // Otherwise we can just use the proc macro if there is no object sentinel field
             serde_derive.serialize(ShouldDerive::Gated);
+        } else if struct_.object_field.is_some() {
+            serde_derive.serialize(ShouldDerive::Never);
         }
 
         let fields = &struct_.fields;

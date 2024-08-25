@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -20,6 +21,7 @@ impl ListEntitlementsFeatureBuilder {
 }
 /// Retrieve a list of features
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListEntitlementsFeature {
     inner: ListEntitlementsFeatureBuilder,
 }
@@ -92,6 +94,7 @@ impl StripeRequest for ListEntitlementsFeature {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -103,6 +106,7 @@ impl RetrieveEntitlementsFeatureBuilder {
 }
 /// Retrieves a feature
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveEntitlementsFeature {
     inner: RetrieveEntitlementsFeatureBuilder,
     id: stripe_shared::EntitlementsFeatureId,
@@ -146,6 +150,7 @@ impl StripeRequest for RetrieveEntitlementsFeature {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -161,6 +166,7 @@ impl CreateEntitlementsFeatureBuilder {
 }
 /// Creates a feature
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateEntitlementsFeature {
     inner: CreateEntitlementsFeatureBuilder,
 }
@@ -210,6 +216,7 @@ impl StripeRequest for CreateEntitlementsFeature {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -227,6 +234,7 @@ impl UpdateEntitlementsFeatureBuilder {
 }
 /// Update a feature’s metadata or permanently deactivate it.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateEntitlementsFeature {
     inner: UpdateEntitlementsFeatureBuilder,
     id: stripe_shared::EntitlementsFeatureId,

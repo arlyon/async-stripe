@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListClimateOrderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -21,6 +22,7 @@ impl ListClimateOrderBuilder {
 /// Lists all Climate order objects. The orders are returned sorted by creation date, with the
 /// most recently created orders appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListClimateOrder {
     inner: ListClimateOrderBuilder,
 }
@@ -92,6 +94,7 @@ impl StripeRequest for ListClimateOrder {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveClimateOrderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -103,6 +106,7 @@ impl RetrieveClimateOrderBuilder {
 }
 /// Retrieves the details of a Climate order object with the given ID.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveClimateOrder {
     inner: RetrieveClimateOrderBuilder,
     order: stripe_misc::ClimateOrderId,
@@ -146,6 +150,7 @@ impl StripeRequest for RetrieveClimateOrder {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateClimateOrderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -177,6 +182,7 @@ impl CreateClimateOrderBuilder {
 /// Creates a Climate order object for a given Climate product. The order will be processed immediately
 /// after creation and payment will be deducted your Stripe balance.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateClimateOrder {
     inner: CreateClimateOrderBuilder,
 }
@@ -251,6 +257,7 @@ impl StripeRequest for CreateClimateOrder {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateClimateOrderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     beneficiary: Option<BeneficiaryParams>,
@@ -266,6 +273,7 @@ impl UpdateClimateOrderBuilder {
 }
 /// Updates the specified order by setting the values of the parameters passed.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateClimateOrder {
     inner: UpdateClimateOrderBuilder,
     order: stripe_misc::ClimateOrderId,
@@ -326,6 +334,7 @@ impl StripeRequest for UpdateClimateOrder {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CancelClimateOrderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -340,6 +349,7 @@ impl CancelClimateOrderBuilder {
 /// might cancel reservations if suppliers fail to deliver. If Frontier cancels the reservation, Stripe
 /// provides 90 days advance notice and refunds the `amount_total`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CancelClimateOrder {
     inner: CancelClimateOrderBuilder,
     order: stripe_misc::ClimateOrderId,
@@ -384,6 +394,7 @@ impl StripeRequest for CancelClimateOrder {
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct BeneficiaryParams {
     /// Publicly displayable name for the end beneficiary of carbon removal.
     pub public_name: String,

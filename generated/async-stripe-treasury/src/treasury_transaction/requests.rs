@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListTreasuryTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -97,6 +98,7 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryTransactionOrderBy {
 /// A filter for the `status_transitions.posted_at` timestamp.
 /// When using this filter, `status=posted` and `order_by=posted_at` must also be specified.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListTreasuryTransactionStatusTransitions {
     /// Returns Transactions with `posted_at` within the specified range.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -114,6 +116,7 @@ impl Default for ListTreasuryTransactionStatusTransitions {
 }
 /// Retrieves a list of Transaction objects.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListTreasuryTransaction {
     inner: ListTreasuryTransactionBuilder,
 }
@@ -206,6 +209,7 @@ impl StripeRequest for ListTreasuryTransaction {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveTreasuryTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -217,6 +221,7 @@ impl RetrieveTreasuryTransactionBuilder {
 }
 /// Retrieves the details of an existing Transaction.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveTreasuryTransaction {
     inner: RetrieveTreasuryTransactionBuilder,
     id: stripe_treasury::TreasuryTransactionId,

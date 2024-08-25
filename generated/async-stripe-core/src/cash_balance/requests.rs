@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveCashBalanceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -14,6 +15,7 @@ impl RetrieveCashBalanceBuilder {
 }
 /// Retrieves a customer’s cash balance.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveCashBalance {
     inner: RetrieveCashBalanceBuilder,
     customer: stripe_shared::CustomerId,
@@ -57,6 +59,7 @@ impl StripeRequest for RetrieveCashBalance {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateCashBalanceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -70,6 +73,7 @@ impl UpdateCashBalanceBuilder {
 }
 /// A hash of settings for this cash balance.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     /// Valid options are `automatic`, `manual`, or `merchant_default`.
@@ -152,6 +156,7 @@ impl<'de> serde::Deserialize<'de> for UpdateCashBalanceSettingsReconciliationMod
 }
 /// Changes the settings on a customer’s cash balance.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateCashBalance {
     inner: UpdateCashBalanceBuilder,
     customer: stripe_shared::CustomerId,

@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListReportingReportTypeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -14,6 +15,7 @@ impl ListReportingReportTypeBuilder {
 }
 /// Returns a full list of Report Types.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListReportingReportType {
     inner: ListReportingReportTypeBuilder,
 }
@@ -66,6 +68,7 @@ impl StripeRequest for ListReportingReportType {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveReportingReportTypeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -78,6 +81,7 @@ impl RetrieveReportingReportTypeBuilder {
 /// Retrieves the details of a Report Type.
 /// (Certain report types require a [live-mode API key](https://stripe.com/docs/keys#test-live-modes).).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveReportingReportType {
     inner: RetrieveReportingReportTypeBuilder,
     report_type: stripe_misc::ReportingReportTypeId,

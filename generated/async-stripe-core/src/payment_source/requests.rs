@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListCustomerPaymentSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -22,6 +23,7 @@ impl ListCustomerPaymentSourceBuilder {
 }
 /// List sources for a specified customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListCustomerPaymentSource {
     inner: ListCustomerPaymentSourceBuilder,
     customer: stripe_shared::CustomerId,
@@ -101,6 +103,7 @@ impl StripeRequest for ListCustomerPaymentSource {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrievePaymentSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -112,6 +115,7 @@ impl RetrievePaymentSourceBuilder {
 }
 /// Retrieve a specified source for a given customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrievePaymentSource {
     inner: RetrievePaymentSourceBuilder,
     customer: stripe_shared::CustomerId,
@@ -161,6 +165,7 @@ impl StripeRequest for RetrievePaymentSource {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateCustomerPaymentSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -181,6 +186,7 @@ impl CreateCustomerPaymentSourceBuilder {
 /// However, if the owner already has a default, then it will not change.
 /// To change the default, you should [update the customer](https://stripe.com/docs/api#update_customer) to have a new `default_source`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomerPaymentSource {
     inner: CreateCustomerPaymentSourceBuilder,
     customer: stripe_shared::CustomerId,

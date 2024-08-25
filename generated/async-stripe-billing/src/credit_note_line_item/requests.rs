@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListCreditNoteCreditNoteLineItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -21,6 +22,7 @@ impl ListCreditNoteCreditNoteLineItemBuilder {
 /// When retrieving a credit note, you’ll get a **lines** property containing the the first handful of those items.
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListCreditNoteCreditNoteLineItem {
     inner: ListCreditNoteCreditNoteLineItemBuilder,
     credit_note: stripe_shared::CreditNoteId,

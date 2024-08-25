@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     account_holder: Option<ListFinancialConnectionsAccountAccountHolder>,
@@ -32,6 +33,7 @@ impl ListFinancialConnectionsAccountBuilder {
 /// If present, only return accounts that belong to the specified account holder.
 /// `account_holder[customer]` and `account_holder[account]` are mutually exclusive.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListFinancialConnectionsAccountAccountHolder {
     /// The ID of the Stripe account whose accounts will be retrieved.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -52,6 +54,7 @@ impl Default for ListFinancialConnectionsAccountAccountHolder {
 }
 /// Returns a list of Financial Connections `Account` objects.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListFinancialConnectionsAccount {
     inner: ListFinancialConnectionsAccountBuilder,
 }
@@ -139,6 +142,7 @@ impl StripeRequest for ListFinancialConnectionsAccount {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -150,6 +154,7 @@ impl RetrieveFinancialConnectionsAccountBuilder {
 }
 /// Retrieves the details of an Financial Connections `Account`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveFinancialConnectionsAccount {
     inner: RetrieveFinancialConnectionsAccountBuilder,
     account: stripe_misc::FinancialConnectionsAccountId,
@@ -193,6 +198,7 @@ impl StripeRequest for RetrieveFinancialConnectionsAccount {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListOwnersFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -217,6 +223,7 @@ impl ListOwnersFinancialConnectionsAccountBuilder {
 }
 /// Lists all owners for a given `Account`
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListOwnersFinancialConnectionsAccount {
     inner: ListOwnersFinancialConnectionsAccountBuilder,
     account: stripe_misc::FinancialConnectionsAccountId,
@@ -302,6 +309,7 @@ impl StripeRequest for ListOwnersFinancialConnectionsAccount {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct DisconnectFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -315,6 +323,7 @@ impl DisconnectFinancialConnectionsAccountBuilder {
 /// You will no longer be able to access data associated with the account (e.g.
 /// balances, transactions).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DisconnectFinancialConnectionsAccount {
     inner: DisconnectFinancialConnectionsAccountBuilder,
     account: stripe_misc::FinancialConnectionsAccountId,
@@ -361,6 +370,7 @@ impl StripeRequest for DisconnectFinancialConnectionsAccount {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RefreshFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -432,6 +442,7 @@ impl<'de> serde::Deserialize<'de> for RefreshFinancialConnectionsAccountFeatures
 }
 /// Refreshes the data associated with a Financial Connections `Account`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RefreshFinancialConnectionsAccount {
     inner: RefreshFinancialConnectionsAccountBuilder,
     account: stripe_misc::FinancialConnectionsAccountId,
@@ -484,6 +495,7 @@ impl StripeRequest for RefreshFinancialConnectionsAccount {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct SubscribeFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -551,6 +563,7 @@ impl<'de> serde::Deserialize<'de> for SubscribeFinancialConnectionsAccountFeatur
 }
 /// Subscribes to periodic refreshes of data associated with a Financial Connections `Account`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct SubscribeFinancialConnectionsAccount {
     inner: SubscribeFinancialConnectionsAccountBuilder,
     account: stripe_misc::FinancialConnectionsAccountId,
@@ -603,6 +616,7 @@ impl StripeRequest for SubscribeFinancialConnectionsAccount {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UnsubscribeFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -670,6 +684,7 @@ impl<'de> serde::Deserialize<'de> for UnsubscribeFinancialConnectionsAccountFeat
 }
 /// Unsubscribes from periodic refreshes of data associated with a Financial Connections `Account`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UnsubscribeFinancialConnectionsAccount {
     inner: UnsubscribeFinancialConnectionsAccountBuilder,
     account: stripe_misc::FinancialConnectionsAccountId,

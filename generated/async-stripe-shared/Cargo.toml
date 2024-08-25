@@ -27,5 +27,7 @@ async-stripe-types = {path = "../../async-stripe-types"}
 
 [features]
 serialize = ["async-stripe-types/serialize"]
+serialize_extra = ["serialize", "async-stripe-types/serialize_extra"]
 deserialize = ["async-stripe-types/deserialize", "dep:serde_json"]
+deserialize_extra = ["deserialize", "async-stripe-types/deserialize_extra", "dep:serde_json"]
 

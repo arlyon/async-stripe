@@ -6,6 +6,7 @@ use stripe_client_core::{
 /// It cannot be undone.
 /// Also immediately cancels any active subscriptions on the customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteCustomer {
     customer: stripe_shared::CustomerId,
 }
@@ -43,6 +44,7 @@ impl StripeRequest for DeleteCustomer {
 }
 /// Removes the currently applied discount on a customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteDiscountCustomer {
     customer: stripe_shared::CustomerId,
 }
@@ -79,6 +81,7 @@ impl StripeRequest for DeleteDiscountCustomer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -111,6 +114,7 @@ impl ListCustomerBuilder {
 /// Returns a list of your customers.
 /// The customers are returned sorted by creation date, with the most recent customers appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListCustomer {
     inner: ListCustomerBuilder,
 }
@@ -199,6 +203,7 @@ impl StripeRequest for ListCustomer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -210,6 +215,7 @@ impl RetrieveCustomerBuilder {
 }
 /// Retrieves a Customer object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveCustomer {
     inner: RetrieveCustomerBuilder,
     customer: stripe_shared::CustomerId,
@@ -332,6 +338,7 @@ const _: () = {
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct BalanceTransactionsCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -349,6 +356,7 @@ impl BalanceTransactionsCustomerBuilder {
 }
 /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct BalanceTransactionsCustomer {
     inner: BalanceTransactionsCustomerBuilder,
     customer: stripe_shared::CustomerId,
@@ -428,6 +436,7 @@ impl StripeRequest for BalanceTransactionsCustomer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListPaymentMethodsCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_redisplay: Option<ListPaymentMethodsCustomerAllowRedisplay>,
@@ -677,6 +686,7 @@ impl<'de> serde::Deserialize<'de> for ListPaymentMethodsCustomerType {
 }
 /// Returns a list of PaymentMethods for a given Customer
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListPaymentMethodsCustomer {
     inner: ListPaymentMethodsCustomerBuilder,
     customer: stripe_shared::CustomerId,
@@ -768,6 +778,7 @@ impl StripeRequest for ListPaymentMethodsCustomer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrievePaymentMethodCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -779,6 +790,7 @@ impl RetrievePaymentMethodCustomerBuilder {
 }
 /// Retrieves a PaymentMethod object for a given Customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrievePaymentMethodCustomer {
     inner: RetrievePaymentMethodCustomerBuilder,
     customer: stripe_shared::CustomerId,
@@ -834,6 +846,7 @@ impl StripeRequest for RetrievePaymentMethodCustomer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct SearchCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -855,6 +868,7 @@ impl SearchCustomerBuilder {
 /// Occasionally, propagation of new or updated data can be up.
 /// to an hour behind during outages. Search functionality is not available to merchants in India.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct SearchCustomer {
     inner: SearchCustomerBuilder,
 }
@@ -914,6 +928,7 @@ impl StripeRequest for SearchCustomer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     address: Option<OptionalFieldsAddress>,
@@ -993,6 +1008,7 @@ impl CreateCustomerBuilder {
 }
 /// Balance information and default balance settings for this customer.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomerCashBalance {
     /// Settings controlling the behavior of the customer's cash balance,
     /// such as reconciliation of funds received.
@@ -1012,6 +1028,7 @@ impl Default for CreateCustomerCashBalance {
 /// Settings controlling the behavior of the customer's cash balance,
 /// such as reconciliation of funds received.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomerCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     /// Valid options are `automatic`, `manual`, or `merchant_default`.
@@ -1094,6 +1111,7 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerCashBalanceSettingsReconcili
 }
 /// Default invoice settings for this customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomerInvoiceSettings {
     /// The list of up to 4 default custom fields to be displayed on invoices for this customer.
     /// When updating, pass an empty string to remove previously-defined fields.
@@ -1126,6 +1144,7 @@ impl Default for CreateCustomerInvoiceSettings {
 }
 /// Default options for invoice PDF rendering for this customer.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomerInvoiceSettingsRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -1209,6 +1228,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Tax details about the customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomerTax {
     /// A recent IP address of the customer used for tax reporting and tax location inference.
     /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
@@ -1289,6 +1309,7 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxValidateLocation {
 }
 /// The customer's tax IDs.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomerTaxIdData {
     /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
     #[serde(rename = "type")]
@@ -1568,6 +1589,7 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxIdDataType {
 }
 /// Creates a new customer object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateCustomer {
     inner: CreateCustomerBuilder,
 }
@@ -1735,6 +1757,7 @@ impl StripeRequest for CreateCustomer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     address: Option<OptionalFieldsAddress>,
@@ -1808,6 +1831,7 @@ impl UpdateCustomerBuilder {
 }
 /// Balance information and default balance settings for this customer.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateCustomerCashBalance {
     /// Settings controlling the behavior of the customer's cash balance,
     /// such as reconciliation of funds received.
@@ -1827,6 +1851,7 @@ impl Default for UpdateCustomerCashBalance {
 /// Settings controlling the behavior of the customer's cash balance,
 /// such as reconciliation of funds received.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateCustomerCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     /// Valid options are `automatic`, `manual`, or `merchant_default`.
@@ -1909,6 +1934,7 @@ impl<'de> serde::Deserialize<'de> for UpdateCustomerCashBalanceSettingsReconcili
 }
 /// Default invoice settings for this customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateCustomerInvoiceSettings {
     /// The list of up to 4 default custom fields to be displayed on invoices for this customer.
     /// When updating, pass an empty string to remove previously-defined fields.
@@ -1941,6 +1967,7 @@ impl Default for UpdateCustomerInvoiceSettings {
 }
 /// Default options for invoice PDF rendering for this customer.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateCustomerInvoiceSettingsRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -2024,6 +2051,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Tax details about the customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateCustomerTax {
     /// A recent IP address of the customer used for tax reporting and tax location inference.
     /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
@@ -2111,6 +2139,7 @@ impl<'de> serde::Deserialize<'de> for UpdateCustomerTaxValidateLocation {
 ///
 /// This request accepts mostly the same arguments as the customer creation call.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateCustomer {
     inner: UpdateCustomerBuilder,
     customer: stripe_shared::CustomerId,
@@ -2270,6 +2299,7 @@ impl StripeRequest for UpdateCustomer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateFundingInstructionsCustomerBuilder {
     bank_transfer: CreateFundingInstructionsCustomerBankTransfer,
     currency: stripe_types::Currency,
@@ -2293,6 +2323,7 @@ impl CreateFundingInstructionsCustomerBuilder {
 }
 /// Additional parameters for `bank_transfer` funding types
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateFundingInstructionsCustomerBankTransfer {
     /// Configuration for eu_bank_transfer funding type.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2315,6 +2346,7 @@ impl CreateFundingInstructionsCustomerBankTransfer {
 }
 /// Configuration for eu_bank_transfer funding type.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateFundingInstructionsCustomerBankTransferEuBankTransfer {
     /// The desired country code of the bank account information.
     /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
@@ -2519,6 +2551,7 @@ impl<'de> serde::Deserialize<'de> for CreateFundingInstructionsCustomerFundingTy
 /// funding instructions will be retrieved.
 /// In other words, we will return the same funding instructions each time.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateFundingInstructionsCustomer {
     inner: CreateFundingInstructionsCustomerBuilder,
     customer: stripe_shared::CustomerId,
@@ -2577,6 +2610,7 @@ impl StripeRequest for CreateFundingInstructionsCustomer {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct FundCashBalanceCustomerBuilder {
     amount: i64,
     currency: stripe_types::Currency,
@@ -2592,6 +2626,7 @@ impl FundCashBalanceCustomerBuilder {
 }
 /// Create an incoming testmode bank transfer
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct FundCashBalanceCustomer {
     inner: FundCashBalanceCustomerBuilder,
     customer: String,
@@ -2653,6 +2688,7 @@ impl StripeRequest for FundCashBalanceCustomer {
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct OptionalFieldsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2684,6 +2720,7 @@ impl Default for OptionalFieldsAddress {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CustomFieldParams {
     /// The name of the custom field. This may be up to 40 characters.
     pub name: String,
@@ -2696,6 +2733,7 @@ impl CustomFieldParams {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CustomerShipping {
     /// Customer shipping address.
     pub address: OptionalFieldsAddress,

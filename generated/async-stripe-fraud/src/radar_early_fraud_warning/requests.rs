@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListRadarEarlyFraudWarningBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<String>,
@@ -34,6 +35,7 @@ impl ListRadarEarlyFraudWarningBuilder {
 }
 /// Returns a list of early fraud warnings.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListRadarEarlyFraudWarning {
     inner: ListRadarEarlyFraudWarningBuilder,
 }
@@ -121,6 +123,7 @@ impl StripeRequest for ListRadarEarlyFraudWarning {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveRadarEarlyFraudWarningBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -134,6 +137,7 @@ impl RetrieveRadarEarlyFraudWarningBuilder {
 ///
 /// Please refer to the [early fraud warning](https://stripe.com/docs/api#early_fraud_warning_object) object reference for more details.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveRadarEarlyFraudWarning {
     inner: RetrieveRadarEarlyFraudWarningBuilder,
     early_fraud_warning: stripe_fraud::RadarEarlyFraudWarningId,

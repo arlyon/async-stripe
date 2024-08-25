@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListPaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -22,6 +23,7 @@ impl ListPaymentLinkBuilder {
 }
 /// Returns a list of your payment links.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListPaymentLink {
     inner: ListPaymentLinkBuilder,
 }
@@ -98,6 +100,7 @@ impl StripeRequest for ListPaymentLink {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrievePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -109,6 +112,7 @@ impl RetrievePaymentLinkBuilder {
 }
 /// Retrieve a payment link.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrievePaymentLink {
     inner: RetrievePaymentLinkBuilder,
     payment_link: stripe_shared::PaymentLinkId,
@@ -152,6 +156,7 @@ impl StripeRequest for RetrievePaymentLink {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListLineItemsPaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -170,6 +175,7 @@ impl ListLineItemsPaymentLinkBuilder {
 /// When retrieving a payment link, there is an includable **line_items** property containing the first handful of those items.
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListLineItemsPaymentLink {
     inner: ListLineItemsPaymentLinkBuilder,
     payment_link: stripe_shared::PaymentLinkId,
@@ -245,6 +251,7 @@ impl StripeRequest for ListLineItemsPaymentLink {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     after_completion: Option<CreatePaymentLinkAfterCompletion>,
@@ -338,6 +345,7 @@ impl CreatePaymentLinkBuilder {
 }
 /// Behavior after the purchase is complete.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkAfterCompletion {
     /// Configuration when `type=hosted_confirmation`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -412,6 +420,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkAfterCompletionType {
 }
 /// Configuration for automatic tax collection.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkAutomaticTax {
     /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
@@ -430,6 +439,7 @@ impl CreatePaymentLinkAutomaticTax {
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -501,6 +511,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkAutomaticTaxLiabilityType
 }
 /// Configure fields to gather active consent from customers.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkConsentCollection {
     /// Determines the display of payment method reuse agreement text in the UI.
     /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
@@ -531,6 +542,7 @@ impl Default for CreatePaymentLinkConsentCollection {
 /// Determines the display of payment method reuse agreement text in the UI.
 /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
     /// Determines the position and visibility of the payment method reuse agreement in the UI.
     /// When set to `auto`, Stripe's.
@@ -727,6 +739,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkConsentCollectionTermsOfS
 /// Collect additional information from your customer using custom fields.
 /// Up to 3 fields are supported.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkCustomFields {
     /// Configuration for `type=dropdown` fields.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -769,6 +782,7 @@ impl CreatePaymentLinkCustomFields {
 }
 /// The label for the field, displayed to the customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkCustomFieldsLabel {
     /// Custom text for the label, displayed to the customer. Up to 50 characters.
     pub custom: String,
@@ -839,6 +853,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkCustomFieldsLabelType {
 }
 /// Configuration for `type=numeric` fields.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkCustomFieldsNumeric {
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -859,6 +874,7 @@ impl Default for CreatePaymentLinkCustomFieldsNumeric {
 }
 /// Configuration for `type=text` fields.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkCustomFieldsText {
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -994,6 +1010,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkCustomerCreation {
 }
 /// Generate a post-purchase Invoice for one-time payments.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkInvoiceCreation {
     /// Whether the feature is enabled
     pub enabled: bool,
@@ -1008,6 +1025,7 @@ impl CreatePaymentLinkInvoiceCreation {
 }
 /// Invoice PDF configuration.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceData {
     /// The account tax IDs associated with the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1056,6 +1074,7 @@ impl Default for CreatePaymentLinkInvoiceCreationInvoiceData {
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceDataIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1129,6 +1148,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkInvoiceCreationInvoiceDat
 }
 /// Default options for invoice PDF rendering for this customer.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -1219,6 +1239,7 @@ impl<'de> serde::Deserialize<'de>
 /// Each line item represents an item being sold.
 /// Up to 20 line items are supported.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkLineItems {
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1235,6 +1256,7 @@ impl CreatePaymentLinkLineItems {
 }
 /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkPaymentIntentData {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1488,6 +1510,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkPaymentMethodCollection {
 ///
 /// We recommend that you review your privacy policy and check with your legal contacts.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkPhoneNumberCollection {
     /// Set to `true` to enable phone number collection.
     pub enabled: bool,
@@ -1499,6 +1522,7 @@ impl CreatePaymentLinkPhoneNumberCollection {
 }
 /// Configuration for collecting the customer's shipping address.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkShippingAddressCollection {
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
     /// shipping locations.
@@ -2279,6 +2303,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkShippingAddressCollection
 }
 /// The shipping rate options to apply to [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkShippingOptions {
     /// The ID of the Shipping Rate to use for this shipping option.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2297,6 +2322,7 @@ impl Default for CreatePaymentLinkShippingOptions {
 /// When creating a subscription, the specified configuration data will be used.
 /// There must be at least one line item with a recurring price to use `subscription_data`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkSubscriptionData {
     /// The subscription's description, meant to be displayable to the customer.
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
@@ -2336,6 +2362,7 @@ impl Default for CreatePaymentLinkSubscriptionData {
 }
 /// All invoices will be billed using the specified settings.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkSubscriptionDataInvoiceSettings {
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
@@ -2355,6 +2382,7 @@ impl Default for CreatePaymentLinkSubscriptionDataInvoiceSettings {
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2430,6 +2458,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkSubscriptionDataInvoiceSe
 }
 /// Settings related to subscription trials.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkSubscriptionDataTrialSettings {
     /// Defines how the subscription should behave when the user's free trial ends.
     pub end_behavior: CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior,
@@ -2443,6 +2472,7 @@ impl CreatePaymentLinkSubscriptionDataTrialSettings {
 }
 /// Defines how the subscription should behave when the user's free trial ends.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
     pub missing_payment_method:
@@ -2526,6 +2556,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Controls tax ID collection during checkout.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkTaxIdCollection {
     /// Set to `true` to enable tax ID collection.
     pub enabled: bool,
@@ -2537,6 +2568,7 @@ impl CreatePaymentLinkTaxIdCollection {
 }
 /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLinkTransferData {
     /// The amount that will be transferred automatically when a charge succeeds.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2554,6 +2586,7 @@ impl CreatePaymentLinkTransferData {
 }
 /// Creates a payment link.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreatePaymentLink {
     inner: CreatePaymentLinkBuilder,
 }
@@ -2797,6 +2830,7 @@ impl StripeRequest for CreatePaymentLink {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -2864,6 +2898,7 @@ impl UpdatePaymentLinkBuilder {
 }
 /// Behavior after the purchase is complete.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkAfterCompletion {
     /// Configuration when `type=hosted_confirmation`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2938,6 +2973,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkAfterCompletionType {
 }
 /// Configuration for automatic tax collection.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkAutomaticTax {
     /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
@@ -2956,6 +2992,7 @@ impl UpdatePaymentLinkAutomaticTax {
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3028,6 +3065,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkAutomaticTaxLiabilityType
 /// Collect additional information from your customer using custom fields.
 /// Up to 3 fields are supported.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkCustomFields {
     /// Configuration for `type=dropdown` fields.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3070,6 +3108,7 @@ impl UpdatePaymentLinkCustomFields {
 }
 /// The label for the field, displayed to the customer.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkCustomFieldsLabel {
     /// Custom text for the label, displayed to the customer. Up to 50 characters.
     pub custom: String,
@@ -3140,6 +3179,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkCustomFieldsLabelType {
 }
 /// Configuration for `type=numeric` fields.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkCustomFieldsNumeric {
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3160,6 +3200,7 @@ impl Default for UpdatePaymentLinkCustomFieldsNumeric {
 }
 /// Configuration for `type=text` fields.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkCustomFieldsText {
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3295,6 +3336,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkCustomerCreation {
 }
 /// Generate a post-purchase Invoice for one-time payments.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkInvoiceCreation {
     /// Whether the feature is enabled
     pub enabled: bool,
@@ -3309,6 +3351,7 @@ impl UpdatePaymentLinkInvoiceCreation {
 }
 /// Invoice PDF configuration.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceData {
     /// The account tax IDs associated with the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3357,6 +3400,7 @@ impl Default for UpdatePaymentLinkInvoiceCreationInvoiceData {
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3430,6 +3474,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkInvoiceCreationInvoiceDat
 }
 /// Default options for invoice PDF rendering for this customer.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -3520,6 +3565,7 @@ impl<'de> serde::Deserialize<'de>
 /// Each line item represents an item being sold.
 /// Up to 20 line items are supported.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkLineItems {
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3537,6 +3583,7 @@ impl UpdatePaymentLinkLineItems {
 }
 /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkPaymentIntentData {
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3639,6 +3686,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkPaymentMethodCollection {
 }
 /// Configuration for collecting the customer's shipping address.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkShippingAddressCollection {
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
     /// shipping locations.
@@ -4420,6 +4468,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkShippingAddressCollection
 /// When creating a subscription, the specified configuration data will be used.
 /// There must be at least one line item with a recurring price to use `subscription_data`.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkSubscriptionData {
     /// All invoices will be billed using the specified settings.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4445,6 +4494,7 @@ impl Default for UpdatePaymentLinkSubscriptionData {
 }
 /// All invoices will be billed using the specified settings.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkSubscriptionDataInvoiceSettings {
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
@@ -4464,6 +4514,7 @@ impl Default for UpdatePaymentLinkSubscriptionDataInvoiceSettings {
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4539,6 +4590,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkSubscriptionDataInvoiceSe
 }
 /// Settings related to subscription trials.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkSubscriptionDataTrialSettings {
     /// Defines how the subscription should behave when the user's free trial ends.
     pub end_behavior: UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior,
@@ -4552,6 +4604,7 @@ impl UpdatePaymentLinkSubscriptionDataTrialSettings {
 }
 /// Defines how the subscription should behave when the user's free trial ends.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
     pub missing_payment_method:
@@ -4635,6 +4688,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Updates a payment link.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdatePaymentLink {
     inner: UpdatePaymentLinkBuilder,
     payment_link: stripe_shared::PaymentLinkId,
@@ -4820,6 +4874,7 @@ impl StripeRequest for UpdatePaymentLink {
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct AfterCompletionConfirmationPageParams {
     /// A custom message to display to the customer after the purchase is complete.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4836,6 +4891,7 @@ impl Default for AfterCompletionConfirmationPageParams {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct AfterCompletionRedirectParams {
     /// The URL the customer will be redirected to after the purchase is complete.
     /// You can embed `{CHECKOUT_SESSION_ID}` into the URL to have the `id` of the completed [checkout session](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-id) included.
@@ -4847,6 +4903,7 @@ impl AfterCompletionRedirectParams {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CustomFieldOptionParam {
     /// The label for the option, displayed to the customer. Up to 100 characters.
     pub label: String,
@@ -4860,6 +4917,7 @@ impl CustomFieldOptionParam {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CustomTextPositionParam {
     /// Text may be up to 1200 characters in length.
     pub message: String,
@@ -4870,6 +4928,7 @@ impl CustomTextPositionParam {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CustomFieldParams {
     /// The name of the custom field. This may be up to 40 characters.
     pub name: String,
@@ -4882,6 +4941,7 @@ impl CustomFieldParams {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct AdjustableQuantityParams {
     /// Set to true if the quantity can be adjusted to any non-negative Integer.
     pub enabled: bool,
@@ -4902,6 +4962,7 @@ impl AdjustableQuantityParams {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CompletedSessionsParams {
     /// The maximum number of checkout sessions that can be completed for the `completed_sessions` restriction to be met.
     pub limit: i64,
@@ -4912,6 +4973,7 @@ impl CompletedSessionsParams {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CustomFieldDropdownParam {
     /// The options available for the customer to select. Up to 200 options allowed.
     pub options: Vec<CustomFieldOptionParam>,
@@ -4922,6 +4984,7 @@ impl CustomFieldDropdownParam {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CustomTextParam {
     /// Custom text that should be displayed after the payment confirmation button.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4952,6 +5015,7 @@ impl Default for CustomTextParam {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RestrictionsParams {
     /// Configuration for the `completed_sessions` restriction type.
     pub completed_sessions: CompletedSessionsParams,

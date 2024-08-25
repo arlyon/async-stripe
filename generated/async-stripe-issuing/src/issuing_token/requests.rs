@@ -3,6 +3,7 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListIssuingTokenBuilder {
     card: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -33,6 +34,7 @@ impl ListIssuingTokenBuilder {
 }
 /// Lists all Issuing `Token` objects for a given card.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListIssuingToken {
     inner: ListIssuingTokenBuilder,
 }
@@ -109,6 +111,7 @@ impl StripeRequest for ListIssuingToken {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveIssuingTokenBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -120,6 +123,7 @@ impl RetrieveIssuingTokenBuilder {
 }
 /// Retrieves an Issuing `Token` object.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveIssuingToken {
     inner: RetrieveIssuingTokenBuilder,
     token: stripe_shared::IssuingTokenId,
@@ -163,6 +167,7 @@ impl StripeRequest for RetrieveIssuingToken {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct UpdateIssuingTokenBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -233,6 +238,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingTokenStatus {
 }
 /// Attempts to update the specified Issuing `Token` object to the status specified.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct UpdateIssuingToken {
     inner: UpdateIssuingTokenBuilder,
     token: stripe_shared::IssuingTokenId,

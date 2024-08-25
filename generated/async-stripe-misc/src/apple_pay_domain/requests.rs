@@ -4,6 +4,7 @@ use stripe_client_core::{
 
 /// Delete an apple pay domain.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct DeleteApplePayDomain {
     domain: String,
 }
@@ -40,6 +41,7 @@ impl StripeRequest for DeleteApplePayDomain {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct ListApplePayDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     domain_name: Option<String>,
@@ -65,6 +67,7 @@ impl ListApplePayDomainBuilder {
 }
 /// List apple pay domains.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct ListApplePayDomain {
     inner: ListApplePayDomainBuilder,
 }
@@ -140,6 +143,7 @@ impl StripeRequest for ListApplePayDomain {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct RetrieveApplePayDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -151,6 +155,7 @@ impl RetrieveApplePayDomainBuilder {
 }
 /// Retrieve an apple pay domain.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct RetrieveApplePayDomain {
     inner: RetrieveApplePayDomainBuilder,
     domain: String,
@@ -194,6 +199,7 @@ impl StripeRequest for RetrieveApplePayDomain {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 struct CreateApplePayDomainBuilder {
     domain_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -206,6 +212,7 @@ impl CreateApplePayDomainBuilder {
 }
 /// Create an apple pay domain.
 #[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(feature = "deserialize_extra", derive(serde::Deserialize))]
 pub struct CreateApplePayDomain {
     inner: CreateApplePayDomainBuilder,
 }
