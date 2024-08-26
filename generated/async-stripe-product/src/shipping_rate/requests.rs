@@ -2,8 +2,8 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListShippingRateBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11,15 +11,15 @@ struct ListShippingRateBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListShippingRateBuilder<'a> {
+impl ListShippingRateBuilder {
     fn new() -> Self {
         Self {
             active: None,
@@ -34,62 +34,62 @@ impl<'a> ListShippingRateBuilder<'a> {
 }
 /// Returns a list of your shipping rates.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListShippingRate<'a> {
-    inner: ListShippingRateBuilder<'a>,
+pub struct ListShippingRate {
+    inner: ListShippingRateBuilder,
 }
-impl<'a> ListShippingRate<'a> {
+impl ListShippingRate {
     /// Construct a new `ListShippingRate`.
     pub fn new() -> Self {
         Self { inner: ListShippingRateBuilder::new() }
     }
     /// Only return shipping rates that are active or inactive.
-    pub fn active(mut self, active: bool) -> Self {
-        self.inner.active = Some(active);
+    pub fn active(mut self, active: impl Into<bool>) -> Self {
+        self.inner.active = Some(active.into());
         self
     }
     /// A filter on the list, based on the object `created` field.
     /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
-    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
-        self.inner.created = Some(created);
+    pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.created = Some(created.into());
         self
     }
     /// Only return shipping rates for the given currency.
-    pub fn currency(mut self, currency: stripe_types::Currency) -> Self {
-        self.inner.currency = Some(currency);
+    pub fn currency(mut self, currency: impl Into<stripe_types::Currency>) -> Self {
+        self.inner.currency = Some(currency.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl<'a> Default for ListShippingRate<'a> {
+impl Default for ListShippingRate {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListShippingRate<'_> {
+impl ListShippingRate {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -109,45 +109,48 @@ impl ListShippingRate<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::ShippingRate>> {
-        stripe_client_core::ListPaginator::new_list("/shipping_rates", self.inner)
+        stripe_client_core::ListPaginator::new_list("/shipping_rates", &self.inner)
     }
 }
 
-impl StripeRequest for ListShippingRate<'_> {
+impl StripeRequest for ListShippingRate {
     type Output = stripe_types::List<stripe_shared::ShippingRate>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/shipping_rates").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveShippingRateBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveShippingRateBuilder<'a> {
+impl RetrieveShippingRateBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Returns the shipping rate object with the given ID.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveShippingRate<'a> {
-    inner: RetrieveShippingRateBuilder<'a>,
-    shipping_rate_token: &'a stripe_shared::ShippingRateId,
+pub struct RetrieveShippingRate {
+    inner: RetrieveShippingRateBuilder,
+    shipping_rate_token: stripe_shared::ShippingRateId,
 }
-impl<'a> RetrieveShippingRate<'a> {
+impl RetrieveShippingRate {
     /// Construct a new `RetrieveShippingRate`.
-    pub fn new(shipping_rate_token: &'a stripe_shared::ShippingRateId) -> Self {
-        Self { shipping_rate_token, inner: RetrieveShippingRateBuilder::new() }
+    pub fn new(shipping_rate_token: impl Into<stripe_shared::ShippingRateId>) -> Self {
+        Self {
+            shipping_rate_token: shipping_rate_token.into(),
+            inner: RetrieveShippingRateBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveShippingRate<'_> {
+impl RetrieveShippingRate {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -165,39 +168,39 @@ impl RetrieveShippingRate<'_> {
     }
 }
 
-impl StripeRequest for RetrieveShippingRate<'_> {
+impl StripeRequest for RetrieveShippingRate {
     type Output = stripe_shared::ShippingRate;
 
     fn build(&self) -> RequestBuilder {
-        let shipping_rate_token = self.shipping_rate_token;
+        let shipping_rate_token = &self.shipping_rate_token;
         RequestBuilder::new(StripeMethod::Get, format!("/shipping_rates/{shipping_rate_token}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateShippingRateBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     delivery_estimate: Option<CreateShippingRateDeliveryEstimate>,
-    display_name: &'a str,
+    display_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    fixed_amount: Option<CreateShippingRateFixedAmount<'a>>,
+    fixed_amount: Option<CreateShippingRateFixedAmount>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_behavior: Option<stripe_shared::ShippingRateTaxBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_code: Option<&'a str>,
+    tax_code: Option<String>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<stripe_shared::ShippingRateType>,
 }
-impl<'a> CreateShippingRateBuilder<'a> {
-    fn new(display_name: &'a str) -> Self {
+impl CreateShippingRateBuilder {
+    fn new(display_name: impl Into<String>) -> Self {
         Self {
             delivery_estimate: None,
-            display_name,
+            display_name: display_name.into(),
             expand: None,
             fixed_amount: None,
             metadata: None,
@@ -237,8 +240,11 @@ pub struct CreateShippingRateDeliveryEstimateMaximum {
     pub value: i64,
 }
 impl CreateShippingRateDeliveryEstimateMaximum {
-    pub fn new(unit: CreateShippingRateDeliveryEstimateMaximumUnit, value: i64) -> Self {
-        Self { unit, value }
+    pub fn new(
+        unit: impl Into<CreateShippingRateDeliveryEstimateMaximumUnit>,
+        value: impl Into<i64>,
+    ) -> Self {
+        Self { unit: unit.into(), value: value.into() }
     }
 }
 /// A unit of time.
@@ -317,8 +323,11 @@ pub struct CreateShippingRateDeliveryEstimateMinimum {
     pub value: i64,
 }
 impl CreateShippingRateDeliveryEstimateMinimum {
-    pub fn new(unit: CreateShippingRateDeliveryEstimateMinimumUnit, value: i64) -> Self {
-        Self { unit, value }
+    pub fn new(
+        unit: impl Into<CreateShippingRateDeliveryEstimateMinimumUnit>,
+        value: impl Into<i64>,
+    ) -> Self {
+        Self { unit: unit.into(), value: value.into() }
     }
 }
 /// A unit of time.
@@ -389,8 +398,8 @@ impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMinimumU
     }
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateShippingRateFixedAmount<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateShippingRateFixedAmount {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -400,15 +409,15 @@ pub struct CreateShippingRateFixedAmount<'a> {
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<
-        &'a std::collections::HashMap<
+        std::collections::HashMap<
             stripe_types::Currency,
             CreateShippingRateFixedAmountCurrencyOptions,
         >,
     >,
 }
-impl<'a> CreateShippingRateFixedAmount<'a> {
-    pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
-        Self { amount, currency, currency_options: None }
+impl CreateShippingRateFixedAmount {
+    pub fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
+        Self { amount: amount.into(), currency: currency.into(), currency_options: None }
     }
 }
 /// Shipping rates defined in each available currency option.
@@ -423,66 +432,72 @@ pub struct CreateShippingRateFixedAmountCurrencyOptions {
     pub tax_behavior: Option<stripe_shared::ShippingRateTaxBehavior>,
 }
 impl CreateShippingRateFixedAmountCurrencyOptions {
-    pub fn new(amount: i64) -> Self {
-        Self { amount, tax_behavior: None }
+    pub fn new(amount: impl Into<i64>) -> Self {
+        Self { amount: amount.into(), tax_behavior: None }
     }
 }
 /// Creates a new shipping rate object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateShippingRate<'a> {
-    inner: CreateShippingRateBuilder<'a>,
+pub struct CreateShippingRate {
+    inner: CreateShippingRateBuilder,
 }
-impl<'a> CreateShippingRate<'a> {
+impl CreateShippingRate {
     /// Construct a new `CreateShippingRate`.
-    pub fn new(display_name: &'a str) -> Self {
-        Self { inner: CreateShippingRateBuilder::new(display_name) }
+    pub fn new(display_name: impl Into<String>) -> Self {
+        Self { inner: CreateShippingRateBuilder::new(display_name.into()) }
     }
     /// The estimated range for how long shipping will take, meant to be displayable to the customer.
     /// This will appear on CheckoutSessions.
     pub fn delivery_estimate(
         mut self,
-        delivery_estimate: CreateShippingRateDeliveryEstimate,
+        delivery_estimate: impl Into<CreateShippingRateDeliveryEstimate>,
     ) -> Self {
-        self.inner.delivery_estimate = Some(delivery_estimate);
+        self.inner.delivery_estimate = Some(delivery_estimate.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
-    pub fn fixed_amount(mut self, fixed_amount: CreateShippingRateFixedAmount<'a>) -> Self {
-        self.inner.fixed_amount = Some(fixed_amount);
+    pub fn fixed_amount(mut self, fixed_amount: impl Into<CreateShippingRateFixedAmount>) -> Self {
+        self.inner.fixed_amount = Some(fixed_amount.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
-    pub fn tax_behavior(mut self, tax_behavior: stripe_shared::ShippingRateTaxBehavior) -> Self {
-        self.inner.tax_behavior = Some(tax_behavior);
+    pub fn tax_behavior(
+        mut self,
+        tax_behavior: impl Into<stripe_shared::ShippingRateTaxBehavior>,
+    ) -> Self {
+        self.inner.tax_behavior = Some(tax_behavior.into());
         self
     }
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     /// The Shipping tax code is `txcd_92010001`.
-    pub fn tax_code(mut self, tax_code: &'a str) -> Self {
-        self.inner.tax_code = Some(tax_code);
+    pub fn tax_code(mut self, tax_code: impl Into<String>) -> Self {
+        self.inner.tax_code = Some(tax_code.into());
         self
     }
     /// The type of calculation to use on the shipping rate. Can only be `fixed_amount` for now.
-    pub fn type_(mut self, type_: stripe_shared::ShippingRateType) -> Self {
-        self.inner.type_ = Some(type_);
+    pub fn type_(mut self, type_: impl Into<stripe_shared::ShippingRateType>) -> Self {
+        self.inner.type_ = Some(type_.into());
         self
     }
 }
-impl CreateShippingRate<'_> {
+impl CreateShippingRate {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -500,50 +515,50 @@ impl CreateShippingRate<'_> {
     }
 }
 
-impl StripeRequest for CreateShippingRate<'_> {
+impl StripeRequest for CreateShippingRate {
     type Output = stripe_shared::ShippingRate;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/shipping_rates").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateShippingRateBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    fixed_amount: Option<UpdateShippingRateFixedAmount<'a>>,
+    fixed_amount: Option<UpdateShippingRateFixedAmount>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_behavior: Option<stripe_shared::ShippingRateTaxBehavior>,
 }
-impl<'a> UpdateShippingRateBuilder<'a> {
+impl UpdateShippingRateBuilder {
     fn new() -> Self {
         Self { active: None, expand: None, fixed_amount: None, metadata: None, tax_behavior: None }
     }
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateShippingRateFixedAmount<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateShippingRateFixedAmount {
     /// Shipping rates defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<
-        &'a std::collections::HashMap<
+        std::collections::HashMap<
             stripe_types::Currency,
             UpdateShippingRateFixedAmountCurrencyOptions,
         >,
     >,
 }
-impl<'a> UpdateShippingRateFixedAmount<'a> {
+impl UpdateShippingRateFixedAmount {
     pub fn new() -> Self {
         Self { currency_options: None }
     }
 }
-impl<'a> Default for UpdateShippingRateFixedAmount<'a> {
+impl Default for UpdateShippingRateFixedAmount {
     fn default() -> Self {
         Self::new()
     }
@@ -572,46 +587,55 @@ impl Default for UpdateShippingRateFixedAmountCurrencyOptions {
 }
 /// Updates an existing shipping rate object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateShippingRate<'a> {
-    inner: UpdateShippingRateBuilder<'a>,
-    shipping_rate_token: &'a stripe_shared::ShippingRateId,
+pub struct UpdateShippingRate {
+    inner: UpdateShippingRateBuilder,
+    shipping_rate_token: stripe_shared::ShippingRateId,
 }
-impl<'a> UpdateShippingRate<'a> {
+impl UpdateShippingRate {
     /// Construct a new `UpdateShippingRate`.
-    pub fn new(shipping_rate_token: &'a stripe_shared::ShippingRateId) -> Self {
-        Self { shipping_rate_token, inner: UpdateShippingRateBuilder::new() }
+    pub fn new(shipping_rate_token: impl Into<stripe_shared::ShippingRateId>) -> Self {
+        Self {
+            shipping_rate_token: shipping_rate_token.into(),
+            inner: UpdateShippingRateBuilder::new(),
+        }
     }
     /// Whether the shipping rate can be used for new purchases. Defaults to `true`.
-    pub fn active(mut self, active: bool) -> Self {
-        self.inner.active = Some(active);
+    pub fn active(mut self, active: impl Into<bool>) -> Self {
+        self.inner.active = Some(active.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
-    pub fn fixed_amount(mut self, fixed_amount: UpdateShippingRateFixedAmount<'a>) -> Self {
-        self.inner.fixed_amount = Some(fixed_amount);
+    pub fn fixed_amount(mut self, fixed_amount: impl Into<UpdateShippingRateFixedAmount>) -> Self {
+        self.inner.fixed_amount = Some(fixed_amount.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
-    pub fn tax_behavior(mut self, tax_behavior: stripe_shared::ShippingRateTaxBehavior) -> Self {
-        self.inner.tax_behavior = Some(tax_behavior);
+    pub fn tax_behavior(
+        mut self,
+        tax_behavior: impl Into<stripe_shared::ShippingRateTaxBehavior>,
+    ) -> Self {
+        self.inner.tax_behavior = Some(tax_behavior.into());
         self
     }
 }
-impl UpdateShippingRate<'_> {
+impl UpdateShippingRate {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -629,11 +653,11 @@ impl UpdateShippingRate<'_> {
     }
 }
 
-impl StripeRequest for UpdateShippingRate<'_> {
+impl StripeRequest for UpdateShippingRate {
     type Output = stripe_shared::ShippingRate;
 
     fn build(&self) -> RequestBuilder {
-        let shipping_rate_token = self.shipping_rate_token;
+        let shipping_rate_token = &self.shipping_rate_token;
         RequestBuilder::new(StripeMethod::Post, format!("/shipping_rates/{shipping_rate_token}"))
             .form(&self.inner)
     }

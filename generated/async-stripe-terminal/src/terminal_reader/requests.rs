@@ -4,16 +4,16 @@ use stripe_client_core::{
 
 /// Deletes a `Reader` object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeleteTerminalReader<'a> {
-    reader: &'a stripe_terminal::TerminalReaderId,
+pub struct DeleteTerminalReader {
+    reader: stripe_terminal::TerminalReaderId,
 }
-impl<'a> DeleteTerminalReader<'a> {
+impl DeleteTerminalReader {
     /// Construct a new `DeleteTerminalReader`.
-    pub fn new(reader: &'a stripe_terminal::TerminalReaderId) -> Self {
-        Self { reader }
+    pub fn new(reader: impl Into<stripe_terminal::TerminalReaderId>) -> Self {
+        Self { reader: reader.into() }
     }
 }
-impl DeleteTerminalReader<'_> {
+impl DeleteTerminalReader {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -31,34 +31,34 @@ impl DeleteTerminalReader<'_> {
     }
 }
 
-impl StripeRequest for DeleteTerminalReader<'_> {
+impl StripeRequest for DeleteTerminalReader {
     type Output = stripe_terminal::DeletedTerminalReader;
 
     fn build(&self) -> RequestBuilder {
-        let reader = self.reader;
+        let reader = &self.reader;
         RequestBuilder::new(StripeMethod::Delete, format!("/terminal/readers/{reader}"))
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListTerminalReaderBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     device_type: Option<stripe_terminal::TerminalReaderDeviceType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    location: Option<&'a str>,
+    location: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    serial_number: Option<&'a str>,
+    serial_number: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_terminal::TerminalReaderStatus>,
 }
-impl<'a> ListTerminalReaderBuilder<'a> {
+impl ListTerminalReaderBuilder {
     fn new() -> Self {
         Self {
             device_type: None,
@@ -74,66 +74,69 @@ impl<'a> ListTerminalReaderBuilder<'a> {
 }
 /// Returns a list of `Reader` objects.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListTerminalReader<'a> {
-    inner: ListTerminalReaderBuilder<'a>,
+pub struct ListTerminalReader {
+    inner: ListTerminalReaderBuilder,
 }
-impl<'a> ListTerminalReader<'a> {
+impl ListTerminalReader {
     /// Construct a new `ListTerminalReader`.
     pub fn new() -> Self {
         Self { inner: ListTerminalReaderBuilder::new() }
     }
     /// Filters readers by device type
-    pub fn device_type(mut self, device_type: stripe_terminal::TerminalReaderDeviceType) -> Self {
-        self.inner.device_type = Some(device_type);
+    pub fn device_type(
+        mut self,
+        device_type: impl Into<stripe_terminal::TerminalReaderDeviceType>,
+    ) -> Self {
+        self.inner.device_type = Some(device_type.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A location ID to filter the response list to only readers at the specific location
-    pub fn location(mut self, location: &'a str) -> Self {
-        self.inner.location = Some(location);
+    pub fn location(mut self, location: impl Into<String>) -> Self {
+        self.inner.location = Some(location.into());
         self
     }
     /// Filters readers by serial number
-    pub fn serial_number(mut self, serial_number: &'a str) -> Self {
-        self.inner.serial_number = Some(serial_number);
+    pub fn serial_number(mut self, serial_number: impl Into<String>) -> Self {
+        self.inner.serial_number = Some(serial_number.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// A status filter to filter readers to only offline or online readers
-    pub fn status(mut self, status: stripe_terminal::TerminalReaderStatus) -> Self {
-        self.inner.status = Some(status);
+    pub fn status(mut self, status: impl Into<stripe_terminal::TerminalReaderStatus>) -> Self {
+        self.inner.status = Some(status.into());
         self
     }
 }
-impl<'a> Default for ListTerminalReader<'a> {
+impl Default for ListTerminalReader {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListTerminalReader<'_> {
+impl ListTerminalReader {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -154,45 +157,45 @@ impl ListTerminalReader<'_> {
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_terminal::TerminalReader>>
     {
-        stripe_client_core::ListPaginator::new_list("/terminal/readers", self.inner)
+        stripe_client_core::ListPaginator::new_list("/terminal/readers", &self.inner)
     }
 }
 
-impl StripeRequest for ListTerminalReader<'_> {
+impl StripeRequest for ListTerminalReader {
     type Output = stripe_types::List<stripe_terminal::TerminalReader>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/terminal/readers").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveTerminalReaderBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveTerminalReaderBuilder<'a> {
+impl RetrieveTerminalReaderBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves a `Reader` object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveTerminalReader<'a> {
-    inner: RetrieveTerminalReaderBuilder<'a>,
-    reader: &'a stripe_terminal::TerminalReaderId,
+pub struct RetrieveTerminalReader {
+    inner: RetrieveTerminalReaderBuilder,
+    reader: stripe_terminal::TerminalReaderId,
 }
-impl<'a> RetrieveTerminalReader<'a> {
+impl RetrieveTerminalReader {
     /// Construct a new `RetrieveTerminalReader`.
-    pub fn new(reader: &'a stripe_terminal::TerminalReaderId) -> Self {
-        Self { reader, inner: RetrieveTerminalReaderBuilder::new() }
+    pub fn new(reader: impl Into<stripe_terminal::TerminalReaderId>) -> Self {
+        Self { reader: reader.into(), inner: RetrieveTerminalReaderBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveTerminalReader<'_> {
+impl RetrieveTerminalReader {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -210,11 +213,11 @@ impl RetrieveTerminalReader<'_> {
     }
 }
 
-impl StripeRequest for RetrieveTerminalReader<'_> {
+impl StripeRequest for RetrieveTerminalReader {
     type Output = RetrieveTerminalReaderReturned;
 
     fn build(&self) -> RequestBuilder {
-        let reader = self.reader;
+        let reader = &self.reader;
         RequestBuilder::new(StripeMethod::Get, format!("/terminal/readers/{reader}"))
             .query(&self.inner)
     }
@@ -301,59 +304,68 @@ const _: () = {
     }
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateTerminalReaderBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    label: Option<&'a str>,
+    label: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    location: Option<&'a str>,
+    location: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
-    registration_code: &'a str,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    registration_code: String,
 }
-impl<'a> CreateTerminalReaderBuilder<'a> {
-    fn new(registration_code: &'a str) -> Self {
-        Self { expand: None, label: None, location: None, metadata: None, registration_code }
+impl CreateTerminalReaderBuilder {
+    fn new(registration_code: impl Into<String>) -> Self {
+        Self {
+            expand: None,
+            label: None,
+            location: None,
+            metadata: None,
+            registration_code: registration_code.into(),
+        }
     }
 }
 /// Creates a new `Reader` object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateTerminalReader<'a> {
-    inner: CreateTerminalReaderBuilder<'a>,
+pub struct CreateTerminalReader {
+    inner: CreateTerminalReaderBuilder,
 }
-impl<'a> CreateTerminalReader<'a> {
+impl CreateTerminalReader {
     /// Construct a new `CreateTerminalReader`.
-    pub fn new(registration_code: &'a str) -> Self {
-        Self { inner: CreateTerminalReaderBuilder::new(registration_code) }
+    pub fn new(registration_code: impl Into<String>) -> Self {
+        Self { inner: CreateTerminalReaderBuilder::new(registration_code.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Custom label given to the reader for easier identification.
     /// If no label is specified, the registration code will be used.
-    pub fn label(mut self, label: &'a str) -> Self {
-        self.inner.label = Some(label);
+    pub fn label(mut self, label: impl Into<String>) -> Self {
+        self.inner.label = Some(label.into());
         self
     }
     /// The location to assign the reader to.
-    pub fn location(mut self, location: &'a str) -> Self {
-        self.inner.location = Some(location);
+    pub fn location(mut self, location: impl Into<String>) -> Self {
+        self.inner.location = Some(location.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
 }
-impl CreateTerminalReader<'_> {
+impl CreateTerminalReader {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -371,23 +383,23 @@ impl CreateTerminalReader<'_> {
     }
 }
 
-impl StripeRequest for CreateTerminalReader<'_> {
+impl StripeRequest for CreateTerminalReader {
     type Output = stripe_terminal::TerminalReader;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/terminal/readers").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateTerminalReaderBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    label: Option<&'a str>,
+    label: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
 }
-impl<'a> UpdateTerminalReaderBuilder<'a> {
+impl UpdateTerminalReaderBuilder {
     fn new() -> Self {
         Self { expand: None, label: None, metadata: None }
     }
@@ -395,35 +407,38 @@ impl<'a> UpdateTerminalReaderBuilder<'a> {
 /// Updates a `Reader` object by setting the values of the parameters passed.
 /// Any parameters not provided will be left unchanged.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateTerminalReader<'a> {
-    inner: UpdateTerminalReaderBuilder<'a>,
-    reader: &'a stripe_terminal::TerminalReaderId,
+pub struct UpdateTerminalReader {
+    inner: UpdateTerminalReaderBuilder,
+    reader: stripe_terminal::TerminalReaderId,
 }
-impl<'a> UpdateTerminalReader<'a> {
+impl UpdateTerminalReader {
     /// Construct a new `UpdateTerminalReader`.
-    pub fn new(reader: &'a stripe_terminal::TerminalReaderId) -> Self {
-        Self { reader, inner: UpdateTerminalReaderBuilder::new() }
+    pub fn new(reader: impl Into<stripe_terminal::TerminalReaderId>) -> Self {
+        Self { reader: reader.into(), inner: UpdateTerminalReaderBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// The new label of the reader.
-    pub fn label(mut self, label: &'a str) -> Self {
-        self.inner.label = Some(label);
+    pub fn label(mut self, label: impl Into<String>) -> Self {
+        self.inner.label = Some(label.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
 }
-impl UpdateTerminalReader<'_> {
+impl UpdateTerminalReader {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -441,11 +456,11 @@ impl UpdateTerminalReader<'_> {
     }
 }
 
-impl StripeRequest for UpdateTerminalReader<'_> {
+impl StripeRequest for UpdateTerminalReader {
     type Output = UpdateTerminalReaderReturned;
 
     fn build(&self) -> RequestBuilder {
-        let reader = self.reader;
+        let reader = &self.reader;
         RequestBuilder::new(StripeMethod::Post, format!("/terminal/readers/{reader}"))
             .form(&self.inner)
     }
@@ -532,34 +547,34 @@ const _: () = {
     }
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CancelActionTerminalReaderBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CancelActionTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> CancelActionTerminalReaderBuilder<'a> {
+impl CancelActionTerminalReaderBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Cancels the current reader action.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CancelActionTerminalReader<'a> {
-    inner: CancelActionTerminalReaderBuilder<'a>,
-    reader: &'a stripe_terminal::TerminalReaderId,
+pub struct CancelActionTerminalReader {
+    inner: CancelActionTerminalReaderBuilder,
+    reader: stripe_terminal::TerminalReaderId,
 }
-impl<'a> CancelActionTerminalReader<'a> {
+impl CancelActionTerminalReader {
     /// Construct a new `CancelActionTerminalReader`.
-    pub fn new(reader: &'a stripe_terminal::TerminalReaderId) -> Self {
-        Self { reader, inner: CancelActionTerminalReaderBuilder::new() }
+    pub fn new(reader: impl Into<stripe_terminal::TerminalReaderId>) -> Self {
+        Self { reader: reader.into(), inner: CancelActionTerminalReaderBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl CancelActionTerminalReader<'_> {
+impl CancelActionTerminalReader {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -577,26 +592,26 @@ impl CancelActionTerminalReader<'_> {
     }
 }
 
-impl StripeRequest for CancelActionTerminalReader<'_> {
+impl StripeRequest for CancelActionTerminalReader {
     type Output = stripe_terminal::TerminalReader;
 
     fn build(&self) -> RequestBuilder {
-        let reader = self.reader;
+        let reader = &self.reader;
         RequestBuilder::new(StripeMethod::Post, format!("/terminal/readers/{reader}/cancel_action"))
             .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ProcessPaymentIntentTerminalReaderBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ProcessPaymentIntentTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    payment_intent: &'a str,
+    expand: Option<Vec<String>>,
+    payment_intent: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     process_config: Option<ProcessPaymentIntentTerminalReaderProcessConfig>,
 }
-impl<'a> ProcessPaymentIntentTerminalReaderBuilder<'a> {
-    fn new(payment_intent: &'a str) -> Self {
-        Self { expand: None, payment_intent, process_config: None }
+impl ProcessPaymentIntentTerminalReaderBuilder {
+    fn new(payment_intent: impl Into<String>) -> Self {
+        Self { expand: None, payment_intent: payment_intent.into(), process_config: None }
     }
 }
 /// Configuration overrides
@@ -642,30 +657,36 @@ impl Default for ProcessPaymentIntentTerminalReaderProcessConfigTipping {
 }
 /// Initiates a payment flow on a Reader.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ProcessPaymentIntentTerminalReader<'a> {
-    inner: ProcessPaymentIntentTerminalReaderBuilder<'a>,
-    reader: &'a stripe_terminal::TerminalReaderId,
+pub struct ProcessPaymentIntentTerminalReader {
+    inner: ProcessPaymentIntentTerminalReaderBuilder,
+    reader: stripe_terminal::TerminalReaderId,
 }
-impl<'a> ProcessPaymentIntentTerminalReader<'a> {
+impl ProcessPaymentIntentTerminalReader {
     /// Construct a new `ProcessPaymentIntentTerminalReader`.
-    pub fn new(reader: &'a stripe_terminal::TerminalReaderId, payment_intent: &'a str) -> Self {
-        Self { reader, inner: ProcessPaymentIntentTerminalReaderBuilder::new(payment_intent) }
+    pub fn new(
+        reader: impl Into<stripe_terminal::TerminalReaderId>,
+        payment_intent: impl Into<String>,
+    ) -> Self {
+        Self {
+            reader: reader.into(),
+            inner: ProcessPaymentIntentTerminalReaderBuilder::new(payment_intent.into()),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Configuration overrides
     pub fn process_config(
         mut self,
-        process_config: ProcessPaymentIntentTerminalReaderProcessConfig,
+        process_config: impl Into<ProcessPaymentIntentTerminalReaderProcessConfig>,
     ) -> Self {
-        self.inner.process_config = Some(process_config);
+        self.inner.process_config = Some(process_config.into());
         self
     }
 }
-impl ProcessPaymentIntentTerminalReader<'_> {
+impl ProcessPaymentIntentTerminalReader {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -683,11 +704,11 @@ impl ProcessPaymentIntentTerminalReader<'_> {
     }
 }
 
-impl StripeRequest for ProcessPaymentIntentTerminalReader<'_> {
+impl StripeRequest for ProcessPaymentIntentTerminalReader {
     type Output = stripe_terminal::TerminalReader;
 
     fn build(&self) -> RequestBuilder {
-        let reader = self.reader;
+        let reader = &self.reader;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/terminal/readers/{reader}/process_payment_intent"),
@@ -695,18 +716,23 @@ impl StripeRequest for ProcessPaymentIntentTerminalReader<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ProcessSetupIntentTerminalReaderBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ProcessSetupIntentTerminalReaderBuilder {
     customer_consent_collected: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     process_config: Option<ProcessSetupIntentTerminalReaderProcessConfig>,
-    setup_intent: &'a str,
+    setup_intent: String,
 }
-impl<'a> ProcessSetupIntentTerminalReaderBuilder<'a> {
-    fn new(customer_consent_collected: bool, setup_intent: &'a str) -> Self {
-        Self { customer_consent_collected, expand: None, process_config: None, setup_intent }
+impl ProcessSetupIntentTerminalReaderBuilder {
+    fn new(customer_consent_collected: impl Into<bool>, setup_intent: impl Into<String>) -> Self {
+        Self {
+            customer_consent_collected: customer_consent_collected.into(),
+            expand: None,
+            process_config: None,
+            setup_intent: setup_intent.into(),
+        }
     }
 }
 /// Configuration overrides
@@ -728,40 +754,40 @@ impl Default for ProcessSetupIntentTerminalReaderProcessConfig {
 }
 /// Initiates a setup intent flow on a Reader.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ProcessSetupIntentTerminalReader<'a> {
-    inner: ProcessSetupIntentTerminalReaderBuilder<'a>,
-    reader: &'a stripe_terminal::TerminalReaderId,
+pub struct ProcessSetupIntentTerminalReader {
+    inner: ProcessSetupIntentTerminalReaderBuilder,
+    reader: stripe_terminal::TerminalReaderId,
 }
-impl<'a> ProcessSetupIntentTerminalReader<'a> {
+impl ProcessSetupIntentTerminalReader {
     /// Construct a new `ProcessSetupIntentTerminalReader`.
     pub fn new(
-        reader: &'a stripe_terminal::TerminalReaderId,
-        customer_consent_collected: bool,
-        setup_intent: &'a str,
+        reader: impl Into<stripe_terminal::TerminalReaderId>,
+        customer_consent_collected: impl Into<bool>,
+        setup_intent: impl Into<String>,
     ) -> Self {
         Self {
-            reader,
+            reader: reader.into(),
             inner: ProcessSetupIntentTerminalReaderBuilder::new(
-                customer_consent_collected,
-                setup_intent,
+                customer_consent_collected.into(),
+                setup_intent.into(),
             ),
         }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Configuration overrides
     pub fn process_config(
         mut self,
-        process_config: ProcessSetupIntentTerminalReaderProcessConfig,
+        process_config: impl Into<ProcessSetupIntentTerminalReaderProcessConfig>,
     ) -> Self {
-        self.inner.process_config = Some(process_config);
+        self.inner.process_config = Some(process_config.into());
         self
     }
 }
-impl ProcessSetupIntentTerminalReader<'_> {
+impl ProcessSetupIntentTerminalReader {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -779,11 +805,11 @@ impl ProcessSetupIntentTerminalReader<'_> {
     }
 }
 
-impl StripeRequest for ProcessSetupIntentTerminalReader<'_> {
+impl StripeRequest for ProcessSetupIntentTerminalReader {
     type Output = stripe_terminal::TerminalReader;
 
     fn build(&self) -> RequestBuilder {
-        let reader = self.reader;
+        let reader = &self.reader;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/terminal/readers/{reader}/process_setup_intent"),
@@ -791,18 +817,18 @@ impl StripeRequest for ProcessSetupIntentTerminalReader<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RefundPaymentTerminalReaderBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RefundPaymentTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    charge: Option<&'a str>,
+    charge: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    payment_intent: Option<&'a str>,
+    payment_intent: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     refund_application_fee: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -810,7 +836,7 @@ struct RefundPaymentTerminalReaderBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     reverse_transfer: Option<bool>,
 }
-impl<'a> RefundPaymentTerminalReaderBuilder<'a> {
+impl RefundPaymentTerminalReaderBuilder {
     fn new() -> Self {
         Self {
             amount: None,
@@ -843,68 +869,71 @@ impl Default for RefundPaymentTerminalReaderRefundPaymentConfig {
 }
 /// Initiates a refund on a Reader
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RefundPaymentTerminalReader<'a> {
-    inner: RefundPaymentTerminalReaderBuilder<'a>,
-    reader: &'a stripe_terminal::TerminalReaderId,
+pub struct RefundPaymentTerminalReader {
+    inner: RefundPaymentTerminalReaderBuilder,
+    reader: stripe_terminal::TerminalReaderId,
 }
-impl<'a> RefundPaymentTerminalReader<'a> {
+impl RefundPaymentTerminalReader {
     /// Construct a new `RefundPaymentTerminalReader`.
-    pub fn new(reader: &'a stripe_terminal::TerminalReaderId) -> Self {
-        Self { reader, inner: RefundPaymentTerminalReaderBuilder::new() }
+    pub fn new(reader: impl Into<stripe_terminal::TerminalReaderId>) -> Self {
+        Self { reader: reader.into(), inner: RefundPaymentTerminalReaderBuilder::new() }
     }
     /// A positive integer in __cents__ representing how much of this charge to refund.
-    pub fn amount(mut self, amount: i64) -> Self {
-        self.inner.amount = Some(amount);
+    pub fn amount(mut self, amount: impl Into<i64>) -> Self {
+        self.inner.amount = Some(amount.into());
         self
     }
     /// ID of the Charge to refund.
-    pub fn charge(mut self, charge: &'a str) -> Self {
-        self.inner.charge = Some(charge);
+    pub fn charge(mut self, charge: impl Into<String>) -> Self {
+        self.inner.charge = Some(charge.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// ID of the PaymentIntent to refund.
-    pub fn payment_intent(mut self, payment_intent: &'a str) -> Self {
-        self.inner.payment_intent = Some(payment_intent);
+    pub fn payment_intent(mut self, payment_intent: impl Into<String>) -> Self {
+        self.inner.payment_intent = Some(payment_intent.into());
         self
     }
     /// Boolean indicating whether the application fee should be refunded when refunding this charge.
     /// If a full charge refund is given, the full application fee will be refunded.
     /// Otherwise, the application fee will be refunded in an amount proportional to the amount of the charge refunded.
     /// An application fee can be refunded only by the application that created the charge.
-    pub fn refund_application_fee(mut self, refund_application_fee: bool) -> Self {
-        self.inner.refund_application_fee = Some(refund_application_fee);
+    pub fn refund_application_fee(mut self, refund_application_fee: impl Into<bool>) -> Self {
+        self.inner.refund_application_fee = Some(refund_application_fee.into());
         self
     }
     /// Configuration overrides
     pub fn refund_payment_config(
         mut self,
-        refund_payment_config: RefundPaymentTerminalReaderRefundPaymentConfig,
+        refund_payment_config: impl Into<RefundPaymentTerminalReaderRefundPaymentConfig>,
     ) -> Self {
-        self.inner.refund_payment_config = Some(refund_payment_config);
+        self.inner.refund_payment_config = Some(refund_payment_config.into());
         self
     }
     /// Boolean indicating whether the transfer should be reversed when refunding this charge.
     /// The transfer will be reversed proportionally to the amount being refunded (either the entire or partial amount).
     /// A transfer can be reversed only by the application that created the charge.
-    pub fn reverse_transfer(mut self, reverse_transfer: bool) -> Self {
-        self.inner.reverse_transfer = Some(reverse_transfer);
+    pub fn reverse_transfer(mut self, reverse_transfer: impl Into<bool>) -> Self {
+        self.inner.reverse_transfer = Some(reverse_transfer.into());
         self
     }
 }
-impl RefundPaymentTerminalReader<'_> {
+impl RefundPaymentTerminalReader {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -922,11 +951,11 @@ impl RefundPaymentTerminalReader<'_> {
     }
 }
 
-impl StripeRequest for RefundPaymentTerminalReader<'_> {
+impl StripeRequest for RefundPaymentTerminalReader {
     type Output = stripe_terminal::TerminalReader;
 
     fn build(&self) -> RequestBuilder {
-        let reader = self.reader;
+        let reader = &self.reader;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/terminal/readers/{reader}/refund_payment"),
@@ -934,56 +963,65 @@ impl StripeRequest for RefundPaymentTerminalReader<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct SetReaderDisplayTerminalReaderBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct SetReaderDisplayTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    cart: Option<SetReaderDisplayTerminalReaderCart<'a>>,
+    cart: Option<SetReaderDisplayTerminalReaderCart>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(rename = "type")]
     type_: SetReaderDisplayTerminalReaderType,
 }
-impl<'a> SetReaderDisplayTerminalReaderBuilder<'a> {
-    fn new(type_: SetReaderDisplayTerminalReaderType) -> Self {
-        Self { cart: None, expand: None, type_ }
+impl SetReaderDisplayTerminalReaderBuilder {
+    fn new(type_: impl Into<SetReaderDisplayTerminalReaderType>) -> Self {
+        Self { cart: None, expand: None, type_: type_.into() }
     }
 }
 /// Cart
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct SetReaderDisplayTerminalReaderCart<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct SetReaderDisplayTerminalReaderCart {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// Array of line items that were purchased.
-    pub line_items: &'a [SetReaderDisplayTerminalReaderCartLineItems<'a>],
+    pub line_items: Vec<SetReaderDisplayTerminalReaderCartLineItems>,
     /// The amount of tax in cents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<i64>,
     /// Total balance of cart due in cents.
     pub total: i64,
 }
-impl<'a> SetReaderDisplayTerminalReaderCart<'a> {
+impl SetReaderDisplayTerminalReaderCart {
     pub fn new(
-        currency: stripe_types::Currency,
-        line_items: &'a [SetReaderDisplayTerminalReaderCartLineItems<'a>],
-        total: i64,
+        currency: impl Into<stripe_types::Currency>,
+        line_items: impl Into<Vec<SetReaderDisplayTerminalReaderCartLineItems>>,
+        total: impl Into<i64>,
     ) -> Self {
-        Self { currency, line_items, tax: None, total }
+        Self {
+            currency: currency.into(),
+            line_items: line_items.into(),
+            tax: None,
+            total: total.into(),
+        }
     }
 }
 /// Array of line items that were purchased.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct SetReaderDisplayTerminalReaderCartLineItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct SetReaderDisplayTerminalReaderCartLineItems {
     /// The price of the item in cents.
     pub amount: i64,
     /// The description or name of the item.
-    pub description: &'a str,
+    pub description: String,
     /// The quantity of the line item being purchased.
     pub quantity: u64,
 }
-impl<'a> SetReaderDisplayTerminalReaderCartLineItems<'a> {
-    pub fn new(amount: i64, description: &'a str, quantity: u64) -> Self {
-        Self { amount, description, quantity }
+impl SetReaderDisplayTerminalReaderCartLineItems {
+    pub fn new(
+        amount: impl Into<i64>,
+        description: impl Into<String>,
+        quantity: impl Into<u64>,
+    ) -> Self {
+        Self { amount: amount.into(), description: description.into(), quantity: quantity.into() }
     }
 }
 /// Type
@@ -1041,30 +1079,33 @@ impl<'de> serde::Deserialize<'de> for SetReaderDisplayTerminalReaderType {
 }
 /// Sets reader display to show cart details.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct SetReaderDisplayTerminalReader<'a> {
-    inner: SetReaderDisplayTerminalReaderBuilder<'a>,
-    reader: &'a stripe_terminal::TerminalReaderId,
+pub struct SetReaderDisplayTerminalReader {
+    inner: SetReaderDisplayTerminalReaderBuilder,
+    reader: stripe_terminal::TerminalReaderId,
 }
-impl<'a> SetReaderDisplayTerminalReader<'a> {
+impl SetReaderDisplayTerminalReader {
     /// Construct a new `SetReaderDisplayTerminalReader`.
     pub fn new(
-        reader: &'a stripe_terminal::TerminalReaderId,
-        type_: SetReaderDisplayTerminalReaderType,
+        reader: impl Into<stripe_terminal::TerminalReaderId>,
+        type_: impl Into<SetReaderDisplayTerminalReaderType>,
     ) -> Self {
-        Self { reader, inner: SetReaderDisplayTerminalReaderBuilder::new(type_) }
+        Self {
+            reader: reader.into(),
+            inner: SetReaderDisplayTerminalReaderBuilder::new(type_.into()),
+        }
     }
     /// Cart
-    pub fn cart(mut self, cart: SetReaderDisplayTerminalReaderCart<'a>) -> Self {
-        self.inner.cart = Some(cart);
+    pub fn cart(mut self, cart: impl Into<SetReaderDisplayTerminalReaderCart>) -> Self {
+        self.inner.cart = Some(cart.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl SetReaderDisplayTerminalReader<'_> {
+impl SetReaderDisplayTerminalReader {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -1082,11 +1123,11 @@ impl SetReaderDisplayTerminalReader<'_> {
     }
 }
 
-impl StripeRequest for SetReaderDisplayTerminalReader<'_> {
+impl StripeRequest for SetReaderDisplayTerminalReader {
     type Output = stripe_terminal::TerminalReader;
 
     fn build(&self) -> RequestBuilder {
-        let reader = self.reader;
+        let reader = &self.reader;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/terminal/readers/{reader}/set_reader_display"),
@@ -1094,21 +1135,21 @@ impl StripeRequest for SetReaderDisplayTerminalReader<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct PresentPaymentMethodTerminalReaderBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct PresentPaymentMethodTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount_tip: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    card_present: Option<PresentPaymentMethodTerminalReaderCardPresent<'a>>,
+    card_present: Option<PresentPaymentMethodTerminalReaderCardPresent>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    interac_present: Option<PresentPaymentMethodTerminalReaderInteracPresent<'a>>,
+    interac_present: Option<PresentPaymentMethodTerminalReaderInteracPresent>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<PresentPaymentMethodTerminalReaderType>,
 }
-impl<'a> PresentPaymentMethodTerminalReaderBuilder<'a> {
+impl PresentPaymentMethodTerminalReaderBuilder {
     fn new() -> Self {
         Self {
             amount_tip: None,
@@ -1120,35 +1161,35 @@ impl<'a> PresentPaymentMethodTerminalReaderBuilder<'a> {
     }
 }
 /// Simulated data for the card_present payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct PresentPaymentMethodTerminalReaderCardPresent<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct PresentPaymentMethodTerminalReaderCardPresent {
     /// The card number, as a string without any separators.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub number: Option<&'a str>,
+    pub number: Option<String>,
 }
-impl<'a> PresentPaymentMethodTerminalReaderCardPresent<'a> {
+impl PresentPaymentMethodTerminalReaderCardPresent {
     pub fn new() -> Self {
         Self { number: None }
     }
 }
-impl<'a> Default for PresentPaymentMethodTerminalReaderCardPresent<'a> {
+impl Default for PresentPaymentMethodTerminalReaderCardPresent {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Simulated data for the interac_present payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct PresentPaymentMethodTerminalReaderInteracPresent<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct PresentPaymentMethodTerminalReaderInteracPresent {
     /// Card Number
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub number: Option<&'a str>,
+    pub number: Option<String>,
 }
-impl<'a> PresentPaymentMethodTerminalReaderInteracPresent<'a> {
+impl PresentPaymentMethodTerminalReaderInteracPresent {
     pub fn new() -> Self {
         Self { number: None }
     }
 }
-impl<'a> Default for PresentPaymentMethodTerminalReaderInteracPresent<'a> {
+impl Default for PresentPaymentMethodTerminalReaderInteracPresent {
     fn default() -> Self {
         Self::new()
     }
@@ -1212,48 +1253,48 @@ impl<'de> serde::Deserialize<'de> for PresentPaymentMethodTerminalReaderType {
 /// Presents a payment method on a simulated reader.
 /// Can be used to simulate accepting a payment, saving a card or refunding a transaction.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct PresentPaymentMethodTerminalReader<'a> {
-    inner: PresentPaymentMethodTerminalReaderBuilder<'a>,
-    reader: &'a str,
+pub struct PresentPaymentMethodTerminalReader {
+    inner: PresentPaymentMethodTerminalReaderBuilder,
+    reader: String,
 }
-impl<'a> PresentPaymentMethodTerminalReader<'a> {
+impl PresentPaymentMethodTerminalReader {
     /// Construct a new `PresentPaymentMethodTerminalReader`.
-    pub fn new(reader: &'a str) -> Self {
-        Self { reader, inner: PresentPaymentMethodTerminalReaderBuilder::new() }
+    pub fn new(reader: impl Into<String>) -> Self {
+        Self { reader: reader.into(), inner: PresentPaymentMethodTerminalReaderBuilder::new() }
     }
     /// Simulated on-reader tip amount.
-    pub fn amount_tip(mut self, amount_tip: i64) -> Self {
-        self.inner.amount_tip = Some(amount_tip);
+    pub fn amount_tip(mut self, amount_tip: impl Into<i64>) -> Self {
+        self.inner.amount_tip = Some(amount_tip.into());
         self
     }
     /// Simulated data for the card_present payment method.
     pub fn card_present(
         mut self,
-        card_present: PresentPaymentMethodTerminalReaderCardPresent<'a>,
+        card_present: impl Into<PresentPaymentMethodTerminalReaderCardPresent>,
     ) -> Self {
-        self.inner.card_present = Some(card_present);
+        self.inner.card_present = Some(card_present.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Simulated data for the interac_present payment method.
     pub fn interac_present(
         mut self,
-        interac_present: PresentPaymentMethodTerminalReaderInteracPresent<'a>,
+        interac_present: impl Into<PresentPaymentMethodTerminalReaderInteracPresent>,
     ) -> Self {
-        self.inner.interac_present = Some(interac_present);
+        self.inner.interac_present = Some(interac_present.into());
         self
     }
     /// Simulated payment type.
-    pub fn type_(mut self, type_: PresentPaymentMethodTerminalReaderType) -> Self {
-        self.inner.type_ = Some(type_);
+    pub fn type_(mut self, type_: impl Into<PresentPaymentMethodTerminalReaderType>) -> Self {
+        self.inner.type_ = Some(type_.into());
         self
     }
 }
-impl PresentPaymentMethodTerminalReader<'_> {
+impl PresentPaymentMethodTerminalReader {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -1271,11 +1312,11 @@ impl PresentPaymentMethodTerminalReader<'_> {
     }
 }
 
-impl StripeRequest for PresentPaymentMethodTerminalReader<'_> {
+impl StripeRequest for PresentPaymentMethodTerminalReader {
     type Output = stripe_terminal::TerminalReader;
 
     fn build(&self) -> RequestBuilder {
-        let reader = self.reader;
+        let reader = &self.reader;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/test_helpers/terminal/readers/{reader}/present_payment_method"),

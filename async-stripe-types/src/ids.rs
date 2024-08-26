@@ -106,6 +106,34 @@ macro_rules! def_id {
             }
         }
 
+        impl From<&str> for $struct_name {
+            #[inline]
+            fn from(text: &str) -> Self {
+                Self(smol_str::SmolStr::from(text))
+            }
+        }
+
+        impl From<$struct_name> for String {
+            #[inline]
+            fn from(id: $struct_name) -> Self {
+                id.0.to_string()
+            }
+        }
+
+        impl From<&$struct_name> for String {
+            #[inline]
+            fn from(id: &$struct_name) -> Self {
+                id.0.to_string()
+            }
+        }
+
+        impl From<&$struct_name> for $struct_name {
+            #[inline]
+            fn from(id: &$struct_name) -> Self {
+                id.clone()
+            }
+        }
+
         #[cfg(feature = "deserialize")]
         impl<'de> serde::Deserialize<'de> for $struct_name {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>

@@ -28,7 +28,7 @@ pub async fn run_connect_example(client: &stripe::Client) -> Result<(), StripeEr
         .send(client)
         .await?;
 
-    let link = CreateAccountLink::new(&account.id, CreateAccountLinkType::AccountOnboarding)
+    let link = CreateAccountLink::new(account.id, CreateAccountLinkType::AccountOnboarding)
         .refresh_url("https://test.com/refresh")
         .return_url("https://test.com/return")
         .send(client)

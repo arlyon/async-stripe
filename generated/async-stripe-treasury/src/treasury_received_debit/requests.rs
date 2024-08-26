@@ -2,26 +2,26 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListTreasuryReceivedDebitBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListTreasuryReceivedDebitBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    financial_account: &'a str,
+    expand: Option<Vec<String>>,
+    financial_account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_treasury::TreasuryReceivedDebitStatus>,
 }
-impl<'a> ListTreasuryReceivedDebitBuilder<'a> {
-    fn new(financial_account: &'a str) -> Self {
+impl ListTreasuryReceivedDebitBuilder {
+    fn new(financial_account: impl Into<String>) -> Self {
         Self {
             ending_before: None,
             expand: None,
-            financial_account,
+            financial_account: financial_account.into(),
             limit: None,
             starting_after: None,
             status: None,
@@ -30,46 +30,49 @@ impl<'a> ListTreasuryReceivedDebitBuilder<'a> {
 }
 /// Returns a list of ReceivedDebits.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListTreasuryReceivedDebit<'a> {
-    inner: ListTreasuryReceivedDebitBuilder<'a>,
+pub struct ListTreasuryReceivedDebit {
+    inner: ListTreasuryReceivedDebitBuilder,
 }
-impl<'a> ListTreasuryReceivedDebit<'a> {
+impl ListTreasuryReceivedDebit {
     /// Construct a new `ListTreasuryReceivedDebit`.
-    pub fn new(financial_account: &'a str) -> Self {
-        Self { inner: ListTreasuryReceivedDebitBuilder::new(financial_account) }
+    pub fn new(financial_account: impl Into<String>) -> Self {
+        Self { inner: ListTreasuryReceivedDebitBuilder::new(financial_account.into()) }
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// Only return ReceivedDebits that have the given status: `succeeded` or `failed`.
-    pub fn status(mut self, status: stripe_treasury::TreasuryReceivedDebitStatus) -> Self {
-        self.inner.status = Some(status);
+    pub fn status(
+        mut self,
+        status: impl Into<stripe_treasury::TreasuryReceivedDebitStatus>,
+    ) -> Self {
+        self.inner.status = Some(status.into());
         self
     }
 }
-impl ListTreasuryReceivedDebit<'_> {
+impl ListTreasuryReceivedDebit {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -90,45 +93,45 @@ impl ListTreasuryReceivedDebit<'_> {
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_treasury::TreasuryReceivedDebit>>
     {
-        stripe_client_core::ListPaginator::new_list("/treasury/received_debits", self.inner)
+        stripe_client_core::ListPaginator::new_list("/treasury/received_debits", &self.inner)
     }
 }
 
-impl StripeRequest for ListTreasuryReceivedDebit<'_> {
+impl StripeRequest for ListTreasuryReceivedDebit {
     type Output = stripe_types::List<stripe_treasury::TreasuryReceivedDebit>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/treasury/received_debits").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveTreasuryReceivedDebitBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveTreasuryReceivedDebitBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveTreasuryReceivedDebitBuilder<'a> {
+impl RetrieveTreasuryReceivedDebitBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves the details of an existing ReceivedDebit by passing the unique ReceivedDebit ID from the ReceivedDebit list.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveTreasuryReceivedDebit<'a> {
-    inner: RetrieveTreasuryReceivedDebitBuilder<'a>,
-    id: &'a stripe_treasury::TreasuryReceivedDebitId,
+pub struct RetrieveTreasuryReceivedDebit {
+    inner: RetrieveTreasuryReceivedDebitBuilder,
+    id: stripe_treasury::TreasuryReceivedDebitId,
 }
-impl<'a> RetrieveTreasuryReceivedDebit<'a> {
+impl RetrieveTreasuryReceivedDebit {
     /// Construct a new `RetrieveTreasuryReceivedDebit`.
-    pub fn new(id: &'a stripe_treasury::TreasuryReceivedDebitId) -> Self {
-        Self { id, inner: RetrieveTreasuryReceivedDebitBuilder::new() }
+    pub fn new(id: impl Into<stripe_treasury::TreasuryReceivedDebitId>) -> Self {
+        Self { id: id.into(), inner: RetrieveTreasuryReceivedDebitBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveTreasuryReceivedDebit<'_> {
+impl RetrieveTreasuryReceivedDebit {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -146,61 +149,63 @@ impl RetrieveTreasuryReceivedDebit<'_> {
     }
 }
 
-impl StripeRequest for RetrieveTreasuryReceivedDebit<'_> {
+impl StripeRequest for RetrieveTreasuryReceivedDebit {
     type Output = stripe_treasury::TreasuryReceivedDebit;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Get, format!("/treasury/received_debits/{id}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateTreasuryReceivedDebitBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateTreasuryReceivedDebitBuilder {
     amount: i64,
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    financial_account: &'a str,
+    expand: Option<Vec<String>>,
+    financial_account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     initiating_payment_method_details:
-        Option<CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails<'a>>,
+        Option<CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails>,
     network: CreateTreasuryReceivedDebitNetwork,
 }
-impl<'a> CreateTreasuryReceivedDebitBuilder<'a> {
+impl CreateTreasuryReceivedDebitBuilder {
     fn new(
-        amount: i64,
-        currency: stripe_types::Currency,
-        financial_account: &'a str,
-        network: CreateTreasuryReceivedDebitNetwork,
+        amount: impl Into<i64>,
+        currency: impl Into<stripe_types::Currency>,
+        financial_account: impl Into<String>,
+        network: impl Into<CreateTreasuryReceivedDebitNetwork>,
     ) -> Self {
         Self {
-            amount,
-            currency,
+            amount: amount.into(),
+            currency: currency.into(),
             description: None,
             expand: None,
-            financial_account,
+            financial_account: financial_account.into(),
             initiating_payment_method_details: None,
-            network,
+            network: network.into(),
         }
     }
 }
 /// Initiating payment method details for the object.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails {
     /// The source type.
     #[serde(rename = "type")]
     pub type_: CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType,
     /// Optional fields for `us_bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account:
-        Option<CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount<'a>>,
+        Option<CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount>,
 }
-impl<'a> CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails<'a> {
-    pub fn new(type_: CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType) -> Self {
-        Self { type_, us_bank_account: None }
+impl CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails {
+    pub fn new(
+        type_: impl Into<CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType>,
+    ) -> Self {
+        Self { type_: type_.into(), us_bank_account: None }
     }
 }
 /// The source type.
@@ -261,24 +266,24 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Optional fields for `us_bank_account`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount {
     /// The bank account holder's name.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_name: Option<&'a str>,
+    pub account_holder_name: Option<String>,
     /// The bank account number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_number: Option<&'a str>,
+    pub account_number: Option<String>,
     /// The bank account's routing number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub routing_number: Option<&'a str>,
+    pub routing_number: Option<String>,
 }
-impl<'a> CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount<'a> {
+impl CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount {
     pub fn new() -> Self {
         Self { account_holder_name: None, account_number: None, routing_number: None }
     }
 }
-impl<'a> Default for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount<'a> {
+impl Default for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount {
     fn default() -> Self {
         Self::new()
     }
@@ -341,46 +346,49 @@ impl<'de> serde::Deserialize<'de> for CreateTreasuryReceivedDebitNetwork {
 /// Use this endpoint to simulate a test mode ReceivedDebit initiated by a third party.
 /// In live mode, you can’t directly create ReceivedDebits initiated by third parties.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateTreasuryReceivedDebit<'a> {
-    inner: CreateTreasuryReceivedDebitBuilder<'a>,
+pub struct CreateTreasuryReceivedDebit {
+    inner: CreateTreasuryReceivedDebitBuilder,
 }
-impl<'a> CreateTreasuryReceivedDebit<'a> {
+impl CreateTreasuryReceivedDebit {
     /// Construct a new `CreateTreasuryReceivedDebit`.
     pub fn new(
-        amount: i64,
-        currency: stripe_types::Currency,
-        financial_account: &'a str,
-        network: CreateTreasuryReceivedDebitNetwork,
+        amount: impl Into<i64>,
+        currency: impl Into<stripe_types::Currency>,
+        financial_account: impl Into<String>,
+        network: impl Into<CreateTreasuryReceivedDebitNetwork>,
     ) -> Self {
         Self {
             inner: CreateTreasuryReceivedDebitBuilder::new(
-                amount,
-                currency,
-                financial_account,
-                network,
+                amount.into(),
+                currency.into(),
+                financial_account.into(),
+                network.into(),
             ),
         }
     }
     /// An arbitrary string attached to the object. Often useful for displaying to users.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.inner.description = Some(description);
+    pub fn description(mut self, description: impl Into<String>) -> Self {
+        self.inner.description = Some(description.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Initiating payment method details for the object.
     pub fn initiating_payment_method_details(
         mut self,
-        initiating_payment_method_details: CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails<'a>,
+        initiating_payment_method_details: impl Into<
+            CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails,
+        >,
     ) -> Self {
-        self.inner.initiating_payment_method_details = Some(initiating_payment_method_details);
+        self.inner.initiating_payment_method_details =
+            Some(initiating_payment_method_details.into());
         self
     }
 }
-impl CreateTreasuryReceivedDebit<'_> {
+impl CreateTreasuryReceivedDebit {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -398,7 +406,7 @@ impl CreateTreasuryReceivedDebit<'_> {
     }
 }
 
-impl StripeRequest for CreateTreasuryReceivedDebit<'_> {
+impl StripeRequest for CreateTreasuryReceivedDebit {
     type Output = stripe_treasury::TreasuryReceivedDebit;
 
     fn build(&self) -> RequestBuilder {

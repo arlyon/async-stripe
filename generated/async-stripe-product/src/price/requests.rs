@@ -2,8 +2,8 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListPriceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListPriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11,24 +11,24 @@ struct ListPriceBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    lookup_keys: Option<&'a [&'a str]>,
+    lookup_keys: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    product: Option<&'a str>,
+    product: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    recurring: Option<ListPriceRecurring<'a>>,
+    recurring: Option<ListPriceRecurring>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<stripe_shared::PriceType>,
 }
-impl<'a> ListPriceBuilder<'a> {
+impl ListPriceBuilder {
     fn new() -> Self {
         Self {
             active: None,
@@ -46,24 +46,24 @@ impl<'a> ListPriceBuilder<'a> {
     }
 }
 /// Only return prices with these recurring fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ListPriceRecurring<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListPriceRecurring {
     /// Filter by billing frequency. Either `day`, `week`, `month` or `year`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval: Option<ListPriceRecurringInterval>,
     /// Filter by the price's meter.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub meter: Option<&'a str>,
+    pub meter: Option<String>,
     /// Filter by the usage type for this price. Can be either `metered` or `licensed`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage_type: Option<ListPriceRecurringUsageType>,
 }
-impl<'a> ListPriceRecurring<'a> {
+impl ListPriceRecurring {
     pub fn new() -> Self {
         Self { interval: None, meter: None, usage_type: None }
     }
 }
-impl<'a> Default for ListPriceRecurring<'a> {
+impl Default for ListPriceRecurring {
     fn default() -> Self {
         Self::new()
     }
@@ -187,82 +187,82 @@ impl<'de> serde::Deserialize<'de> for ListPriceRecurringUsageType {
 /// Returns a list of your active prices, excluding [inline prices](https://stripe.com/docs/products-prices/pricing-models#inline-pricing).
 /// For the list of inactive prices, set `active` to false.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListPrice<'a> {
-    inner: ListPriceBuilder<'a>,
+pub struct ListPrice {
+    inner: ListPriceBuilder,
 }
-impl<'a> ListPrice<'a> {
+impl ListPrice {
     /// Construct a new `ListPrice`.
     pub fn new() -> Self {
         Self { inner: ListPriceBuilder::new() }
     }
     /// Only return prices that are active or inactive (e.g., pass `false` to list all inactive prices).
-    pub fn active(mut self, active: bool) -> Self {
-        self.inner.active = Some(active);
+    pub fn active(mut self, active: impl Into<bool>) -> Self {
+        self.inner.active = Some(active.into());
         self
     }
     /// A filter on the list, based on the object `created` field.
     /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
-    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
-        self.inner.created = Some(created);
+    pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.created = Some(created.into());
         self
     }
     /// Only return prices for the given currency.
-    pub fn currency(mut self, currency: stripe_types::Currency) -> Self {
-        self.inner.currency = Some(currency);
+    pub fn currency(mut self, currency: impl Into<stripe_types::Currency>) -> Self {
+        self.inner.currency = Some(currency.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// Only return the price with these lookup_keys, if any exist.
-    pub fn lookup_keys(mut self, lookup_keys: &'a [&'a str]) -> Self {
-        self.inner.lookup_keys = Some(lookup_keys);
+    pub fn lookup_keys(mut self, lookup_keys: impl Into<Vec<String>>) -> Self {
+        self.inner.lookup_keys = Some(lookup_keys.into());
         self
     }
     /// Only return prices for the given product.
-    pub fn product(mut self, product: &'a str) -> Self {
-        self.inner.product = Some(product);
+    pub fn product(mut self, product: impl Into<String>) -> Self {
+        self.inner.product = Some(product.into());
         self
     }
     /// Only return prices with these recurring fields.
-    pub fn recurring(mut self, recurring: ListPriceRecurring<'a>) -> Self {
-        self.inner.recurring = Some(recurring);
+    pub fn recurring(mut self, recurring: impl Into<ListPriceRecurring>) -> Self {
+        self.inner.recurring = Some(recurring.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// Only return prices of type `recurring` or `one_time`.
-    pub fn type_(mut self, type_: stripe_shared::PriceType) -> Self {
-        self.inner.type_ = Some(type_);
+    pub fn type_(mut self, type_: impl Into<stripe_shared::PriceType>) -> Self {
+        self.inner.type_ = Some(type_.into());
         self
     }
 }
-impl<'a> Default for ListPrice<'a> {
+impl Default for ListPrice {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListPrice<'_> {
+impl ListPrice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -282,45 +282,45 @@ impl ListPrice<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::Price>> {
-        stripe_client_core::ListPaginator::new_list("/prices", self.inner)
+        stripe_client_core::ListPaginator::new_list("/prices", &self.inner)
     }
 }
 
-impl StripeRequest for ListPrice<'_> {
+impl StripeRequest for ListPrice {
     type Output = stripe_types::List<stripe_shared::Price>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/prices").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrievePriceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrievePriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrievePriceBuilder<'a> {
+impl RetrievePriceBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves the price with the given ID.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrievePrice<'a> {
-    inner: RetrievePriceBuilder<'a>,
-    price: &'a stripe_shared::PriceId,
+pub struct RetrievePrice {
+    inner: RetrievePriceBuilder,
+    price: stripe_shared::PriceId,
 }
-impl<'a> RetrievePrice<'a> {
+impl RetrievePrice {
     /// Construct a new `RetrievePrice`.
-    pub fn new(price: &'a stripe_shared::PriceId) -> Self {
-        Self { price, inner: RetrievePriceBuilder::new() }
+    pub fn new(price: impl Into<stripe_shared::PriceId>) -> Self {
+        Self { price: price.into(), inner: RetrievePriceBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrievePrice<'_> {
+impl RetrievePrice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -338,27 +338,27 @@ impl RetrievePrice<'_> {
     }
 }
 
-impl StripeRequest for RetrievePrice<'_> {
+impl StripeRequest for RetrievePrice {
     type Output = stripe_shared::Price;
 
     fn build(&self) -> RequestBuilder {
-        let price = self.price;
+        let price = &self.price;
         RequestBuilder::new(StripeMethod::Get, format!("/prices/{price}")).query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct SearchPriceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct SearchPriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    page: Option<&'a str>,
-    query: &'a str,
+    page: Option<String>,
+    query: String,
 }
-impl<'a> SearchPriceBuilder<'a> {
-    fn new(query: &'a str) -> Self {
-        Self { expand: None, limit: None, page: None, query }
+impl SearchPriceBuilder {
+    fn new(query: impl Into<String>) -> Self {
+        Self { expand: None, limit: None, page: None, query: query.into() }
     }
 }
 /// Search for prices you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
@@ -368,34 +368,34 @@ impl<'a> SearchPriceBuilder<'a> {
 /// Occasionally, propagation of new or updated data can be up.
 /// to an hour behind during outages. Search functionality is not available to merchants in India.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct SearchPrice<'a> {
-    inner: SearchPriceBuilder<'a>,
+pub struct SearchPrice {
+    inner: SearchPriceBuilder,
 }
-impl<'a> SearchPrice<'a> {
+impl SearchPrice {
     /// Construct a new `SearchPrice`.
-    pub fn new(query: &'a str) -> Self {
-        Self { inner: SearchPriceBuilder::new(query) }
+    pub fn new(query: impl Into<String>) -> Self {
+        Self { inner: SearchPriceBuilder::new(query.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for pagination across multiple pages of results.
     /// Don't include this parameter on the first call.
     /// Use the next_page value returned in a previous response to request subsequent results.
-    pub fn page(mut self, page: &'a str) -> Self {
-        self.inner.page = Some(page);
+    pub fn page(mut self, page: impl Into<String>) -> Self {
+        self.inner.page = Some(page.into());
         self
     }
 }
-impl SearchPrice<'_> {
+impl SearchPrice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -415,19 +415,19 @@ impl SearchPrice<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::SearchList<stripe_shared::Price>> {
-        stripe_client_core::ListPaginator::new_search_list("/prices/search", self.inner)
+        stripe_client_core::ListPaginator::new_search_list("/prices/search", &self.inner)
     }
 }
 
-impl StripeRequest for SearchPrice<'_> {
+impl StripeRequest for SearchPrice {
     type Output = stripe_types::SearchList<stripe_shared::Price>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/prices/search").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreatePriceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreatePriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -435,27 +435,27 @@ struct CreatePriceBuilder<'a> {
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
     currency_options:
-        Option<&'a std::collections::HashMap<stripe_types::Currency, CreatePriceCurrencyOptions>>,
+        Option<std::collections::HashMap<stripe_types::Currency, CreatePriceCurrencyOptions>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     custom_unit_amount: Option<CustomUnitAmount>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    lookup_key: Option<&'a str>,
+    lookup_key: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    nickname: Option<&'a str>,
+    nickname: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    product: Option<&'a str>,
+    product: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    product_data: Option<CreatePriceProductData<'a>>,
+    product_data: Option<CreatePriceProductData>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    recurring: Option<CreatePriceRecurring<'a>>,
+    recurring: Option<CreatePriceRecurring>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tiers: Option<&'a [CreatePriceTiers<'a>]>,
+    tiers: Option<Vec<CreatePriceTiers>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tiers_mode: Option<stripe_shared::PriceTiersMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -465,14 +465,14 @@ struct CreatePriceBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     unit_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    unit_amount_decimal: Option<&'a str>,
+    unit_amount_decimal: Option<String>,
 }
-impl<'a> CreatePriceBuilder<'a> {
-    fn new(currency: stripe_types::Currency) -> Self {
+impl CreatePriceBuilder {
+    fn new(currency: impl Into<stripe_types::Currency>) -> Self {
         Self {
             active: None,
             billing_scheme: None,
-            currency,
+            currency: currency.into(),
             currency_options: None,
             custom_unit_amount: None,
             expand: None,
@@ -559,13 +559,13 @@ pub struct CreatePriceCurrencyOptionsTiers {
     pub up_to: CreatePriceCurrencyOptionsTiersUpTo,
 }
 impl CreatePriceCurrencyOptionsTiers {
-    pub fn new(up_to: CreatePriceCurrencyOptionsTiersUpTo) -> Self {
+    pub fn new(up_to: impl Into<CreatePriceCurrencyOptionsTiersUpTo>) -> Self {
         Self {
             flat_amount: None,
             flat_amount_decimal: None,
             unit_amount: None,
             unit_amount_decimal: None,
-            up_to,
+            up_to: up_to.into(),
         }
     }
 }
@@ -580,8 +580,8 @@ pub enum CreatePriceCurrencyOptionsTiersUpTo {
     I64(i64),
 }
 /// These fields can be used to create a new product that this price will belong to.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePriceProductData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePriceProductData {
     /// Whether the product is currently available for purchase. Defaults to `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -589,15 +589,15 @@ pub struct CreatePriceProductData<'a> {
     /// Must be unique.
     /// If not provided, an identifier will be randomly generated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<&'a str>,
+    pub id: Option<String>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The product's name, meant to be displayable to the customer.
-    pub name: &'a str,
+    pub name: String,
     /// An arbitrary string to be displayed on your customer's credit card or bank statement.
     /// While most banks display this information consistently, some may display it incorrectly or not at all.
     ///
@@ -605,22 +605,22 @@ pub struct CreatePriceProductData<'a> {
     /// The statement description may not include `<`, `>`, `\`, `"`, `'` characters, and will appear on your customer's statement in capital letters.
     /// Non-ASCII characters are automatically stripped.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<&'a str>,
+    pub statement_descriptor: Option<String>,
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_code: Option<&'a str>,
+    pub tax_code: Option<String>,
     /// A label that represents units of this product.
     /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_label: Option<&'a str>,
+    pub unit_label: Option<String>,
 }
-impl<'a> CreatePriceProductData<'a> {
-    pub fn new(name: &'a str) -> Self {
+impl CreatePriceProductData {
+    pub fn new(name: impl Into<String>) -> Self {
         Self {
             active: None,
             id: None,
             metadata: None,
-            name,
+            name: name.into(),
             statement_descriptor: None,
             tax_code: None,
             unit_label: None,
@@ -628,8 +628,8 @@ impl<'a> CreatePriceProductData<'a> {
     }
 }
 /// The recurring components of a price such as `interval` and `usage_type`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePriceRecurring<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePriceRecurring {
     /// Specifies a usage aggregation strategy for prices of `usage_type=metered`. Defaults to `sum`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aggregate_usage: Option<CreatePriceRecurringAggregateUsage>,
@@ -642,7 +642,7 @@ pub struct CreatePriceRecurring<'a> {
     pub interval_count: Option<u64>,
     /// The meter tracking the usage of a metered price
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub meter: Option<&'a str>,
+    pub meter: Option<String>,
     /// Default number of trial days when subscribing a customer to this price using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
@@ -654,11 +654,11 @@ pub struct CreatePriceRecurring<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage_type: Option<CreatePriceRecurringUsageType>,
 }
-impl<'a> CreatePriceRecurring<'a> {
-    pub fn new(interval: CreatePriceRecurringInterval) -> Self {
+impl CreatePriceRecurring {
+    pub fn new(interval: impl Into<CreatePriceRecurringInterval>) -> Self {
         Self {
             aggregate_usage: None,
-            interval,
+            interval: interval.into(),
             interval_count: None,
             meter: None,
             trial_period_days: None,
@@ -852,35 +852,35 @@ impl<'de> serde::Deserialize<'de> for CreatePriceRecurringUsageType {
 /// Each element represents a pricing tier.
 /// This parameter requires `billing_scheme` to be set to `tiered`.
 /// See also the documentation for `billing_scheme`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePriceTiers<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePriceTiers {
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,
     /// Same as `flat_amount`, but accepts a decimal value representing an integer in the minor units of the currency.
     /// Only one of `flat_amount` and `flat_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flat_amount_decimal: Option<&'a str>,
+    pub flat_amount_decimal: Option<String>,
     /// The per unit billing amount for each individual unit for which this tier applies.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
     /// Specifies the upper bound of this tier.
     /// The lower bound of a tier is the upper bound of the previous tier adding one.
     /// Use `inf` to define a fallback tier.
     pub up_to: CreatePriceTiersUpTo,
 }
-impl<'a> CreatePriceTiers<'a> {
-    pub fn new(up_to: CreatePriceTiersUpTo) -> Self {
+impl CreatePriceTiers {
+    pub fn new(up_to: impl Into<CreatePriceTiersUpTo>) -> Self {
         Self {
             flat_amount: None,
             flat_amount_decimal: None,
             unit_amount: None,
             unit_amount_decimal: None,
-            up_to,
+            up_to: up_to.into(),
         }
     }
 }
@@ -904,8 +904,11 @@ pub struct CreatePriceTransformQuantity {
     pub round: CreatePriceTransformQuantityRound,
 }
 impl CreatePriceTransformQuantity {
-    pub fn new(divide_by: i64, round: CreatePriceTransformQuantityRound) -> Self {
-        Self { divide_by, round }
+    pub fn new(
+        divide_by: impl Into<i64>,
+        round: impl Into<CreatePriceTransformQuantityRound>,
+    ) -> Self {
+        Self { divide_by: divide_by.into(), round: round.into() }
     }
 }
 /// After division, either round the result `up` or `down`.
@@ -966,129 +969,140 @@ impl<'de> serde::Deserialize<'de> for CreatePriceTransformQuantityRound {
 }
 /// Creates a new price for an existing product. The price can be recurring or one-time.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreatePrice<'a> {
-    inner: CreatePriceBuilder<'a>,
+pub struct CreatePrice {
+    inner: CreatePriceBuilder,
 }
-impl<'a> CreatePrice<'a> {
+impl CreatePrice {
     /// Construct a new `CreatePrice`.
-    pub fn new(currency: stripe_types::Currency) -> Self {
-        Self { inner: CreatePriceBuilder::new(currency) }
+    pub fn new(currency: impl Into<stripe_types::Currency>) -> Self {
+        Self { inner: CreatePriceBuilder::new(currency.into()) }
     }
     /// Whether the price can be used for new purchases. Defaults to `true`.
-    pub fn active(mut self, active: bool) -> Self {
-        self.inner.active = Some(active);
+    pub fn active(mut self, active: impl Into<bool>) -> Self {
+        self.inner.active = Some(active.into());
         self
     }
     /// Describes how to compute the price per period.
     /// Either `per_unit` or `tiered`.
     /// `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`).
     /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
-    pub fn billing_scheme(mut self, billing_scheme: stripe_shared::PriceBillingScheme) -> Self {
-        self.inner.billing_scheme = Some(billing_scheme);
+    pub fn billing_scheme(
+        mut self,
+        billing_scheme: impl Into<stripe_shared::PriceBillingScheme>,
+    ) -> Self {
+        self.inner.billing_scheme = Some(billing_scheme.into());
         self
     }
     /// Prices defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     pub fn currency_options(
         mut self,
-        currency_options: &'a std::collections::HashMap<
-            stripe_types::Currency,
-            CreatePriceCurrencyOptions,
+        currency_options: impl Into<
+            std::collections::HashMap<stripe_types::Currency, CreatePriceCurrencyOptions>,
         >,
     ) -> Self {
-        self.inner.currency_options = Some(currency_options);
+        self.inner.currency_options = Some(currency_options.into());
         self
     }
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
-    pub fn custom_unit_amount(mut self, custom_unit_amount: CustomUnitAmount) -> Self {
-        self.inner.custom_unit_amount = Some(custom_unit_amount);
+    pub fn custom_unit_amount(mut self, custom_unit_amount: impl Into<CustomUnitAmount>) -> Self {
+        self.inner.custom_unit_amount = Some(custom_unit_amount.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A lookup key used to retrieve prices dynamically from a static string.
     /// This may be up to 200 characters.
-    pub fn lookup_key(mut self, lookup_key: &'a str) -> Self {
-        self.inner.lookup_key = Some(lookup_key);
+    pub fn lookup_key(mut self, lookup_key: impl Into<String>) -> Self {
+        self.inner.lookup_key = Some(lookup_key.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// A brief description of the price, hidden from customers.
-    pub fn nickname(mut self, nickname: &'a str) -> Self {
-        self.inner.nickname = Some(nickname);
+    pub fn nickname(mut self, nickname: impl Into<String>) -> Self {
+        self.inner.nickname = Some(nickname.into());
         self
     }
     /// The ID of the product that this price will belong to.
-    pub fn product(mut self, product: &'a str) -> Self {
-        self.inner.product = Some(product);
+    pub fn product(mut self, product: impl Into<String>) -> Self {
+        self.inner.product = Some(product.into());
         self
     }
     /// These fields can be used to create a new product that this price will belong to.
-    pub fn product_data(mut self, product_data: CreatePriceProductData<'a>) -> Self {
-        self.inner.product_data = Some(product_data);
+    pub fn product_data(mut self, product_data: impl Into<CreatePriceProductData>) -> Self {
+        self.inner.product_data = Some(product_data.into());
         self
     }
     /// The recurring components of a price such as `interval` and `usage_type`.
-    pub fn recurring(mut self, recurring: CreatePriceRecurring<'a>) -> Self {
-        self.inner.recurring = Some(recurring);
+    pub fn recurring(mut self, recurring: impl Into<CreatePriceRecurring>) -> Self {
+        self.inner.recurring = Some(recurring.into());
         self
     }
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    pub fn tax_behavior(mut self, tax_behavior: stripe_shared::PriceTaxBehavior) -> Self {
-        self.inner.tax_behavior = Some(tax_behavior);
+    pub fn tax_behavior(
+        mut self,
+        tax_behavior: impl Into<stripe_shared::PriceTaxBehavior>,
+    ) -> Self {
+        self.inner.tax_behavior = Some(tax_behavior.into());
         self
     }
     /// Each element represents a pricing tier.
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
-    pub fn tiers(mut self, tiers: &'a [CreatePriceTiers<'a>]) -> Self {
-        self.inner.tiers = Some(tiers);
+    pub fn tiers(mut self, tiers: impl Into<Vec<CreatePriceTiers>>) -> Self {
+        self.inner.tiers = Some(tiers.into());
         self
     }
     /// Defines if the tiering price should be `graduated` or `volume` based.
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows.
-    pub fn tiers_mode(mut self, tiers_mode: stripe_shared::PriceTiersMode) -> Self {
-        self.inner.tiers_mode = Some(tiers_mode);
+    pub fn tiers_mode(mut self, tiers_mode: impl Into<stripe_shared::PriceTiersMode>) -> Self {
+        self.inner.tiers_mode = Some(tiers_mode.into());
         self
     }
     /// If set to true, will atomically remove the lookup key from the existing price, and assign it to this price.
-    pub fn transfer_lookup_key(mut self, transfer_lookup_key: bool) -> Self {
-        self.inner.transfer_lookup_key = Some(transfer_lookup_key);
+    pub fn transfer_lookup_key(mut self, transfer_lookup_key: impl Into<bool>) -> Self {
+        self.inner.transfer_lookup_key = Some(transfer_lookup_key.into());
         self
     }
     /// Apply a transformation to the reported usage or set quantity before computing the billed price.
     /// Cannot be combined with `tiers`.
-    pub fn transform_quantity(mut self, transform_quantity: CreatePriceTransformQuantity) -> Self {
-        self.inner.transform_quantity = Some(transform_quantity);
+    pub fn transform_quantity(
+        mut self,
+        transform_quantity: impl Into<CreatePriceTransformQuantity>,
+    ) -> Self {
+        self.inner.transform_quantity = Some(transform_quantity.into());
         self
     }
     /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     /// One of `unit_amount`, `unit_amount_decimal`, or `custom_unit_amount` is required, unless `billing_scheme=tiered`.
-    pub fn unit_amount(mut self, unit_amount: i64) -> Self {
-        self.inner.unit_amount = Some(unit_amount);
+    pub fn unit_amount(mut self, unit_amount: impl Into<i64>) -> Self {
+        self.inner.unit_amount = Some(unit_amount.into());
         self
     }
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    pub fn unit_amount_decimal(mut self, unit_amount_decimal: &'a str) -> Self {
-        self.inner.unit_amount_decimal = Some(unit_amount_decimal);
+    pub fn unit_amount_decimal(mut self, unit_amount_decimal: impl Into<String>) -> Self {
+        self.inner.unit_amount_decimal = Some(unit_amount_decimal.into());
         self
     }
 }
-impl CreatePrice<'_> {
+impl CreatePrice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -1106,34 +1120,34 @@ impl CreatePrice<'_> {
     }
 }
 
-impl StripeRequest for CreatePrice<'_> {
+impl StripeRequest for CreatePrice {
     type Output = stripe_shared::Price;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/prices").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdatePriceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdatePriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     currency_options:
-        Option<&'a std::collections::HashMap<stripe_types::Currency, UpdatePriceCurrencyOptions>>,
+        Option<std::collections::HashMap<stripe_types::Currency, UpdatePriceCurrencyOptions>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    lookup_key: Option<&'a str>,
+    lookup_key: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    nickname: Option<&'a str>,
+    nickname: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_lookup_key: Option<bool>,
 }
-impl<'a> UpdatePriceBuilder<'a> {
+impl UpdatePriceBuilder {
     fn new() -> Self {
         Self {
             active: None,
@@ -1214,13 +1228,13 @@ pub struct UpdatePriceCurrencyOptionsTiers {
     pub up_to: UpdatePriceCurrencyOptionsTiersUpTo,
 }
 impl UpdatePriceCurrencyOptionsTiers {
-    pub fn new(up_to: UpdatePriceCurrencyOptionsTiersUpTo) -> Self {
+    pub fn new(up_to: impl Into<UpdatePriceCurrencyOptionsTiersUpTo>) -> Self {
         Self {
             flat_amount: None,
             flat_amount_decimal: None,
             unit_amount: None,
             unit_amount_decimal: None,
-            up_to,
+            up_to: up_to.into(),
         }
     }
 }
@@ -1237,71 +1251,76 @@ pub enum UpdatePriceCurrencyOptionsTiersUpTo {
 /// Updates the specified price by setting the values of the parameters passed.
 /// Any parameters not provided are left unchanged.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdatePrice<'a> {
-    inner: UpdatePriceBuilder<'a>,
-    price: &'a stripe_shared::PriceId,
+pub struct UpdatePrice {
+    inner: UpdatePriceBuilder,
+    price: stripe_shared::PriceId,
 }
-impl<'a> UpdatePrice<'a> {
+impl UpdatePrice {
     /// Construct a new `UpdatePrice`.
-    pub fn new(price: &'a stripe_shared::PriceId) -> Self {
-        Self { price, inner: UpdatePriceBuilder::new() }
+    pub fn new(price: impl Into<stripe_shared::PriceId>) -> Self {
+        Self { price: price.into(), inner: UpdatePriceBuilder::new() }
     }
     /// Whether the price can be used for new purchases. Defaults to `true`.
-    pub fn active(mut self, active: bool) -> Self {
-        self.inner.active = Some(active);
+    pub fn active(mut self, active: impl Into<bool>) -> Self {
+        self.inner.active = Some(active.into());
         self
     }
     /// Prices defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     pub fn currency_options(
         mut self,
-        currency_options: &'a std::collections::HashMap<
-            stripe_types::Currency,
-            UpdatePriceCurrencyOptions,
+        currency_options: impl Into<
+            std::collections::HashMap<stripe_types::Currency, UpdatePriceCurrencyOptions>,
         >,
     ) -> Self {
-        self.inner.currency_options = Some(currency_options);
+        self.inner.currency_options = Some(currency_options.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A lookup key used to retrieve prices dynamically from a static string.
     /// This may be up to 200 characters.
-    pub fn lookup_key(mut self, lookup_key: &'a str) -> Self {
-        self.inner.lookup_key = Some(lookup_key);
+    pub fn lookup_key(mut self, lookup_key: impl Into<String>) -> Self {
+        self.inner.lookup_key = Some(lookup_key.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// A brief description of the price, hidden from customers.
-    pub fn nickname(mut self, nickname: &'a str) -> Self {
-        self.inner.nickname = Some(nickname);
+    pub fn nickname(mut self, nickname: impl Into<String>) -> Self {
+        self.inner.nickname = Some(nickname.into());
         self
     }
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    pub fn tax_behavior(mut self, tax_behavior: stripe_shared::PriceTaxBehavior) -> Self {
-        self.inner.tax_behavior = Some(tax_behavior);
+    pub fn tax_behavior(
+        mut self,
+        tax_behavior: impl Into<stripe_shared::PriceTaxBehavior>,
+    ) -> Self {
+        self.inner.tax_behavior = Some(tax_behavior.into());
         self
     }
     /// If set to true, will atomically remove the lookup key from the existing price, and assign it to this price.
-    pub fn transfer_lookup_key(mut self, transfer_lookup_key: bool) -> Self {
-        self.inner.transfer_lookup_key = Some(transfer_lookup_key);
+    pub fn transfer_lookup_key(mut self, transfer_lookup_key: impl Into<bool>) -> Self {
+        self.inner.transfer_lookup_key = Some(transfer_lookup_key.into());
         self
     }
 }
-impl UpdatePrice<'_> {
+impl UpdatePrice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -1319,11 +1338,11 @@ impl UpdatePrice<'_> {
     }
 }
 
-impl StripeRequest for UpdatePrice<'_> {
+impl StripeRequest for UpdatePrice {
     type Output = stripe_shared::Price;
 
     fn build(&self) -> RequestBuilder {
-        let price = self.price;
+        let price = &self.price;
         RequestBuilder::new(StripeMethod::Post, format!("/prices/{price}")).form(&self.inner)
     }
 }
@@ -1344,7 +1363,7 @@ pub struct CustomUnitAmount {
     pub preset: Option<i64>,
 }
 impl CustomUnitAmount {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, maximum: None, minimum: None, preset: None }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), maximum: None, minimum: None, preset: None }
     }
 }

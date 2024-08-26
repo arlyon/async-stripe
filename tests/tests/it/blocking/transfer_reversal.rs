@@ -1,4 +1,4 @@
-use stripe_connect::transfer_reversal::CreateIdTransferReversal;
+use stripe_connect::{transfer_reversal::CreateIdTransferReversal, TransferId};
 
 use super::get_client;
 
@@ -7,8 +7,8 @@ use super::get_client;
 fn create_transfer_reversal() {
     let client = get_client();
 
-    let id = "tr_Ll53U0VONALFk36".parse().unwrap();
-    let created = CreateIdTransferReversal::new(&id)
+    let id = TransferId::from("tr_Ll53U0VONALFk36");
+    let created = CreateIdTransferReversal::new(id)
         .refund_application_fee(true)
         .amount(4)
         .send_blocking(&client)

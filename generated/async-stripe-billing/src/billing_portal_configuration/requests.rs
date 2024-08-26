@@ -2,22 +2,22 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListBillingPortalConfigurationBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListBillingPortalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     is_default: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListBillingPortalConfigurationBuilder<'a> {
+impl ListBillingPortalConfigurationBuilder {
     fn new() -> Self {
         Self {
             active: None,
@@ -31,56 +31,56 @@ impl<'a> ListBillingPortalConfigurationBuilder<'a> {
 }
 /// Returns a list of configurations that describe the functionality of the customer portal.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListBillingPortalConfiguration<'a> {
-    inner: ListBillingPortalConfigurationBuilder<'a>,
+pub struct ListBillingPortalConfiguration {
+    inner: ListBillingPortalConfigurationBuilder,
 }
-impl<'a> ListBillingPortalConfiguration<'a> {
+impl ListBillingPortalConfiguration {
     /// Construct a new `ListBillingPortalConfiguration`.
     pub fn new() -> Self {
         Self { inner: ListBillingPortalConfigurationBuilder::new() }
     }
     /// Only return configurations that are active or inactive (e.g., pass `true` to only list active configurations).
-    pub fn active(mut self, active: bool) -> Self {
-        self.inner.active = Some(active);
+    pub fn active(mut self, active: impl Into<bool>) -> Self {
+        self.inner.active = Some(active.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Only return the default or non-default configurations (e.g., pass `true` to only list the default configuration).
-    pub fn is_default(mut self, is_default: bool) -> Self {
-        self.inner.is_default = Some(is_default);
+    pub fn is_default(mut self, is_default: impl Into<bool>) -> Self {
+        self.inner.is_default = Some(is_default.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl<'a> Default for ListBillingPortalConfiguration<'a> {
+impl Default for ListBillingPortalConfiguration {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListBillingPortalConfiguration<'_> {
+impl ListBillingPortalConfiguration {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -102,45 +102,48 @@ impl ListBillingPortalConfiguration<'_> {
     ) -> stripe_client_core::ListPaginator<
         stripe_types::List<stripe_billing::BillingPortalConfiguration>,
     > {
-        stripe_client_core::ListPaginator::new_list("/billing_portal/configurations", self.inner)
+        stripe_client_core::ListPaginator::new_list("/billing_portal/configurations", &self.inner)
     }
 }
 
-impl StripeRequest for ListBillingPortalConfiguration<'_> {
+impl StripeRequest for ListBillingPortalConfiguration {
     type Output = stripe_types::List<stripe_billing::BillingPortalConfiguration>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/billing_portal/configurations").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveBillingPortalConfigurationBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveBillingPortalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveBillingPortalConfigurationBuilder<'a> {
+impl RetrieveBillingPortalConfigurationBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves a configuration that describes the functionality of the customer portal.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveBillingPortalConfiguration<'a> {
-    inner: RetrieveBillingPortalConfigurationBuilder<'a>,
-    configuration: &'a stripe_billing::BillingPortalConfigurationId,
+pub struct RetrieveBillingPortalConfiguration {
+    inner: RetrieveBillingPortalConfigurationBuilder,
+    configuration: stripe_billing::BillingPortalConfigurationId,
 }
-impl<'a> RetrieveBillingPortalConfiguration<'a> {
+impl RetrieveBillingPortalConfiguration {
     /// Construct a new `RetrieveBillingPortalConfiguration`.
-    pub fn new(configuration: &'a stripe_billing::BillingPortalConfigurationId) -> Self {
-        Self { configuration, inner: RetrieveBillingPortalConfigurationBuilder::new() }
+    pub fn new(configuration: impl Into<stripe_billing::BillingPortalConfigurationId>) -> Self {
+        Self {
+            configuration: configuration.into(),
+            inner: RetrieveBillingPortalConfigurationBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveBillingPortalConfiguration<'_> {
+impl RetrieveBillingPortalConfiguration {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -158,11 +161,11 @@ impl RetrieveBillingPortalConfiguration<'_> {
     }
 }
 
-impl StripeRequest for RetrieveBillingPortalConfiguration<'_> {
+impl StripeRequest for RetrieveBillingPortalConfiguration {
     type Output = stripe_billing::BillingPortalConfiguration;
 
     fn build(&self) -> RequestBuilder {
-        let configuration = self.configuration;
+        let configuration = &self.configuration;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/billing_portal/configurations/{configuration}"),
@@ -170,63 +173,63 @@ impl StripeRequest for RetrieveBillingPortalConfiguration<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateBillingPortalConfigurationBuilder<'a> {
-    business_profile: CreateBillingPortalConfigurationBusinessProfile<'a>,
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateBillingPortalConfigurationBuilder {
+    business_profile: CreateBillingPortalConfigurationBusinessProfile,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_return_url: Option<&'a str>,
+    default_return_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    features: CreateBillingPortalConfigurationFeatures<'a>,
+    expand: Option<Vec<String>>,
+    features: CreateBillingPortalConfigurationFeatures,
     #[serde(skip_serializing_if = "Option::is_none")]
     login_page: Option<CreateBillingPortalConfigurationLoginPage>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
 }
-impl<'a> CreateBillingPortalConfigurationBuilder<'a> {
+impl CreateBillingPortalConfigurationBuilder {
     fn new(
-        business_profile: CreateBillingPortalConfigurationBusinessProfile<'a>,
-        features: CreateBillingPortalConfigurationFeatures<'a>,
+        business_profile: impl Into<CreateBillingPortalConfigurationBusinessProfile>,
+        features: impl Into<CreateBillingPortalConfigurationFeatures>,
     ) -> Self {
         Self {
-            business_profile,
+            business_profile: business_profile.into(),
             default_return_url: None,
             expand: None,
-            features,
+            features: features.into(),
             login_page: None,
             metadata: None,
         }
     }
 }
 /// The business information shown to customers in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateBillingPortalConfigurationBusinessProfile<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateBillingPortalConfigurationBusinessProfile {
     /// The messaging shown to customers in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub headline: Option<&'a str>,
+    pub headline: Option<String>,
     /// A link to the business’s publicly available privacy policy.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub privacy_policy_url: Option<&'a str>,
+    pub privacy_policy_url: Option<String>,
     /// A link to the business’s publicly available terms of service.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub terms_of_service_url: Option<&'a str>,
+    pub terms_of_service_url: Option<String>,
 }
-impl<'a> CreateBillingPortalConfigurationBusinessProfile<'a> {
+impl CreateBillingPortalConfigurationBusinessProfile {
     pub fn new() -> Self {
         Self { headline: None, privacy_policy_url: None, terms_of_service_url: None }
     }
 }
-impl<'a> Default for CreateBillingPortalConfigurationBusinessProfile<'a> {
+impl Default for CreateBillingPortalConfigurationBusinessProfile {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Information about the features available in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateBillingPortalConfigurationFeatures<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateBillingPortalConfigurationFeatures {
     /// Information about updating the customer details in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_update: Option<CreateBillingPortalConfigurationFeaturesCustomerUpdate<'a>>,
+    pub customer_update: Option<CreateBillingPortalConfigurationFeaturesCustomerUpdate>,
     /// Information about showing the billing history in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_history: Option<CreateBillingPortalConfigurationFeaturesInvoiceHistory>,
@@ -235,12 +238,12 @@ pub struct CreateBillingPortalConfigurationFeatures<'a> {
     pub payment_method_update: Option<CreateBillingPortalConfigurationFeaturesPaymentMethodUpdate>,
     /// Information about canceling subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_cancel: Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancel<'a>>,
+    pub subscription_cancel: Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancel>,
     /// Information about updating subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_update: Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a>>,
+    pub subscription_update: Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdate>,
 }
-impl<'a> CreateBillingPortalConfigurationFeatures<'a> {
+impl CreateBillingPortalConfigurationFeatures {
     pub fn new() -> Self {
         Self {
             customer_update: None,
@@ -251,24 +254,24 @@ impl<'a> CreateBillingPortalConfigurationFeatures<'a> {
         }
     }
 }
-impl<'a> Default for CreateBillingPortalConfigurationFeatures<'a> {
+impl Default for CreateBillingPortalConfigurationFeatures {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Information about updating the customer details in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateBillingPortalConfigurationFeaturesCustomerUpdate<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateBillingPortalConfigurationFeaturesCustomerUpdate {
     /// The types of customer updates that are supported. When empty, customers are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_updates:
-        Option<&'a [CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates]>,
+        Option<Vec<CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates>>,
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
-impl<'a> CreateBillingPortalConfigurationFeaturesCustomerUpdate<'a> {
-    pub fn new(enabled: bool) -> Self {
-        Self { allowed_updates: None, enabled }
+impl CreateBillingPortalConfigurationFeaturesCustomerUpdate {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { allowed_updates: None, enabled: enabled.into() }
     }
 }
 /// The types of customer updates that are supported. When empty, customers are not updateable.
@@ -346,8 +349,8 @@ pub struct CreateBillingPortalConfigurationFeaturesInvoiceHistory {
     pub enabled: bool,
 }
 impl CreateBillingPortalConfigurationFeaturesInvoiceHistory {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into() }
     }
 }
 /// Information about updating payment methods in the portal.
@@ -357,17 +360,17 @@ pub struct CreateBillingPortalConfigurationFeaturesPaymentMethodUpdate {
     pub enabled: bool,
 }
 impl CreateBillingPortalConfigurationFeaturesPaymentMethodUpdate {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into() }
     }
 }
 /// Information about canceling subscriptions in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancel<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancel {
     /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cancellation_reason:
-        Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a>>,
+        Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason>,
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// Whether to cancel subscriptions immediately or at the end of the billing period.
@@ -380,26 +383,35 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancel<'a> {
     pub proration_behavior:
         Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior>,
 }
-impl<'a> CreateBillingPortalConfigurationFeaturesSubscriptionCancel<'a> {
-    pub fn new(enabled: bool) -> Self {
-        Self { cancellation_reason: None, enabled, mode: None, proration_behavior: None }
+impl CreateBillingPortalConfigurationFeaturesSubscriptionCancel {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self {
+            cancellation_reason: None,
+            enabled: enabled.into(),
+            mode: None,
+            proration_behavior: None,
+        }
     }
 }
 /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// Which cancellation reasons will be given as options to the customer.
     pub options:
-        &'a [CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions],
+        Vec<CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions>,
 }
-impl<'a> CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a> {
+impl CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
     pub fn new(
-        enabled: bool,
-        options: &'a [CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions],
+        enabled: impl Into<bool>,
+        options: impl Into<
+            Vec<
+                CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions,
+            >,
+        >,
     ) -> Self {
-        Self { enabled, options }
+        Self { enabled: enabled.into(), options: options.into() }
     }
 }
 /// Which cancellation reasons will be given as options to the customer.
@@ -614,28 +626,35 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about updating subscriptions in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
     pub default_allowed_updates:
-        &'a [CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates],
+        Vec<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates>,
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// The list of up to 10 products that support subscription updates.
-    pub products: &'a [SubscriptionUpdateProductParam<'a>],
+    pub products: Vec<SubscriptionUpdateProductParam>,
     /// Determines how to handle prorations resulting from subscription updates.
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior:
         Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
 }
-impl<'a> CreateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a> {
+impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     pub fn new(
-        default_allowed_updates: &'a [CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates],
-        enabled: bool,
-        products: &'a [SubscriptionUpdateProductParam<'a>],
+        default_allowed_updates: impl Into<
+            Vec<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates>,
+        >,
+        enabled: impl Into<bool>,
+        products: impl Into<Vec<SubscriptionUpdateProductParam>>,
     ) -> Self {
-        Self { default_allowed_updates, enabled, products, proration_behavior: None }
+        Self {
+            default_allowed_updates: default_allowed_updates.into(),
+            enabled: enabled.into(),
+            products: products.into(),
+            proration_behavior: None,
+        }
     }
 }
 /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
@@ -781,50 +800,61 @@ pub struct CreateBillingPortalConfigurationLoginPage {
     pub enabled: bool,
 }
 impl CreateBillingPortalConfigurationLoginPage {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into() }
     }
 }
 /// Creates a configuration that describes the functionality and behavior of a PortalSession
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateBillingPortalConfiguration<'a> {
-    inner: CreateBillingPortalConfigurationBuilder<'a>,
+pub struct CreateBillingPortalConfiguration {
+    inner: CreateBillingPortalConfigurationBuilder,
 }
-impl<'a> CreateBillingPortalConfiguration<'a> {
+impl CreateBillingPortalConfiguration {
     /// Construct a new `CreateBillingPortalConfiguration`.
     pub fn new(
-        business_profile: CreateBillingPortalConfigurationBusinessProfile<'a>,
-        features: CreateBillingPortalConfigurationFeatures<'a>,
+        business_profile: impl Into<CreateBillingPortalConfigurationBusinessProfile>,
+        features: impl Into<CreateBillingPortalConfigurationFeatures>,
     ) -> Self {
-        Self { inner: CreateBillingPortalConfigurationBuilder::new(business_profile, features) }
+        Self {
+            inner: CreateBillingPortalConfigurationBuilder::new(
+                business_profile.into(),
+                features.into(),
+            ),
+        }
     }
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
     /// This can be [overriden](https://stripe.com/docs/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
-    pub fn default_return_url(mut self, default_return_url: &'a str) -> Self {
-        self.inner.default_return_url = Some(default_return_url);
+    pub fn default_return_url(mut self, default_return_url: impl Into<String>) -> Self {
+        self.inner.default_return_url = Some(default_return_url.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// The hosted login page for this configuration.
     /// Learn more about the portal login page in our [integration docs](https://stripe.com/docs/billing/subscriptions/integrating-customer-portal#share).
-    pub fn login_page(mut self, login_page: CreateBillingPortalConfigurationLoginPage) -> Self {
-        self.inner.login_page = Some(login_page);
+    pub fn login_page(
+        mut self,
+        login_page: impl Into<CreateBillingPortalConfigurationLoginPage>,
+    ) -> Self {
+        self.inner.login_page = Some(login_page.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
 }
-impl CreateBillingPortalConfiguration<'_> {
+impl CreateBillingPortalConfiguration {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -842,31 +872,31 @@ impl CreateBillingPortalConfiguration<'_> {
     }
 }
 
-impl StripeRequest for CreateBillingPortalConfiguration<'_> {
+impl StripeRequest for CreateBillingPortalConfiguration {
     type Output = stripe_billing::BillingPortalConfiguration;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/billing_portal/configurations").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateBillingPortalConfigurationBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateBillingPortalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    business_profile: Option<UpdateBillingPortalConfigurationBusinessProfile<'a>>,
+    business_profile: Option<UpdateBillingPortalConfigurationBusinessProfile>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_return_url: Option<&'a str>,
+    default_return_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    features: Option<UpdateBillingPortalConfigurationFeatures<'a>>,
+    features: Option<UpdateBillingPortalConfigurationFeatures>,
     #[serde(skip_serializing_if = "Option::is_none")]
     login_page: Option<UpdateBillingPortalConfigurationLoginPage>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
 }
-impl<'a> UpdateBillingPortalConfigurationBuilder<'a> {
+impl UpdateBillingPortalConfigurationBuilder {
     fn new() -> Self {
         Self {
             active: None,
@@ -880,34 +910,34 @@ impl<'a> UpdateBillingPortalConfigurationBuilder<'a> {
     }
 }
 /// The business information shown to customers in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateBillingPortalConfigurationBusinessProfile<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateBillingPortalConfigurationBusinessProfile {
     /// The messaging shown to customers in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub headline: Option<&'a str>,
+    pub headline: Option<String>,
     /// A link to the business’s publicly available privacy policy.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub privacy_policy_url: Option<&'a str>,
+    pub privacy_policy_url: Option<String>,
     /// A link to the business’s publicly available terms of service.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub terms_of_service_url: Option<&'a str>,
+    pub terms_of_service_url: Option<String>,
 }
-impl<'a> UpdateBillingPortalConfigurationBusinessProfile<'a> {
+impl UpdateBillingPortalConfigurationBusinessProfile {
     pub fn new() -> Self {
         Self { headline: None, privacy_policy_url: None, terms_of_service_url: None }
     }
 }
-impl<'a> Default for UpdateBillingPortalConfigurationBusinessProfile<'a> {
+impl Default for UpdateBillingPortalConfigurationBusinessProfile {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Information about the features available in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateBillingPortalConfigurationFeatures<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateBillingPortalConfigurationFeatures {
     /// Information about updating the customer details in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_update: Option<UpdateBillingPortalConfigurationFeaturesCustomerUpdate<'a>>,
+    pub customer_update: Option<UpdateBillingPortalConfigurationFeaturesCustomerUpdate>,
     /// Information about showing the billing history in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_history: Option<UpdateBillingPortalConfigurationFeaturesInvoiceHistory>,
@@ -916,12 +946,12 @@ pub struct UpdateBillingPortalConfigurationFeatures<'a> {
     pub payment_method_update: Option<UpdateBillingPortalConfigurationFeaturesPaymentMethodUpdate>,
     /// Information about canceling subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_cancel: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancel<'a>>,
+    pub subscription_cancel: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancel>,
     /// Information about updating subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_update: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a>>,
+    pub subscription_update: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate>,
 }
-impl<'a> UpdateBillingPortalConfigurationFeatures<'a> {
+impl UpdateBillingPortalConfigurationFeatures {
     pub fn new() -> Self {
         Self {
             customer_update: None,
@@ -932,28 +962,28 @@ impl<'a> UpdateBillingPortalConfigurationFeatures<'a> {
         }
     }
 }
-impl<'a> Default for UpdateBillingPortalConfigurationFeatures<'a> {
+impl Default for UpdateBillingPortalConfigurationFeatures {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Information about updating the customer details in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateBillingPortalConfigurationFeaturesCustomerUpdate<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateBillingPortalConfigurationFeaturesCustomerUpdate {
     /// The types of customer updates that are supported. When empty, customers are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_updates:
-        Option<&'a [UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates]>,
+        Option<Vec<UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates>>,
     /// Whether the feature is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 }
-impl<'a> UpdateBillingPortalConfigurationFeaturesCustomerUpdate<'a> {
+impl UpdateBillingPortalConfigurationFeaturesCustomerUpdate {
     pub fn new() -> Self {
         Self { allowed_updates: None, enabled: None }
     }
 }
-impl<'a> Default for UpdateBillingPortalConfigurationFeaturesCustomerUpdate<'a> {
+impl Default for UpdateBillingPortalConfigurationFeaturesCustomerUpdate {
     fn default() -> Self {
         Self::new()
     }
@@ -1033,8 +1063,8 @@ pub struct UpdateBillingPortalConfigurationFeaturesInvoiceHistory {
     pub enabled: bool,
 }
 impl UpdateBillingPortalConfigurationFeaturesInvoiceHistory {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into() }
     }
 }
 /// Information about updating payment methods in the portal.
@@ -1044,17 +1074,17 @@ pub struct UpdateBillingPortalConfigurationFeaturesPaymentMethodUpdate {
     pub enabled: bool,
 }
 impl UpdateBillingPortalConfigurationFeaturesPaymentMethodUpdate {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into() }
     }
 }
 /// Information about canceling subscriptions in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancel<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
     /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cancellation_reason:
-        Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a>>,
+        Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason>,
     /// Whether the feature is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -1068,30 +1098,30 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancel<'a> {
     pub proration_behavior:
         Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior>,
 }
-impl<'a> UpdateBillingPortalConfigurationFeaturesSubscriptionCancel<'a> {
+impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
     pub fn new() -> Self {
         Self { cancellation_reason: None, enabled: None, mode: None, proration_behavior: None }
     }
 }
-impl<'a> Default for UpdateBillingPortalConfigurationFeaturesSubscriptionCancel<'a> {
+impl Default for UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// Which cancellation reasons will be given as options to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<
-        &'a [UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions],
+        Vec<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions>,
     >,
 }
-impl<'a> UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a> {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, options: None }
+impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), options: None }
     }
 }
 /// Which cancellation reasons will be given as options to the customer.
@@ -1306,26 +1336,26 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about updating subscriptions in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_allowed_updates: Option<
-        &'a [UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates],
+        Vec<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates>,
     >,
     /// Whether the feature is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// The list of up to 10 products that support subscription updates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub products: Option<&'a [SubscriptionUpdateProductParam<'a>]>,
+    pub products: Option<Vec<SubscriptionUpdateProductParam>>,
     /// Determines how to handle prorations resulting from subscription updates.
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior:
         Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
 }
-impl<'a> UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a> {
+impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     pub fn new() -> Self {
         Self {
             default_allowed_updates: None,
@@ -1335,7 +1365,7 @@ impl<'a> UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a> {
         }
     }
 }
-impl<'a> Default for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a> {
+impl Default for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     fn default() -> Self {
         Self::new()
     }
@@ -1485,66 +1515,78 @@ pub struct UpdateBillingPortalConfigurationLoginPage {
     pub enabled: bool,
 }
 impl UpdateBillingPortalConfigurationLoginPage {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into() }
     }
 }
 /// Updates a configuration that describes the functionality of the customer portal.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateBillingPortalConfiguration<'a> {
-    inner: UpdateBillingPortalConfigurationBuilder<'a>,
-    configuration: &'a stripe_billing::BillingPortalConfigurationId,
+pub struct UpdateBillingPortalConfiguration {
+    inner: UpdateBillingPortalConfigurationBuilder,
+    configuration: stripe_billing::BillingPortalConfigurationId,
 }
-impl<'a> UpdateBillingPortalConfiguration<'a> {
+impl UpdateBillingPortalConfiguration {
     /// Construct a new `UpdateBillingPortalConfiguration`.
-    pub fn new(configuration: &'a stripe_billing::BillingPortalConfigurationId) -> Self {
-        Self { configuration, inner: UpdateBillingPortalConfigurationBuilder::new() }
+    pub fn new(configuration: impl Into<stripe_billing::BillingPortalConfigurationId>) -> Self {
+        Self {
+            configuration: configuration.into(),
+            inner: UpdateBillingPortalConfigurationBuilder::new(),
+        }
     }
     /// Whether the configuration is active and can be used to create portal sessions.
-    pub fn active(mut self, active: bool) -> Self {
-        self.inner.active = Some(active);
+    pub fn active(mut self, active: impl Into<bool>) -> Self {
+        self.inner.active = Some(active.into());
         self
     }
     /// The business information shown to customers in the portal.
     pub fn business_profile(
         mut self,
-        business_profile: UpdateBillingPortalConfigurationBusinessProfile<'a>,
+        business_profile: impl Into<UpdateBillingPortalConfigurationBusinessProfile>,
     ) -> Self {
-        self.inner.business_profile = Some(business_profile);
+        self.inner.business_profile = Some(business_profile.into());
         self
     }
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
     /// This can be [overriden](https://stripe.com/docs/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
-    pub fn default_return_url(mut self, default_return_url: &'a str) -> Self {
-        self.inner.default_return_url = Some(default_return_url);
+    pub fn default_return_url(mut self, default_return_url: impl Into<String>) -> Self {
+        self.inner.default_return_url = Some(default_return_url.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Information about the features available in the portal.
-    pub fn features(mut self, features: UpdateBillingPortalConfigurationFeatures<'a>) -> Self {
-        self.inner.features = Some(features);
+    pub fn features(
+        mut self,
+        features: impl Into<UpdateBillingPortalConfigurationFeatures>,
+    ) -> Self {
+        self.inner.features = Some(features.into());
         self
     }
     /// The hosted login page for this configuration.
     /// Learn more about the portal login page in our [integration docs](https://stripe.com/docs/billing/subscriptions/integrating-customer-portal#share).
-    pub fn login_page(mut self, login_page: UpdateBillingPortalConfigurationLoginPage) -> Self {
-        self.inner.login_page = Some(login_page);
+    pub fn login_page(
+        mut self,
+        login_page: impl Into<UpdateBillingPortalConfigurationLoginPage>,
+    ) -> Self {
+        self.inner.login_page = Some(login_page.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
 }
-impl UpdateBillingPortalConfiguration<'_> {
+impl UpdateBillingPortalConfiguration {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -1562,11 +1604,11 @@ impl UpdateBillingPortalConfiguration<'_> {
     }
 }
 
-impl StripeRequest for UpdateBillingPortalConfiguration<'_> {
+impl StripeRequest for UpdateBillingPortalConfiguration {
     type Output = stripe_billing::BillingPortalConfiguration;
 
     fn build(&self) -> RequestBuilder {
-        let configuration = self.configuration;
+        let configuration = &self.configuration;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/billing_portal/configurations/{configuration}"),
@@ -1575,15 +1617,15 @@ impl StripeRequest for UpdateBillingPortalConfiguration<'_> {
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct SubscriptionUpdateProductParam<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct SubscriptionUpdateProductParam {
     /// The list of price IDs for the product that a subscription can be updated to.
-    pub prices: &'a [&'a str],
+    pub prices: Vec<String>,
     /// The product id.
-    pub product: &'a str,
+    pub product: String,
 }
-impl<'a> SubscriptionUpdateProductParam<'a> {
-    pub fn new(prices: &'a [&'a str], product: &'a str) -> Self {
-        Self { prices, product }
+impl SubscriptionUpdateProductParam {
+    pub fn new(prices: impl Into<Vec<String>>, product: impl Into<String>) -> Self {
+        Self { prices: prices.into(), product: product.into() }
     }
 }

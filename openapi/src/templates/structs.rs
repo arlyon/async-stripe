@@ -62,7 +62,7 @@ impl<'a> ObjectWriter<'a> {
         let mut params = String::new();
         for field in fields.iter().filter(|f| f.required) {
             let printable = self.get_printable(&field.rust_type);
-            let typ = PrintableWithLifetime::new(&printable, self.lifetime);
+            let typ = PrintableWithLifetime::new(&printable, self.lifetime).impl_into();
             let _ = write!(params, "{}: {typ},", field.field_name);
         }
         params
@@ -76,7 +76,7 @@ impl<'a> ObjectWriter<'a> {
         for field in &struct_.fields {
             let f_name = &field.field_name;
             if field.required {
-                let _ = write!(cons_inner, "{f_name},");
+                let _ = write!(cons_inner, "{f_name}: {f_name}.into(),");
             } else {
                 // `Default::default()` would also work here, but nice to
                 // generate less code and maybe make things easier for the compiler since all

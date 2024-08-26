@@ -2,28 +2,28 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListTreasuryReceivedCreditBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListTreasuryReceivedCreditBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    financial_account: &'a str,
+    expand: Option<Vec<String>>,
+    financial_account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     linked_flows: Option<ListTreasuryReceivedCreditLinkedFlows>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_treasury::TreasuryReceivedCreditStatus>,
 }
-impl<'a> ListTreasuryReceivedCreditBuilder<'a> {
-    fn new(financial_account: &'a str) -> Self {
+impl ListTreasuryReceivedCreditBuilder {
+    fn new(financial_account: impl Into<String>) -> Self {
         Self {
             ending_before: None,
             expand: None,
-            financial_account,
+            financial_account: financial_account.into(),
             limit: None,
             linked_flows: None,
             starting_after: None,
@@ -38,8 +38,10 @@ pub struct ListTreasuryReceivedCreditLinkedFlows {
     pub source_flow_type: ListTreasuryReceivedCreditLinkedFlowsSourceFlowType,
 }
 impl ListTreasuryReceivedCreditLinkedFlows {
-    pub fn new(source_flow_type: ListTreasuryReceivedCreditLinkedFlowsSourceFlowType) -> Self {
-        Self { source_flow_type }
+    pub fn new(
+        source_flow_type: impl Into<ListTreasuryReceivedCreditLinkedFlowsSourceFlowType>,
+    ) -> Self {
+        Self { source_flow_type: source_flow_type.into() }
     }
 }
 /// The source flow type.
@@ -108,51 +110,57 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryReceivedCreditLinkedFlowsSourc
 }
 /// Returns a list of ReceivedCredits.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListTreasuryReceivedCredit<'a> {
-    inner: ListTreasuryReceivedCreditBuilder<'a>,
+pub struct ListTreasuryReceivedCredit {
+    inner: ListTreasuryReceivedCreditBuilder,
 }
-impl<'a> ListTreasuryReceivedCredit<'a> {
+impl ListTreasuryReceivedCredit {
     /// Construct a new `ListTreasuryReceivedCredit`.
-    pub fn new(financial_account: &'a str) -> Self {
-        Self { inner: ListTreasuryReceivedCreditBuilder::new(financial_account) }
+    pub fn new(financial_account: impl Into<String>) -> Self {
+        Self { inner: ListTreasuryReceivedCreditBuilder::new(financial_account.into()) }
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// Only return ReceivedCredits described by the flow.
-    pub fn linked_flows(mut self, linked_flows: ListTreasuryReceivedCreditLinkedFlows) -> Self {
-        self.inner.linked_flows = Some(linked_flows);
+    pub fn linked_flows(
+        mut self,
+        linked_flows: impl Into<ListTreasuryReceivedCreditLinkedFlows>,
+    ) -> Self {
+        self.inner.linked_flows = Some(linked_flows.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// Only return ReceivedCredits that have the given status: `succeeded` or `failed`.
-    pub fn status(mut self, status: stripe_treasury::TreasuryReceivedCreditStatus) -> Self {
-        self.inner.status = Some(status);
+    pub fn status(
+        mut self,
+        status: impl Into<stripe_treasury::TreasuryReceivedCreditStatus>,
+    ) -> Self {
+        self.inner.status = Some(status.into());
         self
     }
 }
-impl ListTreasuryReceivedCredit<'_> {
+impl ListTreasuryReceivedCredit {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -174,45 +182,45 @@ impl ListTreasuryReceivedCredit<'_> {
     ) -> stripe_client_core::ListPaginator<
         stripe_types::List<stripe_treasury::TreasuryReceivedCredit>,
     > {
-        stripe_client_core::ListPaginator::new_list("/treasury/received_credits", self.inner)
+        stripe_client_core::ListPaginator::new_list("/treasury/received_credits", &self.inner)
     }
 }
 
-impl StripeRequest for ListTreasuryReceivedCredit<'_> {
+impl StripeRequest for ListTreasuryReceivedCredit {
     type Output = stripe_types::List<stripe_treasury::TreasuryReceivedCredit>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/treasury/received_credits").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveTreasuryReceivedCreditBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveTreasuryReceivedCreditBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveTreasuryReceivedCreditBuilder<'a> {
+impl RetrieveTreasuryReceivedCreditBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves the details of an existing ReceivedCredit by passing the unique ReceivedCredit ID from the ReceivedCredit list.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveTreasuryReceivedCredit<'a> {
-    inner: RetrieveTreasuryReceivedCreditBuilder<'a>,
-    id: &'a stripe_treasury::TreasuryReceivedCreditId,
+pub struct RetrieveTreasuryReceivedCredit {
+    inner: RetrieveTreasuryReceivedCreditBuilder,
+    id: stripe_treasury::TreasuryReceivedCreditId,
 }
-impl<'a> RetrieveTreasuryReceivedCredit<'a> {
+impl RetrieveTreasuryReceivedCredit {
     /// Construct a new `RetrieveTreasuryReceivedCredit`.
-    pub fn new(id: &'a stripe_treasury::TreasuryReceivedCreditId) -> Self {
-        Self { id, inner: RetrieveTreasuryReceivedCreditBuilder::new() }
+    pub fn new(id: impl Into<stripe_treasury::TreasuryReceivedCreditId>) -> Self {
+        Self { id: id.into(), inner: RetrieveTreasuryReceivedCreditBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveTreasuryReceivedCredit<'_> {
+impl RetrieveTreasuryReceivedCredit {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -230,61 +238,63 @@ impl RetrieveTreasuryReceivedCredit<'_> {
     }
 }
 
-impl StripeRequest for RetrieveTreasuryReceivedCredit<'_> {
+impl StripeRequest for RetrieveTreasuryReceivedCredit {
     type Output = stripe_treasury::TreasuryReceivedCredit;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Get, format!("/treasury/received_credits/{id}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateTreasuryReceivedCreditBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateTreasuryReceivedCreditBuilder {
     amount: i64,
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    financial_account: &'a str,
+    expand: Option<Vec<String>>,
+    financial_account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     initiating_payment_method_details:
-        Option<CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails<'a>>,
+        Option<CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails>,
     network: CreateTreasuryReceivedCreditNetwork,
 }
-impl<'a> CreateTreasuryReceivedCreditBuilder<'a> {
+impl CreateTreasuryReceivedCreditBuilder {
     fn new(
-        amount: i64,
-        currency: stripe_types::Currency,
-        financial_account: &'a str,
-        network: CreateTreasuryReceivedCreditNetwork,
+        amount: impl Into<i64>,
+        currency: impl Into<stripe_types::Currency>,
+        financial_account: impl Into<String>,
+        network: impl Into<CreateTreasuryReceivedCreditNetwork>,
     ) -> Self {
         Self {
-            amount,
-            currency,
+            amount: amount.into(),
+            currency: currency.into(),
             description: None,
             expand: None,
-            financial_account,
+            financial_account: financial_account.into(),
             initiating_payment_method_details: None,
-            network,
+            network: network.into(),
         }
     }
 }
 /// Initiating payment method details for the object.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails {
     /// The source type.
     #[serde(rename = "type")]
     pub type_: CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType,
     /// Optional fields for `us_bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account:
-        Option<CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount<'a>>,
+        Option<CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount>,
 }
-impl<'a> CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails<'a> {
-    pub fn new(type_: CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType) -> Self {
-        Self { type_, us_bank_account: None }
+impl CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails {
+    pub fn new(
+        type_: impl Into<CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType>,
+    ) -> Self {
+        Self { type_: type_.into(), us_bank_account: None }
     }
 }
 /// The source type.
@@ -345,24 +355,24 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Optional fields for `us_bank_account`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount {
     /// The bank account holder's name.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_name: Option<&'a str>,
+    pub account_holder_name: Option<String>,
     /// The bank account number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_number: Option<&'a str>,
+    pub account_number: Option<String>,
     /// The bank account's routing number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub routing_number: Option<&'a str>,
+    pub routing_number: Option<String>,
 }
-impl<'a> CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount<'a> {
+impl CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount {
     pub fn new() -> Self {
         Self { account_holder_name: None, account_number: None, routing_number: None }
     }
 }
-impl<'a> Default for CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount<'a> {
+impl Default for CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount {
     fn default() -> Self {
         Self::new()
     }
@@ -428,46 +438,49 @@ impl<'de> serde::Deserialize<'de> for CreateTreasuryReceivedCreditNetwork {
 /// Use this endpoint to simulate a test mode ReceivedCredit initiated by a third party.
 /// In live mode, you can’t directly create ReceivedCredits initiated by third parties.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateTreasuryReceivedCredit<'a> {
-    inner: CreateTreasuryReceivedCreditBuilder<'a>,
+pub struct CreateTreasuryReceivedCredit {
+    inner: CreateTreasuryReceivedCreditBuilder,
 }
-impl<'a> CreateTreasuryReceivedCredit<'a> {
+impl CreateTreasuryReceivedCredit {
     /// Construct a new `CreateTreasuryReceivedCredit`.
     pub fn new(
-        amount: i64,
-        currency: stripe_types::Currency,
-        financial_account: &'a str,
-        network: CreateTreasuryReceivedCreditNetwork,
+        amount: impl Into<i64>,
+        currency: impl Into<stripe_types::Currency>,
+        financial_account: impl Into<String>,
+        network: impl Into<CreateTreasuryReceivedCreditNetwork>,
     ) -> Self {
         Self {
             inner: CreateTreasuryReceivedCreditBuilder::new(
-                amount,
-                currency,
-                financial_account,
-                network,
+                amount.into(),
+                currency.into(),
+                financial_account.into(),
+                network.into(),
             ),
         }
     }
     /// An arbitrary string attached to the object. Often useful for displaying to users.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.inner.description = Some(description);
+    pub fn description(mut self, description: impl Into<String>) -> Self {
+        self.inner.description = Some(description.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Initiating payment method details for the object.
     pub fn initiating_payment_method_details(
         mut self,
-        initiating_payment_method_details: CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails<'a>,
+        initiating_payment_method_details: impl Into<
+            CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails,
+        >,
     ) -> Self {
-        self.inner.initiating_payment_method_details = Some(initiating_payment_method_details);
+        self.inner.initiating_payment_method_details =
+            Some(initiating_payment_method_details.into());
         self
     }
 }
-impl CreateTreasuryReceivedCredit<'_> {
+impl CreateTreasuryReceivedCredit {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -485,7 +498,7 @@ impl CreateTreasuryReceivedCredit<'_> {
     }
 }
 
-impl StripeRequest for CreateTreasuryReceivedCredit<'_> {
+impl StripeRequest for CreateTreasuryReceivedCredit {
     type Output = stripe_treasury::TreasuryReceivedCredit;
 
     fn build(&self) -> RequestBuilder {

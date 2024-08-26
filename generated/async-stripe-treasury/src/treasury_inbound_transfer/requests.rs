@@ -2,26 +2,26 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListTreasuryInboundTransferBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    financial_account: &'a str,
+    expand: Option<Vec<String>>,
+    financial_account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_treasury::TreasuryInboundTransferStatus>,
 }
-impl<'a> ListTreasuryInboundTransferBuilder<'a> {
-    fn new(financial_account: &'a str) -> Self {
+impl ListTreasuryInboundTransferBuilder {
+    fn new(financial_account: impl Into<String>) -> Self {
         Self {
             ending_before: None,
             expand: None,
-            financial_account,
+            financial_account: financial_account.into(),
             limit: None,
             starting_after: None,
             status: None,
@@ -30,46 +30,49 @@ impl<'a> ListTreasuryInboundTransferBuilder<'a> {
 }
 /// Returns a list of InboundTransfers sent from the specified FinancialAccount.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListTreasuryInboundTransfer<'a> {
-    inner: ListTreasuryInboundTransferBuilder<'a>,
+pub struct ListTreasuryInboundTransfer {
+    inner: ListTreasuryInboundTransferBuilder,
 }
-impl<'a> ListTreasuryInboundTransfer<'a> {
+impl ListTreasuryInboundTransfer {
     /// Construct a new `ListTreasuryInboundTransfer`.
-    pub fn new(financial_account: &'a str) -> Self {
-        Self { inner: ListTreasuryInboundTransferBuilder::new(financial_account) }
+    pub fn new(financial_account: impl Into<String>) -> Self {
+        Self { inner: ListTreasuryInboundTransferBuilder::new(financial_account.into()) }
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// Only return InboundTransfers that have the given status: `processing`, `succeeded`, `failed` or `canceled`.
-    pub fn status(mut self, status: stripe_treasury::TreasuryInboundTransferStatus) -> Self {
-        self.inner.status = Some(status);
+    pub fn status(
+        mut self,
+        status: impl Into<stripe_treasury::TreasuryInboundTransferStatus>,
+    ) -> Self {
+        self.inner.status = Some(status.into());
         self
     }
 }
-impl ListTreasuryInboundTransfer<'_> {
+impl ListTreasuryInboundTransfer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -91,45 +94,45 @@ impl ListTreasuryInboundTransfer<'_> {
     ) -> stripe_client_core::ListPaginator<
         stripe_types::List<stripe_treasury::TreasuryInboundTransfer>,
     > {
-        stripe_client_core::ListPaginator::new_list("/treasury/inbound_transfers", self.inner)
+        stripe_client_core::ListPaginator::new_list("/treasury/inbound_transfers", &self.inner)
     }
 }
 
-impl StripeRequest for ListTreasuryInboundTransfer<'_> {
+impl StripeRequest for ListTreasuryInboundTransfer {
     type Output = stripe_types::List<stripe_treasury::TreasuryInboundTransfer>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/treasury/inbound_transfers").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveTreasuryInboundTransferBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveTreasuryInboundTransferBuilder<'a> {
+impl RetrieveTreasuryInboundTransferBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves the details of an existing InboundTransfer.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveTreasuryInboundTransfer<'a> {
-    inner: RetrieveTreasuryInboundTransferBuilder<'a>,
-    id: &'a stripe_treasury::TreasuryInboundTransferId,
+pub struct RetrieveTreasuryInboundTransfer {
+    inner: RetrieveTreasuryInboundTransferBuilder,
+    id: stripe_treasury::TreasuryInboundTransferId,
 }
-impl<'a> RetrieveTreasuryInboundTransfer<'a> {
+impl RetrieveTreasuryInboundTransfer {
     /// Construct a new `RetrieveTreasuryInboundTransfer`.
-    pub fn new(id: &'a stripe_treasury::TreasuryInboundTransferId) -> Self {
-        Self { id, inner: RetrieveTreasuryInboundTransferBuilder::new() }
+    pub fn new(id: impl Into<stripe_treasury::TreasuryInboundTransferId>) -> Self {
+        Self { id: id.into(), inner: RetrieveTreasuryInboundTransferBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveTreasuryInboundTransfer<'_> {
+impl RetrieveTreasuryInboundTransfer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -147,23 +150,23 @@ impl RetrieveTreasuryInboundTransfer<'_> {
     }
 }
 
-impl StripeRequest for RetrieveTreasuryInboundTransfer<'_> {
+impl StripeRequest for RetrieveTreasuryInboundTransfer {
     type Output = stripe_treasury::TreasuryInboundTransfer;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Get, format!("/treasury/inbound_transfers/{id}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct FailTreasuryInboundTransferBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct FailTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     failure_details: Option<FailTreasuryInboundTransferFailureDetails>,
 }
-impl<'a> FailTreasuryInboundTransferBuilder<'a> {
+impl FailTreasuryInboundTransferBuilder {
     fn new() -> Self {
         Self { expand: None, failure_details: None }
     }
@@ -279,30 +282,30 @@ impl<'de> serde::Deserialize<'de> for FailTreasuryInboundTransferFailureDetailsC
 /// Transitions a test mode created InboundTransfer to the `failed` status.
 /// The InboundTransfer must already be in the `processing` state.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct FailTreasuryInboundTransfer<'a> {
-    inner: FailTreasuryInboundTransferBuilder<'a>,
-    id: &'a str,
+pub struct FailTreasuryInboundTransfer {
+    inner: FailTreasuryInboundTransferBuilder,
+    id: String,
 }
-impl<'a> FailTreasuryInboundTransfer<'a> {
+impl FailTreasuryInboundTransfer {
     /// Construct a new `FailTreasuryInboundTransfer`.
-    pub fn new(id: &'a str) -> Self {
-        Self { id, inner: FailTreasuryInboundTransferBuilder::new() }
+    pub fn new(id: impl Into<String>) -> Self {
+        Self { id: id.into(), inner: FailTreasuryInboundTransferBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Details about a failed InboundTransfer.
     pub fn failure_details(
         mut self,
-        failure_details: FailTreasuryInboundTransferFailureDetails,
+        failure_details: impl Into<FailTreasuryInboundTransferFailureDetails>,
     ) -> Self {
-        self.inner.failure_details = Some(failure_details);
+        self.inner.failure_details = Some(failure_details.into());
         self
     }
 }
-impl FailTreasuryInboundTransfer<'_> {
+impl FailTreasuryInboundTransfer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -320,11 +323,11 @@ impl FailTreasuryInboundTransfer<'_> {
     }
 }
 
-impl StripeRequest for FailTreasuryInboundTransfer<'_> {
+impl StripeRequest for FailTreasuryInboundTransfer {
     type Output = stripe_treasury::TreasuryInboundTransfer;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/test_helpers/treasury/inbound_transfers/{id}/fail"),
@@ -332,12 +335,12 @@ impl StripeRequest for FailTreasuryInboundTransfer<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ReturnInboundTransferTreasuryInboundTransferBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ReturnInboundTransferTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> ReturnInboundTransferTreasuryInboundTransferBuilder<'a> {
+impl ReturnInboundTransferTreasuryInboundTransferBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
@@ -345,22 +348,22 @@ impl<'a> ReturnInboundTransferTreasuryInboundTransferBuilder<'a> {
 /// Marks the test mode InboundTransfer object as returned and links the InboundTransfer to a ReceivedDebit.
 /// The InboundTransfer must already be in the `succeeded` state.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ReturnInboundTransferTreasuryInboundTransfer<'a> {
-    inner: ReturnInboundTransferTreasuryInboundTransferBuilder<'a>,
-    id: &'a str,
+pub struct ReturnInboundTransferTreasuryInboundTransfer {
+    inner: ReturnInboundTransferTreasuryInboundTransferBuilder,
+    id: String,
 }
-impl<'a> ReturnInboundTransferTreasuryInboundTransfer<'a> {
+impl ReturnInboundTransferTreasuryInboundTransfer {
     /// Construct a new `ReturnInboundTransferTreasuryInboundTransfer`.
-    pub fn new(id: &'a str) -> Self {
-        Self { id, inner: ReturnInboundTransferTreasuryInboundTransferBuilder::new() }
+    pub fn new(id: impl Into<String>) -> Self {
+        Self { id: id.into(), inner: ReturnInboundTransferTreasuryInboundTransferBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl ReturnInboundTransferTreasuryInboundTransfer<'_> {
+impl ReturnInboundTransferTreasuryInboundTransfer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -378,11 +381,11 @@ impl ReturnInboundTransferTreasuryInboundTransfer<'_> {
     }
 }
 
-impl StripeRequest for ReturnInboundTransferTreasuryInboundTransfer<'_> {
+impl StripeRequest for ReturnInboundTransferTreasuryInboundTransfer {
     type Output = stripe_treasury::TreasuryInboundTransfer;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/test_helpers/treasury/inbound_transfers/{id}/return"),
@@ -390,12 +393,12 @@ impl StripeRequest for ReturnInboundTransferTreasuryInboundTransfer<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct SucceedTreasuryInboundTransferBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct SucceedTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> SucceedTreasuryInboundTransferBuilder<'a> {
+impl SucceedTreasuryInboundTransferBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
@@ -403,22 +406,22 @@ impl<'a> SucceedTreasuryInboundTransferBuilder<'a> {
 /// Transitions a test mode created InboundTransfer to the `succeeded` status.
 /// The InboundTransfer must already be in the `processing` state.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct SucceedTreasuryInboundTransfer<'a> {
-    inner: SucceedTreasuryInboundTransferBuilder<'a>,
-    id: &'a str,
+pub struct SucceedTreasuryInboundTransfer {
+    inner: SucceedTreasuryInboundTransferBuilder,
+    id: String,
 }
-impl<'a> SucceedTreasuryInboundTransfer<'a> {
+impl SucceedTreasuryInboundTransfer {
     /// Construct a new `SucceedTreasuryInboundTransfer`.
-    pub fn new(id: &'a str) -> Self {
-        Self { id, inner: SucceedTreasuryInboundTransferBuilder::new() }
+    pub fn new(id: impl Into<String>) -> Self {
+        Self { id: id.into(), inner: SucceedTreasuryInboundTransferBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl SucceedTreasuryInboundTransfer<'_> {
+impl SucceedTreasuryInboundTransfer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -436,11 +439,11 @@ impl SucceedTreasuryInboundTransfer<'_> {
     }
 }
 
-impl StripeRequest for SucceedTreasuryInboundTransfer<'_> {
+impl StripeRequest for SucceedTreasuryInboundTransfer {
     type Output = stripe_treasury::TreasuryInboundTransfer;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/test_helpers/treasury/inbound_transfers/{id}/succeed"),
@@ -448,87 +451,90 @@ impl StripeRequest for SucceedTreasuryInboundTransfer<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateTreasuryInboundTransferBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateTreasuryInboundTransferBuilder {
     amount: i64,
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    financial_account: &'a str,
+    expand: Option<Vec<String>>,
+    financial_account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
-    origin_payment_method: &'a str,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    origin_payment_method: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    statement_descriptor: Option<&'a str>,
+    statement_descriptor: Option<String>,
 }
-impl<'a> CreateTreasuryInboundTransferBuilder<'a> {
+impl CreateTreasuryInboundTransferBuilder {
     fn new(
-        amount: i64,
-        currency: stripe_types::Currency,
-        financial_account: &'a str,
-        origin_payment_method: &'a str,
+        amount: impl Into<i64>,
+        currency: impl Into<stripe_types::Currency>,
+        financial_account: impl Into<String>,
+        origin_payment_method: impl Into<String>,
     ) -> Self {
         Self {
-            amount,
-            currency,
+            amount: amount.into(),
+            currency: currency.into(),
             description: None,
             expand: None,
-            financial_account,
+            financial_account: financial_account.into(),
             metadata: None,
-            origin_payment_method,
+            origin_payment_method: origin_payment_method.into(),
             statement_descriptor: None,
         }
     }
 }
 /// Creates an InboundTransfer.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateTreasuryInboundTransfer<'a> {
-    inner: CreateTreasuryInboundTransferBuilder<'a>,
+pub struct CreateTreasuryInboundTransfer {
+    inner: CreateTreasuryInboundTransferBuilder,
 }
-impl<'a> CreateTreasuryInboundTransfer<'a> {
+impl CreateTreasuryInboundTransfer {
     /// Construct a new `CreateTreasuryInboundTransfer`.
     pub fn new(
-        amount: i64,
-        currency: stripe_types::Currency,
-        financial_account: &'a str,
-        origin_payment_method: &'a str,
+        amount: impl Into<i64>,
+        currency: impl Into<stripe_types::Currency>,
+        financial_account: impl Into<String>,
+        origin_payment_method: impl Into<String>,
     ) -> Self {
         Self {
             inner: CreateTreasuryInboundTransferBuilder::new(
-                amount,
-                currency,
-                financial_account,
-                origin_payment_method,
+                amount.into(),
+                currency.into(),
+                financial_account.into(),
+                origin_payment_method.into(),
             ),
         }
     }
     /// An arbitrary string attached to the object. Often useful for displaying to users.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.inner.description = Some(description);
+    pub fn description(mut self, description: impl Into<String>) -> Self {
+        self.inner.description = Some(description.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// The complete description that appears on your customers' statements. Maximum 10 characters.
-    pub fn statement_descriptor(mut self, statement_descriptor: &'a str) -> Self {
-        self.inner.statement_descriptor = Some(statement_descriptor);
+    pub fn statement_descriptor(mut self, statement_descriptor: impl Into<String>) -> Self {
+        self.inner.statement_descriptor = Some(statement_descriptor.into());
         self
     }
 }
-impl CreateTreasuryInboundTransfer<'_> {
+impl CreateTreasuryInboundTransfer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -546,41 +552,44 @@ impl CreateTreasuryInboundTransfer<'_> {
     }
 }
 
-impl StripeRequest for CreateTreasuryInboundTransfer<'_> {
+impl StripeRequest for CreateTreasuryInboundTransfer {
     type Output = stripe_treasury::TreasuryInboundTransfer;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/treasury/inbound_transfers").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CancelTreasuryInboundTransferBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CancelTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> CancelTreasuryInboundTransferBuilder<'a> {
+impl CancelTreasuryInboundTransferBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Cancels an InboundTransfer.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CancelTreasuryInboundTransfer<'a> {
-    inner: CancelTreasuryInboundTransferBuilder<'a>,
-    inbound_transfer: &'a stripe_treasury::TreasuryInboundTransferId,
+pub struct CancelTreasuryInboundTransfer {
+    inner: CancelTreasuryInboundTransferBuilder,
+    inbound_transfer: stripe_treasury::TreasuryInboundTransferId,
 }
-impl<'a> CancelTreasuryInboundTransfer<'a> {
+impl CancelTreasuryInboundTransfer {
     /// Construct a new `CancelTreasuryInboundTransfer`.
-    pub fn new(inbound_transfer: &'a stripe_treasury::TreasuryInboundTransferId) -> Self {
-        Self { inbound_transfer, inner: CancelTreasuryInboundTransferBuilder::new() }
+    pub fn new(inbound_transfer: impl Into<stripe_treasury::TreasuryInboundTransferId>) -> Self {
+        Self {
+            inbound_transfer: inbound_transfer.into(),
+            inner: CancelTreasuryInboundTransferBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl CancelTreasuryInboundTransfer<'_> {
+impl CancelTreasuryInboundTransfer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -598,11 +607,11 @@ impl CancelTreasuryInboundTransfer<'_> {
     }
 }
 
-impl StripeRequest for CancelTreasuryInboundTransfer<'_> {
+impl StripeRequest for CancelTreasuryInboundTransfer {
     type Output = stripe_treasury::TreasuryInboundTransfer;
 
     fn build(&self) -> RequestBuilder {
-        let inbound_transfer = self.inbound_transfer;
+        let inbound_transfer = &self.inbound_transfer;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/treasury/inbound_transfers/{inbound_transfer}/cancel"),

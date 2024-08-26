@@ -2,30 +2,30 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListBillingMeterBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_billing::BillingMeterStatus>,
 }
-impl<'a> ListBillingMeterBuilder<'a> {
+impl ListBillingMeterBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None, status: None }
     }
 }
 /// Retrieve a list of billing meters.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListBillingMeter<'a> {
-    inner: ListBillingMeterBuilder<'a>,
+pub struct ListBillingMeter {
+    inner: ListBillingMeterBuilder,
 }
-impl<'a> ListBillingMeter<'a> {
+impl ListBillingMeter {
     /// Construct a new `ListBillingMeter`.
     pub fn new() -> Self {
         Self { inner: ListBillingMeterBuilder::new() }
@@ -33,40 +33,40 @@ impl<'a> ListBillingMeter<'a> {
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// Filter results to only include meters with the given status.
-    pub fn status(mut self, status: stripe_billing::BillingMeterStatus) -> Self {
-        self.inner.status = Some(status);
+    pub fn status(mut self, status: impl Into<stripe_billing::BillingMeterStatus>) -> Self {
+        self.inner.status = Some(status.into());
         self
     }
 }
-impl<'a> Default for ListBillingMeter<'a> {
+impl Default for ListBillingMeter {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListBillingMeter<'_> {
+impl ListBillingMeter {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -86,45 +86,45 @@ impl ListBillingMeter<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_billing::BillingMeter>> {
-        stripe_client_core::ListPaginator::new_list("/billing/meters", self.inner)
+        stripe_client_core::ListPaginator::new_list("/billing/meters", &self.inner)
     }
 }
 
-impl StripeRequest for ListBillingMeter<'_> {
+impl StripeRequest for ListBillingMeter {
     type Output = stripe_types::List<stripe_billing::BillingMeter>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/billing/meters").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveBillingMeterBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveBillingMeterBuilder<'a> {
+impl RetrieveBillingMeterBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves a billing meter given an ID
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveBillingMeter<'a> {
-    inner: RetrieveBillingMeterBuilder<'a>,
-    id: &'a stripe_billing::BillingMeterId,
+pub struct RetrieveBillingMeter {
+    inner: RetrieveBillingMeterBuilder,
+    id: stripe_billing::BillingMeterId,
 }
-impl<'a> RetrieveBillingMeter<'a> {
+impl RetrieveBillingMeter {
     /// Construct a new `RetrieveBillingMeter`.
-    pub fn new(id: &'a stripe_billing::BillingMeterId) -> Self {
-        Self { id, inner: RetrieveBillingMeterBuilder::new() }
+    pub fn new(id: impl Into<stripe_billing::BillingMeterId>) -> Self {
+        Self { id: id.into(), inner: RetrieveBillingMeterBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveBillingMeter<'_> {
+impl RetrieveBillingMeter {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -142,39 +142,39 @@ impl RetrieveBillingMeter<'_> {
     }
 }
 
-impl StripeRequest for RetrieveBillingMeter<'_> {
+impl StripeRequest for RetrieveBillingMeter {
     type Output = stripe_billing::BillingMeter;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Get, format!("/billing/meters/{id}")).query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateBillingMeterBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer_mapping: Option<CreateBillingMeterCustomerMapping<'a>>,
+    customer_mapping: Option<CreateBillingMeterCustomerMapping>,
     default_aggregation: CreateBillingMeterDefaultAggregation,
-    display_name: &'a str,
-    event_name: &'a str,
+    display_name: String,
+    event_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     event_time_window: Option<stripe_billing::BillingMeterEventTimeWindow>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    value_settings: Option<CreateBillingMeterValueSettings<'a>>,
+    value_settings: Option<CreateBillingMeterValueSettings>,
 }
-impl<'a> CreateBillingMeterBuilder<'a> {
+impl CreateBillingMeterBuilder {
     fn new(
-        default_aggregation: CreateBillingMeterDefaultAggregation,
-        display_name: &'a str,
-        event_name: &'a str,
+        default_aggregation: impl Into<CreateBillingMeterDefaultAggregation>,
+        display_name: impl Into<String>,
+        event_name: impl Into<String>,
     ) -> Self {
         Self {
             customer_mapping: None,
-            default_aggregation,
-            display_name,
-            event_name,
+            default_aggregation: default_aggregation.into(),
+            display_name: display_name.into(),
+            event_name: event_name.into(),
             event_time_window: None,
             expand: None,
             value_settings: None,
@@ -182,17 +182,20 @@ impl<'a> CreateBillingMeterBuilder<'a> {
     }
 }
 /// Fields that specify how to map a meter event to a customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateBillingMeterCustomerMapping<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateBillingMeterCustomerMapping {
     /// The key in the usage event payload to use for mapping the event to a customer.
-    pub event_payload_key: &'a str,
+    pub event_payload_key: String,
     /// The method for mapping a meter event to a customer. Must be `by_id`.
     #[serde(rename = "type")]
     pub type_: CreateBillingMeterCustomerMappingType,
 }
-impl<'a> CreateBillingMeterCustomerMapping<'a> {
-    pub fn new(event_payload_key: &'a str, type_: CreateBillingMeterCustomerMappingType) -> Self {
-        Self { event_payload_key, type_ }
+impl CreateBillingMeterCustomerMapping {
+    pub fn new(
+        event_payload_key: impl Into<String>,
+        type_: impl Into<CreateBillingMeterCustomerMappingType>,
+    ) -> Self {
+        Self { event_payload_key: event_payload_key.into(), type_: type_.into() }
     }
 }
 /// The method for mapping a meter event to a customer. Must be `by_id`.
@@ -256,8 +259,8 @@ pub struct CreateBillingMeterDefaultAggregation {
     pub formula: CreateBillingMeterDefaultAggregationFormula,
 }
 impl CreateBillingMeterDefaultAggregation {
-    pub fn new(formula: CreateBillingMeterDefaultAggregationFormula) -> Self {
-        Self { formula }
+    pub fn new(formula: impl Into<CreateBillingMeterDefaultAggregationFormula>) -> Self {
+        Self { formula: formula.into() }
     }
 }
 /// Specifies how events are aggregated.
@@ -320,61 +323,68 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterDefaultAggregationFormul
     }
 }
 /// Fields that specify how to calculate a meter event's value.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateBillingMeterValueSettings<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateBillingMeterValueSettings {
     /// The key in the usage event payload to use as the value for this meter.
     /// For example, if the event payload contains usage on a `bytes_used` field, then set the event_payload_key to "bytes_used".
-    pub event_payload_key: &'a str,
+    pub event_payload_key: String,
 }
-impl<'a> CreateBillingMeterValueSettings<'a> {
-    pub fn new(event_payload_key: &'a str) -> Self {
-        Self { event_payload_key }
+impl CreateBillingMeterValueSettings {
+    pub fn new(event_payload_key: impl Into<String>) -> Self {
+        Self { event_payload_key: event_payload_key.into() }
     }
 }
 /// Creates a billing meter
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateBillingMeter<'a> {
-    inner: CreateBillingMeterBuilder<'a>,
+pub struct CreateBillingMeter {
+    inner: CreateBillingMeterBuilder,
 }
-impl<'a> CreateBillingMeter<'a> {
+impl CreateBillingMeter {
     /// Construct a new `CreateBillingMeter`.
     pub fn new(
-        default_aggregation: CreateBillingMeterDefaultAggregation,
-        display_name: &'a str,
-        event_name: &'a str,
+        default_aggregation: impl Into<CreateBillingMeterDefaultAggregation>,
+        display_name: impl Into<String>,
+        event_name: impl Into<String>,
     ) -> Self {
         Self {
-            inner: CreateBillingMeterBuilder::new(default_aggregation, display_name, event_name),
+            inner: CreateBillingMeterBuilder::new(
+                default_aggregation.into(),
+                display_name.into(),
+                event_name.into(),
+            ),
         }
     }
     /// Fields that specify how to map a meter event to a customer.
     pub fn customer_mapping(
         mut self,
-        customer_mapping: CreateBillingMeterCustomerMapping<'a>,
+        customer_mapping: impl Into<CreateBillingMeterCustomerMapping>,
     ) -> Self {
-        self.inner.customer_mapping = Some(customer_mapping);
+        self.inner.customer_mapping = Some(customer_mapping.into());
         self
     }
     /// The time window to pre-aggregate meter events for, if any.
     pub fn event_time_window(
         mut self,
-        event_time_window: stripe_billing::BillingMeterEventTimeWindow,
+        event_time_window: impl Into<stripe_billing::BillingMeterEventTimeWindow>,
     ) -> Self {
-        self.inner.event_time_window = Some(event_time_window);
+        self.inner.event_time_window = Some(event_time_window.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Fields that specify how to calculate a meter event's value.
-    pub fn value_settings(mut self, value_settings: CreateBillingMeterValueSettings<'a>) -> Self {
-        self.inner.value_settings = Some(value_settings);
+    pub fn value_settings(
+        mut self,
+        value_settings: impl Into<CreateBillingMeterValueSettings>,
+    ) -> Self {
+        self.inner.value_settings = Some(value_settings.into());
         self
     }
 }
-impl CreateBillingMeter<'_> {
+impl CreateBillingMeter {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -392,48 +402,48 @@ impl CreateBillingMeter<'_> {
     }
 }
 
-impl StripeRequest for CreateBillingMeter<'_> {
+impl StripeRequest for CreateBillingMeter {
     type Output = stripe_billing::BillingMeter;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/billing/meters").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateBillingMeterBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    display_name: Option<&'a str>,
+    display_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> UpdateBillingMeterBuilder<'a> {
+impl UpdateBillingMeterBuilder {
     fn new() -> Self {
         Self { display_name: None, expand: None }
     }
 }
 /// Updates a billing meter
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateBillingMeter<'a> {
-    inner: UpdateBillingMeterBuilder<'a>,
-    id: &'a stripe_billing::BillingMeterId,
+pub struct UpdateBillingMeter {
+    inner: UpdateBillingMeterBuilder,
+    id: stripe_billing::BillingMeterId,
 }
-impl<'a> UpdateBillingMeter<'a> {
+impl UpdateBillingMeter {
     /// Construct a new `UpdateBillingMeter`.
-    pub fn new(id: &'a stripe_billing::BillingMeterId) -> Self {
-        Self { id, inner: UpdateBillingMeterBuilder::new() }
+    pub fn new(id: impl Into<stripe_billing::BillingMeterId>) -> Self {
+        Self { id: id.into(), inner: UpdateBillingMeterBuilder::new() }
     }
     /// The meter's name.
-    pub fn display_name(mut self, display_name: &'a str) -> Self {
-        self.inner.display_name = Some(display_name);
+    pub fn display_name(mut self, display_name: impl Into<String>) -> Self {
+        self.inner.display_name = Some(display_name.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl UpdateBillingMeter<'_> {
+impl UpdateBillingMeter {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -451,42 +461,42 @@ impl UpdateBillingMeter<'_> {
     }
 }
 
-impl StripeRequest for UpdateBillingMeter<'_> {
+impl StripeRequest for UpdateBillingMeter {
     type Output = stripe_billing::BillingMeter;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Post, format!("/billing/meters/{id}")).form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct DeactivateBillingMeterBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct DeactivateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> DeactivateBillingMeterBuilder<'a> {
+impl DeactivateBillingMeterBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Deactivates a billing meter
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeactivateBillingMeter<'a> {
-    inner: DeactivateBillingMeterBuilder<'a>,
-    id: &'a stripe_billing::BillingMeterId,
+pub struct DeactivateBillingMeter {
+    inner: DeactivateBillingMeterBuilder,
+    id: stripe_billing::BillingMeterId,
 }
-impl<'a> DeactivateBillingMeter<'a> {
+impl DeactivateBillingMeter {
     /// Construct a new `DeactivateBillingMeter`.
-    pub fn new(id: &'a stripe_billing::BillingMeterId) -> Self {
-        Self { id, inner: DeactivateBillingMeterBuilder::new() }
+    pub fn new(id: impl Into<stripe_billing::BillingMeterId>) -> Self {
+        Self { id: id.into(), inner: DeactivateBillingMeterBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl DeactivateBillingMeter<'_> {
+impl DeactivateBillingMeter {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -504,43 +514,43 @@ impl DeactivateBillingMeter<'_> {
     }
 }
 
-impl StripeRequest for DeactivateBillingMeter<'_> {
+impl StripeRequest for DeactivateBillingMeter {
     type Output = stripe_billing::BillingMeter;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Post, format!("/billing/meters/{id}/deactivate"))
             .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ReactivateBillingMeterBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ReactivateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> ReactivateBillingMeterBuilder<'a> {
+impl ReactivateBillingMeterBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Reactivates a billing meter
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ReactivateBillingMeter<'a> {
-    inner: ReactivateBillingMeterBuilder<'a>,
-    id: &'a stripe_billing::BillingMeterId,
+pub struct ReactivateBillingMeter {
+    inner: ReactivateBillingMeterBuilder,
+    id: stripe_billing::BillingMeterId,
 }
-impl<'a> ReactivateBillingMeter<'a> {
+impl ReactivateBillingMeter {
     /// Construct a new `ReactivateBillingMeter`.
-    pub fn new(id: &'a stripe_billing::BillingMeterId) -> Self {
-        Self { id, inner: ReactivateBillingMeterBuilder::new() }
+    pub fn new(id: impl Into<stripe_billing::BillingMeterId>) -> Self {
+        Self { id: id.into(), inner: ReactivateBillingMeterBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl ReactivateBillingMeter<'_> {
+impl ReactivateBillingMeter {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -558,11 +568,11 @@ impl ReactivateBillingMeter<'_> {
     }
 }
 
-impl StripeRequest for ReactivateBillingMeter<'_> {
+impl StripeRequest for ReactivateBillingMeter {
     type Output = stripe_billing::BillingMeter;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Post, format!("/billing/meters/{id}/reactivate"))
             .form(&self.inner)
     }

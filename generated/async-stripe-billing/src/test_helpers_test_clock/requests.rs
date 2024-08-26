@@ -4,16 +4,16 @@ use stripe_client_core::{
 
 /// Deletes a test clock.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeleteTestHelpersTestClock<'a> {
-    test_clock: &'a stripe_shared::TestHelpersTestClockId,
+pub struct DeleteTestHelpersTestClock {
+    test_clock: stripe_shared::TestHelpersTestClockId,
 }
-impl<'a> DeleteTestHelpersTestClock<'a> {
+impl DeleteTestHelpersTestClock {
     /// Construct a new `DeleteTestHelpersTestClock`.
-    pub fn new(test_clock: &'a stripe_shared::TestHelpersTestClockId) -> Self {
-        Self { test_clock }
+    pub fn new(test_clock: impl Into<stripe_shared::TestHelpersTestClockId>) -> Self {
+        Self { test_clock: test_clock.into() }
     }
 }
-impl DeleteTestHelpersTestClock<'_> {
+impl DeleteTestHelpersTestClock {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -31,36 +31,36 @@ impl DeleteTestHelpersTestClock<'_> {
     }
 }
 
-impl StripeRequest for DeleteTestHelpersTestClock<'_> {
+impl StripeRequest for DeleteTestHelpersTestClock {
     type Output = stripe_shared::DeletedTestHelpersTestClock;
 
     fn build(&self) -> RequestBuilder {
-        let test_clock = self.test_clock;
+        let test_clock = &self.test_clock;
         RequestBuilder::new(StripeMethod::Delete, format!("/test_helpers/test_clocks/{test_clock}"))
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListTestHelpersTestClockBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListTestHelpersTestClockBuilder<'a> {
+impl ListTestHelpersTestClockBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of your test clocks.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListTestHelpersTestClock<'a> {
-    inner: ListTestHelpersTestClockBuilder<'a>,
+pub struct ListTestHelpersTestClock {
+    inner: ListTestHelpersTestClockBuilder,
 }
-impl<'a> ListTestHelpersTestClock<'a> {
+impl ListTestHelpersTestClock {
     /// Construct a new `ListTestHelpersTestClock`.
     pub fn new() -> Self {
         Self { inner: ListTestHelpersTestClockBuilder::new() }
@@ -68,35 +68,35 @@ impl<'a> ListTestHelpersTestClock<'a> {
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl<'a> Default for ListTestHelpersTestClock<'a> {
+impl Default for ListTestHelpersTestClock {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListTestHelpersTestClock<'_> {
+impl ListTestHelpersTestClock {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -117,45 +117,45 @@ impl ListTestHelpersTestClock<'_> {
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::TestHelpersTestClock>>
     {
-        stripe_client_core::ListPaginator::new_list("/test_helpers/test_clocks", self.inner)
+        stripe_client_core::ListPaginator::new_list("/test_helpers/test_clocks", &self.inner)
     }
 }
 
-impl StripeRequest for ListTestHelpersTestClock<'_> {
+impl StripeRequest for ListTestHelpersTestClock {
     type Output = stripe_types::List<stripe_shared::TestHelpersTestClock>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/test_helpers/test_clocks").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveTestHelpersTestClockBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveTestHelpersTestClockBuilder<'a> {
+impl RetrieveTestHelpersTestClockBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves a test clock.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveTestHelpersTestClock<'a> {
-    inner: RetrieveTestHelpersTestClockBuilder<'a>,
-    test_clock: &'a stripe_shared::TestHelpersTestClockId,
+pub struct RetrieveTestHelpersTestClock {
+    inner: RetrieveTestHelpersTestClockBuilder,
+    test_clock: stripe_shared::TestHelpersTestClockId,
 }
-impl<'a> RetrieveTestHelpersTestClock<'a> {
+impl RetrieveTestHelpersTestClock {
     /// Construct a new `RetrieveTestHelpersTestClock`.
-    pub fn new(test_clock: &'a stripe_shared::TestHelpersTestClockId) -> Self {
-        Self { test_clock, inner: RetrieveTestHelpersTestClockBuilder::new() }
+    pub fn new(test_clock: impl Into<stripe_shared::TestHelpersTestClockId>) -> Self {
+        Self { test_clock: test_clock.into(), inner: RetrieveTestHelpersTestClockBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveTestHelpersTestClock<'_> {
+impl RetrieveTestHelpersTestClock {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -173,50 +173,50 @@ impl RetrieveTestHelpersTestClock<'_> {
     }
 }
 
-impl StripeRequest for RetrieveTestHelpersTestClock<'_> {
+impl StripeRequest for RetrieveTestHelpersTestClock {
     type Output = stripe_shared::TestHelpersTestClock;
 
     fn build(&self) -> RequestBuilder {
-        let test_clock = self.test_clock;
+        let test_clock = &self.test_clock;
         RequestBuilder::new(StripeMethod::Get, format!("/test_helpers/test_clocks/{test_clock}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateTestHelpersTestClockBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     frozen_time: stripe_types::Timestamp,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<String>,
 }
-impl<'a> CreateTestHelpersTestClockBuilder<'a> {
-    fn new(frozen_time: stripe_types::Timestamp) -> Self {
-        Self { expand: None, frozen_time, name: None }
+impl CreateTestHelpersTestClockBuilder {
+    fn new(frozen_time: impl Into<stripe_types::Timestamp>) -> Self {
+        Self { expand: None, frozen_time: frozen_time.into(), name: None }
     }
 }
 /// Creates a new test clock that can be attached to new customers and quotes.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateTestHelpersTestClock<'a> {
-    inner: CreateTestHelpersTestClockBuilder<'a>,
+pub struct CreateTestHelpersTestClock {
+    inner: CreateTestHelpersTestClockBuilder,
 }
-impl<'a> CreateTestHelpersTestClock<'a> {
+impl CreateTestHelpersTestClock {
     /// Construct a new `CreateTestHelpersTestClock`.
-    pub fn new(frozen_time: stripe_types::Timestamp) -> Self {
-        Self { inner: CreateTestHelpersTestClockBuilder::new(frozen_time) }
+    pub fn new(frozen_time: impl Into<stripe_types::Timestamp>) -> Self {
+        Self { inner: CreateTestHelpersTestClockBuilder::new(frozen_time.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// The name for this test clock.
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
 }
-impl CreateTestHelpersTestClock<'_> {
+impl CreateTestHelpersTestClock {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -234,46 +234,49 @@ impl CreateTestHelpersTestClock<'_> {
     }
 }
 
-impl StripeRequest for CreateTestHelpersTestClock<'_> {
+impl StripeRequest for CreateTestHelpersTestClock {
     type Output = stripe_shared::TestHelpersTestClock;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/test_helpers/test_clocks").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct AdvanceTestHelpersTestClockBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct AdvanceTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     frozen_time: stripe_types::Timestamp,
 }
-impl<'a> AdvanceTestHelpersTestClockBuilder<'a> {
-    fn new(frozen_time: stripe_types::Timestamp) -> Self {
-        Self { expand: None, frozen_time }
+impl AdvanceTestHelpersTestClockBuilder {
+    fn new(frozen_time: impl Into<stripe_types::Timestamp>) -> Self {
+        Self { expand: None, frozen_time: frozen_time.into() }
     }
 }
 /// Starts advancing a test clock to a specified time in the future.
 /// Advancement is done when status changes to `Ready`.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct AdvanceTestHelpersTestClock<'a> {
-    inner: AdvanceTestHelpersTestClockBuilder<'a>,
-    test_clock: &'a stripe_shared::TestHelpersTestClockId,
+pub struct AdvanceTestHelpersTestClock {
+    inner: AdvanceTestHelpersTestClockBuilder,
+    test_clock: stripe_shared::TestHelpersTestClockId,
 }
-impl<'a> AdvanceTestHelpersTestClock<'a> {
+impl AdvanceTestHelpersTestClock {
     /// Construct a new `AdvanceTestHelpersTestClock`.
     pub fn new(
-        test_clock: &'a stripe_shared::TestHelpersTestClockId,
-        frozen_time: stripe_types::Timestamp,
+        test_clock: impl Into<stripe_shared::TestHelpersTestClockId>,
+        frozen_time: impl Into<stripe_types::Timestamp>,
     ) -> Self {
-        Self { test_clock, inner: AdvanceTestHelpersTestClockBuilder::new(frozen_time) }
+        Self {
+            test_clock: test_clock.into(),
+            inner: AdvanceTestHelpersTestClockBuilder::new(frozen_time.into()),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl AdvanceTestHelpersTestClock<'_> {
+impl AdvanceTestHelpersTestClock {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -291,11 +294,11 @@ impl AdvanceTestHelpersTestClock<'_> {
     }
 }
 
-impl StripeRequest for AdvanceTestHelpersTestClock<'_> {
+impl StripeRequest for AdvanceTestHelpersTestClock {
     type Output = stripe_shared::TestHelpersTestClock;
 
     fn build(&self) -> RequestBuilder {
-        let test_clock = self.test_clock;
+        let test_clock = &self.test_clock;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/test_helpers/test_clocks/{test_clock}/advance"),

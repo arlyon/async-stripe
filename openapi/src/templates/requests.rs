@@ -73,7 +73,7 @@ impl RequestSpec {
         let mut out = String::new();
         for param in &self.path_params {
             let name = &param.name;
-            let _ = writeln!(out, r#"let {name} = self.{name};"#);
+            let _ = writeln!(out, r#"let {name} = &self.{name};"#);
         }
         out
     }
@@ -121,7 +121,7 @@ impl RequestSpec {
             r#"
         pub fn paginate(&self) -> stripe_client_core::ListPaginator<{pagination_typ}> {{
             {build_inner}
-            stripe_client_core::ListPaginator::{paginate_method_name}({path}, self.inner)
+            stripe_client_core::ListPaginator::{paginate_method_name}({path}, &self.inner)
         }}
         "#
         );
@@ -165,6 +165,7 @@ impl RequestSpec {
                         &components.construct_printable_type(&p.rust_type),
                         lifetime
                     )
+                    .impl_into()
                 )
             })
             .collect::<Vec<_>>();
@@ -186,21 +187,21 @@ impl RequestSpec {
         }
         for (f_name, typ) in &required_struct_fields {
             let typ = components.construct_printable_type(typ);
-            let printable = PrintableWithLifetime::new(&typ, lifetime);
+            let printable = PrintableWithLifetime::new(&typ, lifetime).impl_into();
             required_args.push(format!("{f_name}:{printable}"))
         }
         let required_arg_str = required_args.join(",");
 
         let mut cons_inner = String::new();
         for path in &self.path_params {
-            let _ = write!(cons_inner, "{},", path.name);
+            let _ = write!(cons_inner, "{}: {}.into(),", path.name, path.name);
         }
 
         if let Some(req_param) = &self.params {
             let builder_name = components.construct_printable_type(&req_param.typ);
             let mut builder_params = String::new();
             for (f_name, _) in &required_struct_fields {
-                let _ = write!(builder_params, "{f_name},");
+                let _ = write!(builder_params, "{f_name}.into(),");
             }
             let _ = write!(cons_inner, "inner: {builder_name}::new({builder_params})");
         }
@@ -222,7 +223,7 @@ impl RequestSpec {
                 _ => panic!("expected `Option`, found {typ:?}"),
             };
             let typ = components.construct_printable_type(typ);
-            let typ = PrintableWithLifetime::new(&typ, lifetime);
+            let typ = PrintableWithLifetime::new(&typ, lifetime).impl_into();
 
             if let Some(doc_comment) = doc_comment {
                 let _ = writeln!(cons_body, "{}", write_doc_comment(doc_comment, 1).trim_end());
@@ -230,11 +231,11 @@ impl RequestSpec {
             let _ = writedoc!(
                 cons_body,
                 r#"
-            pub fn {f_name}(mut self, {f_name}: {typ}) -> Self {{
-                self.inner.{f_name} = Some({f_name});
-                self
-            }}
-            "#
+                pub fn {f_name}(mut self, {f_name}: {typ}) -> Self {{
+                    self.inner.{f_name} = Some({f_name}.into());
+                    self
+                }}
+                "#
             );
         }
 

@@ -9,9 +9,8 @@ use super::get_client;
 fn create_product() {
     let client = get_client();
 
-    let features = vec![Features::new("great feature")];
     let product = CreateProduct::new("my product")
-        .marketing_features(&features)
+        .marketing_features([Features::new("great feature")])
         .send_blocking(&client)
         .unwrap();
     assert_eq!(product.marketing_features.first().unwrap().name, Some("great feature".into()));

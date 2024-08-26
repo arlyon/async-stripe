@@ -4,17 +4,17 @@ use stripe_client_core::{
 
 /// Delete a specified external account for a given account.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeleteExternalAccount<'a> {
-    account: &'a stripe_shared::AccountId,
-    id: &'a str,
+pub struct DeleteExternalAccount {
+    account: stripe_shared::AccountId,
+    id: String,
 }
-impl<'a> DeleteExternalAccount<'a> {
+impl DeleteExternalAccount {
     /// Construct a new `DeleteExternalAccount`.
-    pub fn new(account: &'a stripe_shared::AccountId, id: &'a str) -> Self {
-        Self { account, id }
+    pub fn new(account: impl Into<stripe_shared::AccountId>, id: impl Into<String>) -> Self {
+        Self { account: account.into(), id: id.into() }
     }
 }
-impl DeleteExternalAccount<'_> {
+impl DeleteExternalAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -32,32 +32,32 @@ impl DeleteExternalAccount<'_> {
     }
 }
 
-impl StripeRequest for DeleteExternalAccount<'_> {
+impl StripeRequest for DeleteExternalAccount {
     type Output = stripe_shared::DeletedExternalAccount;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
-        let id = self.id;
+        let account = &self.account;
+        let id = &self.id;
         RequestBuilder::new(
             StripeMethod::Delete,
             format!("/accounts/{account}/external_accounts/{id}"),
         )
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListAccountExternalAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListAccountExternalAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     object: Option<ListAccountExternalAccountObject>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListAccountExternalAccountBuilder<'a> {
+impl ListAccountExternalAccountBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, object: None, starting_after: None }
     }
@@ -120,47 +120,47 @@ impl<'de> serde::Deserialize<'de> for ListAccountExternalAccountObject {
 }
 /// List external accounts for an account.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListAccountExternalAccount<'a> {
-    inner: ListAccountExternalAccountBuilder<'a>,
-    account: &'a stripe_shared::AccountId,
+pub struct ListAccountExternalAccount {
+    inner: ListAccountExternalAccountBuilder,
+    account: stripe_shared::AccountId,
 }
-impl<'a> ListAccountExternalAccount<'a> {
+impl ListAccountExternalAccount {
     /// Construct a new `ListAccountExternalAccount`.
-    pub fn new(account: &'a stripe_shared::AccountId) -> Self {
-        Self { account, inner: ListAccountExternalAccountBuilder::new() }
+    pub fn new(account: impl Into<stripe_shared::AccountId>) -> Self {
+        Self { account: account.into(), inner: ListAccountExternalAccountBuilder::new() }
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// Filter external accounts according to a particular object type.
-    pub fn object(mut self, object: ListAccountExternalAccountObject) -> Self {
-        self.inner.object = Some(object);
+    pub fn object(mut self, object: impl Into<ListAccountExternalAccountObject>) -> Self {
+        self.inner.object = Some(object.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl ListAccountExternalAccount<'_> {
+impl ListAccountExternalAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -180,53 +180,57 @@ impl ListAccountExternalAccount<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::ExternalAccount>> {
-        let account = self.account;
+        let account = &self.account;
 
         stripe_client_core::ListPaginator::new_list(
             format!("/accounts/{account}/external_accounts"),
-            self.inner,
+            &self.inner,
         )
     }
 }
 
-impl StripeRequest for ListAccountExternalAccount<'_> {
+impl StripeRequest for ListAccountExternalAccount {
     type Output = stripe_types::List<stripe_shared::ExternalAccount>;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
+        let account = &self.account;
         RequestBuilder::new(StripeMethod::Get, format!("/accounts/{account}/external_accounts"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveExternalAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveExternalAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveExternalAccountBuilder<'a> {
+impl RetrieveExternalAccountBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieve a specified external account for a given account.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveExternalAccount<'a> {
-    inner: RetrieveExternalAccountBuilder<'a>,
-    account: &'a stripe_shared::AccountId,
-    id: &'a str,
+pub struct RetrieveExternalAccount {
+    inner: RetrieveExternalAccountBuilder,
+    account: stripe_shared::AccountId,
+    id: String,
 }
-impl<'a> RetrieveExternalAccount<'a> {
+impl RetrieveExternalAccount {
     /// Construct a new `RetrieveExternalAccount`.
-    pub fn new(account: &'a stripe_shared::AccountId, id: &'a str) -> Self {
-        Self { account, id, inner: RetrieveExternalAccountBuilder::new() }
+    pub fn new(account: impl Into<stripe_shared::AccountId>, id: impl Into<String>) -> Self {
+        Self {
+            account: account.into(),
+            id: id.into(),
+            inner: RetrieveExternalAccountBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveExternalAccount<'_> {
+impl RetrieveExternalAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -244,12 +248,12 @@ impl RetrieveExternalAccount<'_> {
     }
 }
 
-impl StripeRequest for RetrieveExternalAccount<'_> {
+impl StripeRequest for RetrieveExternalAccount {
     type Output = stripe_shared::ExternalAccount;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
-        let id = self.id;
+        let account = &self.account;
+        let id = &self.id;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/accounts/{account}/external_accounts/{id}"),
@@ -257,52 +261,66 @@ impl StripeRequest for RetrieveExternalAccount<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateAccountExternalAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateAccountExternalAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     default_for_currency: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    external_account: &'a str,
+    expand: Option<Vec<String>>,
+    external_account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
 }
-impl<'a> CreateAccountExternalAccountBuilder<'a> {
-    fn new(external_account: &'a str) -> Self {
-        Self { default_for_currency: None, expand: None, external_account, metadata: None }
+impl CreateAccountExternalAccountBuilder {
+    fn new(external_account: impl Into<String>) -> Self {
+        Self {
+            default_for_currency: None,
+            expand: None,
+            external_account: external_account.into(),
+            metadata: None,
+        }
     }
 }
 /// Create an external account for a given account.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountExternalAccount<'a> {
-    inner: CreateAccountExternalAccountBuilder<'a>,
-    account: &'a stripe_shared::AccountId,
+pub struct CreateAccountExternalAccount {
+    inner: CreateAccountExternalAccountBuilder,
+    account: stripe_shared::AccountId,
 }
-impl<'a> CreateAccountExternalAccount<'a> {
+impl CreateAccountExternalAccount {
     /// Construct a new `CreateAccountExternalAccount`.
-    pub fn new(account: &'a stripe_shared::AccountId, external_account: &'a str) -> Self {
-        Self { account, inner: CreateAccountExternalAccountBuilder::new(external_account) }
+    pub fn new(
+        account: impl Into<stripe_shared::AccountId>,
+        external_account: impl Into<String>,
+    ) -> Self {
+        Self {
+            account: account.into(),
+            inner: CreateAccountExternalAccountBuilder::new(external_account.into()),
+        }
     }
     /// When set to true, or if this is the first external account added in this currency, this account becomes the default external account for its currency.
-    pub fn default_for_currency(mut self, default_for_currency: bool) -> Self {
-        self.inner.default_for_currency = Some(default_for_currency);
+    pub fn default_for_currency(mut self, default_for_currency: impl Into<bool>) -> Self {
+        self.inner.default_for_currency = Some(default_for_currency.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
 }
-impl CreateAccountExternalAccount<'_> {
+impl CreateAccountExternalAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -320,51 +338,51 @@ impl CreateAccountExternalAccount<'_> {
     }
 }
 
-impl StripeRequest for CreateAccountExternalAccount<'_> {
+impl StripeRequest for CreateAccountExternalAccount {
     type Output = stripe_shared::ExternalAccount;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
+        let account = &self.account;
         RequestBuilder::new(StripeMethod::Post, format!("/accounts/{account}/external_accounts"))
             .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateExternalAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateExternalAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_holder_name: Option<&'a str>,
+    account_holder_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     account_holder_type: Option<UpdateExternalAccountAccountHolderType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     account_type: Option<UpdateExternalAccountAccountType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_city: Option<&'a str>,
+    address_city: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_country: Option<&'a str>,
+    address_country: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_line1: Option<&'a str>,
+    address_line1: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_line2: Option<&'a str>,
+    address_line2: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_state: Option<&'a str>,
+    address_state: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_zip: Option<&'a str>,
+    address_zip: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     default_for_currency: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    documents: Option<UpdateExternalAccountDocuments<'a>>,
+    documents: Option<UpdateExternalAccountDocuments>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    exp_month: Option<&'a str>,
+    exp_month: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    exp_year: Option<&'a str>,
+    exp_year: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<String>,
 }
-impl<'a> UpdateExternalAccountBuilder<'a> {
+impl UpdateExternalAccountBuilder {
     fn new() -> Self {
         Self {
             account_holder_name: None,
@@ -507,38 +525,38 @@ impl<'de> serde::Deserialize<'de> for UpdateExternalAccountAccountType {
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateExternalAccountDocuments<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateExternalAccountDocuments {
     /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
     /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a voided check.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_account_ownership_verification:
-        Option<UpdateExternalAccountDocumentsBankAccountOwnershipVerification<'a>>,
+        Option<UpdateExternalAccountDocumentsBankAccountOwnershipVerification>,
 }
-impl<'a> UpdateExternalAccountDocuments<'a> {
+impl UpdateExternalAccountDocuments {
     pub fn new() -> Self {
         Self { bank_account_ownership_verification: None }
     }
 }
-impl<'a> Default for UpdateExternalAccountDocuments<'a> {
+impl Default for UpdateExternalAccountDocuments {
     fn default() -> Self {
         Self::new()
     }
 }
 /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
 /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a voided check.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateExternalAccountDocumentsBankAccountOwnershipVerification<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateExternalAccountDocumentsBankAccountOwnershipVerification {
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<&'a [&'a str]>,
+    pub files: Option<Vec<String>>,
 }
-impl<'a> UpdateExternalAccountDocumentsBankAccountOwnershipVerification<'a> {
+impl UpdateExternalAccountDocumentsBankAccountOwnershipVerification {
     pub fn new() -> Self {
         Self { files: None }
     }
 }
-impl<'a> Default for UpdateExternalAccountDocumentsBankAccountOwnershipVerification<'a> {
+impl Default for UpdateExternalAccountDocumentsBankAccountOwnershipVerification {
     fn default() -> Self {
         Self::new()
     }
@@ -552,106 +570,112 @@ impl<'a> Default for UpdateExternalAccountDocumentsBankAccountOwnershipVerificat
 /// You can re-enable a disabled bank account by performing an update call without providing any
 /// arguments or changes.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateExternalAccount<'a> {
-    inner: UpdateExternalAccountBuilder<'a>,
-    account: &'a stripe_shared::AccountId,
-    id: &'a str,
+pub struct UpdateExternalAccount {
+    inner: UpdateExternalAccountBuilder,
+    account: stripe_shared::AccountId,
+    id: String,
 }
-impl<'a> UpdateExternalAccount<'a> {
+impl UpdateExternalAccount {
     /// Construct a new `UpdateExternalAccount`.
-    pub fn new(account: &'a stripe_shared::AccountId, id: &'a str) -> Self {
-        Self { account, id, inner: UpdateExternalAccountBuilder::new() }
+    pub fn new(account: impl Into<stripe_shared::AccountId>, id: impl Into<String>) -> Self {
+        Self { account: account.into(), id: id.into(), inner: UpdateExternalAccountBuilder::new() }
     }
     /// The name of the person or business that owns the bank account.
-    pub fn account_holder_name(mut self, account_holder_name: &'a str) -> Self {
-        self.inner.account_holder_name = Some(account_holder_name);
+    pub fn account_holder_name(mut self, account_holder_name: impl Into<String>) -> Self {
+        self.inner.account_holder_name = Some(account_holder_name.into());
         self
     }
     /// The type of entity that holds the account. This can be either `individual` or `company`.
     pub fn account_holder_type(
         mut self,
-        account_holder_type: UpdateExternalAccountAccountHolderType,
+        account_holder_type: impl Into<UpdateExternalAccountAccountHolderType>,
     ) -> Self {
-        self.inner.account_holder_type = Some(account_holder_type);
+        self.inner.account_holder_type = Some(account_holder_type.into());
         self
     }
     /// The bank account type.
     /// This can only be `checking` or `savings` in most countries.
     /// In Japan, this can only be `futsu` or `toza`.
-    pub fn account_type(mut self, account_type: UpdateExternalAccountAccountType) -> Self {
-        self.inner.account_type = Some(account_type);
+    pub fn account_type(
+        mut self,
+        account_type: impl Into<UpdateExternalAccountAccountType>,
+    ) -> Self {
+        self.inner.account_type = Some(account_type.into());
         self
     }
     /// City/District/Suburb/Town/Village.
-    pub fn address_city(mut self, address_city: &'a str) -> Self {
-        self.inner.address_city = Some(address_city);
+    pub fn address_city(mut self, address_city: impl Into<String>) -> Self {
+        self.inner.address_city = Some(address_city.into());
         self
     }
     /// Billing address country, if provided when creating card.
-    pub fn address_country(mut self, address_country: &'a str) -> Self {
-        self.inner.address_country = Some(address_country);
+    pub fn address_country(mut self, address_country: impl Into<String>) -> Self {
+        self.inner.address_country = Some(address_country.into());
         self
     }
     /// Address line 1 (Street address/PO Box/Company name).
-    pub fn address_line1(mut self, address_line1: &'a str) -> Self {
-        self.inner.address_line1 = Some(address_line1);
+    pub fn address_line1(mut self, address_line1: impl Into<String>) -> Self {
+        self.inner.address_line1 = Some(address_line1.into());
         self
     }
     /// Address line 2 (Apartment/Suite/Unit/Building).
-    pub fn address_line2(mut self, address_line2: &'a str) -> Self {
-        self.inner.address_line2 = Some(address_line2);
+    pub fn address_line2(mut self, address_line2: impl Into<String>) -> Self {
+        self.inner.address_line2 = Some(address_line2.into());
         self
     }
     /// State/County/Province/Region.
-    pub fn address_state(mut self, address_state: &'a str) -> Self {
-        self.inner.address_state = Some(address_state);
+    pub fn address_state(mut self, address_state: impl Into<String>) -> Self {
+        self.inner.address_state = Some(address_state.into());
         self
     }
     /// ZIP or postal code.
-    pub fn address_zip(mut self, address_zip: &'a str) -> Self {
-        self.inner.address_zip = Some(address_zip);
+    pub fn address_zip(mut self, address_zip: impl Into<String>) -> Self {
+        self.inner.address_zip = Some(address_zip.into());
         self
     }
     /// When set to true, this becomes the default external account for its currency.
-    pub fn default_for_currency(mut self, default_for_currency: bool) -> Self {
-        self.inner.default_for_currency = Some(default_for_currency);
+    pub fn default_for_currency(mut self, default_for_currency: impl Into<bool>) -> Self {
+        self.inner.default_for_currency = Some(default_for_currency.into());
         self
     }
     /// Documents that may be submitted to satisfy various informational requests.
-    pub fn documents(mut self, documents: UpdateExternalAccountDocuments<'a>) -> Self {
-        self.inner.documents = Some(documents);
+    pub fn documents(mut self, documents: impl Into<UpdateExternalAccountDocuments>) -> Self {
+        self.inner.documents = Some(documents.into());
         self
     }
     /// Two digit number representing the card’s expiration month.
-    pub fn exp_month(mut self, exp_month: &'a str) -> Self {
-        self.inner.exp_month = Some(exp_month);
+    pub fn exp_month(mut self, exp_month: impl Into<String>) -> Self {
+        self.inner.exp_month = Some(exp_month.into());
         self
     }
     /// Four digit number representing the card’s expiration year.
-    pub fn exp_year(mut self, exp_year: &'a str) -> Self {
-        self.inner.exp_year = Some(exp_year);
+    pub fn exp_year(mut self, exp_year: impl Into<String>) -> Self {
+        self.inner.exp_year = Some(exp_year.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// Cardholder name.
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
 }
-impl UpdateExternalAccount<'_> {
+impl UpdateExternalAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -669,12 +693,12 @@ impl UpdateExternalAccount<'_> {
     }
 }
 
-impl StripeRequest for UpdateExternalAccount<'_> {
+impl StripeRequest for UpdateExternalAccount {
     type Output = stripe_shared::ExternalAccount;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
-        let id = self.id;
+        let account = &self.account;
+        let id = &self.id;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/accounts/{account}/external_accounts/{id}"),
