@@ -2,19 +2,19 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateSubscriptionItemUsageRecordBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateSubscriptionItemUsageRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     action: Option<CreateSubscriptionItemUsageRecordAction>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     quantity: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
     timestamp: Option<CreateSubscriptionItemUsageRecordTimestamp>,
 }
-impl<'a> CreateSubscriptionItemUsageRecordBuilder<'a> {
-    fn new(quantity: u64) -> Self {
-        Self { action: None, expand: None, quantity, timestamp: None }
+impl CreateSubscriptionItemUsageRecordBuilder {
+    fn new(quantity: impl Into<u64>) -> Self {
+        Self { action: None, expand: None, quantity: quantity.into(), timestamp: None }
     }
 }
 /// Valid values are `increment` (default) or `set`.
@@ -100,38 +100,47 @@ pub enum CreateSubscriptionItemUsageRecordTimestamp {
 /// The default pricing model for metered billing is [per-unit pricing](https://stripe.com/docs/api/plans/object#plan_object-billing_scheme).
 /// For finer granularity, you can configure metered billing to have a [tiered pricing](https://stripe.com/docs/billing/subscriptions/tiers) model.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateSubscriptionItemUsageRecord<'a> {
-    inner: CreateSubscriptionItemUsageRecordBuilder<'a>,
-    subscription_item: &'a stripe_shared::SubscriptionItemId,
+pub struct CreateSubscriptionItemUsageRecord {
+    inner: CreateSubscriptionItemUsageRecordBuilder,
+    subscription_item: stripe_shared::SubscriptionItemId,
 }
-impl<'a> CreateSubscriptionItemUsageRecord<'a> {
+impl CreateSubscriptionItemUsageRecord {
     /// Construct a new `CreateSubscriptionItemUsageRecord`.
-    pub fn new(subscription_item: &'a stripe_shared::SubscriptionItemId, quantity: u64) -> Self {
-        Self { subscription_item, inner: CreateSubscriptionItemUsageRecordBuilder::new(quantity) }
+    pub fn new(
+        subscription_item: impl Into<stripe_shared::SubscriptionItemId>,
+        quantity: impl Into<u64>,
+    ) -> Self {
+        Self {
+            subscription_item: subscription_item.into(),
+            inner: CreateSubscriptionItemUsageRecordBuilder::new(quantity.into()),
+        }
     }
     /// Valid values are `increment` (default) or `set`.
     /// When using `increment` the specified `quantity` will be added to the usage at the specified timestamp.
     /// The `set` action will overwrite the usage quantity at that timestamp.
     /// If the subscription has [billing thresholds](https://stripe.com/docs/api/subscriptions/object#subscription_object-billing_thresholds), `increment` is the only allowed value.
-    pub fn action(mut self, action: CreateSubscriptionItemUsageRecordAction) -> Self {
-        self.inner.action = Some(action);
+    pub fn action(mut self, action: impl Into<CreateSubscriptionItemUsageRecordAction>) -> Self {
+        self.inner.action = Some(action.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// The timestamp for the usage event.
     /// This timestamp must be within the current billing period of the subscription of the provided `subscription_item`, and must not be in the future.
     /// When passing `"now"`, Stripe records usage for the current time.
     /// Default is `"now"` if a value is not provided.
-    pub fn timestamp(mut self, timestamp: CreateSubscriptionItemUsageRecordTimestamp) -> Self {
-        self.inner.timestamp = Some(timestamp);
+    pub fn timestamp(
+        mut self,
+        timestamp: impl Into<CreateSubscriptionItemUsageRecordTimestamp>,
+    ) -> Self {
+        self.inner.timestamp = Some(timestamp.into());
         self
     }
 }
-impl CreateSubscriptionItemUsageRecord<'_> {
+impl CreateSubscriptionItemUsageRecord {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -149,11 +158,11 @@ impl CreateSubscriptionItemUsageRecord<'_> {
     }
 }
 
-impl StripeRequest for CreateSubscriptionItemUsageRecord<'_> {
+impl StripeRequest for CreateSubscriptionItemUsageRecord {
     type Output = stripe_billing::UsageRecord;
 
     fn build(&self) -> RequestBuilder {
-        let subscription_item = self.subscription_item;
+        let subscription_item = &self.subscription_item;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/subscription_items/{subscription_item}/usage_records"),

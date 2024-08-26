@@ -18,13 +18,11 @@ use stripe_product::product::CreateProduct;
 use stripe_types::{Currency, Expandable};
 
 pub async fn run_subscriptions_example(client: &Client) -> Result<(), StripeError> {
-    let meta =
-        std::collections::HashMap::from([(String::from("async-stripe"), String::from("true"))]);
     let customer = CreateCustomer::new()
         .name("Alexander Lyon")
         .email("test@async-stripe.com")
         .description("A fake customer that is used to illustrate the examples in async-stripe.")
-        .metadata(&meta)
+        .metadata([(String::from("async-stripe"), String::from("true"))])
         .send(client)
         .await?;
 
@@ -32,15 +30,15 @@ pub async fn run_subscriptions_example(client: &Client) -> Result<(), StripeErro
     let payment_method = CreatePaymentMethod::new()
         .type_(CreatePaymentMethodType::Card)
         .card(CreatePaymentMethodCard::CardDetailsParams(CreatePaymentMethodCardDetailsParams {
-            number: "4000008260000000", // UK visa
+            number: String::from("4000008260000000"), // UK visa
             exp_year: 2025,
             exp_month: 1,
-            cvc: Some("123"),
+            cvc: Some(String::from("123")),
             networks: None,
         }))
         .send(client)
         .await?;
-    AttachPaymentMethod::new(&payment_method.id, &customer.id).send(client).await?;
+    AttachPaymentMethod::new(payment_method.id.clone(), &customer.id).send(client).await?;
 
     println!(
         "created a payment method with id {} and attached it to {}",
@@ -49,16 +47,18 @@ pub async fn run_subscriptions_example(client: &Client) -> Result<(), StripeErro
     );
 
     // create a new example product
-    let product =
-        CreateProduct::new("Monthly T-Shirt Subscription").metadata(&meta).send(client).await?;
+    let product = CreateProduct::new("Monthly T-Shirt Subscription")
+        .metadata([(String::from("async-stripe"), String::from("true"))])
+        .send(client)
+        .await?;
 
     // and add a price for it in USD
     let price = CreatePrice::new(Currency::USD)
         .product(&product.id)
-        .metadata(&meta)
+        .metadata([(String::from("async-stripe"), String::from("true"))])
         .unit_amount(1000)
         .recurring(CreatePriceRecurring::new(CreatePriceRecurringInterval::Month))
-        .expand(&["product"])
+        .expand([String::from("product")])
         .send(client)
         .await?;
 
@@ -69,11 +69,17 @@ pub async fn run_subscriptions_example(client: &Client) -> Result<(), StripeErro
         price.currency,
     );
 
-    let create_items = [CreateSubscriptionItems { price: Some(&price.id), ..Default::default() }];
     let subscription = CreateSubscription::new(&customer.id)
-        .items(&create_items)
+        .items(vec![CreateSubscriptionItems {
+            price: Some(price.id.to_string()),
+            ..Default::default()
+        }])
         .default_payment_method(&payment_method.id)
-        .expand(&["items", "items.data.price.product", "schedule"])
+        .expand([
+            String::from("items"),
+            String::from("items.data.price.product"),
+            String::from("schedule"),
+        ])
         .send(client)
         .await?;
 

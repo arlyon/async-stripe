@@ -1,6 +1,9 @@
-use stripe_billing::invoice::{
-    FinalizeInvoiceInvoice, PayInvoice, RetrieveInvoice, UpcomingInvoice,
-    UpcomingInvoiceSubscriptionItems,
+use stripe_billing::{
+    invoice::{
+        FinalizeInvoiceInvoice, PayInvoice, RetrieveInvoice, UpcomingInvoice,
+        UpcomingInvoiceSubscriptionItems,
+    },
+    InvoiceId,
 };
 use stripe_core::ChargeId;
 
@@ -10,9 +13,9 @@ use super::get_client;
 #[test]
 fn is_invoice_retrievable() {
     let client = get_client();
-    let id = "in_123".parse().unwrap();
-    let result = RetrieveInvoice::new(&id)
-        .expand(&["charge.balance_transaction"])
+    let id = InvoiceId::from("in_123");
+    let result = RetrieveInvoice::new(id)
+        .expand([String::from("charge.balance_transaction")])
         .send_blocking(&client)
         .unwrap();
     let charge = result.charge.unwrap();
@@ -28,7 +31,7 @@ fn is_invoice_retrievable() {
 fn is_invoice_payable() {
     let client = get_client();
 
-    let id = "in_123".parse().unwrap();
+    let id = InvoiceId::from("in_123");
 
     let result = PayInvoice::new(&id)
         .forgive(true)

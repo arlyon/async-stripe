@@ -3,15 +3,18 @@ use stripe_client_core::{
 };
 
 #[derive(Clone, Debug, serde::Serialize)]
-struct CreateAccountSessionBuilder<'a> {
-    account: &'a str,
+struct CreateAccountSessionBuilder {
+    account: String,
     components: CreateAccountSessionComponents,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> CreateAccountSessionBuilder<'a> {
-    fn new(account: &'a str, components: CreateAccountSessionComponents) -> Self {
-        Self { account, components, expand: None }
+impl CreateAccountSessionBuilder {
+    fn new(
+        account: impl Into<String>,
+        components: impl Into<CreateAccountSessionComponents>,
+    ) -> Self {
+        Self { account: account.into(), components: components.into(), expand: None }
     }
 }
 /// Each key of the dictionary represents an embedded component, and each embedded component maps to its configuration (e.g.
@@ -68,21 +71,24 @@ impl Default for CreateAccountSessionComponents {
 }
 /// Creates a AccountSession object that includes a single-use token that the platform can use on their front-end to grant client-side API access.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountSession<'a> {
-    inner: CreateAccountSessionBuilder<'a>,
+pub struct CreateAccountSession {
+    inner: CreateAccountSessionBuilder,
 }
-impl<'a> CreateAccountSession<'a> {
+impl CreateAccountSession {
     /// Construct a new `CreateAccountSession`.
-    pub fn new(account: &'a str, components: CreateAccountSessionComponents) -> Self {
-        Self { inner: CreateAccountSessionBuilder::new(account, components) }
+    pub fn new(
+        account: impl Into<String>,
+        components: impl Into<CreateAccountSessionComponents>,
+    ) -> Self {
+        Self { inner: CreateAccountSessionBuilder::new(account.into(), components.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl CreateAccountSession<'_> {
+impl CreateAccountSession {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -100,7 +106,7 @@ impl CreateAccountSession<'_> {
     }
 }
 
-impl StripeRequest for CreateAccountSession<'_> {
+impl StripeRequest for CreateAccountSession {
     type Output = stripe_connect::AccountSession;
 
     fn build(&self) -> RequestBuilder {
@@ -161,8 +167,8 @@ pub struct BaseConfigParam {
     pub features: Option<miniserde::json::Value>,
 }
 impl BaseConfigParam {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, features: None }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -206,8 +212,8 @@ pub struct AccountConfigParam {
     pub features: Option<AccountFeaturesParam>,
 }
 impl AccountConfigParam {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, features: None }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -219,8 +225,8 @@ pub struct PayoutsConfigParam {
     pub features: Option<PayoutsFeaturesParam>,
 }
 impl PayoutsConfigParam {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, features: None }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -232,7 +238,7 @@ pub struct PaymentsConfigParam {
     pub features: Option<PaymentsFeaturesParam>,
 }
 impl PaymentsConfigParam {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, features: None }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
     }
 }

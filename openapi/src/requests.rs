@@ -196,7 +196,7 @@ fn build_request(
         Inference::new(&return_ident).required(true).infer_schema_or_ref_type(req.returned);
 
     let builder_ident = RustIdent::joined(&req_ident, "Builder");
-    let param_inference = Inference::new(&req_ident).can_borrow(true).required(true);
+    let param_inference = Inference::new(&req_ident).can_borrow(false).required(true);
 
     let param_typ = match &req.params {
         RequestParams::Form(schema) => {
@@ -255,21 +255,21 @@ fn build_request(
             bail!("Expected path parameter to follow schema format");
         };
         let base_param_typ = Inference::new(&req_ident)
-            .can_borrow(true)
+            .can_borrow(false)
             .required(param.required)
             .maybe_description(param.description.as_deref())
             .field_name(&param.name)
             .infer_schema_or_ref_type(schema);
 
-        if base_param_typ != RustType::Simple(SimpleType::Str) {
+        if base_param_typ != RustType::Simple(SimpleType::String) {
             bail!("Expected path parameter to be a string");
         }
 
         let rust_type = if let Some(id_typ) = infer_id_path(&param.name, req_path, path_id_map)? {
-            RustType::object_id(id_typ, true)
+            RustType::object_id(id_typ, false)
         } else {
             // NB: Assuming this is safe since we check earlier that this matches the path type.
-            RustType::Simple(SimpleType::Str)
+            RustType::Simple(SimpleType::String)
         };
 
         path_params.push(PathParam { name: param.name.clone(), rust_type })

@@ -2,64 +2,69 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateBillingMeterEventAdjustmentBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateBillingMeterEventAdjustmentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    cancel: Option<CreateBillingMeterEventAdjustmentCancel<'a>>,
-    event_name: &'a str,
+    cancel: Option<CreateBillingMeterEventAdjustmentCancel>,
+    event_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(rename = "type")]
     type_: stripe_billing::BillingMeterEventAdjustmentType,
 }
-impl<'a> CreateBillingMeterEventAdjustmentBuilder<'a> {
-    fn new(event_name: &'a str, type_: stripe_billing::BillingMeterEventAdjustmentType) -> Self {
-        Self { cancel: None, event_name, expand: None, type_ }
+impl CreateBillingMeterEventAdjustmentBuilder {
+    fn new(
+        event_name: impl Into<String>,
+        type_: impl Into<stripe_billing::BillingMeterEventAdjustmentType>,
+    ) -> Self {
+        Self { cancel: None, event_name: event_name.into(), expand: None, type_: type_.into() }
     }
 }
 /// Specifies which event to cancel.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateBillingMeterEventAdjustmentCancel<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateBillingMeterEventAdjustmentCancel {
     /// Unique identifier for the event.
     /// You can only cancel events within 24 hours of Stripe receiving them.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub identifier: Option<&'a str>,
+    pub identifier: Option<String>,
 }
-impl<'a> CreateBillingMeterEventAdjustmentCancel<'a> {
+impl CreateBillingMeterEventAdjustmentCancel {
     pub fn new() -> Self {
         Self { identifier: None }
     }
 }
-impl<'a> Default for CreateBillingMeterEventAdjustmentCancel<'a> {
+impl Default for CreateBillingMeterEventAdjustmentCancel {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Creates a billing meter event adjustment
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateBillingMeterEventAdjustment<'a> {
-    inner: CreateBillingMeterEventAdjustmentBuilder<'a>,
+pub struct CreateBillingMeterEventAdjustment {
+    inner: CreateBillingMeterEventAdjustmentBuilder,
 }
-impl<'a> CreateBillingMeterEventAdjustment<'a> {
+impl CreateBillingMeterEventAdjustment {
     /// Construct a new `CreateBillingMeterEventAdjustment`.
     pub fn new(
-        event_name: &'a str,
-        type_: stripe_billing::BillingMeterEventAdjustmentType,
+        event_name: impl Into<String>,
+        type_: impl Into<stripe_billing::BillingMeterEventAdjustmentType>,
     ) -> Self {
-        Self { inner: CreateBillingMeterEventAdjustmentBuilder::new(event_name, type_) }
+        Self {
+            inner: CreateBillingMeterEventAdjustmentBuilder::new(event_name.into(), type_.into()),
+        }
     }
     /// Specifies which event to cancel.
-    pub fn cancel(mut self, cancel: CreateBillingMeterEventAdjustmentCancel<'a>) -> Self {
-        self.inner.cancel = Some(cancel);
+    pub fn cancel(mut self, cancel: impl Into<CreateBillingMeterEventAdjustmentCancel>) -> Self {
+        self.inner.cancel = Some(cancel.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl CreateBillingMeterEventAdjustment<'_> {
+impl CreateBillingMeterEventAdjustment {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -77,7 +82,7 @@ impl CreateBillingMeterEventAdjustment<'_> {
     }
 }
 
-impl StripeRequest for CreateBillingMeterEventAdjustment<'_> {
+impl StripeRequest for CreateBillingMeterEventAdjustment {
     type Output = stripe_billing::BillingMeterEventAdjustment;
 
     fn build(&self) -> RequestBuilder {

@@ -1,5 +1,8 @@
-use stripe_billing::subscription::{
-    CancelSubscription, CancelSubscriptionCancellationDetails, RetrieveSubscription,
+use stripe_billing::{
+    subscription::{
+        CancelSubscription, CancelSubscriptionCancellationDetails, RetrieveSubscription,
+    },
+    SubscriptionId,
 };
 
 use super::get_client;
@@ -11,8 +14,8 @@ use super::get_client;
 fn is_subscription_retrievable() {
     let client = get_client();
 
-    let id = "sub_123".parse().unwrap();
-    let subscription = RetrieveSubscription::new(&id).send_blocking(&client).unwrap();
+    let id = SubscriptionId::from("sub_123");
+    let subscription = RetrieveSubscription::new(id).send_blocking(&client).unwrap();
     assert_eq!(subscription.id, "sub_123");
     assert!(!subscription.customer.is_object());
 }
@@ -22,9 +25,11 @@ fn is_subscription_retrievable() {
 fn is_subscription_expandable() {
     let client = get_client();
 
-    let id = "sub_123".parse().unwrap();
-    let subscription =
-        RetrieveSubscription::new(&id).expand(&["customer"]).send_blocking(&client).unwrap();
+    let id = SubscriptionId::from("sub_123");
+    let subscription = RetrieveSubscription::new(&id)
+        .expand([String::from("customer")])
+        .send_blocking(&client)
+        .unwrap();
     assert_eq!(subscription.id, "sub_123");
     assert!(subscription.customer.is_object());
 }
@@ -37,7 +42,7 @@ fn can_prorate_when_cancelling_subscription() {
     let client = get_client();
 
     let details = CancelSubscriptionCancellationDetails::new();
-    let id = "sub_123".parse().unwrap();
+    let id = SubscriptionId::from("sub_123");
     let result = CancelSubscription::new(&id)
         .prorate(true)
         .cancellation_details(details)

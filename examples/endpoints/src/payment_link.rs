@@ -15,16 +15,17 @@ use stripe_types::Currency;
 
 pub async fn run_payment_link_example(client: &Client) -> Result<(), StripeError> {
     // create a new example project
-    let meta =
-        std::collections::HashMap::from([(String::from("async-stripe"), String::from("true"))]);
-    let product = CreateProduct::new("T-Shirt").metadata(&meta).send(client).await?;
+    let product = CreateProduct::new("T-Shirt")
+        .metadata([(String::from("async-stripe"), String::from("true"))])
+        .send(client)
+        .await?;
 
     // and add a price for it in USD
     let price = CreatePrice::new(Currency::USD)
         .product(product.id.as_str())
-        .metadata(&meta)
+        .metadata([(String::from("async-stripe"), String::from("true"))])
         .unit_amount(1000)
-        .expand(&["product"])
+        .expand([String::from("product")])
         .send(client)
         .await?;
 
@@ -38,7 +39,7 @@ pub async fn run_payment_link_example(client: &Client) -> Result<(), StripeError
     let payment_link = CreatePaymentLink::new(&[CreatePaymentLinkLineItems {
         adjustable_quantity: None,
         quantity: 3,
-        price: &price.id,
+        price: price.id.to_string(),
     }])
     .send(client)
     .await?;

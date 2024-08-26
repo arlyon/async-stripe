@@ -4,17 +4,17 @@ use stripe_client_core::{
 
 /// Delete a specified external account for a given account.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeleteAccountCard<'a> {
-    account: &'a stripe_shared::AccountId,
-    id: &'a str,
+pub struct DeleteAccountCard {
+    account: stripe_shared::AccountId,
+    id: String,
 }
-impl<'a> DeleteAccountCard<'a> {
+impl DeleteAccountCard {
     /// Construct a new `DeleteAccountCard`.
-    pub fn new(account: &'a stripe_shared::AccountId, id: &'a str) -> Self {
-        Self { account, id }
+    pub fn new(account: impl Into<stripe_shared::AccountId>, id: impl Into<String>) -> Self {
+        Self { account: account.into(), id: id.into() }
     }
 }
-impl DeleteAccountCard<'_> {
+impl DeleteAccountCard {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -32,47 +32,47 @@ impl DeleteAccountCard<'_> {
     }
 }
 
-impl StripeRequest for DeleteAccountCard<'_> {
+impl StripeRequest for DeleteAccountCard {
     type Output = stripe_shared::DeletedExternalAccount;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
-        let id = self.id;
+        let account = &self.account;
+        let id = &self.id;
         RequestBuilder::new(
             StripeMethod::Delete,
             format!("/accounts/{account}/external_accounts/{id}"),
         )
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct DeleteCustomerCardBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct DeleteCustomerCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> DeleteCustomerCardBuilder<'a> {
+impl DeleteCustomerCardBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Delete a specified source for a given customer.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeleteCustomerCard<'a> {
-    inner: DeleteCustomerCardBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
-    id: &'a str,
+pub struct DeleteCustomerCard {
+    inner: DeleteCustomerCardBuilder,
+    customer: stripe_shared::CustomerId,
+    id: String,
 }
-impl<'a> DeleteCustomerCard<'a> {
+impl DeleteCustomerCard {
     /// Construct a new `DeleteCustomerCard`.
-    pub fn new(customer: &'a stripe_shared::CustomerId, id: &'a str) -> Self {
-        Self { customer, id, inner: DeleteCustomerCardBuilder::new() }
+    pub fn new(customer: impl Into<stripe_shared::CustomerId>, id: impl Into<String>) -> Self {
+        Self { customer: customer.into(), id: id.into(), inner: DeleteCustomerCardBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl DeleteCustomerCard<'_> {
+impl DeleteCustomerCard {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -90,12 +90,12 @@ impl DeleteCustomerCard<'_> {
     }
 }
 
-impl StripeRequest for DeleteCustomerCard<'_> {
+impl StripeRequest for DeleteCustomerCard {
     type Output = DeleteCustomerCardReturned;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
-        let id = self.id;
+        let customer = &self.customer;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Delete, format!("/customers/{customer}/sources/{id}"))
             .form(&self.inner)
     }
@@ -182,42 +182,42 @@ const _: () = {
     }
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateAccountCardBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateAccountCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_holder_name: Option<&'a str>,
+    account_holder_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     account_holder_type: Option<UpdateAccountCardAccountHolderType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     account_type: Option<UpdateAccountCardAccountType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_city: Option<&'a str>,
+    address_city: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_country: Option<&'a str>,
+    address_country: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_line1: Option<&'a str>,
+    address_line1: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_line2: Option<&'a str>,
+    address_line2: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_state: Option<&'a str>,
+    address_state: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_zip: Option<&'a str>,
+    address_zip: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     default_for_currency: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    documents: Option<UpdateAccountCardDocuments<'a>>,
+    documents: Option<UpdateAccountCardDocuments>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    exp_month: Option<&'a str>,
+    exp_month: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    exp_year: Option<&'a str>,
+    exp_year: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<String>,
 }
-impl<'a> UpdateAccountCardBuilder<'a> {
+impl UpdateAccountCardBuilder {
     fn new() -> Self {
         Self {
             account_holder_name: None,
@@ -359,38 +359,38 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountCardAccountType {
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateAccountCardDocuments<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateAccountCardDocuments {
     /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
     /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a voided check.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_account_ownership_verification:
-        Option<UpdateAccountCardDocumentsBankAccountOwnershipVerification<'a>>,
+        Option<UpdateAccountCardDocumentsBankAccountOwnershipVerification>,
 }
-impl<'a> UpdateAccountCardDocuments<'a> {
+impl UpdateAccountCardDocuments {
     pub fn new() -> Self {
         Self { bank_account_ownership_verification: None }
     }
 }
-impl<'a> Default for UpdateAccountCardDocuments<'a> {
+impl Default for UpdateAccountCardDocuments {
     fn default() -> Self {
         Self::new()
     }
 }
 /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
 /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a voided check.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateAccountCardDocumentsBankAccountOwnershipVerification<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateAccountCardDocumentsBankAccountOwnershipVerification {
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<&'a [&'a str]>,
+    pub files: Option<Vec<String>>,
 }
-impl<'a> UpdateAccountCardDocumentsBankAccountOwnershipVerification<'a> {
+impl UpdateAccountCardDocumentsBankAccountOwnershipVerification {
     pub fn new() -> Self {
         Self { files: None }
     }
 }
-impl<'a> Default for UpdateAccountCardDocumentsBankAccountOwnershipVerification<'a> {
+impl Default for UpdateAccountCardDocumentsBankAccountOwnershipVerification {
     fn default() -> Self {
         Self::new()
     }
@@ -404,106 +404,109 @@ impl<'a> Default for UpdateAccountCardDocumentsBankAccountOwnershipVerification<
 /// You can re-enable a disabled bank account by performing an update call without providing any
 /// arguments or changes.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateAccountCard<'a> {
-    inner: UpdateAccountCardBuilder<'a>,
-    account: &'a stripe_shared::AccountId,
-    id: &'a str,
+pub struct UpdateAccountCard {
+    inner: UpdateAccountCardBuilder,
+    account: stripe_shared::AccountId,
+    id: String,
 }
-impl<'a> UpdateAccountCard<'a> {
+impl UpdateAccountCard {
     /// Construct a new `UpdateAccountCard`.
-    pub fn new(account: &'a stripe_shared::AccountId, id: &'a str) -> Self {
-        Self { account, id, inner: UpdateAccountCardBuilder::new() }
+    pub fn new(account: impl Into<stripe_shared::AccountId>, id: impl Into<String>) -> Self {
+        Self { account: account.into(), id: id.into(), inner: UpdateAccountCardBuilder::new() }
     }
     /// The name of the person or business that owns the bank account.
-    pub fn account_holder_name(mut self, account_holder_name: &'a str) -> Self {
-        self.inner.account_holder_name = Some(account_holder_name);
+    pub fn account_holder_name(mut self, account_holder_name: impl Into<String>) -> Self {
+        self.inner.account_holder_name = Some(account_holder_name.into());
         self
     }
     /// The type of entity that holds the account. This can be either `individual` or `company`.
     pub fn account_holder_type(
         mut self,
-        account_holder_type: UpdateAccountCardAccountHolderType,
+        account_holder_type: impl Into<UpdateAccountCardAccountHolderType>,
     ) -> Self {
-        self.inner.account_holder_type = Some(account_holder_type);
+        self.inner.account_holder_type = Some(account_holder_type.into());
         self
     }
     /// The bank account type.
     /// This can only be `checking` or `savings` in most countries.
     /// In Japan, this can only be `futsu` or `toza`.
-    pub fn account_type(mut self, account_type: UpdateAccountCardAccountType) -> Self {
-        self.inner.account_type = Some(account_type);
+    pub fn account_type(mut self, account_type: impl Into<UpdateAccountCardAccountType>) -> Self {
+        self.inner.account_type = Some(account_type.into());
         self
     }
     /// City/District/Suburb/Town/Village.
-    pub fn address_city(mut self, address_city: &'a str) -> Self {
-        self.inner.address_city = Some(address_city);
+    pub fn address_city(mut self, address_city: impl Into<String>) -> Self {
+        self.inner.address_city = Some(address_city.into());
         self
     }
     /// Billing address country, if provided when creating card.
-    pub fn address_country(mut self, address_country: &'a str) -> Self {
-        self.inner.address_country = Some(address_country);
+    pub fn address_country(mut self, address_country: impl Into<String>) -> Self {
+        self.inner.address_country = Some(address_country.into());
         self
     }
     /// Address line 1 (Street address/PO Box/Company name).
-    pub fn address_line1(mut self, address_line1: &'a str) -> Self {
-        self.inner.address_line1 = Some(address_line1);
+    pub fn address_line1(mut self, address_line1: impl Into<String>) -> Self {
+        self.inner.address_line1 = Some(address_line1.into());
         self
     }
     /// Address line 2 (Apartment/Suite/Unit/Building).
-    pub fn address_line2(mut self, address_line2: &'a str) -> Self {
-        self.inner.address_line2 = Some(address_line2);
+    pub fn address_line2(mut self, address_line2: impl Into<String>) -> Self {
+        self.inner.address_line2 = Some(address_line2.into());
         self
     }
     /// State/County/Province/Region.
-    pub fn address_state(mut self, address_state: &'a str) -> Self {
-        self.inner.address_state = Some(address_state);
+    pub fn address_state(mut self, address_state: impl Into<String>) -> Self {
+        self.inner.address_state = Some(address_state.into());
         self
     }
     /// ZIP or postal code.
-    pub fn address_zip(mut self, address_zip: &'a str) -> Self {
-        self.inner.address_zip = Some(address_zip);
+    pub fn address_zip(mut self, address_zip: impl Into<String>) -> Self {
+        self.inner.address_zip = Some(address_zip.into());
         self
     }
     /// When set to true, this becomes the default external account for its currency.
-    pub fn default_for_currency(mut self, default_for_currency: bool) -> Self {
-        self.inner.default_for_currency = Some(default_for_currency);
+    pub fn default_for_currency(mut self, default_for_currency: impl Into<bool>) -> Self {
+        self.inner.default_for_currency = Some(default_for_currency.into());
         self
     }
     /// Documents that may be submitted to satisfy various informational requests.
-    pub fn documents(mut self, documents: UpdateAccountCardDocuments<'a>) -> Self {
-        self.inner.documents = Some(documents);
+    pub fn documents(mut self, documents: impl Into<UpdateAccountCardDocuments>) -> Self {
+        self.inner.documents = Some(documents.into());
         self
     }
     /// Two digit number representing the card’s expiration month.
-    pub fn exp_month(mut self, exp_month: &'a str) -> Self {
-        self.inner.exp_month = Some(exp_month);
+    pub fn exp_month(mut self, exp_month: impl Into<String>) -> Self {
+        self.inner.exp_month = Some(exp_month.into());
         self
     }
     /// Four digit number representing the card’s expiration year.
-    pub fn exp_year(mut self, exp_year: &'a str) -> Self {
-        self.inner.exp_year = Some(exp_year);
+    pub fn exp_year(mut self, exp_year: impl Into<String>) -> Self {
+        self.inner.exp_year = Some(exp_year.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// Cardholder name.
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
 }
-impl UpdateAccountCard<'_> {
+impl UpdateAccountCard {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -521,12 +524,12 @@ impl UpdateAccountCard<'_> {
     }
 }
 
-impl StripeRequest for UpdateAccountCard<'_> {
+impl StripeRequest for UpdateAccountCard {
     type Output = stripe_shared::ExternalAccount;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
-        let id = self.id;
+        let account = &self.account;
+        let id = &self.id;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/accounts/{account}/external_accounts/{id}"),
@@ -534,38 +537,38 @@ impl StripeRequest for UpdateAccountCard<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateCustomerCardBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateCustomerCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_holder_name: Option<&'a str>,
+    account_holder_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     account_holder_type: Option<UpdateCustomerCardAccountHolderType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_city: Option<&'a str>,
+    address_city: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_country: Option<&'a str>,
+    address_country: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_line1: Option<&'a str>,
+    address_line1: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_line2: Option<&'a str>,
+    address_line2: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_state: Option<&'a str>,
+    address_state: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address_zip: Option<&'a str>,
+    address_zip: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    exp_month: Option<&'a str>,
+    exp_month: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    exp_year: Option<&'a str>,
+    exp_year: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    owner: Option<UpdateCustomerCardOwner<'a>>,
+    owner: Option<UpdateCustomerCardOwner>,
 }
-impl<'a> UpdateCustomerCardBuilder<'a> {
+impl UpdateCustomerCardBuilder {
     fn new() -> Self {
         Self {
             account_holder_name: None,
@@ -641,152 +644,155 @@ impl<'de> serde::Deserialize<'de> for UpdateCustomerCardAccountHolderType {
         })
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateCustomerCardOwner<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateCustomerCardOwner {
     /// Owner's address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<UpdateCustomerCardOwnerAddress<'a>>,
+    pub address: Option<UpdateCustomerCardOwnerAddress>,
     /// Owner's email address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<&'a str>,
+    pub email: Option<String>,
     /// Owner's full name.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<&'a str>,
+    pub name: Option<String>,
     /// Owner's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
+    pub phone: Option<String>,
 }
-impl<'a> UpdateCustomerCardOwner<'a> {
+impl UpdateCustomerCardOwner {
     pub fn new() -> Self {
         Self { address: None, email: None, name: None, phone: None }
     }
 }
-impl<'a> Default for UpdateCustomerCardOwner<'a> {
+impl Default for UpdateCustomerCardOwner {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Owner's address.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateCustomerCardOwnerAddress<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateCustomerCardOwnerAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
+    pub city: Option<String>,
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
+    pub country: Option<String>,
     /// Address line 1 (e.g., street, PO Box, or company name).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
+    pub line1: Option<String>,
     /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
+    pub line2: Option<String>,
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
+    pub postal_code: Option<String>,
     /// State, county, province, or region.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
+    pub state: Option<String>,
 }
-impl<'a> UpdateCustomerCardOwnerAddress<'a> {
+impl UpdateCustomerCardOwnerAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
     }
 }
-impl<'a> Default for UpdateCustomerCardOwnerAddress<'a> {
+impl Default for UpdateCustomerCardOwnerAddress {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Update a specified source for a given customer.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateCustomerCard<'a> {
-    inner: UpdateCustomerCardBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
-    id: &'a str,
+pub struct UpdateCustomerCard {
+    inner: UpdateCustomerCardBuilder,
+    customer: stripe_shared::CustomerId,
+    id: String,
 }
-impl<'a> UpdateCustomerCard<'a> {
+impl UpdateCustomerCard {
     /// Construct a new `UpdateCustomerCard`.
-    pub fn new(customer: &'a stripe_shared::CustomerId, id: &'a str) -> Self {
-        Self { customer, id, inner: UpdateCustomerCardBuilder::new() }
+    pub fn new(customer: impl Into<stripe_shared::CustomerId>, id: impl Into<String>) -> Self {
+        Self { customer: customer.into(), id: id.into(), inner: UpdateCustomerCardBuilder::new() }
     }
     /// The name of the person or business that owns the bank account.
-    pub fn account_holder_name(mut self, account_holder_name: &'a str) -> Self {
-        self.inner.account_holder_name = Some(account_holder_name);
+    pub fn account_holder_name(mut self, account_holder_name: impl Into<String>) -> Self {
+        self.inner.account_holder_name = Some(account_holder_name.into());
         self
     }
     /// The type of entity that holds the account. This can be either `individual` or `company`.
     pub fn account_holder_type(
         mut self,
-        account_holder_type: UpdateCustomerCardAccountHolderType,
+        account_holder_type: impl Into<UpdateCustomerCardAccountHolderType>,
     ) -> Self {
-        self.inner.account_holder_type = Some(account_holder_type);
+        self.inner.account_holder_type = Some(account_holder_type.into());
         self
     }
     /// City/District/Suburb/Town/Village.
-    pub fn address_city(mut self, address_city: &'a str) -> Self {
-        self.inner.address_city = Some(address_city);
+    pub fn address_city(mut self, address_city: impl Into<String>) -> Self {
+        self.inner.address_city = Some(address_city.into());
         self
     }
     /// Billing address country, if provided when creating card.
-    pub fn address_country(mut self, address_country: &'a str) -> Self {
-        self.inner.address_country = Some(address_country);
+    pub fn address_country(mut self, address_country: impl Into<String>) -> Self {
+        self.inner.address_country = Some(address_country.into());
         self
     }
     /// Address line 1 (Street address/PO Box/Company name).
-    pub fn address_line1(mut self, address_line1: &'a str) -> Self {
-        self.inner.address_line1 = Some(address_line1);
+    pub fn address_line1(mut self, address_line1: impl Into<String>) -> Self {
+        self.inner.address_line1 = Some(address_line1.into());
         self
     }
     /// Address line 2 (Apartment/Suite/Unit/Building).
-    pub fn address_line2(mut self, address_line2: &'a str) -> Self {
-        self.inner.address_line2 = Some(address_line2);
+    pub fn address_line2(mut self, address_line2: impl Into<String>) -> Self {
+        self.inner.address_line2 = Some(address_line2.into());
         self
     }
     /// State/County/Province/Region.
-    pub fn address_state(mut self, address_state: &'a str) -> Self {
-        self.inner.address_state = Some(address_state);
+    pub fn address_state(mut self, address_state: impl Into<String>) -> Self {
+        self.inner.address_state = Some(address_state.into());
         self
     }
     /// ZIP or postal code.
-    pub fn address_zip(mut self, address_zip: &'a str) -> Self {
-        self.inner.address_zip = Some(address_zip);
+    pub fn address_zip(mut self, address_zip: impl Into<String>) -> Self {
+        self.inner.address_zip = Some(address_zip.into());
         self
     }
     /// Two digit number representing the card’s expiration month.
-    pub fn exp_month(mut self, exp_month: &'a str) -> Self {
-        self.inner.exp_month = Some(exp_month);
+    pub fn exp_month(mut self, exp_month: impl Into<String>) -> Self {
+        self.inner.exp_month = Some(exp_month.into());
         self
     }
     /// Four digit number representing the card’s expiration year.
-    pub fn exp_year(mut self, exp_year: &'a str) -> Self {
-        self.inner.exp_year = Some(exp_year);
+    pub fn exp_year(mut self, exp_year: impl Into<String>) -> Self {
+        self.inner.exp_year = Some(exp_year.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// Cardholder name.
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
-    pub fn owner(mut self, owner: UpdateCustomerCardOwner<'a>) -> Self {
-        self.inner.owner = Some(owner);
+    pub fn owner(mut self, owner: impl Into<UpdateCustomerCardOwner>) -> Self {
+        self.inner.owner = Some(owner.into());
         self
     }
 }
-impl UpdateCustomerCard<'_> {
+impl UpdateCustomerCard {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -804,12 +810,12 @@ impl UpdateCustomerCard<'_> {
     }
 }
 
-impl StripeRequest for UpdateCustomerCard<'_> {
+impl StripeRequest for UpdateCustomerCard {
     type Output = UpdateCustomerCardReturned;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
-        let id = self.id;
+        let customer = &self.customer;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Post, format!("/customers/{customer}/sources/{id}"))
             .form(&self.inner)
     }

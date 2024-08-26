@@ -27,7 +27,7 @@ fn enums_requests() {
     assert_eq!(serde_json::to_string(&CreatePlanProduct::Id("id".into())).unwrap(), r#""id""#);
     assert_eq!(
         serde_json::to_string(&CreatePlanProduct::InlineProductParams(
-            CreatePlanInlineProductParams::new("my name".into())
+            CreatePlanInlineProductParams::new("my name")
         ))
         .unwrap(),
         r#"{"name":"my name"}"#

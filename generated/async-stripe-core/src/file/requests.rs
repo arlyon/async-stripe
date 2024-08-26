@@ -2,22 +2,22 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListFileBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListFileBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     purpose: Option<stripe_shared::FilePurpose>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListFileBuilder<'a> {
+impl ListFileBuilder {
     fn new() -> Self {
         Self {
             created: None,
@@ -32,57 +32,57 @@ impl<'a> ListFileBuilder<'a> {
 /// Returns a list of the files that your account has access to.
 /// Stripe sorts and returns the files by their creation dates, placing the most recently created files at the top.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListFile<'a> {
-    inner: ListFileBuilder<'a>,
+pub struct ListFile {
+    inner: ListFileBuilder,
 }
-impl<'a> ListFile<'a> {
+impl ListFile {
     /// Construct a new `ListFile`.
     pub fn new() -> Self {
         Self { inner: ListFileBuilder::new() }
     }
     /// Only return files that were created during the given date interval.
-    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
-        self.inner.created = Some(created);
+    pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.created = Some(created.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// Filter queries by the file purpose.
     /// If you don't provide a purpose, the queries return unfiltered files.
-    pub fn purpose(mut self, purpose: stripe_shared::FilePurpose) -> Self {
-        self.inner.purpose = Some(purpose);
+    pub fn purpose(mut self, purpose: impl Into<stripe_shared::FilePurpose>) -> Self {
+        self.inner.purpose = Some(purpose.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl<'a> Default for ListFile<'a> {
+impl Default for ListFile {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListFile<'_> {
+impl ListFile {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -102,23 +102,23 @@ impl ListFile<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::File>> {
-        stripe_client_core::ListPaginator::new_list("/files", self.inner)
+        stripe_client_core::ListPaginator::new_list("/files", &self.inner)
     }
 }
 
-impl StripeRequest for ListFile<'_> {
+impl StripeRequest for ListFile {
     type Output = stripe_types::List<stripe_shared::File>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/files").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveFileBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveFileBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveFileBuilder<'a> {
+impl RetrieveFileBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
@@ -127,22 +127,22 @@ impl<'a> RetrieveFileBuilder<'a> {
 /// After you supply a unique file ID, Stripe returns the corresponding file object.
 /// Learn how to [access file contents](https://stripe.com/docs/file-upload#download-file-contents).
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveFile<'a> {
-    inner: RetrieveFileBuilder<'a>,
-    file: &'a stripe_shared::FileId,
+pub struct RetrieveFile {
+    inner: RetrieveFileBuilder,
+    file: stripe_shared::FileId,
 }
-impl<'a> RetrieveFile<'a> {
+impl RetrieveFile {
     /// Construct a new `RetrieveFile`.
-    pub fn new(file: &'a stripe_shared::FileId) -> Self {
-        Self { file, inner: RetrieveFileBuilder::new() }
+    pub fn new(file: impl Into<stripe_shared::FileId>) -> Self {
+        Self { file: file.into(), inner: RetrieveFileBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveFile<'_> {
+impl RetrieveFile {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -160,11 +160,11 @@ impl RetrieveFile<'_> {
     }
 }
 
-impl StripeRequest for RetrieveFile<'_> {
+impl StripeRequest for RetrieveFile {
     type Output = stripe_shared::File;
 
     fn build(&self) -> RequestBuilder {
-        let file = self.file;
+        let file = &self.file;
         RequestBuilder::new(StripeMethod::Get, format!("/files/{file}")).query(&self.inner)
     }
 }

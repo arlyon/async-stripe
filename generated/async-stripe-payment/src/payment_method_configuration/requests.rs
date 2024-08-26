@@ -2,20 +2,20 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListPaymentMethodConfigurationBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListPaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    application: Option<&'a str>,
+    application: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListPaymentMethodConfigurationBuilder<'a> {
+impl ListPaymentMethodConfigurationBuilder {
     fn new() -> Self {
         Self {
             application: None,
@@ -28,51 +28,51 @@ impl<'a> ListPaymentMethodConfigurationBuilder<'a> {
 }
 /// List payment method configurations
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListPaymentMethodConfiguration<'a> {
-    inner: ListPaymentMethodConfigurationBuilder<'a>,
+pub struct ListPaymentMethodConfiguration {
+    inner: ListPaymentMethodConfigurationBuilder,
 }
-impl<'a> ListPaymentMethodConfiguration<'a> {
+impl ListPaymentMethodConfiguration {
     /// Construct a new `ListPaymentMethodConfiguration`.
     pub fn new() -> Self {
         Self { inner: ListPaymentMethodConfigurationBuilder::new() }
     }
     /// The Connect application to filter by.
-    pub fn application(mut self, application: &'a str) -> Self {
-        self.inner.application = Some(application);
+    pub fn application(mut self, application: impl Into<String>) -> Self {
+        self.inner.application = Some(application.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl<'a> Default for ListPaymentMethodConfiguration<'a> {
+impl Default for ListPaymentMethodConfiguration {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListPaymentMethodConfiguration<'_> {
+impl ListPaymentMethodConfiguration {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -94,45 +94,48 @@ impl ListPaymentMethodConfiguration<'_> {
     ) -> stripe_client_core::ListPaginator<
         stripe_types::List<stripe_payment::PaymentMethodConfiguration>,
     > {
-        stripe_client_core::ListPaginator::new_list("/payment_method_configurations", self.inner)
+        stripe_client_core::ListPaginator::new_list("/payment_method_configurations", &self.inner)
     }
 }
 
-impl StripeRequest for ListPaymentMethodConfiguration<'_> {
+impl StripeRequest for ListPaymentMethodConfiguration {
     type Output = stripe_types::List<stripe_payment::PaymentMethodConfiguration>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/payment_method_configurations").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrievePaymentMethodConfigurationBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrievePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrievePaymentMethodConfigurationBuilder<'a> {
+impl RetrievePaymentMethodConfigurationBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieve payment method configuration
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrievePaymentMethodConfiguration<'a> {
-    inner: RetrievePaymentMethodConfigurationBuilder<'a>,
-    configuration: &'a stripe_payment::PaymentMethodConfigurationId,
+pub struct RetrievePaymentMethodConfiguration {
+    inner: RetrievePaymentMethodConfigurationBuilder,
+    configuration: stripe_payment::PaymentMethodConfigurationId,
 }
-impl<'a> RetrievePaymentMethodConfiguration<'a> {
+impl RetrievePaymentMethodConfiguration {
     /// Construct a new `RetrievePaymentMethodConfiguration`.
-    pub fn new(configuration: &'a stripe_payment::PaymentMethodConfigurationId) -> Self {
-        Self { configuration, inner: RetrievePaymentMethodConfigurationBuilder::new() }
+    pub fn new(configuration: impl Into<stripe_payment::PaymentMethodConfigurationId>) -> Self {
+        Self {
+            configuration: configuration.into(),
+            inner: RetrievePaymentMethodConfigurationBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrievePaymentMethodConfiguration<'_> {
+impl RetrievePaymentMethodConfiguration {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -150,11 +153,11 @@ impl RetrievePaymentMethodConfiguration<'_> {
     }
 }
 
-impl StripeRequest for RetrievePaymentMethodConfiguration<'_> {
+impl StripeRequest for RetrievePaymentMethodConfiguration {
     type Output = stripe_payment::PaymentMethodConfiguration;
 
     fn build(&self) -> RequestBuilder {
-        let configuration = self.configuration;
+        let configuration = &self.configuration;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/payment_method_configurations/{configuration}"),
@@ -162,8 +165,8 @@ impl StripeRequest for RetrievePaymentMethodConfiguration<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreatePaymentMethodConfigurationBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     acss_debit: Option<CreatePaymentMethodConfigurationAcssDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -199,7 +202,7 @@ struct CreatePaymentMethodConfigurationBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     eps: Option<CreatePaymentMethodConfigurationEps>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     fpx: Option<CreatePaymentMethodConfigurationFpx>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -221,13 +224,13 @@ struct CreatePaymentMethodConfigurationBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     mobilepay: Option<CreatePaymentMethodConfigurationMobilepay>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     oxxo: Option<CreatePaymentMethodConfigurationOxxo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     p24: Option<CreatePaymentMethodConfigurationP24>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    parent: Option<&'a str>,
+    parent: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     paynow: Option<CreatePaymentMethodConfigurationPaynow>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -249,7 +252,7 @@ struct CreatePaymentMethodConfigurationBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     zip: Option<CreatePaymentMethodConfigurationZip>,
 }
-impl<'a> CreatePaymentMethodConfigurationBuilder<'a> {
+impl CreatePaymentMethodConfigurationBuilder {
     fn new() -> Self {
         Self {
             acss_debit: None,
@@ -4063,101 +4066,116 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Creates a payment method configuration
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreatePaymentMethodConfiguration<'a> {
-    inner: CreatePaymentMethodConfigurationBuilder<'a>,
+pub struct CreatePaymentMethodConfiguration {
+    inner: CreatePaymentMethodConfigurationBuilder,
 }
-impl<'a> CreatePaymentMethodConfiguration<'a> {
+impl CreatePaymentMethodConfiguration {
     /// Construct a new `CreatePaymentMethodConfiguration`.
     pub fn new() -> Self {
         Self { inner: CreatePaymentMethodConfigurationBuilder::new() }
     }
     /// Canadian pre-authorized debit payments, check this [page](https://stripe.com/docs/payments/acss-debit) for more details like country availability.
-    pub fn acss_debit(mut self, acss_debit: CreatePaymentMethodConfigurationAcssDebit) -> Self {
-        self.inner.acss_debit = Some(acss_debit);
+    pub fn acss_debit(
+        mut self,
+        acss_debit: impl Into<CreatePaymentMethodConfigurationAcssDebit>,
+    ) -> Self {
+        self.inner.acss_debit = Some(acss_debit.into());
         self
     }
     /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
     /// Depending on the purchase, they can pay with four interest-free payments (Split Pay) or pay over a longer term (Installments), which might include interest.
     /// Check this [page](https://stripe.com/docs/payments/affirm) for more details like country availability.
-    pub fn affirm(mut self, affirm: CreatePaymentMethodConfigurationAffirm) -> Self {
-        self.inner.affirm = Some(affirm);
+    pub fn affirm(mut self, affirm: impl Into<CreatePaymentMethodConfigurationAffirm>) -> Self {
+        self.inner.affirm = Some(affirm.into());
         self
     }
     /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://stripe.com/docs/payments/afterpay-clearpay) for more details like country availability.
     /// Afterpay is particularly popular among businesses selling fashion, beauty, and sports products.
     pub fn afterpay_clearpay(
         mut self,
-        afterpay_clearpay: CreatePaymentMethodConfigurationAfterpayClearpay,
+        afterpay_clearpay: impl Into<CreatePaymentMethodConfigurationAfterpayClearpay>,
     ) -> Self {
-        self.inner.afterpay_clearpay = Some(afterpay_clearpay);
+        self.inner.afterpay_clearpay = Some(afterpay_clearpay.into());
         self
     }
     /// Alipay is a digital wallet in China that has more than a billion active users worldwide.
     /// Alipay users can pay on the web or on a mobile device using login credentials or their Alipay app.
     /// Alipay has a low dispute rate and reduces fraud by authenticating payments using the customer's login credentials.
     /// Check this [page](https://stripe.com/docs/payments/alipay) for more details.
-    pub fn alipay(mut self, alipay: CreatePaymentMethodConfigurationAlipay) -> Self {
-        self.inner.alipay = Some(alipay);
+    pub fn alipay(mut self, alipay: impl Into<CreatePaymentMethodConfigurationAlipay>) -> Self {
+        self.inner.alipay = Some(alipay.into());
         self
     }
     /// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
-    pub fn amazon_pay(mut self, amazon_pay: CreatePaymentMethodConfigurationAmazonPay) -> Self {
-        self.inner.amazon_pay = Some(amazon_pay);
+    pub fn amazon_pay(
+        mut self,
+        amazon_pay: impl Into<CreatePaymentMethodConfigurationAmazonPay>,
+    ) -> Self {
+        self.inner.amazon_pay = Some(amazon_pay.into());
         self
     }
     /// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
     /// There are no additional fees to process Apple Pay payments, and the [pricing](/pricing) is the same as other card transactions.
     /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
-    pub fn apple_pay(mut self, apple_pay: CreatePaymentMethodConfigurationApplePay) -> Self {
-        self.inner.apple_pay = Some(apple_pay);
+    pub fn apple_pay(
+        mut self,
+        apple_pay: impl Into<CreatePaymentMethodConfigurationApplePay>,
+    ) -> Self {
+        self.inner.apple_pay = Some(apple_pay.into());
         self
     }
     /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
     pub fn apple_pay_later(
         mut self,
-        apple_pay_later: CreatePaymentMethodConfigurationApplePayLater,
+        apple_pay_later: impl Into<CreatePaymentMethodConfigurationApplePayLater>,
     ) -> Self {
-        self.inner.apple_pay_later = Some(apple_pay_later);
+        self.inner.apple_pay_later = Some(apple_pay_later.into());
         self
     }
     /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
     /// Check this [page](https://stripe.com/docs/payments/au-becs-debit) for more details.
     pub fn au_becs_debit(
         mut self,
-        au_becs_debit: CreatePaymentMethodConfigurationAuBecsDebit,
+        au_becs_debit: impl Into<CreatePaymentMethodConfigurationAuBecsDebit>,
     ) -> Self {
-        self.inner.au_becs_debit = Some(au_becs_debit);
+        self.inner.au_becs_debit = Some(au_becs_debit.into());
         self
     }
     /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://stripe.com/docs/payments/payment-methods/bacs-debit) for more details.
-    pub fn bacs_debit(mut self, bacs_debit: CreatePaymentMethodConfigurationBacsDebit) -> Self {
-        self.inner.bacs_debit = Some(bacs_debit);
+    pub fn bacs_debit(
+        mut self,
+        bacs_debit: impl Into<CreatePaymentMethodConfigurationBacsDebit>,
+    ) -> Self {
+        self.inner.bacs_debit = Some(bacs_debit.into());
         self
     }
     /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
     /// [Customers](https://stripe.com/docs/api/customers) use a Bancontact card or mobile app linked to a Belgian bank account to make online payments that are secure, guaranteed, and confirmed immediately.
     /// Check this [page](https://stripe.com/docs/payments/bancontact) for more details.
-    pub fn bancontact(mut self, bancontact: CreatePaymentMethodConfigurationBancontact) -> Self {
-        self.inner.bancontact = Some(bancontact);
+    pub fn bancontact(
+        mut self,
+        bancontact: impl Into<CreatePaymentMethodConfigurationBancontact>,
+    ) -> Self {
+        self.inner.bancontact = Some(bancontact.into());
         self
     }
     /// BLIK is a [single use](https://stripe.com/docs/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
     /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
     /// Check this [page](https://stripe.com/docs/payments/blik) for more details.
-    pub fn blik(mut self, blik: CreatePaymentMethodConfigurationBlik) -> Self {
-        self.inner.blik = Some(blik);
+    pub fn blik(mut self, blik: impl Into<CreatePaymentMethodConfigurationBlik>) -> Self {
+        self.inner.blik = Some(blik.into());
         self
     }
     /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
     /// Check this [page](https://stripe.com/docs/payments/boleto) for more details.
-    pub fn boleto(mut self, boleto: CreatePaymentMethodConfigurationBoleto) -> Self {
-        self.inner.boleto = Some(boleto);
+    pub fn boleto(mut self, boleto: impl Into<CreatePaymentMethodConfigurationBoleto>) -> Self {
+        self.inner.boleto = Some(boleto.into());
         self
     }
     /// Cards are a popular way for consumers and businesses to pay online or in person.
     /// Stripe supports global and local card networks.
-    pub fn card(mut self, card: CreatePaymentMethodConfigurationCard) -> Self {
-        self.inner.card = Some(card);
+    pub fn card(mut self, card: impl Into<CreatePaymentMethodConfigurationCard>) -> Self {
+        self.inner.card = Some(card.into());
         self
     }
     /// Cartes Bancaires is France's local card network.
@@ -4165,15 +4183,15 @@ impl<'a> CreatePaymentMethodConfiguration<'a> {
     /// Check this [page](https://stripe.com/docs/payments/cartes-bancaires) for more details.
     pub fn cartes_bancaires(
         mut self,
-        cartes_bancaires: CreatePaymentMethodConfigurationCartesBancaires,
+        cartes_bancaires: impl Into<CreatePaymentMethodConfigurationCartesBancaires>,
     ) -> Self {
-        self.inner.cartes_bancaires = Some(cartes_bancaires);
+        self.inner.cartes_bancaires = Some(cartes_bancaires.into());
         self
     }
     /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
     /// Check this [page](https://stripe.com/docs/payments/cash-app-pay) for more details.
-    pub fn cashapp(mut self, cashapp: CreatePaymentMethodConfigurationCashapp) -> Self {
-        self.inner.cashapp = Some(cashapp);
+    pub fn cashapp(mut self, cashapp: impl Into<CreatePaymentMethodConfigurationCashapp>) -> Self {
+        self.inner.cashapp = Some(cashapp.into());
         self
     }
     /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
@@ -4181,29 +4199,29 @@ impl<'a> CreatePaymentMethodConfiguration<'a> {
     /// Check this [page](https://stripe.com/docs/payments/bank-transfers) for more details.
     pub fn customer_balance(
         mut self,
-        customer_balance: CreatePaymentMethodConfigurationCustomerBalance,
+        customer_balance: impl Into<CreatePaymentMethodConfigurationCustomerBalance>,
     ) -> Self {
-        self.inner.customer_balance = Some(customer_balance);
+        self.inner.customer_balance = Some(customer_balance.into());
         self
     }
     /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
     /// EPS is supported by all Austrian banks and is accepted by over 80% of Austrian online retailers.
     /// Check this [page](https://stripe.com/docs/payments/eps) for more details.
-    pub fn eps(mut self, eps: CreatePaymentMethodConfigurationEps) -> Self {
-        self.inner.eps = Some(eps);
+    pub fn eps(mut self, eps: impl Into<CreatePaymentMethodConfigurationEps>) -> Self {
+        self.inner.eps = Some(eps.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Financial Process Exchange (FPX) is a Malaysia-based payment method that allows customers to complete transactions online using their bank credentials.
     /// Bank Negara Malaysia (BNM), the Central Bank of Malaysia, and eleven other major Malaysian financial institutions are members of the PayNet Group, which owns and operates FPX.
     /// It is one of the most popular online payment methods in Malaysia, with nearly 90 million transactions in 2018 according to BNM.
     /// Check this [page](https://stripe.com/docs/payments/fpx) for more details.
-    pub fn fpx(mut self, fpx: CreatePaymentMethodConfigurationFpx) -> Self {
-        self.inner.fpx = Some(fpx);
+    pub fn fpx(mut self, fpx: impl Into<CreatePaymentMethodConfigurationFpx>) -> Self {
+        self.inner.fpx = Some(fpx.into());
         self
     }
     /// giropay is a German payment method based on online banking, introduced in 2006.
@@ -4211,162 +4229,180 @@ impl<'a> CreatePaymentMethodConfiguration<'a> {
     /// Depending on their bank, customers confirm payments on giropay using a second factor of authentication or a PIN.
     /// giropay accounts for 10% of online checkouts in Germany.
     /// Check this [page](https://stripe.com/docs/payments/giropay) for more details.
-    pub fn giropay(mut self, giropay: CreatePaymentMethodConfigurationGiropay) -> Self {
-        self.inner.giropay = Some(giropay);
+    pub fn giropay(mut self, giropay: impl Into<CreatePaymentMethodConfigurationGiropay>) -> Self {
+        self.inner.giropay = Some(giropay.into());
         self
     }
     /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
     /// Use the Google Pay API to request any credit or debit card stored in your customer's Google account.
     /// Check this [page](https://stripe.com/docs/google-pay) for more details.
-    pub fn google_pay(mut self, google_pay: CreatePaymentMethodConfigurationGooglePay) -> Self {
-        self.inner.google_pay = Some(google_pay);
+    pub fn google_pay(
+        mut self,
+        google_pay: impl Into<CreatePaymentMethodConfigurationGooglePay>,
+    ) -> Self {
+        self.inner.google_pay = Some(google_pay.into());
         self
     }
     /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
     /// GrabPay is a digital wallet - customers maintain a balance in their wallets that they pay out with.
     /// Check this [page](https://stripe.com/docs/payments/grabpay) for more details.
-    pub fn grabpay(mut self, grabpay: CreatePaymentMethodConfigurationGrabpay) -> Self {
-        self.inner.grabpay = Some(grabpay);
+    pub fn grabpay(mut self, grabpay: impl Into<CreatePaymentMethodConfigurationGrabpay>) -> Self {
+        self.inner.grabpay = Some(grabpay.into());
         self
     }
     /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
     /// All major Dutch banks are members of Currence, the scheme that operates iDEAL, making it the most popular online payment method in the Netherlands with a share of online transactions close to 55%.
     /// Check this [page](https://stripe.com/docs/payments/ideal) for more details.
-    pub fn ideal(mut self, ideal: CreatePaymentMethodConfigurationIdeal) -> Self {
-        self.inner.ideal = Some(ideal);
+    pub fn ideal(mut self, ideal: impl Into<CreatePaymentMethodConfigurationIdeal>) -> Self {
+        self.inner.ideal = Some(ideal.into());
         self
     }
     /// JCB is a credit card company based in Japan.
     /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
     /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
-    pub fn jcb(mut self, jcb: CreatePaymentMethodConfigurationJcb) -> Self {
-        self.inner.jcb = Some(jcb);
+    pub fn jcb(mut self, jcb: impl Into<CreatePaymentMethodConfigurationJcb>) -> Self {
+        self.inner.jcb = Some(jcb.into());
         self
     }
     /// Klarna gives customers a range of [payment options](https://stripe.com/docs/payments/klarna#payment-options) during checkout.
     /// Available payment options vary depending on the customer's billing address and the transaction amount.
     /// These payment options make it convenient for customers to purchase items in all price ranges.
     /// Check this [page](https://stripe.com/docs/payments/klarna) for more details.
-    pub fn klarna(mut self, klarna: CreatePaymentMethodConfigurationKlarna) -> Self {
-        self.inner.klarna = Some(klarna);
+    pub fn klarna(mut self, klarna: impl Into<CreatePaymentMethodConfigurationKlarna>) -> Self {
+        self.inner.klarna = Some(klarna.into());
         self
     }
     /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
     /// Check this [page](https://stripe.com/docs/payments/konbini) for more details.
-    pub fn konbini(mut self, konbini: CreatePaymentMethodConfigurationKonbini) -> Self {
-        self.inner.konbini = Some(konbini);
+    pub fn konbini(mut self, konbini: impl Into<CreatePaymentMethodConfigurationKonbini>) -> Self {
+        self.inner.konbini = Some(konbini.into());
         self
     }
     /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
     /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
-    pub fn link(mut self, link: CreatePaymentMethodConfigurationLink) -> Self {
-        self.inner.link = Some(link);
+    pub fn link(mut self, link: impl Into<CreatePaymentMethodConfigurationLink>) -> Self {
+        self.inner.link = Some(link.into());
         self
     }
     /// MobilePay is a [single-use](https://stripe.com/docs/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
     /// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the MobilePay app.
     /// Check this [page](https://stripe.com/docs/payments/mobilepay) for more details.
-    pub fn mobilepay(mut self, mobilepay: CreatePaymentMethodConfigurationMobilepay) -> Self {
-        self.inner.mobilepay = Some(mobilepay);
+    pub fn mobilepay(
+        mut self,
+        mobilepay: impl Into<CreatePaymentMethodConfigurationMobilepay>,
+    ) -> Self {
+        self.inner.mobilepay = Some(mobilepay.into());
         self
     }
     /// Configuration name.
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
     /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
     /// OXXO allows customers to pay bills and online purchases in-store with cash.
     /// Check this [page](https://stripe.com/docs/payments/oxxo) for more details.
-    pub fn oxxo(mut self, oxxo: CreatePaymentMethodConfigurationOxxo) -> Self {
-        self.inner.oxxo = Some(oxxo);
+    pub fn oxxo(mut self, oxxo: impl Into<CreatePaymentMethodConfigurationOxxo>) -> Self {
+        self.inner.oxxo = Some(oxxo.into());
         self
     }
     /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
     /// Bank transfers account for 30% of online payments in Poland and Przelewy24 provides a way for customers to pay with over 165 banks.
     /// Check this [page](https://stripe.com/docs/payments/p24) for more details.
-    pub fn p24(mut self, p24: CreatePaymentMethodConfigurationP24) -> Self {
-        self.inner.p24 = Some(p24);
+    pub fn p24(mut self, p24: impl Into<CreatePaymentMethodConfigurationP24>) -> Self {
+        self.inner.p24 = Some(p24.into());
         self
     }
     /// Configuration's parent configuration. Specify to create a child configuration.
-    pub fn parent(mut self, parent: &'a str) -> Self {
-        self.inner.parent = Some(parent);
+    pub fn parent(mut self, parent: impl Into<String>) -> Self {
+        self.inner.parent = Some(parent.into());
         self
     }
     /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
     /// Check this [page](https://stripe.com/docs/payments/paynow) for more details.
-    pub fn paynow(mut self, paynow: CreatePaymentMethodConfigurationPaynow) -> Self {
-        self.inner.paynow = Some(paynow);
+    pub fn paynow(mut self, paynow: impl Into<CreatePaymentMethodConfigurationPaynow>) -> Self {
+        self.inner.paynow = Some(paynow.into());
         self
     }
     /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
     /// Check this [page](https://stripe.com/docs/payments/paypal) for more details.
-    pub fn paypal(mut self, paypal: CreatePaymentMethodConfigurationPaypal) -> Self {
-        self.inner.paypal = Some(paypal);
+    pub fn paypal(mut self, paypal: impl Into<CreatePaymentMethodConfigurationPaypal>) -> Self {
+        self.inner.paypal = Some(paypal.into());
         self
     }
     /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
     /// Check this [page](https://stripe.com/docs/payments/promptpay) for more details.
-    pub fn promptpay(mut self, promptpay: CreatePaymentMethodConfigurationPromptpay) -> Self {
-        self.inner.promptpay = Some(promptpay);
+    pub fn promptpay(
+        mut self,
+        promptpay: impl Into<CreatePaymentMethodConfigurationPromptpay>,
+    ) -> Self {
+        self.inner.promptpay = Some(promptpay.into());
         self
     }
     /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
     /// Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
-    pub fn revolut_pay(mut self, revolut_pay: CreatePaymentMethodConfigurationRevolutPay) -> Self {
-        self.inner.revolut_pay = Some(revolut_pay);
+    pub fn revolut_pay(
+        mut self,
+        revolut_pay: impl Into<CreatePaymentMethodConfigurationRevolutPay>,
+    ) -> Self {
+        self.inner.revolut_pay = Some(revolut_pay.into());
         self
     }
     /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
     /// SEPA established and enforced banking standards to allow for the direct debiting of every EUR-denominated bank account within the SEPA region, check this [page](https://stripe.com/docs/payments/sepa-debit) for more details.
-    pub fn sepa_debit(mut self, sepa_debit: CreatePaymentMethodConfigurationSepaDebit) -> Self {
-        self.inner.sepa_debit = Some(sepa_debit);
+    pub fn sepa_debit(
+        mut self,
+        sepa_debit: impl Into<CreatePaymentMethodConfigurationSepaDebit>,
+    ) -> Self {
+        self.inner.sepa_debit = Some(sepa_debit.into());
         self
     }
     /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
     /// Check this [page](https://stripe.com/docs/payments/sofort) for more details.
-    pub fn sofort(mut self, sofort: CreatePaymentMethodConfigurationSofort) -> Self {
-        self.inner.sofort = Some(sofort);
+    pub fn sofort(mut self, sofort: impl Into<CreatePaymentMethodConfigurationSofort>) -> Self {
+        self.inner.sofort = Some(sofort.into());
         self
     }
     /// Swish is a [real-time](https://stripe.com/docs/payments/real-time) payment method popular in Sweden.
     /// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
     /// Check this [page](https://stripe.com/docs/payments/swish) for more details.
-    pub fn swish(mut self, swish: CreatePaymentMethodConfigurationSwish) -> Self {
-        self.inner.swish = Some(swish);
+    pub fn swish(mut self, swish: impl Into<CreatePaymentMethodConfigurationSwish>) -> Self {
+        self.inner.swish = Some(swish.into());
         self
     }
     /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
     /// Check this [page](https://stripe.com/docs/payments/ach-debit) for more details.
     pub fn us_bank_account(
         mut self,
-        us_bank_account: CreatePaymentMethodConfigurationUsBankAccount,
+        us_bank_account: impl Into<CreatePaymentMethodConfigurationUsBankAccount>,
     ) -> Self {
-        self.inner.us_bank_account = Some(us_bank_account);
+        self.inner.us_bank_account = Some(us_bank_account.into());
         self
     }
     /// WeChat, owned by Tencent, is China's leading mobile app with over 1 billion monthly active users.
     /// Chinese consumers can use WeChat Pay to pay for goods and services inside of businesses' apps and websites.
     /// WeChat Pay users buy most frequently in gaming, e-commerce, travel, online education, and food/nutrition.
     /// Check this [page](https://stripe.com/docs/payments/wechat-pay) for more details.
-    pub fn wechat_pay(mut self, wechat_pay: CreatePaymentMethodConfigurationWechatPay) -> Self {
-        self.inner.wechat_pay = Some(wechat_pay);
+    pub fn wechat_pay(
+        mut self,
+        wechat_pay: impl Into<CreatePaymentMethodConfigurationWechatPay>,
+    ) -> Self {
+        self.inner.wechat_pay = Some(wechat_pay.into());
         self
     }
     /// Zip gives your customers a way to split purchases over a series of payments.
     /// Check this [page](https://stripe.com/docs/payments/zip) for more details like country availability.
-    pub fn zip(mut self, zip: CreatePaymentMethodConfigurationZip) -> Self {
-        self.inner.zip = Some(zip);
+    pub fn zip(mut self, zip: impl Into<CreatePaymentMethodConfigurationZip>) -> Self {
+        self.inner.zip = Some(zip.into());
         self
     }
 }
-impl<'a> Default for CreatePaymentMethodConfiguration<'a> {
+impl Default for CreatePaymentMethodConfiguration {
     fn default() -> Self {
         Self::new()
     }
 }
-impl CreatePaymentMethodConfiguration<'_> {
+impl CreatePaymentMethodConfiguration {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -4384,15 +4420,15 @@ impl CreatePaymentMethodConfiguration<'_> {
     }
 }
 
-impl StripeRequest for CreatePaymentMethodConfiguration<'_> {
+impl StripeRequest for CreatePaymentMethodConfiguration {
     type Output = stripe_payment::PaymentMethodConfiguration;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/payment_method_configurations").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdatePaymentMethodConfigurationBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     acss_debit: Option<UpdatePaymentMethodConfigurationAcssDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4430,7 +4466,7 @@ struct UpdatePaymentMethodConfigurationBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     eps: Option<UpdatePaymentMethodConfigurationEps>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     fpx: Option<UpdatePaymentMethodConfigurationFpx>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4452,7 +4488,7 @@ struct UpdatePaymentMethodConfigurationBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     mobilepay: Option<UpdatePaymentMethodConfigurationMobilepay>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     oxxo: Option<UpdatePaymentMethodConfigurationOxxo>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4478,7 +4514,7 @@ struct UpdatePaymentMethodConfigurationBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     zip: Option<UpdatePaymentMethodConfigurationZip>,
 }
-impl<'a> UpdatePaymentMethodConfigurationBuilder<'a> {
+impl UpdatePaymentMethodConfigurationBuilder {
     fn new() -> Self {
         Self {
             acss_debit: None,
@@ -8292,107 +8328,125 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Update payment method configuration
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdatePaymentMethodConfiguration<'a> {
-    inner: UpdatePaymentMethodConfigurationBuilder<'a>,
-    configuration: &'a stripe_payment::PaymentMethodConfigurationId,
+pub struct UpdatePaymentMethodConfiguration {
+    inner: UpdatePaymentMethodConfigurationBuilder,
+    configuration: stripe_payment::PaymentMethodConfigurationId,
 }
-impl<'a> UpdatePaymentMethodConfiguration<'a> {
+impl UpdatePaymentMethodConfiguration {
     /// Construct a new `UpdatePaymentMethodConfiguration`.
-    pub fn new(configuration: &'a stripe_payment::PaymentMethodConfigurationId) -> Self {
-        Self { configuration, inner: UpdatePaymentMethodConfigurationBuilder::new() }
+    pub fn new(configuration: impl Into<stripe_payment::PaymentMethodConfigurationId>) -> Self {
+        Self {
+            configuration: configuration.into(),
+            inner: UpdatePaymentMethodConfigurationBuilder::new(),
+        }
     }
     /// Canadian pre-authorized debit payments, check this [page](https://stripe.com/docs/payments/acss-debit) for more details like country availability.
-    pub fn acss_debit(mut self, acss_debit: UpdatePaymentMethodConfigurationAcssDebit) -> Self {
-        self.inner.acss_debit = Some(acss_debit);
+    pub fn acss_debit(
+        mut self,
+        acss_debit: impl Into<UpdatePaymentMethodConfigurationAcssDebit>,
+    ) -> Self {
+        self.inner.acss_debit = Some(acss_debit.into());
         self
     }
     /// Whether the configuration can be used for new payments.
-    pub fn active(mut self, active: bool) -> Self {
-        self.inner.active = Some(active);
+    pub fn active(mut self, active: impl Into<bool>) -> Self {
+        self.inner.active = Some(active.into());
         self
     }
     /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
     /// Depending on the purchase, they can pay with four interest-free payments (Split Pay) or pay over a longer term (Installments), which might include interest.
     /// Check this [page](https://stripe.com/docs/payments/affirm) for more details like country availability.
-    pub fn affirm(mut self, affirm: UpdatePaymentMethodConfigurationAffirm) -> Self {
-        self.inner.affirm = Some(affirm);
+    pub fn affirm(mut self, affirm: impl Into<UpdatePaymentMethodConfigurationAffirm>) -> Self {
+        self.inner.affirm = Some(affirm.into());
         self
     }
     /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://stripe.com/docs/payments/afterpay-clearpay) for more details like country availability.
     /// Afterpay is particularly popular among businesses selling fashion, beauty, and sports products.
     pub fn afterpay_clearpay(
         mut self,
-        afterpay_clearpay: UpdatePaymentMethodConfigurationAfterpayClearpay,
+        afterpay_clearpay: impl Into<UpdatePaymentMethodConfigurationAfterpayClearpay>,
     ) -> Self {
-        self.inner.afterpay_clearpay = Some(afterpay_clearpay);
+        self.inner.afterpay_clearpay = Some(afterpay_clearpay.into());
         self
     }
     /// Alipay is a digital wallet in China that has more than a billion active users worldwide.
     /// Alipay users can pay on the web or on a mobile device using login credentials or their Alipay app.
     /// Alipay has a low dispute rate and reduces fraud by authenticating payments using the customer's login credentials.
     /// Check this [page](https://stripe.com/docs/payments/alipay) for more details.
-    pub fn alipay(mut self, alipay: UpdatePaymentMethodConfigurationAlipay) -> Self {
-        self.inner.alipay = Some(alipay);
+    pub fn alipay(mut self, alipay: impl Into<UpdatePaymentMethodConfigurationAlipay>) -> Self {
+        self.inner.alipay = Some(alipay.into());
         self
     }
     /// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
-    pub fn amazon_pay(mut self, amazon_pay: UpdatePaymentMethodConfigurationAmazonPay) -> Self {
-        self.inner.amazon_pay = Some(amazon_pay);
+    pub fn amazon_pay(
+        mut self,
+        amazon_pay: impl Into<UpdatePaymentMethodConfigurationAmazonPay>,
+    ) -> Self {
+        self.inner.amazon_pay = Some(amazon_pay.into());
         self
     }
     /// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
     /// There are no additional fees to process Apple Pay payments, and the [pricing](/pricing) is the same as other card transactions.
     /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
-    pub fn apple_pay(mut self, apple_pay: UpdatePaymentMethodConfigurationApplePay) -> Self {
-        self.inner.apple_pay = Some(apple_pay);
+    pub fn apple_pay(
+        mut self,
+        apple_pay: impl Into<UpdatePaymentMethodConfigurationApplePay>,
+    ) -> Self {
+        self.inner.apple_pay = Some(apple_pay.into());
         self
     }
     /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
     pub fn apple_pay_later(
         mut self,
-        apple_pay_later: UpdatePaymentMethodConfigurationApplePayLater,
+        apple_pay_later: impl Into<UpdatePaymentMethodConfigurationApplePayLater>,
     ) -> Self {
-        self.inner.apple_pay_later = Some(apple_pay_later);
+        self.inner.apple_pay_later = Some(apple_pay_later.into());
         self
     }
     /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
     /// Check this [page](https://stripe.com/docs/payments/au-becs-debit) for more details.
     pub fn au_becs_debit(
         mut self,
-        au_becs_debit: UpdatePaymentMethodConfigurationAuBecsDebit,
+        au_becs_debit: impl Into<UpdatePaymentMethodConfigurationAuBecsDebit>,
     ) -> Self {
-        self.inner.au_becs_debit = Some(au_becs_debit);
+        self.inner.au_becs_debit = Some(au_becs_debit.into());
         self
     }
     /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://stripe.com/docs/payments/payment-methods/bacs-debit) for more details.
-    pub fn bacs_debit(mut self, bacs_debit: UpdatePaymentMethodConfigurationBacsDebit) -> Self {
-        self.inner.bacs_debit = Some(bacs_debit);
+    pub fn bacs_debit(
+        mut self,
+        bacs_debit: impl Into<UpdatePaymentMethodConfigurationBacsDebit>,
+    ) -> Self {
+        self.inner.bacs_debit = Some(bacs_debit.into());
         self
     }
     /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
     /// [Customers](https://stripe.com/docs/api/customers) use a Bancontact card or mobile app linked to a Belgian bank account to make online payments that are secure, guaranteed, and confirmed immediately.
     /// Check this [page](https://stripe.com/docs/payments/bancontact) for more details.
-    pub fn bancontact(mut self, bancontact: UpdatePaymentMethodConfigurationBancontact) -> Self {
-        self.inner.bancontact = Some(bancontact);
+    pub fn bancontact(
+        mut self,
+        bancontact: impl Into<UpdatePaymentMethodConfigurationBancontact>,
+    ) -> Self {
+        self.inner.bancontact = Some(bancontact.into());
         self
     }
     /// BLIK is a [single use](https://stripe.com/docs/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
     /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
     /// Check this [page](https://stripe.com/docs/payments/blik) for more details.
-    pub fn blik(mut self, blik: UpdatePaymentMethodConfigurationBlik) -> Self {
-        self.inner.blik = Some(blik);
+    pub fn blik(mut self, blik: impl Into<UpdatePaymentMethodConfigurationBlik>) -> Self {
+        self.inner.blik = Some(blik.into());
         self
     }
     /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
     /// Check this [page](https://stripe.com/docs/payments/boleto) for more details.
-    pub fn boleto(mut self, boleto: UpdatePaymentMethodConfigurationBoleto) -> Self {
-        self.inner.boleto = Some(boleto);
+    pub fn boleto(mut self, boleto: impl Into<UpdatePaymentMethodConfigurationBoleto>) -> Self {
+        self.inner.boleto = Some(boleto.into());
         self
     }
     /// Cards are a popular way for consumers and businesses to pay online or in person.
     /// Stripe supports global and local card networks.
-    pub fn card(mut self, card: UpdatePaymentMethodConfigurationCard) -> Self {
-        self.inner.card = Some(card);
+    pub fn card(mut self, card: impl Into<UpdatePaymentMethodConfigurationCard>) -> Self {
+        self.inner.card = Some(card.into());
         self
     }
     /// Cartes Bancaires is France's local card network.
@@ -8400,15 +8454,15 @@ impl<'a> UpdatePaymentMethodConfiguration<'a> {
     /// Check this [page](https://stripe.com/docs/payments/cartes-bancaires) for more details.
     pub fn cartes_bancaires(
         mut self,
-        cartes_bancaires: UpdatePaymentMethodConfigurationCartesBancaires,
+        cartes_bancaires: impl Into<UpdatePaymentMethodConfigurationCartesBancaires>,
     ) -> Self {
-        self.inner.cartes_bancaires = Some(cartes_bancaires);
+        self.inner.cartes_bancaires = Some(cartes_bancaires.into());
         self
     }
     /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
     /// Check this [page](https://stripe.com/docs/payments/cash-app-pay) for more details.
-    pub fn cashapp(mut self, cashapp: UpdatePaymentMethodConfigurationCashapp) -> Self {
-        self.inner.cashapp = Some(cashapp);
+    pub fn cashapp(mut self, cashapp: impl Into<UpdatePaymentMethodConfigurationCashapp>) -> Self {
+        self.inner.cashapp = Some(cashapp.into());
         self
     }
     /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
@@ -8416,29 +8470,29 @@ impl<'a> UpdatePaymentMethodConfiguration<'a> {
     /// Check this [page](https://stripe.com/docs/payments/bank-transfers) for more details.
     pub fn customer_balance(
         mut self,
-        customer_balance: UpdatePaymentMethodConfigurationCustomerBalance,
+        customer_balance: impl Into<UpdatePaymentMethodConfigurationCustomerBalance>,
     ) -> Self {
-        self.inner.customer_balance = Some(customer_balance);
+        self.inner.customer_balance = Some(customer_balance.into());
         self
     }
     /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
     /// EPS is supported by all Austrian banks and is accepted by over 80% of Austrian online retailers.
     /// Check this [page](https://stripe.com/docs/payments/eps) for more details.
-    pub fn eps(mut self, eps: UpdatePaymentMethodConfigurationEps) -> Self {
-        self.inner.eps = Some(eps);
+    pub fn eps(mut self, eps: impl Into<UpdatePaymentMethodConfigurationEps>) -> Self {
+        self.inner.eps = Some(eps.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Financial Process Exchange (FPX) is a Malaysia-based payment method that allows customers to complete transactions online using their bank credentials.
     /// Bank Negara Malaysia (BNM), the Central Bank of Malaysia, and eleven other major Malaysian financial institutions are members of the PayNet Group, which owns and operates FPX.
     /// It is one of the most popular online payment methods in Malaysia, with nearly 90 million transactions in 2018 according to BNM.
     /// Check this [page](https://stripe.com/docs/payments/fpx) for more details.
-    pub fn fpx(mut self, fpx: UpdatePaymentMethodConfigurationFpx) -> Self {
-        self.inner.fpx = Some(fpx);
+    pub fn fpx(mut self, fpx: impl Into<UpdatePaymentMethodConfigurationFpx>) -> Self {
+        self.inner.fpx = Some(fpx.into());
         self
     }
     /// giropay is a German payment method based on online banking, introduced in 2006.
@@ -8446,152 +8500,170 @@ impl<'a> UpdatePaymentMethodConfiguration<'a> {
     /// Depending on their bank, customers confirm payments on giropay using a second factor of authentication or a PIN.
     /// giropay accounts for 10% of online checkouts in Germany.
     /// Check this [page](https://stripe.com/docs/payments/giropay) for more details.
-    pub fn giropay(mut self, giropay: UpdatePaymentMethodConfigurationGiropay) -> Self {
-        self.inner.giropay = Some(giropay);
+    pub fn giropay(mut self, giropay: impl Into<UpdatePaymentMethodConfigurationGiropay>) -> Self {
+        self.inner.giropay = Some(giropay.into());
         self
     }
     /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
     /// Use the Google Pay API to request any credit or debit card stored in your customer's Google account.
     /// Check this [page](https://stripe.com/docs/google-pay) for more details.
-    pub fn google_pay(mut self, google_pay: UpdatePaymentMethodConfigurationGooglePay) -> Self {
-        self.inner.google_pay = Some(google_pay);
+    pub fn google_pay(
+        mut self,
+        google_pay: impl Into<UpdatePaymentMethodConfigurationGooglePay>,
+    ) -> Self {
+        self.inner.google_pay = Some(google_pay.into());
         self
     }
     /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
     /// GrabPay is a digital wallet - customers maintain a balance in their wallets that they pay out with.
     /// Check this [page](https://stripe.com/docs/payments/grabpay) for more details.
-    pub fn grabpay(mut self, grabpay: UpdatePaymentMethodConfigurationGrabpay) -> Self {
-        self.inner.grabpay = Some(grabpay);
+    pub fn grabpay(mut self, grabpay: impl Into<UpdatePaymentMethodConfigurationGrabpay>) -> Self {
+        self.inner.grabpay = Some(grabpay.into());
         self
     }
     /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
     /// All major Dutch banks are members of Currence, the scheme that operates iDEAL, making it the most popular online payment method in the Netherlands with a share of online transactions close to 55%.
     /// Check this [page](https://stripe.com/docs/payments/ideal) for more details.
-    pub fn ideal(mut self, ideal: UpdatePaymentMethodConfigurationIdeal) -> Self {
-        self.inner.ideal = Some(ideal);
+    pub fn ideal(mut self, ideal: impl Into<UpdatePaymentMethodConfigurationIdeal>) -> Self {
+        self.inner.ideal = Some(ideal.into());
         self
     }
     /// JCB is a credit card company based in Japan.
     /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
     /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
-    pub fn jcb(mut self, jcb: UpdatePaymentMethodConfigurationJcb) -> Self {
-        self.inner.jcb = Some(jcb);
+    pub fn jcb(mut self, jcb: impl Into<UpdatePaymentMethodConfigurationJcb>) -> Self {
+        self.inner.jcb = Some(jcb.into());
         self
     }
     /// Klarna gives customers a range of [payment options](https://stripe.com/docs/payments/klarna#payment-options) during checkout.
     /// Available payment options vary depending on the customer's billing address and the transaction amount.
     /// These payment options make it convenient for customers to purchase items in all price ranges.
     /// Check this [page](https://stripe.com/docs/payments/klarna) for more details.
-    pub fn klarna(mut self, klarna: UpdatePaymentMethodConfigurationKlarna) -> Self {
-        self.inner.klarna = Some(klarna);
+    pub fn klarna(mut self, klarna: impl Into<UpdatePaymentMethodConfigurationKlarna>) -> Self {
+        self.inner.klarna = Some(klarna.into());
         self
     }
     /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
     /// Check this [page](https://stripe.com/docs/payments/konbini) for more details.
-    pub fn konbini(mut self, konbini: UpdatePaymentMethodConfigurationKonbini) -> Self {
-        self.inner.konbini = Some(konbini);
+    pub fn konbini(mut self, konbini: impl Into<UpdatePaymentMethodConfigurationKonbini>) -> Self {
+        self.inner.konbini = Some(konbini.into());
         self
     }
     /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
     /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
-    pub fn link(mut self, link: UpdatePaymentMethodConfigurationLink) -> Self {
-        self.inner.link = Some(link);
+    pub fn link(mut self, link: impl Into<UpdatePaymentMethodConfigurationLink>) -> Self {
+        self.inner.link = Some(link.into());
         self
     }
     /// MobilePay is a [single-use](https://stripe.com/docs/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
     /// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the MobilePay app.
     /// Check this [page](https://stripe.com/docs/payments/mobilepay) for more details.
-    pub fn mobilepay(mut self, mobilepay: UpdatePaymentMethodConfigurationMobilepay) -> Self {
-        self.inner.mobilepay = Some(mobilepay);
+    pub fn mobilepay(
+        mut self,
+        mobilepay: impl Into<UpdatePaymentMethodConfigurationMobilepay>,
+    ) -> Self {
+        self.inner.mobilepay = Some(mobilepay.into());
         self
     }
     /// Configuration name.
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
     /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
     /// OXXO allows customers to pay bills and online purchases in-store with cash.
     /// Check this [page](https://stripe.com/docs/payments/oxxo) for more details.
-    pub fn oxxo(mut self, oxxo: UpdatePaymentMethodConfigurationOxxo) -> Self {
-        self.inner.oxxo = Some(oxxo);
+    pub fn oxxo(mut self, oxxo: impl Into<UpdatePaymentMethodConfigurationOxxo>) -> Self {
+        self.inner.oxxo = Some(oxxo.into());
         self
     }
     /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
     /// Bank transfers account for 30% of online payments in Poland and Przelewy24 provides a way for customers to pay with over 165 banks.
     /// Check this [page](https://stripe.com/docs/payments/p24) for more details.
-    pub fn p24(mut self, p24: UpdatePaymentMethodConfigurationP24) -> Self {
-        self.inner.p24 = Some(p24);
+    pub fn p24(mut self, p24: impl Into<UpdatePaymentMethodConfigurationP24>) -> Self {
+        self.inner.p24 = Some(p24.into());
         self
     }
     /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
     /// Check this [page](https://stripe.com/docs/payments/paynow) for more details.
-    pub fn paynow(mut self, paynow: UpdatePaymentMethodConfigurationPaynow) -> Self {
-        self.inner.paynow = Some(paynow);
+    pub fn paynow(mut self, paynow: impl Into<UpdatePaymentMethodConfigurationPaynow>) -> Self {
+        self.inner.paynow = Some(paynow.into());
         self
     }
     /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
     /// Check this [page](https://stripe.com/docs/payments/paypal) for more details.
-    pub fn paypal(mut self, paypal: UpdatePaymentMethodConfigurationPaypal) -> Self {
-        self.inner.paypal = Some(paypal);
+    pub fn paypal(mut self, paypal: impl Into<UpdatePaymentMethodConfigurationPaypal>) -> Self {
+        self.inner.paypal = Some(paypal.into());
         self
     }
     /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
     /// Check this [page](https://stripe.com/docs/payments/promptpay) for more details.
-    pub fn promptpay(mut self, promptpay: UpdatePaymentMethodConfigurationPromptpay) -> Self {
-        self.inner.promptpay = Some(promptpay);
+    pub fn promptpay(
+        mut self,
+        promptpay: impl Into<UpdatePaymentMethodConfigurationPromptpay>,
+    ) -> Self {
+        self.inner.promptpay = Some(promptpay.into());
         self
     }
     /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
     /// Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
-    pub fn revolut_pay(mut self, revolut_pay: UpdatePaymentMethodConfigurationRevolutPay) -> Self {
-        self.inner.revolut_pay = Some(revolut_pay);
+    pub fn revolut_pay(
+        mut self,
+        revolut_pay: impl Into<UpdatePaymentMethodConfigurationRevolutPay>,
+    ) -> Self {
+        self.inner.revolut_pay = Some(revolut_pay.into());
         self
     }
     /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
     /// SEPA established and enforced banking standards to allow for the direct debiting of every EUR-denominated bank account within the SEPA region, check this [page](https://stripe.com/docs/payments/sepa-debit) for more details.
-    pub fn sepa_debit(mut self, sepa_debit: UpdatePaymentMethodConfigurationSepaDebit) -> Self {
-        self.inner.sepa_debit = Some(sepa_debit);
+    pub fn sepa_debit(
+        mut self,
+        sepa_debit: impl Into<UpdatePaymentMethodConfigurationSepaDebit>,
+    ) -> Self {
+        self.inner.sepa_debit = Some(sepa_debit.into());
         self
     }
     /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
     /// Check this [page](https://stripe.com/docs/payments/sofort) for more details.
-    pub fn sofort(mut self, sofort: UpdatePaymentMethodConfigurationSofort) -> Self {
-        self.inner.sofort = Some(sofort);
+    pub fn sofort(mut self, sofort: impl Into<UpdatePaymentMethodConfigurationSofort>) -> Self {
+        self.inner.sofort = Some(sofort.into());
         self
     }
     /// Swish is a [real-time](https://stripe.com/docs/payments/real-time) payment method popular in Sweden.
     /// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
     /// Check this [page](https://stripe.com/docs/payments/swish) for more details.
-    pub fn swish(mut self, swish: UpdatePaymentMethodConfigurationSwish) -> Self {
-        self.inner.swish = Some(swish);
+    pub fn swish(mut self, swish: impl Into<UpdatePaymentMethodConfigurationSwish>) -> Self {
+        self.inner.swish = Some(swish.into());
         self
     }
     /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
     /// Check this [page](https://stripe.com/docs/payments/ach-debit) for more details.
     pub fn us_bank_account(
         mut self,
-        us_bank_account: UpdatePaymentMethodConfigurationUsBankAccount,
+        us_bank_account: impl Into<UpdatePaymentMethodConfigurationUsBankAccount>,
     ) -> Self {
-        self.inner.us_bank_account = Some(us_bank_account);
+        self.inner.us_bank_account = Some(us_bank_account.into());
         self
     }
     /// WeChat, owned by Tencent, is China's leading mobile app with over 1 billion monthly active users.
     /// Chinese consumers can use WeChat Pay to pay for goods and services inside of businesses' apps and websites.
     /// WeChat Pay users buy most frequently in gaming, e-commerce, travel, online education, and food/nutrition.
     /// Check this [page](https://stripe.com/docs/payments/wechat-pay) for more details.
-    pub fn wechat_pay(mut self, wechat_pay: UpdatePaymentMethodConfigurationWechatPay) -> Self {
-        self.inner.wechat_pay = Some(wechat_pay);
+    pub fn wechat_pay(
+        mut self,
+        wechat_pay: impl Into<UpdatePaymentMethodConfigurationWechatPay>,
+    ) -> Self {
+        self.inner.wechat_pay = Some(wechat_pay.into());
         self
     }
     /// Zip gives your customers a way to split purchases over a series of payments.
     /// Check this [page](https://stripe.com/docs/payments/zip) for more details like country availability.
-    pub fn zip(mut self, zip: UpdatePaymentMethodConfigurationZip) -> Self {
-        self.inner.zip = Some(zip);
+    pub fn zip(mut self, zip: impl Into<UpdatePaymentMethodConfigurationZip>) -> Self {
+        self.inner.zip = Some(zip.into());
         self
     }
 }
-impl UpdatePaymentMethodConfiguration<'_> {
+impl UpdatePaymentMethodConfiguration {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -8609,11 +8681,11 @@ impl UpdatePaymentMethodConfiguration<'_> {
     }
 }
 
-impl StripeRequest for UpdatePaymentMethodConfiguration<'_> {
+impl StripeRequest for UpdatePaymentMethodConfiguration {
     type Output = stripe_payment::PaymentMethodConfiguration;
 
     fn build(&self) -> RequestBuilder {
-        let configuration = self.configuration;
+        let configuration = &self.configuration;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/payment_method_configurations/{configuration}"),

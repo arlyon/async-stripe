@@ -368,7 +368,7 @@ impl RequestSpec {
     }
 
     pub fn has_reference(&self, components: &Components) -> bool {
-        if !self.path_params.is_empty() {
+        if self.path_params.iter().any(|p| p.rust_type.has_reference(components)) {
             return true;
         }
         let Some(params) = &self.params else {

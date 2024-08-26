@@ -2,22 +2,22 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListFinancialConnectionsAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_holder: Option<ListFinancialConnectionsAccountAccountHolder<'a>>,
+    account_holder: Option<ListFinancialConnectionsAccountAccountHolder>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    session: Option<&'a str>,
+    session: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListFinancialConnectionsAccountBuilder<'a> {
+impl ListFinancialConnectionsAccountBuilder {
     fn new() -> Self {
         Self {
             account_holder: None,
@@ -31,31 +31,31 @@ impl<'a> ListFinancialConnectionsAccountBuilder<'a> {
 }
 /// If present, only return accounts that belong to the specified account holder.
 /// `account_holder[customer]` and `account_holder[account]` are mutually exclusive.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ListFinancialConnectionsAccountAccountHolder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListFinancialConnectionsAccountAccountHolder {
     /// The ID of the Stripe account whose accounts will be retrieved.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// The ID of the Stripe customer whose accounts will be retrieved.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
+    pub customer: Option<String>,
 }
-impl<'a> ListFinancialConnectionsAccountAccountHolder<'a> {
+impl ListFinancialConnectionsAccountAccountHolder {
     pub fn new() -> Self {
         Self { account: None, customer: None }
     }
 }
-impl<'a> Default for ListFinancialConnectionsAccountAccountHolder<'a> {
+impl Default for ListFinancialConnectionsAccountAccountHolder {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Returns a list of Financial Connections `Account` objects.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListFinancialConnectionsAccount<'a> {
-    inner: ListFinancialConnectionsAccountBuilder<'a>,
+pub struct ListFinancialConnectionsAccount {
+    inner: ListFinancialConnectionsAccountBuilder,
 }
-impl<'a> ListFinancialConnectionsAccount<'a> {
+impl ListFinancialConnectionsAccount {
     /// Construct a new `ListFinancialConnectionsAccount`.
     pub fn new() -> Self {
         Self { inner: ListFinancialConnectionsAccountBuilder::new() }
@@ -64,48 +64,48 @@ impl<'a> ListFinancialConnectionsAccount<'a> {
     /// `account_holder[customer]` and `account_holder[account]` are mutually exclusive.
     pub fn account_holder(
         mut self,
-        account_holder: ListFinancialConnectionsAccountAccountHolder<'a>,
+        account_holder: impl Into<ListFinancialConnectionsAccountAccountHolder>,
     ) -> Self {
-        self.inner.account_holder = Some(account_holder);
+        self.inner.account_holder = Some(account_holder.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// If present, only return accounts that were collected as part of the given session.
-    pub fn session(mut self, session: &'a str) -> Self {
-        self.inner.session = Some(session);
+    pub fn session(mut self, session: impl Into<String>) -> Self {
+        self.inner.session = Some(session.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl<'a> Default for ListFinancialConnectionsAccount<'a> {
+impl Default for ListFinancialConnectionsAccount {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListFinancialConnectionsAccount<'_> {
+impl ListFinancialConnectionsAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -127,45 +127,45 @@ impl ListFinancialConnectionsAccount<'_> {
     ) -> stripe_client_core::ListPaginator<
         stripe_types::List<stripe_misc::FinancialConnectionsAccount>,
     > {
-        stripe_client_core::ListPaginator::new_list("/financial_connections/accounts", self.inner)
+        stripe_client_core::ListPaginator::new_list("/financial_connections/accounts", &self.inner)
     }
 }
 
-impl StripeRequest for ListFinancialConnectionsAccount<'_> {
+impl StripeRequest for ListFinancialConnectionsAccount {
     type Output = stripe_types::List<stripe_misc::FinancialConnectionsAccount>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/financial_connections/accounts").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveFinancialConnectionsAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveFinancialConnectionsAccountBuilder<'a> {
+impl RetrieveFinancialConnectionsAccountBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves the details of an Financial Connections `Account`.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveFinancialConnectionsAccount<'a> {
-    inner: RetrieveFinancialConnectionsAccountBuilder<'a>,
-    account: &'a stripe_misc::FinancialConnectionsAccountId,
+pub struct RetrieveFinancialConnectionsAccount {
+    inner: RetrieveFinancialConnectionsAccountBuilder,
+    account: stripe_misc::FinancialConnectionsAccountId,
 }
-impl<'a> RetrieveFinancialConnectionsAccount<'a> {
+impl RetrieveFinancialConnectionsAccount {
     /// Construct a new `RetrieveFinancialConnectionsAccount`.
-    pub fn new(account: &'a stripe_misc::FinancialConnectionsAccountId) -> Self {
-        Self { account, inner: RetrieveFinancialConnectionsAccountBuilder::new() }
+    pub fn new(account: impl Into<stripe_misc::FinancialConnectionsAccountId>) -> Self {
+        Self { account: account.into(), inner: RetrieveFinancialConnectionsAccountBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveFinancialConnectionsAccount<'_> {
+impl RetrieveFinancialConnectionsAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -183,73 +183,82 @@ impl RetrieveFinancialConnectionsAccount<'_> {
     }
 }
 
-impl StripeRequest for RetrieveFinancialConnectionsAccount<'_> {
+impl StripeRequest for RetrieveFinancialConnectionsAccount {
     type Output = stripe_misc::FinancialConnectionsAccount;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
+        let account = &self.account;
         RequestBuilder::new(StripeMethod::Get, format!("/financial_connections/accounts/{account}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListOwnersFinancialConnectionsAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListOwnersFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
-    ownership: &'a str,
+    ownership: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListOwnersFinancialConnectionsAccountBuilder<'a> {
-    fn new(ownership: &'a str) -> Self {
-        Self { ending_before: None, expand: None, limit: None, ownership, starting_after: None }
+impl ListOwnersFinancialConnectionsAccountBuilder {
+    fn new(ownership: impl Into<String>) -> Self {
+        Self {
+            ending_before: None,
+            expand: None,
+            limit: None,
+            ownership: ownership.into(),
+            starting_after: None,
+        }
     }
 }
 /// Lists all owners for a given `Account`
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListOwnersFinancialConnectionsAccount<'a> {
-    inner: ListOwnersFinancialConnectionsAccountBuilder<'a>,
-    account: &'a stripe_misc::FinancialConnectionsAccountId,
+pub struct ListOwnersFinancialConnectionsAccount {
+    inner: ListOwnersFinancialConnectionsAccountBuilder,
+    account: stripe_misc::FinancialConnectionsAccountId,
 }
-impl<'a> ListOwnersFinancialConnectionsAccount<'a> {
+impl ListOwnersFinancialConnectionsAccount {
     /// Construct a new `ListOwnersFinancialConnectionsAccount`.
     pub fn new(
-        account: &'a stripe_misc::FinancialConnectionsAccountId,
-        ownership: &'a str,
+        account: impl Into<stripe_misc::FinancialConnectionsAccountId>,
+        ownership: impl Into<String>,
     ) -> Self {
-        Self { account, inner: ListOwnersFinancialConnectionsAccountBuilder::new(ownership) }
+        Self {
+            account: account.into(),
+            inner: ListOwnersFinancialConnectionsAccountBuilder::new(ownership.into()),
+        }
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl ListOwnersFinancialConnectionsAccount<'_> {
+impl ListOwnersFinancialConnectionsAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -271,20 +280,20 @@ impl ListOwnersFinancialConnectionsAccount<'_> {
     ) -> stripe_client_core::ListPaginator<
         stripe_types::List<stripe_misc::FinancialConnectionsAccountOwner>,
     > {
-        let account = self.account;
+        let account = &self.account;
 
         stripe_client_core::ListPaginator::new_list(
             format!("/financial_connections/accounts/{account}/owners"),
-            self.inner,
+            &self.inner,
         )
     }
 }
 
-impl StripeRequest for ListOwnersFinancialConnectionsAccount<'_> {
+impl StripeRequest for ListOwnersFinancialConnectionsAccount {
     type Output = stripe_types::List<stripe_misc::FinancialConnectionsAccountOwner>;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
+        let account = &self.account;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/financial_connections/accounts/{account}/owners"),
@@ -292,12 +301,12 @@ impl StripeRequest for ListOwnersFinancialConnectionsAccount<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct DisconnectFinancialConnectionsAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct DisconnectFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> DisconnectFinancialConnectionsAccountBuilder<'a> {
+impl DisconnectFinancialConnectionsAccountBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
@@ -306,22 +315,22 @@ impl<'a> DisconnectFinancialConnectionsAccountBuilder<'a> {
 /// You will no longer be able to access data associated with the account (e.g.
 /// balances, transactions).
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DisconnectFinancialConnectionsAccount<'a> {
-    inner: DisconnectFinancialConnectionsAccountBuilder<'a>,
-    account: &'a stripe_misc::FinancialConnectionsAccountId,
+pub struct DisconnectFinancialConnectionsAccount {
+    inner: DisconnectFinancialConnectionsAccountBuilder,
+    account: stripe_misc::FinancialConnectionsAccountId,
 }
-impl<'a> DisconnectFinancialConnectionsAccount<'a> {
+impl DisconnectFinancialConnectionsAccount {
     /// Construct a new `DisconnectFinancialConnectionsAccount`.
-    pub fn new(account: &'a stripe_misc::FinancialConnectionsAccountId) -> Self {
-        Self { account, inner: DisconnectFinancialConnectionsAccountBuilder::new() }
+    pub fn new(account: impl Into<stripe_misc::FinancialConnectionsAccountId>) -> Self {
+        Self { account: account.into(), inner: DisconnectFinancialConnectionsAccountBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl DisconnectFinancialConnectionsAccount<'_> {
+impl DisconnectFinancialConnectionsAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -339,11 +348,11 @@ impl DisconnectFinancialConnectionsAccount<'_> {
     }
 }
 
-impl StripeRequest for DisconnectFinancialConnectionsAccount<'_> {
+impl StripeRequest for DisconnectFinancialConnectionsAccount {
     type Output = stripe_misc::FinancialConnectionsAccount;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
+        let account = &self.account;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/financial_connections/accounts/{account}/disconnect"),
@@ -351,15 +360,15 @@ impl StripeRequest for DisconnectFinancialConnectionsAccount<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RefreshFinancialConnectionsAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RefreshFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    features: &'a [RefreshFinancialConnectionsAccountFeatures],
+    expand: Option<Vec<String>>,
+    features: Vec<RefreshFinancialConnectionsAccountFeatures>,
 }
-impl<'a> RefreshFinancialConnectionsAccountBuilder<'a> {
-    fn new(features: &'a [RefreshFinancialConnectionsAccountFeatures]) -> Self {
-        Self { expand: None, features }
+impl RefreshFinancialConnectionsAccountBuilder {
+    fn new(features: impl Into<Vec<RefreshFinancialConnectionsAccountFeatures>>) -> Self {
+        Self { expand: None, features: features.into() }
     }
 }
 /// The list of account features that you would like to refresh.
@@ -423,25 +432,28 @@ impl<'de> serde::Deserialize<'de> for RefreshFinancialConnectionsAccountFeatures
 }
 /// Refreshes the data associated with a Financial Connections `Account`.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RefreshFinancialConnectionsAccount<'a> {
-    inner: RefreshFinancialConnectionsAccountBuilder<'a>,
-    account: &'a stripe_misc::FinancialConnectionsAccountId,
+pub struct RefreshFinancialConnectionsAccount {
+    inner: RefreshFinancialConnectionsAccountBuilder,
+    account: stripe_misc::FinancialConnectionsAccountId,
 }
-impl<'a> RefreshFinancialConnectionsAccount<'a> {
+impl RefreshFinancialConnectionsAccount {
     /// Construct a new `RefreshFinancialConnectionsAccount`.
     pub fn new(
-        account: &'a stripe_misc::FinancialConnectionsAccountId,
-        features: &'a [RefreshFinancialConnectionsAccountFeatures],
+        account: impl Into<stripe_misc::FinancialConnectionsAccountId>,
+        features: impl Into<Vec<RefreshFinancialConnectionsAccountFeatures>>,
     ) -> Self {
-        Self { account, inner: RefreshFinancialConnectionsAccountBuilder::new(features) }
+        Self {
+            account: account.into(),
+            inner: RefreshFinancialConnectionsAccountBuilder::new(features.into()),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RefreshFinancialConnectionsAccount<'_> {
+impl RefreshFinancialConnectionsAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -459,11 +471,11 @@ impl RefreshFinancialConnectionsAccount<'_> {
     }
 }
 
-impl StripeRequest for RefreshFinancialConnectionsAccount<'_> {
+impl StripeRequest for RefreshFinancialConnectionsAccount {
     type Output = stripe_misc::FinancialConnectionsAccount;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
+        let account = &self.account;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/financial_connections/accounts/{account}/refresh"),
@@ -471,15 +483,15 @@ impl StripeRequest for RefreshFinancialConnectionsAccount<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct SubscribeFinancialConnectionsAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct SubscribeFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    features: &'a [SubscribeFinancialConnectionsAccountFeatures],
+    expand: Option<Vec<String>>,
+    features: Vec<SubscribeFinancialConnectionsAccountFeatures>,
 }
-impl<'a> SubscribeFinancialConnectionsAccountBuilder<'a> {
-    fn new(features: &'a [SubscribeFinancialConnectionsAccountFeatures]) -> Self {
-        Self { expand: None, features }
+impl SubscribeFinancialConnectionsAccountBuilder {
+    fn new(features: impl Into<Vec<SubscribeFinancialConnectionsAccountFeatures>>) -> Self {
+        Self { expand: None, features: features.into() }
     }
 }
 /// The list of account features to which you would like to subscribe.
@@ -539,25 +551,28 @@ impl<'de> serde::Deserialize<'de> for SubscribeFinancialConnectionsAccountFeatur
 }
 /// Subscribes to periodic refreshes of data associated with a Financial Connections `Account`.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct SubscribeFinancialConnectionsAccount<'a> {
-    inner: SubscribeFinancialConnectionsAccountBuilder<'a>,
-    account: &'a stripe_misc::FinancialConnectionsAccountId,
+pub struct SubscribeFinancialConnectionsAccount {
+    inner: SubscribeFinancialConnectionsAccountBuilder,
+    account: stripe_misc::FinancialConnectionsAccountId,
 }
-impl<'a> SubscribeFinancialConnectionsAccount<'a> {
+impl SubscribeFinancialConnectionsAccount {
     /// Construct a new `SubscribeFinancialConnectionsAccount`.
     pub fn new(
-        account: &'a stripe_misc::FinancialConnectionsAccountId,
-        features: &'a [SubscribeFinancialConnectionsAccountFeatures],
+        account: impl Into<stripe_misc::FinancialConnectionsAccountId>,
+        features: impl Into<Vec<SubscribeFinancialConnectionsAccountFeatures>>,
     ) -> Self {
-        Self { account, inner: SubscribeFinancialConnectionsAccountBuilder::new(features) }
+        Self {
+            account: account.into(),
+            inner: SubscribeFinancialConnectionsAccountBuilder::new(features.into()),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl SubscribeFinancialConnectionsAccount<'_> {
+impl SubscribeFinancialConnectionsAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -575,11 +590,11 @@ impl SubscribeFinancialConnectionsAccount<'_> {
     }
 }
 
-impl StripeRequest for SubscribeFinancialConnectionsAccount<'_> {
+impl StripeRequest for SubscribeFinancialConnectionsAccount {
     type Output = stripe_misc::FinancialConnectionsAccount;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
+        let account = &self.account;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/financial_connections/accounts/{account}/subscribe"),
@@ -587,15 +602,15 @@ impl StripeRequest for SubscribeFinancialConnectionsAccount<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UnsubscribeFinancialConnectionsAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UnsubscribeFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    features: &'a [UnsubscribeFinancialConnectionsAccountFeatures],
+    expand: Option<Vec<String>>,
+    features: Vec<UnsubscribeFinancialConnectionsAccountFeatures>,
 }
-impl<'a> UnsubscribeFinancialConnectionsAccountBuilder<'a> {
-    fn new(features: &'a [UnsubscribeFinancialConnectionsAccountFeatures]) -> Self {
-        Self { expand: None, features }
+impl UnsubscribeFinancialConnectionsAccountBuilder {
+    fn new(features: impl Into<Vec<UnsubscribeFinancialConnectionsAccountFeatures>>) -> Self {
+        Self { expand: None, features: features.into() }
     }
 }
 /// The list of account features from which you would like to unsubscribe.
@@ -655,25 +670,28 @@ impl<'de> serde::Deserialize<'de> for UnsubscribeFinancialConnectionsAccountFeat
 }
 /// Unsubscribes from periodic refreshes of data associated with a Financial Connections `Account`.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UnsubscribeFinancialConnectionsAccount<'a> {
-    inner: UnsubscribeFinancialConnectionsAccountBuilder<'a>,
-    account: &'a stripe_misc::FinancialConnectionsAccountId,
+pub struct UnsubscribeFinancialConnectionsAccount {
+    inner: UnsubscribeFinancialConnectionsAccountBuilder,
+    account: stripe_misc::FinancialConnectionsAccountId,
 }
-impl<'a> UnsubscribeFinancialConnectionsAccount<'a> {
+impl UnsubscribeFinancialConnectionsAccount {
     /// Construct a new `UnsubscribeFinancialConnectionsAccount`.
     pub fn new(
-        account: &'a stripe_misc::FinancialConnectionsAccountId,
-        features: &'a [UnsubscribeFinancialConnectionsAccountFeatures],
+        account: impl Into<stripe_misc::FinancialConnectionsAccountId>,
+        features: impl Into<Vec<UnsubscribeFinancialConnectionsAccountFeatures>>,
     ) -> Self {
-        Self { account, inner: UnsubscribeFinancialConnectionsAccountBuilder::new(features) }
+        Self {
+            account: account.into(),
+            inner: UnsubscribeFinancialConnectionsAccountBuilder::new(features.into()),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl UnsubscribeFinancialConnectionsAccount<'_> {
+impl UnsubscribeFinancialConnectionsAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -691,11 +709,11 @@ impl UnsubscribeFinancialConnectionsAccount<'_> {
     }
 }
 
-impl StripeRequest for UnsubscribeFinancialConnectionsAccount<'_> {
+impl StripeRequest for UnsubscribeFinancialConnectionsAccount {
     type Output = stripe_misc::FinancialConnectionsAccount;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
+        let account = &self.account;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/financial_connections/accounts/{account}/unsubscribe"),

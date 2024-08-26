@@ -2,12 +2,12 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateAccountLoginLinkBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateAccountLoginLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> CreateAccountLoginLinkBuilder<'a> {
+impl CreateAccountLoginLinkBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
@@ -16,22 +16,22 @@ impl<'a> CreateAccountLoginLinkBuilder<'a> {
 ///
 /// **You can only create login links for accounts that use the <a href="/connect/express-dashboard">Express Dashboard</a> and are connected to your platform**.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountLoginLink<'a> {
-    inner: CreateAccountLoginLinkBuilder<'a>,
-    account: &'a stripe_shared::AccountId,
+pub struct CreateAccountLoginLink {
+    inner: CreateAccountLoginLinkBuilder,
+    account: stripe_shared::AccountId,
 }
-impl<'a> CreateAccountLoginLink<'a> {
+impl CreateAccountLoginLink {
     /// Construct a new `CreateAccountLoginLink`.
-    pub fn new(account: &'a stripe_shared::AccountId) -> Self {
-        Self { account, inner: CreateAccountLoginLinkBuilder::new() }
+    pub fn new(account: impl Into<stripe_shared::AccountId>) -> Self {
+        Self { account: account.into(), inner: CreateAccountLoginLinkBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl CreateAccountLoginLink<'_> {
+impl CreateAccountLoginLink {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -49,11 +49,11 @@ impl CreateAccountLoginLink<'_> {
     }
 }
 
-impl StripeRequest for CreateAccountLoginLink<'_> {
+impl StripeRequest for CreateAccountLoginLink {
     type Output = stripe_connect::LoginLink;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
+        let account = &self.account;
         RequestBuilder::new(StripeMethod::Post, format!("/accounts/{account}/login_links"))
             .form(&self.inner)
     }

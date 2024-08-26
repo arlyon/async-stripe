@@ -2,66 +2,66 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListTreasuryFinancialAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListTreasuryFinancialAccountBuilder<'a> {
+impl ListTreasuryFinancialAccountBuilder {
     fn new() -> Self {
         Self { created: None, ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of FinancialAccounts.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListTreasuryFinancialAccount<'a> {
-    inner: ListTreasuryFinancialAccountBuilder<'a>,
+pub struct ListTreasuryFinancialAccount {
+    inner: ListTreasuryFinancialAccountBuilder,
 }
-impl<'a> ListTreasuryFinancialAccount<'a> {
+impl ListTreasuryFinancialAccount {
     /// Construct a new `ListTreasuryFinancialAccount`.
     pub fn new() -> Self {
         Self { inner: ListTreasuryFinancialAccountBuilder::new() }
     }
     /// Only return FinancialAccounts that were created during the given date interval.
-    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
-        self.inner.created = Some(created);
+    pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.created = Some(created.into());
         self
     }
     /// An object ID cursor for use in pagination.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit ranging from 1 to 100 (defaults to 10).
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// An object ID cursor for use in pagination.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl<'a> Default for ListTreasuryFinancialAccount<'a> {
+impl Default for ListTreasuryFinancialAccount {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListTreasuryFinancialAccount<'_> {
+impl ListTreasuryFinancialAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -83,45 +83,48 @@ impl ListTreasuryFinancialAccount<'_> {
     ) -> stripe_client_core::ListPaginator<
         stripe_types::List<stripe_treasury::TreasuryFinancialAccount>,
     > {
-        stripe_client_core::ListPaginator::new_list("/treasury/financial_accounts", self.inner)
+        stripe_client_core::ListPaginator::new_list("/treasury/financial_accounts", &self.inner)
     }
 }
 
-impl StripeRequest for ListTreasuryFinancialAccount<'_> {
+impl StripeRequest for ListTreasuryFinancialAccount {
     type Output = stripe_types::List<stripe_treasury::TreasuryFinancialAccount>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/treasury/financial_accounts").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveTreasuryFinancialAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveTreasuryFinancialAccountBuilder<'a> {
+impl RetrieveTreasuryFinancialAccountBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves the details of a FinancialAccount.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveTreasuryFinancialAccount<'a> {
-    inner: RetrieveTreasuryFinancialAccountBuilder<'a>,
-    financial_account: &'a stripe_treasury::TreasuryFinancialAccountId,
+pub struct RetrieveTreasuryFinancialAccount {
+    inner: RetrieveTreasuryFinancialAccountBuilder,
+    financial_account: stripe_treasury::TreasuryFinancialAccountId,
 }
-impl<'a> RetrieveTreasuryFinancialAccount<'a> {
+impl RetrieveTreasuryFinancialAccount {
     /// Construct a new `RetrieveTreasuryFinancialAccount`.
-    pub fn new(financial_account: &'a stripe_treasury::TreasuryFinancialAccountId) -> Self {
-        Self { financial_account, inner: RetrieveTreasuryFinancialAccountBuilder::new() }
+    pub fn new(financial_account: impl Into<stripe_treasury::TreasuryFinancialAccountId>) -> Self {
+        Self {
+            financial_account: financial_account.into(),
+            inner: RetrieveTreasuryFinancialAccountBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveTreasuryFinancialAccount<'_> {
+impl RetrieveTreasuryFinancialAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -139,11 +142,11 @@ impl RetrieveTreasuryFinancialAccount<'_> {
     }
 }
 
-impl StripeRequest for RetrieveTreasuryFinancialAccount<'_> {
+impl StripeRequest for RetrieveTreasuryFinancialAccount {
     type Output = stripe_treasury::TreasuryFinancialAccount;
 
     fn build(&self) -> RequestBuilder {
-        let financial_account = self.financial_account;
+        let financial_account = &self.financial_account;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/treasury/financial_accounts/{financial_account}"),
@@ -151,34 +154,37 @@ impl StripeRequest for RetrieveTreasuryFinancialAccount<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveFeaturesTreasuryFinancialAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveFeaturesTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveFeaturesTreasuryFinancialAccountBuilder<'a> {
+impl RetrieveFeaturesTreasuryFinancialAccountBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves Features information associated with the FinancialAccount.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveFeaturesTreasuryFinancialAccount<'a> {
-    inner: RetrieveFeaturesTreasuryFinancialAccountBuilder<'a>,
-    financial_account: &'a stripe_treasury::TreasuryFinancialAccountId,
+pub struct RetrieveFeaturesTreasuryFinancialAccount {
+    inner: RetrieveFeaturesTreasuryFinancialAccountBuilder,
+    financial_account: stripe_treasury::TreasuryFinancialAccountId,
 }
-impl<'a> RetrieveFeaturesTreasuryFinancialAccount<'a> {
+impl RetrieveFeaturesTreasuryFinancialAccount {
     /// Construct a new `RetrieveFeaturesTreasuryFinancialAccount`.
-    pub fn new(financial_account: &'a stripe_treasury::TreasuryFinancialAccountId) -> Self {
-        Self { financial_account, inner: RetrieveFeaturesTreasuryFinancialAccountBuilder::new() }
+    pub fn new(financial_account: impl Into<stripe_treasury::TreasuryFinancialAccountId>) -> Self {
+        Self {
+            financial_account: financial_account.into(),
+            inner: RetrieveFeaturesTreasuryFinancialAccountBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveFeaturesTreasuryFinancialAccount<'_> {
+impl RetrieveFeaturesTreasuryFinancialAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -196,11 +202,11 @@ impl RetrieveFeaturesTreasuryFinancialAccount<'_> {
     }
 }
 
-impl StripeRequest for RetrieveFeaturesTreasuryFinancialAccount<'_> {
+impl StripeRequest for RetrieveFeaturesTreasuryFinancialAccount {
     type Output = stripe_treasury::TreasuryFinancialAccountFeatures;
 
     fn build(&self) -> RequestBuilder {
-        let financial_account = self.financial_account;
+        let financial_account = &self.financial_account;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/treasury/financial_accounts/{financial_account}/features"),
@@ -208,26 +214,26 @@ impl StripeRequest for RetrieveFeaturesTreasuryFinancialAccount<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateTreasuryFinancialAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     features: Option<CreateTreasuryFinancialAccountFeatures>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     platform_restrictions: Option<CreateTreasuryFinancialAccountPlatformRestrictions>,
-    supported_currencies: &'a [&'a str],
+    supported_currencies: Vec<String>,
 }
-impl<'a> CreateTreasuryFinancialAccountBuilder<'a> {
-    fn new(supported_currencies: &'a [&'a str]) -> Self {
+impl CreateTreasuryFinancialAccountBuilder {
+    fn new(supported_currencies: impl Into<Vec<String>>) -> Self {
         Self {
             expand: None,
             features: None,
             metadata: None,
             platform_restrictions: None,
-            supported_currencies,
+            supported_currencies: supported_currencies.into(),
         }
     }
 }
@@ -283,8 +289,8 @@ pub struct CreateTreasuryFinancialAccountFeaturesCardIssuing {
     pub requested: bool,
 }
 impl CreateTreasuryFinancialAccountFeaturesCardIssuing {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Represents whether this FinancialAccount is eligible for deposit insurance.
@@ -295,8 +301,8 @@ pub struct CreateTreasuryFinancialAccountFeaturesDepositInsurance {
     pub requested: bool,
 }
 impl CreateTreasuryFinancialAccountFeaturesDepositInsurance {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Contains Features that add FinancialAddresses to the FinancialAccount.
@@ -323,8 +329,8 @@ pub struct CreateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
     pub requested: bool,
 }
 impl CreateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Contains settings related to adding funds to a FinancialAccount from another Account with the same owner.
@@ -351,8 +357,8 @@ pub struct CreateTreasuryFinancialAccountFeaturesInboundTransfersAch {
     pub requested: bool,
 }
 impl CreateTreasuryFinancialAccountFeaturesInboundTransfersAch {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Represents the ability for the FinancialAccount to send money to, or receive money from other FinancialAccounts (for example, via OutboundPayment).
@@ -362,8 +368,8 @@ pub struct CreateTreasuryFinancialAccountFeaturesIntraStripeFlows {
     pub requested: bool,
 }
 impl CreateTreasuryFinancialAccountFeaturesIntraStripeFlows {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Includes Features related to initiating money movement out of the FinancialAccount to someone else's bucket of money.
@@ -394,8 +400,8 @@ pub struct CreateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
     pub requested: bool,
 }
 impl CreateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Enables US domestic wire transfers via the OutboundPayments API.
@@ -405,8 +411,8 @@ pub struct CreateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire 
     pub requested: bool,
 }
 impl CreateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Contains a Feature and settings related to moving money out of the FinancialAccount into another Account with the same owner.
@@ -437,8 +443,8 @@ pub struct CreateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
     pub requested: bool,
 }
 impl CreateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Enables US domestic wire transfers via the OutboundTransfers API.
@@ -448,8 +454,8 @@ pub struct CreateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire
     pub requested: bool,
 }
 impl CreateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// The set of functionalities that the platform can restrict on the FinancialAccount.
@@ -594,43 +600,46 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Creates a new FinancialAccount. For now, each connected account can only have one FinancialAccount.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateTreasuryFinancialAccount<'a> {
-    inner: CreateTreasuryFinancialAccountBuilder<'a>,
+pub struct CreateTreasuryFinancialAccount {
+    inner: CreateTreasuryFinancialAccountBuilder,
 }
-impl<'a> CreateTreasuryFinancialAccount<'a> {
+impl CreateTreasuryFinancialAccount {
     /// Construct a new `CreateTreasuryFinancialAccount`.
-    pub fn new(supported_currencies: &'a [&'a str]) -> Self {
-        Self { inner: CreateTreasuryFinancialAccountBuilder::new(supported_currencies) }
+    pub fn new(supported_currencies: impl Into<Vec<String>>) -> Self {
+        Self { inner: CreateTreasuryFinancialAccountBuilder::new(supported_currencies.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Encodes whether a FinancialAccount has access to a particular feature.
     /// Stripe or the platform can control features via the requested field.
-    pub fn features(mut self, features: CreateTreasuryFinancialAccountFeatures) -> Self {
-        self.inner.features = Some(features);
+    pub fn features(mut self, features: impl Into<CreateTreasuryFinancialAccountFeatures>) -> Self {
+        self.inner.features = Some(features.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
     pub fn platform_restrictions(
         mut self,
-        platform_restrictions: CreateTreasuryFinancialAccountPlatformRestrictions,
+        platform_restrictions: impl Into<CreateTreasuryFinancialAccountPlatformRestrictions>,
     ) -> Self {
-        self.inner.platform_restrictions = Some(platform_restrictions);
+        self.inner.platform_restrictions = Some(platform_restrictions.into());
         self
     }
 }
-impl CreateTreasuryFinancialAccount<'_> {
+impl CreateTreasuryFinancialAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -648,25 +657,25 @@ impl CreateTreasuryFinancialAccount<'_> {
     }
 }
 
-impl StripeRequest for CreateTreasuryFinancialAccount<'_> {
+impl StripeRequest for CreateTreasuryFinancialAccount {
     type Output = stripe_treasury::TreasuryFinancialAccount;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/treasury/financial_accounts").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateTreasuryFinancialAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     features: Option<UpdateTreasuryFinancialAccountFeatures>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     platform_restrictions: Option<UpdateTreasuryFinancialAccountPlatformRestrictions>,
 }
-impl<'a> UpdateTreasuryFinancialAccountBuilder<'a> {
+impl UpdateTreasuryFinancialAccountBuilder {
     fn new() -> Self {
         Self { expand: None, features: None, metadata: None, platform_restrictions: None }
     }
@@ -723,8 +732,8 @@ pub struct UpdateTreasuryFinancialAccountFeaturesCardIssuing {
     pub requested: bool,
 }
 impl UpdateTreasuryFinancialAccountFeaturesCardIssuing {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Represents whether this FinancialAccount is eligible for deposit insurance.
@@ -735,8 +744,8 @@ pub struct UpdateTreasuryFinancialAccountFeaturesDepositInsurance {
     pub requested: bool,
 }
 impl UpdateTreasuryFinancialAccountFeaturesDepositInsurance {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Contains Features that add FinancialAddresses to the FinancialAccount.
@@ -763,8 +772,8 @@ pub struct UpdateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
     pub requested: bool,
 }
 impl UpdateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Contains settings related to adding funds to a FinancialAccount from another Account with the same owner.
@@ -791,8 +800,8 @@ pub struct UpdateTreasuryFinancialAccountFeaturesInboundTransfersAch {
     pub requested: bool,
 }
 impl UpdateTreasuryFinancialAccountFeaturesInboundTransfersAch {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Represents the ability for the FinancialAccount to send money to, or receive money from other FinancialAccounts (for example, via OutboundPayment).
@@ -802,8 +811,8 @@ pub struct UpdateTreasuryFinancialAccountFeaturesIntraStripeFlows {
     pub requested: bool,
 }
 impl UpdateTreasuryFinancialAccountFeaturesIntraStripeFlows {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Includes Features related to initiating money movement out of the FinancialAccount to someone else's bucket of money.
@@ -834,8 +843,8 @@ pub struct UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
     pub requested: bool,
 }
 impl UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Enables US domestic wire transfers via the OutboundPayments API.
@@ -845,8 +854,8 @@ pub struct UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire 
     pub requested: bool,
 }
 impl UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Contains a Feature and settings related to moving money out of the FinancialAccount into another Account with the same owner.
@@ -877,8 +886,8 @@ pub struct UpdateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
     pub requested: bool,
 }
 impl UpdateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Enables US domestic wire transfers via the OutboundTransfers API.
@@ -888,8 +897,8 @@ pub struct UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire
     pub requested: bool,
 }
 impl UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// The set of functionalities that the platform can restrict on the FinancialAccount.
@@ -1034,44 +1043,50 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Updates the details of a FinancialAccount.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateTreasuryFinancialAccount<'a> {
-    inner: UpdateTreasuryFinancialAccountBuilder<'a>,
-    financial_account: &'a stripe_treasury::TreasuryFinancialAccountId,
+pub struct UpdateTreasuryFinancialAccount {
+    inner: UpdateTreasuryFinancialAccountBuilder,
+    financial_account: stripe_treasury::TreasuryFinancialAccountId,
 }
-impl<'a> UpdateTreasuryFinancialAccount<'a> {
+impl UpdateTreasuryFinancialAccount {
     /// Construct a new `UpdateTreasuryFinancialAccount`.
-    pub fn new(financial_account: &'a stripe_treasury::TreasuryFinancialAccountId) -> Self {
-        Self { financial_account, inner: UpdateTreasuryFinancialAccountBuilder::new() }
+    pub fn new(financial_account: impl Into<stripe_treasury::TreasuryFinancialAccountId>) -> Self {
+        Self {
+            financial_account: financial_account.into(),
+            inner: UpdateTreasuryFinancialAccountBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Encodes whether a FinancialAccount has access to a particular feature, with a status enum and associated `status_details`.
     /// Stripe or the platform may control features via the requested field.
-    pub fn features(mut self, features: UpdateTreasuryFinancialAccountFeatures) -> Self {
-        self.inner.features = Some(features);
+    pub fn features(mut self, features: impl Into<UpdateTreasuryFinancialAccountFeatures>) -> Self {
+        self.inner.features = Some(features.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
     pub fn platform_restrictions(
         mut self,
-        platform_restrictions: UpdateTreasuryFinancialAccountPlatformRestrictions,
+        platform_restrictions: impl Into<UpdateTreasuryFinancialAccountPlatformRestrictions>,
     ) -> Self {
-        self.inner.platform_restrictions = Some(platform_restrictions);
+        self.inner.platform_restrictions = Some(platform_restrictions.into());
         self
     }
 }
-impl UpdateTreasuryFinancialAccount<'_> {
+impl UpdateTreasuryFinancialAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -1089,11 +1104,11 @@ impl UpdateTreasuryFinancialAccount<'_> {
     }
 }
 
-impl StripeRequest for UpdateTreasuryFinancialAccount<'_> {
+impl StripeRequest for UpdateTreasuryFinancialAccount {
     type Output = stripe_treasury::TreasuryFinancialAccount;
 
     fn build(&self) -> RequestBuilder {
-        let financial_account = self.financial_account;
+        let financial_account = &self.financial_account;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/treasury/financial_accounts/{financial_account}"),
@@ -1101,14 +1116,14 @@ impl StripeRequest for UpdateTreasuryFinancialAccount<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateFeaturesTreasuryFinancialAccountBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateFeaturesTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     card_issuing: Option<UpdateFeaturesTreasuryFinancialAccountCardIssuing>,
     #[serde(skip_serializing_if = "Option::is_none")]
     deposit_insurance: Option<UpdateFeaturesTreasuryFinancialAccountDepositInsurance>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     financial_addresses: Option<UpdateFeaturesTreasuryFinancialAccountFinancialAddresses>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1120,7 +1135,7 @@ struct UpdateFeaturesTreasuryFinancialAccountBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     outbound_transfers: Option<UpdateFeaturesTreasuryFinancialAccountOutboundTransfers>,
 }
-impl<'a> UpdateFeaturesTreasuryFinancialAccountBuilder<'a> {
+impl UpdateFeaturesTreasuryFinancialAccountBuilder {
     fn new() -> Self {
         Self {
             card_issuing: None,
@@ -1141,8 +1156,8 @@ pub struct UpdateFeaturesTreasuryFinancialAccountCardIssuing {
     pub requested: bool,
 }
 impl UpdateFeaturesTreasuryFinancialAccountCardIssuing {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Represents whether this FinancialAccount is eligible for deposit insurance.
@@ -1153,8 +1168,8 @@ pub struct UpdateFeaturesTreasuryFinancialAccountDepositInsurance {
     pub requested: bool,
 }
 impl UpdateFeaturesTreasuryFinancialAccountDepositInsurance {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Contains Features that add FinancialAddresses to the FinancialAccount.
@@ -1181,8 +1196,8 @@ pub struct UpdateFeaturesTreasuryFinancialAccountFinancialAddressesAba {
     pub requested: bool,
 }
 impl UpdateFeaturesTreasuryFinancialAccountFinancialAddressesAba {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Contains settings related to adding funds to a FinancialAccount from another Account with the same owner.
@@ -1209,8 +1224,8 @@ pub struct UpdateFeaturesTreasuryFinancialAccountInboundTransfersAch {
     pub requested: bool,
 }
 impl UpdateFeaturesTreasuryFinancialAccountInboundTransfersAch {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Represents the ability for the FinancialAccount to send money to, or receive money from other FinancialAccounts (for example, via OutboundPayment).
@@ -1220,8 +1235,8 @@ pub struct UpdateFeaturesTreasuryFinancialAccountIntraStripeFlows {
     pub requested: bool,
 }
 impl UpdateFeaturesTreasuryFinancialAccountIntraStripeFlows {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Includes Features related to initiating money movement out of the FinancialAccount to someone else's bucket of money.
@@ -1252,8 +1267,8 @@ pub struct UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsAch {
     pub requested: bool,
 }
 impl UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsAch {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Enables US domestic wire transfers via the OutboundPayments API.
@@ -1263,8 +1278,8 @@ pub struct UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsUsDomesticWire 
     pub requested: bool,
 }
 impl UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsUsDomesticWire {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Contains a Feature and settings related to moving money out of the FinancialAccount into another Account with the same owner.
@@ -1295,8 +1310,8 @@ pub struct UpdateFeaturesTreasuryFinancialAccountOutboundTransfersAch {
     pub requested: bool,
 }
 impl UpdateFeaturesTreasuryFinancialAccountOutboundTransfersAch {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Enables US domestic wire transfers via the OutboundTransfers API.
@@ -1306,85 +1321,88 @@ pub struct UpdateFeaturesTreasuryFinancialAccountOutboundTransfersUsDomesticWire
     pub requested: bool,
 }
 impl UpdateFeaturesTreasuryFinancialAccountOutboundTransfersUsDomesticWire {
-    pub fn new(requested: bool) -> Self {
-        Self { requested }
+    pub fn new(requested: impl Into<bool>) -> Self {
+        Self { requested: requested.into() }
     }
 }
 /// Updates the Features associated with a FinancialAccount.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateFeaturesTreasuryFinancialAccount<'a> {
-    inner: UpdateFeaturesTreasuryFinancialAccountBuilder<'a>,
-    financial_account: &'a stripe_treasury::TreasuryFinancialAccountId,
+pub struct UpdateFeaturesTreasuryFinancialAccount {
+    inner: UpdateFeaturesTreasuryFinancialAccountBuilder,
+    financial_account: stripe_treasury::TreasuryFinancialAccountId,
 }
-impl<'a> UpdateFeaturesTreasuryFinancialAccount<'a> {
+impl UpdateFeaturesTreasuryFinancialAccount {
     /// Construct a new `UpdateFeaturesTreasuryFinancialAccount`.
-    pub fn new(financial_account: &'a stripe_treasury::TreasuryFinancialAccountId) -> Self {
-        Self { financial_account, inner: UpdateFeaturesTreasuryFinancialAccountBuilder::new() }
+    pub fn new(financial_account: impl Into<stripe_treasury::TreasuryFinancialAccountId>) -> Self {
+        Self {
+            financial_account: financial_account.into(),
+            inner: UpdateFeaturesTreasuryFinancialAccountBuilder::new(),
+        }
     }
     /// Encodes the FinancialAccount's ability to be used with the Issuing product, including attaching cards to and drawing funds from the FinancialAccount.
     pub fn card_issuing(
         mut self,
-        card_issuing: UpdateFeaturesTreasuryFinancialAccountCardIssuing,
+        card_issuing: impl Into<UpdateFeaturesTreasuryFinancialAccountCardIssuing>,
     ) -> Self {
-        self.inner.card_issuing = Some(card_issuing);
+        self.inner.card_issuing = Some(card_issuing.into());
         self
     }
     /// Represents whether this FinancialAccount is eligible for deposit insurance.
     /// Various factors determine the insurance amount.
     pub fn deposit_insurance(
         mut self,
-        deposit_insurance: UpdateFeaturesTreasuryFinancialAccountDepositInsurance,
+        deposit_insurance: impl Into<UpdateFeaturesTreasuryFinancialAccountDepositInsurance>,
     ) -> Self {
-        self.inner.deposit_insurance = Some(deposit_insurance);
+        self.inner.deposit_insurance = Some(deposit_insurance.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Contains Features that add FinancialAddresses to the FinancialAccount.
     pub fn financial_addresses(
         mut self,
-        financial_addresses: UpdateFeaturesTreasuryFinancialAccountFinancialAddresses,
+        financial_addresses: impl Into<UpdateFeaturesTreasuryFinancialAccountFinancialAddresses>,
     ) -> Self {
-        self.inner.financial_addresses = Some(financial_addresses);
+        self.inner.financial_addresses = Some(financial_addresses.into());
         self
     }
     /// Contains settings related to adding funds to a FinancialAccount from another Account with the same owner.
     pub fn inbound_transfers(
         mut self,
-        inbound_transfers: UpdateFeaturesTreasuryFinancialAccountInboundTransfers,
+        inbound_transfers: impl Into<UpdateFeaturesTreasuryFinancialAccountInboundTransfers>,
     ) -> Self {
-        self.inner.inbound_transfers = Some(inbound_transfers);
+        self.inner.inbound_transfers = Some(inbound_transfers.into());
         self
     }
     /// Represents the ability for the FinancialAccount to send money to, or receive money from other FinancialAccounts (for example, via OutboundPayment).
     pub fn intra_stripe_flows(
         mut self,
-        intra_stripe_flows: UpdateFeaturesTreasuryFinancialAccountIntraStripeFlows,
+        intra_stripe_flows: impl Into<UpdateFeaturesTreasuryFinancialAccountIntraStripeFlows>,
     ) -> Self {
-        self.inner.intra_stripe_flows = Some(intra_stripe_flows);
+        self.inner.intra_stripe_flows = Some(intra_stripe_flows.into());
         self
     }
     /// Includes Features related to initiating money movement out of the FinancialAccount to someone else's bucket of money.
     pub fn outbound_payments(
         mut self,
-        outbound_payments: UpdateFeaturesTreasuryFinancialAccountOutboundPayments,
+        outbound_payments: impl Into<UpdateFeaturesTreasuryFinancialAccountOutboundPayments>,
     ) -> Self {
-        self.inner.outbound_payments = Some(outbound_payments);
+        self.inner.outbound_payments = Some(outbound_payments.into());
         self
     }
     /// Contains a Feature and settings related to moving money out of the FinancialAccount into another Account with the same owner.
     pub fn outbound_transfers(
         mut self,
-        outbound_transfers: UpdateFeaturesTreasuryFinancialAccountOutboundTransfers,
+        outbound_transfers: impl Into<UpdateFeaturesTreasuryFinancialAccountOutboundTransfers>,
     ) -> Self {
-        self.inner.outbound_transfers = Some(outbound_transfers);
+        self.inner.outbound_transfers = Some(outbound_transfers.into());
         self
     }
 }
-impl UpdateFeaturesTreasuryFinancialAccount<'_> {
+impl UpdateFeaturesTreasuryFinancialAccount {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -1402,11 +1420,11 @@ impl UpdateFeaturesTreasuryFinancialAccount<'_> {
     }
 }
 
-impl StripeRequest for UpdateFeaturesTreasuryFinancialAccount<'_> {
+impl StripeRequest for UpdateFeaturesTreasuryFinancialAccount {
     type Output = stripe_treasury::TreasuryFinancialAccountFeatures;
 
     fn build(&self) -> RequestBuilder {
-        let financial_account = self.financial_account;
+        let financial_account = &self.financial_account;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/treasury/financial_accounts/{financial_account}/features"),

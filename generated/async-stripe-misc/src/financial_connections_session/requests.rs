@@ -2,34 +2,34 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveFinancialConnectionsSessionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveFinancialConnectionsSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveFinancialConnectionsSessionBuilder<'a> {
+impl RetrieveFinancialConnectionsSessionBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves the details of a Financial Connections `Session`
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveFinancialConnectionsSession<'a> {
-    inner: RetrieveFinancialConnectionsSessionBuilder<'a>,
-    session: &'a stripe_misc::FinancialConnectionsSessionId,
+pub struct RetrieveFinancialConnectionsSession {
+    inner: RetrieveFinancialConnectionsSessionBuilder,
+    session: stripe_misc::FinancialConnectionsSessionId,
 }
-impl<'a> RetrieveFinancialConnectionsSession<'a> {
+impl RetrieveFinancialConnectionsSession {
     /// Construct a new `RetrieveFinancialConnectionsSession`.
-    pub fn new(session: &'a stripe_misc::FinancialConnectionsSessionId) -> Self {
-        Self { session, inner: RetrieveFinancialConnectionsSessionBuilder::new() }
+    pub fn new(session: impl Into<stripe_misc::FinancialConnectionsSessionId>) -> Self {
+        Self { session: session.into(), inner: RetrieveFinancialConnectionsSessionBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveFinancialConnectionsSession<'_> {
+impl RetrieveFinancialConnectionsSession {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -47,61 +47,61 @@ impl RetrieveFinancialConnectionsSession<'_> {
     }
 }
 
-impl StripeRequest for RetrieveFinancialConnectionsSession<'_> {
+impl StripeRequest for RetrieveFinancialConnectionsSession {
     type Output = stripe_misc::FinancialConnectionsSession;
 
     fn build(&self) -> RequestBuilder {
-        let session = self.session;
+        let session = &self.session;
         RequestBuilder::new(StripeMethod::Get, format!("/financial_connections/sessions/{session}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateFinancialConnectionsSessionBuilder<'a> {
-    account_holder: CreateFinancialConnectionsSessionAccountHolder<'a>,
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateFinancialConnectionsSessionBuilder {
+    account_holder: CreateFinancialConnectionsSessionAccountHolder,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    filters: Option<CreateFinancialConnectionsSessionFilters<'a>>,
-    permissions: &'a [stripe_misc::FinancialConnectionsSessionPermissions],
+    filters: Option<CreateFinancialConnectionsSessionFilters>,
+    permissions: Vec<stripe_misc::FinancialConnectionsSessionPermissions>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    prefetch: Option<&'a [stripe_misc::FinancialConnectionsSessionPrefetch]>,
+    prefetch: Option<Vec<stripe_misc::FinancialConnectionsSessionPrefetch>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    return_url: Option<&'a str>,
+    return_url: Option<String>,
 }
-impl<'a> CreateFinancialConnectionsSessionBuilder<'a> {
+impl CreateFinancialConnectionsSessionBuilder {
     fn new(
-        account_holder: CreateFinancialConnectionsSessionAccountHolder<'a>,
-        permissions: &'a [stripe_misc::FinancialConnectionsSessionPermissions],
+        account_holder: impl Into<CreateFinancialConnectionsSessionAccountHolder>,
+        permissions: impl Into<Vec<stripe_misc::FinancialConnectionsSessionPermissions>>,
     ) -> Self {
         Self {
-            account_holder,
+            account_holder: account_holder.into(),
             expand: None,
             filters: None,
-            permissions,
+            permissions: permissions.into(),
             prefetch: None,
             return_url: None,
         }
     }
 }
 /// The account holder to link accounts for.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateFinancialConnectionsSessionAccountHolder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateFinancialConnectionsSessionAccountHolder {
     /// The ID of the Stripe account whose accounts will be retrieved.
     /// Should only be present if `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// The ID of the Stripe customer whose accounts will be retrieved.
     /// Should only be present if `type` is `customer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
+    pub customer: Option<String>,
     /// Type of account holder to collect accounts for.
     #[serde(rename = "type")]
     pub type_: CreateFinancialConnectionsSessionAccountHolderType,
 }
-impl<'a> CreateFinancialConnectionsSessionAccountHolder<'a> {
-    pub fn new(type_: CreateFinancialConnectionsSessionAccountHolderType) -> Self {
-        Self { account: None, customer: None, type_ }
+impl CreateFinancialConnectionsSessionAccountHolder {
+    pub fn new(type_: impl Into<CreateFinancialConnectionsSessionAccountHolderType>) -> Self {
+        Self { account: None, customer: None, type_: type_.into() }
     }
 }
 /// Type of account holder to collect accounts for.
@@ -163,56 +163,61 @@ impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionAccountHo
     }
 }
 /// Filters to restrict the kinds of accounts to collect.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateFinancialConnectionsSessionFilters<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateFinancialConnectionsSessionFilters {
     /// List of countries from which to collect accounts.
-    pub countries: &'a [&'a str],
+    pub countries: Vec<String>,
 }
-impl<'a> CreateFinancialConnectionsSessionFilters<'a> {
-    pub fn new(countries: &'a [&'a str]) -> Self {
-        Self { countries }
+impl CreateFinancialConnectionsSessionFilters {
+    pub fn new(countries: impl Into<Vec<String>>) -> Self {
+        Self { countries: countries.into() }
     }
 }
 /// To launch the Financial Connections authorization flow, create a `Session`.
 /// The session’s `client_secret` can be used to launch the flow using Stripe.js.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateFinancialConnectionsSession<'a> {
-    inner: CreateFinancialConnectionsSessionBuilder<'a>,
+pub struct CreateFinancialConnectionsSession {
+    inner: CreateFinancialConnectionsSessionBuilder,
 }
-impl<'a> CreateFinancialConnectionsSession<'a> {
+impl CreateFinancialConnectionsSession {
     /// Construct a new `CreateFinancialConnectionsSession`.
     pub fn new(
-        account_holder: CreateFinancialConnectionsSessionAccountHolder<'a>,
-        permissions: &'a [stripe_misc::FinancialConnectionsSessionPermissions],
+        account_holder: impl Into<CreateFinancialConnectionsSessionAccountHolder>,
+        permissions: impl Into<Vec<stripe_misc::FinancialConnectionsSessionPermissions>>,
     ) -> Self {
-        Self { inner: CreateFinancialConnectionsSessionBuilder::new(account_holder, permissions) }
+        Self {
+            inner: CreateFinancialConnectionsSessionBuilder::new(
+                account_holder.into(),
+                permissions.into(),
+            ),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Filters to restrict the kinds of accounts to collect.
-    pub fn filters(mut self, filters: CreateFinancialConnectionsSessionFilters<'a>) -> Self {
-        self.inner.filters = Some(filters);
+    pub fn filters(mut self, filters: impl Into<CreateFinancialConnectionsSessionFilters>) -> Self {
+        self.inner.filters = Some(filters.into());
         self
     }
     /// List of data features that you would like to retrieve upon account creation.
     pub fn prefetch(
         mut self,
-        prefetch: &'a [stripe_misc::FinancialConnectionsSessionPrefetch],
+        prefetch: impl Into<Vec<stripe_misc::FinancialConnectionsSessionPrefetch>>,
     ) -> Self {
-        self.inner.prefetch = Some(prefetch);
+        self.inner.prefetch = Some(prefetch.into());
         self
     }
     /// For webview integrations only.
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
-    pub fn return_url(mut self, return_url: &'a str) -> Self {
-        self.inner.return_url = Some(return_url);
+    pub fn return_url(mut self, return_url: impl Into<String>) -> Self {
+        self.inner.return_url = Some(return_url.into());
         self
     }
 }
-impl CreateFinancialConnectionsSession<'_> {
+impl CreateFinancialConnectionsSession {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -230,7 +235,7 @@ impl CreateFinancialConnectionsSession<'_> {
     }
 }
 
-impl StripeRequest for CreateFinancialConnectionsSession<'_> {
+impl StripeRequest for CreateFinancialConnectionsSession {
     type Output = stripe_misc::FinancialConnectionsSession;
 
     fn build(&self) -> RequestBuilder {

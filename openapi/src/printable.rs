@@ -39,7 +39,11 @@ pub enum PrintableContainer {
 impl<'a> Display for PrintableWithLifetime<'a> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let Some(lifetime) = self.lifetime else {
-            return write!(f, "{}", self.typ);
+            if self.impl_into {
+                return write!(f, "impl Into<{}>", self.typ);
+            } else {
+                return write!(f, "{}", self.typ);
+            }
         };
 
         use PrintableContainer::*;
@@ -49,31 +53,65 @@ impl<'a> Display for PrintableWithLifetime<'a> {
                 let full_path = PathWithIdent::new(path.as_ref(), ident);
                 if *is_ref {
                     write!(f, "&{lifetime} ")?;
+                } else if self.impl_into {
+                    write!(f, "impl Into<")?;
                 }
                 if *has_ref {
-                    write!(f, "{full_path}<{lifetime}>")
+                    write!(f, "{full_path}<{lifetime}>")?;
                 } else {
-                    write!(f, "{full_path}")
+                    write!(f, "{full_path}")?;
                 }
+                if !*is_ref && self.impl_into {
+                    write!(f, ">")?;
+                }
+                Ok(())
             }
             Simple(typ) => {
-                if typ.is_reference() {
+                let is_ref = typ.is_reference();
+                if is_ref {
                     write!(f, "&{lifetime} ")?;
+                } else if self.impl_into {
+                    write!(f, "impl Into<")?;
                 }
-                f.write_str(typ.ident())
+                f.write_str(typ.ident())?;
+                if !is_ref && self.impl_into {
+                    write!(f, ">")?;
+                }
+                Ok(())
             }
             Container(typ) => match typ {
                 List(inner) => {
                     let inner = PrintableWithLifetime::new(inner, Some(lifetime));
-                    write!(f, "{STRIPE_TYPES}::List<{inner}>")
+                    if self.impl_into {
+                        write!(f, "impl Into<")?;
+                    }
+                    write!(f, "{STRIPE_TYPES}::List<{inner}>")?;
+                    if self.impl_into {
+                        write!(f, ">")?;
+                    }
+                    Ok(())
                 }
                 SearchList(inner) => {
                     let inner = PrintableWithLifetime::new(inner, Some(lifetime));
-                    write!(f, "{STRIPE_TYPES}::SearchList<{inner}>")
+                    if self.impl_into {
+                        write!(f, "impl Into<")?;
+                    }
+                    write!(f, "{STRIPE_TYPES}::SearchList<{inner}>")?;
+                    if self.impl_into {
+                        write!(f, ">")?;
+                    }
+                    Ok(())
                 }
                 Vec(inner) => {
                     let inner = PrintableWithLifetime::new(inner, Some(lifetime));
-                    write!(f, "Vec<{inner}>")
+                    if self.impl_into {
+                        write!(f, "impl Into<")?;
+                    }
+                    write!(f, "Vec<{inner}>")?;
+                    if self.impl_into {
+                        write!(f, ">")?;
+                    }
+                    Ok(())
                 }
                 Slice(inner) => {
                     let inner = PrintableWithLifetime::new(inner, Some(lifetime));
@@ -85,18 +123,38 @@ impl<'a> Display for PrintableWithLifetime<'a> {
                 }
                 Option(inner) => {
                     let inner = PrintableWithLifetime::new(inner, Some(lifetime));
-                    write!(f, "Option<{inner}>")
+                    if self.impl_into {
+                        write!(f, "impl Into<")?;
+                    }
+                    write!(f, "Option<{inner}>")?;
+                    if self.impl_into {
+                        write!(f, ">")?;
+                    }
+                    Ok(())
                 }
                 Box(inner) => {
                     let inner = PrintableWithLifetime::new(inner, Some(lifetime));
-                    write!(f, "Box<{inner}>")
+                    if self.impl_into {
+                        write!(f, "impl Into<")?;
+                    }
+                    write!(f, "Box<{inner}>")?;
+                    if self.impl_into {
+                        write!(f, ">")?;
+                    }
+                    Ok(())
                 }
                 Map { key, value, is_ref } => {
                     let value = PrintableWithLifetime::new(value, Some(lifetime));
                     if *is_ref {
                         write!(f, "&{lifetime} ")?;
+                    } else if self.impl_into {
+                        write!(f, "impl Into<")?;
                     }
-                    write!(f, "std::collections::HashMap<{key}, {value}>")
+                    write!(f, "std::collections::HashMap<{key}, {value}>")?;
+                    if !*is_ref && self.impl_into {
+                        write!(f, ">")?;
+                    }
+                    Ok(())
                 }
             },
         }
@@ -179,11 +237,16 @@ impl Display for Lifetime {
 pub struct PrintableWithLifetime<'a> {
     lifetime: Option<Lifetime>,
     typ: &'a PrintableType,
+    impl_into: bool,
 }
 
 impl<'a> PrintableWithLifetime<'a> {
     pub fn new(typ: &'a PrintableType, lifetime: Option<Lifetime>) -> Self {
-        Self { typ, lifetime }
+        Self { typ, lifetime, impl_into: false }
+    }
+    pub fn impl_into(mut self) -> Self {
+        self.impl_into = true;
+        self
     }
 }
 

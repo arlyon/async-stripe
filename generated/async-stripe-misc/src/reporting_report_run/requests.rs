@@ -2,71 +2,71 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListReportingReportRunBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListReportingReportRunBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListReportingReportRunBuilder<'a> {
+impl ListReportingReportRunBuilder {
     fn new() -> Self {
         Self { created: None, ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of Report Runs, with the most recent appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListReportingReportRun<'a> {
-    inner: ListReportingReportRunBuilder<'a>,
+pub struct ListReportingReportRun {
+    inner: ListReportingReportRunBuilder,
 }
-impl<'a> ListReportingReportRun<'a> {
+impl ListReportingReportRun {
     /// Construct a new `ListReportingReportRun`.
     pub fn new() -> Self {
         Self { inner: ListReportingReportRunBuilder::new() }
     }
     /// Only return Report Runs that were created during the given date interval.
-    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
-        self.inner.created = Some(created);
+    pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.created = Some(created.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl<'a> Default for ListReportingReportRun<'a> {
+impl Default for ListReportingReportRun {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListReportingReportRun<'_> {
+impl ListReportingReportRun {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -87,45 +87,45 @@ impl ListReportingReportRun<'_> {
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_misc::ReportingReportRun>>
     {
-        stripe_client_core::ListPaginator::new_list("/reporting/report_runs", self.inner)
+        stripe_client_core::ListPaginator::new_list("/reporting/report_runs", &self.inner)
     }
 }
 
-impl StripeRequest for ListReportingReportRun<'_> {
+impl StripeRequest for ListReportingReportRun {
     type Output = stripe_types::List<stripe_misc::ReportingReportRun>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/reporting/report_runs").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveReportingReportRunBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveReportingReportRunBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveReportingReportRunBuilder<'a> {
+impl RetrieveReportingReportRunBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves the details of an existing Report Run.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveReportingReportRun<'a> {
-    inner: RetrieveReportingReportRunBuilder<'a>,
-    report_run: &'a stripe_misc::ReportingReportRunId,
+pub struct RetrieveReportingReportRun {
+    inner: RetrieveReportingReportRunBuilder,
+    report_run: stripe_misc::ReportingReportRunId,
 }
-impl<'a> RetrieveReportingReportRun<'a> {
+impl RetrieveReportingReportRun {
     /// Construct a new `RetrieveReportingReportRun`.
-    pub fn new(report_run: &'a stripe_misc::ReportingReportRunId) -> Self {
-        Self { report_run, inner: RetrieveReportingReportRunBuilder::new() }
+    pub fn new(report_run: impl Into<stripe_misc::ReportingReportRunId>) -> Self {
+        Self { report_run: report_run.into(), inner: RetrieveReportingReportRunBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveReportingReportRun<'_> {
+impl RetrieveReportingReportRun {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -143,39 +143,39 @@ impl RetrieveReportingReportRun<'_> {
     }
 }
 
-impl StripeRequest for RetrieveReportingReportRun<'_> {
+impl StripeRequest for RetrieveReportingReportRun {
     type Output = stripe_misc::ReportingReportRun;
 
     fn build(&self) -> RequestBuilder {
-        let report_run = self.report_run;
+        let report_run = &self.report_run;
         RequestBuilder::new(StripeMethod::Get, format!("/reporting/report_runs/{report_run}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateReportingReportRunBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateReportingReportRunBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    parameters: Option<CreateReportingReportRunParameters<'a>>,
-    report_type: &'a str,
+    parameters: Option<CreateReportingReportRunParameters>,
+    report_type: String,
 }
-impl<'a> CreateReportingReportRunBuilder<'a> {
-    fn new(report_type: &'a str) -> Self {
-        Self { expand: None, parameters: None, report_type }
+impl CreateReportingReportRunBuilder {
+    fn new(report_type: impl Into<String>) -> Self {
+        Self { expand: None, parameters: None, report_type: report_type.into() }
     }
 }
 /// Parameters specifying how the report should be run.
 /// Different Report Types have different required and optional parameters, listed in the [API Access to Reports](https://stripe.com/docs/reporting/statements/api) documentation.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateReportingReportRunParameters<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateReportingReportRunParameters {
     /// The set of report columns to include in the report output.
     /// If omitted, the Report Type is run with its default column set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub columns: Option<&'a [&'a str]>,
+    pub columns: Option<Vec<String>>,
     /// Connected account ID to filter for in the report run.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub connected_account: Option<&'a str>,
+    pub connected_account: Option<String>,
     /// Currency of objects to be included in the report run.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<stripe_types::Currency>,
@@ -187,7 +187,7 @@ pub struct CreateReportingReportRunParameters<'a> {
     pub interval_start: Option<stripe_types::Timestamp>,
     /// Payout ID by which to filter the report run.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payout: Option<&'a str>,
+    pub payout: Option<String>,
     /// Category of balance transactions to be included in the report run.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reporting_category: Option<CreateReportingReportRunParametersReportingCategory>,
@@ -198,7 +198,7 @@ pub struct CreateReportingReportRunParameters<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timezone: Option<CreateReportingReportRunParametersTimezone>,
 }
-impl<'a> CreateReportingReportRunParameters<'a> {
+impl CreateReportingReportRunParameters {
     pub fn new() -> Self {
         Self {
             columns: None,
@@ -212,7 +212,7 @@ impl<'a> CreateReportingReportRunParameters<'a> {
         }
     }
 }
-impl<'a> Default for CreateReportingReportRunParameters<'a> {
+impl Default for CreateReportingReportRunParameters {
     fn default() -> Self {
         Self::new()
     }
@@ -2232,27 +2232,27 @@ impl<'de> serde::Deserialize<'de> for CreateReportingReportRunParametersTimezone
 /// Creates a new object and begin running the report.
 /// (Certain report types require a [live-mode API key](https://stripe.com/docs/keys#test-live-modes).).
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateReportingReportRun<'a> {
-    inner: CreateReportingReportRunBuilder<'a>,
+pub struct CreateReportingReportRun {
+    inner: CreateReportingReportRunBuilder,
 }
-impl<'a> CreateReportingReportRun<'a> {
+impl CreateReportingReportRun {
     /// Construct a new `CreateReportingReportRun`.
-    pub fn new(report_type: &'a str) -> Self {
-        Self { inner: CreateReportingReportRunBuilder::new(report_type) }
+    pub fn new(report_type: impl Into<String>) -> Self {
+        Self { inner: CreateReportingReportRunBuilder::new(report_type.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Parameters specifying how the report should be run.
     /// Different Report Types have different required and optional parameters, listed in the [API Access to Reports](https://stripe.com/docs/reporting/statements/api) documentation.
-    pub fn parameters(mut self, parameters: CreateReportingReportRunParameters<'a>) -> Self {
-        self.inner.parameters = Some(parameters);
+    pub fn parameters(mut self, parameters: impl Into<CreateReportingReportRunParameters>) -> Self {
+        self.inner.parameters = Some(parameters.into());
         self
     }
 }
-impl CreateReportingReportRun<'_> {
+impl CreateReportingReportRun {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -2270,7 +2270,7 @@ impl CreateReportingReportRun<'_> {
     }
 }
 
-impl StripeRequest for CreateReportingReportRun<'_> {
+impl StripeRequest for CreateReportingReportRun {
     type Output = stripe_misc::ReportingReportRun;
 
     fn build(&self) -> RequestBuilder {

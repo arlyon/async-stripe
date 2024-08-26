@@ -2,24 +2,24 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListIdentityVerificationSessionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    client_reference_id: Option<&'a str>,
+    client_reference_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_misc::IdentityVerificationSessionStatus>,
 }
-impl<'a> ListIdentityVerificationSessionBuilder<'a> {
+impl ListIdentityVerificationSessionBuilder {
     fn new() -> Self {
         Self {
             client_reference_id: None,
@@ -34,63 +34,66 @@ impl<'a> ListIdentityVerificationSessionBuilder<'a> {
 }
 /// Returns a list of VerificationSessions
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListIdentityVerificationSession<'a> {
-    inner: ListIdentityVerificationSessionBuilder<'a>,
+pub struct ListIdentityVerificationSession {
+    inner: ListIdentityVerificationSessionBuilder,
 }
-impl<'a> ListIdentityVerificationSession<'a> {
+impl ListIdentityVerificationSession {
     /// Construct a new `ListIdentityVerificationSession`.
     pub fn new() -> Self {
         Self { inner: ListIdentityVerificationSessionBuilder::new() }
     }
     /// A string to reference this user.
     /// This can be a customer ID, a session ID, or similar, and can be used to reconcile this verification with your internal systems.
-    pub fn client_reference_id(mut self, client_reference_id: &'a str) -> Self {
-        self.inner.client_reference_id = Some(client_reference_id);
+    pub fn client_reference_id(mut self, client_reference_id: impl Into<String>) -> Self {
+        self.inner.client_reference_id = Some(client_reference_id.into());
         self
     }
     /// Only return VerificationSessions that were created during the given date interval.
-    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
-        self.inner.created = Some(created);
+    pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.created = Some(created.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// Only return VerificationSessions with this status.
     /// [Learn more about the lifecycle of sessions](https://stripe.com/docs/identity/how-sessions-work).
-    pub fn status(mut self, status: stripe_misc::IdentityVerificationSessionStatus) -> Self {
-        self.inner.status = Some(status);
+    pub fn status(
+        mut self,
+        status: impl Into<stripe_misc::IdentityVerificationSessionStatus>,
+    ) -> Self {
+        self.inner.status = Some(status.into());
         self
     }
 }
-impl<'a> Default for ListIdentityVerificationSession<'a> {
+impl Default for ListIdentityVerificationSession {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListIdentityVerificationSession<'_> {
+impl ListIdentityVerificationSession {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -112,23 +115,23 @@ impl ListIdentityVerificationSession<'_> {
     ) -> stripe_client_core::ListPaginator<
         stripe_types::List<stripe_misc::IdentityVerificationSession>,
     > {
-        stripe_client_core::ListPaginator::new_list("/identity/verification_sessions", self.inner)
+        stripe_client_core::ListPaginator::new_list("/identity/verification_sessions", &self.inner)
     }
 }
 
-impl StripeRequest for ListIdentityVerificationSession<'_> {
+impl StripeRequest for ListIdentityVerificationSession {
     type Output = stripe_types::List<stripe_misc::IdentityVerificationSession>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/identity/verification_sessions").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveIdentityVerificationSessionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveIdentityVerificationSessionBuilder<'a> {
+impl RetrieveIdentityVerificationSessionBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
@@ -138,22 +141,22 @@ impl<'a> RetrieveIdentityVerificationSessionBuilder<'a> {
 /// When the session status is `requires_input`, you can use this method to retrieve a valid
 /// `client_secret` or `url` to allow re-submission.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveIdentityVerificationSession<'a> {
-    inner: RetrieveIdentityVerificationSessionBuilder<'a>,
-    session: &'a stripe_misc::IdentityVerificationSessionId,
+pub struct RetrieveIdentityVerificationSession {
+    inner: RetrieveIdentityVerificationSessionBuilder,
+    session: stripe_misc::IdentityVerificationSessionId,
 }
-impl<'a> RetrieveIdentityVerificationSession<'a> {
+impl RetrieveIdentityVerificationSession {
     /// Construct a new `RetrieveIdentityVerificationSession`.
-    pub fn new(session: &'a stripe_misc::IdentityVerificationSessionId) -> Self {
-        Self { session, inner: RetrieveIdentityVerificationSessionBuilder::new() }
+    pub fn new(session: impl Into<stripe_misc::IdentityVerificationSessionId>) -> Self {
+        Self { session: session.into(), inner: RetrieveIdentityVerificationSessionBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveIdentityVerificationSession<'_> {
+impl RetrieveIdentityVerificationSession {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -171,36 +174,36 @@ impl RetrieveIdentityVerificationSession<'_> {
     }
 }
 
-impl StripeRequest for RetrieveIdentityVerificationSession<'_> {
+impl StripeRequest for RetrieveIdentityVerificationSession {
     type Output = stripe_misc::IdentityVerificationSession;
 
     fn build(&self) -> RequestBuilder {
-        let session = self.session;
+        let session = &self.session;
         RequestBuilder::new(StripeMethod::Get, format!("/identity/verification_sessions/{session}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateIdentityVerificationSessionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    client_reference_id: Option<&'a str>,
+    client_reference_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    options: Option<CreateIdentityVerificationSessionOptions<'a>>,
+    options: Option<CreateIdentityVerificationSessionOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    provided_details: Option<ProvidedDetailsParam<'a>>,
+    provided_details: Option<ProvidedDetailsParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    return_url: Option<&'a str>,
+    return_url: Option<String>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<CreateIdentityVerificationSessionType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    verification_flow: Option<&'a str>,
+    verification_flow: Option<String>,
 }
-impl<'a> CreateIdentityVerificationSessionBuilder<'a> {
+impl CreateIdentityVerificationSessionBuilder {
     fn new() -> Self {
         Self {
             client_reference_id: None,
@@ -215,29 +218,29 @@ impl<'a> CreateIdentityVerificationSessionBuilder<'a> {
     }
 }
 /// A set of options for the session’s verification checks.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateIdentityVerificationSessionOptions<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIdentityVerificationSessionOptions {
     /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<CreateIdentityVerificationSessionOptionsDocument<'a>>,
+    pub document: Option<CreateIdentityVerificationSessionOptionsDocument>,
 }
-impl<'a> CreateIdentityVerificationSessionOptions<'a> {
+impl CreateIdentityVerificationSessionOptions {
     pub fn new() -> Self {
         Self { document: None }
     }
 }
-impl<'a> Default for CreateIdentityVerificationSessionOptions<'a> {
+impl Default for CreateIdentityVerificationSessionOptions {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateIdentityVerificationSessionOptionsDocument<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIdentityVerificationSessionOptionsDocument {
     /// Array of strings of allowed identity document types.
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_types: Option<&'a [CreateIdentityVerificationSessionOptionsDocumentAllowedTypes]>,
+    pub allowed_types: Option<Vec<CreateIdentityVerificationSessionOptionsDocumentAllowedTypes>>,
     /// Collect an ID number and perform an [ID number check](https://stripe.com/docs/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_id_number: Option<bool>,
@@ -249,7 +252,7 @@ pub struct CreateIdentityVerificationSessionOptionsDocument<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_matching_selfie: Option<bool>,
 }
-impl<'a> CreateIdentityVerificationSessionOptionsDocument<'a> {
+impl CreateIdentityVerificationSessionOptionsDocument {
     pub fn new() -> Self {
         Self {
             allowed_types: None,
@@ -259,7 +262,7 @@ impl<'a> CreateIdentityVerificationSessionOptionsDocument<'a> {
         }
     }
 }
-impl<'a> Default for CreateIdentityVerificationSessionOptionsDocument<'a> {
+impl Default for CreateIdentityVerificationSessionOptionsDocument {
     fn default() -> Self {
         Self::new()
     }
@@ -391,67 +394,70 @@ impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionType {
 ///
 /// Related guide: [Verify your users’ identity documents](https://stripe.com/docs/identity/verify-identity-documents).
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateIdentityVerificationSession<'a> {
-    inner: CreateIdentityVerificationSessionBuilder<'a>,
+pub struct CreateIdentityVerificationSession {
+    inner: CreateIdentityVerificationSessionBuilder,
 }
-impl<'a> CreateIdentityVerificationSession<'a> {
+impl CreateIdentityVerificationSession {
     /// Construct a new `CreateIdentityVerificationSession`.
     pub fn new() -> Self {
         Self { inner: CreateIdentityVerificationSessionBuilder::new() }
     }
     /// A string to reference this user.
     /// This can be a customer ID, a session ID, or similar, and can be used to reconcile this verification with your internal systems.
-    pub fn client_reference_id(mut self, client_reference_id: &'a str) -> Self {
-        self.inner.client_reference_id = Some(client_reference_id);
+    pub fn client_reference_id(mut self, client_reference_id: impl Into<String>) -> Self {
+        self.inner.client_reference_id = Some(client_reference_id.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// A set of options for the session’s verification checks.
-    pub fn options(mut self, options: CreateIdentityVerificationSessionOptions<'a>) -> Self {
-        self.inner.options = Some(options);
+    pub fn options(mut self, options: impl Into<CreateIdentityVerificationSessionOptions>) -> Self {
+        self.inner.options = Some(options.into());
         self
     }
     /// Details provided about the user being verified. These details may be shown to the user.
-    pub fn provided_details(mut self, provided_details: ProvidedDetailsParam<'a>) -> Self {
-        self.inner.provided_details = Some(provided_details);
+    pub fn provided_details(mut self, provided_details: impl Into<ProvidedDetailsParam>) -> Self {
+        self.inner.provided_details = Some(provided_details.into());
         self
     }
     /// The URL that the user will be redirected to upon completing the verification flow.
-    pub fn return_url(mut self, return_url: &'a str) -> Self {
-        self.inner.return_url = Some(return_url);
+    pub fn return_url(mut self, return_url: impl Into<String>) -> Self {
+        self.inner.return_url = Some(return_url.into());
         self
     }
     /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
     /// You must provide a `type` if not passing `verification_flow`.
-    pub fn type_(mut self, type_: CreateIdentityVerificationSessionType) -> Self {
-        self.inner.type_ = Some(type_);
+    pub fn type_(mut self, type_: impl Into<CreateIdentityVerificationSessionType>) -> Self {
+        self.inner.type_ = Some(type_.into());
         self
     }
     /// The ID of a Verification Flow from the Dashboard.
     /// See <https://docs.stripe.com/identity/verification-flows>.
-    pub fn verification_flow(mut self, verification_flow: &'a str) -> Self {
-        self.inner.verification_flow = Some(verification_flow);
+    pub fn verification_flow(mut self, verification_flow: impl Into<String>) -> Self {
+        self.inner.verification_flow = Some(verification_flow.into());
         self
     }
 }
-impl<'a> Default for CreateIdentityVerificationSession<'a> {
+impl Default for CreateIdentityVerificationSession {
     fn default() -> Self {
         Self::new()
     }
 }
-impl CreateIdentityVerificationSession<'_> {
+impl CreateIdentityVerificationSession {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -469,56 +475,56 @@ impl CreateIdentityVerificationSession<'_> {
     }
 }
 
-impl StripeRequest for CreateIdentityVerificationSession<'_> {
+impl StripeRequest for CreateIdentityVerificationSession {
     type Output = stripe_misc::IdentityVerificationSession;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/identity/verification_sessions").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateIdentityVerificationSessionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    options: Option<UpdateIdentityVerificationSessionOptions<'a>>,
+    options: Option<UpdateIdentityVerificationSessionOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    provided_details: Option<ProvidedDetailsParam<'a>>,
+    provided_details: Option<ProvidedDetailsParam>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<UpdateIdentityVerificationSessionType>,
 }
-impl<'a> UpdateIdentityVerificationSessionBuilder<'a> {
+impl UpdateIdentityVerificationSessionBuilder {
     fn new() -> Self {
         Self { expand: None, metadata: None, options: None, provided_details: None, type_: None }
     }
 }
 /// A set of options for the session’s verification checks.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateIdentityVerificationSessionOptions<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateIdentityVerificationSessionOptions {
     /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<UpdateIdentityVerificationSessionOptionsDocument<'a>>,
+    pub document: Option<UpdateIdentityVerificationSessionOptionsDocument>,
 }
-impl<'a> UpdateIdentityVerificationSessionOptions<'a> {
+impl UpdateIdentityVerificationSessionOptions {
     pub fn new() -> Self {
         Self { document: None }
     }
 }
-impl<'a> Default for UpdateIdentityVerificationSessionOptions<'a> {
+impl Default for UpdateIdentityVerificationSessionOptions {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateIdentityVerificationSessionOptionsDocument<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateIdentityVerificationSessionOptionsDocument {
     /// Array of strings of allowed identity document types.
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_types: Option<&'a [UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes]>,
+    pub allowed_types: Option<Vec<UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes>>,
     /// Collect an ID number and perform an [ID number check](https://stripe.com/docs/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_id_number: Option<bool>,
@@ -530,7 +536,7 @@ pub struct UpdateIdentityVerificationSessionOptionsDocument<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_matching_selfie: Option<bool>,
 }
-impl<'a> UpdateIdentityVerificationSessionOptionsDocument<'a> {
+impl UpdateIdentityVerificationSessionOptionsDocument {
     pub fn new() -> Self {
         Self {
             allowed_types: None,
@@ -540,7 +546,7 @@ impl<'a> UpdateIdentityVerificationSessionOptionsDocument<'a> {
         }
     }
 }
-impl<'a> Default for UpdateIdentityVerificationSessionOptionsDocument<'a> {
+impl Default for UpdateIdentityVerificationSessionOptionsDocument {
     fn default() -> Self {
         Self::new()
     }
@@ -668,45 +674,48 @@ impl<'de> serde::Deserialize<'de> for UpdateIdentityVerificationSessionType {
 /// When the session status is `requires_input`, you can use this method to update the
 /// verification check and options.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateIdentityVerificationSession<'a> {
-    inner: UpdateIdentityVerificationSessionBuilder<'a>,
-    session: &'a stripe_misc::IdentityVerificationSessionId,
+pub struct UpdateIdentityVerificationSession {
+    inner: UpdateIdentityVerificationSessionBuilder,
+    session: stripe_misc::IdentityVerificationSessionId,
 }
-impl<'a> UpdateIdentityVerificationSession<'a> {
+impl UpdateIdentityVerificationSession {
     /// Construct a new `UpdateIdentityVerificationSession`.
-    pub fn new(session: &'a stripe_misc::IdentityVerificationSessionId) -> Self {
-        Self { session, inner: UpdateIdentityVerificationSessionBuilder::new() }
+    pub fn new(session: impl Into<stripe_misc::IdentityVerificationSessionId>) -> Self {
+        Self { session: session.into(), inner: UpdateIdentityVerificationSessionBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// A set of options for the session’s verification checks.
-    pub fn options(mut self, options: UpdateIdentityVerificationSessionOptions<'a>) -> Self {
-        self.inner.options = Some(options);
+    pub fn options(mut self, options: impl Into<UpdateIdentityVerificationSessionOptions>) -> Self {
+        self.inner.options = Some(options.into());
         self
     }
     /// Details provided about the user being verified. These details may be shown to the user.
-    pub fn provided_details(mut self, provided_details: ProvidedDetailsParam<'a>) -> Self {
-        self.inner.provided_details = Some(provided_details);
+    pub fn provided_details(mut self, provided_details: impl Into<ProvidedDetailsParam>) -> Self {
+        self.inner.provided_details = Some(provided_details.into());
         self
     }
     /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
-    pub fn type_(mut self, type_: UpdateIdentityVerificationSessionType) -> Self {
-        self.inner.type_ = Some(type_);
+    pub fn type_(mut self, type_: impl Into<UpdateIdentityVerificationSessionType>) -> Self {
+        self.inner.type_ = Some(type_.into());
         self
     }
 }
-impl UpdateIdentityVerificationSession<'_> {
+impl UpdateIdentityVerificationSession {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -724,11 +733,11 @@ impl UpdateIdentityVerificationSession<'_> {
     }
 }
 
-impl StripeRequest for UpdateIdentityVerificationSession<'_> {
+impl StripeRequest for UpdateIdentityVerificationSession {
     type Output = stripe_misc::IdentityVerificationSession;
 
     fn build(&self) -> RequestBuilder {
-        let session = self.session;
+        let session = &self.session;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/identity/verification_sessions/{session}"),
@@ -736,12 +745,12 @@ impl StripeRequest for UpdateIdentityVerificationSession<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CancelIdentityVerificationSessionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CancelIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> CancelIdentityVerificationSessionBuilder<'a> {
+impl CancelIdentityVerificationSessionBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
@@ -752,22 +761,22 @@ impl<'a> CancelIdentityVerificationSessionBuilder<'a> {
 /// This cannot be undone.
 /// [Learn more](https://stripe.com/docs/identity/verification-sessions#cancel).
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CancelIdentityVerificationSession<'a> {
-    inner: CancelIdentityVerificationSessionBuilder<'a>,
-    session: &'a stripe_misc::IdentityVerificationSessionId,
+pub struct CancelIdentityVerificationSession {
+    inner: CancelIdentityVerificationSessionBuilder,
+    session: stripe_misc::IdentityVerificationSessionId,
 }
-impl<'a> CancelIdentityVerificationSession<'a> {
+impl CancelIdentityVerificationSession {
     /// Construct a new `CancelIdentityVerificationSession`.
-    pub fn new(session: &'a stripe_misc::IdentityVerificationSessionId) -> Self {
-        Self { session, inner: CancelIdentityVerificationSessionBuilder::new() }
+    pub fn new(session: impl Into<stripe_misc::IdentityVerificationSessionId>) -> Self {
+        Self { session: session.into(), inner: CancelIdentityVerificationSessionBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl CancelIdentityVerificationSession<'_> {
+impl CancelIdentityVerificationSession {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -785,11 +794,11 @@ impl CancelIdentityVerificationSession<'_> {
     }
 }
 
-impl StripeRequest for CancelIdentityVerificationSession<'_> {
+impl StripeRequest for CancelIdentityVerificationSession {
     type Output = stripe_misc::IdentityVerificationSession;
 
     fn build(&self) -> RequestBuilder {
-        let session = self.session;
+        let session = &self.session;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/identity/verification_sessions/{session}/cancel"),
@@ -797,12 +806,12 @@ impl StripeRequest for CancelIdentityVerificationSession<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RedactIdentityVerificationSessionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RedactIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RedactIdentityVerificationSessionBuilder<'a> {
+impl RedactIdentityVerificationSessionBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
@@ -828,22 +837,22 @@ impl<'a> RedactIdentityVerificationSessionBuilder<'a> {
 ///
 /// [Learn more](https://stripe.com/docs/identity/verification-sessions#redact).
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RedactIdentityVerificationSession<'a> {
-    inner: RedactIdentityVerificationSessionBuilder<'a>,
-    session: &'a stripe_misc::IdentityVerificationSessionId,
+pub struct RedactIdentityVerificationSession {
+    inner: RedactIdentityVerificationSessionBuilder,
+    session: stripe_misc::IdentityVerificationSessionId,
 }
-impl<'a> RedactIdentityVerificationSession<'a> {
+impl RedactIdentityVerificationSession {
     /// Construct a new `RedactIdentityVerificationSession`.
-    pub fn new(session: &'a stripe_misc::IdentityVerificationSessionId) -> Self {
-        Self { session, inner: RedactIdentityVerificationSessionBuilder::new() }
+    pub fn new(session: impl Into<stripe_misc::IdentityVerificationSessionId>) -> Self {
+        Self { session: session.into(), inner: RedactIdentityVerificationSessionBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RedactIdentityVerificationSession<'_> {
+impl RedactIdentityVerificationSession {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -861,11 +870,11 @@ impl RedactIdentityVerificationSession<'_> {
     }
 }
 
-impl StripeRequest for RedactIdentityVerificationSession<'_> {
+impl StripeRequest for RedactIdentityVerificationSession {
     type Output = stripe_misc::IdentityVerificationSession;
 
     fn build(&self) -> RequestBuilder {
-        let session = self.session;
+        let session = &self.session;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/identity/verification_sessions/{session}/redact"),
@@ -874,21 +883,21 @@ impl StripeRequest for RedactIdentityVerificationSession<'_> {
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ProvidedDetailsParam<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ProvidedDetailsParam {
     /// Email of user being verified
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<&'a str>,
+    pub email: Option<String>,
     /// Phone number of user being verified
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
+    pub phone: Option<String>,
 }
-impl<'a> ProvidedDetailsParam<'a> {
+impl ProvidedDetailsParam {
     pub fn new() -> Self {
         Self { email: None, phone: None }
     }
 }
-impl<'a> Default for ProvidedDetailsParam<'a> {
+impl Default for ProvidedDetailsParam {
     fn default() -> Self {
         Self::new()
     }

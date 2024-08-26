@@ -2,26 +2,26 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListIssuingTokenBuilder<'a> {
-    card: &'a str,
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListIssuingTokenBuilder {
+    card: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_shared::IssuingTokenStatus>,
 }
-impl<'a> ListIssuingTokenBuilder<'a> {
-    fn new(card: &'a str) -> Self {
+impl ListIssuingTokenBuilder {
+    fn new(card: impl Into<String>) -> Self {
         Self {
-            card,
+            card: card.into(),
             created: None,
             ending_before: None,
             expand: None,
@@ -33,51 +33,51 @@ impl<'a> ListIssuingTokenBuilder<'a> {
 }
 /// Lists all Issuing `Token` objects for a given card.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListIssuingToken<'a> {
-    inner: ListIssuingTokenBuilder<'a>,
+pub struct ListIssuingToken {
+    inner: ListIssuingTokenBuilder,
 }
-impl<'a> ListIssuingToken<'a> {
+impl ListIssuingToken {
     /// Construct a new `ListIssuingToken`.
-    pub fn new(card: &'a str) -> Self {
-        Self { inner: ListIssuingTokenBuilder::new(card) }
+    pub fn new(card: impl Into<String>) -> Self {
+        Self { inner: ListIssuingTokenBuilder::new(card.into()) }
     }
     /// Only return Issuing tokens that were created during the given date interval.
-    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
-        self.inner.created = Some(created);
+    pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.created = Some(created.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// Select Issuing tokens with the given status.
-    pub fn status(mut self, status: stripe_shared::IssuingTokenStatus) -> Self {
-        self.inner.status = Some(status);
+    pub fn status(mut self, status: impl Into<stripe_shared::IssuingTokenStatus>) -> Self {
+        self.inner.status = Some(status.into());
         self
     }
 }
-impl ListIssuingToken<'_> {
+impl ListIssuingToken {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -97,45 +97,45 @@ impl ListIssuingToken<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::IssuingToken>> {
-        stripe_client_core::ListPaginator::new_list("/issuing/tokens", self.inner)
+        stripe_client_core::ListPaginator::new_list("/issuing/tokens", &self.inner)
     }
 }
 
-impl StripeRequest for ListIssuingToken<'_> {
+impl StripeRequest for ListIssuingToken {
     type Output = stripe_types::List<stripe_shared::IssuingToken>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/issuing/tokens").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveIssuingTokenBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveIssuingTokenBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveIssuingTokenBuilder<'a> {
+impl RetrieveIssuingTokenBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves an Issuing `Token` object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveIssuingToken<'a> {
-    inner: RetrieveIssuingTokenBuilder<'a>,
-    token: &'a stripe_shared::IssuingTokenId,
+pub struct RetrieveIssuingToken {
+    inner: RetrieveIssuingTokenBuilder,
+    token: stripe_shared::IssuingTokenId,
 }
-impl<'a> RetrieveIssuingToken<'a> {
+impl RetrieveIssuingToken {
     /// Construct a new `RetrieveIssuingToken`.
-    pub fn new(token: &'a stripe_shared::IssuingTokenId) -> Self {
-        Self { token, inner: RetrieveIssuingTokenBuilder::new() }
+    pub fn new(token: impl Into<stripe_shared::IssuingTokenId>) -> Self {
+        Self { token: token.into(), inner: RetrieveIssuingTokenBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveIssuingToken<'_> {
+impl RetrieveIssuingToken {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -153,24 +153,24 @@ impl RetrieveIssuingToken<'_> {
     }
 }
 
-impl StripeRequest for RetrieveIssuingToken<'_> {
+impl StripeRequest for RetrieveIssuingToken {
     type Output = stripe_shared::IssuingToken;
 
     fn build(&self) -> RequestBuilder {
-        let token = self.token;
+        let token = &self.token;
         RequestBuilder::new(StripeMethod::Get, format!("/issuing/tokens/{token}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateIssuingTokenBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateIssuingTokenBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     status: UpdateIssuingTokenStatus,
 }
-impl<'a> UpdateIssuingTokenBuilder<'a> {
-    fn new(status: UpdateIssuingTokenStatus) -> Self {
-        Self { expand: None, status }
+impl UpdateIssuingTokenBuilder {
+    fn new(status: impl Into<UpdateIssuingTokenStatus>) -> Self {
+        Self { expand: None, status: status.into() }
     }
 }
 /// Specifies which status the token should be updated to.
@@ -233,22 +233,25 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingTokenStatus {
 }
 /// Attempts to update the specified Issuing `Token` object to the status specified.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateIssuingToken<'a> {
-    inner: UpdateIssuingTokenBuilder<'a>,
-    token: &'a stripe_shared::IssuingTokenId,
+pub struct UpdateIssuingToken {
+    inner: UpdateIssuingTokenBuilder,
+    token: stripe_shared::IssuingTokenId,
 }
-impl<'a> UpdateIssuingToken<'a> {
+impl UpdateIssuingToken {
     /// Construct a new `UpdateIssuingToken`.
-    pub fn new(token: &'a stripe_shared::IssuingTokenId, status: UpdateIssuingTokenStatus) -> Self {
-        Self { token, inner: UpdateIssuingTokenBuilder::new(status) }
+    pub fn new(
+        token: impl Into<stripe_shared::IssuingTokenId>,
+        status: impl Into<UpdateIssuingTokenStatus>,
+    ) -> Self {
+        Self { token: token.into(), inner: UpdateIssuingTokenBuilder::new(status.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl UpdateIssuingToken<'_> {
+impl UpdateIssuingToken {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -266,11 +269,11 @@ impl UpdateIssuingToken<'_> {
     }
 }
 
-impl StripeRequest for UpdateIssuingToken<'_> {
+impl StripeRequest for UpdateIssuingToken {
     type Output = stripe_shared::IssuingToken;
 
     fn build(&self) -> RequestBuilder {
-        let token = self.token;
+        let token = &self.token;
         RequestBuilder::new(StripeMethod::Post, format!("/issuing/tokens/{token}"))
             .form(&self.inner)
     }

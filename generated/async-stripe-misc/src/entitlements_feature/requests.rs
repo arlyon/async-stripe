@@ -2,28 +2,28 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListEntitlementsFeatureBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListEntitlementsFeatureBuilder<'a> {
+impl ListEntitlementsFeatureBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Retrieve a list of features
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListEntitlementsFeature<'a> {
-    inner: ListEntitlementsFeatureBuilder<'a>,
+pub struct ListEntitlementsFeature {
+    inner: ListEntitlementsFeatureBuilder,
 }
-impl<'a> ListEntitlementsFeature<'a> {
+impl ListEntitlementsFeature {
     /// Construct a new `ListEntitlementsFeature`.
     pub fn new() -> Self {
         Self { inner: ListEntitlementsFeatureBuilder::new() }
@@ -31,35 +31,35 @@ impl<'a> ListEntitlementsFeature<'a> {
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl<'a> Default for ListEntitlementsFeature<'a> {
+impl Default for ListEntitlementsFeature {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListEntitlementsFeature<'_> {
+impl ListEntitlementsFeature {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -80,45 +80,45 @@ impl ListEntitlementsFeature<'_> {
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::EntitlementsFeature>>
     {
-        stripe_client_core::ListPaginator::new_list("/entitlements/features", self.inner)
+        stripe_client_core::ListPaginator::new_list("/entitlements/features", &self.inner)
     }
 }
 
-impl StripeRequest for ListEntitlementsFeature<'_> {
+impl StripeRequest for ListEntitlementsFeature {
     type Output = stripe_types::List<stripe_shared::EntitlementsFeature>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/entitlements/features").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveEntitlementsFeatureBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveEntitlementsFeatureBuilder<'a> {
+impl RetrieveEntitlementsFeatureBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves a feature
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveEntitlementsFeature<'a> {
-    inner: RetrieveEntitlementsFeatureBuilder<'a>,
-    id: &'a stripe_shared::EntitlementsFeatureId,
+pub struct RetrieveEntitlementsFeature {
+    inner: RetrieveEntitlementsFeatureBuilder,
+    id: stripe_shared::EntitlementsFeatureId,
 }
-impl<'a> RetrieveEntitlementsFeature<'a> {
+impl RetrieveEntitlementsFeature {
     /// Construct a new `RetrieveEntitlementsFeature`.
-    pub fn new(id: &'a stripe_shared::EntitlementsFeatureId) -> Self {
-        Self { id, inner: RetrieveEntitlementsFeatureBuilder::new() }
+    pub fn new(id: impl Into<stripe_shared::EntitlementsFeatureId>) -> Self {
+        Self { id: id.into(), inner: RetrieveEntitlementsFeatureBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveEntitlementsFeature<'_> {
+impl RetrieveEntitlementsFeature {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -136,52 +136,55 @@ impl RetrieveEntitlementsFeature<'_> {
     }
 }
 
-impl StripeRequest for RetrieveEntitlementsFeature<'_> {
+impl StripeRequest for RetrieveEntitlementsFeature {
     type Output = stripe_shared::EntitlementsFeature;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Get, format!("/entitlements/features/{id}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateEntitlementsFeatureBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    lookup_key: &'a str,
+    expand: Option<Vec<String>>,
+    lookup_key: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
-    name: &'a str,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    name: String,
 }
-impl<'a> CreateEntitlementsFeatureBuilder<'a> {
-    fn new(lookup_key: &'a str, name: &'a str) -> Self {
-        Self { expand: None, lookup_key, metadata: None, name }
+impl CreateEntitlementsFeatureBuilder {
+    fn new(lookup_key: impl Into<String>, name: impl Into<String>) -> Self {
+        Self { expand: None, lookup_key: lookup_key.into(), metadata: None, name: name.into() }
     }
 }
 /// Creates a feature
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateEntitlementsFeature<'a> {
-    inner: CreateEntitlementsFeatureBuilder<'a>,
+pub struct CreateEntitlementsFeature {
+    inner: CreateEntitlementsFeatureBuilder,
 }
-impl<'a> CreateEntitlementsFeature<'a> {
+impl CreateEntitlementsFeature {
     /// Construct a new `CreateEntitlementsFeature`.
-    pub fn new(lookup_key: &'a str, name: &'a str) -> Self {
-        Self { inner: CreateEntitlementsFeatureBuilder::new(lookup_key, name) }
+    pub fn new(lookup_key: impl Into<String>, name: impl Into<String>) -> Self {
+        Self { inner: CreateEntitlementsFeatureBuilder::new(lookup_key.into(), name.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of key-value pairs that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
 }
-impl CreateEntitlementsFeature<'_> {
+impl CreateEntitlementsFeature {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -199,63 +202,66 @@ impl CreateEntitlementsFeature<'_> {
     }
 }
 
-impl StripeRequest for CreateEntitlementsFeature<'_> {
+impl StripeRequest for CreateEntitlementsFeature {
     type Output = stripe_shared::EntitlementsFeature;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/entitlements/features").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateEntitlementsFeatureBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<String>,
 }
-impl<'a> UpdateEntitlementsFeatureBuilder<'a> {
+impl UpdateEntitlementsFeatureBuilder {
     fn new() -> Self {
         Self { active: None, expand: None, metadata: None, name: None }
     }
 }
 /// Update a feature’s metadata or permanently deactivate it.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateEntitlementsFeature<'a> {
-    inner: UpdateEntitlementsFeatureBuilder<'a>,
-    id: &'a stripe_shared::EntitlementsFeatureId,
+pub struct UpdateEntitlementsFeature {
+    inner: UpdateEntitlementsFeatureBuilder,
+    id: stripe_shared::EntitlementsFeatureId,
 }
-impl<'a> UpdateEntitlementsFeature<'a> {
+impl UpdateEntitlementsFeature {
     /// Construct a new `UpdateEntitlementsFeature`.
-    pub fn new(id: &'a stripe_shared::EntitlementsFeatureId) -> Self {
-        Self { id, inner: UpdateEntitlementsFeatureBuilder::new() }
+    pub fn new(id: impl Into<stripe_shared::EntitlementsFeatureId>) -> Self {
+        Self { id: id.into(), inner: UpdateEntitlementsFeatureBuilder::new() }
     }
     /// Inactive features cannot be attached to new products and will not be returned from the features list endpoint.
-    pub fn active(mut self, active: bool) -> Self {
-        self.inner.active = Some(active);
+    pub fn active(mut self, active: impl Into<bool>) -> Self {
+        self.inner.active = Some(active.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of key-value pairs that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// The feature's name, for your own purpose, not meant to be displayable to the customer.
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
 }
-impl UpdateEntitlementsFeature<'_> {
+impl UpdateEntitlementsFeature {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -273,11 +279,11 @@ impl UpdateEntitlementsFeature<'_> {
     }
 }
 
-impl StripeRequest for UpdateEntitlementsFeature<'_> {
+impl StripeRequest for UpdateEntitlementsFeature {
     type Output = stripe_shared::EntitlementsFeature;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Post, format!("/entitlements/features/{id}"))
             .form(&self.inner)
     }

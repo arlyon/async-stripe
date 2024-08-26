@@ -2,24 +2,24 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListIssuingPersonalizationDesignBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    lookup_keys: Option<&'a [&'a str]>,
+    lookup_keys: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     preferences: Option<ListIssuingPersonalizationDesignPreferences>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_shared::IssuingPersonalizationDesignStatus>,
 }
-impl<'a> ListIssuingPersonalizationDesignBuilder<'a> {
+impl ListIssuingPersonalizationDesignBuilder {
     fn new() -> Self {
         Self {
             ending_before: None,
@@ -57,10 +57,10 @@ impl Default for ListIssuingPersonalizationDesignPreferences {
 /// Returns a list of personalization design objects.
 /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListIssuingPersonalizationDesign<'a> {
-    inner: ListIssuingPersonalizationDesignBuilder<'a>,
+pub struct ListIssuingPersonalizationDesign {
+    inner: ListIssuingPersonalizationDesignBuilder,
 }
-impl<'a> ListIssuingPersonalizationDesign<'a> {
+impl ListIssuingPersonalizationDesign {
     /// Construct a new `ListIssuingPersonalizationDesign`.
     pub fn new() -> Self {
         Self { inner: ListIssuingPersonalizationDesignBuilder::new() }
@@ -68,50 +68,56 @@ impl<'a> ListIssuingPersonalizationDesign<'a> {
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// Only return personalization designs with the given lookup keys.
-    pub fn lookup_keys(mut self, lookup_keys: &'a [&'a str]) -> Self {
-        self.inner.lookup_keys = Some(lookup_keys);
+    pub fn lookup_keys(mut self, lookup_keys: impl Into<Vec<String>>) -> Self {
+        self.inner.lookup_keys = Some(lookup_keys.into());
         self
     }
     /// Only return personalization designs with the given preferences.
-    pub fn preferences(mut self, preferences: ListIssuingPersonalizationDesignPreferences) -> Self {
-        self.inner.preferences = Some(preferences);
+    pub fn preferences(
+        mut self,
+        preferences: impl Into<ListIssuingPersonalizationDesignPreferences>,
+    ) -> Self {
+        self.inner.preferences = Some(preferences.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// Only return personalization designs with the given status.
-    pub fn status(mut self, status: stripe_shared::IssuingPersonalizationDesignStatus) -> Self {
-        self.inner.status = Some(status);
+    pub fn status(
+        mut self,
+        status: impl Into<stripe_shared::IssuingPersonalizationDesignStatus>,
+    ) -> Self {
+        self.inner.status = Some(status.into());
         self
     }
 }
-impl<'a> Default for ListIssuingPersonalizationDesign<'a> {
+impl Default for ListIssuingPersonalizationDesign {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListIssuingPersonalizationDesign<'_> {
+impl ListIssuingPersonalizationDesign {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -133,11 +139,11 @@ impl ListIssuingPersonalizationDesign<'_> {
     ) -> stripe_client_core::ListPaginator<
         stripe_types::List<stripe_shared::IssuingPersonalizationDesign>,
     > {
-        stripe_client_core::ListPaginator::new_list("/issuing/personalization_designs", self.inner)
+        stripe_client_core::ListPaginator::new_list("/issuing/personalization_designs", &self.inner)
     }
 }
 
-impl StripeRequest for ListIssuingPersonalizationDesign<'_> {
+impl StripeRequest for ListIssuingPersonalizationDesign {
     type Output = stripe_types::List<stripe_shared::IssuingPersonalizationDesign>;
 
     fn build(&self) -> RequestBuilder {
@@ -145,34 +151,39 @@ impl StripeRequest for ListIssuingPersonalizationDesign<'_> {
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveIssuingPersonalizationDesignBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveIssuingPersonalizationDesignBuilder<'a> {
+impl RetrieveIssuingPersonalizationDesignBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves a personalization design object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveIssuingPersonalizationDesign<'a> {
-    inner: RetrieveIssuingPersonalizationDesignBuilder<'a>,
-    personalization_design: &'a stripe_shared::IssuingPersonalizationDesignId,
+pub struct RetrieveIssuingPersonalizationDesign {
+    inner: RetrieveIssuingPersonalizationDesignBuilder,
+    personalization_design: stripe_shared::IssuingPersonalizationDesignId,
 }
-impl<'a> RetrieveIssuingPersonalizationDesign<'a> {
+impl RetrieveIssuingPersonalizationDesign {
     /// Construct a new `RetrieveIssuingPersonalizationDesign`.
-    pub fn new(personalization_design: &'a stripe_shared::IssuingPersonalizationDesignId) -> Self {
-        Self { personalization_design, inner: RetrieveIssuingPersonalizationDesignBuilder::new() }
+    pub fn new(
+        personalization_design: impl Into<stripe_shared::IssuingPersonalizationDesignId>,
+    ) -> Self {
+        Self {
+            personalization_design: personalization_design.into(),
+            inner: RetrieveIssuingPersonalizationDesignBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveIssuingPersonalizationDesign<'_> {
+impl RetrieveIssuingPersonalizationDesign {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -190,11 +201,11 @@ impl RetrieveIssuingPersonalizationDesign<'_> {
     }
 }
 
-impl StripeRequest for RetrieveIssuingPersonalizationDesign<'_> {
+impl StripeRequest for RetrieveIssuingPersonalizationDesign {
     type Output = stripe_shared::IssuingPersonalizationDesign;
 
     fn build(&self) -> RequestBuilder {
-        let personalization_design = self.personalization_design;
+        let personalization_design = &self.personalization_design;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/issuing/personalization_designs/{personalization_design}"),
@@ -202,28 +213,28 @@ impl StripeRequest for RetrieveIssuingPersonalizationDesign<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateIssuingPersonalizationDesignBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    card_logo: Option<&'a str>,
+    card_logo: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    carrier_text: Option<CarrierTextParam<'a>>,
+    carrier_text: Option<CarrierTextParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    lookup_key: Option<&'a str>,
+    lookup_key: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
-    physical_bundle: &'a str,
+    name: Option<String>,
+    physical_bundle: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     preferences: Option<PreferencesParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_lookup_key: Option<bool>,
 }
-impl<'a> CreateIssuingPersonalizationDesignBuilder<'a> {
-    fn new(physical_bundle: &'a str) -> Self {
+impl CreateIssuingPersonalizationDesignBuilder {
+    fn new(physical_bundle: impl Into<String>) -> Self {
         Self {
             card_logo: None,
             carrier_text: None,
@@ -231,7 +242,7 @@ impl<'a> CreateIssuingPersonalizationDesignBuilder<'a> {
             lookup_key: None,
             metadata: None,
             name: None,
-            physical_bundle,
+            physical_bundle: physical_bundle.into(),
             preferences: None,
             transfer_lookup_key: None,
         }
@@ -239,61 +250,64 @@ impl<'a> CreateIssuingPersonalizationDesignBuilder<'a> {
 }
 /// Creates a personalization design object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateIssuingPersonalizationDesign<'a> {
-    inner: CreateIssuingPersonalizationDesignBuilder<'a>,
+pub struct CreateIssuingPersonalizationDesign {
+    inner: CreateIssuingPersonalizationDesignBuilder,
 }
-impl<'a> CreateIssuingPersonalizationDesign<'a> {
+impl CreateIssuingPersonalizationDesign {
     /// Construct a new `CreateIssuingPersonalizationDesign`.
-    pub fn new(physical_bundle: &'a str) -> Self {
-        Self { inner: CreateIssuingPersonalizationDesignBuilder::new(physical_bundle) }
+    pub fn new(physical_bundle: impl Into<String>) -> Self {
+        Self { inner: CreateIssuingPersonalizationDesignBuilder::new(physical_bundle.into()) }
     }
     /// The file for the card logo, for use with physical bundles that support card logos.
     /// Must have a `purpose` value of `issuing_logo`.
-    pub fn card_logo(mut self, card_logo: &'a str) -> Self {
-        self.inner.card_logo = Some(card_logo);
+    pub fn card_logo(mut self, card_logo: impl Into<String>) -> Self {
+        self.inner.card_logo = Some(card_logo.into());
         self
     }
     /// Hash containing carrier text, for use with physical bundles that support carrier text.
-    pub fn carrier_text(mut self, carrier_text: CarrierTextParam<'a>) -> Self {
-        self.inner.carrier_text = Some(carrier_text);
+    pub fn carrier_text(mut self, carrier_text: impl Into<CarrierTextParam>) -> Self {
+        self.inner.carrier_text = Some(carrier_text.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A lookup key used to retrieve personalization designs dynamically from a static string.
     /// This may be up to 200 characters.
-    pub fn lookup_key(mut self, lookup_key: &'a str) -> Self {
-        self.inner.lookup_key = Some(lookup_key);
+    pub fn lookup_key(mut self, lookup_key: impl Into<String>) -> Self {
+        self.inner.lookup_key = Some(lookup_key.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// Friendly display name.
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
     /// Information on whether this personalization design is used to create cards when one is not specified.
-    pub fn preferences(mut self, preferences: PreferencesParam) -> Self {
-        self.inner.preferences = Some(preferences);
+    pub fn preferences(mut self, preferences: impl Into<PreferencesParam>) -> Self {
+        self.inner.preferences = Some(preferences.into());
         self
     }
     /// If set to true, will atomically remove the lookup key from the existing personalization design, and assign it to this personalization design.
-    pub fn transfer_lookup_key(mut self, transfer_lookup_key: bool) -> Self {
-        self.inner.transfer_lookup_key = Some(transfer_lookup_key);
+    pub fn transfer_lookup_key(mut self, transfer_lookup_key: impl Into<bool>) -> Self {
+        self.inner.transfer_lookup_key = Some(transfer_lookup_key.into());
         self
     }
 }
-impl CreateIssuingPersonalizationDesign<'_> {
+impl CreateIssuingPersonalizationDesign {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -311,7 +325,7 @@ impl CreateIssuingPersonalizationDesign<'_> {
     }
 }
 
-impl StripeRequest for CreateIssuingPersonalizationDesign<'_> {
+impl StripeRequest for CreateIssuingPersonalizationDesign {
     type Output = stripe_shared::IssuingPersonalizationDesign;
 
     fn build(&self) -> RequestBuilder {
@@ -319,28 +333,28 @@ impl StripeRequest for CreateIssuingPersonalizationDesign<'_> {
             .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateIssuingPersonalizationDesignBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    card_logo: Option<&'a str>,
+    card_logo: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    carrier_text: Option<CarrierTextParam<'a>>,
+    carrier_text: Option<CarrierTextParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    lookup_key: Option<&'a str>,
+    lookup_key: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    physical_bundle: Option<&'a str>,
+    physical_bundle: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     preferences: Option<PreferencesParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_lookup_key: Option<bool>,
 }
-impl<'a> UpdateIssuingPersonalizationDesignBuilder<'a> {
+impl UpdateIssuingPersonalizationDesignBuilder {
     fn new() -> Self {
         Self {
             card_logo: None,
@@ -357,67 +371,75 @@ impl<'a> UpdateIssuingPersonalizationDesignBuilder<'a> {
 }
 /// Updates a card personalization object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateIssuingPersonalizationDesign<'a> {
-    inner: UpdateIssuingPersonalizationDesignBuilder<'a>,
-    personalization_design: &'a stripe_shared::IssuingPersonalizationDesignId,
+pub struct UpdateIssuingPersonalizationDesign {
+    inner: UpdateIssuingPersonalizationDesignBuilder,
+    personalization_design: stripe_shared::IssuingPersonalizationDesignId,
 }
-impl<'a> UpdateIssuingPersonalizationDesign<'a> {
+impl UpdateIssuingPersonalizationDesign {
     /// Construct a new `UpdateIssuingPersonalizationDesign`.
-    pub fn new(personalization_design: &'a stripe_shared::IssuingPersonalizationDesignId) -> Self {
-        Self { personalization_design, inner: UpdateIssuingPersonalizationDesignBuilder::new() }
+    pub fn new(
+        personalization_design: impl Into<stripe_shared::IssuingPersonalizationDesignId>,
+    ) -> Self {
+        Self {
+            personalization_design: personalization_design.into(),
+            inner: UpdateIssuingPersonalizationDesignBuilder::new(),
+        }
     }
     /// The file for the card logo, for use with physical bundles that support card logos.
     /// Must have a `purpose` value of `issuing_logo`.
-    pub fn card_logo(mut self, card_logo: &'a str) -> Self {
-        self.inner.card_logo = Some(card_logo);
+    pub fn card_logo(mut self, card_logo: impl Into<String>) -> Self {
+        self.inner.card_logo = Some(card_logo.into());
         self
     }
     /// Hash containing carrier text, for use with physical bundles that support carrier text.
-    pub fn carrier_text(mut self, carrier_text: CarrierTextParam<'a>) -> Self {
-        self.inner.carrier_text = Some(carrier_text);
+    pub fn carrier_text(mut self, carrier_text: impl Into<CarrierTextParam>) -> Self {
+        self.inner.carrier_text = Some(carrier_text.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A lookup key used to retrieve personalization designs dynamically from a static string.
     /// This may be up to 200 characters.
-    pub fn lookup_key(mut self, lookup_key: &'a str) -> Self {
-        self.inner.lookup_key = Some(lookup_key);
+    pub fn lookup_key(mut self, lookup_key: impl Into<String>) -> Self {
+        self.inner.lookup_key = Some(lookup_key.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// Friendly display name. Providing an empty string will set the field to null.
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
     /// The physical bundle object belonging to this personalization design.
-    pub fn physical_bundle(mut self, physical_bundle: &'a str) -> Self {
-        self.inner.physical_bundle = Some(physical_bundle);
+    pub fn physical_bundle(mut self, physical_bundle: impl Into<String>) -> Self {
+        self.inner.physical_bundle = Some(physical_bundle.into());
         self
     }
     /// Information on whether this personalization design is used to create cards when one is not specified.
-    pub fn preferences(mut self, preferences: PreferencesParam) -> Self {
-        self.inner.preferences = Some(preferences);
+    pub fn preferences(mut self, preferences: impl Into<PreferencesParam>) -> Self {
+        self.inner.preferences = Some(preferences.into());
         self
     }
     /// If set to true, will atomically remove the lookup key from the existing personalization design, and assign it to this personalization design.
-    pub fn transfer_lookup_key(mut self, transfer_lookup_key: bool) -> Self {
-        self.inner.transfer_lookup_key = Some(transfer_lookup_key);
+    pub fn transfer_lookup_key(mut self, transfer_lookup_key: impl Into<bool>) -> Self {
+        self.inner.transfer_lookup_key = Some(transfer_lookup_key.into());
         self
     }
 }
-impl UpdateIssuingPersonalizationDesign<'_> {
+impl UpdateIssuingPersonalizationDesign {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -435,11 +457,11 @@ impl UpdateIssuingPersonalizationDesign<'_> {
     }
 }
 
-impl StripeRequest for UpdateIssuingPersonalizationDesign<'_> {
+impl StripeRequest for UpdateIssuingPersonalizationDesign {
     type Output = stripe_shared::IssuingPersonalizationDesign;
 
     fn build(&self) -> RequestBuilder {
-        let personalization_design = self.personalization_design;
+        let personalization_design = &self.personalization_design;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/issuing/personalization_designs/{personalization_design}"),
@@ -447,34 +469,37 @@ impl StripeRequest for UpdateIssuingPersonalizationDesign<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ActivateIssuingPersonalizationDesignBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ActivateIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> ActivateIssuingPersonalizationDesignBuilder<'a> {
+impl ActivateIssuingPersonalizationDesignBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Updates the `status` of the specified testmode personalization design object to `active`.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ActivateIssuingPersonalizationDesign<'a> {
-    inner: ActivateIssuingPersonalizationDesignBuilder<'a>,
-    personalization_design: &'a str,
+pub struct ActivateIssuingPersonalizationDesign {
+    inner: ActivateIssuingPersonalizationDesignBuilder,
+    personalization_design: String,
 }
-impl<'a> ActivateIssuingPersonalizationDesign<'a> {
+impl ActivateIssuingPersonalizationDesign {
     /// Construct a new `ActivateIssuingPersonalizationDesign`.
-    pub fn new(personalization_design: &'a str) -> Self {
-        Self { personalization_design, inner: ActivateIssuingPersonalizationDesignBuilder::new() }
+    pub fn new(personalization_design: impl Into<String>) -> Self {
+        Self {
+            personalization_design: personalization_design.into(),
+            inner: ActivateIssuingPersonalizationDesignBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl ActivateIssuingPersonalizationDesign<'_> {
+impl ActivateIssuingPersonalizationDesign {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -492,11 +517,11 @@ impl ActivateIssuingPersonalizationDesign<'_> {
     }
 }
 
-impl StripeRequest for ActivateIssuingPersonalizationDesign<'_> {
+impl StripeRequest for ActivateIssuingPersonalizationDesign {
     type Output = stripe_shared::IssuingPersonalizationDesign;
 
     fn build(&self) -> RequestBuilder {
-        let personalization_design = self.personalization_design;
+        let personalization_design = &self.personalization_design;
         RequestBuilder::new(
             StripeMethod::Post,
             format!(
@@ -506,34 +531,37 @@ impl StripeRequest for ActivateIssuingPersonalizationDesign<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct DeactivateIssuingPersonalizationDesignBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct DeactivateIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> DeactivateIssuingPersonalizationDesignBuilder<'a> {
+impl DeactivateIssuingPersonalizationDesignBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Updates the `status` of the specified testmode personalization design object to `inactive`.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeactivateIssuingPersonalizationDesign<'a> {
-    inner: DeactivateIssuingPersonalizationDesignBuilder<'a>,
-    personalization_design: &'a str,
+pub struct DeactivateIssuingPersonalizationDesign {
+    inner: DeactivateIssuingPersonalizationDesignBuilder,
+    personalization_design: String,
 }
-impl<'a> DeactivateIssuingPersonalizationDesign<'a> {
+impl DeactivateIssuingPersonalizationDesign {
     /// Construct a new `DeactivateIssuingPersonalizationDesign`.
-    pub fn new(personalization_design: &'a str) -> Self {
-        Self { personalization_design, inner: DeactivateIssuingPersonalizationDesignBuilder::new() }
+    pub fn new(personalization_design: impl Into<String>) -> Self {
+        Self {
+            personalization_design: personalization_design.into(),
+            inner: DeactivateIssuingPersonalizationDesignBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl DeactivateIssuingPersonalizationDesign<'_> {
+impl DeactivateIssuingPersonalizationDesign {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -551,11 +579,11 @@ impl DeactivateIssuingPersonalizationDesign<'_> {
     }
 }
 
-impl StripeRequest for DeactivateIssuingPersonalizationDesign<'_> {
+impl StripeRequest for DeactivateIssuingPersonalizationDesign {
     type Output = stripe_shared::IssuingPersonalizationDesign;
 
     fn build(&self) -> RequestBuilder {
-        let personalization_design = self.personalization_design;
+        let personalization_design = &self.personalization_design;
         RequestBuilder::new(
             StripeMethod::Post,
             format!(
@@ -565,33 +593,35 @@ impl StripeRequest for DeactivateIssuingPersonalizationDesign<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RejectIssuingPersonalizationDesignBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RejectIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    rejection_reasons: RejectIssuingPersonalizationDesignRejectionReasons<'a>,
+    expand: Option<Vec<String>>,
+    rejection_reasons: RejectIssuingPersonalizationDesignRejectionReasons,
 }
-impl<'a> RejectIssuingPersonalizationDesignBuilder<'a> {
-    fn new(rejection_reasons: RejectIssuingPersonalizationDesignRejectionReasons<'a>) -> Self {
-        Self { expand: None, rejection_reasons }
+impl RejectIssuingPersonalizationDesignBuilder {
+    fn new(
+        rejection_reasons: impl Into<RejectIssuingPersonalizationDesignRejectionReasons>,
+    ) -> Self {
+        Self { expand: None, rejection_reasons: rejection_reasons.into() }
     }
 }
 /// The reason(s) the personalization design was rejected.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct RejectIssuingPersonalizationDesignRejectionReasons<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RejectIssuingPersonalizationDesignRejectionReasons {
     /// The reason(s) the card logo was rejected.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_logo: Option<&'a [RejectIssuingPersonalizationDesignRejectionReasonsCardLogo]>,
+    pub card_logo: Option<Vec<RejectIssuingPersonalizationDesignRejectionReasonsCardLogo>>,
     /// The reason(s) the carrier text was rejected.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub carrier_text: Option<&'a [RejectIssuingPersonalizationDesignRejectionReasonsCarrierText]>,
+    pub carrier_text: Option<Vec<RejectIssuingPersonalizationDesignRejectionReasonsCarrierText>>,
 }
-impl<'a> RejectIssuingPersonalizationDesignRejectionReasons<'a> {
+impl RejectIssuingPersonalizationDesignRejectionReasons {
     pub fn new() -> Self {
         Self { card_logo: None, carrier_text: None }
     }
 }
-impl<'a> Default for RejectIssuingPersonalizationDesignRejectionReasons<'a> {
+impl Default for RejectIssuingPersonalizationDesignRejectionReasons {
     fn default() -> Self {
         Self::new()
     }
@@ -749,28 +779,28 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Updates the `status` of the specified testmode personalization design object to `rejected`.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RejectIssuingPersonalizationDesign<'a> {
-    inner: RejectIssuingPersonalizationDesignBuilder<'a>,
-    personalization_design: &'a str,
+pub struct RejectIssuingPersonalizationDesign {
+    inner: RejectIssuingPersonalizationDesignBuilder,
+    personalization_design: String,
 }
-impl<'a> RejectIssuingPersonalizationDesign<'a> {
+impl RejectIssuingPersonalizationDesign {
     /// Construct a new `RejectIssuingPersonalizationDesign`.
     pub fn new(
-        personalization_design: &'a str,
-        rejection_reasons: RejectIssuingPersonalizationDesignRejectionReasons<'a>,
+        personalization_design: impl Into<String>,
+        rejection_reasons: impl Into<RejectIssuingPersonalizationDesignRejectionReasons>,
     ) -> Self {
         Self {
-            personalization_design,
-            inner: RejectIssuingPersonalizationDesignBuilder::new(rejection_reasons),
+            personalization_design: personalization_design.into(),
+            inner: RejectIssuingPersonalizationDesignBuilder::new(rejection_reasons.into()),
         }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RejectIssuingPersonalizationDesign<'_> {
+impl RejectIssuingPersonalizationDesign {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -788,11 +818,11 @@ impl RejectIssuingPersonalizationDesign<'_> {
     }
 }
 
-impl StripeRequest for RejectIssuingPersonalizationDesign<'_> {
+impl StripeRequest for RejectIssuingPersonalizationDesign {
     type Output = stripe_shared::IssuingPersonalizationDesign;
 
     fn build(&self) -> RequestBuilder {
-        let personalization_design = self.personalization_design;
+        let personalization_design = &self.personalization_design;
         RequestBuilder::new(
             StripeMethod::Post,
             format!(
@@ -803,27 +833,27 @@ impl StripeRequest for RejectIssuingPersonalizationDesign<'_> {
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CarrierTextParam<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CarrierTextParam {
     /// The footer body text of the carrier letter.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub footer_body: Option<&'a str>,
+    pub footer_body: Option<String>,
     /// The footer title text of the carrier letter.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub footer_title: Option<&'a str>,
+    pub footer_title: Option<String>,
     /// The header body text of the carrier letter.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub header_body: Option<&'a str>,
+    pub header_body: Option<String>,
     /// The header title text of the carrier letter.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub header_title: Option<&'a str>,
+    pub header_title: Option<String>,
 }
-impl<'a> CarrierTextParam<'a> {
+impl CarrierTextParam {
     pub fn new() -> Self {
         Self { footer_body: None, footer_title: None, header_body: None, header_title: None }
     }
 }
-impl<'a> Default for CarrierTextParam<'a> {
+impl Default for CarrierTextParam {
     fn default() -> Self {
         Self::new()
     }
@@ -835,7 +865,7 @@ pub struct PreferencesParam {
     pub is_default: bool,
 }
 impl PreferencesParam {
-    pub fn new(is_default: bool) -> Self {
-        Self { is_default }
+    pub fn new(is_default: impl Into<bool>) -> Self {
+        Self { is_default: is_default.into() }
     }
 }

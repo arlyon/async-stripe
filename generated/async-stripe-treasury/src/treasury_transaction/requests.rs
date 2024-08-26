@@ -2,33 +2,33 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListTreasuryTransactionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListTreasuryTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    financial_account: &'a str,
+    expand: Option<Vec<String>>,
+    financial_account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     order_by: Option<ListTreasuryTransactionOrderBy>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_treasury::TreasuryTransactionStatus>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status_transitions: Option<ListTreasuryTransactionStatusTransitions>,
 }
-impl<'a> ListTreasuryTransactionBuilder<'a> {
-    fn new(financial_account: &'a str) -> Self {
+impl ListTreasuryTransactionBuilder {
+    fn new(financial_account: impl Into<String>) -> Self {
         Self {
             created: None,
             ending_before: None,
             expand: None,
-            financial_account,
+            financial_account: financial_account.into(),
             limit: None,
             order_by: None,
             starting_after: None,
@@ -114,66 +114,66 @@ impl Default for ListTreasuryTransactionStatusTransitions {
 }
 /// Retrieves a list of Transaction objects.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListTreasuryTransaction<'a> {
-    inner: ListTreasuryTransactionBuilder<'a>,
+pub struct ListTreasuryTransaction {
+    inner: ListTreasuryTransactionBuilder,
 }
-impl<'a> ListTreasuryTransaction<'a> {
+impl ListTreasuryTransaction {
     /// Construct a new `ListTreasuryTransaction`.
-    pub fn new(financial_account: &'a str) -> Self {
-        Self { inner: ListTreasuryTransactionBuilder::new(financial_account) }
+    pub fn new(financial_account: impl Into<String>) -> Self {
+        Self { inner: ListTreasuryTransactionBuilder::new(financial_account.into()) }
     }
     /// Only return Transactions that were created during the given date interval.
-    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
-        self.inner.created = Some(created);
+    pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.created = Some(created.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// The results are in reverse chronological order by `created` or `posted_at`.
     /// The default is `created`.
-    pub fn order_by(mut self, order_by: ListTreasuryTransactionOrderBy) -> Self {
-        self.inner.order_by = Some(order_by);
+    pub fn order_by(mut self, order_by: impl Into<ListTreasuryTransactionOrderBy>) -> Self {
+        self.inner.order_by = Some(order_by.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// Only return Transactions that have the given status: `open`, `posted`, or `void`.
-    pub fn status(mut self, status: stripe_treasury::TreasuryTransactionStatus) -> Self {
-        self.inner.status = Some(status);
+    pub fn status(mut self, status: impl Into<stripe_treasury::TreasuryTransactionStatus>) -> Self {
+        self.inner.status = Some(status.into());
         self
     }
     /// A filter for the `status_transitions.posted_at` timestamp.
     /// When using this filter, `status=posted` and `order_by=posted_at` must also be specified.
     pub fn status_transitions(
         mut self,
-        status_transitions: ListTreasuryTransactionStatusTransitions,
+        status_transitions: impl Into<ListTreasuryTransactionStatusTransitions>,
     ) -> Self {
-        self.inner.status_transitions = Some(status_transitions);
+        self.inner.status_transitions = Some(status_transitions.into());
         self
     }
 }
-impl ListTreasuryTransaction<'_> {
+impl ListTreasuryTransaction {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -194,45 +194,45 @@ impl ListTreasuryTransaction<'_> {
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_treasury::TreasuryTransaction>>
     {
-        stripe_client_core::ListPaginator::new_list("/treasury/transactions", self.inner)
+        stripe_client_core::ListPaginator::new_list("/treasury/transactions", &self.inner)
     }
 }
 
-impl StripeRequest for ListTreasuryTransaction<'_> {
+impl StripeRequest for ListTreasuryTransaction {
     type Output = stripe_types::List<stripe_treasury::TreasuryTransaction>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/treasury/transactions").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveTreasuryTransactionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveTreasuryTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveTreasuryTransactionBuilder<'a> {
+impl RetrieveTreasuryTransactionBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves the details of an existing Transaction.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveTreasuryTransaction<'a> {
-    inner: RetrieveTreasuryTransactionBuilder<'a>,
-    id: &'a stripe_treasury::TreasuryTransactionId,
+pub struct RetrieveTreasuryTransaction {
+    inner: RetrieveTreasuryTransactionBuilder,
+    id: stripe_treasury::TreasuryTransactionId,
 }
-impl<'a> RetrieveTreasuryTransaction<'a> {
+impl RetrieveTreasuryTransaction {
     /// Construct a new `RetrieveTreasuryTransaction`.
-    pub fn new(id: &'a stripe_treasury::TreasuryTransactionId) -> Self {
-        Self { id, inner: RetrieveTreasuryTransactionBuilder::new() }
+    pub fn new(id: impl Into<stripe_treasury::TreasuryTransactionId>) -> Self {
+        Self { id: id.into(), inner: RetrieveTreasuryTransactionBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveTreasuryTransaction<'_> {
+impl RetrieveTreasuryTransaction {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -250,11 +250,11 @@ impl RetrieveTreasuryTransaction<'_> {
     }
 }
 
-impl StripeRequest for RetrieveTreasuryTransaction<'_> {
+impl StripeRequest for RetrieveTreasuryTransaction {
     type Output = stripe_treasury::TreasuryTransaction;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Get, format!("/treasury/transactions/{id}"))
             .query(&self.inner)
     }

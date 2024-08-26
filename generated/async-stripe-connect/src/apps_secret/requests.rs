@@ -2,38 +2,44 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListAppsSecretBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
-    scope: ListAppsSecretScope<'a>,
+    scope: ListAppsSecretScope,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListAppsSecretBuilder<'a> {
-    fn new(scope: ListAppsSecretScope<'a>) -> Self {
-        Self { ending_before: None, expand: None, limit: None, scope, starting_after: None }
+impl ListAppsSecretBuilder {
+    fn new(scope: impl Into<ListAppsSecretScope>) -> Self {
+        Self {
+            ending_before: None,
+            expand: None,
+            limit: None,
+            scope: scope.into(),
+            starting_after: None,
+        }
     }
 }
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ListAppsSecretScope<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ListAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
     pub type_: ListAppsSecretScopeType,
     /// The user ID.
     /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub user: Option<&'a str>,
+    pub user: Option<String>,
 }
-impl<'a> ListAppsSecretScope<'a> {
-    pub fn new(type_: ListAppsSecretScopeType) -> Self {
-        Self { type_, user: None }
+impl ListAppsSecretScope {
+    pub fn new(type_: impl Into<ListAppsSecretScopeType>) -> Self {
+        Self { type_: type_.into(), user: None }
     }
 }
 /// The secret scope type.
@@ -93,41 +99,41 @@ impl<'de> serde::Deserialize<'de> for ListAppsSecretScopeType {
 }
 /// List all secrets stored on the given scope.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListAppsSecret<'a> {
-    inner: ListAppsSecretBuilder<'a>,
+pub struct ListAppsSecret {
+    inner: ListAppsSecretBuilder,
 }
-impl<'a> ListAppsSecret<'a> {
+impl ListAppsSecret {
     /// Construct a new `ListAppsSecret`.
-    pub fn new(scope: ListAppsSecretScope<'a>) -> Self {
-        Self { inner: ListAppsSecretBuilder::new(scope) }
+    pub fn new(scope: impl Into<ListAppsSecretScope>) -> Self {
+        Self { inner: ListAppsSecretBuilder::new(scope.into()) }
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl ListAppsSecret<'_> {
+impl ListAppsSecret {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -147,44 +153,44 @@ impl ListAppsSecret<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_connect::AppsSecret>> {
-        stripe_client_core::ListPaginator::new_list("/apps/secrets", self.inner)
+        stripe_client_core::ListPaginator::new_list("/apps/secrets", &self.inner)
     }
 }
 
-impl StripeRequest for ListAppsSecret<'_> {
+impl StripeRequest for ListAppsSecret {
     type Output = stripe_types::List<stripe_connect::AppsSecret>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/apps/secrets").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct FindAppsSecretBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct FindAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    name: &'a str,
-    scope: FindAppsSecretScope<'a>,
+    expand: Option<Vec<String>>,
+    name: String,
+    scope: FindAppsSecretScope,
 }
-impl<'a> FindAppsSecretBuilder<'a> {
-    fn new(name: &'a str, scope: FindAppsSecretScope<'a>) -> Self {
-        Self { expand: None, name, scope }
+impl FindAppsSecretBuilder {
+    fn new(name: impl Into<String>, scope: impl Into<FindAppsSecretScope>) -> Self {
+        Self { expand: None, name: name.into(), scope: scope.into() }
     }
 }
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct FindAppsSecretScope<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FindAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
     pub type_: FindAppsSecretScopeType,
     /// The user ID.
     /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub user: Option<&'a str>,
+    pub user: Option<String>,
 }
-impl<'a> FindAppsSecretScope<'a> {
-    pub fn new(type_: FindAppsSecretScopeType) -> Self {
-        Self { type_, user: None }
+impl FindAppsSecretScope {
+    pub fn new(type_: impl Into<FindAppsSecretScopeType>) -> Self {
+        Self { type_: type_.into(), user: None }
     }
 }
 /// The secret scope type.
@@ -244,21 +250,21 @@ impl<'de> serde::Deserialize<'de> for FindAppsSecretScopeType {
 }
 /// Finds a secret in the secret store by name and scope.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct FindAppsSecret<'a> {
-    inner: FindAppsSecretBuilder<'a>,
+pub struct FindAppsSecret {
+    inner: FindAppsSecretBuilder,
 }
-impl<'a> FindAppsSecret<'a> {
+impl FindAppsSecret {
     /// Construct a new `FindAppsSecret`.
-    pub fn new(name: &'a str, scope: FindAppsSecretScope<'a>) -> Self {
-        Self { inner: FindAppsSecretBuilder::new(name, scope) }
+    pub fn new(name: impl Into<String>, scope: impl Into<FindAppsSecretScope>) -> Self {
+        Self { inner: FindAppsSecretBuilder::new(name.into(), scope.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl FindAppsSecret<'_> {
+impl FindAppsSecret {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -276,43 +282,53 @@ impl FindAppsSecret<'_> {
     }
 }
 
-impl StripeRequest for FindAppsSecret<'_> {
+impl StripeRequest for FindAppsSecret {
     type Output = stripe_connect::AppsSecret;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/apps/secrets/find").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateAppsSecretBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expires_at: Option<stripe_types::Timestamp>,
-    name: &'a str,
-    payload: &'a str,
-    scope: CreateAppsSecretScope<'a>,
+    name: String,
+    payload: String,
+    scope: CreateAppsSecretScope,
 }
-impl<'a> CreateAppsSecretBuilder<'a> {
-    fn new(name: &'a str, payload: &'a str, scope: CreateAppsSecretScope<'a>) -> Self {
-        Self { expand: None, expires_at: None, name, payload, scope }
+impl CreateAppsSecretBuilder {
+    fn new(
+        name: impl Into<String>,
+        payload: impl Into<String>,
+        scope: impl Into<CreateAppsSecretScope>,
+    ) -> Self {
+        Self {
+            expand: None,
+            expires_at: None,
+            name: name.into(),
+            payload: payload.into(),
+            scope: scope.into(),
+        }
     }
 }
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateAppsSecretScope<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
     pub type_: CreateAppsSecretScopeType,
     /// The user ID.
     /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub user: Option<&'a str>,
+    pub user: Option<String>,
 }
-impl<'a> CreateAppsSecretScope<'a> {
-    pub fn new(type_: CreateAppsSecretScopeType) -> Self {
-        Self { type_, user: None }
+impl CreateAppsSecretScope {
+    pub fn new(type_: impl Into<CreateAppsSecretScopeType>) -> Self {
+        Self { type_: type_.into(), user: None }
     }
 }
 /// The secret scope type.
@@ -372,26 +388,30 @@ impl<'de> serde::Deserialize<'de> for CreateAppsSecretScopeType {
 }
 /// Create or replace a secret in the secret store.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAppsSecret<'a> {
-    inner: CreateAppsSecretBuilder<'a>,
+pub struct CreateAppsSecret {
+    inner: CreateAppsSecretBuilder,
 }
-impl<'a> CreateAppsSecret<'a> {
+impl CreateAppsSecret {
     /// Construct a new `CreateAppsSecret`.
-    pub fn new(name: &'a str, payload: &'a str, scope: CreateAppsSecretScope<'a>) -> Self {
-        Self { inner: CreateAppsSecretBuilder::new(name, payload, scope) }
+    pub fn new(
+        name: impl Into<String>,
+        payload: impl Into<String>,
+        scope: impl Into<CreateAppsSecretScope>,
+    ) -> Self {
+        Self { inner: CreateAppsSecretBuilder::new(name.into(), payload.into(), scope.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// The Unix timestamp for the expiry time of the secret, after which the secret deletes.
-    pub fn expires_at(mut self, expires_at: stripe_types::Timestamp) -> Self {
-        self.inner.expires_at = Some(expires_at);
+    pub fn expires_at(mut self, expires_at: impl Into<stripe_types::Timestamp>) -> Self {
+        self.inner.expires_at = Some(expires_at.into());
         self
     }
 }
-impl CreateAppsSecret<'_> {
+impl CreateAppsSecret {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -409,40 +429,40 @@ impl CreateAppsSecret<'_> {
     }
 }
 
-impl StripeRequest for CreateAppsSecret<'_> {
+impl StripeRequest for CreateAppsSecret {
     type Output = stripe_connect::AppsSecret;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/apps/secrets").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct DeleteWhereAppsSecretBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct DeleteWhereAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    name: &'a str,
-    scope: DeleteWhereAppsSecretScope<'a>,
+    expand: Option<Vec<String>>,
+    name: String,
+    scope: DeleteWhereAppsSecretScope,
 }
-impl<'a> DeleteWhereAppsSecretBuilder<'a> {
-    fn new(name: &'a str, scope: DeleteWhereAppsSecretScope<'a>) -> Self {
-        Self { expand: None, name, scope }
+impl DeleteWhereAppsSecretBuilder {
+    fn new(name: impl Into<String>, scope: impl Into<DeleteWhereAppsSecretScope>) -> Self {
+        Self { expand: None, name: name.into(), scope: scope.into() }
     }
 }
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct DeleteWhereAppsSecretScope<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DeleteWhereAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
     pub type_: DeleteWhereAppsSecretScopeType,
     /// The user ID.
     /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub user: Option<&'a str>,
+    pub user: Option<String>,
 }
-impl<'a> DeleteWhereAppsSecretScope<'a> {
-    pub fn new(type_: DeleteWhereAppsSecretScopeType) -> Self {
-        Self { type_, user: None }
+impl DeleteWhereAppsSecretScope {
+    pub fn new(type_: impl Into<DeleteWhereAppsSecretScopeType>) -> Self {
+        Self { type_: type_.into(), user: None }
     }
 }
 /// The secret scope type.
@@ -503,21 +523,21 @@ impl<'de> serde::Deserialize<'de> for DeleteWhereAppsSecretScopeType {
 }
 /// Deletes a secret from the secret store by name and scope.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeleteWhereAppsSecret<'a> {
-    inner: DeleteWhereAppsSecretBuilder<'a>,
+pub struct DeleteWhereAppsSecret {
+    inner: DeleteWhereAppsSecretBuilder,
 }
-impl<'a> DeleteWhereAppsSecret<'a> {
+impl DeleteWhereAppsSecret {
     /// Construct a new `DeleteWhereAppsSecret`.
-    pub fn new(name: &'a str, scope: DeleteWhereAppsSecretScope<'a>) -> Self {
-        Self { inner: DeleteWhereAppsSecretBuilder::new(name, scope) }
+    pub fn new(name: impl Into<String>, scope: impl Into<DeleteWhereAppsSecretScope>) -> Self {
+        Self { inner: DeleteWhereAppsSecretBuilder::new(name.into(), scope.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl DeleteWhereAppsSecret<'_> {
+impl DeleteWhereAppsSecret {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -535,7 +555,7 @@ impl DeleteWhereAppsSecret<'_> {
     }
 }
 
-impl StripeRequest for DeleteWhereAppsSecret<'_> {
+impl StripeRequest for DeleteWhereAppsSecret {
     type Output = stripe_connect::AppsSecret;
 
     fn build(&self) -> RequestBuilder {

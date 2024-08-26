@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use stripe_product::price::{UpdatePrice, UpdatePriceCurrencyOptions};
-use stripe_product::PriceTaxBehavior;
+use stripe_product::{PriceId, PriceTaxBehavior};
 use stripe_types::Currency;
 
 use super::get_client;
@@ -16,11 +16,9 @@ fn update_price() {
     opt.unit_amount = Some(4);
     currency_opts.insert(Currency::USD, opt);
 
-    let price_id = "price_123".parse().unwrap();
-    let price = UpdatePrice::new(&price_id)
-        .currency_options(&currency_opts)
-        .send_blocking(&client)
-        .unwrap();
+    let price_id = PriceId::from("price_123");
+    let price =
+        UpdatePrice::new(&price_id).currency_options(currency_opts).send_blocking(&client).unwrap();
 
     assert_eq!(price.id, price_id);
     assert_eq!(price.tax_behavior, Some(PriceTaxBehavior::Unspecified));
