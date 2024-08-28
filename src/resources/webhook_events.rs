@@ -565,21 +565,23 @@ struct Signature<'r> {
 #[cfg(feature = "webhook-events")]
 impl<'r> Signature<'r> {
     fn parse(raw: &'r str) -> Result<Signature<'r>, WebhookError> {
-        let headers: HashMap<&str, &str> = raw
-            .split(',')
-            .map(|header| {
-                let mut key_and_value = header.split('=');
-                let key = key_and_value.next();
-                let value = key_and_value.next();
-                (key, value)
-            })
-            .filter_map(|(key, value)| match (key, value) {
-                (Some(key), Some(value)) => Some((key, value)),
-                _ => None,
-            })
-            .collect();
-        let t = headers.get("t").ok_or(WebhookError::BadSignature)?;
-        let v1 = headers.get("v1").ok_or(WebhookError::BadSignature)?;
+        let mut t = None;
+        let mut v1 = None;
+        for header in raw.split(',') {
+            let Some((key, value)) = header.split_once('=') else {
+                continue;
+            };
+
+            match key {
+                "t" => t = Some(value),
+                "v1" => v1 = Some(value),
+                _ => (),
+            }
+        }
+        let (Some(t), Some(v1)) = (t, v1) else {
+            return Err(WebhookError::BadSignature);
+        };
+
         Ok(Signature { t: t.parse::<i64>().map_err(WebhookError::BadHeader)?, v1 })
     }
 }
