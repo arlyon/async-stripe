@@ -261,7 +261,7 @@ fn deserialize_customer_with_source() {
 }
 
 #[test]
-#[cfg(feature = "event")]
+#[cfg(feature = "events")]
 fn deserialize_checkout_event() {
     use stripe::Event;
 
