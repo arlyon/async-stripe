@@ -191,6 +191,9 @@ pub use {
         payment_link::*,
         item::*
     },
+    checkout::{
+        checkout_session_ext::*
+    }
 };
 
 #[rustfmt::skip]
