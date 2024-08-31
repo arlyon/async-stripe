@@ -1,3 +1,17 @@
+# [0.39.0](https://github.com/arlyon/async-stripe/compare/v0.38.1...v0.39.0) (2024-08-31)
+
+
+### Bug Fixes
+
+* `post` -> `post_form` ([bc39260](https://github.com/arlyon/async-stripe/commit/bc3926039eb50d48cf8f20ddb8110c847e7f7f00))
+* Move `promotion_code_ext` to `products` feature ([32435f3](https://github.com/arlyon/async-stripe/commit/32435f38c242ad47d8c992d1178736c460f107f2))
+* Re-export ([24f1782](https://github.com/arlyon/async-stripe/commit/24f17823b1812886bda32762f9de66dceb83559b))
+
+
+### Features
+
+* Create promotion code ([0fde9eb](https://github.com/arlyon/async-stripe/commit/0fde9eb6bc3333bab3bb135709697d114017be4a))
+
 ## [0.38.1](https://github.com/arlyon/async-stripe/compare/v0.38.0...v0.38.1) (2024-08-06)
 
 
