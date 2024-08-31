@@ -56,6 +56,7 @@ mod billing {
 mod products {
     pub mod price_ext;
     pub mod product_ext;
+    pub mod promotion_code_ext;
 }
 
 #[path = "resources"]
@@ -199,6 +200,7 @@ pub use {
     products::{
         product_ext::*,
         price_ext::*,
+        promotion_code_ext::*,
     }
 };
 
