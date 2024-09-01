@@ -12,7 +12,12 @@ pub struct RefundNextActionDisplayDetailsBuilder {
     expires_at: Option<stripe_types::Timestamp>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -58,7 +63,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { email_sent: self.email_sent.take()?, expires_at: self.expires_at? })
+            let (Some(email_sent), Some(expires_at)) = (self.email_sent.take(), self.expires_at)
+            else {
+                return None;
+            };
+            Some(Self::Out { email_sent, expires_at })
         }
     }
 
@@ -85,8 +94,8 @@ const _: () = {
             let mut b = RefundNextActionDisplayDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "email_sent" => b.email_sent = Some(FromValueOpt::from_value(v)?),
-                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
+                    "email_sent" => b.email_sent = FromValueOpt::from_value(v),
+                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

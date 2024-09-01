@@ -13,7 +13,12 @@ pub struct InvoicesResourceLineItemsCreditedItemsBuilder {
     invoice_line_items: Option<Vec<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +64,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                invoice: self.invoice.take()?,
-                invoice_line_items: self.invoice_line_items.take()?,
-            })
+            let (Some(invoice), Some(invoice_line_items)) =
+                (self.invoice.take(), self.invoice_line_items.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { invoice, invoice_line_items })
         }
     }
 
@@ -89,10 +96,8 @@ const _: () = {
             let mut b = InvoicesResourceLineItemsCreditedItemsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
-                    "invoice_line_items" => {
-                        b.invoice_line_items = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "invoice" => b.invoice = FromValueOpt::from_value(v),
+                    "invoice_line_items" => b.invoice_line_items = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

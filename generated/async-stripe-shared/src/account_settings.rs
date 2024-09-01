@@ -27,7 +27,12 @@ pub struct AccountSettingsBuilder {
     treasury: Option<Option<stripe_shared::AccountTreasurySettings>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -92,17 +97,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(bacs_debit_payments),
+                Some(branding),
+                Some(card_issuing),
+                Some(card_payments),
+                Some(dashboard),
+                Some(invoices),
+                Some(payments),
+                Some(payouts),
+                Some(sepa_debit_payments),
+                Some(treasury),
+            ) = (
+                self.bacs_debit_payments.take(),
+                self.branding.take(),
+                self.card_issuing.take(),
+                self.card_payments.take(),
+                self.dashboard.take(),
+                self.invoices.take(),
+                self.payments.take(),
+                self.payouts.take(),
+                self.sepa_debit_payments.take(),
+                self.treasury.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                bacs_debit_payments: self.bacs_debit_payments.take()?,
-                branding: self.branding.take()?,
-                card_issuing: self.card_issuing.take()?,
-                card_payments: self.card_payments.take()?,
-                dashboard: self.dashboard.take()?,
-                invoices: self.invoices.take()?,
-                payments: self.payments.take()?,
-                payouts: self.payouts.take()?,
-                sepa_debit_payments: self.sepa_debit_payments.take()?,
-                treasury: self.treasury.take()?,
+                bacs_debit_payments,
+                branding,
+                card_issuing,
+                card_payments,
+                dashboard,
+                invoices,
+                payments,
+                payouts,
+                sepa_debit_payments,
+                treasury,
             })
         }
     }
@@ -130,20 +161,16 @@ const _: () = {
             let mut b = AccountSettingsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bacs_debit_payments" => {
-                        b.bacs_debit_payments = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "branding" => b.branding = Some(FromValueOpt::from_value(v)?),
-                    "card_issuing" => b.card_issuing = Some(FromValueOpt::from_value(v)?),
-                    "card_payments" => b.card_payments = Some(FromValueOpt::from_value(v)?),
-                    "dashboard" => b.dashboard = Some(FromValueOpt::from_value(v)?),
-                    "invoices" => b.invoices = Some(FromValueOpt::from_value(v)?),
-                    "payments" => b.payments = Some(FromValueOpt::from_value(v)?),
-                    "payouts" => b.payouts = Some(FromValueOpt::from_value(v)?),
-                    "sepa_debit_payments" => {
-                        b.sepa_debit_payments = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "treasury" => b.treasury = Some(FromValueOpt::from_value(v)?),
+                    "bacs_debit_payments" => b.bacs_debit_payments = FromValueOpt::from_value(v),
+                    "branding" => b.branding = FromValueOpt::from_value(v),
+                    "card_issuing" => b.card_issuing = FromValueOpt::from_value(v),
+                    "card_payments" => b.card_payments = FromValueOpt::from_value(v),
+                    "dashboard" => b.dashboard = FromValueOpt::from_value(v),
+                    "invoices" => b.invoices = FromValueOpt::from_value(v),
+                    "payments" => b.payments = FromValueOpt::from_value(v),
+                    "payouts" => b.payouts = FromValueOpt::from_value(v),
+                    "sepa_debit_payments" => b.sepa_debit_payments = FromValueOpt::from_value(v),
+                    "treasury" => b.treasury = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

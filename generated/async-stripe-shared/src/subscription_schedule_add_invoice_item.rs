@@ -20,7 +20,12 @@ pub struct SubscriptionScheduleAddInvoiceItemBuilder {
     tax_rates: Option<Option<Vec<stripe_shared::TaxRate>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -73,12 +78,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                discounts: self.discounts.take()?,
-                price: self.price.take()?,
-                quantity: self.quantity?,
-                tax_rates: self.tax_rates.take()?,
-            })
+            let (Some(discounts), Some(price), Some(quantity), Some(tax_rates)) =
+                (self.discounts.take(), self.price.take(), self.quantity, self.tax_rates.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { discounts, price, quantity, tax_rates })
         }
     }
 
@@ -105,10 +110,10 @@ const _: () = {
             let mut b = SubscriptionScheduleAddInvoiceItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
-                    "price" => b.price = Some(FromValueOpt::from_value(v)?),
-                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
-                    "tax_rates" => b.tax_rates = Some(FromValueOpt::from_value(v)?),
+                    "discounts" => b.discounts = FromValueOpt::from_value(v),
+                    "price" => b.price = FromValueOpt::from_value(v),
+                    "quantity" => b.quantity = FromValueOpt::from_value(v),
+                    "tax_rates" => b.tax_rates = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

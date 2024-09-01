@@ -12,7 +12,12 @@ pub struct TaxProductRegistrationsResourceCountryOptionsEuStandardBuilder {
         Option<TaxProductRegistrationsResourceCountryOptionsEuStandardPlaceOfSupplyScheme>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -58,7 +63,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { place_of_supply_scheme: self.place_of_supply_scheme? })
+            let (Some(place_of_supply_scheme),) = (self.place_of_supply_scheme,) else {
+                return None;
+            };
+            Some(Self::Out { place_of_supply_scheme })
         }
     }
 
@@ -87,7 +95,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "place_of_supply_scheme" => {
-                        b.place_of_supply_scheme = Some(FromValueOpt::from_value(v)?)
+                        b.place_of_supply_scheme = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

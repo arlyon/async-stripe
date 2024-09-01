@@ -36,7 +36,12 @@ pub struct CountrySpecBuilder {
     verification_fields: Option<stripe_connect::CountrySpecVerificationFields>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -103,14 +108,34 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(default_currency),
+                Some(id),
+                Some(supported_bank_account_currencies),
+                Some(supported_payment_currencies),
+                Some(supported_payment_methods),
+                Some(supported_transfer_countries),
+                Some(verification_fields),
+            ) = (
+                self.default_currency,
+                self.id.take(),
+                self.supported_bank_account_currencies.take(),
+                self.supported_payment_currencies.take(),
+                self.supported_payment_methods.take(),
+                self.supported_transfer_countries.take(),
+                self.verification_fields.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                default_currency: self.default_currency?,
-                id: self.id.take()?,
-                supported_bank_account_currencies: self.supported_bank_account_currencies.take()?,
-                supported_payment_currencies: self.supported_payment_currencies.take()?,
-                supported_payment_methods: self.supported_payment_methods.take()?,
-                supported_transfer_countries: self.supported_transfer_countries.take()?,
-                verification_fields: self.verification_fields.take()?,
+                default_currency,
+                id,
+                supported_bank_account_currencies,
+                supported_payment_currencies,
+                supported_payment_methods,
+                supported_transfer_countries,
+                verification_fields,
             })
         }
     }
@@ -138,23 +163,21 @@ const _: () = {
             let mut b = CountrySpecBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "default_currency" => b.default_currency = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "default_currency" => b.default_currency = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
                     "supported_bank_account_currencies" => {
-                        b.supported_bank_account_currencies = Some(FromValueOpt::from_value(v)?)
+                        b.supported_bank_account_currencies = FromValueOpt::from_value(v)
                     }
                     "supported_payment_currencies" => {
-                        b.supported_payment_currencies = Some(FromValueOpt::from_value(v)?)
+                        b.supported_payment_currencies = FromValueOpt::from_value(v)
                     }
                     "supported_payment_methods" => {
-                        b.supported_payment_methods = Some(FromValueOpt::from_value(v)?)
+                        b.supported_payment_methods = FromValueOpt::from_value(v)
                     }
                     "supported_transfer_countries" => {
-                        b.supported_transfer_countries = Some(FromValueOpt::from_value(v)?)
+                        b.supported_transfer_countries = FromValueOpt::from_value(v)
                     }
-                    "verification_fields" => {
-                        b.verification_fields = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "verification_fields" => b.verification_fields = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

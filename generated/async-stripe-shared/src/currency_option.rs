@@ -29,7 +29,12 @@ pub struct CurrencyOptionBuilder {
     unit_amount_decimal: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -84,12 +89,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(custom_unit_amount),
+                Some(tax_behavior),
+                Some(tiers),
+                Some(unit_amount),
+                Some(unit_amount_decimal),
+            ) = (
+                self.custom_unit_amount,
+                self.tax_behavior,
+                self.tiers.take(),
+                self.unit_amount,
+                self.unit_amount_decimal.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                custom_unit_amount: self.custom_unit_amount?,
-                tax_behavior: self.tax_behavior?,
-                tiers: self.tiers.take()?,
-                unit_amount: self.unit_amount?,
-                unit_amount_decimal: self.unit_amount_decimal.take()?,
+                custom_unit_amount,
+                tax_behavior,
+                tiers,
+                unit_amount,
+                unit_amount_decimal,
             })
         }
     }
@@ -117,15 +138,11 @@ const _: () = {
             let mut b = CurrencyOptionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "custom_unit_amount" => {
-                        b.custom_unit_amount = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "tax_behavior" => b.tax_behavior = Some(FromValueOpt::from_value(v)?),
-                    "tiers" => b.tiers = Some(FromValueOpt::from_value(v)?),
-                    "unit_amount" => b.unit_amount = Some(FromValueOpt::from_value(v)?),
-                    "unit_amount_decimal" => {
-                        b.unit_amount_decimal = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "custom_unit_amount" => b.custom_unit_amount = FromValueOpt::from_value(v),
+                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
+                    "tiers" => b.tiers = FromValueOpt::from_value(v),
+                    "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
+                    "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

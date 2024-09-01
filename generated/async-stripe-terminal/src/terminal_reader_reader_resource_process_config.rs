@@ -16,7 +16,12 @@ pub struct TerminalReaderReaderResourceProcessConfigBuilder {
     tipping: Option<Option<stripe_terminal::TerminalReaderReaderResourceTippingConfig>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                enable_customer_cancellation: self.enable_customer_cancellation?,
-                skip_tipping: self.skip_tipping?,
-                tipping: self.tipping?,
-            })
+            let (Some(enable_customer_cancellation), Some(skip_tipping), Some(tipping)) =
+                (self.enable_customer_cancellation, self.skip_tipping, self.tipping)
+            else {
+                return None;
+            };
+            Some(Self::Out { enable_customer_cancellation, skip_tipping, tipping })
         }
     }
 
@@ -101,10 +107,10 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "enable_customer_cancellation" => {
-                        b.enable_customer_cancellation = Some(FromValueOpt::from_value(v)?)
+                        b.enable_customer_cancellation = FromValueOpt::from_value(v)
                     }
-                    "skip_tipping" => b.skip_tipping = Some(FromValueOpt::from_value(v)?),
-                    "tipping" => b.tipping = Some(FromValueOpt::from_value(v)?),
+                    "skip_tipping" => b.skip_tipping = FromValueOpt::from_value(v),
+                    "tipping" => b.tipping = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

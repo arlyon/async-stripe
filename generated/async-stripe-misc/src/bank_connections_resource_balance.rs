@@ -29,7 +29,12 @@ pub struct BankConnectionsResourceBalanceBuilder {
     type_: Option<BankConnectionsResourceBalanceType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -84,13 +89,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                as_of: self.as_of?,
-                cash: self.cash.take()?,
-                credit: self.credit.take()?,
-                current: self.current.take()?,
-                type_: self.type_?,
-            })
+            let (Some(as_of), Some(cash), Some(credit), Some(current), Some(type_)) =
+                (self.as_of, self.cash.take(), self.credit.take(), self.current.take(), self.type_)
+            else {
+                return None;
+            };
+            Some(Self::Out { as_of, cash, credit, current, type_ })
         }
     }
 
@@ -117,11 +121,11 @@ const _: () = {
             let mut b = BankConnectionsResourceBalanceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "as_of" => b.as_of = Some(FromValueOpt::from_value(v)?),
-                    "cash" => b.cash = Some(FromValueOpt::from_value(v)?),
-                    "credit" => b.credit = Some(FromValueOpt::from_value(v)?),
-                    "current" => b.current = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "as_of" => b.as_of = FromValueOpt::from_value(v),
+                    "cash" => b.cash = FromValueOpt::from_value(v),
+                    "credit" => b.credit = FromValueOpt::from_value(v),
+                    "current" => b.current = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

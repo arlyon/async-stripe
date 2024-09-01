@@ -18,7 +18,12 @@ pub struct PaymentIntentNextActionVerifyWithMicrodepositsBuilder {
         Option<Option<PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                arrival_date: self.arrival_date?,
-                hosted_verification_url: self.hosted_verification_url.take()?,
-                microdeposit_type: self.microdeposit_type?,
-            })
+            let (Some(arrival_date), Some(hosted_verification_url), Some(microdeposit_type)) =
+                (self.arrival_date, self.hosted_verification_url.take(), self.microdeposit_type)
+            else {
+                return None;
+            };
+            Some(Self::Out { arrival_date, hosted_verification_url, microdeposit_type })
         }
     }
 
@@ -100,11 +106,11 @@ const _: () = {
             let mut b = PaymentIntentNextActionVerifyWithMicrodepositsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "arrival_date" => b.arrival_date = Some(FromValueOpt::from_value(v)?),
+                    "arrival_date" => b.arrival_date = FromValueOpt::from_value(v),
                     "hosted_verification_url" => {
-                        b.hosted_verification_url = Some(FromValueOpt::from_value(v)?)
+                        b.hosted_verification_url = FromValueOpt::from_value(v)
                     }
-                    "microdeposit_type" => b.microdeposit_type = Some(FromValueOpt::from_value(v)?),
+                    "microdeposit_type" => b.microdeposit_type = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -12,7 +12,12 @@ pub struct TerminalReaderReaderResourceTippingConfigBuilder {
     amount_eligible: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -57,7 +62,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { amount_eligible: self.amount_eligible? })
+            let (Some(amount_eligible),) = (self.amount_eligible,) else {
+                return None;
+            };
+            Some(Self::Out { amount_eligible })
         }
     }
 
@@ -84,7 +92,7 @@ const _: () = {
             let mut b = TerminalReaderReaderResourceTippingConfigBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_eligible" => b.amount_eligible = Some(FromValueOpt::from_value(v)?),
+                    "amount_eligible" => b.amount_eligible = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

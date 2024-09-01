@@ -20,7 +20,12 @@ pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsBuilder {
         Option<Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -71,11 +76,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                code: self.code?,
-                resolution: self.resolution?,
-                restriction: self.restriction?,
-            })
+            let (Some(code), Some(resolution), Some(restriction)) =
+                (self.code, self.resolution, self.restriction)
+            else {
+                return None;
+            };
+            Some(Self::Out { code, resolution, restriction })
         }
     }
 
@@ -104,9 +110,9 @@ const _: () = {
                 );
             for (k, v) in obj {
                 match k.as_str() {
-                    "code" => b.code = Some(FromValueOpt::from_value(v)?),
-                    "resolution" => b.resolution = Some(FromValueOpt::from_value(v)?),
-                    "restriction" => b.restriction = Some(FromValueOpt::from_value(v)?),
+                    "code" => b.code = FromValueOpt::from_value(v),
+                    "resolution" => b.resolution = FromValueOpt::from_value(v),
+                    "restriction" => b.restriction = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

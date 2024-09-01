@@ -11,7 +11,12 @@ pub struct IssuingCardholderCardIssuingBuilder {
     user_terms_acceptance: Option<Option<stripe_shared::IssuingCardholderUserTermsAcceptance>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -56,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { user_terms_acceptance: self.user_terms_acceptance.take()? })
+            let (Some(user_terms_acceptance),) = (self.user_terms_acceptance.take(),) else {
+                return None;
+            };
+            Some(Self::Out { user_terms_acceptance })
         }
     }
 
@@ -84,7 +92,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "user_terms_acceptance" => {
-                        b.user_terms_acceptance = Some(FromValueOpt::from_value(v)?)
+                        b.user_terms_acceptance = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

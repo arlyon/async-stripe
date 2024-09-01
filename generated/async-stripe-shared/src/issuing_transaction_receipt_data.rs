@@ -19,7 +19,12 @@ pub struct IssuingTransactionReceiptDataBuilder {
     unit_cost: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                description: self.description.take()?,
-                quantity: self.quantity?,
-                total: self.total?,
-                unit_cost: self.unit_cost?,
-            })
+            let (Some(description), Some(quantity), Some(total), Some(unit_cost)) =
+                (self.description.take(), self.quantity, self.total, self.unit_cost)
+            else {
+                return None;
+            };
+            Some(Self::Out { description, quantity, total, unit_cost })
         }
     }
 
@@ -104,10 +109,10 @@ const _: () = {
             let mut b = IssuingTransactionReceiptDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
-                    "total" => b.total = Some(FromValueOpt::from_value(v)?),
-                    "unit_cost" => b.unit_cost = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "quantity" => b.quantity = FromValueOpt::from_value(v),
+                    "total" => b.total = FromValueOpt::from_value(v),
+                    "unit_cost" => b.unit_cost = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -65,7 +65,12 @@ pub struct DisputeBuilder {
     status: Option<DisputeStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -139,23 +144,61 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(balance_transactions),
+                Some(charge),
+                Some(created),
+                Some(currency),
+                Some(evidence),
+                Some(evidence_details),
+                Some(id),
+                Some(is_charge_refundable),
+                Some(livemode),
+                Some(metadata),
+                Some(network_reason_code),
+                Some(payment_intent),
+                Some(payment_method_details),
+                Some(reason),
+                Some(status),
+            ) = (
+                self.amount,
+                self.balance_transactions.take(),
+                self.charge.take(),
+                self.created,
+                self.currency,
+                self.evidence.take(),
+                self.evidence_details,
+                self.id.take(),
+                self.is_charge_refundable,
+                self.livemode,
+                self.metadata.take(),
+                self.network_reason_code.take(),
+                self.payment_intent.take(),
+                self.payment_method_details.take(),
+                self.reason.take(),
+                self.status,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                balance_transactions: self.balance_transactions.take()?,
-                charge: self.charge.take()?,
-                created: self.created?,
-                currency: self.currency?,
-                evidence: self.evidence.take()?,
-                evidence_details: self.evidence_details?,
-                id: self.id.take()?,
-                is_charge_refundable: self.is_charge_refundable?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                network_reason_code: self.network_reason_code.take()?,
-                payment_intent: self.payment_intent.take()?,
-                payment_method_details: self.payment_method_details.take()?,
-                reason: self.reason.take()?,
-                status: self.status?,
+                amount,
+                balance_transactions,
+                charge,
+                created,
+                currency,
+                evidence,
+                evidence_details,
+                id,
+                is_charge_refundable,
+                livemode,
+                metadata,
+                network_reason_code,
+                payment_intent,
+                payment_method_details,
+                reason,
+                status,
             })
         }
     }
@@ -183,30 +226,24 @@ const _: () = {
             let mut b = DisputeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "balance_transactions" => {
-                        b.balance_transactions = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "charge" => b.charge = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "evidence" => b.evidence = Some(FromValueOpt::from_value(v)?),
-                    "evidence_details" => b.evidence_details = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "is_charge_refundable" => {
-                        b.is_charge_refundable = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "network_reason_code" => {
-                        b.network_reason_code = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "payment_intent" => b.payment_intent = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "balance_transactions" => b.balance_transactions = FromValueOpt::from_value(v),
+                    "charge" => b.charge = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "evidence" => b.evidence = FromValueOpt::from_value(v),
+                    "evidence_details" => b.evidence_details = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "is_charge_refundable" => b.is_charge_refundable = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "network_reason_code" => b.network_reason_code = FromValueOpt::from_value(v),
+                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
                     "payment_method_details" => {
-                        b.payment_method_details = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_details = FromValueOpt::from_value(v)
                     }
-                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "reason" => b.reason = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

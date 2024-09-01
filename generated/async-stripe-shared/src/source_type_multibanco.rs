@@ -27,7 +27,12 @@ pub struct SourceTypeMultibancoBuilder {
     refund_iban: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -106,29 +111,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(entity),
+                Some(reference),
+                Some(refund_account_holder_address_city),
+                Some(refund_account_holder_address_country),
+                Some(refund_account_holder_address_line1),
+                Some(refund_account_holder_address_line2),
+                Some(refund_account_holder_address_postal_code),
+                Some(refund_account_holder_address_state),
+                Some(refund_account_holder_name),
+                Some(refund_iban),
+            ) = (
+                self.entity.take(),
+                self.reference.take(),
+                self.refund_account_holder_address_city.take(),
+                self.refund_account_holder_address_country.take(),
+                self.refund_account_holder_address_line1.take(),
+                self.refund_account_holder_address_line2.take(),
+                self.refund_account_holder_address_postal_code.take(),
+                self.refund_account_holder_address_state.take(),
+                self.refund_account_holder_name.take(),
+                self.refund_iban.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                entity: self.entity.take()?,
-                reference: self.reference.take()?,
-                refund_account_holder_address_city: self
-                    .refund_account_holder_address_city
-                    .take()?,
-                refund_account_holder_address_country: self
-                    .refund_account_holder_address_country
-                    .take()?,
-                refund_account_holder_address_line1: self
-                    .refund_account_holder_address_line1
-                    .take()?,
-                refund_account_holder_address_line2: self
-                    .refund_account_holder_address_line2
-                    .take()?,
-                refund_account_holder_address_postal_code: self
-                    .refund_account_holder_address_postal_code
-                    .take()?,
-                refund_account_holder_address_state: self
-                    .refund_account_holder_address_state
-                    .take()?,
-                refund_account_holder_name: self.refund_account_holder_name.take()?,
-                refund_iban: self.refund_iban.take()?,
+                entity,
+                reference,
+                refund_account_holder_address_city,
+                refund_account_holder_address_country,
+                refund_account_holder_address_line1,
+                refund_account_holder_address_line2,
+                refund_account_holder_address_postal_code,
+                refund_account_holder_address_state,
+                refund_account_holder_name,
+                refund_iban,
             })
         }
     }
@@ -156,31 +175,30 @@ const _: () = {
             let mut b = SourceTypeMultibancoBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "entity" => b.entity = Some(FromValueOpt::from_value(v)?),
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
+                    "entity" => b.entity = FromValueOpt::from_value(v),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
                     "refund_account_holder_address_city" => {
-                        b.refund_account_holder_address_city = Some(FromValueOpt::from_value(v)?)
+                        b.refund_account_holder_address_city = FromValueOpt::from_value(v)
                     }
                     "refund_account_holder_address_country" => {
-                        b.refund_account_holder_address_country = Some(FromValueOpt::from_value(v)?)
+                        b.refund_account_holder_address_country = FromValueOpt::from_value(v)
                     }
                     "refund_account_holder_address_line1" => {
-                        b.refund_account_holder_address_line1 = Some(FromValueOpt::from_value(v)?)
+                        b.refund_account_holder_address_line1 = FromValueOpt::from_value(v)
                     }
                     "refund_account_holder_address_line2" => {
-                        b.refund_account_holder_address_line2 = Some(FromValueOpt::from_value(v)?)
+                        b.refund_account_holder_address_line2 = FromValueOpt::from_value(v)
                     }
                     "refund_account_holder_address_postal_code" => {
-                        b.refund_account_holder_address_postal_code =
-                            Some(FromValueOpt::from_value(v)?)
+                        b.refund_account_holder_address_postal_code = FromValueOpt::from_value(v)
                     }
                     "refund_account_holder_address_state" => {
-                        b.refund_account_holder_address_state = Some(FromValueOpt::from_value(v)?)
+                        b.refund_account_holder_address_state = FromValueOpt::from_value(v)
                     }
                     "refund_account_holder_name" => {
-                        b.refund_account_holder_name = Some(FromValueOpt::from_value(v)?)
+                        b.refund_account_holder_name = FromValueOpt::from_value(v)
                     }
-                    "refund_iban" => b.refund_iban = Some(FromValueOpt::from_value(v)?),
+                    "refund_iban" => b.refund_iban = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

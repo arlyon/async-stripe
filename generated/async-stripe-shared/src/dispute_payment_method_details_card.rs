@@ -15,7 +15,12 @@ pub struct DisputePaymentMethodDetailsCardBuilder {
     network_reason_code: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -61,10 +66,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                brand: self.brand.take()?,
-                network_reason_code: self.network_reason_code.take()?,
-            })
+            let (Some(brand), Some(network_reason_code)) =
+                (self.brand.take(), self.network_reason_code.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { brand, network_reason_code })
         }
     }
 
@@ -91,10 +98,8 @@ const _: () = {
             let mut b = DisputePaymentMethodDetailsCardBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "brand" => b.brand = Some(FromValueOpt::from_value(v)?),
-                    "network_reason_code" => {
-                        b.network_reason_code = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "brand" => b.brand = FromValueOpt::from_value(v),
+                    "network_reason_code" => b.network_reason_code = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

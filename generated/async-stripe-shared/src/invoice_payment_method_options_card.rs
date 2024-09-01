@@ -14,7 +14,12 @@ pub struct InvoicePaymentMethodOptionsCardBuilder {
     request_three_d_secure: Option<Option<InvoicePaymentMethodOptionsCardRequestThreeDSecure>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -63,10 +68,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                installments: self.installments?,
-                request_three_d_secure: self.request_three_d_secure?,
-            })
+            let (Some(installments), Some(request_three_d_secure)) =
+                (self.installments, self.request_three_d_secure)
+            else {
+                return None;
+            };
+            Some(Self::Out { installments, request_three_d_secure })
         }
     }
 
@@ -93,9 +100,9 @@ const _: () = {
             let mut b = InvoicePaymentMethodOptionsCardBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "installments" => b.installments = Some(FromValueOpt::from_value(v)?),
+                    "installments" => b.installments = FromValueOpt::from_value(v),
                     "request_three_d_secure" => {
-                        b.request_three_d_secure = Some(FromValueOpt::from_value(v)?)
+                        b.request_three_d_secure = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

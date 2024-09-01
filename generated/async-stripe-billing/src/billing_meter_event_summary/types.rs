@@ -28,7 +28,12 @@ pub struct BillingMeterEventSummaryBuilder {
     start_time: Option<stripe_types::Timestamp>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -85,14 +90,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                aggregated_value: self.aggregated_value?,
-                end_time: self.end_time?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                meter: self.meter.take()?,
-                start_time: self.start_time?,
-            })
+            let (
+                Some(aggregated_value),
+                Some(end_time),
+                Some(id),
+                Some(livemode),
+                Some(meter),
+                Some(start_time),
+            ) = (
+                self.aggregated_value,
+                self.end_time,
+                self.id.take(),
+                self.livemode,
+                self.meter.take(),
+                self.start_time,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { aggregated_value, end_time, id, livemode, meter, start_time })
         }
     }
 
@@ -119,12 +135,12 @@ const _: () = {
             let mut b = BillingMeterEventSummaryBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "aggregated_value" => b.aggregated_value = Some(FromValueOpt::from_value(v)?),
-                    "end_time" => b.end_time = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "meter" => b.meter = Some(FromValueOpt::from_value(v)?),
-                    "start_time" => b.start_time = Some(FromValueOpt::from_value(v)?),
+                    "aggregated_value" => b.aggregated_value = FromValueOpt::from_value(v),
+                    "end_time" => b.end_time = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "meter" => b.meter = FromValueOpt::from_value(v),
+                    "start_time" => b.start_time = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

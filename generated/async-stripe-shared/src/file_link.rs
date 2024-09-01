@@ -36,7 +36,12 @@ pub struct FileLinkBuilder {
     url: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -94,16 +99,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                created: self.created?,
-                expired: self.expired?,
-                expires_at: self.expires_at?,
-                file: self.file.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                url: self.url.take()?,
-            })
+            let (
+                Some(created),
+                Some(expired),
+                Some(expires_at),
+                Some(file),
+                Some(id),
+                Some(livemode),
+                Some(metadata),
+                Some(url),
+            ) = (
+                self.created,
+                self.expired,
+                self.expires_at,
+                self.file.take(),
+                self.id.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.url.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { created, expired, expires_at, file, id, livemode, metadata, url })
         }
     }
 
@@ -130,14 +148,14 @@ const _: () = {
             let mut b = FileLinkBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "expired" => b.expired = Some(FromValueOpt::from_value(v)?),
-                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
-                    "file" => b.file = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "expired" => b.expired = FromValueOpt::from_value(v),
+                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
+                    "file" => b.file = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "url" => b.url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

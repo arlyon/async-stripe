@@ -20,7 +20,12 @@ pub struct AccountBacsDebitPaymentsSettingsBuilder {
     service_user_number: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,10 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                display_name: self.display_name.take()?,
-                service_user_number: self.service_user_number.take()?,
-            })
+            let (Some(display_name), Some(service_user_number)) =
+                (self.display_name.take(), self.service_user_number.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { display_name, service_user_number })
         }
     }
 
@@ -99,10 +106,8 @@ const _: () = {
             let mut b = AccountBacsDebitPaymentsSettingsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "display_name" => b.display_name = Some(FromValueOpt::from_value(v)?),
-                    "service_user_number" => {
-                        b.service_user_number = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "display_name" => b.display_name = FromValueOpt::from_value(v),
+                    "service_user_number" => b.service_user_number = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

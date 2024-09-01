@@ -20,7 +20,12 @@ pub struct TaxDeductedAtSourceBuilder {
     tax_deduction_account_number: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -75,12 +80,21 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                id: self.id.take()?,
-                period_end: self.period_end?,
-                period_start: self.period_start?,
-                tax_deduction_account_number: self.tax_deduction_account_number.take()?,
-            })
+            let (
+                Some(id),
+                Some(period_end),
+                Some(period_start),
+                Some(tax_deduction_account_number),
+            ) = (
+                self.id.take(),
+                self.period_end,
+                self.period_start,
+                self.tax_deduction_account_number.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { id, period_end, period_start, tax_deduction_account_number })
         }
     }
 
@@ -107,11 +121,11 @@ const _: () = {
             let mut b = TaxDeductedAtSourceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "period_end" => b.period_end = Some(FromValueOpt::from_value(v)?),
-                    "period_start" => b.period_start = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "period_end" => b.period_end = FromValueOpt::from_value(v),
+                    "period_start" => b.period_start = FromValueOpt::from_value(v),
                     "tax_deduction_account_number" => {
-                        b.tax_deduction_account_number = Some(FromValueOpt::from_value(v)?)
+                        b.tax_deduction_account_number = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

@@ -14,7 +14,12 @@ pub struct PaymentIntentProcessingCustomerNotificationBuilder {
     completes_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -63,10 +68,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                approval_requested: self.approval_requested?,
-                completes_at: self.completes_at?,
-            })
+            let (Some(approval_requested), Some(completes_at)) =
+                (self.approval_requested, self.completes_at)
+            else {
+                return None;
+            };
+            Some(Self::Out { approval_requested, completes_at })
         }
     }
 
@@ -93,10 +100,8 @@ const _: () = {
             let mut b = PaymentIntentProcessingCustomerNotificationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "approval_requested" => {
-                        b.approval_requested = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "completes_at" => b.completes_at = Some(FromValueOpt::from_value(v)?),
+                    "approval_requested" => b.approval_requested = FromValueOpt::from_value(v),
+                    "completes_at" => b.completes_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -19,7 +19,12 @@ pub struct TerminalConnectionTokenBuilder {
     secret: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -65,7 +70,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { location: self.location.take()?, secret: self.secret.take()? })
+            let (Some(location), Some(secret)) = (self.location.take(), self.secret.take()) else {
+                return None;
+            };
+            Some(Self::Out { location, secret })
         }
     }
 
@@ -92,8 +100,8 @@ const _: () = {
             let mut b = TerminalConnectionTokenBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "location" => b.location = Some(FromValueOpt::from_value(v)?),
-                    "secret" => b.secret = Some(FromValueOpt::from_value(v)?),
+                    "location" => b.location = FromValueOpt::from_value(v),
+                    "secret" => b.secret = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

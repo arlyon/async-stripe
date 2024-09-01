@@ -13,7 +13,12 @@ pub struct SetupAttemptPaymentMethodDetailsCardPresentBuilder {
     offline: Option<Option<stripe_shared::PaymentMethodDetailsCardPresentOffline>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { generated_card: self.generated_card.take()?, offline: self.offline? })
+            let (Some(generated_card), Some(offline)) = (self.generated_card.take(), self.offline)
+            else {
+                return None;
+            };
+            Some(Self::Out { generated_card, offline })
         }
     }
 
@@ -86,8 +95,8 @@ const _: () = {
             let mut b = SetupAttemptPaymentMethodDetailsCardPresentBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "generated_card" => b.generated_card = Some(FromValueOpt::from_value(v)?),
-                    "offline" => b.offline = Some(FromValueOpt::from_value(v)?),
+                    "generated_card" => b.generated_card = FromValueOpt::from_value(v),
+                    "offline" => b.offline = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

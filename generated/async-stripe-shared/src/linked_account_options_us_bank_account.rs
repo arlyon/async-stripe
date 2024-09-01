@@ -17,7 +17,12 @@ pub struct LinkedAccountOptionsUsBankAccountBuilder {
     return_url: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +73,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                permissions: self.permissions.take()?,
-                prefetch: self.prefetch.take()?,
-                return_url: self.return_url.take()?,
-            })
+            let (Some(permissions), Some(prefetch), Some(return_url)) =
+                (self.permissions.take(), self.prefetch.take(), self.return_url.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { permissions, prefetch, return_url })
         }
     }
 
@@ -99,9 +105,9 @@ const _: () = {
             let mut b = LinkedAccountOptionsUsBankAccountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "permissions" => b.permissions = Some(FromValueOpt::from_value(v)?),
-                    "prefetch" => b.prefetch = Some(FromValueOpt::from_value(v)?),
-                    "return_url" => b.return_url = Some(FromValueOpt::from_value(v)?),
+                    "permissions" => b.permissions = FromValueOpt::from_value(v),
+                    "prefetch" => b.prefetch = FromValueOpt::from_value(v),
+                    "return_url" => b.return_url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

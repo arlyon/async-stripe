@@ -24,7 +24,12 @@ pub struct CashBalanceBuilder {
     settings: Option<stripe_shared::CustomerBalanceCustomerBalanceSettings>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,12 +82,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                available: self.available.take()?,
-                customer: self.customer.take()?,
-                livemode: self.livemode?,
-                settings: self.settings?,
-            })
+            let (Some(available), Some(customer), Some(livemode), Some(settings)) =
+                (self.available.take(), self.customer.take(), self.livemode, self.settings)
+            else {
+                return None;
+            };
+            Some(Self::Out { available, customer, livemode, settings })
         }
     }
 
@@ -109,10 +114,10 @@ const _: () = {
             let mut b = CashBalanceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "available" => b.available = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "settings" => b.settings = Some(FromValueOpt::from_value(v)?),
+                    "available" => b.available = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "settings" => b.settings = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -60,7 +60,12 @@ pub struct SetupAttemptBuilder {
     usage: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -133,21 +138,55 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(application),
+                Some(attach_to_self),
+                Some(created),
+                Some(customer),
+                Some(flow_directions),
+                Some(id),
+                Some(livemode),
+                Some(on_behalf_of),
+                Some(payment_method),
+                Some(payment_method_details),
+                Some(setup_error),
+                Some(setup_intent),
+                Some(status),
+                Some(usage),
+            ) = (
+                self.application.take(),
+                self.attach_to_self,
+                self.created,
+                self.customer.take(),
+                self.flow_directions.take(),
+                self.id.take(),
+                self.livemode,
+                self.on_behalf_of.take(),
+                self.payment_method.take(),
+                self.payment_method_details.take(),
+                self.setup_error.take(),
+                self.setup_intent.take(),
+                self.status.take(),
+                self.usage.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                application: self.application.take()?,
-                attach_to_self: self.attach_to_self?,
-                created: self.created?,
-                customer: self.customer.take()?,
-                flow_directions: self.flow_directions.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                on_behalf_of: self.on_behalf_of.take()?,
-                payment_method: self.payment_method.take()?,
-                payment_method_details: self.payment_method_details.take()?,
-                setup_error: self.setup_error.take()?,
-                setup_intent: self.setup_intent.take()?,
-                status: self.status.take()?,
-                usage: self.usage.take()?,
+                application,
+                attach_to_self,
+                created,
+                customer,
+                flow_directions,
+                id,
+                livemode,
+                on_behalf_of,
+                payment_method,
+                payment_method_details,
+                setup_error,
+                setup_intent,
+                status,
+                usage,
             })
         }
     }
@@ -175,22 +214,22 @@ const _: () = {
             let mut b = SetupAttemptBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "application" => b.application = Some(FromValueOpt::from_value(v)?),
-                    "attach_to_self" => b.attach_to_self = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "flow_directions" => b.flow_directions = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "on_behalf_of" => b.on_behalf_of = Some(FromValueOpt::from_value(v)?),
-                    "payment_method" => b.payment_method = Some(FromValueOpt::from_value(v)?),
+                    "application" => b.application = FromValueOpt::from_value(v),
+                    "attach_to_self" => b.attach_to_self = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "flow_directions" => b.flow_directions = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
+                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
                     "payment_method_details" => {
-                        b.payment_method_details = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_details = FromValueOpt::from_value(v)
                     }
-                    "setup_error" => b.setup_error = Some(FromValueOpt::from_value(v)?),
-                    "setup_intent" => b.setup_intent = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "usage" => b.usage = Some(FromValueOpt::from_value(v)?),
+                    "setup_error" => b.setup_error = FromValueOpt::from_value(v),
+                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "usage" => b.usage = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

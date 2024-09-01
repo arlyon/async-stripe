@@ -11,7 +11,12 @@ pub struct GelatoVerificationReportOptionsBuilder {
     id_number: Option<Option<stripe_misc::GelatoReportIdNumberOptions>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -57,7 +62,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { document: self.document.take()?, id_number: self.id_number? })
+            let (Some(document), Some(id_number)) = (self.document.take(), self.id_number) else {
+                return None;
+            };
+            Some(Self::Out { document, id_number })
         }
     }
 
@@ -84,8 +92,8 @@ const _: () = {
             let mut b = GelatoVerificationReportOptionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "document" => b.document = Some(FromValueOpt::from_value(v)?),
-                    "id_number" => b.id_number = Some(FromValueOpt::from_value(v)?),
+                    "document" => b.document = FromValueOpt::from_value(v),
+                    "id_number" => b.id_number = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

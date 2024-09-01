@@ -22,7 +22,12 @@ pub struct IssuingTransactionPurchaseDetailsBuilder {
     reference: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,13 +82,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                flight: self.flight.take()?,
-                fuel: self.fuel.take()?,
-                lodging: self.lodging?,
-                receipt: self.receipt.take()?,
-                reference: self.reference.take()?,
-            })
+            let (Some(flight), Some(fuel), Some(lodging), Some(receipt), Some(reference)) = (
+                self.flight.take(),
+                self.fuel.take(),
+                self.lodging,
+                self.receipt.take(),
+                self.reference.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { flight, fuel, lodging, receipt, reference })
         }
     }
 
@@ -110,11 +118,11 @@ const _: () = {
             let mut b = IssuingTransactionPurchaseDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "flight" => b.flight = Some(FromValueOpt::from_value(v)?),
-                    "fuel" => b.fuel = Some(FromValueOpt::from_value(v)?),
-                    "lodging" => b.lodging = Some(FromValueOpt::from_value(v)?),
-                    "receipt" => b.receipt = Some(FromValueOpt::from_value(v)?),
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
+                    "flight" => b.flight = FromValueOpt::from_value(v),
+                    "fuel" => b.fuel = FromValueOpt::from_value(v),
+                    "lodging" => b.lodging = FromValueOpt::from_value(v),
+                    "receipt" => b.receipt = FromValueOpt::from_value(v),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

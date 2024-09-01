@@ -10,7 +10,12 @@ pub struct SubscriptionsTrialsResourceTrialSettingsBuilder {
     end_behavior: Option<stripe_shared::SubscriptionsTrialsResourceEndBehavior>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { end_behavior: self.end_behavior? })
+            let (Some(end_behavior),) = (self.end_behavior,) else {
+                return None;
+            };
+            Some(Self::Out { end_behavior })
         }
     }
 
@@ -82,7 +90,7 @@ const _: () = {
             let mut b = SubscriptionsTrialsResourceTrialSettingsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "end_behavior" => b.end_behavior = Some(FromValueOpt::from_value(v)?),
+                    "end_behavior" => b.end_behavior = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

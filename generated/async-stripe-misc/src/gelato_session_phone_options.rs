@@ -10,7 +10,12 @@ pub struct GelatoSessionPhoneOptionsBuilder {
     require_verification: Option<Option<bool>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { require_verification: self.require_verification? })
+            let (Some(require_verification),) = (self.require_verification,) else {
+                return None;
+            };
+            Some(Self::Out { require_verification })
         }
     }
 
@@ -82,9 +90,7 @@ const _: () = {
             let mut b = GelatoSessionPhoneOptionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "require_verification" => {
-                        b.require_verification = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "require_verification" => b.require_verification = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

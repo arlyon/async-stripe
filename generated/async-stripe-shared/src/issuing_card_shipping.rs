@@ -48,7 +48,12 @@ pub struct IssuingCardShippingBuilder {
     type_: Option<IssuingCardShippingType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -117,19 +122,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(address),
+                Some(carrier),
+                Some(customs),
+                Some(eta),
+                Some(name),
+                Some(phone_number),
+                Some(require_signature),
+                Some(service),
+                Some(status),
+                Some(tracking_number),
+                Some(tracking_url),
+                Some(type_),
+            ) = (
+                self.address.take(),
+                self.carrier,
+                self.customs.take(),
+                self.eta,
+                self.name.take(),
+                self.phone_number.take(),
+                self.require_signature,
+                self.service,
+                self.status,
+                self.tracking_number.take(),
+                self.tracking_url.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                address: self.address.take()?,
-                carrier: self.carrier?,
-                customs: self.customs.take()?,
-                eta: self.eta?,
-                name: self.name.take()?,
-                phone_number: self.phone_number.take()?,
-                require_signature: self.require_signature?,
-                service: self.service?,
-                status: self.status?,
-                tracking_number: self.tracking_number.take()?,
-                tracking_url: self.tracking_url.take()?,
-                type_: self.type_?,
+                address,
+                carrier,
+                customs,
+                eta,
+                name,
+                phone_number,
+                require_signature,
+                service,
+                status,
+                tracking_number,
+                tracking_url,
+                type_,
             })
         }
     }
@@ -157,18 +192,18 @@ const _: () = {
             let mut b = IssuingCardShippingBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
-                    "carrier" => b.carrier = Some(FromValueOpt::from_value(v)?),
-                    "customs" => b.customs = Some(FromValueOpt::from_value(v)?),
-                    "eta" => b.eta = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "phone_number" => b.phone_number = Some(FromValueOpt::from_value(v)?),
-                    "require_signature" => b.require_signature = Some(FromValueOpt::from_value(v)?),
-                    "service" => b.service = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "tracking_number" => b.tracking_number = Some(FromValueOpt::from_value(v)?),
-                    "tracking_url" => b.tracking_url = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "address" => b.address = FromValueOpt::from_value(v),
+                    "carrier" => b.carrier = FromValueOpt::from_value(v),
+                    "customs" => b.customs = FromValueOpt::from_value(v),
+                    "eta" => b.eta = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "phone_number" => b.phone_number = FromValueOpt::from_value(v),
+                    "require_signature" => b.require_signature = FromValueOpt::from_value(v),
+                    "service" => b.service = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "tracking_number" => b.tracking_number = FromValueOpt::from_value(v),
+                    "tracking_url" => b.tracking_url = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

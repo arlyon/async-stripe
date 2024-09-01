@@ -18,7 +18,12 @@ pub struct IssuingAuthorizationNetworkDataBuilder {
     transaction_id: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -73,11 +78,19 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                acquiring_institution_id: self.acquiring_institution_id.take()?,
-                system_trace_audit_number: self.system_trace_audit_number.take()?,
-                transaction_id: self.transaction_id.take()?,
-            })
+            let (
+                Some(acquiring_institution_id),
+                Some(system_trace_audit_number),
+                Some(transaction_id),
+            ) = (
+                self.acquiring_institution_id.take(),
+                self.system_trace_audit_number.take(),
+                self.transaction_id.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { acquiring_institution_id, system_trace_audit_number, transaction_id })
         }
     }
 
@@ -105,12 +118,12 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "acquiring_institution_id" => {
-                        b.acquiring_institution_id = Some(FromValueOpt::from_value(v)?)
+                        b.acquiring_institution_id = FromValueOpt::from_value(v)
                     }
                     "system_trace_audit_number" => {
-                        b.system_trace_audit_number = Some(FromValueOpt::from_value(v)?)
+                        b.system_trace_audit_number = FromValueOpt::from_value(v)
                     }
-                    "transaction_id" => b.transaction_id = Some(FromValueOpt::from_value(v)?),
+                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

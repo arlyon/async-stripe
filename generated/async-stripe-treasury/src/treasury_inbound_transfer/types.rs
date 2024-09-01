@@ -75,7 +75,12 @@ pub struct TreasuryInboundTransferBuilder {
     transaction: Option<Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -162,26 +167,70 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(cancelable),
+                Some(created),
+                Some(currency),
+                Some(description),
+                Some(failure_details),
+                Some(financial_account),
+                Some(hosted_regulatory_receipt_url),
+                Some(id),
+                Some(linked_flows),
+                Some(livemode),
+                Some(metadata),
+                Some(origin_payment_method),
+                Some(origin_payment_method_details),
+                Some(returned),
+                Some(statement_descriptor),
+                Some(status),
+                Some(status_transitions),
+                Some(transaction),
+            ) = (
+                self.amount,
+                self.cancelable,
+                self.created,
+                self.currency,
+                self.description.take(),
+                self.failure_details,
+                self.financial_account.take(),
+                self.hosted_regulatory_receipt_url.take(),
+                self.id.take(),
+                self.linked_flows.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.origin_payment_method.take(),
+                self.origin_payment_method_details.take(),
+                self.returned,
+                self.statement_descriptor.take(),
+                self.status,
+                self.status_transitions,
+                self.transaction.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                cancelable: self.cancelable?,
-                created: self.created?,
-                currency: self.currency?,
-                description: self.description.take()?,
-                failure_details: self.failure_details?,
-                financial_account: self.financial_account.take()?,
-                hosted_regulatory_receipt_url: self.hosted_regulatory_receipt_url.take()?,
-                id: self.id.take()?,
-                linked_flows: self.linked_flows.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                origin_payment_method: self.origin_payment_method.take()?,
-                origin_payment_method_details: self.origin_payment_method_details.take()?,
-                returned: self.returned?,
-                statement_descriptor: self.statement_descriptor.take()?,
-                status: self.status?,
-                status_transitions: self.status_transitions?,
-                transaction: self.transaction.take()?,
+                amount,
+                cancelable,
+                created,
+                currency,
+                description,
+                failure_details,
+                financial_account,
+                hosted_regulatory_receipt_url,
+                id,
+                linked_flows,
+                livemode,
+                metadata,
+                origin_payment_method,
+                origin_payment_method_details,
+                returned,
+                statement_descriptor,
+                status,
+                status_transitions,
+                transaction,
             })
         }
     }
@@ -209,35 +258,31 @@ const _: () = {
             let mut b = TreasuryInboundTransferBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "cancelable" => b.cancelable = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "failure_details" => b.failure_details = Some(FromValueOpt::from_value(v)?),
-                    "financial_account" => b.financial_account = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "cancelable" => b.cancelable = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "failure_details" => b.failure_details = FromValueOpt::from_value(v),
+                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
                     "hosted_regulatory_receipt_url" => {
-                        b.hosted_regulatory_receipt_url = Some(FromValueOpt::from_value(v)?)
+                        b.hosted_regulatory_receipt_url = FromValueOpt::from_value(v)
                     }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "linked_flows" => b.linked_flows = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "linked_flows" => b.linked_flows = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "origin_payment_method" => {
-                        b.origin_payment_method = Some(FromValueOpt::from_value(v)?)
+                        b.origin_payment_method = FromValueOpt::from_value(v)
                     }
                     "origin_payment_method_details" => {
-                        b.origin_payment_method_details = Some(FromValueOpt::from_value(v)?)
+                        b.origin_payment_method_details = FromValueOpt::from_value(v)
                     }
-                    "returned" => b.returned = Some(FromValueOpt::from_value(v)?),
-                    "statement_descriptor" => {
-                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "status_transitions" => {
-                        b.status_transitions = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "transaction" => b.transaction = Some(FromValueOpt::from_value(v)?),
+                    "returned" => b.returned = FromValueOpt::from_value(v),
+                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
+                    "transaction" => b.transaction = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

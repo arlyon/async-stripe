@@ -24,7 +24,12 @@ pub struct LegalEntityPersonVerificationBuilder {
     status: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -79,13 +84,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                additional_document: self.additional_document.take()?,
-                details: self.details.take()?,
-                details_code: self.details_code.take()?,
-                document: self.document.take()?,
-                status: self.status.take()?,
-            })
+            let (
+                Some(additional_document),
+                Some(details),
+                Some(details_code),
+                Some(document),
+                Some(status),
+            ) = (
+                self.additional_document.take(),
+                self.details.take(),
+                self.details_code.take(),
+                self.document.take(),
+                self.status.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { additional_document, details, details_code, document, status })
         }
     }
 
@@ -112,13 +127,11 @@ const _: () = {
             let mut b = LegalEntityPersonVerificationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "additional_document" => {
-                        b.additional_document = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "details" => b.details = Some(FromValueOpt::from_value(v)?),
-                    "details_code" => b.details_code = Some(FromValueOpt::from_value(v)?),
-                    "document" => b.document = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "additional_document" => b.additional_document = FromValueOpt::from_value(v),
+                    "details" => b.details = FromValueOpt::from_value(v),
+                    "details_code" => b.details_code = FromValueOpt::from_value(v),
+                    "document" => b.document = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

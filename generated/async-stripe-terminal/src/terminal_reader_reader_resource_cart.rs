@@ -23,7 +23,12 @@ pub struct TerminalReaderReaderResourceCartBuilder {
     total: Option<i64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -76,12 +81,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                currency: self.currency?,
-                line_items: self.line_items.take()?,
-                tax: self.tax?,
-                total: self.total?,
-            })
+            let (Some(currency), Some(line_items), Some(tax), Some(total)) =
+                (self.currency, self.line_items.take(), self.tax, self.total)
+            else {
+                return None;
+            };
+            Some(Self::Out { currency, line_items, tax, total })
         }
     }
 
@@ -108,10 +113,10 @@ const _: () = {
             let mut b = TerminalReaderReaderResourceCartBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "line_items" => b.line_items = Some(FromValueOpt::from_value(v)?),
-                    "tax" => b.tax = Some(FromValueOpt::from_value(v)?),
-                    "total" => b.total = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "line_items" => b.line_items = FromValueOpt::from_value(v),
+                    "tax" => b.tax = FromValueOpt::from_value(v),
+                    "total" => b.total = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

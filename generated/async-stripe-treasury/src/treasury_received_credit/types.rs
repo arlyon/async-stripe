@@ -57,7 +57,12 @@ transaction: Option<Option<stripe_types::Expandable<stripe_treasury::TreasuryTra
 
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -136,22 +141,58 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(created),
+                Some(currency),
+                Some(description),
+                Some(failure_code),
+                Some(financial_account),
+                Some(hosted_regulatory_receipt_url),
+                Some(id),
+                Some(initiating_payment_method_details),
+                Some(linked_flows),
+                Some(livemode),
+                Some(network),
+                Some(reversal_details),
+                Some(status),
+                Some(transaction),
+            ) = (
+                self.amount,
+                self.created,
+                self.currency,
+                self.description.take(),
+                self.failure_code,
+                self.financial_account.take(),
+                self.hosted_regulatory_receipt_url.take(),
+                self.id.take(),
+                self.initiating_payment_method_details.take(),
+                self.linked_flows.take(),
+                self.livemode,
+                self.network,
+                self.reversal_details,
+                self.status,
+                self.transaction.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                created: self.created?,
-                currency: self.currency?,
-                description: self.description.take()?,
-                failure_code: self.failure_code?,
-                financial_account: self.financial_account.take()?,
-                hosted_regulatory_receipt_url: self.hosted_regulatory_receipt_url.take()?,
-                id: self.id.take()?,
-                initiating_payment_method_details: self.initiating_payment_method_details.take()?,
-                linked_flows: self.linked_flows.take()?,
-                livemode: self.livemode?,
-                network: self.network?,
-                reversal_details: self.reversal_details?,
-                status: self.status?,
-                transaction: self.transaction.take()?,
+                amount,
+                created,
+                currency,
+                description,
+                failure_code,
+                financial_account,
+                hosted_regulatory_receipt_url,
+                id,
+                initiating_payment_method_details,
+                linked_flows,
+                livemode,
+                network,
+                reversal_details,
+                status,
+                transaction,
             })
         }
     }
@@ -179,25 +220,25 @@ const _: () = {
             let mut b = TreasuryReceivedCreditBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "failure_code" => b.failure_code = Some(FromValueOpt::from_value(v)?),
-                    "financial_account" => b.financial_account = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "failure_code" => b.failure_code = FromValueOpt::from_value(v),
+                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
                     "hosted_regulatory_receipt_url" => {
-                        b.hosted_regulatory_receipt_url = Some(FromValueOpt::from_value(v)?)
+                        b.hosted_regulatory_receipt_url = FromValueOpt::from_value(v)
                     }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
                     "initiating_payment_method_details" => {
-                        b.initiating_payment_method_details = Some(FromValueOpt::from_value(v)?)
+                        b.initiating_payment_method_details = FromValueOpt::from_value(v)
                     }
-                    "linked_flows" => b.linked_flows = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "network" => b.network = Some(FromValueOpt::from_value(v)?),
-                    "reversal_details" => b.reversal_details = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "transaction" => b.transaction = Some(FromValueOpt::from_value(v)?),
+                    "linked_flows" => b.linked_flows = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "network" => b.network = FromValueOpt::from_value(v),
+                    "reversal_details" => b.reversal_details = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "transaction" => b.transaction = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

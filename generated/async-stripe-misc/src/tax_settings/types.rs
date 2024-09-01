@@ -25,7 +25,12 @@ pub struct TaxSettingsBuilder {
     status_details: Option<stripe_misc::TaxProductResourceTaxSettingsStatusDetails>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -80,13 +85,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                defaults: self.defaults.take()?,
-                head_office: self.head_office.take()?,
-                livemode: self.livemode?,
-                status: self.status?,
-                status_details: self.status_details.take()?,
-            })
+            let (
+                Some(defaults),
+                Some(head_office),
+                Some(livemode),
+                Some(status),
+                Some(status_details),
+            ) = (
+                self.defaults.take(),
+                self.head_office.take(),
+                self.livemode,
+                self.status,
+                self.status_details.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { defaults, head_office, livemode, status, status_details })
         }
     }
 
@@ -113,11 +128,11 @@ const _: () = {
             let mut b = TaxSettingsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "defaults" => b.defaults = Some(FromValueOpt::from_value(v)?),
-                    "head_office" => b.head_office = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "status_details" => b.status_details = Some(FromValueOpt::from_value(v)?),
+                    "defaults" => b.defaults = FromValueOpt::from_value(v),
+                    "head_office" => b.head_office = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "status_details" => b.status_details = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

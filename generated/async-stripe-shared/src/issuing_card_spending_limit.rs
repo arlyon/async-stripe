@@ -18,7 +18,12 @@ pub struct IssuingCardSpendingLimitBuilder {
     interval: Option<IssuingCardSpendingLimitInterval>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount: self.amount?,
-                categories: self.categories.take()?,
-                interval: self.interval?,
-            })
+            let (Some(amount), Some(categories), Some(interval)) =
+                (self.amount, self.categories.take(), self.interval)
+            else {
+                return None;
+            };
+            Some(Self::Out { amount, categories, interval })
         }
     }
 
@@ -100,9 +106,9 @@ const _: () = {
             let mut b = IssuingCardSpendingLimitBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "categories" => b.categories = Some(FromValueOpt::from_value(v)?),
-                    "interval" => b.interval = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "categories" => b.categories = FromValueOpt::from_value(v),
+                    "interval" => b.interval = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

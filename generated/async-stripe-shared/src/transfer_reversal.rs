@@ -51,7 +51,12 @@ pub struct TransferReversalBuilder {
     transfer: Option<stripe_types::Expandable<stripe_shared::Transfer>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -116,16 +121,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(balance_transaction),
+                Some(created),
+                Some(currency),
+                Some(destination_payment_refund),
+                Some(id),
+                Some(metadata),
+                Some(source_refund),
+                Some(transfer),
+            ) = (
+                self.amount,
+                self.balance_transaction.take(),
+                self.created,
+                self.currency,
+                self.destination_payment_refund.take(),
+                self.id.take(),
+                self.metadata.take(),
+                self.source_refund.take(),
+                self.transfer.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                balance_transaction: self.balance_transaction.take()?,
-                created: self.created?,
-                currency: self.currency?,
-                destination_payment_refund: self.destination_payment_refund.take()?,
-                id: self.id.take()?,
-                metadata: self.metadata.take()?,
-                source_refund: self.source_refund.take()?,
-                transfer: self.transfer.take()?,
+                amount,
+                balance_transaction,
+                created,
+                currency,
+                destination_payment_refund,
+                id,
+                metadata,
+                source_refund,
+                transfer,
             })
         }
     }
@@ -153,19 +182,17 @@ const _: () = {
             let mut b = TransferReversalBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "balance_transaction" => {
-                        b.balance_transaction = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
                     "destination_payment_refund" => {
-                        b.destination_payment_refund = Some(FromValueOpt::from_value(v)?)
+                        b.destination_payment_refund = FromValueOpt::from_value(v)
                     }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "source_refund" => b.source_refund = Some(FromValueOpt::from_value(v)?),
-                    "transfer" => b.transfer = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "source_refund" => b.source_refund = FromValueOpt::from_value(v),
+                    "transfer" => b.transfer = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

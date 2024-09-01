@@ -16,7 +16,12 @@ pub struct ClimateRemovalsProductsPriceBuilder {
     amount_total: Option<i64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount_fees: self.amount_fees?,
-                amount_subtotal: self.amount_subtotal?,
-                amount_total: self.amount_total?,
-            })
+            let (Some(amount_fees), Some(amount_subtotal), Some(amount_total)) =
+                (self.amount_fees, self.amount_subtotal, self.amount_total)
+            else {
+                return None;
+            };
+            Some(Self::Out { amount_fees, amount_subtotal, amount_total })
         }
     }
 
@@ -98,9 +104,9 @@ const _: () = {
             let mut b = ClimateRemovalsProductsPriceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_fees" => b.amount_fees = Some(FromValueOpt::from_value(v)?),
-                    "amount_subtotal" => b.amount_subtotal = Some(FromValueOpt::from_value(v)?),
-                    "amount_total" => b.amount_total = Some(FromValueOpt::from_value(v)?),
+                    "amount_fees" => b.amount_fees = FromValueOpt::from_value(v),
+                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
+                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

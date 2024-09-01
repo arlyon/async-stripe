@@ -15,7 +15,12 @@ status: Option<PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterprise
 
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -65,9 +70,14 @@ status: Deserialize::default(),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        Some(Self::Out { maximum_amount_capturable: self.maximum_amount_capturable?,
-status: self.status?,
- })
+        let (Some(maximum_amount_capturable),
+Some(status),
+) = (self.maximum_amount_capturable,
+self.status,
+) else {
+            return None;
+        };
+        Some(Self::Out { maximum_amount_capturable,status })
     }
 }
 
@@ -94,8 +104,8 @@ status: self.status?,
         let mut b = PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureBuilder::deser_default();
         for (k, v) in obj {
             match k.as_str() {
-                "maximum_amount_capturable" => b.maximum_amount_capturable = Some(FromValueOpt::from_value(v)?),
-"status" => b.status = Some(FromValueOpt::from_value(v)?),
+                "maximum_amount_capturable" => b.maximum_amount_capturable = FromValueOpt::from_value(v),
+"status" => b.status = FromValueOpt::from_value(v),
 
                 _ => {}
             }

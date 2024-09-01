@@ -22,7 +22,12 @@ pub struct QuotesResourceRecurringBuilder {
     total_details: Option<stripe_shared::QuotesResourceTotalDetails>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,12 +82,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount_subtotal),
+                Some(amount_total),
+                Some(interval),
+                Some(interval_count),
+                Some(total_details),
+            ) = (
+                self.amount_subtotal,
+                self.amount_total,
+                self.interval,
+                self.interval_count,
+                self.total_details.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount_subtotal: self.amount_subtotal?,
-                amount_total: self.amount_total?,
-                interval: self.interval?,
-                interval_count: self.interval_count?,
-                total_details: self.total_details.take()?,
+                amount_subtotal,
+                amount_total,
+                interval,
+                interval_count,
+                total_details,
             })
         }
     }
@@ -110,11 +131,11 @@ const _: () = {
             let mut b = QuotesResourceRecurringBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_subtotal" => b.amount_subtotal = Some(FromValueOpt::from_value(v)?),
-                    "amount_total" => b.amount_total = Some(FromValueOpt::from_value(v)?),
-                    "interval" => b.interval = Some(FromValueOpt::from_value(v)?),
-                    "interval_count" => b.interval_count = Some(FromValueOpt::from_value(v)?),
-                    "total_details" => b.total_details = Some(FromValueOpt::from_value(v)?),
+                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
+                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
+                    "interval" => b.interval = FromValueOpt::from_value(v),
+                    "interval_count" => b.interval_count = FromValueOpt::from_value(v),
+                    "total_details" => b.total_details = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

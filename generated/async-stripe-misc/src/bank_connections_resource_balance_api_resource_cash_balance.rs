@@ -16,7 +16,12 @@ pub struct BankConnectionsResourceBalanceApiResourceCashBalanceBuilder {
     available: Option<Option<std::collections::HashMap<String, i64>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -62,7 +67,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { available: self.available.take()? })
+            let (Some(available),) = (self.available.take(),) else {
+                return None;
+            };
+            Some(Self::Out { available })
         }
     }
 
@@ -90,7 +98,7 @@ const _: () = {
                 BankConnectionsResourceBalanceApiResourceCashBalanceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "available" => b.available = Some(FromValueOpt::from_value(v)?),
+                    "available" => b.available = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

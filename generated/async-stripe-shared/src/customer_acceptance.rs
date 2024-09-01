@@ -18,7 +18,12 @@ pub struct CustomerAcceptanceBuilder {
     type_: Option<CustomerAcceptanceType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -71,12 +76,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                accepted_at: self.accepted_at?,
-                offline: self.offline?,
-                online: self.online.take()?,
-                type_: self.type_?,
-            })
+            let (Some(accepted_at), Some(offline), Some(online), Some(type_)) =
+                (self.accepted_at, self.offline, self.online.take(), self.type_)
+            else {
+                return None;
+            };
+            Some(Self::Out { accepted_at, offline, online, type_ })
         }
     }
 
@@ -103,10 +108,10 @@ const _: () = {
             let mut b = CustomerAcceptanceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "accepted_at" => b.accepted_at = Some(FromValueOpt::from_value(v)?),
-                    "offline" => b.offline = Some(FromValueOpt::from_value(v)?),
-                    "online" => b.online = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "accepted_at" => b.accepted_at = FromValueOpt::from_value(v),
+                    "offline" => b.offline = FromValueOpt::from_value(v),
+                    "online" => b.online = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

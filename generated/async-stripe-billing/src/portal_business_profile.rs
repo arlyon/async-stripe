@@ -16,7 +16,12 @@ pub struct PortalBusinessProfileBuilder {
     terms_of_service_url: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +72,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                headline: self.headline.take()?,
-                privacy_policy_url: self.privacy_policy_url.take()?,
-                terms_of_service_url: self.terms_of_service_url.take()?,
-            })
+            let (Some(headline), Some(privacy_policy_url), Some(terms_of_service_url)) = (
+                self.headline.take(),
+                self.privacy_policy_url.take(),
+                self.terms_of_service_url.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { headline, privacy_policy_url, terms_of_service_url })
         }
     }
 
@@ -98,13 +106,9 @@ const _: () = {
             let mut b = PortalBusinessProfileBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "headline" => b.headline = Some(FromValueOpt::from_value(v)?),
-                    "privacy_policy_url" => {
-                        b.privacy_policy_url = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "terms_of_service_url" => {
-                        b.terms_of_service_url = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "headline" => b.headline = FromValueOpt::from_value(v),
+                    "privacy_policy_url" => b.privacy_policy_url = FromValueOpt::from_value(v),
+                    "terms_of_service_url" => b.terms_of_service_url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

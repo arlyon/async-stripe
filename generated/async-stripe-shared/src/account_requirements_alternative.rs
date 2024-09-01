@@ -13,7 +13,12 @@ pub struct AccountRequirementsAlternativeBuilder {
     original_fields_due: Option<Vec<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -62,10 +67,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                alternative_fields_due: self.alternative_fields_due.take()?,
-                original_fields_due: self.original_fields_due.take()?,
-            })
+            let (Some(alternative_fields_due), Some(original_fields_due)) =
+                (self.alternative_fields_due.take(), self.original_fields_due.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { alternative_fields_due, original_fields_due })
         }
     }
 
@@ -93,11 +100,9 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "alternative_fields_due" => {
-                        b.alternative_fields_due = Some(FromValueOpt::from_value(v)?)
+                        b.alternative_fields_due = FromValueOpt::from_value(v)
                     }
-                    "original_fields_due" => {
-                        b.original_fields_due = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "original_fields_due" => b.original_fields_due = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

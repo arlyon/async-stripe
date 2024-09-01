@@ -16,7 +16,12 @@ pub struct PaymentIntentNextActionSwishQrCodeBuilder {
     image_url_svg: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                data: self.data.take()?,
-                image_url_png: self.image_url_png.take()?,
-                image_url_svg: self.image_url_svg.take()?,
-            })
+            let (Some(data), Some(image_url_png), Some(image_url_svg)) =
+                (self.data.take(), self.image_url_png.take(), self.image_url_svg.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { data, image_url_png, image_url_svg })
         }
     }
 
@@ -98,9 +104,9 @@ const _: () = {
             let mut b = PaymentIntentNextActionSwishQrCodeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "data" => b.data = Some(FromValueOpt::from_value(v)?),
-                    "image_url_png" => b.image_url_png = Some(FromValueOpt::from_value(v)?),
-                    "image_url_svg" => b.image_url_svg = Some(FromValueOpt::from_value(v)?),
+                    "data" => b.data = FromValueOpt::from_value(v),
+                    "image_url_png" => b.image_url_png = FromValueOpt::from_value(v),
+                    "image_url_svg" => b.image_url_svg = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

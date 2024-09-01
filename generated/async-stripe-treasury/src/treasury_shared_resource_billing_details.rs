@@ -15,7 +15,12 @@ pub struct TreasurySharedResourceBillingDetailsBuilder {
     name: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -66,11 +71,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                address: self.address.take()?,
-                email: self.email.take()?,
-                name: self.name.take()?,
-            })
+            let (Some(address), Some(email), Some(name)) =
+                (self.address.take(), self.email.take(), self.name.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { address, email, name })
         }
     }
 
@@ -97,9 +103,9 @@ const _: () = {
             let mut b = TreasurySharedResourceBillingDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
-                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
+                    "address" => b.address = FromValueOpt::from_value(v),
+                    "email" => b.email = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

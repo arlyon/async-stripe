@@ -25,7 +25,12 @@ pub struct IssuingPhysicalBundleBuilder {
     type_: Option<stripe_shared::IssuingPhysicalBundleType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -82,14 +87,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                features: self.features?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                name: self.name.take()?,
-                status: self.status?,
-                type_: self.type_?,
-            })
+            let (Some(features), Some(id), Some(livemode), Some(name), Some(status), Some(type_)) = (
+                self.features,
+                self.id.take(),
+                self.livemode,
+                self.name.take(),
+                self.status,
+                self.type_,
+            ) else {
+                return None;
+            };
+            Some(Self::Out { features, id, livemode, name, status, type_ })
         }
     }
 
@@ -116,12 +124,12 @@ const _: () = {
             let mut b = IssuingPhysicalBundleBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "features" => b.features = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "features" => b.features = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

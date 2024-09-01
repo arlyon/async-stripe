@@ -23,7 +23,12 @@ pub struct UsageRecordSummaryBuilder {
     total_usage: Option<i64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -80,14 +85,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                id: self.id.take()?,
-                invoice: self.invoice.take()?,
-                livemode: self.livemode?,
-                period: self.period?,
-                subscription_item: self.subscription_item.take()?,
-                total_usage: self.total_usage?,
-            })
+            let (
+                Some(id),
+                Some(invoice),
+                Some(livemode),
+                Some(period),
+                Some(subscription_item),
+                Some(total_usage),
+            ) = (
+                self.id.take(),
+                self.invoice.take(),
+                self.livemode,
+                self.period,
+                self.subscription_item.take(),
+                self.total_usage,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { id, invoice, livemode, period, subscription_item, total_usage })
         }
     }
 
@@ -114,12 +130,12 @@ const _: () = {
             let mut b = UsageRecordSummaryBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "period" => b.period = Some(FromValueOpt::from_value(v)?),
-                    "subscription_item" => b.subscription_item = Some(FromValueOpt::from_value(v)?),
-                    "total_usage" => b.total_usage = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "invoice" => b.invoice = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "period" => b.period = FromValueOpt::from_value(v),
+                    "subscription_item" => b.subscription_item = FromValueOpt::from_value(v),
+                    "total_usage" => b.total_usage = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

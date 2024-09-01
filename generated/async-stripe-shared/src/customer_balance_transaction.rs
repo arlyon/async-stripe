@@ -57,7 +57,12 @@ pub struct CustomerBalanceTransactionBuilder {
     type_: Option<CustomerBalanceTransactionType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -126,19 +131,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(created),
+                Some(credit_note),
+                Some(currency),
+                Some(customer),
+                Some(description),
+                Some(ending_balance),
+                Some(id),
+                Some(invoice),
+                Some(livemode),
+                Some(metadata),
+                Some(type_),
+            ) = (
+                self.amount,
+                self.created,
+                self.credit_note.take(),
+                self.currency,
+                self.customer.take(),
+                self.description.take(),
+                self.ending_balance,
+                self.id.take(),
+                self.invoice.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                created: self.created?,
-                credit_note: self.credit_note.take()?,
-                currency: self.currency?,
-                customer: self.customer.take()?,
-                description: self.description.take()?,
-                ending_balance: self.ending_balance?,
-                id: self.id.take()?,
-                invoice: self.invoice.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                type_: self.type_?,
+                amount,
+                created,
+                credit_note,
+                currency,
+                customer,
+                description,
+                ending_balance,
+                id,
+                invoice,
+                livemode,
+                metadata,
+                type_,
             })
         }
     }
@@ -166,18 +201,18 @@ const _: () = {
             let mut b = CustomerBalanceTransactionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "credit_note" => b.credit_note = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "ending_balance" => b.ending_balance = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "credit_note" => b.credit_note = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "ending_balance" => b.ending_balance = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "invoice" => b.invoice = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

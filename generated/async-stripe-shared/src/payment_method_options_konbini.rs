@@ -29,7 +29,12 @@ pub struct PaymentMethodOptionsKonbiniBuilder {
     setup_future_usage: Option<Option<PaymentMethodOptionsKonbiniSetupFutureUsage>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -84,12 +89,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(confirmation_number),
+                Some(expires_after_days),
+                Some(expires_at),
+                Some(product_description),
+                Some(setup_future_usage),
+            ) = (
+                self.confirmation_number.take(),
+                self.expires_after_days,
+                self.expires_at,
+                self.product_description.take(),
+                self.setup_future_usage,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                confirmation_number: self.confirmation_number.take()?,
-                expires_after_days: self.expires_after_days?,
-                expires_at: self.expires_at?,
-                product_description: self.product_description.take()?,
-                setup_future_usage: self.setup_future_usage?,
+                confirmation_number,
+                expires_after_days,
+                expires_at,
+                product_description,
+                setup_future_usage,
             })
         }
     }
@@ -117,19 +138,11 @@ const _: () = {
             let mut b = PaymentMethodOptionsKonbiniBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "confirmation_number" => {
-                        b.confirmation_number = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "expires_after_days" => {
-                        b.expires_after_days = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
-                    "product_description" => {
-                        b.product_description = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "setup_future_usage" => {
-                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "confirmation_number" => b.confirmation_number = FromValueOpt::from_value(v),
+                    "expires_after_days" => b.expires_after_days = FromValueOpt::from_value(v),
+                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
+                    "product_description" => b.product_description = FromValueOpt::from_value(v),
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

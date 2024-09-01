@@ -13,7 +13,12 @@ pub struct PaymentMethodConfigResourcePaymentMethodPropertiesBuilder {
     display_preference: Option<stripe_payment::PaymentMethodConfigResourceDisplayPreference>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +64,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                available: self.available?,
-                display_preference: self.display_preference?,
-            })
+            let (Some(available), Some(display_preference)) =
+                (self.available, self.display_preference)
+            else {
+                return None;
+            };
+            Some(Self::Out { available, display_preference })
         }
     }
 
@@ -89,10 +96,8 @@ const _: () = {
             let mut b = PaymentMethodConfigResourcePaymentMethodPropertiesBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "available" => b.available = Some(FromValueOpt::from_value(v)?),
-                    "display_preference" => {
-                        b.display_preference = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "available" => b.available = FromValueOpt::from_value(v),
+                    "display_preference" => b.display_preference = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

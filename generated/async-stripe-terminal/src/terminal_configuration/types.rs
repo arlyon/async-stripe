@@ -36,7 +36,12 @@ pub struct TerminalConfigurationBuilder {
     >,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -97,15 +102,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(bbpos_wisepos_e),
+                Some(id),
+                Some(is_account_default),
+                Some(livemode),
+                Some(name),
+                Some(offline),
+                Some(tipping),
+                Some(verifone_p400),
+            ) = (
+                self.bbpos_wisepos_e.take(),
+                self.id.take(),
+                self.is_account_default,
+                self.livemode,
+                self.name.take(),
+                self.offline,
+                self.tipping.take(),
+                self.verifone_p400.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                bbpos_wisepos_e: self.bbpos_wisepos_e.take()?,
-                id: self.id.take()?,
-                is_account_default: self.is_account_default?,
-                livemode: self.livemode?,
-                name: self.name.take()?,
-                offline: self.offline?,
-                tipping: self.tipping.take()?,
-                verifone_p400: self.verifone_p400.take()?,
+                bbpos_wisepos_e,
+                id,
+                is_account_default,
+                livemode,
+                name,
+                offline,
+                tipping,
+                verifone_p400,
             })
         }
     }
@@ -133,16 +160,14 @@ const _: () = {
             let mut b = TerminalConfigurationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bbpos_wisepos_e" => b.bbpos_wisepos_e = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "is_account_default" => {
-                        b.is_account_default = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "offline" => b.offline = Some(FromValueOpt::from_value(v)?),
-                    "tipping" => b.tipping = Some(FromValueOpt::from_value(v)?),
-                    "verifone_p400" => b.verifone_p400 = Some(FromValueOpt::from_value(v)?),
+                    "bbpos_wisepos_e" => b.bbpos_wisepos_e = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "is_account_default" => b.is_account_default = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "offline" => b.offline = FromValueOpt::from_value(v),
+                    "tipping" => b.tipping = FromValueOpt::from_value(v),
+                    "verifone_p400" => b.verifone_p400 = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

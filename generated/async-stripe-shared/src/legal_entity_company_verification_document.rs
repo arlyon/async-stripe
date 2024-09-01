@@ -20,7 +20,12 @@ pub struct LegalEntityCompanyVerificationDocumentBuilder {
     front: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -73,12 +78,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                back: self.back.take()?,
-                details: self.details.take()?,
-                details_code: self.details_code.take()?,
-                front: self.front.take()?,
-            })
+            let (Some(back), Some(details), Some(details_code), Some(front)) = (
+                self.back.take(),
+                self.details.take(),
+                self.details_code.take(),
+                self.front.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { back, details, details_code, front })
         }
     }
 
@@ -105,10 +113,10 @@ const _: () = {
             let mut b = LegalEntityCompanyVerificationDocumentBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "back" => b.back = Some(FromValueOpt::from_value(v)?),
-                    "details" => b.details = Some(FromValueOpt::from_value(v)?),
-                    "details_code" => b.details_code = Some(FromValueOpt::from_value(v)?),
-                    "front" => b.front = Some(FromValueOpt::from_value(v)?),
+                    "back" => b.back = FromValueOpt::from_value(v),
+                    "details" => b.details = FromValueOpt::from_value(v),
+                    "details_code" => b.details_code = FromValueOpt::from_value(v),
+                    "front" => b.front = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

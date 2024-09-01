@@ -174,7 +174,12 @@ pub struct PaymentIntentBuilder {
     transfer_group: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -303,48 +308,130 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(amount_capturable),
+                Some(amount_details),
+                Some(amount_received),
+                Some(application),
+                Some(application_fee_amount),
+                Some(automatic_payment_methods),
+                Some(canceled_at),
+                Some(cancellation_reason),
+                Some(capture_method),
+                Some(client_secret),
+                Some(confirmation_method),
+                Some(created),
+                Some(currency),
+                Some(customer),
+                Some(description),
+                Some(id),
+                Some(invoice),
+                Some(last_payment_error),
+                Some(latest_charge),
+                Some(livemode),
+                Some(metadata),
+                Some(next_action),
+                Some(on_behalf_of),
+                Some(payment_method),
+                Some(payment_method_configuration_details),
+                Some(payment_method_options),
+                Some(payment_method_types),
+                Some(processing),
+                Some(receipt_email),
+                Some(review),
+                Some(setup_future_usage),
+                Some(shipping),
+                Some(source),
+                Some(statement_descriptor),
+                Some(statement_descriptor_suffix),
+                Some(status),
+                Some(transfer_data),
+                Some(transfer_group),
+            ) = (
+                self.amount,
+                self.amount_capturable,
+                self.amount_details,
+                self.amount_received,
+                self.application.take(),
+                self.application_fee_amount,
+                self.automatic_payment_methods,
+                self.canceled_at,
+                self.cancellation_reason,
+                self.capture_method,
+                self.client_secret.take(),
+                self.confirmation_method,
+                self.created,
+                self.currency,
+                self.customer.take(),
+                self.description.take(),
+                self.id.take(),
+                self.invoice.take(),
+                self.last_payment_error.take(),
+                self.latest_charge.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.next_action.take(),
+                self.on_behalf_of.take(),
+                self.payment_method.take(),
+                self.payment_method_configuration_details.take(),
+                self.payment_method_options.take(),
+                self.payment_method_types.take(),
+                self.processing,
+                self.receipt_email.take(),
+                self.review.take(),
+                self.setup_future_usage,
+                self.shipping.take(),
+                self.source.take(),
+                self.statement_descriptor.take(),
+                self.statement_descriptor_suffix.take(),
+                self.status,
+                self.transfer_data.take(),
+                self.transfer_group.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                amount_capturable: self.amount_capturable?,
-                amount_details: self.amount_details?,
-                amount_received: self.amount_received?,
-                application: self.application.take()?,
-                application_fee_amount: self.application_fee_amount?,
-                automatic_payment_methods: self.automatic_payment_methods?,
-                canceled_at: self.canceled_at?,
-                cancellation_reason: self.cancellation_reason?,
-                capture_method: self.capture_method?,
-                client_secret: self.client_secret.take()?,
-                confirmation_method: self.confirmation_method?,
-                created: self.created?,
-                currency: self.currency?,
-                customer: self.customer.take()?,
-                description: self.description.take()?,
-                id: self.id.take()?,
-                invoice: self.invoice.take()?,
-                last_payment_error: self.last_payment_error.take()?,
-                latest_charge: self.latest_charge.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                next_action: self.next_action.take()?,
-                on_behalf_of: self.on_behalf_of.take()?,
-                payment_method: self.payment_method.take()?,
-                payment_method_configuration_details: self
-                    .payment_method_configuration_details
-                    .take()?,
-                payment_method_options: self.payment_method_options.take()?,
-                payment_method_types: self.payment_method_types.take()?,
-                processing: self.processing?,
-                receipt_email: self.receipt_email.take()?,
-                review: self.review.take()?,
-                setup_future_usage: self.setup_future_usage?,
-                shipping: self.shipping.take()?,
-                source: self.source.take()?,
-                statement_descriptor: self.statement_descriptor.take()?,
-                statement_descriptor_suffix: self.statement_descriptor_suffix.take()?,
-                status: self.status?,
-                transfer_data: self.transfer_data.take()?,
-                transfer_group: self.transfer_group.take()?,
+                amount,
+                amount_capturable,
+                amount_details,
+                amount_received,
+                application,
+                application_fee_amount,
+                automatic_payment_methods,
+                canceled_at,
+                cancellation_reason,
+                capture_method,
+                client_secret,
+                confirmation_method,
+                created,
+                currency,
+                customer,
+                description,
+                id,
+                invoice,
+                last_payment_error,
+                latest_charge,
+                livemode,
+                metadata,
+                next_action,
+                on_behalf_of,
+                payment_method,
+                payment_method_configuration_details,
+                payment_method_options,
+                payment_method_types,
+                processing,
+                receipt_email,
+                review,
+                setup_future_usage,
+                shipping,
+                source,
+                statement_descriptor,
+                statement_descriptor_suffix,
+                status,
+                transfer_data,
+                transfer_group,
             })
         }
     }
@@ -372,67 +459,55 @@ const _: () = {
             let mut b = PaymentIntentBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_capturable" => b.amount_capturable = Some(FromValueOpt::from_value(v)?),
-                    "amount_details" => b.amount_details = Some(FromValueOpt::from_value(v)?),
-                    "amount_received" => b.amount_received = Some(FromValueOpt::from_value(v)?),
-                    "application" => b.application = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_capturable" => b.amount_capturable = FromValueOpt::from_value(v),
+                    "amount_details" => b.amount_details = FromValueOpt::from_value(v),
+                    "amount_received" => b.amount_received = FromValueOpt::from_value(v),
+                    "application" => b.application = FromValueOpt::from_value(v),
                     "application_fee_amount" => {
-                        b.application_fee_amount = Some(FromValueOpt::from_value(v)?)
+                        b.application_fee_amount = FromValueOpt::from_value(v)
                     }
                     "automatic_payment_methods" => {
-                        b.automatic_payment_methods = Some(FromValueOpt::from_value(v)?)
+                        b.automatic_payment_methods = FromValueOpt::from_value(v)
                     }
-                    "canceled_at" => b.canceled_at = Some(FromValueOpt::from_value(v)?),
-                    "cancellation_reason" => {
-                        b.cancellation_reason = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "capture_method" => b.capture_method = Some(FromValueOpt::from_value(v)?),
-                    "client_secret" => b.client_secret = Some(FromValueOpt::from_value(v)?),
-                    "confirmation_method" => {
-                        b.confirmation_method = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
-                    "last_payment_error" => {
-                        b.last_payment_error = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "latest_charge" => b.latest_charge = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "next_action" => b.next_action = Some(FromValueOpt::from_value(v)?),
-                    "on_behalf_of" => b.on_behalf_of = Some(FromValueOpt::from_value(v)?),
-                    "payment_method" => b.payment_method = Some(FromValueOpt::from_value(v)?),
+                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
+                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
+                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
+                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
+                    "confirmation_method" => b.confirmation_method = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "invoice" => b.invoice = FromValueOpt::from_value(v),
+                    "last_payment_error" => b.last_payment_error = FromValueOpt::from_value(v),
+                    "latest_charge" => b.latest_charge = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "next_action" => b.next_action = FromValueOpt::from_value(v),
+                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
+                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
                     "payment_method_configuration_details" => {
-                        b.payment_method_configuration_details = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_configuration_details = FromValueOpt::from_value(v)
                     }
                     "payment_method_options" => {
-                        b.payment_method_options = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_options = FromValueOpt::from_value(v)
                     }
-                    "payment_method_types" => {
-                        b.payment_method_types = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "processing" => b.processing = Some(FromValueOpt::from_value(v)?),
-                    "receipt_email" => b.receipt_email = Some(FromValueOpt::from_value(v)?),
-                    "review" => b.review = Some(FromValueOpt::from_value(v)?),
-                    "setup_future_usage" => {
-                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "shipping" => b.shipping = Some(FromValueOpt::from_value(v)?),
-                    "source" => b.source = Some(FromValueOpt::from_value(v)?),
-                    "statement_descriptor" => {
-                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
+                    "processing" => b.processing = FromValueOpt::from_value(v),
+                    "receipt_email" => b.receipt_email = FromValueOpt::from_value(v),
+                    "review" => b.review = FromValueOpt::from_value(v),
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
+                    "shipping" => b.shipping = FromValueOpt::from_value(v),
+                    "source" => b.source = FromValueOpt::from_value(v),
+                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
                     "statement_descriptor_suffix" => {
-                        b.statement_descriptor_suffix = Some(FromValueOpt::from_value(v)?)
+                        b.statement_descriptor_suffix = FromValueOpt::from_value(v)
                     }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "transfer_data" => b.transfer_data = Some(FromValueOpt::from_value(v)?),
-                    "transfer_group" => b.transfer_group = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
+                    "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

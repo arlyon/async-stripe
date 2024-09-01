@@ -20,7 +20,12 @@ pub struct PaymentLinksResourceCustomTextBuilder {
         Option<Option<stripe_shared::PaymentLinksResourceCustomTextPosition>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -75,12 +80,21 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                after_submit: self.after_submit.take()?,
-                shipping_address: self.shipping_address.take()?,
-                submit: self.submit.take()?,
-                terms_of_service_acceptance: self.terms_of_service_acceptance.take()?,
-            })
+            let (
+                Some(after_submit),
+                Some(shipping_address),
+                Some(submit),
+                Some(terms_of_service_acceptance),
+            ) = (
+                self.after_submit.take(),
+                self.shipping_address.take(),
+                self.submit.take(),
+                self.terms_of_service_acceptance.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { after_submit, shipping_address, submit, terms_of_service_acceptance })
         }
     }
 
@@ -107,11 +121,11 @@ const _: () = {
             let mut b = PaymentLinksResourceCustomTextBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "after_submit" => b.after_submit = Some(FromValueOpt::from_value(v)?),
-                    "shipping_address" => b.shipping_address = Some(FromValueOpt::from_value(v)?),
-                    "submit" => b.submit = Some(FromValueOpt::from_value(v)?),
+                    "after_submit" => b.after_submit = FromValueOpt::from_value(v),
+                    "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
+                    "submit" => b.submit = FromValueOpt::from_value(v),
                     "terms_of_service_acceptance" => {
-                        b.terms_of_service_acceptance = Some(FromValueOpt::from_value(v)?)
+                        b.terms_of_service_acceptance = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

@@ -18,7 +18,12 @@ pub struct AccountPayoutSettingsBuilder {
     statement_descriptor: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,11 +74,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                debit_negative_balances: self.debit_negative_balances?,
-                schedule: self.schedule.take()?,
-                statement_descriptor: self.statement_descriptor.take()?,
-            })
+            let (Some(debit_negative_balances), Some(schedule), Some(statement_descriptor)) = (
+                self.debit_negative_balances,
+                self.schedule.take(),
+                self.statement_descriptor.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { debit_negative_balances, schedule, statement_descriptor })
         }
     }
 
@@ -101,12 +109,10 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "debit_negative_balances" => {
-                        b.debit_negative_balances = Some(FromValueOpt::from_value(v)?)
+                        b.debit_negative_balances = FromValueOpt::from_value(v)
                     }
-                    "schedule" => b.schedule = Some(FromValueOpt::from_value(v)?),
-                    "statement_descriptor" => {
-                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "schedule" => b.schedule = FromValueOpt::from_value(v),
+                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

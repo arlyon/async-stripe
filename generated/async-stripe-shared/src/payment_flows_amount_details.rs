@@ -9,7 +9,12 @@ pub struct PaymentFlowsAmountDetailsBuilder {
     tip: Option<Option<stripe_shared::PaymentFlowsAmountDetailsResourceTip>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -54,7 +59,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { tip: self.tip? })
+            let (Some(tip),) = (self.tip,) else {
+                return None;
+            };
+            Some(Self::Out { tip })
         }
     }
 
@@ -81,7 +89,7 @@ const _: () = {
             let mut b = PaymentFlowsAmountDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "tip" => b.tip = Some(FromValueOpt::from_value(v)?),
+                    "tip" => b.tip = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

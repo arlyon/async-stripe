@@ -16,7 +16,12 @@ pub struct DiscountsResourceStackableDiscountBuilder {
     promotion_code: Option<Option<stripe_types::Expandable<stripe_shared::PromotionCode>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                coupon: self.coupon.take()?,
-                discount: self.discount.take()?,
-                promotion_code: self.promotion_code.take()?,
-            })
+            let (Some(coupon), Some(discount), Some(promotion_code)) =
+                (self.coupon.take(), self.discount.take(), self.promotion_code.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { coupon, discount, promotion_code })
         }
     }
 
@@ -98,9 +104,9 @@ const _: () = {
             let mut b = DiscountsResourceStackableDiscountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "coupon" => b.coupon = Some(FromValueOpt::from_value(v)?),
-                    "discount" => b.discount = Some(FromValueOpt::from_value(v)?),
-                    "promotion_code" => b.promotion_code = Some(FromValueOpt::from_value(v)?),
+                    "coupon" => b.coupon = FromValueOpt::from_value(v),
+                    "discount" => b.discount = FromValueOpt::from_value(v),
+                    "promotion_code" => b.promotion_code = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

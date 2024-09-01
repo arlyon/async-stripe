@@ -21,7 +21,12 @@ pub struct PaymentPagesCheckoutSessionConsentCollectionBuilder {
     terms_of_service: Option<Option<PaymentPagesCheckoutSessionConsentCollectionTermsOfService>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -74,11 +79,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                payment_method_reuse_agreement: self.payment_method_reuse_agreement?,
-                promotions: self.promotions?,
-                terms_of_service: self.terms_of_service?,
-            })
+            let (Some(payment_method_reuse_agreement), Some(promotions), Some(terms_of_service)) =
+                (self.payment_method_reuse_agreement, self.promotions, self.terms_of_service)
+            else {
+                return None;
+            };
+            Some(Self::Out { payment_method_reuse_agreement, promotions, terms_of_service })
         }
     }
 
@@ -106,10 +112,10 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "payment_method_reuse_agreement" => {
-                        b.payment_method_reuse_agreement = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_reuse_agreement = FromValueOpt::from_value(v)
                     }
-                    "promotions" => b.promotions = Some(FromValueOpt::from_value(v)?),
-                    "terms_of_service" => b.terms_of_service = Some(FromValueOpt::from_value(v)?),
+                    "promotions" => b.promotions = FromValueOpt::from_value(v),
+                    "terms_of_service" => b.terms_of_service = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

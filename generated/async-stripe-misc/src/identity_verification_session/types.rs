@@ -82,7 +82,12 @@ pub struct IdentityVerificationSessionBuilder {
     verified_outputs: Option<Option<stripe_misc::GelatoVerifiedOutputs>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -161,23 +166,61 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(client_reference_id),
+                Some(client_secret),
+                Some(created),
+                Some(id),
+                Some(last_error),
+                Some(last_verification_report),
+                Some(livemode),
+                Some(metadata),
+                Some(options),
+                Some(provided_details),
+                Some(redaction),
+                Some(status),
+                Some(type_),
+                Some(url),
+                Some(verification_flow),
+                Some(verified_outputs),
+            ) = (
+                self.client_reference_id.take(),
+                self.client_secret.take(),
+                self.created,
+                self.id.take(),
+                self.last_error.take(),
+                self.last_verification_report.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.options.take(),
+                self.provided_details.take(),
+                self.redaction,
+                self.status,
+                self.type_,
+                self.url.take(),
+                self.verification_flow.take(),
+                self.verified_outputs.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                client_reference_id: self.client_reference_id.take()?,
-                client_secret: self.client_secret.take()?,
-                created: self.created?,
-                id: self.id.take()?,
-                last_error: self.last_error.take()?,
-                last_verification_report: self.last_verification_report.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                options: self.options.take()?,
-                provided_details: self.provided_details.take()?,
-                redaction: self.redaction?,
-                status: self.status?,
-                type_: self.type_?,
-                url: self.url.take()?,
-                verification_flow: self.verification_flow.take()?,
-                verified_outputs: self.verified_outputs.take()?,
+                client_reference_id,
+                client_secret,
+                created,
+                id,
+                last_error,
+                last_verification_report,
+                livemode,
+                metadata,
+                options,
+                provided_details,
+                redaction,
+                status,
+                type_,
+                url,
+                verification_flow,
+                verified_outputs,
             })
         }
     }
@@ -205,26 +248,24 @@ const _: () = {
             let mut b = IdentityVerificationSessionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "client_reference_id" => {
-                        b.client_reference_id = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "client_secret" => b.client_secret = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "last_error" => b.last_error = Some(FromValueOpt::from_value(v)?),
+                    "client_reference_id" => b.client_reference_id = FromValueOpt::from_value(v),
+                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "last_error" => b.last_error = FromValueOpt::from_value(v),
                     "last_verification_report" => {
-                        b.last_verification_report = Some(FromValueOpt::from_value(v)?)
+                        b.last_verification_report = FromValueOpt::from_value(v)
                     }
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "options" => b.options = Some(FromValueOpt::from_value(v)?),
-                    "provided_details" => b.provided_details = Some(FromValueOpt::from_value(v)?),
-                    "redaction" => b.redaction = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
-                    "verification_flow" => b.verification_flow = Some(FromValueOpt::from_value(v)?),
-                    "verified_outputs" => b.verified_outputs = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "options" => b.options = FromValueOpt::from_value(v),
+                    "provided_details" => b.provided_details = FromValueOpt::from_value(v),
+                    "redaction" => b.redaction = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "url" => b.url = FromValueOpt::from_value(v),
+                    "verification_flow" => b.verification_flow = FromValueOpt::from_value(v),
+                    "verified_outputs" => b.verified_outputs = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

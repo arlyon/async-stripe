@@ -13,7 +13,12 @@ pub struct IssuingCardholderIdDocumentBuilder {
     front: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { back: self.back.take()?, front: self.front.take()? })
+            let (Some(back), Some(front)) = (self.back.take(), self.front.take()) else {
+                return None;
+            };
+            Some(Self::Out { back, front })
         }
     }
 
@@ -86,8 +94,8 @@ const _: () = {
             let mut b = IssuingCardholderIdDocumentBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "back" => b.back = Some(FromValueOpt::from_value(v)?),
-                    "front" => b.front = Some(FromValueOpt::from_value(v)?),
+                    "back" => b.back = FromValueOpt::from_value(v),
+                    "front" => b.front = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

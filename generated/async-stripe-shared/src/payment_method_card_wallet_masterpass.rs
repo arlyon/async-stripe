@@ -27,7 +27,12 @@ pub struct PaymentMethodCardWalletMasterpassBuilder {
     shipping_address: Option<Option<stripe_shared::Address>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -80,12 +85,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                billing_address: self.billing_address.take()?,
-                email: self.email.take()?,
-                name: self.name.take()?,
-                shipping_address: self.shipping_address.take()?,
-            })
+            let (Some(billing_address), Some(email), Some(name), Some(shipping_address)) = (
+                self.billing_address.take(),
+                self.email.take(),
+                self.name.take(),
+                self.shipping_address.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { billing_address, email, name, shipping_address })
         }
     }
 
@@ -112,10 +120,10 @@ const _: () = {
             let mut b = PaymentMethodCardWalletMasterpassBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "billing_address" => b.billing_address = Some(FromValueOpt::from_value(v)?),
-                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "shipping_address" => b.shipping_address = Some(FromValueOpt::from_value(v)?),
+                    "billing_address" => b.billing_address = FromValueOpt::from_value(v),
+                    "email" => b.email = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

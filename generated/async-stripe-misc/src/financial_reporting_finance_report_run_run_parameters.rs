@@ -36,7 +36,12 @@ pub struct FinancialReportingFinanceReportRunRunParametersBuilder {
     timezone: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -97,15 +102,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(columns),
+                Some(connected_account),
+                Some(currency),
+                Some(interval_end),
+                Some(interval_start),
+                Some(payout),
+                Some(reporting_category),
+                Some(timezone),
+            ) = (
+                self.columns.take(),
+                self.connected_account.take(),
+                self.currency,
+                self.interval_end,
+                self.interval_start,
+                self.payout.take(),
+                self.reporting_category.take(),
+                self.timezone.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                columns: self.columns.take()?,
-                connected_account: self.connected_account.take()?,
-                currency: self.currency?,
-                interval_end: self.interval_end?,
-                interval_start: self.interval_start?,
-                payout: self.payout.take()?,
-                reporting_category: self.reporting_category.take()?,
-                timezone: self.timezone.take()?,
+                columns,
+                connected_account,
+                currency,
+                interval_end,
+                interval_start,
+                payout,
+                reporting_category,
+                timezone,
             })
         }
     }
@@ -133,16 +160,14 @@ const _: () = {
             let mut b = FinancialReportingFinanceReportRunRunParametersBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "columns" => b.columns = Some(FromValueOpt::from_value(v)?),
-                    "connected_account" => b.connected_account = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "interval_end" => b.interval_end = Some(FromValueOpt::from_value(v)?),
-                    "interval_start" => b.interval_start = Some(FromValueOpt::from_value(v)?),
-                    "payout" => b.payout = Some(FromValueOpt::from_value(v)?),
-                    "reporting_category" => {
-                        b.reporting_category = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "timezone" => b.timezone = Some(FromValueOpt::from_value(v)?),
+                    "columns" => b.columns = FromValueOpt::from_value(v),
+                    "connected_account" => b.connected_account = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "interval_end" => b.interval_end = FromValueOpt::from_value(v),
+                    "interval_start" => b.interval_start = FromValueOpt::from_value(v),
+                    "payout" => b.payout = FromValueOpt::from_value(v),
+                    "reporting_category" => b.reporting_category = FromValueOpt::from_value(v),
+                    "timezone" => b.timezone = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

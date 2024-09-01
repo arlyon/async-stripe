@@ -13,7 +13,12 @@ pub struct IssuingCardholderRequirementsBuilder {
     past_due: Option<Option<Vec<IssuingCardholderRequirementsPastDue>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +64,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                disabled_reason: self.disabled_reason?,
-                past_due: self.past_due.take()?,
-            })
+            let (Some(disabled_reason), Some(past_due)) =
+                (self.disabled_reason, self.past_due.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { disabled_reason, past_due })
         }
     }
 
@@ -89,8 +96,8 @@ const _: () = {
             let mut b = IssuingCardholderRequirementsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "disabled_reason" => b.disabled_reason = Some(FromValueOpt::from_value(v)?),
-                    "past_due" => b.past_due = Some(FromValueOpt::from_value(v)?),
+                    "disabled_reason" => b.disabled_reason = FromValueOpt::from_value(v),
+                    "past_due" => b.past_due = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

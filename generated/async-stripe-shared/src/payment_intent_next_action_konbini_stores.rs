@@ -19,7 +19,12 @@ pub struct PaymentIntentNextActionKonbiniStoresBuilder {
     seicomart: Option<Option<stripe_shared::PaymentIntentNextActionKonbiniSeicomart>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                familymart: self.familymart.take()?,
-                lawson: self.lawson.take()?,
-                ministop: self.ministop.take()?,
-                seicomart: self.seicomart.take()?,
-            })
+            let (Some(familymart), Some(lawson), Some(ministop), Some(seicomart)) = (
+                self.familymart.take(),
+                self.lawson.take(),
+                self.ministop.take(),
+                self.seicomart.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { familymart, lawson, ministop, seicomart })
         }
     }
 
@@ -104,10 +112,10 @@ const _: () = {
             let mut b = PaymentIntentNextActionKonbiniStoresBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "familymart" => b.familymart = Some(FromValueOpt::from_value(v)?),
-                    "lawson" => b.lawson = Some(FromValueOpt::from_value(v)?),
-                    "ministop" => b.ministop = Some(FromValueOpt::from_value(v)?),
-                    "seicomart" => b.seicomart = Some(FromValueOpt::from_value(v)?),
+                    "familymart" => b.familymart = FromValueOpt::from_value(v),
+                    "lawson" => b.lawson = FromValueOpt::from_value(v),
+                    "ministop" => b.ministop = FromValueOpt::from_value(v),
+                    "seicomart" => b.seicomart = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

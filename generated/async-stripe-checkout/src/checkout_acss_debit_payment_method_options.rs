@@ -23,7 +23,12 @@ pub struct CheckoutAcssDebitPaymentMethodOptionsBuilder {
     verification_method: Option<Option<CheckoutAcssDebitPaymentMethodOptionsVerificationMethod>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -76,12 +81,21 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                currency: self.currency?,
-                mandate_options: self.mandate_options.take()?,
-                setup_future_usage: self.setup_future_usage?,
-                verification_method: self.verification_method?,
-            })
+            let (
+                Some(currency),
+                Some(mandate_options),
+                Some(setup_future_usage),
+                Some(verification_method),
+            ) = (
+                self.currency,
+                self.mandate_options.take(),
+                self.setup_future_usage,
+                self.verification_method,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { currency, mandate_options, setup_future_usage, verification_method })
         }
     }
 
@@ -108,14 +122,10 @@ const _: () = {
             let mut b = CheckoutAcssDebitPaymentMethodOptionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "mandate_options" => b.mandate_options = Some(FromValueOpt::from_value(v)?),
-                    "setup_future_usage" => {
-                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "verification_method" => {
-                        b.verification_method = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
+                    "verification_method" => b.verification_method = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

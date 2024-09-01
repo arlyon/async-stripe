@@ -11,7 +11,12 @@ pub struct SubscriptionsTrialsResourceEndBehaviorBuilder {
     missing_payment_method: Option<SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -56,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { missing_payment_method: self.missing_payment_method? })
+            let (Some(missing_payment_method),) = (self.missing_payment_method,) else {
+                return None;
+            };
+            Some(Self::Out { missing_payment_method })
         }
     }
 
@@ -84,7 +92,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "missing_payment_method" => {
-                        b.missing_payment_method = Some(FromValueOpt::from_value(v)?)
+                        b.missing_payment_method = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

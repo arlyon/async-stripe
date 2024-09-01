@@ -108,7 +108,12 @@ pub struct CreditNoteBuilder {
     voided_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -213,36 +218,100 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(amount_shipping),
+                Some(created),
+                Some(currency),
+                Some(customer),
+                Some(customer_balance_transaction),
+                Some(discount_amount),
+                Some(discount_amounts),
+                Some(effective_at),
+                Some(id),
+                Some(invoice),
+                Some(lines),
+                Some(livemode),
+                Some(memo),
+                Some(metadata),
+                Some(number),
+                Some(out_of_band_amount),
+                Some(pdf),
+                Some(reason),
+                Some(refund),
+                Some(shipping_cost),
+                Some(status),
+                Some(subtotal),
+                Some(subtotal_excluding_tax),
+                Some(tax_amounts),
+                Some(total),
+                Some(total_excluding_tax),
+                Some(type_),
+                Some(voided_at),
+            ) = (
+                self.amount,
+                self.amount_shipping,
+                self.created,
+                self.currency,
+                self.customer.take(),
+                self.customer_balance_transaction.take(),
+                self.discount_amount,
+                self.discount_amounts.take(),
+                self.effective_at,
+                self.id.take(),
+                self.invoice.take(),
+                self.lines.take(),
+                self.livemode,
+                self.memo.take(),
+                self.metadata.take(),
+                self.number.take(),
+                self.out_of_band_amount,
+                self.pdf.take(),
+                self.reason,
+                self.refund.take(),
+                self.shipping_cost.take(),
+                self.status,
+                self.subtotal,
+                self.subtotal_excluding_tax,
+                self.tax_amounts.take(),
+                self.total,
+                self.total_excluding_tax,
+                self.type_,
+                self.voided_at,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                amount_shipping: self.amount_shipping?,
-                created: self.created?,
-                currency: self.currency?,
-                customer: self.customer.take()?,
-                customer_balance_transaction: self.customer_balance_transaction.take()?,
-                discount_amount: self.discount_amount?,
-                discount_amounts: self.discount_amounts.take()?,
-                effective_at: self.effective_at?,
-                id: self.id.take()?,
-                invoice: self.invoice.take()?,
-                lines: self.lines.take()?,
-                livemode: self.livemode?,
-                memo: self.memo.take()?,
-                metadata: self.metadata.take()?,
-                number: self.number.take()?,
-                out_of_band_amount: self.out_of_band_amount?,
-                pdf: self.pdf.take()?,
-                reason: self.reason?,
-                refund: self.refund.take()?,
-                shipping_cost: self.shipping_cost.take()?,
-                status: self.status?,
-                subtotal: self.subtotal?,
-                subtotal_excluding_tax: self.subtotal_excluding_tax?,
-                tax_amounts: self.tax_amounts.take()?,
-                total: self.total?,
-                total_excluding_tax: self.total_excluding_tax?,
-                type_: self.type_?,
-                voided_at: self.voided_at?,
+                amount,
+                amount_shipping,
+                created,
+                currency,
+                customer,
+                customer_balance_transaction,
+                discount_amount,
+                discount_amounts,
+                effective_at,
+                id,
+                invoice,
+                lines,
+                livemode,
+                memo,
+                metadata,
+                number,
+                out_of_band_amount,
+                pdf,
+                reason,
+                refund,
+                shipping_cost,
+                status,
+                subtotal,
+                subtotal_excluding_tax,
+                tax_amounts,
+                total,
+                total_excluding_tax,
+                type_,
+                voided_at,
             })
         }
     }
@@ -270,43 +339,39 @@ const _: () = {
             let mut b = CreditNoteBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_shipping" => b.amount_shipping = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_shipping" => b.amount_shipping = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
                     "customer_balance_transaction" => {
-                        b.customer_balance_transaction = Some(FromValueOpt::from_value(v)?)
+                        b.customer_balance_transaction = FromValueOpt::from_value(v)
                     }
-                    "discount_amount" => b.discount_amount = Some(FromValueOpt::from_value(v)?),
-                    "discount_amounts" => b.discount_amounts = Some(FromValueOpt::from_value(v)?),
-                    "effective_at" => b.effective_at = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
-                    "lines" => b.lines = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "memo" => b.memo = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "number" => b.number = Some(FromValueOpt::from_value(v)?),
-                    "out_of_band_amount" => {
-                        b.out_of_band_amount = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "pdf" => b.pdf = Some(FromValueOpt::from_value(v)?),
-                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
-                    "refund" => b.refund = Some(FromValueOpt::from_value(v)?),
-                    "shipping_cost" => b.shipping_cost = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "subtotal" => b.subtotal = Some(FromValueOpt::from_value(v)?),
+                    "discount_amount" => b.discount_amount = FromValueOpt::from_value(v),
+                    "discount_amounts" => b.discount_amounts = FromValueOpt::from_value(v),
+                    "effective_at" => b.effective_at = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "invoice" => b.invoice = FromValueOpt::from_value(v),
+                    "lines" => b.lines = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "memo" => b.memo = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "number" => b.number = FromValueOpt::from_value(v),
+                    "out_of_band_amount" => b.out_of_band_amount = FromValueOpt::from_value(v),
+                    "pdf" => b.pdf = FromValueOpt::from_value(v),
+                    "reason" => b.reason = FromValueOpt::from_value(v),
+                    "refund" => b.refund = FromValueOpt::from_value(v),
+                    "shipping_cost" => b.shipping_cost = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "subtotal" => b.subtotal = FromValueOpt::from_value(v),
                     "subtotal_excluding_tax" => {
-                        b.subtotal_excluding_tax = Some(FromValueOpt::from_value(v)?)
+                        b.subtotal_excluding_tax = FromValueOpt::from_value(v)
                     }
-                    "tax_amounts" => b.tax_amounts = Some(FromValueOpt::from_value(v)?),
-                    "total" => b.total = Some(FromValueOpt::from_value(v)?),
-                    "total_excluding_tax" => {
-                        b.total_excluding_tax = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "voided_at" => b.voided_at = Some(FromValueOpt::from_value(v)?),
+                    "tax_amounts" => b.tax_amounts = FromValueOpt::from_value(v),
+                    "total" => b.total = FromValueOpt::from_value(v),
+                    "total_excluding_tax" => b.total_excluding_tax = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "voided_at" => b.voided_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

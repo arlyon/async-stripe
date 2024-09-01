@@ -18,7 +18,12 @@ pub struct ForwardedRequestDetailsBuilder {
     http_method: Option<ForwardedRequestDetailsHttpMethod>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                body: self.body.take()?,
-                headers: self.headers.take()?,
-                http_method: self.http_method?,
-            })
+            let (Some(body), Some(headers), Some(http_method)) =
+                (self.body.take(), self.headers.take(), self.http_method)
+            else {
+                return None;
+            };
+            Some(Self::Out { body, headers, http_method })
         }
     }
 
@@ -100,9 +106,9 @@ const _: () = {
             let mut b = ForwardedRequestDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "body" => b.body = Some(FromValueOpt::from_value(v)?),
-                    "headers" => b.headers = Some(FromValueOpt::from_value(v)?),
-                    "http_method" => b.http_method = Some(FromValueOpt::from_value(v)?),
+                    "body" => b.body = FromValueOpt::from_value(v),
+                    "headers" => b.headers = FromValueOpt::from_value(v),
+                    "http_method" => b.http_method = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -25,7 +25,12 @@ pub struct ConnectEmbeddedAccountSessionCreateComponentsBuilder {
     payouts_list: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -88,16 +93,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account_management),
+                Some(account_onboarding),
+                Some(balances),
+                Some(documents),
+                Some(notification_banner),
+                Some(payment_details),
+                Some(payments),
+                Some(payouts),
+                Some(payouts_list),
+            ) = (
+                self.account_management,
+                self.account_onboarding,
+                self.balances,
+                self.documents,
+                self.notification_banner,
+                self.payment_details,
+                self.payments,
+                self.payouts,
+                self.payouts_list,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account_management: self.account_management?,
-                account_onboarding: self.account_onboarding?,
-                balances: self.balances?,
-                documents: self.documents?,
-                notification_banner: self.notification_banner?,
-                payment_details: self.payment_details?,
-                payments: self.payments?,
-                payouts: self.payouts?,
-                payouts_list: self.payouts_list?,
+                account_management,
+                account_onboarding,
+                balances,
+                documents,
+                notification_banner,
+                payment_details,
+                payments,
+                payouts,
+                payouts_list,
             })
         }
     }
@@ -125,21 +154,15 @@ const _: () = {
             let mut b = ConnectEmbeddedAccountSessionCreateComponentsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_management" => {
-                        b.account_management = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "account_onboarding" => {
-                        b.account_onboarding = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "balances" => b.balances = Some(FromValueOpt::from_value(v)?),
-                    "documents" => b.documents = Some(FromValueOpt::from_value(v)?),
-                    "notification_banner" => {
-                        b.notification_banner = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "payment_details" => b.payment_details = Some(FromValueOpt::from_value(v)?),
-                    "payments" => b.payments = Some(FromValueOpt::from_value(v)?),
-                    "payouts" => b.payouts = Some(FromValueOpt::from_value(v)?),
-                    "payouts_list" => b.payouts_list = Some(FromValueOpt::from_value(v)?),
+                    "account_management" => b.account_management = FromValueOpt::from_value(v),
+                    "account_onboarding" => b.account_onboarding = FromValueOpt::from_value(v),
+                    "balances" => b.balances = FromValueOpt::from_value(v),
+                    "documents" => b.documents = FromValueOpt::from_value(v),
+                    "notification_banner" => b.notification_banner = FromValueOpt::from_value(v),
+                    "payment_details" => b.payment_details = FromValueOpt::from_value(v),
+                    "payments" => b.payments = FromValueOpt::from_value(v),
+                    "payouts" => b.payouts = FromValueOpt::from_value(v),
+                    "payouts_list" => b.payouts_list = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

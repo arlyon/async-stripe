@@ -17,7 +17,12 @@ pub struct TreasuryReceivedCreditsResourceSourceFlowsDetailsBuilder {
     type_: Option<TreasuryReceivedCreditsResourceSourceFlowsDetailsType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -70,12 +75,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                credit_reversal: self.credit_reversal.take()?,
-                outbound_payment: self.outbound_payment.take()?,
-                payout: self.payout.take()?,
-                type_: self.type_?,
-            })
+            let (Some(credit_reversal), Some(outbound_payment), Some(payout), Some(type_)) = (
+                self.credit_reversal.take(),
+                self.outbound_payment.take(),
+                self.payout.take(),
+                self.type_,
+            ) else {
+                return None;
+            };
+            Some(Self::Out { credit_reversal, outbound_payment, payout, type_ })
         }
     }
 
@@ -102,10 +110,10 @@ const _: () = {
             let mut b = TreasuryReceivedCreditsResourceSourceFlowsDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "credit_reversal" => b.credit_reversal = Some(FromValueOpt::from_value(v)?),
-                    "outbound_payment" => b.outbound_payment = Some(FromValueOpt::from_value(v)?),
-                    "payout" => b.payout = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "credit_reversal" => b.credit_reversal = FromValueOpt::from_value(v),
+                    "outbound_payment" => b.outbound_payment = FromValueOpt::from_value(v),
+                    "payout" => b.payout = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

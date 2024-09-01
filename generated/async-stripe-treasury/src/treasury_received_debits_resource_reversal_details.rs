@@ -14,7 +14,12 @@ pub struct TreasuryReceivedDebitsResourceReversalDetailsBuilder {
         Option<Option<TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -60,7 +65,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { deadline: self.deadline?, restricted_reason: self.restricted_reason? })
+            let (Some(deadline), Some(restricted_reason)) = (self.deadline, self.restricted_reason)
+            else {
+                return None;
+            };
+            Some(Self::Out { deadline, restricted_reason })
         }
     }
 
@@ -87,8 +96,8 @@ const _: () = {
             let mut b = TreasuryReceivedDebitsResourceReversalDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "deadline" => b.deadline = Some(FromValueOpt::from_value(v)?),
-                    "restricted_reason" => b.restricted_reason = Some(FromValueOpt::from_value(v)?),
+                    "deadline" => b.deadline = FromValueOpt::from_value(v),
+                    "restricted_reason" => b.restricted_reason = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

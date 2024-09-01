@@ -23,7 +23,12 @@ pub struct SourceTypeAchCreditTransferBuilder {
     swift_code: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -88,15 +93,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account_number),
+                Some(bank_name),
+                Some(fingerprint),
+                Some(refund_account_holder_name),
+                Some(refund_account_holder_type),
+                Some(refund_routing_number),
+                Some(routing_number),
+                Some(swift_code),
+            ) = (
+                self.account_number.take(),
+                self.bank_name.take(),
+                self.fingerprint.take(),
+                self.refund_account_holder_name.take(),
+                self.refund_account_holder_type.take(),
+                self.refund_routing_number.take(),
+                self.routing_number.take(),
+                self.swift_code.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account_number: self.account_number.take()?,
-                bank_name: self.bank_name.take()?,
-                fingerprint: self.fingerprint.take()?,
-                refund_account_holder_name: self.refund_account_holder_name.take()?,
-                refund_account_holder_type: self.refund_account_holder_type.take()?,
-                refund_routing_number: self.refund_routing_number.take()?,
-                routing_number: self.routing_number.take()?,
-                swift_code: self.swift_code.take()?,
+                account_number,
+                bank_name,
+                fingerprint,
+                refund_account_holder_name,
+                refund_account_holder_type,
+                refund_routing_number,
+                routing_number,
+                swift_code,
             })
         }
     }
@@ -124,20 +151,20 @@ const _: () = {
             let mut b = SourceTypeAchCreditTransferBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_number" => b.account_number = Some(FromValueOpt::from_value(v)?),
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
+                    "account_number" => b.account_number = FromValueOpt::from_value(v),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
                     "refund_account_holder_name" => {
-                        b.refund_account_holder_name = Some(FromValueOpt::from_value(v)?)
+                        b.refund_account_holder_name = FromValueOpt::from_value(v)
                     }
                     "refund_account_holder_type" => {
-                        b.refund_account_holder_type = Some(FromValueOpt::from_value(v)?)
+                        b.refund_account_holder_type = FromValueOpt::from_value(v)
                     }
                     "refund_routing_number" => {
-                        b.refund_routing_number = Some(FromValueOpt::from_value(v)?)
+                        b.refund_routing_number = FromValueOpt::from_value(v)
                     }
-                    "routing_number" => b.routing_number = Some(FromValueOpt::from_value(v)?),
-                    "swift_code" => b.swift_code = Some(FromValueOpt::from_value(v)?),
+                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
+                    "swift_code" => b.swift_code = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

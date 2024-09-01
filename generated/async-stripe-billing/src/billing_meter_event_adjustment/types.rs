@@ -25,7 +25,12 @@ pub struct BillingMeterEventAdjustmentBuilder {
     type_: Option<stripe_billing::BillingMeterEventAdjustmentType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -80,13 +85,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                cancel: self.cancel.take()?,
-                event_name: self.event_name.take()?,
-                livemode: self.livemode?,
-                status: self.status?,
-                type_: self.type_?,
-            })
+            let (Some(cancel), Some(event_name), Some(livemode), Some(status), Some(type_)) = (
+                self.cancel.take(),
+                self.event_name.take(),
+                self.livemode,
+                self.status,
+                self.type_,
+            ) else {
+                return None;
+            };
+            Some(Self::Out { cancel, event_name, livemode, status, type_ })
         }
     }
 
@@ -113,11 +121,11 @@ const _: () = {
             let mut b = BillingMeterEventAdjustmentBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "cancel" => b.cancel = Some(FromValueOpt::from_value(v)?),
-                    "event_name" => b.event_name = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "cancel" => b.cancel = FromValueOpt::from_value(v),
+                    "event_name" => b.event_name = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

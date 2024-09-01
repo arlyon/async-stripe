@@ -13,7 +13,12 @@ pub struct TreasuryTransactionsResourceAbstractTransactionResourceStatusTransiti
     void_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -63,7 +68,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { posted_at: self.posted_at?, void_at: self.void_at? })
+            let (Some(posted_at), Some(void_at)) = (self.posted_at, self.void_at) else {
+                return None;
+            };
+            Some(Self::Out { posted_at, void_at })
         }
     }
 
@@ -91,8 +99,8 @@ const _: () = {
             let mut b = TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "posted_at" => b.posted_at = Some(FromValueOpt::from_value(v)?),
-                    "void_at" => b.void_at = Some(FromValueOpt::from_value(v)?),
+                    "posted_at" => b.posted_at = FromValueOpt::from_value(v),
+                    "void_at" => b.void_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

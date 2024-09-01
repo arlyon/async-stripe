@@ -51,7 +51,12 @@ pub struct WebhookEndpointBuilder {
     url: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -118,18 +123,46 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(api_version),
+                Some(application),
+                Some(created),
+                Some(description),
+                Some(enabled_events),
+                Some(id),
+                Some(livemode),
+                Some(metadata),
+                Some(secret),
+                Some(status),
+                Some(url),
+            ) = (
+                self.api_version.take(),
+                self.application.take(),
+                self.created,
+                self.description.take(),
+                self.enabled_events.take(),
+                self.id.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.secret.take(),
+                self.status.take(),
+                self.url.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                api_version: self.api_version.take()?,
-                application: self.application.take()?,
-                created: self.created?,
-                description: self.description.take()?,
-                enabled_events: self.enabled_events.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                secret: self.secret.take()?,
-                status: self.status.take()?,
-                url: self.url.take()?,
+                api_version,
+                application,
+                created,
+                description,
+                enabled_events,
+                id,
+                livemode,
+                metadata,
+                secret,
+                status,
+                url,
             })
         }
     }
@@ -157,17 +190,17 @@ const _: () = {
             let mut b = WebhookEndpointBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "api_version" => b.api_version = Some(FromValueOpt::from_value(v)?),
-                    "application" => b.application = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "enabled_events" => b.enabled_events = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "secret" => b.secret = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+                    "api_version" => b.api_version = FromValueOpt::from_value(v),
+                    "application" => b.application = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "enabled_events" => b.enabled_events = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "secret" => b.secret = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "url" => b.url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

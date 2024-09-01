@@ -15,7 +15,12 @@ pub struct AccountDashboardSettingsBuilder {
     timezone: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -61,10 +66,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                display_name: self.display_name.take()?,
-                timezone: self.timezone.take()?,
-            })
+            let (Some(display_name), Some(timezone)) =
+                (self.display_name.take(), self.timezone.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { display_name, timezone })
         }
     }
 
@@ -91,8 +98,8 @@ const _: () = {
             let mut b = AccountDashboardSettingsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "display_name" => b.display_name = Some(FromValueOpt::from_value(v)?),
-                    "timezone" => b.timezone = Some(FromValueOpt::from_value(v)?),
+                    "display_name" => b.display_name = FromValueOpt::from_value(v),
+                    "timezone" => b.timezone = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

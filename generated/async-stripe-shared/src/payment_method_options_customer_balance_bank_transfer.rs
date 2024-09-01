@@ -22,7 +22,12 @@ pub struct PaymentMethodOptionsCustomerBalanceBankTransferBuilder {
     type_: Option<Option<PaymentMethodOptionsCustomerBalanceBankTransferType>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -73,11 +78,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                eu_bank_transfer: self.eu_bank_transfer?,
-                requested_address_types: self.requested_address_types.take()?,
-                type_: self.type_?,
-            })
+            let (Some(eu_bank_transfer), Some(requested_address_types), Some(type_)) =
+                (self.eu_bank_transfer, self.requested_address_types.take(), self.type_)
+            else {
+                return None;
+            };
+            Some(Self::Out { eu_bank_transfer, requested_address_types, type_ })
         }
     }
 
@@ -104,11 +110,11 @@ const _: () = {
             let mut b = PaymentMethodOptionsCustomerBalanceBankTransferBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "eu_bank_transfer" => b.eu_bank_transfer = Some(FromValueOpt::from_value(v)?),
+                    "eu_bank_transfer" => b.eu_bank_transfer = FromValueOpt::from_value(v),
                     "requested_address_types" => {
-                        b.requested_address_types = Some(FromValueOpt::from_value(v)?)
+                        b.requested_address_types = FromValueOpt::from_value(v)
                     }
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

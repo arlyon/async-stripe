@@ -13,7 +13,12 @@ pub struct CustomerBalanceCustomerBalanceSettingsBuilder {
     using_merchant_default: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -62,10 +67,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                reconciliation_mode: self.reconciliation_mode?,
-                using_merchant_default: self.using_merchant_default?,
-            })
+            let (Some(reconciliation_mode), Some(using_merchant_default)) =
+                (self.reconciliation_mode, self.using_merchant_default)
+            else {
+                return None;
+            };
+            Some(Self::Out { reconciliation_mode, using_merchant_default })
         }
     }
 
@@ -92,11 +99,9 @@ const _: () = {
             let mut b = CustomerBalanceCustomerBalanceSettingsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "reconciliation_mode" => {
-                        b.reconciliation_mode = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "reconciliation_mode" => b.reconciliation_mode = FromValueOpt::from_value(v),
                     "using_merchant_default" => {
-                        b.using_merchant_default = Some(FromValueOpt::from_value(v)?)
+                        b.using_merchant_default = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

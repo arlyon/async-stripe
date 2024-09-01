@@ -59,7 +59,12 @@ pub struct SourceTypeCardPresentBuilder {
     transaction_status_information: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -168,33 +173,91 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(application_cryptogram),
+                Some(application_preferred_name),
+                Some(authorization_code),
+                Some(authorization_response_code),
+                Some(brand),
+                Some(country),
+                Some(cvm_type),
+                Some(data_type),
+                Some(dedicated_file_name),
+                Some(description),
+                Some(emv_auth_data),
+                Some(evidence_customer_signature),
+                Some(evidence_transaction_certificate),
+                Some(exp_month),
+                Some(exp_year),
+                Some(fingerprint),
+                Some(funding),
+                Some(iin),
+                Some(issuer),
+                Some(last4),
+                Some(pos_device_id),
+                Some(pos_entry_mode),
+                Some(read_method),
+                Some(reader),
+                Some(terminal_verification_results),
+                Some(transaction_status_information),
+            ) = (
+                self.application_cryptogram.take(),
+                self.application_preferred_name.take(),
+                self.authorization_code.take(),
+                self.authorization_response_code.take(),
+                self.brand.take(),
+                self.country.take(),
+                self.cvm_type.take(),
+                self.data_type.take(),
+                self.dedicated_file_name.take(),
+                self.description.take(),
+                self.emv_auth_data.take(),
+                self.evidence_customer_signature.take(),
+                self.evidence_transaction_certificate.take(),
+                self.exp_month,
+                self.exp_year,
+                self.fingerprint.take(),
+                self.funding.take(),
+                self.iin.take(),
+                self.issuer.take(),
+                self.last4.take(),
+                self.pos_device_id.take(),
+                self.pos_entry_mode.take(),
+                self.read_method.take(),
+                self.reader.take(),
+                self.terminal_verification_results.take(),
+                self.transaction_status_information.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                application_cryptogram: self.application_cryptogram.take()?,
-                application_preferred_name: self.application_preferred_name.take()?,
-                authorization_code: self.authorization_code.take()?,
-                authorization_response_code: self.authorization_response_code.take()?,
-                brand: self.brand.take()?,
-                country: self.country.take()?,
-                cvm_type: self.cvm_type.take()?,
-                data_type: self.data_type.take()?,
-                dedicated_file_name: self.dedicated_file_name.take()?,
-                description: self.description.take()?,
-                emv_auth_data: self.emv_auth_data.take()?,
-                evidence_customer_signature: self.evidence_customer_signature.take()?,
-                evidence_transaction_certificate: self.evidence_transaction_certificate.take()?,
-                exp_month: self.exp_month?,
-                exp_year: self.exp_year?,
-                fingerprint: self.fingerprint.take()?,
-                funding: self.funding.take()?,
-                iin: self.iin.take()?,
-                issuer: self.issuer.take()?,
-                last4: self.last4.take()?,
-                pos_device_id: self.pos_device_id.take()?,
-                pos_entry_mode: self.pos_entry_mode.take()?,
-                read_method: self.read_method.take()?,
-                reader: self.reader.take()?,
-                terminal_verification_results: self.terminal_verification_results.take()?,
-                transaction_status_information: self.transaction_status_information.take()?,
+                application_cryptogram,
+                application_preferred_name,
+                authorization_code,
+                authorization_response_code,
+                brand,
+                country,
+                cvm_type,
+                data_type,
+                dedicated_file_name,
+                description,
+                emv_auth_data,
+                evidence_customer_signature,
+                evidence_transaction_certificate,
+                exp_month,
+                exp_year,
+                fingerprint,
+                funding,
+                iin,
+                issuer,
+                last4,
+                pos_device_id,
+                pos_entry_mode,
+                read_method,
+                reader,
+                terminal_verification_results,
+                transaction_status_information,
             })
         }
     }
@@ -223,48 +286,44 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "application_cryptogram" => {
-                        b.application_cryptogram = Some(FromValueOpt::from_value(v)?)
+                        b.application_cryptogram = FromValueOpt::from_value(v)
                     }
                     "application_preferred_name" => {
-                        b.application_preferred_name = Some(FromValueOpt::from_value(v)?)
+                        b.application_preferred_name = FromValueOpt::from_value(v)
                     }
-                    "authorization_code" => {
-                        b.authorization_code = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
                     "authorization_response_code" => {
-                        b.authorization_response_code = Some(FromValueOpt::from_value(v)?)
+                        b.authorization_response_code = FromValueOpt::from_value(v)
                     }
-                    "brand" => b.brand = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "cvm_type" => b.cvm_type = Some(FromValueOpt::from_value(v)?),
-                    "data_type" => b.data_type = Some(FromValueOpt::from_value(v)?),
-                    "dedicated_file_name" => {
-                        b.dedicated_file_name = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "emv_auth_data" => b.emv_auth_data = Some(FromValueOpt::from_value(v)?),
+                    "brand" => b.brand = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "cvm_type" => b.cvm_type = FromValueOpt::from_value(v),
+                    "data_type" => b.data_type = FromValueOpt::from_value(v),
+                    "dedicated_file_name" => b.dedicated_file_name = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "emv_auth_data" => b.emv_auth_data = FromValueOpt::from_value(v),
                     "evidence_customer_signature" => {
-                        b.evidence_customer_signature = Some(FromValueOpt::from_value(v)?)
+                        b.evidence_customer_signature = FromValueOpt::from_value(v)
                     }
                     "evidence_transaction_certificate" => {
-                        b.evidence_transaction_certificate = Some(FromValueOpt::from_value(v)?)
+                        b.evidence_transaction_certificate = FromValueOpt::from_value(v)
                     }
-                    "exp_month" => b.exp_month = Some(FromValueOpt::from_value(v)?),
-                    "exp_year" => b.exp_year = Some(FromValueOpt::from_value(v)?),
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "funding" => b.funding = Some(FromValueOpt::from_value(v)?),
-                    "iin" => b.iin = Some(FromValueOpt::from_value(v)?),
-                    "issuer" => b.issuer = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "pos_device_id" => b.pos_device_id = Some(FromValueOpt::from_value(v)?),
-                    "pos_entry_mode" => b.pos_entry_mode = Some(FromValueOpt::from_value(v)?),
-                    "read_method" => b.read_method = Some(FromValueOpt::from_value(v)?),
-                    "reader" => b.reader = Some(FromValueOpt::from_value(v)?),
+                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
+                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "funding" => b.funding = FromValueOpt::from_value(v),
+                    "iin" => b.iin = FromValueOpt::from_value(v),
+                    "issuer" => b.issuer = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "pos_device_id" => b.pos_device_id = FromValueOpt::from_value(v),
+                    "pos_entry_mode" => b.pos_entry_mode = FromValueOpt::from_value(v),
+                    "read_method" => b.read_method = FromValueOpt::from_value(v),
+                    "reader" => b.reader = FromValueOpt::from_value(v),
                     "terminal_verification_results" => {
-                        b.terminal_verification_results = Some(FromValueOpt::from_value(v)?)
+                        b.terminal_verification_results = FromValueOpt::from_value(v)
                     }
                     "transaction_status_information" => {
-                        b.transaction_status_information = Some(FromValueOpt::from_value(v)?)
+                        b.transaction_status_information = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

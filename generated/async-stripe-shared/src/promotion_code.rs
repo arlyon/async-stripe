@@ -48,7 +48,12 @@ pub struct PromotionCodeBuilder {
     times_redeemed: Option<i64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -117,19 +122,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(active),
+                Some(code),
+                Some(coupon),
+                Some(created),
+                Some(customer),
+                Some(expires_at),
+                Some(id),
+                Some(livemode),
+                Some(max_redemptions),
+                Some(metadata),
+                Some(restrictions),
+                Some(times_redeemed),
+            ) = (
+                self.active,
+                self.code.take(),
+                self.coupon.take(),
+                self.created,
+                self.customer.take(),
+                self.expires_at,
+                self.id.take(),
+                self.livemode,
+                self.max_redemptions,
+                self.metadata.take(),
+                self.restrictions.take(),
+                self.times_redeemed,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                active: self.active?,
-                code: self.code.take()?,
-                coupon: self.coupon.take()?,
-                created: self.created?,
-                customer: self.customer.take()?,
-                expires_at: self.expires_at?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                max_redemptions: self.max_redemptions?,
-                metadata: self.metadata.take()?,
-                restrictions: self.restrictions.take()?,
-                times_redeemed: self.times_redeemed?,
+                active,
+                code,
+                coupon,
+                created,
+                customer,
+                expires_at,
+                id,
+                livemode,
+                max_redemptions,
+                metadata,
+                restrictions,
+                times_redeemed,
             })
         }
     }
@@ -157,18 +192,18 @@ const _: () = {
             let mut b = PromotionCodeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "active" => b.active = Some(FromValueOpt::from_value(v)?),
-                    "code" => b.code = Some(FromValueOpt::from_value(v)?),
-                    "coupon" => b.coupon = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "max_redemptions" => b.max_redemptions = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "restrictions" => b.restrictions = Some(FromValueOpt::from_value(v)?),
-                    "times_redeemed" => b.times_redeemed = Some(FromValueOpt::from_value(v)?),
+                    "active" => b.active = FromValueOpt::from_value(v),
+                    "code" => b.code = FromValueOpt::from_value(v),
+                    "coupon" => b.coupon = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "max_redemptions" => b.max_redemptions = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "restrictions" => b.restrictions = FromValueOpt::from_value(v),
+                    "times_redeemed" => b.times_redeemed = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

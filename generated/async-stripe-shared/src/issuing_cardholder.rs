@@ -62,7 +62,12 @@ pub struct IssuingCardholderBuilder {
     type_: Option<stripe_shared::IssuingCardholderType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -137,22 +142,58 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(billing),
+                Some(company),
+                Some(created),
+                Some(email),
+                Some(id),
+                Some(individual),
+                Some(livemode),
+                Some(metadata),
+                Some(name),
+                Some(phone_number),
+                Some(preferred_locales),
+                Some(requirements),
+                Some(spending_controls),
+                Some(status),
+                Some(type_),
+            ) = (
+                self.billing.take(),
+                self.company,
+                self.created,
+                self.email.take(),
+                self.id.take(),
+                self.individual.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.name.take(),
+                self.phone_number.take(),
+                self.preferred_locales.take(),
+                self.requirements.take(),
+                self.spending_controls.take(),
+                self.status,
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                billing: self.billing.take()?,
-                company: self.company?,
-                created: self.created?,
-                email: self.email.take()?,
-                id: self.id.take()?,
-                individual: self.individual.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                name: self.name.take()?,
-                phone_number: self.phone_number.take()?,
-                preferred_locales: self.preferred_locales.take()?,
-                requirements: self.requirements.take()?,
-                spending_controls: self.spending_controls.take()?,
-                status: self.status?,
-                type_: self.type_?,
+                billing,
+                company,
+                created,
+                email,
+                id,
+                individual,
+                livemode,
+                metadata,
+                name,
+                phone_number,
+                preferred_locales,
+                requirements,
+                spending_controls,
+                status,
+                type_,
             })
         }
     }
@@ -180,21 +221,21 @@ const _: () = {
             let mut b = IssuingCardholderBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "billing" => b.billing = Some(FromValueOpt::from_value(v)?),
-                    "company" => b.company = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "individual" => b.individual = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "phone_number" => b.phone_number = Some(FromValueOpt::from_value(v)?),
-                    "preferred_locales" => b.preferred_locales = Some(FromValueOpt::from_value(v)?),
-                    "requirements" => b.requirements = Some(FromValueOpt::from_value(v)?),
-                    "spending_controls" => b.spending_controls = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "billing" => b.billing = FromValueOpt::from_value(v),
+                    "company" => b.company = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "email" => b.email = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "individual" => b.individual = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "phone_number" => b.phone_number = FromValueOpt::from_value(v),
+                    "preferred_locales" => b.preferred_locales = FromValueOpt::from_value(v),
+                    "requirements" => b.requirements = FromValueOpt::from_value(v),
+                    "spending_controls" => b.spending_controls = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

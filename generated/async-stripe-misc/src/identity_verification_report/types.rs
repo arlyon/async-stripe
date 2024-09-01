@@ -54,7 +54,12 @@ pub struct IdentityVerificationReportBuilder {
     verification_session: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -125,20 +130,52 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(client_reference_id),
+                Some(created),
+                Some(document),
+                Some(email),
+                Some(id),
+                Some(id_number),
+                Some(livemode),
+                Some(options),
+                Some(phone),
+                Some(selfie),
+                Some(type_),
+                Some(verification_flow),
+                Some(verification_session),
+            ) = (
+                self.client_reference_id.take(),
+                self.created,
+                self.document.take(),
+                self.email.take(),
+                self.id.take(),
+                self.id_number.take(),
+                self.livemode,
+                self.options.take(),
+                self.phone.take(),
+                self.selfie.take(),
+                self.type_,
+                self.verification_flow.take(),
+                self.verification_session.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                client_reference_id: self.client_reference_id.take()?,
-                created: self.created?,
-                document: self.document.take()?,
-                email: self.email.take()?,
-                id: self.id.take()?,
-                id_number: self.id_number.take()?,
-                livemode: self.livemode?,
-                options: self.options.take()?,
-                phone: self.phone.take()?,
-                selfie: self.selfie.take()?,
-                type_: self.type_?,
-                verification_flow: self.verification_flow.take()?,
-                verification_session: self.verification_session.take()?,
+                client_reference_id,
+                created,
+                document,
+                email,
+                id,
+                id_number,
+                livemode,
+                options,
+                phone,
+                selfie,
+                type_,
+                verification_flow,
+                verification_session,
             })
         }
     }
@@ -166,23 +203,19 @@ const _: () = {
             let mut b = IdentityVerificationReportBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "client_reference_id" => {
-                        b.client_reference_id = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "document" => b.document = Some(FromValueOpt::from_value(v)?),
-                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "id_number" => b.id_number = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "options" => b.options = Some(FromValueOpt::from_value(v)?),
-                    "phone" => b.phone = Some(FromValueOpt::from_value(v)?),
-                    "selfie" => b.selfie = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "verification_flow" => b.verification_flow = Some(FromValueOpt::from_value(v)?),
-                    "verification_session" => {
-                        b.verification_session = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "client_reference_id" => b.client_reference_id = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "document" => b.document = FromValueOpt::from_value(v),
+                    "email" => b.email = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "id_number" => b.id_number = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "options" => b.options = FromValueOpt::from_value(v),
+                    "phone" => b.phone = FromValueOpt::from_value(v),
+                    "selfie" => b.selfie = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "verification_flow" => b.verification_flow = FromValueOpt::from_value(v),
+                    "verification_session" => b.verification_session = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

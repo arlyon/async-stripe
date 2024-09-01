@@ -14,7 +14,12 @@ pub struct QuotesResourceComputedBuilder {
     upfront: Option<stripe_shared::QuotesResourceUpfront>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -60,7 +65,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { recurring: self.recurring.take()?, upfront: self.upfront.take()? })
+            let (Some(recurring), Some(upfront)) = (self.recurring.take(), self.upfront.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { recurring, upfront })
         }
     }
 
@@ -87,8 +96,8 @@ const _: () = {
             let mut b = QuotesResourceComputedBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "recurring" => b.recurring = Some(FromValueOpt::from_value(v)?),
-                    "upfront" => b.upfront = Some(FromValueOpt::from_value(v)?),
+                    "recurring" => b.recurring = FromValueOpt::from_value(v),
+                    "upfront" => b.upfront = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

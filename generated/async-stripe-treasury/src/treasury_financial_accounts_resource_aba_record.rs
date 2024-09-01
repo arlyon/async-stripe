@@ -23,7 +23,12 @@ pub struct TreasuryFinancialAccountsResourceAbaRecordBuilder {
     routing_number: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -78,12 +83,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account_holder_name),
+                Some(account_number),
+                Some(account_number_last4),
+                Some(bank_name),
+                Some(routing_number),
+            ) = (
+                self.account_holder_name.take(),
+                self.account_number.take(),
+                self.account_number_last4.take(),
+                self.bank_name.take(),
+                self.routing_number.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account_holder_name: self.account_holder_name.take()?,
-                account_number: self.account_number.take()?,
-                account_number_last4: self.account_number_last4.take()?,
-                bank_name: self.bank_name.take()?,
-                routing_number: self.routing_number.take()?,
+                account_holder_name,
+                account_number,
+                account_number_last4,
+                bank_name,
+                routing_number,
             })
         }
     }
@@ -111,15 +132,11 @@ const _: () = {
             let mut b = TreasuryFinancialAccountsResourceAbaRecordBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_holder_name" => {
-                        b.account_holder_name = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "account_number" => b.account_number = Some(FromValueOpt::from_value(v)?),
-                    "account_number_last4" => {
-                        b.account_number_last4 = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
-                    "routing_number" => b.routing_number = Some(FromValueOpt::from_value(v)?),
+                    "account_holder_name" => b.account_holder_name = FromValueOpt::from_value(v),
+                    "account_number" => b.account_number = FromValueOpt::from_value(v),
+                    "account_number_last4" => b.account_number_last4 = FromValueOpt::from_value(v),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

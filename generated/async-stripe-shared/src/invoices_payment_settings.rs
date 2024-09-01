@@ -19,7 +19,12 @@ pub struct InvoicesPaymentSettingsBuilder {
     payment_method_types: Option<Option<Vec<InvoicesPaymentSettingsPaymentMethodTypes>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -70,11 +75,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                default_mandate: self.default_mandate.take()?,
-                payment_method_options: self.payment_method_options.take()?,
-                payment_method_types: self.payment_method_types.take()?,
-            })
+            let (Some(default_mandate), Some(payment_method_options), Some(payment_method_types)) = (
+                self.default_mandate.take(),
+                self.payment_method_options.take(),
+                self.payment_method_types.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { default_mandate, payment_method_options, payment_method_types })
         }
     }
 
@@ -101,13 +109,11 @@ const _: () = {
             let mut b = InvoicesPaymentSettingsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "default_mandate" => b.default_mandate = Some(FromValueOpt::from_value(v)?),
+                    "default_mandate" => b.default_mandate = FromValueOpt::from_value(v),
                     "payment_method_options" => {
-                        b.payment_method_options = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_options = FromValueOpt::from_value(v)
                     }
-                    "payment_method_types" => {
-                        b.payment_method_types = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

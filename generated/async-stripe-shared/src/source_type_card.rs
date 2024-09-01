@@ -41,7 +41,12 @@ pub struct SourceTypeCardBuilder {
     tokenization_method: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -120,24 +125,64 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(address_line1_check),
+                Some(address_zip_check),
+                Some(brand),
+                Some(country),
+                Some(cvc_check),
+                Some(description),
+                Some(dynamic_last4),
+                Some(exp_month),
+                Some(exp_year),
+                Some(fingerprint),
+                Some(funding),
+                Some(iin),
+                Some(issuer),
+                Some(last4),
+                Some(name),
+                Some(three_d_secure),
+                Some(tokenization_method),
+            ) = (
+                self.address_line1_check.take(),
+                self.address_zip_check.take(),
+                self.brand.take(),
+                self.country.take(),
+                self.cvc_check.take(),
+                self.description.take(),
+                self.dynamic_last4.take(),
+                self.exp_month,
+                self.exp_year,
+                self.fingerprint.take(),
+                self.funding.take(),
+                self.iin.take(),
+                self.issuer.take(),
+                self.last4.take(),
+                self.name.take(),
+                self.three_d_secure.take(),
+                self.tokenization_method.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                address_line1_check: self.address_line1_check.take()?,
-                address_zip_check: self.address_zip_check.take()?,
-                brand: self.brand.take()?,
-                country: self.country.take()?,
-                cvc_check: self.cvc_check.take()?,
-                description: self.description.take()?,
-                dynamic_last4: self.dynamic_last4.take()?,
-                exp_month: self.exp_month?,
-                exp_year: self.exp_year?,
-                fingerprint: self.fingerprint.take()?,
-                funding: self.funding.take()?,
-                iin: self.iin.take()?,
-                issuer: self.issuer.take()?,
-                last4: self.last4.take()?,
-                name: self.name.take()?,
-                three_d_secure: self.three_d_secure.take()?,
-                tokenization_method: self.tokenization_method.take()?,
+                address_line1_check,
+                address_zip_check,
+                brand,
+                country,
+                cvc_check,
+                description,
+                dynamic_last4,
+                exp_month,
+                exp_year,
+                fingerprint,
+                funding,
+                iin,
+                issuer,
+                last4,
+                name,
+                three_d_secure,
+                tokenization_method,
             })
         }
     }
@@ -165,27 +210,23 @@ const _: () = {
             let mut b = SourceTypeCardBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "address_line1_check" => {
-                        b.address_line1_check = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "address_zip_check" => b.address_zip_check = Some(FromValueOpt::from_value(v)?),
-                    "brand" => b.brand = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "cvc_check" => b.cvc_check = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "dynamic_last4" => b.dynamic_last4 = Some(FromValueOpt::from_value(v)?),
-                    "exp_month" => b.exp_month = Some(FromValueOpt::from_value(v)?),
-                    "exp_year" => b.exp_year = Some(FromValueOpt::from_value(v)?),
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "funding" => b.funding = Some(FromValueOpt::from_value(v)?),
-                    "iin" => b.iin = Some(FromValueOpt::from_value(v)?),
-                    "issuer" => b.issuer = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "three_d_secure" => b.three_d_secure = Some(FromValueOpt::from_value(v)?),
-                    "tokenization_method" => {
-                        b.tokenization_method = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "address_line1_check" => b.address_line1_check = FromValueOpt::from_value(v),
+                    "address_zip_check" => b.address_zip_check = FromValueOpt::from_value(v),
+                    "brand" => b.brand = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "cvc_check" => b.cvc_check = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "dynamic_last4" => b.dynamic_last4 = FromValueOpt::from_value(v),
+                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
+                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "funding" => b.funding = FromValueOpt::from_value(v),
+                    "iin" => b.iin = FromValueOpt::from_value(v),
+                    "issuer" => b.issuer = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
+                    "tokenization_method" => b.tokenization_method = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

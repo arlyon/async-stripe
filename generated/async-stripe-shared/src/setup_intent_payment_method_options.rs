@@ -23,7 +23,12 @@ pub struct SetupIntentPaymentMethodOptionsBuilder {
     us_bank_account: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsUsBankAccount>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -84,15 +89,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(acss_debit),
+                Some(amazon_pay),
+                Some(card),
+                Some(card_present),
+                Some(link),
+                Some(paypal),
+                Some(sepa_debit),
+                Some(us_bank_account),
+            ) = (
+                self.acss_debit.take(),
+                self.amazon_pay,
+                self.card.take(),
+                self.card_present,
+                self.link.take(),
+                self.paypal.take(),
+                self.sepa_debit,
+                self.us_bank_account.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                acss_debit: self.acss_debit.take()?,
-                amazon_pay: self.amazon_pay?,
-                card: self.card.take()?,
-                card_present: self.card_present?,
-                link: self.link.take()?,
-                paypal: self.paypal.take()?,
-                sepa_debit: self.sepa_debit?,
-                us_bank_account: self.us_bank_account.take()?,
+                acss_debit,
+                amazon_pay,
+                card,
+                card_present,
+                link,
+                paypal,
+                sepa_debit,
+                us_bank_account,
             })
         }
     }
@@ -120,14 +147,14 @@ const _: () = {
             let mut b = SetupIntentPaymentMethodOptionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "acss_debit" => b.acss_debit = Some(FromValueOpt::from_value(v)?),
-                    "amazon_pay" => b.amazon_pay = Some(FromValueOpt::from_value(v)?),
-                    "card" => b.card = Some(FromValueOpt::from_value(v)?),
-                    "card_present" => b.card_present = Some(FromValueOpt::from_value(v)?),
-                    "link" => b.link = Some(FromValueOpt::from_value(v)?),
-                    "paypal" => b.paypal = Some(FromValueOpt::from_value(v)?),
-                    "sepa_debit" => b.sepa_debit = Some(FromValueOpt::from_value(v)?),
-                    "us_bank_account" => b.us_bank_account = Some(FromValueOpt::from_value(v)?),
+                    "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
+                    "amazon_pay" => b.amazon_pay = FromValueOpt::from_value(v),
+                    "card" => b.card = FromValueOpt::from_value(v),
+                    "card_present" => b.card_present = FromValueOpt::from_value(v),
+                    "link" => b.link = FromValueOpt::from_value(v),
+                    "paypal" => b.paypal = FromValueOpt::from_value(v),
+                    "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
+                    "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

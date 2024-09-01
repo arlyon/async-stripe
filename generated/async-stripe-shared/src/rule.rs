@@ -16,7 +16,12 @@ pub struct RuleBuilder {
     predicate: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -64,11 +69,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                action: self.action.take()?,
-                id: self.id.take()?,
-                predicate: self.predicate.take()?,
-            })
+            let (Some(action), Some(id), Some(predicate)) =
+                (self.action.take(), self.id.take(), self.predicate.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { action, id, predicate })
         }
     }
 
@@ -95,9 +101,9 @@ const _: () = {
             let mut b = RuleBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "action" => b.action = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "predicate" => b.predicate = Some(FromValueOpt::from_value(v)?),
+                    "action" => b.action = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "predicate" => b.predicate = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

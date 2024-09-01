@@ -16,7 +16,12 @@ pub struct AccountRequirementsErrorBuilder {
     requirement: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                code: self.code?,
-                reason: self.reason.take()?,
-                requirement: self.requirement.take()?,
-            })
+            let (Some(code), Some(reason), Some(requirement)) =
+                (self.code, self.reason.take(), self.requirement.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { code, reason, requirement })
         }
     }
 
@@ -98,9 +104,9 @@ const _: () = {
             let mut b = AccountRequirementsErrorBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "code" => b.code = Some(FromValueOpt::from_value(v)?),
-                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
-                    "requirement" => b.requirement = Some(FromValueOpt::from_value(v)?),
+                    "code" => b.code = FromValueOpt::from_value(v),
+                    "reason" => b.reason = FromValueOpt::from_value(v),
+                    "requirement" => b.requirement = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

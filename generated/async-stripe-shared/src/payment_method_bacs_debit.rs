@@ -17,7 +17,12 @@ pub struct PaymentMethodBacsDebitBuilder {
     sort_code: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +73,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                fingerprint: self.fingerprint.take()?,
-                last4: self.last4.take()?,
-                sort_code: self.sort_code.take()?,
-            })
+            let (Some(fingerprint), Some(last4), Some(sort_code)) =
+                (self.fingerprint.take(), self.last4.take(), self.sort_code.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { fingerprint, last4, sort_code })
         }
     }
 
@@ -99,9 +105,9 @@ const _: () = {
             let mut b = PaymentMethodBacsDebitBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "sort_code" => b.sort_code = Some(FromValueOpt::from_value(v)?),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "sort_code" => b.sort_code = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

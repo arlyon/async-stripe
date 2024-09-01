@@ -13,7 +13,12 @@ pub struct DiscountsResourceDiscountAmountBuilder {
     discount: Option<stripe_types::Expandable<stripe_shared::Discount>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { amount: self.amount?, discount: self.discount.take()? })
+            let (Some(amount), Some(discount)) = (self.amount, self.discount.take()) else {
+                return None;
+            };
+            Some(Self::Out { amount, discount })
         }
     }
 
@@ -86,8 +94,8 @@ const _: () = {
             let mut b = DiscountsResourceDiscountAmountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "discount" => b.discount = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "discount" => b.discount = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

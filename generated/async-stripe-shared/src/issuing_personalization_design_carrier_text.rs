@@ -19,7 +19,12 @@ pub struct IssuingPersonalizationDesignCarrierTextBuilder {
     header_title: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                footer_body: self.footer_body.take()?,
-                footer_title: self.footer_title.take()?,
-                header_body: self.header_body.take()?,
-                header_title: self.header_title.take()?,
-            })
+            let (Some(footer_body), Some(footer_title), Some(header_body), Some(header_title)) = (
+                self.footer_body.take(),
+                self.footer_title.take(),
+                self.header_body.take(),
+                self.header_title.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { footer_body, footer_title, header_body, header_title })
         }
     }
 
@@ -104,10 +112,10 @@ const _: () = {
             let mut b = IssuingPersonalizationDesignCarrierTextBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "footer_body" => b.footer_body = Some(FromValueOpt::from_value(v)?),
-                    "footer_title" => b.footer_title = Some(FromValueOpt::from_value(v)?),
-                    "header_body" => b.header_body = Some(FromValueOpt::from_value(v)?),
-                    "header_title" => b.header_title = Some(FromValueOpt::from_value(v)?),
+                    "footer_body" => b.footer_body = FromValueOpt::from_value(v),
+                    "footer_title" => b.footer_title = FromValueOpt::from_value(v),
+                    "header_body" => b.header_body = FromValueOpt::from_value(v),
+                    "header_title" => b.header_title = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

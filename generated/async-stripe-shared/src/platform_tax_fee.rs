@@ -19,7 +19,12 @@ pub struct PlatformTaxFeeBuilder {
     type_: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                account: self.account.take()?,
-                id: self.id.take()?,
-                source_transaction: self.source_transaction.take()?,
-                type_: self.type_.take()?,
-            })
+            let (Some(account), Some(id), Some(source_transaction), Some(type_)) = (
+                self.account.take(),
+                self.id.take(),
+                self.source_transaction.take(),
+                self.type_.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { account, id, source_transaction, type_ })
         }
     }
 
@@ -104,12 +112,10 @@ const _: () = {
             let mut b = PlatformTaxFeeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account" => b.account = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "source_transaction" => {
-                        b.source_transaction = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "account" => b.account = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "source_transaction" => b.source_transaction = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

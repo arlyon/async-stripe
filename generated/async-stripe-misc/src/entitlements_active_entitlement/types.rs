@@ -19,7 +19,12 @@ pub struct EntitlementsActiveEntitlementBuilder {
     lookup_key: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                feature: self.feature.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                lookup_key: self.lookup_key.take()?,
-            })
+            let (Some(feature), Some(id), Some(livemode), Some(lookup_key)) =
+                (self.feature.take(), self.id.take(), self.livemode, self.lookup_key.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { feature, id, livemode, lookup_key })
         }
     }
 
@@ -104,10 +109,10 @@ const _: () = {
             let mut b = EntitlementsActiveEntitlementBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "feature" => b.feature = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "lookup_key" => b.lookup_key = Some(FromValueOpt::from_value(v)?),
+                    "feature" => b.feature = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "lookup_key" => b.lookup_key = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

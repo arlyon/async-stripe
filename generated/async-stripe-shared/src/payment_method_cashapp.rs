@@ -13,7 +13,12 @@ pub struct PaymentMethodCashappBuilder {
     cashtag: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { buyer_id: self.buyer_id.take()?, cashtag: self.cashtag.take()? })
+            let (Some(buyer_id), Some(cashtag)) = (self.buyer_id.take(), self.cashtag.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { buyer_id, cashtag })
         }
     }
 
@@ -86,8 +95,8 @@ const _: () = {
             let mut b = PaymentMethodCashappBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "buyer_id" => b.buyer_id = Some(FromValueOpt::from_value(v)?),
-                    "cashtag" => b.cashtag = Some(FromValueOpt::from_value(v)?),
+                    "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),
+                    "cashtag" => b.cashtag = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

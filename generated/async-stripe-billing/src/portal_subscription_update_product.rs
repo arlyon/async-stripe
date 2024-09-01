@@ -13,7 +13,12 @@ pub struct PortalSubscriptionUpdateProductBuilder {
     product: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { prices: self.prices.take()?, product: self.product.take()? })
+            let (Some(prices), Some(product)) = (self.prices.take(), self.product.take()) else {
+                return None;
+            };
+            Some(Self::Out { prices, product })
         }
     }
 
@@ -86,8 +94,8 @@ const _: () = {
             let mut b = PortalSubscriptionUpdateProductBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "prices" => b.prices = Some(FromValueOpt::from_value(v)?),
-                    "product" => b.product = Some(FromValueOpt::from_value(v)?),
+                    "prices" => b.prices = FromValueOpt::from_value(v),
+                    "product" => b.product = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

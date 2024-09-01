@@ -13,7 +13,12 @@ pub struct PaymentPagesCheckoutSessionShippingOptionBuilder {
     shipping_rate: Option<stripe_types::Expandable<stripe_shared::ShippingRate>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +64,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                shipping_amount: self.shipping_amount?,
-                shipping_rate: self.shipping_rate.take()?,
-            })
+            let (Some(shipping_amount), Some(shipping_rate)) =
+                (self.shipping_amount, self.shipping_rate.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { shipping_amount, shipping_rate })
         }
     }
 
@@ -89,8 +96,8 @@ const _: () = {
             let mut b = PaymentPagesCheckoutSessionShippingOptionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "shipping_amount" => b.shipping_amount = Some(FromValueOpt::from_value(v)?),
-                    "shipping_rate" => b.shipping_rate = Some(FromValueOpt::from_value(v)?),
+                    "shipping_amount" => b.shipping_amount = FromValueOpt::from_value(v),
+                    "shipping_rate" => b.shipping_rate = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

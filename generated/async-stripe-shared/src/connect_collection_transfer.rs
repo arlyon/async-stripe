@@ -22,7 +22,12 @@ pub struct ConnectCollectionTransferBuilder {
     livemode: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,13 +82,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount: self.amount?,
-                currency: self.currency?,
-                destination: self.destination.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-            })
+            let (Some(amount), Some(currency), Some(destination), Some(id), Some(livemode)) = (
+                self.amount,
+                self.currency,
+                self.destination.take(),
+                self.id.take(),
+                self.livemode,
+            ) else {
+                return None;
+            };
+            Some(Self::Out { amount, currency, destination, id, livemode })
         }
     }
 
@@ -110,11 +118,11 @@ const _: () = {
             let mut b = ConnectCollectionTransferBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "destination" => b.destination = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "destination" => b.destination = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

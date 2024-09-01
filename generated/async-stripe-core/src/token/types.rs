@@ -51,7 +51,12 @@ pub struct TokenBuilder {
     used: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -109,16 +114,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                bank_account: self.bank_account.take()?,
-                card: self.card.take()?,
-                client_ip: self.client_ip.take()?,
-                created: self.created?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                type_: self.type_.take()?,
-                used: self.used?,
-            })
+            let (
+                Some(bank_account),
+                Some(card),
+                Some(client_ip),
+                Some(created),
+                Some(id),
+                Some(livemode),
+                Some(type_),
+                Some(used),
+            ) = (
+                self.bank_account.take(),
+                self.card.take(),
+                self.client_ip.take(),
+                self.created,
+                self.id.take(),
+                self.livemode,
+                self.type_.take(),
+                self.used,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { bank_account, card, client_ip, created, id, livemode, type_, used })
         }
     }
 
@@ -145,14 +163,14 @@ const _: () = {
             let mut b = TokenBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank_account" => b.bank_account = Some(FromValueOpt::from_value(v)?),
-                    "card" => b.card = Some(FromValueOpt::from_value(v)?),
-                    "client_ip" => b.client_ip = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "used" => b.used = Some(FromValueOpt::from_value(v)?),
+                    "bank_account" => b.bank_account = FromValueOpt::from_value(v),
+                    "card" => b.card = FromValueOpt::from_value(v),
+                    "client_ip" => b.client_ip = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "used" => b.used = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -27,7 +27,12 @@ pub struct IssuingNetworkTokenDeviceBuilder {
     type_: Option<Option<IssuingNetworkTokenDeviceType>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -84,14 +89,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                device_fingerprint: self.device_fingerprint.take()?,
-                ip_address: self.ip_address.take()?,
-                location: self.location.take()?,
-                name: self.name.take()?,
-                phone_number: self.phone_number.take()?,
-                type_: self.type_?,
-            })
+            let (
+                Some(device_fingerprint),
+                Some(ip_address),
+                Some(location),
+                Some(name),
+                Some(phone_number),
+                Some(type_),
+            ) = (
+                self.device_fingerprint.take(),
+                self.ip_address.take(),
+                self.location.take(),
+                self.name.take(),
+                self.phone_number.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { device_fingerprint, ip_address, location, name, phone_number, type_ })
         }
     }
 
@@ -118,14 +134,12 @@ const _: () = {
             let mut b = IssuingNetworkTokenDeviceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "device_fingerprint" => {
-                        b.device_fingerprint = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "ip_address" => b.ip_address = Some(FromValueOpt::from_value(v)?),
-                    "location" => b.location = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "phone_number" => b.phone_number = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "device_fingerprint" => b.device_fingerprint = FromValueOpt::from_value(v),
+                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
+                    "location" => b.location = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "phone_number" => b.phone_number = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

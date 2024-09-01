@@ -15,7 +15,12 @@ pub struct SourceTypeIdealBuilder {
     statement_descriptor: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,12 +73,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                bank: self.bank.take()?,
-                bic: self.bic.take()?,
-                iban_last4: self.iban_last4.take()?,
-                statement_descriptor: self.statement_descriptor.take()?,
-            })
+            let (Some(bank), Some(bic), Some(iban_last4), Some(statement_descriptor)) = (
+                self.bank.take(),
+                self.bic.take(),
+                self.iban_last4.take(),
+                self.statement_descriptor.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { bank, bic, iban_last4, statement_descriptor })
         }
     }
 
@@ -100,12 +108,10 @@ const _: () = {
             let mut b = SourceTypeIdealBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank" => b.bank = Some(FromValueOpt::from_value(v)?),
-                    "bic" => b.bic = Some(FromValueOpt::from_value(v)?),
-                    "iban_last4" => b.iban_last4 = Some(FromValueOpt::from_value(v)?),
-                    "statement_descriptor" => {
-                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "bank" => b.bank = FromValueOpt::from_value(v),
+                    "bic" => b.bic = FromValueOpt::from_value(v),
+                    "iban_last4" => b.iban_last4 = FromValueOpt::from_value(v),
+                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

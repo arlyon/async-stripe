@@ -30,7 +30,12 @@ pub struct IssuingAuthorizationVerificationDataBuilder {
     three_d_secure: Option<Option<stripe_shared::IssuingAuthorizationThreeDSecure>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -93,14 +98,34 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(address_line1_check),
+                Some(address_postal_code_check),
+                Some(authentication_exemption),
+                Some(cvc_check),
+                Some(expiry_check),
+                Some(postal_code),
+                Some(three_d_secure),
+            ) = (
+                self.address_line1_check,
+                self.address_postal_code_check,
+                self.authentication_exemption,
+                self.cvc_check,
+                self.expiry_check,
+                self.postal_code.take(),
+                self.three_d_secure,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                address_line1_check: self.address_line1_check?,
-                address_postal_code_check: self.address_postal_code_check?,
-                authentication_exemption: self.authentication_exemption?,
-                cvc_check: self.cvc_check?,
-                expiry_check: self.expiry_check?,
-                postal_code: self.postal_code.take()?,
-                three_d_secure: self.three_d_secure?,
+                address_line1_check,
+                address_postal_code_check,
+                authentication_exemption,
+                cvc_check,
+                expiry_check,
+                postal_code,
+                three_d_secure,
             })
         }
     }
@@ -128,19 +153,17 @@ const _: () = {
             let mut b = IssuingAuthorizationVerificationDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "address_line1_check" => {
-                        b.address_line1_check = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "address_line1_check" => b.address_line1_check = FromValueOpt::from_value(v),
                     "address_postal_code_check" => {
-                        b.address_postal_code_check = Some(FromValueOpt::from_value(v)?)
+                        b.address_postal_code_check = FromValueOpt::from_value(v)
                     }
                     "authentication_exemption" => {
-                        b.authentication_exemption = Some(FromValueOpt::from_value(v)?)
+                        b.authentication_exemption = FromValueOpt::from_value(v)
                     }
-                    "cvc_check" => b.cvc_check = Some(FromValueOpt::from_value(v)?),
-                    "expiry_check" => b.expiry_check = Some(FromValueOpt::from_value(v)?),
-                    "postal_code" => b.postal_code = Some(FromValueOpt::from_value(v)?),
-                    "three_d_secure" => b.three_d_secure = Some(FromValueOpt::from_value(v)?),
+                    "cvc_check" => b.cvc_check = FromValueOpt::from_value(v),
+                    "expiry_check" => b.expiry_check = FromValueOpt::from_value(v),
+                    "postal_code" => b.postal_code = FromValueOpt::from_value(v),
+                    "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

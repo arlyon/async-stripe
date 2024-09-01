@@ -10,7 +10,12 @@ pub struct CouponCurrencyOptionBuilder {
     amount_off: Option<i64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { amount_off: self.amount_off? })
+            let (Some(amount_off),) = (self.amount_off,) else {
+                return None;
+            };
+            Some(Self::Out { amount_off })
         }
     }
 
@@ -82,7 +90,7 @@ const _: () = {
             let mut b = CouponCurrencyOptionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_off" => b.amount_off = Some(FromValueOpt::from_value(v)?),
+                    "amount_off" => b.amount_off = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -42,7 +42,12 @@ pub struct SourceMandateNotificationBuilder {
     type_: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -109,18 +114,46 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(acss_debit),
+                Some(amount),
+                Some(bacs_debit),
+                Some(created),
+                Some(id),
+                Some(livemode),
+                Some(reason),
+                Some(sepa_debit),
+                Some(source),
+                Some(status),
+                Some(type_),
+            ) = (
+                self.acss_debit.take(),
+                self.amount,
+                self.bacs_debit.take(),
+                self.created,
+                self.id.take(),
+                self.livemode,
+                self.reason.take(),
+                self.sepa_debit.take(),
+                self.source.take(),
+                self.status.take(),
+                self.type_.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                acss_debit: self.acss_debit.take()?,
-                amount: self.amount?,
-                bacs_debit: self.bacs_debit.take()?,
-                created: self.created?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                reason: self.reason.take()?,
-                sepa_debit: self.sepa_debit.take()?,
-                source: self.source.take()?,
-                status: self.status.take()?,
-                type_: self.type_.take()?,
+                acss_debit,
+                amount,
+                bacs_debit,
+                created,
+                id,
+                livemode,
+                reason,
+                sepa_debit,
+                source,
+                status,
+                type_,
             })
         }
     }
@@ -148,17 +181,17 @@ const _: () = {
             let mut b = SourceMandateNotificationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "acss_debit" => b.acss_debit = Some(FromValueOpt::from_value(v)?),
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "bacs_debit" => b.bacs_debit = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
-                    "sepa_debit" => b.sepa_debit = Some(FromValueOpt::from_value(v)?),
-                    "source" => b.source = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "bacs_debit" => b.bacs_debit = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "reason" => b.reason = FromValueOpt::from_value(v),
+                    "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
+                    "source" => b.source = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

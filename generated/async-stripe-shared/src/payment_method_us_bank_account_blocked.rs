@@ -13,7 +13,12 @@ pub struct PaymentMethodUsBankAccountBlockedBuilder {
     reason: Option<Option<PaymentMethodUsBankAccountBlockedReason>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { network_code: self.network_code?, reason: self.reason? })
+            let (Some(network_code), Some(reason)) = (self.network_code, self.reason) else {
+                return None;
+            };
+            Some(Self::Out { network_code, reason })
         }
     }
 
@@ -86,8 +94,8 @@ const _: () = {
             let mut b = PaymentMethodUsBankAccountBlockedBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "network_code" => b.network_code = Some(FromValueOpt::from_value(v)?),
-                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
+                    "network_code" => b.network_code = FromValueOpt::from_value(v),
+                    "reason" => b.reason = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

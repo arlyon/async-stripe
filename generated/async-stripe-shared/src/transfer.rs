@@ -73,7 +73,12 @@ pub struct TransferBuilder {
     transfer_group: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -147,23 +152,61 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(amount_reversed),
+                Some(balance_transaction),
+                Some(created),
+                Some(currency),
+                Some(description),
+                Some(destination),
+                Some(destination_payment),
+                Some(id),
+                Some(livemode),
+                Some(metadata),
+                Some(reversals),
+                Some(reversed),
+                Some(source_transaction),
+                Some(source_type),
+                Some(transfer_group),
+            ) = (
+                self.amount,
+                self.amount_reversed,
+                self.balance_transaction.take(),
+                self.created,
+                self.currency,
+                self.description.take(),
+                self.destination.take(),
+                self.destination_payment.take(),
+                self.id.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.reversals.take(),
+                self.reversed,
+                self.source_transaction.take(),
+                self.source_type.take(),
+                self.transfer_group.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                amount_reversed: self.amount_reversed?,
-                balance_transaction: self.balance_transaction.take()?,
-                created: self.created?,
-                currency: self.currency?,
-                description: self.description.take()?,
-                destination: self.destination.take()?,
-                destination_payment: self.destination_payment.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                reversals: self.reversals.take()?,
-                reversed: self.reversed?,
-                source_transaction: self.source_transaction.take()?,
-                source_type: self.source_type.take()?,
-                transfer_group: self.transfer_group.take()?,
+                amount,
+                amount_reversed,
+                balance_transaction,
+                created,
+                currency,
+                description,
+                destination,
+                destination_payment,
+                id,
+                livemode,
+                metadata,
+                reversals,
+                reversed,
+                source_transaction,
+                source_type,
+                transfer_group,
             })
         }
     }
@@ -191,28 +234,22 @@ const _: () = {
             let mut b = TransferBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_reversed" => b.amount_reversed = Some(FromValueOpt::from_value(v)?),
-                    "balance_transaction" => {
-                        b.balance_transaction = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "destination" => b.destination = Some(FromValueOpt::from_value(v)?),
-                    "destination_payment" => {
-                        b.destination_payment = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "reversals" => b.reversals = Some(FromValueOpt::from_value(v)?),
-                    "reversed" => b.reversed = Some(FromValueOpt::from_value(v)?),
-                    "source_transaction" => {
-                        b.source_transaction = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "source_type" => b.source_type = Some(FromValueOpt::from_value(v)?),
-                    "transfer_group" => b.transfer_group = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_reversed" => b.amount_reversed = FromValueOpt::from_value(v),
+                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "destination" => b.destination = FromValueOpt::from_value(v),
+                    "destination_payment" => b.destination_payment = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "reversals" => b.reversals = FromValueOpt::from_value(v),
+                    "reversed" => b.reversed = FromValueOpt::from_value(v),
+                    "source_transaction" => b.source_transaction = FromValueOpt::from_value(v),
+                    "source_type" => b.source_type = FromValueOpt::from_value(v),
+                    "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

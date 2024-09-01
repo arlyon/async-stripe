@@ -51,7 +51,12 @@ pub struct ForwardingRequestBuilder {
     url: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -114,16 +119,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(created),
+                Some(id),
+                Some(livemode),
+                Some(payment_method),
+                Some(replacements),
+                Some(request_context),
+                Some(request_details),
+                Some(response_details),
+                Some(url),
+            ) = (
+                self.created,
+                self.id.take(),
+                self.livemode,
+                self.payment_method.take(),
+                self.replacements.take(),
+                self.request_context.take(),
+                self.request_details.take(),
+                self.response_details.take(),
+                self.url.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                created: self.created?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                payment_method: self.payment_method.take()?,
-                replacements: self.replacements.take()?,
-                request_context: self.request_context.take()?,
-                request_details: self.request_details.take()?,
-                response_details: self.response_details.take()?,
-                url: self.url.take()?,
+                created,
+                id,
+                livemode,
+                payment_method,
+                replacements,
+                request_context,
+                request_details,
+                response_details,
+                url,
             })
         }
     }
@@ -151,15 +180,15 @@ const _: () = {
             let mut b = ForwardingRequestBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "payment_method" => b.payment_method = Some(FromValueOpt::from_value(v)?),
-                    "replacements" => b.replacements = Some(FromValueOpt::from_value(v)?),
-                    "request_context" => b.request_context = Some(FromValueOpt::from_value(v)?),
-                    "request_details" => b.request_details = Some(FromValueOpt::from_value(v)?),
-                    "response_details" => b.response_details = Some(FromValueOpt::from_value(v)?),
-                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
+                    "replacements" => b.replacements = FromValueOpt::from_value(v),
+                    "request_context" => b.request_context = FromValueOpt::from_value(v),
+                    "request_details" => b.request_details = FromValueOpt::from_value(v),
+                    "response_details" => b.response_details = FromValueOpt::from_value(v),
+                    "url" => b.url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -13,7 +13,12 @@ pub struct TerminalReaderReaderResourceProcessPaymentIntentActionBuilder {
     process_config: Option<Option<stripe_terminal::TerminalReaderReaderResourceProcessConfig>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -60,10 +65,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                payment_intent: self.payment_intent.take()?,
-                process_config: self.process_config?,
-            })
+            let (Some(payment_intent), Some(process_config)) =
+                (self.payment_intent.take(), self.process_config)
+            else {
+                return None;
+            };
+            Some(Self::Out { payment_intent, process_config })
         }
     }
 
@@ -91,8 +98,8 @@ const _: () = {
                 TerminalReaderReaderResourceProcessPaymentIntentActionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "payment_intent" => b.payment_intent = Some(FromValueOpt::from_value(v)?),
-                    "process_config" => b.process_config = Some(FromValueOpt::from_value(v)?),
+                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
+                    "process_config" => b.process_config = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

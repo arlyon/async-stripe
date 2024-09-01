@@ -13,7 +13,12 @@ pub struct PortalFlowsSubscriptionUpdateConfirmDiscountBuilder {
     promotion_code: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +64,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                coupon: self.coupon.take()?,
-                promotion_code: self.promotion_code.take()?,
-            })
+            let (Some(coupon), Some(promotion_code)) =
+                (self.coupon.take(), self.promotion_code.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { coupon, promotion_code })
         }
     }
 
@@ -89,8 +96,8 @@ const _: () = {
             let mut b = PortalFlowsSubscriptionUpdateConfirmDiscountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "coupon" => b.coupon = Some(FromValueOpt::from_value(v)?),
-                    "promotion_code" => b.promotion_code = Some(FromValueOpt::from_value(v)?),
+                    "coupon" => b.coupon = FromValueOpt::from_value(v),
+                    "promotion_code" => b.promotion_code = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

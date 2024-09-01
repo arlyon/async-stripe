@@ -13,7 +13,12 @@ pub struct IssuingDisputeFraudulentEvidenceBuilder {
     explanation: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -64,10 +69,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                additional_documentation: self.additional_documentation.take()?,
-                explanation: self.explanation.take()?,
-            })
+            let (Some(additional_documentation), Some(explanation)) =
+                (self.additional_documentation.take(), self.explanation.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { additional_documentation, explanation })
         }
     }
 
@@ -95,9 +102,9 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "additional_documentation" => {
-                        b.additional_documentation = Some(FromValueOpt::from_value(v)?)
+                        b.additional_documentation = FromValueOpt::from_value(v)
                     }
-                    "explanation" => b.explanation = Some(FromValueOpt::from_value(v)?),
+                    "explanation" => b.explanation = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

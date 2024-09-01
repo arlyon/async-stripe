@@ -16,7 +16,12 @@ pub struct TerminalConfigurationConfigurationResourceCurrencySpecificConfigBuild
     smart_tip_threshold: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                fixed_amounts: self.fixed_amounts.take()?,
-                percentages: self.percentages.take()?,
-                smart_tip_threshold: self.smart_tip_threshold?,
-            })
+            let (Some(fixed_amounts), Some(percentages), Some(smart_tip_threshold)) =
+                (self.fixed_amounts.take(), self.percentages.take(), self.smart_tip_threshold)
+            else {
+                return None;
+            };
+            Some(Self::Out { fixed_amounts, percentages, smart_tip_threshold })
         }
     }
 
@@ -98,11 +104,9 @@ const _: () = {
             let mut b = TerminalConfigurationConfigurationResourceCurrencySpecificConfigBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "fixed_amounts" => b.fixed_amounts = Some(FromValueOpt::from_value(v)?),
-                    "percentages" => b.percentages = Some(FromValueOpt::from_value(v)?),
-                    "smart_tip_threshold" => {
-                        b.smart_tip_threshold = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "fixed_amounts" => b.fixed_amounts = FromValueOpt::from_value(v),
+                    "percentages" => b.percentages = FromValueOpt::from_value(v),
+                    "smart_tip_threshold" => b.smart_tip_threshold = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -18,7 +18,12 @@ pub struct PaymentFlowsPrivatePaymentMethodsAlipayDetailsBuilder {
     transaction_id: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                buyer_id: self.buyer_id.take()?,
-                fingerprint: self.fingerprint.take()?,
-                transaction_id: self.transaction_id.take()?,
-            })
+            let (Some(buyer_id), Some(fingerprint), Some(transaction_id)) =
+                (self.buyer_id.take(), self.fingerprint.take(), self.transaction_id.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { buyer_id, fingerprint, transaction_id })
         }
     }
 
@@ -100,9 +106,9 @@ const _: () = {
             let mut b = PaymentFlowsPrivatePaymentMethodsAlipayDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "buyer_id" => b.buyer_id = Some(FromValueOpt::from_value(v)?),
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "transaction_id" => b.transaction_id = Some(FromValueOpt::from_value(v)?),
+                    "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

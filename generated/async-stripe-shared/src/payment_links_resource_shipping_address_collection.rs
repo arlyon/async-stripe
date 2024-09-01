@@ -11,7 +11,12 @@ pub struct PaymentLinksResourceShippingAddressCollectionBuilder {
     allowed_countries: Option<Vec<PaymentLinksResourceShippingAddressCollectionAllowedCountries>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -56,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { allowed_countries: self.allowed_countries.take()? })
+            let (Some(allowed_countries),) = (self.allowed_countries.take(),) else {
+                return None;
+            };
+            Some(Self::Out { allowed_countries })
         }
     }
 
@@ -83,7 +91,7 @@ const _: () = {
             let mut b = PaymentLinksResourceShippingAddressCollectionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "allowed_countries" => b.allowed_countries = Some(FromValueOpt::from_value(v)?),
+                    "allowed_countries" => b.allowed_countries = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

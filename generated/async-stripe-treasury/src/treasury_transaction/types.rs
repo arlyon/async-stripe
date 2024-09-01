@@ -52,7 +52,12 @@ pub struct TreasuryTransactionBuilder {
     >,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -125,21 +130,55 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(balance_impact),
+                Some(created),
+                Some(currency),
+                Some(description),
+                Some(entries),
+                Some(financial_account),
+                Some(flow),
+                Some(flow_details),
+                Some(flow_type),
+                Some(id),
+                Some(livemode),
+                Some(status),
+                Some(status_transitions),
+            ) = (
+                self.amount,
+                self.balance_impact,
+                self.created,
+                self.currency,
+                self.description.take(),
+                self.entries.take(),
+                self.financial_account.take(),
+                self.flow.take(),
+                self.flow_details.take(),
+                self.flow_type,
+                self.id.take(),
+                self.livemode,
+                self.status,
+                self.status_transitions,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                balance_impact: self.balance_impact?,
-                created: self.created?,
-                currency: self.currency?,
-                description: self.description.take()?,
-                entries: self.entries.take()?,
-                financial_account: self.financial_account.take()?,
-                flow: self.flow.take()?,
-                flow_details: self.flow_details.take()?,
-                flow_type: self.flow_type?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                status: self.status?,
-                status_transitions: self.status_transitions?,
+                amount,
+                balance_impact,
+                created,
+                currency,
+                description,
+                entries,
+                financial_account,
+                flow,
+                flow_details,
+                flow_type,
+                id,
+                livemode,
+                status,
+                status_transitions,
             })
         }
     }
@@ -167,22 +206,20 @@ const _: () = {
             let mut b = TreasuryTransactionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "balance_impact" => b.balance_impact = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "entries" => b.entries = Some(FromValueOpt::from_value(v)?),
-                    "financial_account" => b.financial_account = Some(FromValueOpt::from_value(v)?),
-                    "flow" => b.flow = Some(FromValueOpt::from_value(v)?),
-                    "flow_details" => b.flow_details = Some(FromValueOpt::from_value(v)?),
-                    "flow_type" => b.flow_type = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "status_transitions" => {
-                        b.status_transitions = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "balance_impact" => b.balance_impact = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "entries" => b.entries = FromValueOpt::from_value(v),
+                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
+                    "flow" => b.flow = FromValueOpt::from_value(v),
+                    "flow_details" => b.flow_details = FromValueOpt::from_value(v),
+                    "flow_type" => b.flow_type = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -66,7 +66,12 @@ pub struct EventBuilder {
     type_: Option<EventType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -126,16 +131,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account),
+                Some(api_version),
+                Some(created),
+                Some(data),
+                Some(id),
+                Some(livemode),
+                Some(pending_webhooks),
+                Some(request),
+                Some(type_),
+            ) = (
+                self.account.take(),
+                self.api_version.take(),
+                self.created,
+                self.data.take(),
+                self.id.take(),
+                self.livemode,
+                self.pending_webhooks,
+                self.request.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account: self.account.take()?,
-                api_version: self.api_version.take()?,
-                created: self.created?,
-                data: self.data.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                pending_webhooks: self.pending_webhooks?,
-                request: self.request.take()?,
-                type_: self.type_?,
+                account,
+                api_version,
+                created,
+                data,
+                id,
+                livemode,
+                pending_webhooks,
+                request,
+                type_,
             })
         }
     }
@@ -163,15 +192,15 @@ const _: () = {
             let mut b = EventBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account" => b.account = Some(FromValueOpt::from_value(v)?),
-                    "api_version" => b.api_version = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "data" => b.data = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "pending_webhooks" => b.pending_webhooks = Some(FromValueOpt::from_value(v)?),
-                    "request" => b.request = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "account" => b.account = FromValueOpt::from_value(v),
+                    "api_version" => b.api_version = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "data" => b.data = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "pending_webhooks" => b.pending_webhooks = FromValueOpt::from_value(v),
+                    "request" => b.request = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

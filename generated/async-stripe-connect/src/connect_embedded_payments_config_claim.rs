@@ -12,7 +12,12 @@ pub struct ConnectEmbeddedPaymentsConfigClaimBuilder {
     features: Option<stripe_connect::ConnectEmbeddedPaymentsFeatures>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -58,7 +63,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { enabled: self.enabled?, features: self.features? })
+            let (Some(enabled), Some(features)) = (self.enabled, self.features) else {
+                return None;
+            };
+            Some(Self::Out { enabled, features })
         }
     }
 
@@ -85,8 +93,8 @@ const _: () = {
             let mut b = ConnectEmbeddedPaymentsConfigClaimBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "enabled" => b.enabled = Some(FromValueOpt::from_value(v)?),
-                    "features" => b.features = Some(FromValueOpt::from_value(v)?),
+                    "enabled" => b.enabled = FromValueOpt::from_value(v),
+                    "features" => b.features = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

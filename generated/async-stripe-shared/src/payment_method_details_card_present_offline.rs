@@ -10,7 +10,12 @@ pub struct PaymentMethodDetailsCardPresentOfflineBuilder {
     stored_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { stored_at: self.stored_at? })
+            let (Some(stored_at),) = (self.stored_at,) else {
+                return None;
+            };
+            Some(Self::Out { stored_at })
         }
     }
 
@@ -82,7 +90,7 @@ const _: () = {
             let mut b = PaymentMethodDetailsCardPresentOfflineBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "stored_at" => b.stored_at = Some(FromValueOpt::from_value(v)?),
+                    "stored_at" => b.stored_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

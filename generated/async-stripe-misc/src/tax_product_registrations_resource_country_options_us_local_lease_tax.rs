@@ -10,7 +10,12 @@ pub struct TaxProductRegistrationsResourceCountryOptionsUsLocalLeaseTaxBuilder {
     jurisdiction: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { jurisdiction: self.jurisdiction.take()? })
+            let (Some(jurisdiction),) = (self.jurisdiction.take(),) else {
+                return None;
+            };
+            Some(Self::Out { jurisdiction })
         }
     }
 
@@ -84,7 +92,7 @@ const _: () = {
                 );
             for (k, v) in obj {
                 match k.as_str() {
-                    "jurisdiction" => b.jurisdiction = Some(FromValueOpt::from_value(v)?),
+                    "jurisdiction" => b.jurisdiction = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -11,7 +11,12 @@ pub struct CountrySpecVerificationFieldsBuilder {
     individual: Option<stripe_connect::CountrySpecVerificationFieldDetails>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -57,7 +62,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { company: self.company.take()?, individual: self.individual.take()? })
+            let (Some(company), Some(individual)) = (self.company.take(), self.individual.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { company, individual })
         }
     }
 
@@ -84,8 +93,8 @@ const _: () = {
             let mut b = CountrySpecVerificationFieldsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "company" => b.company = Some(FromValueOpt::from_value(v)?),
-                    "individual" => b.individual = Some(FromValueOpt::from_value(v)?),
+                    "company" => b.company = FromValueOpt::from_value(v),
+                    "individual" => b.individual = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

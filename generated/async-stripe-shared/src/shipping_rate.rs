@@ -49,7 +49,12 @@ pub struct ShippingRateBuilder {
     type_: Option<stripe_shared::ShippingRateType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -116,18 +121,46 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(active),
+                Some(created),
+                Some(delivery_estimate),
+                Some(display_name),
+                Some(fixed_amount),
+                Some(id),
+                Some(livemode),
+                Some(metadata),
+                Some(tax_behavior),
+                Some(tax_code),
+                Some(type_),
+            ) = (
+                self.active,
+                self.created,
+                self.delivery_estimate,
+                self.display_name.take(),
+                self.fixed_amount.take(),
+                self.id.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.tax_behavior,
+                self.tax_code.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                active: self.active?,
-                created: self.created?,
-                delivery_estimate: self.delivery_estimate?,
-                display_name: self.display_name.take()?,
-                fixed_amount: self.fixed_amount.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                tax_behavior: self.tax_behavior?,
-                tax_code: self.tax_code.take()?,
-                type_: self.type_?,
+                active,
+                created,
+                delivery_estimate,
+                display_name,
+                fixed_amount,
+                id,
+                livemode,
+                metadata,
+                tax_behavior,
+                tax_code,
+                type_,
             })
         }
     }
@@ -155,17 +188,17 @@ const _: () = {
             let mut b = ShippingRateBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "active" => b.active = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "delivery_estimate" => b.delivery_estimate = Some(FromValueOpt::from_value(v)?),
-                    "display_name" => b.display_name = Some(FromValueOpt::from_value(v)?),
-                    "fixed_amount" => b.fixed_amount = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "tax_behavior" => b.tax_behavior = Some(FromValueOpt::from_value(v)?),
-                    "tax_code" => b.tax_code = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "active" => b.active = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "delivery_estimate" => b.delivery_estimate = FromValueOpt::from_value(v),
+                    "display_name" => b.display_name = FromValueOpt::from_value(v),
+                    "fixed_amount" => b.fixed_amount = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
+                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

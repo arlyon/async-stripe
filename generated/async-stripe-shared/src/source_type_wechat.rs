@@ -13,7 +13,12 @@ pub struct SourceTypeWechatBuilder {
     statement_descriptor: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -64,11 +69,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                prepay_id: self.prepay_id.take()?,
-                qr_code_url: self.qr_code_url.take()?,
-                statement_descriptor: self.statement_descriptor.take()?,
-            })
+            let (Some(prepay_id), Some(qr_code_url), Some(statement_descriptor)) =
+                (self.prepay_id.take(), self.qr_code_url.take(), self.statement_descriptor.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { prepay_id, qr_code_url, statement_descriptor })
         }
     }
 
@@ -95,11 +101,9 @@ const _: () = {
             let mut b = SourceTypeWechatBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "prepay_id" => b.prepay_id = Some(FromValueOpt::from_value(v)?),
-                    "qr_code_url" => b.qr_code_url = Some(FromValueOpt::from_value(v)?),
-                    "statement_descriptor" => {
-                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "prepay_id" => b.prepay_id = FromValueOpt::from_value(v),
+                    "qr_code_url" => b.qr_code_url = FromValueOpt::from_value(v),
+                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
 
                     _ => {}
                 }
