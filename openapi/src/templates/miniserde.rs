@@ -170,7 +170,7 @@ impl<'a> ObjectWriter<'a> {
             {builder_inner}
         }}
 
-        #[allow(unused_variables, irrefutable_let_patterns, clippy::match_single_binding, clippy::single_match)]
+        #[allow(unused_variables, irrefutable_let_patterns, clippy::let_unit_value, clippy::match_single_binding, clippy::single_match)]
         const _: () = {{
             use miniserde::de::{{Map, Visitor}};
             use miniserde::json::Value;
