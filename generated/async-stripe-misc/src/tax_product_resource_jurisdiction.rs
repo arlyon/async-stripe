@@ -20,7 +20,12 @@ pub struct TaxProductResourceJurisdictionBuilder {
     state: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -73,12 +78,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                country: self.country.take()?,
-                display_name: self.display_name.take()?,
-                level: self.level?,
-                state: self.state.take()?,
-            })
+            let (Some(country), Some(display_name), Some(level), Some(state)) =
+                (self.country.take(), self.display_name.take(), self.level, self.state.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { country, display_name, level, state })
         }
     }
 
@@ -105,10 +110,10 @@ const _: () = {
             let mut b = TaxProductResourceJurisdictionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "display_name" => b.display_name = Some(FromValueOpt::from_value(v)?),
-                    "level" => b.level = Some(FromValueOpt::from_value(v)?),
-                    "state" => b.state = Some(FromValueOpt::from_value(v)?),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "display_name" => b.display_name = FromValueOpt::from_value(v),
+                    "level" => b.level = FromValueOpt::from_value(v),
+                    "state" => b.state = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

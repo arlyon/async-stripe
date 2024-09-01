@@ -19,7 +19,12 @@ pub struct RadarReviewResourceSessionBuilder {
     version: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                browser: self.browser.take()?,
-                device: self.device.take()?,
-                platform: self.platform.take()?,
-                version: self.version.take()?,
-            })
+            let (Some(browser), Some(device), Some(platform), Some(version)) = (
+                self.browser.take(),
+                self.device.take(),
+                self.platform.take(),
+                self.version.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { browser, device, platform, version })
         }
     }
 
@@ -104,10 +112,10 @@ const _: () = {
             let mut b = RadarReviewResourceSessionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "browser" => b.browser = Some(FromValueOpt::from_value(v)?),
-                    "device" => b.device = Some(FromValueOpt::from_value(v)?),
-                    "platform" => b.platform = Some(FromValueOpt::from_value(v)?),
-                    "version" => b.version = Some(FromValueOpt::from_value(v)?),
+                    "browser" => b.browser = FromValueOpt::from_value(v),
+                    "device" => b.device = FromValueOpt::from_value(v),
+                    "platform" => b.platform = FromValueOpt::from_value(v),
+                    "version" => b.version = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

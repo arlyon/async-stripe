@@ -32,7 +32,12 @@ pub struct PersonRelationshipBuilder {
     title: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -91,14 +96,34 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(director),
+                Some(executive),
+                Some(legal_guardian),
+                Some(owner),
+                Some(percent_ownership),
+                Some(representative),
+                Some(title),
+            ) = (
+                self.director,
+                self.executive,
+                self.legal_guardian,
+                self.owner,
+                self.percent_ownership,
+                self.representative,
+                self.title.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                director: self.director?,
-                executive: self.executive?,
-                legal_guardian: self.legal_guardian?,
-                owner: self.owner?,
-                percent_ownership: self.percent_ownership?,
-                representative: self.representative?,
-                title: self.title.take()?,
+                director,
+                executive,
+                legal_guardian,
+                owner,
+                percent_ownership,
+                representative,
+                title,
             })
         }
     }
@@ -126,13 +151,13 @@ const _: () = {
             let mut b = PersonRelationshipBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "director" => b.director = Some(FromValueOpt::from_value(v)?),
-                    "executive" => b.executive = Some(FromValueOpt::from_value(v)?),
-                    "legal_guardian" => b.legal_guardian = Some(FromValueOpt::from_value(v)?),
-                    "owner" => b.owner = Some(FromValueOpt::from_value(v)?),
-                    "percent_ownership" => b.percent_ownership = Some(FromValueOpt::from_value(v)?),
-                    "representative" => b.representative = Some(FromValueOpt::from_value(v)?),
-                    "title" => b.title = Some(FromValueOpt::from_value(v)?),
+                    "director" => b.director = FromValueOpt::from_value(v),
+                    "executive" => b.executive = FromValueOpt::from_value(v),
+                    "legal_guardian" => b.legal_guardian = FromValueOpt::from_value(v),
+                    "owner" => b.owner = FromValueOpt::from_value(v),
+                    "percent_ownership" => b.percent_ownership = FromValueOpt::from_value(v),
+                    "representative" => b.representative = FromValueOpt::from_value(v),
+                    "title" => b.title = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

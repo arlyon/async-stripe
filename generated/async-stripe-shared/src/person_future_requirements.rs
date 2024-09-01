@@ -32,7 +32,12 @@ pub struct PersonFutureRequirementsBuilder {
     pending_verification: Option<Vec<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -89,13 +94,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(alternatives),
+                Some(currently_due),
+                Some(errors),
+                Some(eventually_due),
+                Some(past_due),
+                Some(pending_verification),
+            ) = (
+                self.alternatives.take(),
+                self.currently_due.take(),
+                self.errors.take(),
+                self.eventually_due.take(),
+                self.past_due.take(),
+                self.pending_verification.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                alternatives: self.alternatives.take()?,
-                currently_due: self.currently_due.take()?,
-                errors: self.errors.take()?,
-                eventually_due: self.eventually_due.take()?,
-                past_due: self.past_due.take()?,
-                pending_verification: self.pending_verification.take()?,
+                alternatives,
+                currently_due,
+                errors,
+                eventually_due,
+                past_due,
+                pending_verification,
             })
         }
     }
@@ -123,14 +146,12 @@ const _: () = {
             let mut b = PersonFutureRequirementsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "alternatives" => b.alternatives = Some(FromValueOpt::from_value(v)?),
-                    "currently_due" => b.currently_due = Some(FromValueOpt::from_value(v)?),
-                    "errors" => b.errors = Some(FromValueOpt::from_value(v)?),
-                    "eventually_due" => b.eventually_due = Some(FromValueOpt::from_value(v)?),
-                    "past_due" => b.past_due = Some(FromValueOpt::from_value(v)?),
-                    "pending_verification" => {
-                        b.pending_verification = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "alternatives" => b.alternatives = FromValueOpt::from_value(v),
+                    "currently_due" => b.currently_due = FromValueOpt::from_value(v),
+                    "errors" => b.errors = FromValueOpt::from_value(v),
+                    "eventually_due" => b.eventually_due = FromValueOpt::from_value(v),
+                    "past_due" => b.past_due = FromValueOpt::from_value(v),
+                    "pending_verification" => b.pending_verification = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

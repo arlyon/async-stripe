@@ -10,7 +10,12 @@ pub struct TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfigBui
     splashscreen: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { splashscreen: self.splashscreen.take()? })
+            let (Some(splashscreen),) = (self.splashscreen.take(),) else {
+                return None;
+            };
+            Some(Self::Out { splashscreen })
         }
     }
 
@@ -82,7 +90,7 @@ const _: () = {
             let mut b = TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfigBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "splashscreen" => b.splashscreen = Some(FromValueOpt::from_value(v)?),
+                    "splashscreen" => b.splashscreen = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

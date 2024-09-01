@@ -10,7 +10,12 @@ pub struct PaymentMethodDetailsPixBuilder {
     bank_transaction_id: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { bank_transaction_id: self.bank_transaction_id.take()? })
+            let (Some(bank_transaction_id),) = (self.bank_transaction_id.take(),) else {
+                return None;
+            };
+            Some(Self::Out { bank_transaction_id })
         }
     }
 
@@ -82,9 +90,7 @@ const _: () = {
             let mut b = PaymentMethodDetailsPixBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank_transaction_id" => {
-                        b.bank_transaction_id = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "bank_transaction_id" => b.bank_transaction_id = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -16,7 +16,12 @@ pub struct SourceMandateNotificationSepaDebitDataBuilder {
     mandate_reference: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                creditor_identifier: self.creditor_identifier.take()?,
-                last4: self.last4.take()?,
-                mandate_reference: self.mandate_reference.take()?,
-            })
+            let (Some(creditor_identifier), Some(last4), Some(mandate_reference)) =
+                (self.creditor_identifier.take(), self.last4.take(), self.mandate_reference.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { creditor_identifier, last4, mandate_reference })
         }
     }
 
@@ -98,11 +104,9 @@ const _: () = {
             let mut b = SourceMandateNotificationSepaDebitDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "creditor_identifier" => {
-                        b.creditor_identifier = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "mandate_reference" => b.mandate_reference = Some(FromValueOpt::from_value(v)?),
+                    "creditor_identifier" => b.creditor_identifier = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "mandate_reference" => b.mandate_reference = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

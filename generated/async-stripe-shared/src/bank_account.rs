@@ -85,7 +85,12 @@ pub struct BankAccountBuilder {
     status: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -168,25 +173,67 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account),
+                Some(account_holder_name),
+                Some(account_holder_type),
+                Some(account_type),
+                Some(available_payout_methods),
+                Some(bank_name),
+                Some(country),
+                Some(currency),
+                Some(customer),
+                Some(default_for_currency),
+                Some(fingerprint),
+                Some(future_requirements),
+                Some(id),
+                Some(last4),
+                Some(metadata),
+                Some(requirements),
+                Some(routing_number),
+                Some(status),
+            ) = (
+                self.account.take(),
+                self.account_holder_name.take(),
+                self.account_holder_type.take(),
+                self.account_type.take(),
+                self.available_payout_methods.take(),
+                self.bank_name.take(),
+                self.country.take(),
+                self.currency,
+                self.customer.take(),
+                self.default_for_currency,
+                self.fingerprint.take(),
+                self.future_requirements.take(),
+                self.id.take(),
+                self.last4.take(),
+                self.metadata.take(),
+                self.requirements.take(),
+                self.routing_number.take(),
+                self.status.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account: self.account.take()?,
-                account_holder_name: self.account_holder_name.take()?,
-                account_holder_type: self.account_holder_type.take()?,
-                account_type: self.account_type.take()?,
-                available_payout_methods: self.available_payout_methods.take()?,
-                bank_name: self.bank_name.take()?,
-                country: self.country.take()?,
-                currency: self.currency?,
-                customer: self.customer.take()?,
-                default_for_currency: self.default_for_currency?,
-                fingerprint: self.fingerprint.take()?,
-                future_requirements: self.future_requirements.take()?,
-                id: self.id.take()?,
-                last4: self.last4.take()?,
-                metadata: self.metadata.take()?,
-                requirements: self.requirements.take()?,
-                routing_number: self.routing_number.take()?,
-                status: self.status.take()?,
+                account,
+                account_holder_name,
+                account_holder_type,
+                account_type,
+                available_payout_methods,
+                bank_name,
+                country,
+                currency,
+                customer,
+                default_for_currency,
+                fingerprint,
+                future_requirements,
+                id,
+                last4,
+                metadata,
+                requirements,
+                routing_number,
+                status,
             })
         }
     }
@@ -214,34 +261,26 @@ const _: () = {
             let mut b = BankAccountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account" => b.account = Some(FromValueOpt::from_value(v)?),
-                    "account_holder_name" => {
-                        b.account_holder_name = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "account_holder_type" => {
-                        b.account_holder_type = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "account_type" => b.account_type = Some(FromValueOpt::from_value(v)?),
+                    "account" => b.account = FromValueOpt::from_value(v),
+                    "account_holder_name" => b.account_holder_name = FromValueOpt::from_value(v),
+                    "account_holder_type" => b.account_holder_type = FromValueOpt::from_value(v),
+                    "account_type" => b.account_type = FromValueOpt::from_value(v),
                     "available_payout_methods" => {
-                        b.available_payout_methods = Some(FromValueOpt::from_value(v)?)
+                        b.available_payout_methods = FromValueOpt::from_value(v)
                     }
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "default_for_currency" => {
-                        b.default_for_currency = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "future_requirements" => {
-                        b.future_requirements = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "requirements" => b.requirements = Some(FromValueOpt::from_value(v)?),
-                    "routing_number" => b.routing_number = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "default_for_currency" => b.default_for_currency = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "future_requirements" => b.future_requirements = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "requirements" => b.requirements = FromValueOpt::from_value(v),
+                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

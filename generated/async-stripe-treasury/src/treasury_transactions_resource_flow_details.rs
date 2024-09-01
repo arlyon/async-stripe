@@ -27,7 +27,12 @@ pub struct TreasuryTransactionsResourceFlowDetailsBuilder {
     type_: Option<TreasuryTransactionsResourceFlowDetailsType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -90,16 +95,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(credit_reversal),
+                Some(debit_reversal),
+                Some(inbound_transfer),
+                Some(issuing_authorization),
+                Some(outbound_payment),
+                Some(outbound_transfer),
+                Some(received_credit),
+                Some(received_debit),
+                Some(type_),
+            ) = (
+                self.credit_reversal.take(),
+                self.debit_reversal.take(),
+                self.inbound_transfer.take(),
+                self.issuing_authorization.take(),
+                self.outbound_payment.take(),
+                self.outbound_transfer.take(),
+                self.received_credit.take(),
+                self.received_debit.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                credit_reversal: self.credit_reversal.take()?,
-                debit_reversal: self.debit_reversal.take()?,
-                inbound_transfer: self.inbound_transfer.take()?,
-                issuing_authorization: self.issuing_authorization.take()?,
-                outbound_payment: self.outbound_payment.take()?,
-                outbound_transfer: self.outbound_transfer.take()?,
-                received_credit: self.received_credit.take()?,
-                received_debit: self.received_debit.take()?,
-                type_: self.type_?,
+                credit_reversal,
+                debit_reversal,
+                inbound_transfer,
+                issuing_authorization,
+                outbound_payment,
+                outbound_transfer,
+                received_credit,
+                received_debit,
+                type_,
             })
         }
     }
@@ -127,17 +156,17 @@ const _: () = {
             let mut b = TreasuryTransactionsResourceFlowDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "credit_reversal" => b.credit_reversal = Some(FromValueOpt::from_value(v)?),
-                    "debit_reversal" => b.debit_reversal = Some(FromValueOpt::from_value(v)?),
-                    "inbound_transfer" => b.inbound_transfer = Some(FromValueOpt::from_value(v)?),
+                    "credit_reversal" => b.credit_reversal = FromValueOpt::from_value(v),
+                    "debit_reversal" => b.debit_reversal = FromValueOpt::from_value(v),
+                    "inbound_transfer" => b.inbound_transfer = FromValueOpt::from_value(v),
                     "issuing_authorization" => {
-                        b.issuing_authorization = Some(FromValueOpt::from_value(v)?)
+                        b.issuing_authorization = FromValueOpt::from_value(v)
                     }
-                    "outbound_payment" => b.outbound_payment = Some(FromValueOpt::from_value(v)?),
-                    "outbound_transfer" => b.outbound_transfer = Some(FromValueOpt::from_value(v)?),
-                    "received_credit" => b.received_credit = Some(FromValueOpt::from_value(v)?),
-                    "received_debit" => b.received_debit = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "outbound_payment" => b.outbound_payment = FromValueOpt::from_value(v),
+                    "outbound_transfer" => b.outbound_transfer = FromValueOpt::from_value(v),
+                    "received_credit" => b.received_credit = FromValueOpt::from_value(v),
+                    "received_debit" => b.received_debit = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

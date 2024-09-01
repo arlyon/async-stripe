@@ -11,7 +11,12 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPay
     payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -65,8 +70,12 @@ const _: () = {
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        Some(Self::Out { payment_intent: self.payment_intent.take()?,
- })
+        let (Some(payment_intent),
+) = (self.payment_intent.take(),
+) else {
+            return None;
+        };
+        Some(Self::Out { payment_intent })
     }
 }
 
@@ -97,7 +106,7 @@ const _: () = {
             let mut b = CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransactionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "payment_intent" => b.payment_intent = Some(FromValueOpt::from_value(v)?),
+                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

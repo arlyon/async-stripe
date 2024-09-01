@@ -19,7 +19,12 @@ pub struct Level3Builder {
     shipping_from_zip: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -73,13 +78,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(customer_reference),
+                Some(line_items),
+                Some(merchant_reference),
+                Some(shipping_address_zip),
+                Some(shipping_amount),
+                Some(shipping_from_zip),
+            ) = (
+                self.customer_reference.take(),
+                self.line_items.take(),
+                self.merchant_reference.take(),
+                self.shipping_address_zip.take(),
+                self.shipping_amount,
+                self.shipping_from_zip.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                customer_reference: self.customer_reference.take()?,
-                line_items: self.line_items.take()?,
-                merchant_reference: self.merchant_reference.take()?,
-                shipping_address_zip: self.shipping_address_zip.take()?,
-                shipping_amount: self.shipping_amount?,
-                shipping_from_zip: self.shipping_from_zip.take()?,
+                customer_reference,
+                line_items,
+                merchant_reference,
+                shipping_address_zip,
+                shipping_amount,
+                shipping_from_zip,
             })
         }
     }
@@ -107,18 +130,12 @@ const _: () = {
             let mut b = Level3Builder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "customer_reference" => {
-                        b.customer_reference = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "line_items" => b.line_items = Some(FromValueOpt::from_value(v)?),
-                    "merchant_reference" => {
-                        b.merchant_reference = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "shipping_address_zip" => {
-                        b.shipping_address_zip = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "shipping_amount" => b.shipping_amount = Some(FromValueOpt::from_value(v)?),
-                    "shipping_from_zip" => b.shipping_from_zip = Some(FromValueOpt::from_value(v)?),
+                    "customer_reference" => b.customer_reference = FromValueOpt::from_value(v),
+                    "line_items" => b.line_items = FromValueOpt::from_value(v),
+                    "merchant_reference" => b.merchant_reference = FromValueOpt::from_value(v),
+                    "shipping_address_zip" => b.shipping_address_zip = FromValueOpt::from_value(v),
+                    "shipping_amount" => b.shipping_amount = FromValueOpt::from_value(v),
+                    "shipping_from_zip" => b.shipping_from_zip = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

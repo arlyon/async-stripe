@@ -35,7 +35,12 @@ pub struct OutboundPaymentsPaymentMethodDetailsUsBankAccountBuilder {
     routing_number: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -96,15 +101,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account_holder_type),
+                Some(account_type),
+                Some(bank_name),
+                Some(fingerprint),
+                Some(last4),
+                Some(mandate),
+                Some(network),
+                Some(routing_number),
+            ) = (
+                self.account_holder_type,
+                self.account_type,
+                self.bank_name.take(),
+                self.fingerprint.take(),
+                self.last4.take(),
+                self.mandate.take(),
+                self.network,
+                self.routing_number.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account_holder_type: self.account_holder_type?,
-                account_type: self.account_type?,
-                bank_name: self.bank_name.take()?,
-                fingerprint: self.fingerprint.take()?,
-                last4: self.last4.take()?,
-                mandate: self.mandate.take()?,
-                network: self.network?,
-                routing_number: self.routing_number.take()?,
+                account_holder_type,
+                account_type,
+                bank_name,
+                fingerprint,
+                last4,
+                mandate,
+                network,
+                routing_number,
             })
         }
     }
@@ -132,16 +159,14 @@ const _: () = {
             let mut b = OutboundPaymentsPaymentMethodDetailsUsBankAccountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_holder_type" => {
-                        b.account_holder_type = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "account_type" => b.account_type = Some(FromValueOpt::from_value(v)?),
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "mandate" => b.mandate = Some(FromValueOpt::from_value(v)?),
-                    "network" => b.network = Some(FromValueOpt::from_value(v)?),
-                    "routing_number" => b.routing_number = Some(FromValueOpt::from_value(v)?),
+                    "account_holder_type" => b.account_holder_type = FromValueOpt::from_value(v),
+                    "account_type" => b.account_type = FromValueOpt::from_value(v),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "mandate" => b.mandate = FromValueOpt::from_value(v),
+                    "network" => b.network = FromValueOpt::from_value(v),
+                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

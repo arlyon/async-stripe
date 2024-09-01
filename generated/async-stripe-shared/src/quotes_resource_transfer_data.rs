@@ -19,7 +19,12 @@ pub struct QuotesResourceTransferDataBuilder {
     destination: Option<stripe_types::Expandable<stripe_shared::Account>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -70,11 +75,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount: self.amount?,
-                amount_percent: self.amount_percent?,
-                destination: self.destination.take()?,
-            })
+            let (Some(amount), Some(amount_percent), Some(destination)) =
+                (self.amount, self.amount_percent, self.destination.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { amount, amount_percent, destination })
         }
     }
 
@@ -101,9 +107,9 @@ const _: () = {
             let mut b = QuotesResourceTransferDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_percent" => b.amount_percent = Some(FromValueOpt::from_value(v)?),
-                    "destination" => b.destination = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_percent" => b.amount_percent = FromValueOpt::from_value(v),
+                    "destination" => b.destination = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

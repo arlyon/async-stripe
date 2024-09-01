@@ -11,7 +11,12 @@ pub struct AccountInvoicesSettingsBuilder {
     default_account_tax_ids: Option<Option<Vec<stripe_types::Expandable<stripe_shared::TaxId>>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -56,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { default_account_tax_ids: self.default_account_tax_ids.take()? })
+            let (Some(default_account_tax_ids),) = (self.default_account_tax_ids.take(),) else {
+                return None;
+            };
+            Some(Self::Out { default_account_tax_ids })
         }
     }
 
@@ -84,7 +92,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "default_account_tax_ids" => {
-                        b.default_account_tax_ids = Some(FromValueOpt::from_value(v)?)
+                        b.default_account_tax_ids = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

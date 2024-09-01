@@ -14,7 +14,12 @@ pub struct IssuingCardWalletsBuilder {
     primary_account_identifier: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                apple_pay: self.apple_pay?,
-                google_pay: self.google_pay?,
-                primary_account_identifier: self.primary_account_identifier.take()?,
-            })
+            let (Some(apple_pay), Some(google_pay), Some(primary_account_identifier)) =
+                (self.apple_pay, self.google_pay, self.primary_account_identifier.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { apple_pay, google_pay, primary_account_identifier })
         }
     }
 
@@ -98,10 +104,10 @@ const _: () = {
             let mut b = IssuingCardWalletsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "apple_pay" => b.apple_pay = Some(FromValueOpt::from_value(v)?),
-                    "google_pay" => b.google_pay = Some(FromValueOpt::from_value(v)?),
+                    "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
+                    "google_pay" => b.google_pay = FromValueOpt::from_value(v),
                     "primary_account_identifier" => {
-                        b.primary_account_identifier = Some(FromValueOpt::from_value(v)?)
+                        b.primary_account_identifier = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

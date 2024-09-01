@@ -23,7 +23,12 @@ pub struct TaxProductRegistrationsResourceCountryOptionsUnitedStatesBuilder {
     type_: Option<TaxProductRegistrationsResourceCountryOptionsUnitedStatesType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -78,12 +83,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                local_amusement_tax: self.local_amusement_tax.take()?,
-                local_lease_tax: self.local_lease_tax.take()?,
-                state: self.state.take()?,
-                type_: self.type_?,
-            })
+            let (Some(local_amusement_tax), Some(local_lease_tax), Some(state), Some(type_)) = (
+                self.local_amusement_tax.take(),
+                self.local_lease_tax.take(),
+                self.state.take(),
+                self.type_,
+            ) else {
+                return None;
+            };
+            Some(Self::Out { local_amusement_tax, local_lease_tax, state, type_ })
         }
     }
 
@@ -111,12 +119,10 @@ const _: () = {
                 TaxProductRegistrationsResourceCountryOptionsUnitedStatesBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "local_amusement_tax" => {
-                        b.local_amusement_tax = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "local_lease_tax" => b.local_lease_tax = Some(FromValueOpt::from_value(v)?),
-                    "state" => b.state = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "local_amusement_tax" => b.local_amusement_tax = FromValueOpt::from_value(v),
+                    "local_lease_tax" => b.local_lease_tax = FromValueOpt::from_value(v),
+                    "state" => b.state = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

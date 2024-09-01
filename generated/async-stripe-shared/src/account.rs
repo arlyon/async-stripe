@@ -83,7 +83,12 @@ pub struct AccountBuilder {
     type_: Option<Option<AccountType>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -167,28 +172,76 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(business_profile),
+                Some(business_type),
+                Some(capabilities),
+                Some(charges_enabled),
+                Some(company),
+                Some(controller),
+                Some(country),
+                Some(created),
+                Some(default_currency),
+                Some(details_submitted),
+                Some(email),
+                Some(external_accounts),
+                Some(future_requirements),
+                Some(id),
+                Some(individual),
+                Some(metadata),
+                Some(payouts_enabled),
+                Some(requirements),
+                Some(settings),
+                Some(tos_acceptance),
+                Some(type_),
+            ) = (
+                self.business_profile.take(),
+                self.business_type,
+                self.capabilities,
+                self.charges_enabled,
+                self.company.take(),
+                self.controller,
+                self.country.take(),
+                self.created,
+                self.default_currency,
+                self.details_submitted,
+                self.email.take(),
+                self.external_accounts.take(),
+                self.future_requirements.take(),
+                self.id.take(),
+                self.individual.take(),
+                self.metadata.take(),
+                self.payouts_enabled,
+                self.requirements.take(),
+                self.settings.take(),
+                self.tos_acceptance.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                business_profile: self.business_profile.take()?,
-                business_type: self.business_type?,
-                capabilities: self.capabilities?,
-                charges_enabled: self.charges_enabled?,
-                company: self.company.take()?,
-                controller: self.controller?,
-                country: self.country.take()?,
-                created: self.created?,
-                default_currency: self.default_currency?,
-                details_submitted: self.details_submitted?,
-                email: self.email.take()?,
-                external_accounts: self.external_accounts.take()?,
-                future_requirements: self.future_requirements.take()?,
-                id: self.id.take()?,
-                individual: self.individual.take()?,
-                metadata: self.metadata.take()?,
-                payouts_enabled: self.payouts_enabled?,
-                requirements: self.requirements.take()?,
-                settings: self.settings.take()?,
-                tos_acceptance: self.tos_acceptance.take()?,
-                type_: self.type_?,
+                business_profile,
+                business_type,
+                capabilities,
+                charges_enabled,
+                company,
+                controller,
+                country,
+                created,
+                default_currency,
+                details_submitted,
+                email,
+                external_accounts,
+                future_requirements,
+                id,
+                individual,
+                metadata,
+                payouts_enabled,
+                requirements,
+                settings,
+                tos_acceptance,
+                type_,
             })
         }
     }
@@ -216,29 +269,27 @@ const _: () = {
             let mut b = AccountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "business_profile" => b.business_profile = Some(FromValueOpt::from_value(v)?),
-                    "business_type" => b.business_type = Some(FromValueOpt::from_value(v)?),
-                    "capabilities" => b.capabilities = Some(FromValueOpt::from_value(v)?),
-                    "charges_enabled" => b.charges_enabled = Some(FromValueOpt::from_value(v)?),
-                    "company" => b.company = Some(FromValueOpt::from_value(v)?),
-                    "controller" => b.controller = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "default_currency" => b.default_currency = Some(FromValueOpt::from_value(v)?),
-                    "details_submitted" => b.details_submitted = Some(FromValueOpt::from_value(v)?),
-                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
-                    "external_accounts" => b.external_accounts = Some(FromValueOpt::from_value(v)?),
-                    "future_requirements" => {
-                        b.future_requirements = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "individual" => b.individual = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "payouts_enabled" => b.payouts_enabled = Some(FromValueOpt::from_value(v)?),
-                    "requirements" => b.requirements = Some(FromValueOpt::from_value(v)?),
-                    "settings" => b.settings = Some(FromValueOpt::from_value(v)?),
-                    "tos_acceptance" => b.tos_acceptance = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "business_profile" => b.business_profile = FromValueOpt::from_value(v),
+                    "business_type" => b.business_type = FromValueOpt::from_value(v),
+                    "capabilities" => b.capabilities = FromValueOpt::from_value(v),
+                    "charges_enabled" => b.charges_enabled = FromValueOpt::from_value(v),
+                    "company" => b.company = FromValueOpt::from_value(v),
+                    "controller" => b.controller = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "default_currency" => b.default_currency = FromValueOpt::from_value(v),
+                    "details_submitted" => b.details_submitted = FromValueOpt::from_value(v),
+                    "email" => b.email = FromValueOpt::from_value(v),
+                    "external_accounts" => b.external_accounts = FromValueOpt::from_value(v),
+                    "future_requirements" => b.future_requirements = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "individual" => b.individual = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "payouts_enabled" => b.payouts_enabled = FromValueOpt::from_value(v),
+                    "requirements" => b.requirements = FromValueOpt::from_value(v),
+                    "settings" => b.settings = FromValueOpt::from_value(v),
+                    "tos_acceptance" => b.tos_acceptance = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

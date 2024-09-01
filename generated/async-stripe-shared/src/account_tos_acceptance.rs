@@ -19,7 +19,12 @@ pub struct AccountTosAcceptanceBuilder {
     user_agent: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                date: self.date?,
-                ip: self.ip.take()?,
-                service_agreement: self.service_agreement.take()?,
-                user_agent: self.user_agent.take()?,
-            })
+            let (Some(date), Some(ip), Some(service_agreement), Some(user_agent)) =
+                (self.date, self.ip.take(), self.service_agreement.take(), self.user_agent.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { date, ip, service_agreement, user_agent })
         }
     }
 
@@ -104,10 +109,10 @@ const _: () = {
             let mut b = AccountTosAcceptanceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "date" => b.date = Some(FromValueOpt::from_value(v)?),
-                    "ip" => b.ip = Some(FromValueOpt::from_value(v)?),
-                    "service_agreement" => b.service_agreement = Some(FromValueOpt::from_value(v)?),
-                    "user_agent" => b.user_agent = Some(FromValueOpt::from_value(v)?),
+                    "date" => b.date = FromValueOpt::from_value(v),
+                    "ip" => b.ip = FromValueOpt::from_value(v),
+                    "service_agreement" => b.service_agreement = FromValueOpt::from_value(v),
+                    "user_agent" => b.user_agent = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

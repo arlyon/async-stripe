@@ -21,7 +21,12 @@ pub struct IssuingTransactionFuelDataBuilder {
     volume_decimal: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -74,12 +79,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                type_: self.type_.take()?,
-                unit: self.unit.take()?,
-                unit_cost_decimal: self.unit_cost_decimal.take()?,
-                volume_decimal: self.volume_decimal.take()?,
-            })
+            let (Some(type_), Some(unit), Some(unit_cost_decimal), Some(volume_decimal)) = (
+                self.type_.take(),
+                self.unit.take(),
+                self.unit_cost_decimal.take(),
+                self.volume_decimal.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { type_, unit, unit_cost_decimal, volume_decimal })
         }
     }
 
@@ -106,10 +114,10 @@ const _: () = {
             let mut b = IssuingTransactionFuelDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "unit" => b.unit = Some(FromValueOpt::from_value(v)?),
-                    "unit_cost_decimal" => b.unit_cost_decimal = Some(FromValueOpt::from_value(v)?),
-                    "volume_decimal" => b.volume_decimal = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "unit" => b.unit = FromValueOpt::from_value(v),
+                    "unit_cost_decimal" => b.unit_cost_decimal = FromValueOpt::from_value(v),
+                    "volume_decimal" => b.volume_decimal = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

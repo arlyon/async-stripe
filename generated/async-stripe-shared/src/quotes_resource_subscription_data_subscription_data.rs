@@ -26,7 +26,12 @@ pub struct QuotesResourceSubscriptionDataSubscriptionDataBuilder {
     trial_period_days: Option<Option<u32>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -79,12 +84,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                description: self.description.take()?,
-                effective_date: self.effective_date?,
-                metadata: self.metadata.take()?,
-                trial_period_days: self.trial_period_days?,
-            })
+            let (Some(description), Some(effective_date), Some(metadata), Some(trial_period_days)) = (
+                self.description.take(),
+                self.effective_date,
+                self.metadata.take(),
+                self.trial_period_days,
+            ) else {
+                return None;
+            };
+            Some(Self::Out { description, effective_date, metadata, trial_period_days })
         }
     }
 
@@ -111,10 +119,10 @@ const _: () = {
             let mut b = QuotesResourceSubscriptionDataSubscriptionDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "effective_date" => b.effective_date = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "trial_period_days" => b.trial_period_days = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "effective_date" => b.effective_date = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "trial_period_days" => b.trial_period_days = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

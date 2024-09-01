@@ -101,7 +101,12 @@ pub struct PersonBuilder {
     verification: Option<Option<stripe_shared::LegalEntityPersonVerification>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -207,37 +212,103 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account),
+                Some(additional_tos_acceptances),
+                Some(address),
+                Some(address_kana),
+                Some(address_kanji),
+                Some(created),
+                Some(dob),
+                Some(email),
+                Some(first_name),
+                Some(first_name_kana),
+                Some(first_name_kanji),
+                Some(full_name_aliases),
+                Some(future_requirements),
+                Some(gender),
+                Some(id),
+                Some(id_number_provided),
+                Some(id_number_secondary_provided),
+                Some(last_name),
+                Some(last_name_kana),
+                Some(last_name_kanji),
+                Some(maiden_name),
+                Some(metadata),
+                Some(nationality),
+                Some(phone),
+                Some(political_exposure),
+                Some(registered_address),
+                Some(relationship),
+                Some(requirements),
+                Some(ssn_last_4_provided),
+                Some(verification),
+            ) = (
+                self.account.take(),
+                self.additional_tos_acceptances.take(),
+                self.address.take(),
+                self.address_kana.take(),
+                self.address_kanji.take(),
+                self.created,
+                self.dob,
+                self.email.take(),
+                self.first_name.take(),
+                self.first_name_kana.take(),
+                self.first_name_kanji.take(),
+                self.full_name_aliases.take(),
+                self.future_requirements.take(),
+                self.gender.take(),
+                self.id.take(),
+                self.id_number_provided,
+                self.id_number_secondary_provided,
+                self.last_name.take(),
+                self.last_name_kana.take(),
+                self.last_name_kanji.take(),
+                self.maiden_name.take(),
+                self.metadata.take(),
+                self.nationality.take(),
+                self.phone.take(),
+                self.political_exposure,
+                self.registered_address.take(),
+                self.relationship.take(),
+                self.requirements.take(),
+                self.ssn_last_4_provided,
+                self.verification.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account: self.account.take()?,
-                additional_tos_acceptances: self.additional_tos_acceptances.take()?,
-                address: self.address.take()?,
-                address_kana: self.address_kana.take()?,
-                address_kanji: self.address_kanji.take()?,
-                created: self.created?,
-                dob: self.dob?,
-                email: self.email.take()?,
-                first_name: self.first_name.take()?,
-                first_name_kana: self.first_name_kana.take()?,
-                first_name_kanji: self.first_name_kanji.take()?,
-                full_name_aliases: self.full_name_aliases.take()?,
-                future_requirements: self.future_requirements.take()?,
-                gender: self.gender.take()?,
-                id: self.id.take()?,
-                id_number_provided: self.id_number_provided?,
-                id_number_secondary_provided: self.id_number_secondary_provided?,
-                last_name: self.last_name.take()?,
-                last_name_kana: self.last_name_kana.take()?,
-                last_name_kanji: self.last_name_kanji.take()?,
-                maiden_name: self.maiden_name.take()?,
-                metadata: self.metadata.take()?,
-                nationality: self.nationality.take()?,
-                phone: self.phone.take()?,
-                political_exposure: self.political_exposure?,
-                registered_address: self.registered_address.take()?,
-                relationship: self.relationship.take()?,
-                requirements: self.requirements.take()?,
-                ssn_last_4_provided: self.ssn_last_4_provided?,
-                verification: self.verification.take()?,
+                account,
+                additional_tos_acceptances,
+                address,
+                address_kana,
+                address_kanji,
+                created,
+                dob,
+                email,
+                first_name,
+                first_name_kana,
+                first_name_kanji,
+                full_name_aliases,
+                future_requirements,
+                gender,
+                id,
+                id_number_provided,
+                id_number_secondary_provided,
+                last_name,
+                last_name_kana,
+                last_name_kanji,
+                maiden_name,
+                metadata,
+                nationality,
+                phone,
+                political_exposure,
+                registered_address,
+                relationship,
+                requirements,
+                ssn_last_4_provided,
+                verification,
             })
         }
     }
@@ -265,50 +336,40 @@ const _: () = {
             let mut b = PersonBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account" => b.account = Some(FromValueOpt::from_value(v)?),
+                    "account" => b.account = FromValueOpt::from_value(v),
                     "additional_tos_acceptances" => {
-                        b.additional_tos_acceptances = Some(FromValueOpt::from_value(v)?)
+                        b.additional_tos_acceptances = FromValueOpt::from_value(v)
                     }
-                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
-                    "address_kana" => b.address_kana = Some(FromValueOpt::from_value(v)?),
-                    "address_kanji" => b.address_kanji = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "dob" => b.dob = Some(FromValueOpt::from_value(v)?),
-                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
-                    "first_name" => b.first_name = Some(FromValueOpt::from_value(v)?),
-                    "first_name_kana" => b.first_name_kana = Some(FromValueOpt::from_value(v)?),
-                    "first_name_kanji" => b.first_name_kanji = Some(FromValueOpt::from_value(v)?),
-                    "full_name_aliases" => b.full_name_aliases = Some(FromValueOpt::from_value(v)?),
-                    "future_requirements" => {
-                        b.future_requirements = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "gender" => b.gender = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "id_number_provided" => {
-                        b.id_number_provided = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "address" => b.address = FromValueOpt::from_value(v),
+                    "address_kana" => b.address_kana = FromValueOpt::from_value(v),
+                    "address_kanji" => b.address_kanji = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "dob" => b.dob = FromValueOpt::from_value(v),
+                    "email" => b.email = FromValueOpt::from_value(v),
+                    "first_name" => b.first_name = FromValueOpt::from_value(v),
+                    "first_name_kana" => b.first_name_kana = FromValueOpt::from_value(v),
+                    "first_name_kanji" => b.first_name_kanji = FromValueOpt::from_value(v),
+                    "full_name_aliases" => b.full_name_aliases = FromValueOpt::from_value(v),
+                    "future_requirements" => b.future_requirements = FromValueOpt::from_value(v),
+                    "gender" => b.gender = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "id_number_provided" => b.id_number_provided = FromValueOpt::from_value(v),
                     "id_number_secondary_provided" => {
-                        b.id_number_secondary_provided = Some(FromValueOpt::from_value(v)?)
+                        b.id_number_secondary_provided = FromValueOpt::from_value(v)
                     }
-                    "last_name" => b.last_name = Some(FromValueOpt::from_value(v)?),
-                    "last_name_kana" => b.last_name_kana = Some(FromValueOpt::from_value(v)?),
-                    "last_name_kanji" => b.last_name_kanji = Some(FromValueOpt::from_value(v)?),
-                    "maiden_name" => b.maiden_name = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "nationality" => b.nationality = Some(FromValueOpt::from_value(v)?),
-                    "phone" => b.phone = Some(FromValueOpt::from_value(v)?),
-                    "political_exposure" => {
-                        b.political_exposure = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "registered_address" => {
-                        b.registered_address = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "relationship" => b.relationship = Some(FromValueOpt::from_value(v)?),
-                    "requirements" => b.requirements = Some(FromValueOpt::from_value(v)?),
-                    "ssn_last_4_provided" => {
-                        b.ssn_last_4_provided = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "verification" => b.verification = Some(FromValueOpt::from_value(v)?),
+                    "last_name" => b.last_name = FromValueOpt::from_value(v),
+                    "last_name_kana" => b.last_name_kana = FromValueOpt::from_value(v),
+                    "last_name_kanji" => b.last_name_kanji = FromValueOpt::from_value(v),
+                    "maiden_name" => b.maiden_name = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "nationality" => b.nationality = FromValueOpt::from_value(v),
+                    "phone" => b.phone = FromValueOpt::from_value(v),
+                    "political_exposure" => b.political_exposure = FromValueOpt::from_value(v),
+                    "registered_address" => b.registered_address = FromValueOpt::from_value(v),
+                    "relationship" => b.relationship = FromValueOpt::from_value(v),
+                    "requirements" => b.requirements = FromValueOpt::from_value(v),
+                    "ssn_last_4_provided" => b.ssn_last_4_provided = FromValueOpt::from_value(v),
+                    "verification" => b.verification = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -10,7 +10,12 @@ pub struct SetupIntentPaymentMethodOptionsLinkBuilder {
     persistent_token: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { persistent_token: self.persistent_token.take()? })
+            let (Some(persistent_token),) = (self.persistent_token.take(),) else {
+                return None;
+            };
+            Some(Self::Out { persistent_token })
         }
     }
 
@@ -82,7 +90,7 @@ const _: () = {
             let mut b = SetupIntentPaymentMethodOptionsLinkBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "persistent_token" => b.persistent_token = Some(FromValueOpt::from_value(v)?),
+                    "persistent_token" => b.persistent_token = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

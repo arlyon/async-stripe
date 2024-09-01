@@ -14,7 +14,12 @@ pub struct RefundNextActionBuilder {
     type_: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -60,10 +65,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                display_details: self.display_details.take()?,
-                type_: self.type_.take()?,
-            })
+            let (Some(display_details), Some(type_)) =
+                (self.display_details.take(), self.type_.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { display_details, type_ })
         }
     }
 
@@ -90,8 +97,8 @@ const _: () = {
             let mut b = RefundNextActionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "display_details" => b.display_details = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "display_details" => b.display_details = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

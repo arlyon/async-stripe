@@ -16,7 +16,12 @@ pub struct ProductFeatureBuilder {
     livemode: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                entitlement_feature: self.entitlement_feature.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-            })
+            let (Some(entitlement_feature), Some(id), Some(livemode)) =
+                (self.entitlement_feature.take(), self.id.take(), self.livemode)
+            else {
+                return None;
+            };
+            Some(Self::Out { entitlement_feature, id, livemode })
         }
     }
 
@@ -98,11 +104,9 @@ const _: () = {
             let mut b = ProductFeatureBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "entitlement_feature" => {
-                        b.entitlement_feature = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "entitlement_feature" => b.entitlement_feature = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

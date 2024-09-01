@@ -44,7 +44,12 @@ pub struct IssuingPersonalizationDesignBuilder {
     status: Option<stripe_shared::IssuingPersonalizationDesignStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -113,19 +118,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(card_logo),
+                Some(carrier_text),
+                Some(created),
+                Some(id),
+                Some(livemode),
+                Some(lookup_key),
+                Some(metadata),
+                Some(name),
+                Some(physical_bundle),
+                Some(preferences),
+                Some(rejection_reasons),
+                Some(status),
+            ) = (
+                self.card_logo.take(),
+                self.carrier_text.take(),
+                self.created,
+                self.id.take(),
+                self.livemode,
+                self.lookup_key.take(),
+                self.metadata.take(),
+                self.name.take(),
+                self.physical_bundle.take(),
+                self.preferences,
+                self.rejection_reasons.take(),
+                self.status,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                card_logo: self.card_logo.take()?,
-                carrier_text: self.carrier_text.take()?,
-                created: self.created?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                lookup_key: self.lookup_key.take()?,
-                metadata: self.metadata.take()?,
-                name: self.name.take()?,
-                physical_bundle: self.physical_bundle.take()?,
-                preferences: self.preferences?,
-                rejection_reasons: self.rejection_reasons.take()?,
-                status: self.status?,
+                card_logo,
+                carrier_text,
+                created,
+                id,
+                livemode,
+                lookup_key,
+                metadata,
+                name,
+                physical_bundle,
+                preferences,
+                rejection_reasons,
+                status,
             })
         }
     }
@@ -153,18 +188,18 @@ const _: () = {
             let mut b = IssuingPersonalizationDesignBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "card_logo" => b.card_logo = Some(FromValueOpt::from_value(v)?),
-                    "carrier_text" => b.carrier_text = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "lookup_key" => b.lookup_key = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "physical_bundle" => b.physical_bundle = Some(FromValueOpt::from_value(v)?),
-                    "preferences" => b.preferences = Some(FromValueOpt::from_value(v)?),
-                    "rejection_reasons" => b.rejection_reasons = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "card_logo" => b.card_logo = FromValueOpt::from_value(v),
+                    "carrier_text" => b.carrier_text = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "lookup_key" => b.lookup_key = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "physical_bundle" => b.physical_bundle = FromValueOpt::from_value(v),
+                    "preferences" => b.preferences = FromValueOpt::from_value(v),
+                    "rejection_reasons" => b.rejection_reasons = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

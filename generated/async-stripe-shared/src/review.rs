@@ -54,7 +54,12 @@ pub struct ReviewBuilder {
     session: Option<Option<stripe_shared::RadarReviewResourceSession>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -122,20 +127,52 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(billing_zip),
+                Some(charge),
+                Some(closed_reason),
+                Some(created),
+                Some(id),
+                Some(ip_address),
+                Some(ip_address_location),
+                Some(livemode),
+                Some(open),
+                Some(opened_reason),
+                Some(payment_intent),
+                Some(reason),
+                Some(session),
+            ) = (
+                self.billing_zip.take(),
+                self.charge.take(),
+                self.closed_reason,
+                self.created,
+                self.id.take(),
+                self.ip_address.take(),
+                self.ip_address_location.take(),
+                self.livemode,
+                self.open,
+                self.opened_reason,
+                self.payment_intent.take(),
+                self.reason.take(),
+                self.session.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                billing_zip: self.billing_zip.take()?,
-                charge: self.charge.take()?,
-                closed_reason: self.closed_reason?,
-                created: self.created?,
-                id: self.id.take()?,
-                ip_address: self.ip_address.take()?,
-                ip_address_location: self.ip_address_location.take()?,
-                livemode: self.livemode?,
-                open: self.open?,
-                opened_reason: self.opened_reason?,
-                payment_intent: self.payment_intent.take()?,
-                reason: self.reason.take()?,
-                session: self.session.take()?,
+                billing_zip,
+                charge,
+                closed_reason,
+                created,
+                id,
+                ip_address,
+                ip_address_location,
+                livemode,
+                open,
+                opened_reason,
+                payment_intent,
+                reason,
+                session,
             })
         }
     }
@@ -163,21 +200,19 @@ const _: () = {
             let mut b = ReviewBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "billing_zip" => b.billing_zip = Some(FromValueOpt::from_value(v)?),
-                    "charge" => b.charge = Some(FromValueOpt::from_value(v)?),
-                    "closed_reason" => b.closed_reason = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "ip_address" => b.ip_address = Some(FromValueOpt::from_value(v)?),
-                    "ip_address_location" => {
-                        b.ip_address_location = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "open" => b.open = Some(FromValueOpt::from_value(v)?),
-                    "opened_reason" => b.opened_reason = Some(FromValueOpt::from_value(v)?),
-                    "payment_intent" => b.payment_intent = Some(FromValueOpt::from_value(v)?),
-                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
-                    "session" => b.session = Some(FromValueOpt::from_value(v)?),
+                    "billing_zip" => b.billing_zip = FromValueOpt::from_value(v),
+                    "charge" => b.charge = FromValueOpt::from_value(v),
+                    "closed_reason" => b.closed_reason = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
+                    "ip_address_location" => b.ip_address_location = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "open" => b.open = FromValueOpt::from_value(v),
+                    "opened_reason" => b.opened_reason = FromValueOpt::from_value(v),
+                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
+                    "reason" => b.reason = FromValueOpt::from_value(v),
+                    "session" => b.session = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

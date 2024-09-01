@@ -12,7 +12,12 @@ pub struct ConnectEmbeddedAccountFeaturesClaimBuilder {
     external_account_collection: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { external_account_collection: self.external_account_collection? })
+            let (Some(external_account_collection),) = (self.external_account_collection,) else {
+                return None;
+            };
+            Some(Self::Out { external_account_collection })
         }
     }
 
@@ -87,7 +95,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "external_account_collection" => {
-                        b.external_account_collection = Some(FromValueOpt::from_value(v)?)
+                        b.external_account_collection = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

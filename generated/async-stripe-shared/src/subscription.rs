@@ -200,7 +200,12 @@ pub struct SubscriptionBuilder {
     trial_start: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -339,51 +344,145 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(application),
+                Some(application_fee_percent),
+                Some(automatic_tax),
+                Some(billing_cycle_anchor),
+                Some(billing_cycle_anchor_config),
+                Some(billing_thresholds),
+                Some(cancel_at),
+                Some(cancel_at_period_end),
+                Some(canceled_at),
+                Some(cancellation_details),
+                Some(collection_method),
+                Some(created),
+                Some(currency),
+                Some(current_period_end),
+                Some(current_period_start),
+                Some(customer),
+                Some(days_until_due),
+                Some(default_payment_method),
+                Some(default_source),
+                Some(default_tax_rates),
+                Some(description),
+                Some(discount),
+                Some(discounts),
+                Some(ended_at),
+                Some(id),
+                Some(items),
+                Some(latest_invoice),
+                Some(livemode),
+                Some(metadata),
+                Some(next_pending_invoice_item_invoice),
+                Some(on_behalf_of),
+                Some(pause_collection),
+                Some(payment_settings),
+                Some(pending_invoice_item_interval),
+                Some(pending_setup_intent),
+                Some(pending_update),
+                Some(schedule),
+                Some(start_date),
+                Some(status),
+                Some(test_clock),
+                Some(transfer_data),
+                Some(trial_end),
+                Some(trial_settings),
+                Some(trial_start),
+            ) = (
+                self.application.take(),
+                self.application_fee_percent,
+                self.automatic_tax.take(),
+                self.billing_cycle_anchor,
+                self.billing_cycle_anchor_config,
+                self.billing_thresholds,
+                self.cancel_at,
+                self.cancel_at_period_end,
+                self.canceled_at,
+                self.cancellation_details.take(),
+                self.collection_method,
+                self.created,
+                self.currency,
+                self.current_period_end,
+                self.current_period_start,
+                self.customer.take(),
+                self.days_until_due,
+                self.default_payment_method.take(),
+                self.default_source.take(),
+                self.default_tax_rates.take(),
+                self.description.take(),
+                self.discount.take(),
+                self.discounts.take(),
+                self.ended_at,
+                self.id.take(),
+                self.items.take(),
+                self.latest_invoice.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.next_pending_invoice_item_invoice,
+                self.on_behalf_of.take(),
+                self.pause_collection,
+                self.payment_settings.take(),
+                self.pending_invoice_item_interval,
+                self.pending_setup_intent.take(),
+                self.pending_update.take(),
+                self.schedule.take(),
+                self.start_date,
+                self.status,
+                self.test_clock.take(),
+                self.transfer_data.take(),
+                self.trial_end,
+                self.trial_settings,
+                self.trial_start,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                application: self.application.take()?,
-                application_fee_percent: self.application_fee_percent?,
-                automatic_tax: self.automatic_tax.take()?,
-                billing_cycle_anchor: self.billing_cycle_anchor?,
-                billing_cycle_anchor_config: self.billing_cycle_anchor_config?,
-                billing_thresholds: self.billing_thresholds?,
-                cancel_at: self.cancel_at?,
-                cancel_at_period_end: self.cancel_at_period_end?,
-                canceled_at: self.canceled_at?,
-                cancellation_details: self.cancellation_details.take()?,
-                collection_method: self.collection_method?,
-                created: self.created?,
-                currency: self.currency?,
-                current_period_end: self.current_period_end?,
-                current_period_start: self.current_period_start?,
-                customer: self.customer.take()?,
-                days_until_due: self.days_until_due?,
-                default_payment_method: self.default_payment_method.take()?,
-                default_source: self.default_source.take()?,
-                default_tax_rates: self.default_tax_rates.take()?,
-                description: self.description.take()?,
-                discount: self.discount.take()?,
-                discounts: self.discounts.take()?,
-                ended_at: self.ended_at?,
-                id: self.id.take()?,
-                items: self.items.take()?,
-                latest_invoice: self.latest_invoice.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                next_pending_invoice_item_invoice: self.next_pending_invoice_item_invoice?,
-                on_behalf_of: self.on_behalf_of.take()?,
-                pause_collection: self.pause_collection?,
-                payment_settings: self.payment_settings.take()?,
-                pending_invoice_item_interval: self.pending_invoice_item_interval?,
-                pending_setup_intent: self.pending_setup_intent.take()?,
-                pending_update: self.pending_update.take()?,
-                schedule: self.schedule.take()?,
-                start_date: self.start_date?,
-                status: self.status?,
-                test_clock: self.test_clock.take()?,
-                transfer_data: self.transfer_data.take()?,
-                trial_end: self.trial_end?,
-                trial_settings: self.trial_settings?,
-                trial_start: self.trial_start?,
+                application,
+                application_fee_percent,
+                automatic_tax,
+                billing_cycle_anchor,
+                billing_cycle_anchor_config,
+                billing_thresholds,
+                cancel_at,
+                cancel_at_period_end,
+                canceled_at,
+                cancellation_details,
+                collection_method,
+                created,
+                currency,
+                current_period_end,
+                current_period_start,
+                customer,
+                days_until_due,
+                default_payment_method,
+                default_source,
+                default_tax_rates,
+                description,
+                discount,
+                discounts,
+                ended_at,
+                id,
+                items,
+                latest_invoice,
+                livemode,
+                metadata,
+                next_pending_invoice_item_invoice,
+                on_behalf_of,
+                pause_collection,
+                payment_settings,
+                pending_invoice_item_interval,
+                pending_setup_intent,
+                pending_update,
+                schedule,
+                start_date,
+                status,
+                test_clock,
+                transfer_data,
+                trial_end,
+                trial_settings,
+                trial_start,
             })
         }
     }
@@ -411,74 +510,60 @@ const _: () = {
             let mut b = SubscriptionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "application" => b.application = Some(FromValueOpt::from_value(v)?),
+                    "application" => b.application = FromValueOpt::from_value(v),
                     "application_fee_percent" => {
-                        b.application_fee_percent = Some(FromValueOpt::from_value(v)?)
+                        b.application_fee_percent = FromValueOpt::from_value(v)
                     }
-                    "automatic_tax" => b.automatic_tax = Some(FromValueOpt::from_value(v)?),
-                    "billing_cycle_anchor" => {
-                        b.billing_cycle_anchor = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
+                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
                     "billing_cycle_anchor_config" => {
-                        b.billing_cycle_anchor_config = Some(FromValueOpt::from_value(v)?)
+                        b.billing_cycle_anchor_config = FromValueOpt::from_value(v)
                     }
-                    "billing_thresholds" => {
-                        b.billing_thresholds = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "cancel_at" => b.cancel_at = Some(FromValueOpt::from_value(v)?),
-                    "cancel_at_period_end" => {
-                        b.cancel_at_period_end = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "canceled_at" => b.canceled_at = Some(FromValueOpt::from_value(v)?),
-                    "cancellation_details" => {
-                        b.cancellation_details = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "collection_method" => b.collection_method = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "current_period_end" => {
-                        b.current_period_end = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "current_period_start" => {
-                        b.current_period_start = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "days_until_due" => b.days_until_due = Some(FromValueOpt::from_value(v)?),
+                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
+                    "cancel_at" => b.cancel_at = FromValueOpt::from_value(v),
+                    "cancel_at_period_end" => b.cancel_at_period_end = FromValueOpt::from_value(v),
+                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
+                    "cancellation_details" => b.cancellation_details = FromValueOpt::from_value(v),
+                    "collection_method" => b.collection_method = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "current_period_end" => b.current_period_end = FromValueOpt::from_value(v),
+                    "current_period_start" => b.current_period_start = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "days_until_due" => b.days_until_due = FromValueOpt::from_value(v),
                     "default_payment_method" => {
-                        b.default_payment_method = Some(FromValueOpt::from_value(v)?)
+                        b.default_payment_method = FromValueOpt::from_value(v)
                     }
-                    "default_source" => b.default_source = Some(FromValueOpt::from_value(v)?),
-                    "default_tax_rates" => b.default_tax_rates = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "discount" => b.discount = Some(FromValueOpt::from_value(v)?),
-                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
-                    "ended_at" => b.ended_at = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "items" => b.items = Some(FromValueOpt::from_value(v)?),
-                    "latest_invoice" => b.latest_invoice = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "default_source" => b.default_source = FromValueOpt::from_value(v),
+                    "default_tax_rates" => b.default_tax_rates = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "discount" => b.discount = FromValueOpt::from_value(v),
+                    "discounts" => b.discounts = FromValueOpt::from_value(v),
+                    "ended_at" => b.ended_at = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "items" => b.items = FromValueOpt::from_value(v),
+                    "latest_invoice" => b.latest_invoice = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "next_pending_invoice_item_invoice" => {
-                        b.next_pending_invoice_item_invoice = Some(FromValueOpt::from_value(v)?)
+                        b.next_pending_invoice_item_invoice = FromValueOpt::from_value(v)
                     }
-                    "on_behalf_of" => b.on_behalf_of = Some(FromValueOpt::from_value(v)?),
-                    "pause_collection" => b.pause_collection = Some(FromValueOpt::from_value(v)?),
-                    "payment_settings" => b.payment_settings = Some(FromValueOpt::from_value(v)?),
+                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
+                    "pause_collection" => b.pause_collection = FromValueOpt::from_value(v),
+                    "payment_settings" => b.payment_settings = FromValueOpt::from_value(v),
                     "pending_invoice_item_interval" => {
-                        b.pending_invoice_item_interval = Some(FromValueOpt::from_value(v)?)
+                        b.pending_invoice_item_interval = FromValueOpt::from_value(v)
                     }
-                    "pending_setup_intent" => {
-                        b.pending_setup_intent = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "pending_update" => b.pending_update = Some(FromValueOpt::from_value(v)?),
-                    "schedule" => b.schedule = Some(FromValueOpt::from_value(v)?),
-                    "start_date" => b.start_date = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "test_clock" => b.test_clock = Some(FromValueOpt::from_value(v)?),
-                    "transfer_data" => b.transfer_data = Some(FromValueOpt::from_value(v)?),
-                    "trial_end" => b.trial_end = Some(FromValueOpt::from_value(v)?),
-                    "trial_settings" => b.trial_settings = Some(FromValueOpt::from_value(v)?),
-                    "trial_start" => b.trial_start = Some(FromValueOpt::from_value(v)?),
+                    "pending_setup_intent" => b.pending_setup_intent = FromValueOpt::from_value(v),
+                    "pending_update" => b.pending_update = FromValueOpt::from_value(v),
+                    "schedule" => b.schedule = FromValueOpt::from_value(v),
+                    "start_date" => b.start_date = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "test_clock" => b.test_clock = FromValueOpt::from_value(v),
+                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
+                    "trial_end" => b.trial_end = FromValueOpt::from_value(v),
+                    "trial_settings" => b.trial_settings = FromValueOpt::from_value(v),
+                    "trial_start" => b.trial_start = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -19,7 +19,12 @@ pub struct PortalSubscriptionCancelBuilder {
     proration_behavior: Option<PortalSubscriptionCancelProrationBehavior>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                cancellation_reason: self.cancellation_reason.take()?,
-                enabled: self.enabled?,
-                mode: self.mode?,
-                proration_behavior: self.proration_behavior?,
-            })
+            let (Some(cancellation_reason), Some(enabled), Some(mode), Some(proration_behavior)) =
+                (self.cancellation_reason.take(), self.enabled, self.mode, self.proration_behavior)
+            else {
+                return None;
+            };
+            Some(Self::Out { cancellation_reason, enabled, mode, proration_behavior })
         }
     }
 
@@ -104,14 +109,10 @@ const _: () = {
             let mut b = PortalSubscriptionCancelBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "cancellation_reason" => {
-                        b.cancellation_reason = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "enabled" => b.enabled = Some(FromValueOpt::from_value(v)?),
-                    "mode" => b.mode = Some(FromValueOpt::from_value(v)?),
-                    "proration_behavior" => {
-                        b.proration_behavior = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
+                    "enabled" => b.enabled = FromValueOpt::from_value(v),
+                    "mode" => b.mode = FromValueOpt::from_value(v),
+                    "proration_behavior" => b.proration_behavior = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

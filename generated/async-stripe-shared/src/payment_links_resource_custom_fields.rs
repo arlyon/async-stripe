@@ -27,7 +27,12 @@ pub struct PaymentLinksResourceCustomFieldsBuilder {
     type_: Option<PaymentLinksResourceCustomFieldsType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -86,15 +91,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                dropdown: self.dropdown.take()?,
-                key: self.key.take()?,
-                label: self.label.take()?,
-                numeric: self.numeric?,
-                optional: self.optional?,
-                text: self.text?,
-                type_: self.type_?,
-            })
+            let (
+                Some(dropdown),
+                Some(key),
+                Some(label),
+                Some(numeric),
+                Some(optional),
+                Some(text),
+                Some(type_),
+            ) = (
+                self.dropdown.take(),
+                self.key.take(),
+                self.label.take(),
+                self.numeric,
+                self.optional,
+                self.text,
+                self.type_,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { dropdown, key, label, numeric, optional, text, type_ })
         }
     }
 
@@ -121,13 +138,13 @@ const _: () = {
             let mut b = PaymentLinksResourceCustomFieldsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "dropdown" => b.dropdown = Some(FromValueOpt::from_value(v)?),
-                    "key" => b.key = Some(FromValueOpt::from_value(v)?),
-                    "label" => b.label = Some(FromValueOpt::from_value(v)?),
-                    "numeric" => b.numeric = Some(FromValueOpt::from_value(v)?),
-                    "optional" => b.optional = Some(FromValueOpt::from_value(v)?),
-                    "text" => b.text = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "dropdown" => b.dropdown = FromValueOpt::from_value(v),
+                    "key" => b.key = FromValueOpt::from_value(v),
+                    "label" => b.label = FromValueOpt::from_value(v),
+                    "numeric" => b.numeric = FromValueOpt::from_value(v),
+                    "optional" => b.optional = FromValueOpt::from_value(v),
+                    "text" => b.text = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -13,7 +13,12 @@ pub struct QuotesResourceTotalDetailsResourceBreakdownBuilder {
     taxes: Option<Vec<stripe_shared::LineItemsTaxAmount>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { discounts: self.discounts.take()?, taxes: self.taxes.take()? })
+            let (Some(discounts), Some(taxes)) = (self.discounts.take(), self.taxes.take()) else {
+                return None;
+            };
+            Some(Self::Out { discounts, taxes })
         }
     }
 
@@ -86,8 +94,8 @@ const _: () = {
             let mut b = QuotesResourceTotalDetailsResourceBreakdownBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
-                    "taxes" => b.taxes = Some(FromValueOpt::from_value(v)?),
+                    "discounts" => b.discounts = FromValueOpt::from_value(v),
+                    "taxes" => b.taxes = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

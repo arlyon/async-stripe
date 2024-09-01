@@ -13,7 +13,12 @@ pub struct PortalCustomerUpdateBuilder {
     enabled: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +64,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                allowed_updates: self.allowed_updates.take()?,
-                enabled: self.enabled?,
-            })
+            let (Some(allowed_updates), Some(enabled)) =
+                (self.allowed_updates.take(), self.enabled)
+            else {
+                return None;
+            };
+            Some(Self::Out { allowed_updates, enabled })
         }
     }
 
@@ -89,8 +96,8 @@ const _: () = {
             let mut b = PortalCustomerUpdateBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "allowed_updates" => b.allowed_updates = Some(FromValueOpt::from_value(v)?),
-                    "enabled" => b.enabled = Some(FromValueOpt::from_value(v)?),
+                    "allowed_updates" => b.allowed_updates = FromValueOpt::from_value(v),
+                    "enabled" => b.enabled = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

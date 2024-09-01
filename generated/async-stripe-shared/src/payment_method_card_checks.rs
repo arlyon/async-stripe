@@ -16,7 +16,12 @@ pub struct PaymentMethodCardChecksBuilder {
     cvc_check: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,11 +74,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                address_line1_check: self.address_line1_check.take()?,
-                address_postal_code_check: self.address_postal_code_check.take()?,
-                cvc_check: self.cvc_check.take()?,
-            })
+            let (Some(address_line1_check), Some(address_postal_code_check), Some(cvc_check)) = (
+                self.address_line1_check.take(),
+                self.address_postal_code_check.take(),
+                self.cvc_check.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { address_line1_check, address_postal_code_check, cvc_check })
         }
     }
 
@@ -100,13 +108,11 @@ const _: () = {
             let mut b = PaymentMethodCardChecksBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "address_line1_check" => {
-                        b.address_line1_check = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "address_line1_check" => b.address_line1_check = FromValueOpt::from_value(v),
                     "address_postal_code_check" => {
-                        b.address_postal_code_check = Some(FromValueOpt::from_value(v)?)
+                        b.address_postal_code_check = FromValueOpt::from_value(v)
                     }
-                    "cvc_check" => b.cvc_check = Some(FromValueOpt::from_value(v)?),
+                    "cvc_check" => b.cvc_check = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

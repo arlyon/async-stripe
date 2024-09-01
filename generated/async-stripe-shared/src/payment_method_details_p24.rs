@@ -19,7 +19,12 @@ pub struct PaymentMethodDetailsP24Builder {
     verified_name: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -70,11 +75,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                bank: self.bank?,
-                reference: self.reference.take()?,
-                verified_name: self.verified_name.take()?,
-            })
+            let (Some(bank), Some(reference), Some(verified_name)) =
+                (self.bank, self.reference.take(), self.verified_name.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { bank, reference, verified_name })
         }
     }
 
@@ -101,9 +107,9 @@ const _: () = {
             let mut b = PaymentMethodDetailsP24Builder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank" => b.bank = Some(FromValueOpt::from_value(v)?),
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
-                    "verified_name" => b.verified_name = Some(FromValueOpt::from_value(v)?),
+                    "bank" => b.bank = FromValueOpt::from_value(v),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
+                    "verified_name" => b.verified_name = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

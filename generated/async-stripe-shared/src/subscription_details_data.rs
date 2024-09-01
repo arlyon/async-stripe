@@ -12,7 +12,12 @@ pub struct SubscriptionDetailsDataBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -57,7 +62,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { metadata: self.metadata.take()? })
+            let (Some(metadata),) = (self.metadata.take(),) else {
+                return None;
+            };
+            Some(Self::Out { metadata })
         }
     }
 
@@ -84,7 +92,7 @@ const _: () = {
             let mut b = SubscriptionDetailsDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

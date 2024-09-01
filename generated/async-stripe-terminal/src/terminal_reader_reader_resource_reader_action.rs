@@ -36,7 +36,12 @@ pub struct TerminalReaderReaderResourceReaderActionBuilder {
     type_: Option<TerminalReaderReaderResourceReaderActionType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -97,15 +102,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(failure_code),
+                Some(failure_message),
+                Some(process_payment_intent),
+                Some(process_setup_intent),
+                Some(refund_payment),
+                Some(set_reader_display),
+                Some(status),
+                Some(type_),
+            ) = (
+                self.failure_code.take(),
+                self.failure_message.take(),
+                self.process_payment_intent.take(),
+                self.process_setup_intent.take(),
+                self.refund_payment.take(),
+                self.set_reader_display.take(),
+                self.status,
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                failure_code: self.failure_code.take()?,
-                failure_message: self.failure_message.take()?,
-                process_payment_intent: self.process_payment_intent.take()?,
-                process_setup_intent: self.process_setup_intent.take()?,
-                refund_payment: self.refund_payment.take()?,
-                set_reader_display: self.set_reader_display.take()?,
-                status: self.status?,
-                type_: self.type_?,
+                failure_code,
+                failure_message,
+                process_payment_intent,
+                process_setup_intent,
+                refund_payment,
+                set_reader_display,
+                status,
+                type_,
             })
         }
     }
@@ -133,20 +160,16 @@ const _: () = {
             let mut b = TerminalReaderReaderResourceReaderActionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "failure_code" => b.failure_code = Some(FromValueOpt::from_value(v)?),
-                    "failure_message" => b.failure_message = Some(FromValueOpt::from_value(v)?),
+                    "failure_code" => b.failure_code = FromValueOpt::from_value(v),
+                    "failure_message" => b.failure_message = FromValueOpt::from_value(v),
                     "process_payment_intent" => {
-                        b.process_payment_intent = Some(FromValueOpt::from_value(v)?)
+                        b.process_payment_intent = FromValueOpt::from_value(v)
                     }
-                    "process_setup_intent" => {
-                        b.process_setup_intent = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "refund_payment" => b.refund_payment = Some(FromValueOpt::from_value(v)?),
-                    "set_reader_display" => {
-                        b.set_reader_display = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "process_setup_intent" => b.process_setup_intent = FromValueOpt::from_value(v),
+                    "refund_payment" => b.refund_payment = FromValueOpt::from_value(v),
+                    "set_reader_display" => b.set_reader_display = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

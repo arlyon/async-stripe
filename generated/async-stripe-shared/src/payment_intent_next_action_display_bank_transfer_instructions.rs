@@ -30,7 +30,12 @@ pub struct PaymentIntentNextActionDisplayBankTransferInstructionsBuilder {
     type_: Option<PaymentIntentNextActionDisplayBankTransferInstructionsType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -88,13 +93,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount_remaining),
+                Some(currency),
+                Some(financial_addresses),
+                Some(hosted_instructions_url),
+                Some(reference),
+                Some(type_),
+            ) = (
+                self.amount_remaining,
+                self.currency,
+                self.financial_addresses.take(),
+                self.hosted_instructions_url.take(),
+                self.reference.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount_remaining: self.amount_remaining?,
-                currency: self.currency?,
-                financial_addresses: self.financial_addresses.take()?,
-                hosted_instructions_url: self.hosted_instructions_url.take()?,
-                reference: self.reference.take()?,
-                type_: self.type_?,
+                amount_remaining,
+                currency,
+                financial_addresses,
+                hosted_instructions_url,
+                reference,
+                type_,
             })
         }
     }
@@ -123,16 +146,14 @@ const _: () = {
                 PaymentIntentNextActionDisplayBankTransferInstructionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_remaining" => b.amount_remaining = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "financial_addresses" => {
-                        b.financial_addresses = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "amount_remaining" => b.amount_remaining = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "financial_addresses" => b.financial_addresses = FromValueOpt::from_value(v),
                     "hosted_instructions_url" => {
-                        b.hosted_instructions_url = Some(FromValueOpt::from_value(v)?)
+                        b.hosted_instructions_url = FromValueOpt::from_value(v)
                     }
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

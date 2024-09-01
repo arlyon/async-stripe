@@ -13,7 +13,12 @@ pub struct ShippingRateDeliveryEstimateBoundBuilder {
     value: Option<i64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { unit: self.unit?, value: self.value? })
+            let (Some(unit), Some(value)) = (self.unit, self.value) else {
+                return None;
+            };
+            Some(Self::Out { unit, value })
         }
     }
 
@@ -86,8 +94,8 @@ const _: () = {
             let mut b = ShippingRateDeliveryEstimateBoundBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "unit" => b.unit = Some(FromValueOpt::from_value(v)?),
-                    "value" => b.value = Some(FromValueOpt::from_value(v)?),
+                    "unit" => b.unit = FromValueOpt::from_value(v),
+                    "value" => b.value = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

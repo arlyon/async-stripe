@@ -19,7 +19,12 @@ pub struct PaymentPagesCheckoutSessionSavedPaymentMethodOptionsBuilder {
         Option<Option<PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,10 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                allow_redisplay_filters: self.allow_redisplay_filters.take()?,
-                payment_method_save: self.payment_method_save?,
-            })
+            let (Some(allow_redisplay_filters), Some(payment_method_save)) =
+                (self.allow_redisplay_filters.take(), self.payment_method_save)
+            else {
+                return None;
+            };
+            Some(Self::Out { allow_redisplay_filters, payment_method_save })
         }
     }
 
@@ -101,11 +108,9 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "allow_redisplay_filters" => {
-                        b.allow_redisplay_filters = Some(FromValueOpt::from_value(v)?)
+                        b.allow_redisplay_filters = FromValueOpt::from_value(v)
                     }
-                    "payment_method_save" => {
-                        b.payment_method_save = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "payment_method_save" => b.payment_method_save = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -97,7 +97,12 @@ pub struct PriceBuilder {
     unit_amount_decimal: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -179,27 +184,73 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(active),
+                Some(billing_scheme),
+                Some(created),
+                Some(currency),
+                Some(currency_options),
+                Some(custom_unit_amount),
+                Some(id),
+                Some(livemode),
+                Some(lookup_key),
+                Some(metadata),
+                Some(nickname),
+                Some(product),
+                Some(recurring),
+                Some(tax_behavior),
+                Some(tiers),
+                Some(tiers_mode),
+                Some(transform_quantity),
+                Some(type_),
+                Some(unit_amount),
+                Some(unit_amount_decimal),
+            ) = (
+                self.active,
+                self.billing_scheme,
+                self.created,
+                self.currency,
+                self.currency_options.take(),
+                self.custom_unit_amount,
+                self.id.take(),
+                self.livemode,
+                self.lookup_key.take(),
+                self.metadata.take(),
+                self.nickname.take(),
+                self.product.take(),
+                self.recurring.take(),
+                self.tax_behavior,
+                self.tiers.take(),
+                self.tiers_mode,
+                self.transform_quantity,
+                self.type_,
+                self.unit_amount,
+                self.unit_amount_decimal.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                active: self.active?,
-                billing_scheme: self.billing_scheme?,
-                created: self.created?,
-                currency: self.currency?,
-                currency_options: self.currency_options.take()?,
-                custom_unit_amount: self.custom_unit_amount?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                lookup_key: self.lookup_key.take()?,
-                metadata: self.metadata.take()?,
-                nickname: self.nickname.take()?,
-                product: self.product.take()?,
-                recurring: self.recurring.take()?,
-                tax_behavior: self.tax_behavior?,
-                tiers: self.tiers.take()?,
-                tiers_mode: self.tiers_mode?,
-                transform_quantity: self.transform_quantity?,
-                type_: self.type_?,
-                unit_amount: self.unit_amount?,
-                unit_amount_decimal: self.unit_amount_decimal.take()?,
+                active,
+                billing_scheme,
+                created,
+                currency,
+                currency_options,
+                custom_unit_amount,
+                id,
+                livemode,
+                lookup_key,
+                metadata,
+                nickname,
+                product,
+                recurring,
+                tax_behavior,
+                tiers,
+                tiers_mode,
+                transform_quantity,
+                type_,
+                unit_amount,
+                unit_amount_decimal,
             })
         }
     }
@@ -227,32 +278,26 @@ const _: () = {
             let mut b = PriceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "active" => b.active = Some(FromValueOpt::from_value(v)?),
-                    "billing_scheme" => b.billing_scheme = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "currency_options" => b.currency_options = Some(FromValueOpt::from_value(v)?),
-                    "custom_unit_amount" => {
-                        b.custom_unit_amount = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "lookup_key" => b.lookup_key = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "nickname" => b.nickname = Some(FromValueOpt::from_value(v)?),
-                    "product" => b.product = Some(FromValueOpt::from_value(v)?),
-                    "recurring" => b.recurring = Some(FromValueOpt::from_value(v)?),
-                    "tax_behavior" => b.tax_behavior = Some(FromValueOpt::from_value(v)?),
-                    "tiers" => b.tiers = Some(FromValueOpt::from_value(v)?),
-                    "tiers_mode" => b.tiers_mode = Some(FromValueOpt::from_value(v)?),
-                    "transform_quantity" => {
-                        b.transform_quantity = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "unit_amount" => b.unit_amount = Some(FromValueOpt::from_value(v)?),
-                    "unit_amount_decimal" => {
-                        b.unit_amount_decimal = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "active" => b.active = FromValueOpt::from_value(v),
+                    "billing_scheme" => b.billing_scheme = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "currency_options" => b.currency_options = FromValueOpt::from_value(v),
+                    "custom_unit_amount" => b.custom_unit_amount = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "lookup_key" => b.lookup_key = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "nickname" => b.nickname = FromValueOpt::from_value(v),
+                    "product" => b.product = FromValueOpt::from_value(v),
+                    "recurring" => b.recurring = FromValueOpt::from_value(v),
+                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
+                    "tiers" => b.tiers = FromValueOpt::from_value(v),
+                    "tiers_mode" => b.tiers_mode = FromValueOpt::from_value(v),
+                    "transform_quantity" => b.transform_quantity = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
+                    "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

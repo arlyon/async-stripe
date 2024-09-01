@@ -16,7 +16,12 @@ pub struct LoginLinkBuilder {
     url: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { created: self.created?, url: self.url.take()? })
+            let (Some(created), Some(url)) = (self.created, self.url.take()) else {
+                return None;
+            };
+            Some(Self::Out { created, url })
         }
     }
 
@@ -86,8 +94,8 @@ const _: () = {
             let mut b = LoginLinkBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "url" => b.url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

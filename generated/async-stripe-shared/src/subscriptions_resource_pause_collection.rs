@@ -16,7 +16,12 @@ pub struct SubscriptionsResourcePauseCollectionBuilder {
     resumes_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -62,7 +67,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { behavior: self.behavior?, resumes_at: self.resumes_at? })
+            let (Some(behavior), Some(resumes_at)) = (self.behavior, self.resumes_at) else {
+                return None;
+            };
+            Some(Self::Out { behavior, resumes_at })
         }
     }
 
@@ -89,8 +97,8 @@ const _: () = {
             let mut b = SubscriptionsResourcePauseCollectionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "behavior" => b.behavior = Some(FromValueOpt::from_value(v)?),
-                    "resumes_at" => b.resumes_at = Some(FromValueOpt::from_value(v)?),
+                    "behavior" => b.behavior = FromValueOpt::from_value(v),
+                    "resumes_at" => b.resumes_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

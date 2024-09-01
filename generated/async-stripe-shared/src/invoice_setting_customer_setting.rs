@@ -19,7 +19,12 @@ pub struct InvoiceSettingCustomerSettingBuilder {
     rendering_options: Option<Option<stripe_shared::InvoiceSettingCustomerRenderingOptions>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,21 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                custom_fields: self.custom_fields.take()?,
-                default_payment_method: self.default_payment_method.take()?,
-                footer: self.footer.take()?,
-                rendering_options: self.rendering_options.take()?,
-            })
+            let (
+                Some(custom_fields),
+                Some(default_payment_method),
+                Some(footer),
+                Some(rendering_options),
+            ) = (
+                self.custom_fields.take(),
+                self.default_payment_method.take(),
+                self.footer.take(),
+                self.rendering_options.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { custom_fields, default_payment_method, footer, rendering_options })
         }
     }
 
@@ -104,12 +118,12 @@ const _: () = {
             let mut b = InvoiceSettingCustomerSettingBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "custom_fields" => b.custom_fields = Some(FromValueOpt::from_value(v)?),
+                    "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
                     "default_payment_method" => {
-                        b.default_payment_method = Some(FromValueOpt::from_value(v)?)
+                        b.default_payment_method = FromValueOpt::from_value(v)
                     }
-                    "footer" => b.footer = Some(FromValueOpt::from_value(v)?),
-                    "rendering_options" => b.rendering_options = Some(FromValueOpt::from_value(v)?),
+                    "footer" => b.footer = FromValueOpt::from_value(v),
+                    "rendering_options" => b.rendering_options = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -19,7 +19,12 @@ pub struct LineItemsTaxAmountBuilder {
     taxable_amount: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount: self.amount?,
-                rate: self.rate.take()?,
-                taxability_reason: self.taxability_reason?,
-                taxable_amount: self.taxable_amount?,
-            })
+            let (Some(amount), Some(rate), Some(taxability_reason), Some(taxable_amount)) =
+                (self.amount, self.rate.take(), self.taxability_reason, self.taxable_amount)
+            else {
+                return None;
+            };
+            Some(Self::Out { amount, rate, taxability_reason, taxable_amount })
         }
     }
 
@@ -104,10 +109,10 @@ const _: () = {
             let mut b = LineItemsTaxAmountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "rate" => b.rate = Some(FromValueOpt::from_value(v)?),
-                    "taxability_reason" => b.taxability_reason = Some(FromValueOpt::from_value(v)?),
-                    "taxable_amount" => b.taxable_amount = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "rate" => b.rate = FromValueOpt::from_value(v),
+                    "taxability_reason" => b.taxability_reason = FromValueOpt::from_value(v),
+                    "taxable_amount" => b.taxable_amount = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

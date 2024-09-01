@@ -84,7 +84,12 @@ pub struct InvoiceLineItemBuilder {
     unit_amount_excluding_tax: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -179,31 +184,85 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(amount_excluding_tax),
+                Some(currency),
+                Some(description),
+                Some(discount_amounts),
+                Some(discountable),
+                Some(discounts),
+                Some(id),
+                Some(invoice),
+                Some(invoice_item),
+                Some(livemode),
+                Some(metadata),
+                Some(period),
+                Some(plan),
+                Some(price),
+                Some(proration),
+                Some(proration_details),
+                Some(quantity),
+                Some(subscription),
+                Some(subscription_item),
+                Some(tax_amounts),
+                Some(tax_rates),
+                Some(type_),
+                Some(unit_amount_excluding_tax),
+            ) = (
+                self.amount,
+                self.amount_excluding_tax,
+                self.currency,
+                self.description.take(),
+                self.discount_amounts.take(),
+                self.discountable,
+                self.discounts.take(),
+                self.id.take(),
+                self.invoice.take(),
+                self.invoice_item.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.period,
+                self.plan.take(),
+                self.price.take(),
+                self.proration,
+                self.proration_details.take(),
+                self.quantity,
+                self.subscription.take(),
+                self.subscription_item.take(),
+                self.tax_amounts.take(),
+                self.tax_rates.take(),
+                self.type_,
+                self.unit_amount_excluding_tax.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                amount_excluding_tax: self.amount_excluding_tax?,
-                currency: self.currency?,
-                description: self.description.take()?,
-                discount_amounts: self.discount_amounts.take()?,
-                discountable: self.discountable?,
-                discounts: self.discounts.take()?,
-                id: self.id.take()?,
-                invoice: self.invoice.take()?,
-                invoice_item: self.invoice_item.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                period: self.period?,
-                plan: self.plan.take()?,
-                price: self.price.take()?,
-                proration: self.proration?,
-                proration_details: self.proration_details.take()?,
-                quantity: self.quantity?,
-                subscription: self.subscription.take()?,
-                subscription_item: self.subscription_item.take()?,
-                tax_amounts: self.tax_amounts.take()?,
-                tax_rates: self.tax_rates.take()?,
-                type_: self.type_?,
-                unit_amount_excluding_tax: self.unit_amount_excluding_tax.take()?,
+                amount,
+                amount_excluding_tax,
+                currency,
+                description,
+                discount_amounts,
+                discountable,
+                discounts,
+                id,
+                invoice,
+                invoice_item,
+                livemode,
+                metadata,
+                period,
+                plan,
+                price,
+                proration,
+                proration_details,
+                quantity,
+                subscription,
+                subscription_item,
+                tax_amounts,
+                tax_rates,
+                type_,
+                unit_amount_excluding_tax,
             })
         }
     }
@@ -231,33 +290,31 @@ const _: () = {
             let mut b = InvoiceLineItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_excluding_tax" => {
-                        b.amount_excluding_tax = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "discount_amounts" => b.discount_amounts = Some(FromValueOpt::from_value(v)?),
-                    "discountable" => b.discountable = Some(FromValueOpt::from_value(v)?),
-                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
-                    "invoice_item" => b.invoice_item = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "period" => b.period = Some(FromValueOpt::from_value(v)?),
-                    "plan" => b.plan = Some(FromValueOpt::from_value(v)?),
-                    "price" => b.price = Some(FromValueOpt::from_value(v)?),
-                    "proration" => b.proration = Some(FromValueOpt::from_value(v)?),
-                    "proration_details" => b.proration_details = Some(FromValueOpt::from_value(v)?),
-                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
-                    "subscription" => b.subscription = Some(FromValueOpt::from_value(v)?),
-                    "subscription_item" => b.subscription_item = Some(FromValueOpt::from_value(v)?),
-                    "tax_amounts" => b.tax_amounts = Some(FromValueOpt::from_value(v)?),
-                    "tax_rates" => b.tax_rates = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_excluding_tax" => b.amount_excluding_tax = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "discount_amounts" => b.discount_amounts = FromValueOpt::from_value(v),
+                    "discountable" => b.discountable = FromValueOpt::from_value(v),
+                    "discounts" => b.discounts = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "invoice" => b.invoice = FromValueOpt::from_value(v),
+                    "invoice_item" => b.invoice_item = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "period" => b.period = FromValueOpt::from_value(v),
+                    "plan" => b.plan = FromValueOpt::from_value(v),
+                    "price" => b.price = FromValueOpt::from_value(v),
+                    "proration" => b.proration = FromValueOpt::from_value(v),
+                    "proration_details" => b.proration_details = FromValueOpt::from_value(v),
+                    "quantity" => b.quantity = FromValueOpt::from_value(v),
+                    "subscription" => b.subscription = FromValueOpt::from_value(v),
+                    "subscription_item" => b.subscription_item = FromValueOpt::from_value(v),
+                    "tax_amounts" => b.tax_amounts = FromValueOpt::from_value(v),
+                    "tax_rates" => b.tax_rates = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
                     "unit_amount_excluding_tax" => {
-                        b.unit_amount_excluding_tax = Some(FromValueOpt::from_value(v)?)
+                        b.unit_amount_excluding_tax = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

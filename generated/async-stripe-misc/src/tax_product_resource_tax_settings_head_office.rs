@@ -9,7 +9,12 @@ pub struct TaxProductResourceTaxSettingsHeadOfficeBuilder {
     address: Option<stripe_shared::Address>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -54,7 +59,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { address: self.address.take()? })
+            let (Some(address),) = (self.address.take(),) else {
+                return None;
+            };
+            Some(Self::Out { address })
         }
     }
 
@@ -81,7 +89,7 @@ const _: () = {
             let mut b = TaxProductResourceTaxSettingsHeadOfficeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
+                    "address" => b.address = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

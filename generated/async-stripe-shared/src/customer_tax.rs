@@ -16,7 +16,12 @@ pub struct CustomerTaxBuilder {
     location: Option<Option<stripe_shared::CustomerTaxLocation>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                automatic_tax: self.automatic_tax?,
-                ip_address: self.ip_address.take()?,
-                location: self.location.take()?,
-            })
+            let (Some(automatic_tax), Some(ip_address), Some(location)) =
+                (self.automatic_tax, self.ip_address.take(), self.location.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { automatic_tax, ip_address, location })
         }
     }
 
@@ -98,9 +104,9 @@ const _: () = {
             let mut b = CustomerTaxBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "automatic_tax" => b.automatic_tax = Some(FromValueOpt::from_value(v)?),
-                    "ip_address" => b.ip_address = Some(FromValueOpt::from_value(v)?),
-                    "location" => b.location = Some(FromValueOpt::from_value(v)?),
+                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
+                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
+                    "location" => b.location = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

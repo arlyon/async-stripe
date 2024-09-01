@@ -25,7 +25,12 @@ pub struct ClimateSupplierBuilder {
     removal_pathway: Option<ClimateSupplierRemovalPathway>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -82,14 +87,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                id: self.id.take()?,
-                info_url: self.info_url.take()?,
-                livemode: self.livemode?,
-                locations: self.locations.take()?,
-                name: self.name.take()?,
-                removal_pathway: self.removal_pathway?,
-            })
+            let (
+                Some(id),
+                Some(info_url),
+                Some(livemode),
+                Some(locations),
+                Some(name),
+                Some(removal_pathway),
+            ) = (
+                self.id.take(),
+                self.info_url.take(),
+                self.livemode,
+                self.locations.take(),
+                self.name.take(),
+                self.removal_pathway,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { id, info_url, livemode, locations, name, removal_pathway })
         }
     }
 
@@ -116,12 +132,12 @@ const _: () = {
             let mut b = ClimateSupplierBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "info_url" => b.info_url = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "locations" => b.locations = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "removal_pathway" => b.removal_pathway = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "info_url" => b.info_url = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "locations" => b.locations = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "removal_pathway" => b.removal_pathway = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

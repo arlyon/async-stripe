@@ -13,7 +13,12 @@ pub struct RefundDestinationDetailsGenericBuilder {
     reference_status: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +64,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                reference: self.reference.take()?,
-                reference_status: self.reference_status.take()?,
-            })
+            let (Some(reference), Some(reference_status)) =
+                (self.reference.take(), self.reference_status.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { reference, reference_status })
         }
     }
 
@@ -89,8 +96,8 @@ const _: () = {
             let mut b = RefundDestinationDetailsGenericBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
-                    "reference_status" => b.reference_status = Some(FromValueOpt::from_value(v)?),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
+                    "reference_status" => b.reference_status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

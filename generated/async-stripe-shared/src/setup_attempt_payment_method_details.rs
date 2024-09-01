@@ -47,7 +47,12 @@ pub struct SetupAttemptPaymentMethodDetailsBuilder {
     us_bank_account: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsUsBankAccount>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -128,25 +133,67 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(acss_debit),
+                Some(amazon_pay),
+                Some(au_becs_debit),
+                Some(bacs_debit),
+                Some(bancontact),
+                Some(boleto),
+                Some(card),
+                Some(card_present),
+                Some(cashapp),
+                Some(ideal),
+                Some(klarna),
+                Some(link),
+                Some(paypal),
+                Some(revolut_pay),
+                Some(sepa_debit),
+                Some(sofort),
+                Some(type_),
+                Some(us_bank_account),
+            ) = (
+                self.acss_debit,
+                self.amazon_pay,
+                self.au_becs_debit,
+                self.bacs_debit,
+                self.bancontact.take(),
+                self.boleto,
+                self.card.take(),
+                self.card_present.take(),
+                self.cashapp,
+                self.ideal.take(),
+                self.klarna,
+                self.link,
+                self.paypal,
+                self.revolut_pay,
+                self.sepa_debit,
+                self.sofort.take(),
+                self.type_.take(),
+                self.us_bank_account,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                acss_debit: self.acss_debit?,
-                amazon_pay: self.amazon_pay?,
-                au_becs_debit: self.au_becs_debit?,
-                bacs_debit: self.bacs_debit?,
-                bancontact: self.bancontact.take()?,
-                boleto: self.boleto?,
-                card: self.card.take()?,
-                card_present: self.card_present.take()?,
-                cashapp: self.cashapp?,
-                ideal: self.ideal.take()?,
-                klarna: self.klarna?,
-                link: self.link?,
-                paypal: self.paypal?,
-                revolut_pay: self.revolut_pay?,
-                sepa_debit: self.sepa_debit?,
-                sofort: self.sofort.take()?,
-                type_: self.type_.take()?,
-                us_bank_account: self.us_bank_account?,
+                acss_debit,
+                amazon_pay,
+                au_becs_debit,
+                bacs_debit,
+                bancontact,
+                boleto,
+                card,
+                card_present,
+                cashapp,
+                ideal,
+                klarna,
+                link,
+                paypal,
+                revolut_pay,
+                sepa_debit,
+                sofort,
+                type_,
+                us_bank_account,
             })
         }
     }
@@ -174,24 +221,24 @@ const _: () = {
             let mut b = SetupAttemptPaymentMethodDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "acss_debit" => b.acss_debit = Some(FromValueOpt::from_value(v)?),
-                    "amazon_pay" => b.amazon_pay = Some(FromValueOpt::from_value(v)?),
-                    "au_becs_debit" => b.au_becs_debit = Some(FromValueOpt::from_value(v)?),
-                    "bacs_debit" => b.bacs_debit = Some(FromValueOpt::from_value(v)?),
-                    "bancontact" => b.bancontact = Some(FromValueOpt::from_value(v)?),
-                    "boleto" => b.boleto = Some(FromValueOpt::from_value(v)?),
-                    "card" => b.card = Some(FromValueOpt::from_value(v)?),
-                    "card_present" => b.card_present = Some(FromValueOpt::from_value(v)?),
-                    "cashapp" => b.cashapp = Some(FromValueOpt::from_value(v)?),
-                    "ideal" => b.ideal = Some(FromValueOpt::from_value(v)?),
-                    "klarna" => b.klarna = Some(FromValueOpt::from_value(v)?),
-                    "link" => b.link = Some(FromValueOpt::from_value(v)?),
-                    "paypal" => b.paypal = Some(FromValueOpt::from_value(v)?),
-                    "revolut_pay" => b.revolut_pay = Some(FromValueOpt::from_value(v)?),
-                    "sepa_debit" => b.sepa_debit = Some(FromValueOpt::from_value(v)?),
-                    "sofort" => b.sofort = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "us_bank_account" => b.us_bank_account = Some(FromValueOpt::from_value(v)?),
+                    "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
+                    "amazon_pay" => b.amazon_pay = FromValueOpt::from_value(v),
+                    "au_becs_debit" => b.au_becs_debit = FromValueOpt::from_value(v),
+                    "bacs_debit" => b.bacs_debit = FromValueOpt::from_value(v),
+                    "bancontact" => b.bancontact = FromValueOpt::from_value(v),
+                    "boleto" => b.boleto = FromValueOpt::from_value(v),
+                    "card" => b.card = FromValueOpt::from_value(v),
+                    "card_present" => b.card_present = FromValueOpt::from_value(v),
+                    "cashapp" => b.cashapp = FromValueOpt::from_value(v),
+                    "ideal" => b.ideal = FromValueOpt::from_value(v),
+                    "klarna" => b.klarna = FromValueOpt::from_value(v),
+                    "link" => b.link = FromValueOpt::from_value(v),
+                    "paypal" => b.paypal = FromValueOpt::from_value(v),
+                    "revolut_pay" => b.revolut_pay = FromValueOpt::from_value(v),
+                    "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
+                    "sofort" => b.sofort = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

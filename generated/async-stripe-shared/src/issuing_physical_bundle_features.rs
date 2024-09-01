@@ -16,7 +16,12 @@ pub struct IssuingPhysicalBundleFeaturesBuilder {
     second_line: Option<IssuingPhysicalBundleFeaturesSecondLine>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                card_logo: self.card_logo?,
-                carrier_text: self.carrier_text?,
-                second_line: self.second_line?,
-            })
+            let (Some(card_logo), Some(carrier_text), Some(second_line)) =
+                (self.card_logo, self.carrier_text, self.second_line)
+            else {
+                return None;
+            };
+            Some(Self::Out { card_logo, carrier_text, second_line })
         }
     }
 
@@ -98,9 +104,9 @@ const _: () = {
             let mut b = IssuingPhysicalBundleFeaturesBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "card_logo" => b.card_logo = Some(FromValueOpt::from_value(v)?),
-                    "carrier_text" => b.carrier_text = Some(FromValueOpt::from_value(v)?),
-                    "second_line" => b.second_line = Some(FromValueOpt::from_value(v)?),
+                    "card_logo" => b.card_logo = FromValueOpt::from_value(v),
+                    "carrier_text" => b.carrier_text = FromValueOpt::from_value(v),
+                    "second_line" => b.second_line = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

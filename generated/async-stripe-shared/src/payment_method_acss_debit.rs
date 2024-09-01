@@ -23,7 +23,12 @@ pub struct PaymentMethodAcssDebitBuilder {
     transit_number: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -78,13 +83,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                bank_name: self.bank_name.take()?,
-                fingerprint: self.fingerprint.take()?,
-                institution_number: self.institution_number.take()?,
-                last4: self.last4.take()?,
-                transit_number: self.transit_number.take()?,
-            })
+            let (
+                Some(bank_name),
+                Some(fingerprint),
+                Some(institution_number),
+                Some(last4),
+                Some(transit_number),
+            ) = (
+                self.bank_name.take(),
+                self.fingerprint.take(),
+                self.institution_number.take(),
+                self.last4.take(),
+                self.transit_number.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { bank_name, fingerprint, institution_number, last4, transit_number })
         }
     }
 
@@ -111,13 +126,11 @@ const _: () = {
             let mut b = PaymentMethodAcssDebitBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "institution_number" => {
-                        b.institution_number = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "transit_number" => b.transit_number = Some(FromValueOpt::from_value(v)?),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "institution_number" => b.institution_number = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "transit_number" => b.transit_number = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

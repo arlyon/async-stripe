@@ -14,7 +14,12 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverd
         Option<stripe_types::Expandable<stripe_shared::CustomerCashBalanceTransaction>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,10 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                balance_transaction: self.balance_transaction.take()?,
-                linked_transaction: self.linked_transaction.take()?,
-            })
+            let (Some(balance_transaction), Some(linked_transaction)) =
+                (self.balance_transaction.take(), self.linked_transaction.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { balance_transaction, linked_transaction })
         }
     }
 
@@ -98,12 +105,8 @@ const _: () = {
             let mut b = CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraftBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "balance_transaction" => {
-                        b.balance_transaction = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "linked_transaction" => {
-                        b.linked_transaction = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
+                    "linked_transaction" => b.linked_transaction = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

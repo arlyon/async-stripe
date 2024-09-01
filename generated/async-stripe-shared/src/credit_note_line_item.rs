@@ -56,7 +56,12 @@ pub struct CreditNoteLineItemBuilder {
     unit_amount_excluding_tax: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -133,22 +138,58 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(amount_excluding_tax),
+                Some(description),
+                Some(discount_amount),
+                Some(discount_amounts),
+                Some(id),
+                Some(invoice_line_item),
+                Some(livemode),
+                Some(quantity),
+                Some(tax_amounts),
+                Some(tax_rates),
+                Some(type_),
+                Some(unit_amount),
+                Some(unit_amount_decimal),
+                Some(unit_amount_excluding_tax),
+            ) = (
+                self.amount,
+                self.amount_excluding_tax,
+                self.description.take(),
+                self.discount_amount,
+                self.discount_amounts.take(),
+                self.id.take(),
+                self.invoice_line_item.take(),
+                self.livemode,
+                self.quantity,
+                self.tax_amounts.take(),
+                self.tax_rates.take(),
+                self.type_,
+                self.unit_amount,
+                self.unit_amount_decimal.take(),
+                self.unit_amount_excluding_tax.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                amount_excluding_tax: self.amount_excluding_tax?,
-                description: self.description.take()?,
-                discount_amount: self.discount_amount?,
-                discount_amounts: self.discount_amounts.take()?,
-                id: self.id.take()?,
-                invoice_line_item: self.invoice_line_item.take()?,
-                livemode: self.livemode?,
-                quantity: self.quantity?,
-                tax_amounts: self.tax_amounts.take()?,
-                tax_rates: self.tax_rates.take()?,
-                type_: self.type_?,
-                unit_amount: self.unit_amount?,
-                unit_amount_decimal: self.unit_amount_decimal.take()?,
-                unit_amount_excluding_tax: self.unit_amount_excluding_tax.take()?,
+                amount,
+                amount_excluding_tax,
+                description,
+                discount_amount,
+                discount_amounts,
+                id,
+                invoice_line_item,
+                livemode,
+                quantity,
+                tax_amounts,
+                tax_rates,
+                type_,
+                unit_amount,
+                unit_amount_decimal,
+                unit_amount_excluding_tax,
             })
         }
     }
@@ -176,26 +217,22 @@ const _: () = {
             let mut b = CreditNoteLineItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_excluding_tax" => {
-                        b.amount_excluding_tax = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "discount_amount" => b.discount_amount = Some(FromValueOpt::from_value(v)?),
-                    "discount_amounts" => b.discount_amounts = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "invoice_line_item" => b.invoice_line_item = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
-                    "tax_amounts" => b.tax_amounts = Some(FromValueOpt::from_value(v)?),
-                    "tax_rates" => b.tax_rates = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "unit_amount" => b.unit_amount = Some(FromValueOpt::from_value(v)?),
-                    "unit_amount_decimal" => {
-                        b.unit_amount_decimal = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_excluding_tax" => b.amount_excluding_tax = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "discount_amount" => b.discount_amount = FromValueOpt::from_value(v),
+                    "discount_amounts" => b.discount_amounts = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "invoice_line_item" => b.invoice_line_item = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "quantity" => b.quantity = FromValueOpt::from_value(v),
+                    "tax_amounts" => b.tax_amounts = FromValueOpt::from_value(v),
+                    "tax_rates" => b.tax_rates = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
+                    "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
                     "unit_amount_excluding_tax" => {
-                        b.unit_amount_excluding_tax = Some(FromValueOpt::from_value(v)?)
+                        b.unit_amount_excluding_tax = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

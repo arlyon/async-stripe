@@ -30,7 +30,12 @@ pub struct PaymentIntentPaymentMethodOptionsUsBankAccountBuilder {
         Option<Option<PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -87,12 +92,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(financial_connections),
+                Some(mandate_options),
+                Some(preferred_settlement_speed),
+                Some(setup_future_usage),
+                Some(verification_method),
+            ) = (
+                self.financial_connections.take(),
+                self.mandate_options,
+                self.preferred_settlement_speed,
+                self.setup_future_usage,
+                self.verification_method,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                financial_connections: self.financial_connections.take()?,
-                mandate_options: self.mandate_options?,
-                preferred_settlement_speed: self.preferred_settlement_speed?,
-                setup_future_usage: self.setup_future_usage?,
-                verification_method: self.verification_method?,
+                financial_connections,
+                mandate_options,
+                preferred_settlement_speed,
+                setup_future_usage,
+                verification_method,
             })
         }
     }
@@ -121,18 +142,14 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "financial_connections" => {
-                        b.financial_connections = Some(FromValueOpt::from_value(v)?)
+                        b.financial_connections = FromValueOpt::from_value(v)
                     }
-                    "mandate_options" => b.mandate_options = Some(FromValueOpt::from_value(v)?),
+                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
                     "preferred_settlement_speed" => {
-                        b.preferred_settlement_speed = Some(FromValueOpt::from_value(v)?)
+                        b.preferred_settlement_speed = FromValueOpt::from_value(v)
                     }
-                    "setup_future_usage" => {
-                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "verification_method" => {
-                        b.verification_method = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
+                    "verification_method" => b.verification_method = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

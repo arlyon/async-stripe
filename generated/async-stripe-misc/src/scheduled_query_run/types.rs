@@ -41,7 +41,12 @@ pub struct ScheduledQueryRunBuilder {
     title: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -106,17 +111,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(created),
+                Some(data_load_time),
+                Some(error),
+                Some(file),
+                Some(id),
+                Some(livemode),
+                Some(result_available_until),
+                Some(sql),
+                Some(status),
+                Some(title),
+            ) = (
+                self.created,
+                self.data_load_time,
+                self.error.take(),
+                self.file.take(),
+                self.id.take(),
+                self.livemode,
+                self.result_available_until,
+                self.sql.take(),
+                self.status.take(),
+                self.title.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                created: self.created?,
-                data_load_time: self.data_load_time?,
-                error: self.error.take()?,
-                file: self.file.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                result_available_until: self.result_available_until?,
-                sql: self.sql.take()?,
-                status: self.status.take()?,
-                title: self.title.take()?,
+                created,
+                data_load_time,
+                error,
+                file,
+                id,
+                livemode,
+                result_available_until,
+                sql,
+                status,
+                title,
             })
         }
     }
@@ -144,18 +175,18 @@ const _: () = {
             let mut b = ScheduledQueryRunBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "data_load_time" => b.data_load_time = Some(FromValueOpt::from_value(v)?),
-                    "error" => b.error = Some(FromValueOpt::from_value(v)?),
-                    "file" => b.file = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "data_load_time" => b.data_load_time = FromValueOpt::from_value(v),
+                    "error" => b.error = FromValueOpt::from_value(v),
+                    "file" => b.file = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "result_available_until" => {
-                        b.result_available_until = Some(FromValueOpt::from_value(v)?)
+                        b.result_available_until = FromValueOpt::from_value(v)
                     }
-                    "sql" => b.sql = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "title" => b.title = Some(FromValueOpt::from_value(v)?),
+                    "sql" => b.sql = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "title" => b.title = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

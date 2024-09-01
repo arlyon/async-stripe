@@ -22,7 +22,12 @@ pub struct InternalCardBuilder {
     last4: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,13 +82,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                brand: self.brand.take()?,
-                country: self.country.take()?,
-                exp_month: self.exp_month?,
-                exp_year: self.exp_year?,
-                last4: self.last4.take()?,
-            })
+            let (Some(brand), Some(country), Some(exp_month), Some(exp_year), Some(last4)) = (
+                self.brand.take(),
+                self.country.take(),
+                self.exp_month,
+                self.exp_year,
+                self.last4.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { brand, country, exp_month, exp_year, last4 })
         }
     }
 
@@ -110,11 +118,11 @@ const _: () = {
             let mut b = InternalCardBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "brand" => b.brand = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "exp_month" => b.exp_month = Some(FromValueOpt::from_value(v)?),
-                    "exp_year" => b.exp_year = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
+                    "brand" => b.brand = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
+                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

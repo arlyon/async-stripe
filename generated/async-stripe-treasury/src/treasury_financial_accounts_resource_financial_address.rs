@@ -19,7 +19,12 @@ pub struct TreasuryFinancialAccountsResourceFinancialAddressBuilder {
     type_: Option<TreasuryFinancialAccountsResourceFinancialAddressType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -70,11 +75,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                aba: self.aba.take()?,
-                supported_networks: self.supported_networks.take()?,
-                type_: self.type_?,
-            })
+            let (Some(aba), Some(supported_networks), Some(type_)) =
+                (self.aba.take(), self.supported_networks.take(), self.type_)
+            else {
+                return None;
+            };
+            Some(Self::Out { aba, supported_networks, type_ })
         }
     }
 
@@ -101,11 +107,9 @@ const _: () = {
             let mut b = TreasuryFinancialAccountsResourceFinancialAddressBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "aba" => b.aba = Some(FromValueOpt::from_value(v)?),
-                    "supported_networks" => {
-                        b.supported_networks = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "aba" => b.aba = FromValueOpt::from_value(v),
+                    "supported_networks" => b.supported_networks = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

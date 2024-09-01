@@ -18,7 +18,12 @@ pub struct BankConnectionsResourceOwnershipRefreshBuilder {
     status: Option<BankConnectionsResourceOwnershipRefreshStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -71,11 +76,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                last_attempted_at: self.last_attempted_at?,
-                next_refresh_available_at: self.next_refresh_available_at?,
-                status: self.status?,
-            })
+            let (Some(last_attempted_at), Some(next_refresh_available_at), Some(status)) =
+                (self.last_attempted_at, self.next_refresh_available_at, self.status)
+            else {
+                return None;
+            };
+            Some(Self::Out { last_attempted_at, next_refresh_available_at, status })
         }
     }
 
@@ -102,11 +108,11 @@ const _: () = {
             let mut b = BankConnectionsResourceOwnershipRefreshBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "last_attempted_at" => b.last_attempted_at = Some(FromValueOpt::from_value(v)?),
+                    "last_attempted_at" => b.last_attempted_at = FromValueOpt::from_value(v),
                     "next_refresh_available_at" => {
-                        b.next_refresh_available_at = Some(FromValueOpt::from_value(v)?)
+                        b.next_refresh_available_at = FromValueOpt::from_value(v)
                     }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

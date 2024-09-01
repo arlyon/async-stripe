@@ -22,7 +22,12 @@ pub struct IssuingTransactionFlightDataBuilder {
     travel_agency: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,13 +82,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                departure_at: self.departure_at?,
-                passenger_name: self.passenger_name.take()?,
-                refundable: self.refundable?,
-                segments: self.segments.take()?,
-                travel_agency: self.travel_agency.take()?,
-            })
+            let (
+                Some(departure_at),
+                Some(passenger_name),
+                Some(refundable),
+                Some(segments),
+                Some(travel_agency),
+            ) = (
+                self.departure_at,
+                self.passenger_name.take(),
+                self.refundable,
+                self.segments.take(),
+                self.travel_agency.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { departure_at, passenger_name, refundable, segments, travel_agency })
         }
     }
 
@@ -110,11 +125,11 @@ const _: () = {
             let mut b = IssuingTransactionFlightDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "departure_at" => b.departure_at = Some(FromValueOpt::from_value(v)?),
-                    "passenger_name" => b.passenger_name = Some(FromValueOpt::from_value(v)?),
-                    "refundable" => b.refundable = Some(FromValueOpt::from_value(v)?),
-                    "segments" => b.segments = Some(FromValueOpt::from_value(v)?),
-                    "travel_agency" => b.travel_agency = Some(FromValueOpt::from_value(v)?),
+                    "departure_at" => b.departure_at = FromValueOpt::from_value(v),
+                    "passenger_name" => b.passenger_name = FromValueOpt::from_value(v),
+                    "refundable" => b.refundable = FromValueOpt::from_value(v),
+                    "segments" => b.segments = FromValueOpt::from_value(v),
+                    "travel_agency" => b.travel_agency = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

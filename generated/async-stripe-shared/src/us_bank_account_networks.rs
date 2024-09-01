@@ -13,7 +13,12 @@ pub struct UsBankAccountNetworksBuilder {
     supported: Option<Vec<UsBankAccountNetworksSupported>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { preferred: self.preferred.take()?, supported: self.supported.take()? })
+            let (Some(preferred), Some(supported)) = (self.preferred.take(), self.supported.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { preferred, supported })
         }
     }
 
@@ -86,8 +95,8 @@ const _: () = {
             let mut b = UsBankAccountNetworksBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "preferred" => b.preferred = Some(FromValueOpt::from_value(v)?),
-                    "supported" => b.supported = Some(FromValueOpt::from_value(v)?),
+                    "preferred" => b.preferred = FromValueOpt::from_value(v),
+                    "supported" => b.supported = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

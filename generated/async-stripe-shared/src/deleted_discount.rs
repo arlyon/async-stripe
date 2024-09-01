@@ -41,7 +41,12 @@ pub struct DeletedDiscountBuilder {
     subscription_item: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -108,18 +113,46 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(checkout_session),
+                Some(coupon),
+                Some(customer),
+                Some(deleted),
+                Some(id),
+                Some(invoice),
+                Some(invoice_item),
+                Some(promotion_code),
+                Some(start),
+                Some(subscription),
+                Some(subscription_item),
+            ) = (
+                self.checkout_session.take(),
+                self.coupon.take(),
+                self.customer.take(),
+                self.deleted,
+                self.id.take(),
+                self.invoice.take(),
+                self.invoice_item.take(),
+                self.promotion_code.take(),
+                self.start,
+                self.subscription.take(),
+                self.subscription_item.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                checkout_session: self.checkout_session.take()?,
-                coupon: self.coupon.take()?,
-                customer: self.customer.take()?,
-                deleted: self.deleted?,
-                id: self.id.take()?,
-                invoice: self.invoice.take()?,
-                invoice_item: self.invoice_item.take()?,
-                promotion_code: self.promotion_code.take()?,
-                start: self.start?,
-                subscription: self.subscription.take()?,
-                subscription_item: self.subscription_item.take()?,
+                checkout_session,
+                coupon,
+                customer,
+                deleted,
+                id,
+                invoice,
+                invoice_item,
+                promotion_code,
+                start,
+                subscription,
+                subscription_item,
             })
         }
     }
@@ -147,17 +180,17 @@ const _: () = {
             let mut b = DeletedDiscountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "checkout_session" => b.checkout_session = Some(FromValueOpt::from_value(v)?),
-                    "coupon" => b.coupon = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "deleted" => b.deleted = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
-                    "invoice_item" => b.invoice_item = Some(FromValueOpt::from_value(v)?),
-                    "promotion_code" => b.promotion_code = Some(FromValueOpt::from_value(v)?),
-                    "start" => b.start = Some(FromValueOpt::from_value(v)?),
-                    "subscription" => b.subscription = Some(FromValueOpt::from_value(v)?),
-                    "subscription_item" => b.subscription_item = Some(FromValueOpt::from_value(v)?),
+                    "checkout_session" => b.checkout_session = FromValueOpt::from_value(v),
+                    "coupon" => b.coupon = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "deleted" => b.deleted = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "invoice" => b.invoice = FromValueOpt::from_value(v),
+                    "invoice_item" => b.invoice_item = FromValueOpt::from_value(v),
+                    "promotion_code" => b.promotion_code = FromValueOpt::from_value(v),
+                    "start" => b.start = FromValueOpt::from_value(v),
+                    "subscription" => b.subscription = FromValueOpt::from_value(v),
+                    "subscription_item" => b.subscription_item = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

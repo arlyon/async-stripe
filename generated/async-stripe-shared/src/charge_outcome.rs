@@ -42,7 +42,12 @@ pub struct ChargeOutcomeBuilder {
     type_: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -101,14 +106,34 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(network_status),
+                Some(reason),
+                Some(risk_level),
+                Some(risk_score),
+                Some(rule),
+                Some(seller_message),
+                Some(type_),
+            ) = (
+                self.network_status.take(),
+                self.reason.take(),
+                self.risk_level.take(),
+                self.risk_score,
+                self.rule.take(),
+                self.seller_message.take(),
+                self.type_.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                network_status: self.network_status.take()?,
-                reason: self.reason.take()?,
-                risk_level: self.risk_level.take()?,
-                risk_score: self.risk_score?,
-                rule: self.rule.take()?,
-                seller_message: self.seller_message.take()?,
-                type_: self.type_.take()?,
+                network_status,
+                reason,
+                risk_level,
+                risk_score,
+                rule,
+                seller_message,
+                type_,
             })
         }
     }
@@ -136,13 +161,13 @@ const _: () = {
             let mut b = ChargeOutcomeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "network_status" => b.network_status = Some(FromValueOpt::from_value(v)?),
-                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
-                    "risk_level" => b.risk_level = Some(FromValueOpt::from_value(v)?),
-                    "risk_score" => b.risk_score = Some(FromValueOpt::from_value(v)?),
-                    "rule" => b.rule = Some(FromValueOpt::from_value(v)?),
-                    "seller_message" => b.seller_message = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "network_status" => b.network_status = FromValueOpt::from_value(v),
+                    "reason" => b.reason = FromValueOpt::from_value(v),
+                    "risk_level" => b.risk_level = FromValueOpt::from_value(v),
+                    "risk_score" => b.risk_score = FromValueOpt::from_value(v),
+                    "rule" => b.rule = FromValueOpt::from_value(v),
+                    "seller_message" => b.seller_message = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

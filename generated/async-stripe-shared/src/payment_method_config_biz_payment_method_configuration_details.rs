@@ -13,7 +13,12 @@ pub struct PaymentMethodConfigBizPaymentMethodConfigurationDetailsBuilder {
     parent: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -60,7 +65,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { id: self.id.take()?, parent: self.parent.take()? })
+            let (Some(id), Some(parent)) = (self.id.take(), self.parent.take()) else {
+                return None;
+            };
+            Some(Self::Out { id, parent })
         }
     }
 
@@ -88,8 +96,8 @@ const _: () = {
                 PaymentMethodConfigBizPaymentMethodConfigurationDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "parent" => b.parent = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "parent" => b.parent = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

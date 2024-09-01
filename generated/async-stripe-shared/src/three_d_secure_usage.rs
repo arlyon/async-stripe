@@ -10,7 +10,12 @@ pub struct ThreeDSecureUsageBuilder {
     supported: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { supported: self.supported? })
+            let (Some(supported),) = (self.supported,) else {
+                return None;
+            };
+            Some(Self::Out { supported })
         }
     }
 
@@ -82,7 +90,7 @@ const _: () = {
             let mut b = ThreeDSecureUsageBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "supported" => b.supported = Some(FromValueOpt::from_value(v)?),
+                    "supported" => b.supported = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

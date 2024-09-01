@@ -17,7 +17,12 @@ pub struct FundingInstructionsBankTransferSpeiRecordBuilder {
     clabe: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +73,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                bank_code: self.bank_code.take()?,
-                bank_name: self.bank_name.take()?,
-                clabe: self.clabe.take()?,
-            })
+            let (Some(bank_code), Some(bank_name), Some(clabe)) =
+                (self.bank_code.take(), self.bank_name.take(), self.clabe.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { bank_code, bank_name, clabe })
         }
     }
 
@@ -99,9 +105,9 @@ const _: () = {
             let mut b = FundingInstructionsBankTransferSpeiRecordBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank_code" => b.bank_code = Some(FromValueOpt::from_value(v)?),
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
-                    "clabe" => b.clabe = Some(FromValueOpt::from_value(v)?),
+                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "clabe" => b.clabe = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

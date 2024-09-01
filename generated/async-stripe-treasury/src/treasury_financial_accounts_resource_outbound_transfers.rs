@@ -13,7 +13,12 @@ pub struct TreasuryFinancialAccountsResourceOutboundTransfersBuilder {
         Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceToggleSettings>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +64,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                ach: self.ach.take()?,
-                us_domestic_wire: self.us_domestic_wire.take()?,
-            })
+            let (Some(ach), Some(us_domestic_wire)) =
+                (self.ach.take(), self.us_domestic_wire.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { ach, us_domestic_wire })
         }
     }
 
@@ -89,8 +96,8 @@ const _: () = {
             let mut b = TreasuryFinancialAccountsResourceOutboundTransfersBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "ach" => b.ach = Some(FromValueOpt::from_value(v)?),
-                    "us_domestic_wire" => b.us_domestic_wire = Some(FromValueOpt::from_value(v)?),
+                    "ach" => b.ach = FromValueOpt::from_value(v),
+                    "us_domestic_wire" => b.us_domestic_wire = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

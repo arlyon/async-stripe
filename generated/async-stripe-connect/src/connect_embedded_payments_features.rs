@@ -21,7 +21,12 @@ pub struct ConnectEmbeddedPaymentsFeaturesBuilder {
     refund_management: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -76,12 +81,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(capture_payments),
+                Some(destination_on_behalf_of_charge_management),
+                Some(dispute_management),
+                Some(refund_management),
+            ) = (
+                self.capture_payments,
+                self.destination_on_behalf_of_charge_management,
+                self.dispute_management,
+                self.refund_management,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                capture_payments: self.capture_payments?,
-                destination_on_behalf_of_charge_management: self
-                    .destination_on_behalf_of_charge_management?,
-                dispute_management: self.dispute_management?,
-                refund_management: self.refund_management?,
+                capture_payments,
+                destination_on_behalf_of_charge_management,
+                dispute_management,
+                refund_management,
             })
         }
     }
@@ -109,15 +127,12 @@ const _: () = {
             let mut b = ConnectEmbeddedPaymentsFeaturesBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "capture_payments" => b.capture_payments = Some(FromValueOpt::from_value(v)?),
+                    "capture_payments" => b.capture_payments = FromValueOpt::from_value(v),
                     "destination_on_behalf_of_charge_management" => {
-                        b.destination_on_behalf_of_charge_management =
-                            Some(FromValueOpt::from_value(v)?)
+                        b.destination_on_behalf_of_charge_management = FromValueOpt::from_value(v)
                     }
-                    "dispute_management" => {
-                        b.dispute_management = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "refund_management" => b.refund_management = Some(FromValueOpt::from_value(v)?),
+                    "dispute_management" => b.dispute_management = FromValueOpt::from_value(v),
+                    "refund_management" => b.refund_management = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -10,7 +10,12 @@ pub struct PaymentMethodBoletoBuilder {
     tax_id: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { tax_id: self.tax_id.take()? })
+            let (Some(tax_id),) = (self.tax_id.take(),) else {
+                return None;
+            };
+            Some(Self::Out { tax_id })
         }
     }
 
@@ -82,7 +90,7 @@ const _: () = {
             let mut b = PaymentMethodBoletoBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "tax_id" => b.tax_id = Some(FromValueOpt::from_value(v)?),
+                    "tax_id" => b.tax_id = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

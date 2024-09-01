@@ -22,7 +22,12 @@ pub struct PaymentLinksResourceSubscriptionDataBuilder {
     trial_settings: Option<Option<stripe_shared::SubscriptionsTrialsResourceTrialSettings>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,12 +82,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(description),
+                Some(invoice_settings),
+                Some(metadata),
+                Some(trial_period_days),
+                Some(trial_settings),
+            ) = (
+                self.description.take(),
+                self.invoice_settings.take(),
+                self.metadata.take(),
+                self.trial_period_days,
+                self.trial_settings,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                description: self.description.take()?,
-                invoice_settings: self.invoice_settings.take()?,
-                metadata: self.metadata.take()?,
-                trial_period_days: self.trial_period_days?,
-                trial_settings: self.trial_settings?,
+                description,
+                invoice_settings,
+                metadata,
+                trial_period_days,
+                trial_settings,
             })
         }
     }
@@ -110,11 +131,11 @@ const _: () = {
             let mut b = PaymentLinksResourceSubscriptionDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "invoice_settings" => b.invoice_settings = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "trial_period_days" => b.trial_period_days = Some(FromValueOpt::from_value(v)?),
-                    "trial_settings" => b.trial_settings = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "invoice_settings" => b.invoice_settings = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "trial_period_days" => b.trial_period_days = FromValueOpt::from_value(v),
+                    "trial_settings" => b.trial_settings = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

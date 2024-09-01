@@ -16,7 +16,12 @@ pub struct PaymentFlowsAutomaticPaymentMethodsSetupIntentBuilder {
     enabled: Option<Option<bool>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -62,7 +67,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { allow_redirects: self.allow_redirects?, enabled: self.enabled? })
+            let (Some(allow_redirects), Some(enabled)) = (self.allow_redirects, self.enabled)
+            else {
+                return None;
+            };
+            Some(Self::Out { allow_redirects, enabled })
         }
     }
 
@@ -89,8 +98,8 @@ const _: () = {
             let mut b = PaymentFlowsAutomaticPaymentMethodsSetupIntentBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "allow_redirects" => b.allow_redirects = Some(FromValueOpt::from_value(v)?),
-                    "enabled" => b.enabled = Some(FromValueOpt::from_value(v)?),
+                    "allow_redirects" => b.allow_redirects = FromValueOpt::from_value(v),
+                    "enabled" => b.enabled = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

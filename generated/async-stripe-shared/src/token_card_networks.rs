@@ -11,7 +11,12 @@ pub struct TokenCardNetworksBuilder {
     preferred: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -56,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { preferred: self.preferred.take()? })
+            let (Some(preferred),) = (self.preferred.take(),) else {
+                return None;
+            };
+            Some(Self::Out { preferred })
         }
     }
 
@@ -83,7 +91,7 @@ const _: () = {
             let mut b = TokenCardNetworksBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "preferred" => b.preferred = Some(FromValueOpt::from_value(v)?),
+                    "preferred" => b.preferred = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

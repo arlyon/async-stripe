@@ -26,7 +26,12 @@ pub struct TaxProductResourceLineItemTaxBreakdownBuilder {
     taxable_amount: Option<i64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -83,13 +88,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(jurisdiction),
+                Some(sourcing),
+                Some(tax_rate_details),
+                Some(taxability_reason),
+                Some(taxable_amount),
+            ) = (
+                self.amount,
+                self.jurisdiction.take(),
+                self.sourcing,
+                self.tax_rate_details.take(),
+                self.taxability_reason,
+                self.taxable_amount,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                jurisdiction: self.jurisdiction.take()?,
-                sourcing: self.sourcing?,
-                tax_rate_details: self.tax_rate_details.take()?,
-                taxability_reason: self.taxability_reason?,
-                taxable_amount: self.taxable_amount?,
+                amount,
+                jurisdiction,
+                sourcing,
+                tax_rate_details,
+                taxability_reason,
+                taxable_amount,
             })
         }
     }
@@ -117,12 +140,12 @@ const _: () = {
             let mut b = TaxProductResourceLineItemTaxBreakdownBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "jurisdiction" => b.jurisdiction = Some(FromValueOpt::from_value(v)?),
-                    "sourcing" => b.sourcing = Some(FromValueOpt::from_value(v)?),
-                    "tax_rate_details" => b.tax_rate_details = Some(FromValueOpt::from_value(v)?),
-                    "taxability_reason" => b.taxability_reason = Some(FromValueOpt::from_value(v)?),
-                    "taxable_amount" => b.taxable_amount = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "jurisdiction" => b.jurisdiction = FromValueOpt::from_value(v),
+                    "sourcing" => b.sourcing = FromValueOpt::from_value(v),
+                    "tax_rate_details" => b.tax_rate_details = FromValueOpt::from_value(v),
+                    "taxability_reason" => b.taxability_reason = FromValueOpt::from_value(v),
+                    "taxable_amount" => b.taxable_amount = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

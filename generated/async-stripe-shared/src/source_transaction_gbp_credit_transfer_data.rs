@@ -30,7 +30,12 @@ pub struct SourceTransactionGbpCreditTransferDataBuilder {
     sender_sort_code: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -89,14 +94,34 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(fingerprint),
+                Some(funding_method),
+                Some(last4),
+                Some(reference),
+                Some(sender_account_number),
+                Some(sender_name),
+                Some(sender_sort_code),
+            ) = (
+                self.fingerprint.take(),
+                self.funding_method.take(),
+                self.last4.take(),
+                self.reference.take(),
+                self.sender_account_number.take(),
+                self.sender_name.take(),
+                self.sender_sort_code.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                fingerprint: self.fingerprint.take()?,
-                funding_method: self.funding_method.take()?,
-                last4: self.last4.take()?,
-                reference: self.reference.take()?,
-                sender_account_number: self.sender_account_number.take()?,
-                sender_name: self.sender_name.take()?,
-                sender_sort_code: self.sender_sort_code.take()?,
+                fingerprint,
+                funding_method,
+                last4,
+                reference,
+                sender_account_number,
+                sender_name,
+                sender_sort_code,
             })
         }
     }
@@ -124,15 +149,15 @@ const _: () = {
             let mut b = SourceTransactionGbpCreditTransferDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "funding_method" => b.funding_method = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "funding_method" => b.funding_method = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
                     "sender_account_number" => {
-                        b.sender_account_number = Some(FromValueOpt::from_value(v)?)
+                        b.sender_account_number = FromValueOpt::from_value(v)
                     }
-                    "sender_name" => b.sender_name = Some(FromValueOpt::from_value(v)?),
-                    "sender_sort_code" => b.sender_sort_code = Some(FromValueOpt::from_value(v)?),
+                    "sender_name" => b.sender_name = FromValueOpt::from_value(v),
+                    "sender_sort_code" => b.sender_sort_code = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

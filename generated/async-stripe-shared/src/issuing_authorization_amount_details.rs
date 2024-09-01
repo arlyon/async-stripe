@@ -13,7 +13,12 @@ pub struct IssuingAuthorizationAmountDetailsBuilder {
     cashback_amount: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { atm_fee: self.atm_fee?, cashback_amount: self.cashback_amount? })
+            let (Some(atm_fee), Some(cashback_amount)) = (self.atm_fee, self.cashback_amount)
+            else {
+                return None;
+            };
+            Some(Self::Out { atm_fee, cashback_amount })
         }
     }
 
@@ -86,8 +95,8 @@ const _: () = {
             let mut b = IssuingAuthorizationAmountDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "atm_fee" => b.atm_fee = Some(FromValueOpt::from_value(v)?),
-                    "cashback_amount" => b.cashback_amount = Some(FromValueOpt::from_value(v)?),
+                    "atm_fee" => b.atm_fee = FromValueOpt::from_value(v),
+                    "cashback_amount" => b.cashback_amount = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

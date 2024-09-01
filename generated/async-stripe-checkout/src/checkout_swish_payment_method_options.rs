@@ -11,7 +11,12 @@ pub struct CheckoutSwishPaymentMethodOptionsBuilder {
     reference: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -56,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { reference: self.reference.take()? })
+            let (Some(reference),) = (self.reference.take(),) else {
+                return None;
+            };
+            Some(Self::Out { reference })
         }
     }
 
@@ -83,7 +91,7 @@ const _: () = {
             let mut b = CheckoutSwishPaymentMethodOptionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

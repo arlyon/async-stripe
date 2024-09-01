@@ -12,7 +12,12 @@ pub struct ConfirmationTokensResourceMandateDataBuilder {
         Option<stripe_payment::ConfirmationTokensResourceMandateDataResourceCustomerAcceptance>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -57,7 +62,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { customer_acceptance: self.customer_acceptance.take()? })
+            let (Some(customer_acceptance),) = (self.customer_acceptance.take(),) else {
+                return None;
+            };
+            Some(Self::Out { customer_acceptance })
         }
     }
 
@@ -84,9 +92,7 @@ const _: () = {
             let mut b = ConfirmationTokensResourceMandateDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "customer_acceptance" => {
-                        b.customer_acceptance = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "customer_acceptance" => b.customer_acceptance = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

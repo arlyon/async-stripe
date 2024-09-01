@@ -20,7 +20,12 @@ pub struct IssuingNetworkTokenVisaBuilder {
     token_risk_score: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -73,11 +78,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(card_reference_id),
+                Some(token_reference_id),
+                Some(token_requestor_id),
+                Some(token_risk_score),
+            ) = (
+                self.card_reference_id.take(),
+                self.token_reference_id.take(),
+                self.token_requestor_id.take(),
+                self.token_risk_score.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                card_reference_id: self.card_reference_id.take()?,
-                token_reference_id: self.token_reference_id.take()?,
-                token_requestor_id: self.token_requestor_id.take()?,
-                token_risk_score: self.token_risk_score.take()?,
+                card_reference_id,
+                token_reference_id,
+                token_requestor_id,
+                token_risk_score,
             })
         }
     }
@@ -105,14 +124,10 @@ const _: () = {
             let mut b = IssuingNetworkTokenVisaBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "card_reference_id" => b.card_reference_id = Some(FromValueOpt::from_value(v)?),
-                    "token_reference_id" => {
-                        b.token_reference_id = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "token_requestor_id" => {
-                        b.token_requestor_id = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "token_risk_score" => b.token_risk_score = Some(FromValueOpt::from_value(v)?),
+                    "card_reference_id" => b.card_reference_id = FromValueOpt::from_value(v),
+                    "token_reference_id" => b.token_reference_id = FromValueOpt::from_value(v),
+                    "token_requestor_id" => b.token_requestor_id = FromValueOpt::from_value(v),
+                    "token_risk_score" => b.token_risk_score = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

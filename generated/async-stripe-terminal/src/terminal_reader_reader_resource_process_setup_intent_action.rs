@@ -17,7 +17,12 @@ pub struct TerminalReaderReaderResourceProcessSetupIntentActionBuilder {
     setup_intent: Option<stripe_types::Expandable<stripe_shared::SetupIntent>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                generated_card: self.generated_card.take()?,
-                process_config: self.process_config?,
-                setup_intent: self.setup_intent.take()?,
-            })
+            let (Some(generated_card), Some(process_config), Some(setup_intent)) =
+                (self.generated_card.take(), self.process_config, self.setup_intent.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { generated_card, process_config, setup_intent })
         }
     }
 
@@ -101,9 +107,9 @@ const _: () = {
                 TerminalReaderReaderResourceProcessSetupIntentActionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "generated_card" => b.generated_card = Some(FromValueOpt::from_value(v)?),
-                    "process_config" => b.process_config = Some(FromValueOpt::from_value(v)?),
-                    "setup_intent" => b.setup_intent = Some(FromValueOpt::from_value(v)?),
+                    "generated_card" => b.generated_card = FromValueOpt::from_value(v),
+                    "process_config" => b.process_config = FromValueOpt::from_value(v),
+                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

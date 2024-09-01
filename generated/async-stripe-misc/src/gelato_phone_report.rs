@@ -17,7 +17,12 @@ pub struct GelatoPhoneReportBuilder {
     status: Option<GelatoPhoneReportStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +73,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                error: self.error.take()?,
-                phone: self.phone.take()?,
-                status: self.status?,
-            })
+            let (Some(error), Some(phone), Some(status)) =
+                (self.error.take(), self.phone.take(), self.status)
+            else {
+                return None;
+            };
+            Some(Self::Out { error, phone, status })
         }
     }
 
@@ -99,9 +105,9 @@ const _: () = {
             let mut b = GelatoPhoneReportBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "error" => b.error = Some(FromValueOpt::from_value(v)?),
-                    "phone" => b.phone = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "error" => b.error = FromValueOpt::from_value(v),
+                    "phone" => b.phone = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

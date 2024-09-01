@@ -34,7 +34,12 @@ pub struct TreasuryFinancialAccountFeaturesBuilder {
         Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceOutboundTransfers>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -93,14 +98,34 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(card_issuing),
+                Some(deposit_insurance),
+                Some(financial_addresses),
+                Some(inbound_transfers),
+                Some(intra_stripe_flows),
+                Some(outbound_payments),
+                Some(outbound_transfers),
+            ) = (
+                self.card_issuing.take(),
+                self.deposit_insurance.take(),
+                self.financial_addresses.take(),
+                self.inbound_transfers.take(),
+                self.intra_stripe_flows.take(),
+                self.outbound_payments.take(),
+                self.outbound_transfers.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                card_issuing: self.card_issuing.take()?,
-                deposit_insurance: self.deposit_insurance.take()?,
-                financial_addresses: self.financial_addresses.take()?,
-                inbound_transfers: self.inbound_transfers.take()?,
-                intra_stripe_flows: self.intra_stripe_flows.take()?,
-                outbound_payments: self.outbound_payments.take()?,
-                outbound_transfers: self.outbound_transfers.take()?,
+                card_issuing,
+                deposit_insurance,
+                financial_addresses,
+                inbound_transfers,
+                intra_stripe_flows,
+                outbound_payments,
+                outbound_transfers,
             })
         }
     }
@@ -128,19 +153,13 @@ const _: () = {
             let mut b = TreasuryFinancialAccountFeaturesBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "card_issuing" => b.card_issuing = Some(FromValueOpt::from_value(v)?),
-                    "deposit_insurance" => b.deposit_insurance = Some(FromValueOpt::from_value(v)?),
-                    "financial_addresses" => {
-                        b.financial_addresses = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "inbound_transfers" => b.inbound_transfers = Some(FromValueOpt::from_value(v)?),
-                    "intra_stripe_flows" => {
-                        b.intra_stripe_flows = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "outbound_payments" => b.outbound_payments = Some(FromValueOpt::from_value(v)?),
-                    "outbound_transfers" => {
-                        b.outbound_transfers = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "card_issuing" => b.card_issuing = FromValueOpt::from_value(v),
+                    "deposit_insurance" => b.deposit_insurance = FromValueOpt::from_value(v),
+                    "financial_addresses" => b.financial_addresses = FromValueOpt::from_value(v),
+                    "inbound_transfers" => b.inbound_transfers = FromValueOpt::from_value(v),
+                    "intra_stripe_flows" => b.intra_stripe_flows = FromValueOpt::from_value(v),
+                    "outbound_payments" => b.outbound_payments = FromValueOpt::from_value(v),
+                    "outbound_transfers" => b.outbound_transfers = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

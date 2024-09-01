@@ -18,7 +18,12 @@ pub struct ReserveTransactionBuilder {
     id: Option<stripe_shared::ReserveTransactionId>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -71,12 +76,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount: self.amount?,
-                currency: self.currency?,
-                description: self.description.take()?,
-                id: self.id.take()?,
-            })
+            let (Some(amount), Some(currency), Some(description), Some(id)) =
+                (self.amount, self.currency, self.description.take(), self.id.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { amount, currency, description, id })
         }
     }
 
@@ -103,10 +108,10 @@ const _: () = {
             let mut b = ReserveTransactionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

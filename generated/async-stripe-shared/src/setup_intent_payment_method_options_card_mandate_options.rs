@@ -47,7 +47,12 @@ pub struct SetupIntentPaymentMethodOptionsCardMandateOptionsBuilder {
         Option<Option<Vec<SetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -112,17 +117,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(amount_type),
+                Some(currency),
+                Some(description),
+                Some(end_date),
+                Some(interval),
+                Some(interval_count),
+                Some(reference),
+                Some(start_date),
+                Some(supported_types),
+            ) = (
+                self.amount,
+                self.amount_type,
+                self.currency,
+                self.description.take(),
+                self.end_date,
+                self.interval,
+                self.interval_count,
+                self.reference.take(),
+                self.start_date,
+                self.supported_types.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                amount_type: self.amount_type?,
-                currency: self.currency?,
-                description: self.description.take()?,
-                end_date: self.end_date?,
-                interval: self.interval?,
-                interval_count: self.interval_count?,
-                reference: self.reference.take()?,
-                start_date: self.start_date?,
-                supported_types: self.supported_types.take()?,
+                amount,
+                amount_type,
+                currency,
+                description,
+                end_date,
+                interval,
+                interval_count,
+                reference,
+                start_date,
+                supported_types,
             })
         }
     }
@@ -150,16 +181,16 @@ const _: () = {
             let mut b = SetupIntentPaymentMethodOptionsCardMandateOptionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_type" => b.amount_type = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "end_date" => b.end_date = Some(FromValueOpt::from_value(v)?),
-                    "interval" => b.interval = Some(FromValueOpt::from_value(v)?),
-                    "interval_count" => b.interval_count = Some(FromValueOpt::from_value(v)?),
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
-                    "start_date" => b.start_date = Some(FromValueOpt::from_value(v)?),
-                    "supported_types" => b.supported_types = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_type" => b.amount_type = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "end_date" => b.end_date = FromValueOpt::from_value(v),
+                    "interval" => b.interval = FromValueOpt::from_value(v),
+                    "interval_count" => b.interval_count = FromValueOpt::from_value(v),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
+                    "start_date" => b.start_date = FromValueOpt::from_value(v),
+                    "supported_types" => b.supported_types = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

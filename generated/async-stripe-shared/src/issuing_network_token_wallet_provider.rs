@@ -37,7 +37,12 @@ pub struct IssuingNetworkTokenWalletProviderBuilder {
     suggested_decision_version: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -106,17 +111,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account_id),
+                Some(account_trust_score),
+                Some(card_number_source),
+                Some(cardholder_address),
+                Some(cardholder_name),
+                Some(device_trust_score),
+                Some(hashed_account_email_address),
+                Some(reason_codes),
+                Some(suggested_decision),
+                Some(suggested_decision_version),
+            ) = (
+                self.account_id.take(),
+                self.account_trust_score,
+                self.card_number_source,
+                self.cardholder_address.take(),
+                self.cardholder_name.take(),
+                self.device_trust_score,
+                self.hashed_account_email_address.take(),
+                self.reason_codes.take(),
+                self.suggested_decision,
+                self.suggested_decision_version.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account_id: self.account_id.take()?,
-                account_trust_score: self.account_trust_score?,
-                card_number_source: self.card_number_source?,
-                cardholder_address: self.cardholder_address.take()?,
-                cardholder_name: self.cardholder_name.take()?,
-                device_trust_score: self.device_trust_score?,
-                hashed_account_email_address: self.hashed_account_email_address.take()?,
-                reason_codes: self.reason_codes.take()?,
-                suggested_decision: self.suggested_decision?,
-                suggested_decision_version: self.suggested_decision_version.take()?,
+                account_id,
+                account_trust_score,
+                card_number_source,
+                cardholder_address,
+                cardholder_name,
+                device_trust_score,
+                hashed_account_email_address,
+                reason_codes,
+                suggested_decision,
+                suggested_decision_version,
             })
         }
     }
@@ -144,29 +175,19 @@ const _: () = {
             let mut b = IssuingNetworkTokenWalletProviderBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_id" => b.account_id = Some(FromValueOpt::from_value(v)?),
-                    "account_trust_score" => {
-                        b.account_trust_score = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "card_number_source" => {
-                        b.card_number_source = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "cardholder_address" => {
-                        b.cardholder_address = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "cardholder_name" => b.cardholder_name = Some(FromValueOpt::from_value(v)?),
-                    "device_trust_score" => {
-                        b.device_trust_score = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "account_id" => b.account_id = FromValueOpt::from_value(v),
+                    "account_trust_score" => b.account_trust_score = FromValueOpt::from_value(v),
+                    "card_number_source" => b.card_number_source = FromValueOpt::from_value(v),
+                    "cardholder_address" => b.cardholder_address = FromValueOpt::from_value(v),
+                    "cardholder_name" => b.cardholder_name = FromValueOpt::from_value(v),
+                    "device_trust_score" => b.device_trust_score = FromValueOpt::from_value(v),
                     "hashed_account_email_address" => {
-                        b.hashed_account_email_address = Some(FromValueOpt::from_value(v)?)
+                        b.hashed_account_email_address = FromValueOpt::from_value(v)
                     }
-                    "reason_codes" => b.reason_codes = Some(FromValueOpt::from_value(v)?),
-                    "suggested_decision" => {
-                        b.suggested_decision = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "reason_codes" => b.reason_codes = FromValueOpt::from_value(v),
+                    "suggested_decision" => b.suggested_decision = FromValueOpt::from_value(v),
                     "suggested_decision_version" => {
-                        b.suggested_decision_version = Some(FromValueOpt::from_value(v)?)
+                        b.suggested_decision_version = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

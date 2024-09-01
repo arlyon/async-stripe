@@ -22,7 +22,12 @@ pub struct SourceOrderBuilder {
     shipping: Option<Option<stripe_shared::Shipping>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,13 +82,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount: self.amount?,
-                currency: self.currency?,
-                email: self.email.take()?,
-                items: self.items.take()?,
-                shipping: self.shipping.take()?,
-            })
+            let (Some(amount), Some(currency), Some(email), Some(items), Some(shipping)) = (
+                self.amount,
+                self.currency,
+                self.email.take(),
+                self.items.take(),
+                self.shipping.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { amount, currency, email, items, shipping })
         }
     }
 
@@ -110,11 +118,11 @@ const _: () = {
             let mut b = SourceOrderBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
-                    "items" => b.items = Some(FromValueOpt::from_value(v)?),
-                    "shipping" => b.shipping = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "email" => b.email = FromValueOpt::from_value(v),
+                    "items" => b.items = FromValueOpt::from_value(v),
+                    "shipping" => b.shipping = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

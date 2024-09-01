@@ -13,7 +13,12 @@ pub struct SubscriptionScheduleCurrentPhaseBuilder {
     start_date: Option<stripe_types::Timestamp>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { end_date: self.end_date?, start_date: self.start_date? })
+            let (Some(end_date), Some(start_date)) = (self.end_date, self.start_date) else {
+                return None;
+            };
+            Some(Self::Out { end_date, start_date })
         }
     }
 
@@ -86,8 +94,8 @@ const _: () = {
             let mut b = SubscriptionScheduleCurrentPhaseBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "end_date" => b.end_date = Some(FromValueOpt::from_value(v)?),
-                    "start_date" => b.start_date = Some(FromValueOpt::from_value(v)?),
+                    "end_date" => b.end_date = FromValueOpt::from_value(v),
+                    "start_date" => b.start_date = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

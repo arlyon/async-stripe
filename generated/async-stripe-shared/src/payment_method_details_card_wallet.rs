@@ -32,7 +32,12 @@ pub struct PaymentMethodDetailsCardWalletBuilder {
     visa_checkout: Option<Option<stripe_shared::PaymentMethodDetailsCardWalletVisaCheckout>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -95,16 +100,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amex_express_checkout),
+                Some(apple_pay),
+                Some(dynamic_last4),
+                Some(google_pay),
+                Some(link),
+                Some(masterpass),
+                Some(samsung_pay),
+                Some(type_),
+                Some(visa_checkout),
+            ) = (
+                self.amex_express_checkout,
+                self.apple_pay,
+                self.dynamic_last4.take(),
+                self.google_pay,
+                self.link,
+                self.masterpass.take(),
+                self.samsung_pay,
+                self.type_,
+                self.visa_checkout.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amex_express_checkout: self.amex_express_checkout?,
-                apple_pay: self.apple_pay?,
-                dynamic_last4: self.dynamic_last4.take()?,
-                google_pay: self.google_pay?,
-                link: self.link?,
-                masterpass: self.masterpass.take()?,
-                samsung_pay: self.samsung_pay?,
-                type_: self.type_?,
-                visa_checkout: self.visa_checkout.take()?,
+                amex_express_checkout,
+                apple_pay,
+                dynamic_last4,
+                google_pay,
+                link,
+                masterpass,
+                samsung_pay,
+                type_,
+                visa_checkout,
             })
         }
     }
@@ -133,16 +162,16 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "amex_express_checkout" => {
-                        b.amex_express_checkout = Some(FromValueOpt::from_value(v)?)
+                        b.amex_express_checkout = FromValueOpt::from_value(v)
                     }
-                    "apple_pay" => b.apple_pay = Some(FromValueOpt::from_value(v)?),
-                    "dynamic_last4" => b.dynamic_last4 = Some(FromValueOpt::from_value(v)?),
-                    "google_pay" => b.google_pay = Some(FromValueOpt::from_value(v)?),
-                    "link" => b.link = Some(FromValueOpt::from_value(v)?),
-                    "masterpass" => b.masterpass = Some(FromValueOpt::from_value(v)?),
-                    "samsung_pay" => b.samsung_pay = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "visa_checkout" => b.visa_checkout = Some(FromValueOpt::from_value(v)?),
+                    "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
+                    "dynamic_last4" => b.dynamic_last4 = FromValueOpt::from_value(v),
+                    "google_pay" => b.google_pay = FromValueOpt::from_value(v),
+                    "link" => b.link = FromValueOpt::from_value(v),
+                    "masterpass" => b.masterpass = FromValueOpt::from_value(v),
+                    "samsung_pay" => b.samsung_pay = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "visa_checkout" => b.visa_checkout = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

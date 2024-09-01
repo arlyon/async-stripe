@@ -85,7 +85,12 @@ pub struct PaymentMethodDetailsCardPresentBuilder {
     receipt: Option<Option<stripe_shared::PaymentMethodDetailsCardPresentReceipt>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -174,28 +179,76 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount_authorized),
+                Some(brand),
+                Some(capture_before),
+                Some(cardholder_name),
+                Some(country),
+                Some(description),
+                Some(emv_auth_data),
+                Some(exp_month),
+                Some(exp_year),
+                Some(fingerprint),
+                Some(funding),
+                Some(generated_card),
+                Some(iin),
+                Some(incremental_authorization_supported),
+                Some(issuer),
+                Some(last4),
+                Some(network),
+                Some(offline),
+                Some(overcapture_supported),
+                Some(read_method),
+                Some(receipt),
+            ) = (
+                self.amount_authorized,
+                self.brand.take(),
+                self.capture_before,
+                self.cardholder_name.take(),
+                self.country.take(),
+                self.description.take(),
+                self.emv_auth_data.take(),
+                self.exp_month,
+                self.exp_year,
+                self.fingerprint.take(),
+                self.funding.take(),
+                self.generated_card.take(),
+                self.iin.take(),
+                self.incremental_authorization_supported,
+                self.issuer.take(),
+                self.last4.take(),
+                self.network.take(),
+                self.offline,
+                self.overcapture_supported,
+                self.read_method,
+                self.receipt.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount_authorized: self.amount_authorized?,
-                brand: self.brand.take()?,
-                capture_before: self.capture_before?,
-                cardholder_name: self.cardholder_name.take()?,
-                country: self.country.take()?,
-                description: self.description.take()?,
-                emv_auth_data: self.emv_auth_data.take()?,
-                exp_month: self.exp_month?,
-                exp_year: self.exp_year?,
-                fingerprint: self.fingerprint.take()?,
-                funding: self.funding.take()?,
-                generated_card: self.generated_card.take()?,
-                iin: self.iin.take()?,
-                incremental_authorization_supported: self.incremental_authorization_supported?,
-                issuer: self.issuer.take()?,
-                last4: self.last4.take()?,
-                network: self.network.take()?,
-                offline: self.offline?,
-                overcapture_supported: self.overcapture_supported?,
-                read_method: self.read_method?,
-                receipt: self.receipt.take()?,
+                amount_authorized,
+                brand,
+                capture_before,
+                cardholder_name,
+                country,
+                description,
+                emv_auth_data,
+                exp_month,
+                exp_year,
+                fingerprint,
+                funding,
+                generated_card,
+                iin,
+                incremental_authorization_supported,
+                issuer,
+                last4,
+                network,
+                offline,
+                overcapture_supported,
+                read_method,
+                receipt,
             })
         }
     }
@@ -223,31 +276,31 @@ const _: () = {
             let mut b = PaymentMethodDetailsCardPresentBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_authorized" => b.amount_authorized = Some(FromValueOpt::from_value(v)?),
-                    "brand" => b.brand = Some(FromValueOpt::from_value(v)?),
-                    "capture_before" => b.capture_before = Some(FromValueOpt::from_value(v)?),
-                    "cardholder_name" => b.cardholder_name = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "emv_auth_data" => b.emv_auth_data = Some(FromValueOpt::from_value(v)?),
-                    "exp_month" => b.exp_month = Some(FromValueOpt::from_value(v)?),
-                    "exp_year" => b.exp_year = Some(FromValueOpt::from_value(v)?),
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "funding" => b.funding = Some(FromValueOpt::from_value(v)?),
-                    "generated_card" => b.generated_card = Some(FromValueOpt::from_value(v)?),
-                    "iin" => b.iin = Some(FromValueOpt::from_value(v)?),
+                    "amount_authorized" => b.amount_authorized = FromValueOpt::from_value(v),
+                    "brand" => b.brand = FromValueOpt::from_value(v),
+                    "capture_before" => b.capture_before = FromValueOpt::from_value(v),
+                    "cardholder_name" => b.cardholder_name = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "emv_auth_data" => b.emv_auth_data = FromValueOpt::from_value(v),
+                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
+                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "funding" => b.funding = FromValueOpt::from_value(v),
+                    "generated_card" => b.generated_card = FromValueOpt::from_value(v),
+                    "iin" => b.iin = FromValueOpt::from_value(v),
                     "incremental_authorization_supported" => {
-                        b.incremental_authorization_supported = Some(FromValueOpt::from_value(v)?)
+                        b.incremental_authorization_supported = FromValueOpt::from_value(v)
                     }
-                    "issuer" => b.issuer = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "network" => b.network = Some(FromValueOpt::from_value(v)?),
-                    "offline" => b.offline = Some(FromValueOpt::from_value(v)?),
+                    "issuer" => b.issuer = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "network" => b.network = FromValueOpt::from_value(v),
+                    "offline" => b.offline = FromValueOpt::from_value(v),
                     "overcapture_supported" => {
-                        b.overcapture_supported = Some(FromValueOpt::from_value(v)?)
+                        b.overcapture_supported = FromValueOpt::from_value(v)
                     }
-                    "read_method" => b.read_method = Some(FromValueOpt::from_value(v)?),
-                    "receipt" => b.receipt = Some(FromValueOpt::from_value(v)?),
+                    "read_method" => b.read_method = FromValueOpt::from_value(v),
+                    "receipt" => b.receipt = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

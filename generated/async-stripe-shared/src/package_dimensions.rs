@@ -19,7 +19,12 @@ pub struct PackageDimensionsBuilder {
     width: Option<f64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                height: self.height?,
-                length: self.length?,
-                weight: self.weight?,
-                width: self.width?,
-            })
+            let (Some(height), Some(length), Some(weight), Some(width)) =
+                (self.height, self.length, self.weight, self.width)
+            else {
+                return None;
+            };
+            Some(Self::Out { height, length, weight, width })
         }
     }
 
@@ -104,10 +109,10 @@ const _: () = {
             let mut b = PackageDimensionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "height" => b.height = Some(FromValueOpt::from_value(v)?),
-                    "length" => b.length = Some(FromValueOpt::from_value(v)?),
-                    "weight" => b.weight = Some(FromValueOpt::from_value(v)?),
-                    "width" => b.width = Some(FromValueOpt::from_value(v)?),
+                    "height" => b.height = FromValueOpt::from_value(v),
+                    "length" => b.length = FromValueOpt::from_value(v),
+                    "weight" => b.weight = FromValueOpt::from_value(v),
+                    "width" => b.width = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

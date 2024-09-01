@@ -10,7 +10,12 @@ pub struct PaymentMethodDetailsCardInstallmentsBuilder {
     plan: Option<Option<stripe_shared::PaymentMethodDetailsCardInstallmentsPlan>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { plan: self.plan? })
+            let (Some(plan),) = (self.plan,) else {
+                return None;
+            };
+            Some(Self::Out { plan })
         }
     }
 
@@ -82,7 +90,7 @@ const _: () = {
             let mut b = PaymentMethodDetailsCardInstallmentsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "plan" => b.plan = Some(FromValueOpt::from_value(v)?),
+                    "plan" => b.plan = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -35,7 +35,12 @@ pub struct CheckoutCardPaymentMethodOptionsBuilder {
     statement_descriptor_suffix_kanji: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -94,12 +99,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(installments),
+                Some(request_three_d_secure),
+                Some(setup_future_usage),
+                Some(statement_descriptor_suffix_kana),
+                Some(statement_descriptor_suffix_kanji),
+            ) = (
+                self.installments,
+                self.request_three_d_secure,
+                self.setup_future_usage,
+                self.statement_descriptor_suffix_kana.take(),
+                self.statement_descriptor_suffix_kanji.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                installments: self.installments?,
-                request_three_d_secure: self.request_three_d_secure?,
-                setup_future_usage: self.setup_future_usage?,
-                statement_descriptor_suffix_kana: self.statement_descriptor_suffix_kana.take()?,
-                statement_descriptor_suffix_kanji: self.statement_descriptor_suffix_kanji.take()?,
+                installments,
+                request_three_d_secure,
+                setup_future_usage,
+                statement_descriptor_suffix_kana,
+                statement_descriptor_suffix_kanji,
             })
         }
     }
@@ -127,18 +148,16 @@ const _: () = {
             let mut b = CheckoutCardPaymentMethodOptionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "installments" => b.installments = Some(FromValueOpt::from_value(v)?),
+                    "installments" => b.installments = FromValueOpt::from_value(v),
                     "request_three_d_secure" => {
-                        b.request_three_d_secure = Some(FromValueOpt::from_value(v)?)
+                        b.request_three_d_secure = FromValueOpt::from_value(v)
                     }
-                    "setup_future_usage" => {
-                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
                     "statement_descriptor_suffix_kana" => {
-                        b.statement_descriptor_suffix_kana = Some(FromValueOpt::from_value(v)?)
+                        b.statement_descriptor_suffix_kana = FromValueOpt::from_value(v)
                     }
                     "statement_descriptor_suffix_kanji" => {
-                        b.statement_descriptor_suffix_kanji = Some(FromValueOpt::from_value(v)?)
+                        b.statement_descriptor_suffix_kanji = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

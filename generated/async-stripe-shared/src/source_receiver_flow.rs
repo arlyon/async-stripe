@@ -32,7 +32,12 @@ pub struct SourceReceiverFlowBuilder {
     refund_attributes_status: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -93,13 +98,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(address),
+                Some(amount_charged),
+                Some(amount_received),
+                Some(amount_returned),
+                Some(refund_attributes_method),
+                Some(refund_attributes_status),
+            ) = (
+                self.address.take(),
+                self.amount_charged,
+                self.amount_received,
+                self.amount_returned,
+                self.refund_attributes_method.take(),
+                self.refund_attributes_status.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                address: self.address.take()?,
-                amount_charged: self.amount_charged?,
-                amount_received: self.amount_received?,
-                amount_returned: self.amount_returned?,
-                refund_attributes_method: self.refund_attributes_method.take()?,
-                refund_attributes_status: self.refund_attributes_status.take()?,
+                address,
+                amount_charged,
+                amount_received,
+                amount_returned,
+                refund_attributes_method,
+                refund_attributes_status,
             })
         }
     }
@@ -127,15 +150,15 @@ const _: () = {
             let mut b = SourceReceiverFlowBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
-                    "amount_charged" => b.amount_charged = Some(FromValueOpt::from_value(v)?),
-                    "amount_received" => b.amount_received = Some(FromValueOpt::from_value(v)?),
-                    "amount_returned" => b.amount_returned = Some(FromValueOpt::from_value(v)?),
+                    "address" => b.address = FromValueOpt::from_value(v),
+                    "amount_charged" => b.amount_charged = FromValueOpt::from_value(v),
+                    "amount_received" => b.amount_received = FromValueOpt::from_value(v),
+                    "amount_returned" => b.amount_returned = FromValueOpt::from_value(v),
                     "refund_attributes_method" => {
-                        b.refund_attributes_method = Some(FromValueOpt::from_value(v)?)
+                        b.refund_attributes_method = FromValueOpt::from_value(v)
                     }
                     "refund_attributes_status" => {
-                        b.refund_attributes_status = Some(FromValueOpt::from_value(v)?)
+                        b.refund_attributes_status = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

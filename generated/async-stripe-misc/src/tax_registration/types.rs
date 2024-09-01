@@ -38,7 +38,12 @@ pub struct TaxRegistrationBuilder {
     status: Option<TaxRegistrationStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -99,15 +104,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(active_from),
+                Some(country),
+                Some(country_options),
+                Some(created),
+                Some(expires_at),
+                Some(id),
+                Some(livemode),
+                Some(status),
+            ) = (
+                self.active_from,
+                self.country.take(),
+                self.country_options.take(),
+                self.created,
+                self.expires_at,
+                self.id.take(),
+                self.livemode,
+                self.status,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                active_from: self.active_from?,
-                country: self.country.take()?,
-                country_options: self.country_options.take()?,
-                created: self.created?,
-                expires_at: self.expires_at?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                status: self.status?,
+                active_from,
+                country,
+                country_options,
+                created,
+                expires_at,
+                id,
+                livemode,
+                status,
             })
         }
     }
@@ -135,14 +162,14 @@ const _: () = {
             let mut b = TaxRegistrationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "active_from" => b.active_from = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "country_options" => b.country_options = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "active_from" => b.active_from = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "country_options" => b.country_options = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -29,7 +29,12 @@ pub struct GelatoIdNumberReportBuilder {
     status: Option<GelatoIdNumberReportStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -88,15 +93,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                dob: self.dob?,
-                error: self.error.take()?,
-                first_name: self.first_name.take()?,
-                id_number: self.id_number.take()?,
-                id_number_type: self.id_number_type?,
-                last_name: self.last_name.take()?,
-                status: self.status?,
-            })
+            let (
+                Some(dob),
+                Some(error),
+                Some(first_name),
+                Some(id_number),
+                Some(id_number_type),
+                Some(last_name),
+                Some(status),
+            ) = (
+                self.dob,
+                self.error.take(),
+                self.first_name.take(),
+                self.id_number.take(),
+                self.id_number_type,
+                self.last_name.take(),
+                self.status,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { dob, error, first_name, id_number, id_number_type, last_name, status })
         }
     }
 
@@ -123,13 +140,13 @@ const _: () = {
             let mut b = GelatoIdNumberReportBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "dob" => b.dob = Some(FromValueOpt::from_value(v)?),
-                    "error" => b.error = Some(FromValueOpt::from_value(v)?),
-                    "first_name" => b.first_name = Some(FromValueOpt::from_value(v)?),
-                    "id_number" => b.id_number = Some(FromValueOpt::from_value(v)?),
-                    "id_number_type" => b.id_number_type = Some(FromValueOpt::from_value(v)?),
-                    "last_name" => b.last_name = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "dob" => b.dob = FromValueOpt::from_value(v),
+                    "error" => b.error = FromValueOpt::from_value(v),
+                    "first_name" => b.first_name = FromValueOpt::from_value(v),
+                    "id_number" => b.id_number = FromValueOpt::from_value(v),
+                    "id_number_type" => b.id_number_type = FromValueOpt::from_value(v),
+                    "last_name" => b.last_name = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

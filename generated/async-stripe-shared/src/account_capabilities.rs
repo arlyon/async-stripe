@@ -127,7 +127,12 @@ pub struct AccountCapabilitiesBuilder {
     zip_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -262,47 +267,133 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(acss_debit_payments),
+                Some(affirm_payments),
+                Some(afterpay_clearpay_payments),
+                Some(amazon_pay_payments),
+                Some(au_becs_debit_payments),
+                Some(bacs_debit_payments),
+                Some(bancontact_payments),
+                Some(bank_transfer_payments),
+                Some(blik_payments),
+                Some(boleto_payments),
+                Some(card_issuing),
+                Some(card_payments),
+                Some(cartes_bancaires_payments),
+                Some(cashapp_payments),
+                Some(eps_payments),
+                Some(fpx_payments),
+                Some(giropay_payments),
+                Some(grabpay_payments),
+                Some(ideal_payments),
+                Some(india_international_payments),
+                Some(jcb_payments),
+                Some(klarna_payments),
+                Some(konbini_payments),
+                Some(legacy_payments),
+                Some(link_payments),
+                Some(mobilepay_payments),
+                Some(oxxo_payments),
+                Some(p24_payments),
+                Some(paynow_payments),
+                Some(promptpay_payments),
+                Some(revolut_pay_payments),
+                Some(sepa_debit_payments),
+                Some(sofort_payments),
+                Some(swish_payments),
+                Some(tax_reporting_us_1099_k),
+                Some(tax_reporting_us_1099_misc),
+                Some(transfers),
+                Some(treasury),
+                Some(us_bank_account_ach_payments),
+                Some(zip_payments),
+            ) = (
+                self.acss_debit_payments,
+                self.affirm_payments,
+                self.afterpay_clearpay_payments,
+                self.amazon_pay_payments,
+                self.au_becs_debit_payments,
+                self.bacs_debit_payments,
+                self.bancontact_payments,
+                self.bank_transfer_payments,
+                self.blik_payments,
+                self.boleto_payments,
+                self.card_issuing,
+                self.card_payments,
+                self.cartes_bancaires_payments,
+                self.cashapp_payments,
+                self.eps_payments,
+                self.fpx_payments,
+                self.giropay_payments,
+                self.grabpay_payments,
+                self.ideal_payments,
+                self.india_international_payments,
+                self.jcb_payments,
+                self.klarna_payments,
+                self.konbini_payments,
+                self.legacy_payments,
+                self.link_payments,
+                self.mobilepay_payments,
+                self.oxxo_payments,
+                self.p24_payments,
+                self.paynow_payments,
+                self.promptpay_payments,
+                self.revolut_pay_payments,
+                self.sepa_debit_payments,
+                self.sofort_payments,
+                self.swish_payments,
+                self.tax_reporting_us_1099_k,
+                self.tax_reporting_us_1099_misc,
+                self.transfers,
+                self.treasury,
+                self.us_bank_account_ach_payments,
+                self.zip_payments,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                acss_debit_payments: self.acss_debit_payments?,
-                affirm_payments: self.affirm_payments?,
-                afterpay_clearpay_payments: self.afterpay_clearpay_payments?,
-                amazon_pay_payments: self.amazon_pay_payments?,
-                au_becs_debit_payments: self.au_becs_debit_payments?,
-                bacs_debit_payments: self.bacs_debit_payments?,
-                bancontact_payments: self.bancontact_payments?,
-                bank_transfer_payments: self.bank_transfer_payments?,
-                blik_payments: self.blik_payments?,
-                boleto_payments: self.boleto_payments?,
-                card_issuing: self.card_issuing?,
-                card_payments: self.card_payments?,
-                cartes_bancaires_payments: self.cartes_bancaires_payments?,
-                cashapp_payments: self.cashapp_payments?,
-                eps_payments: self.eps_payments?,
-                fpx_payments: self.fpx_payments?,
-                giropay_payments: self.giropay_payments?,
-                grabpay_payments: self.grabpay_payments?,
-                ideal_payments: self.ideal_payments?,
-                india_international_payments: self.india_international_payments?,
-                jcb_payments: self.jcb_payments?,
-                klarna_payments: self.klarna_payments?,
-                konbini_payments: self.konbini_payments?,
-                legacy_payments: self.legacy_payments?,
-                link_payments: self.link_payments?,
-                mobilepay_payments: self.mobilepay_payments?,
-                oxxo_payments: self.oxxo_payments?,
-                p24_payments: self.p24_payments?,
-                paynow_payments: self.paynow_payments?,
-                promptpay_payments: self.promptpay_payments?,
-                revolut_pay_payments: self.revolut_pay_payments?,
-                sepa_debit_payments: self.sepa_debit_payments?,
-                sofort_payments: self.sofort_payments?,
-                swish_payments: self.swish_payments?,
-                tax_reporting_us_1099_k: self.tax_reporting_us_1099_k?,
-                tax_reporting_us_1099_misc: self.tax_reporting_us_1099_misc?,
-                transfers: self.transfers?,
-                treasury: self.treasury?,
-                us_bank_account_ach_payments: self.us_bank_account_ach_payments?,
-                zip_payments: self.zip_payments?,
+                acss_debit_payments,
+                affirm_payments,
+                afterpay_clearpay_payments,
+                amazon_pay_payments,
+                au_becs_debit_payments,
+                bacs_debit_payments,
+                bancontact_payments,
+                bank_transfer_payments,
+                blik_payments,
+                boleto_payments,
+                card_issuing,
+                card_payments,
+                cartes_bancaires_payments,
+                cashapp_payments,
+                eps_payments,
+                fpx_payments,
+                giropay_payments,
+                grabpay_payments,
+                ideal_payments,
+                india_international_payments,
+                jcb_payments,
+                klarna_payments,
+                konbini_payments,
+                legacy_payments,
+                link_payments,
+                mobilepay_payments,
+                oxxo_payments,
+                p24_payments,
+                paynow_payments,
+                promptpay_payments,
+                revolut_pay_payments,
+                sepa_debit_payments,
+                sofort_payments,
+                swish_payments,
+                tax_reporting_us_1099_k,
+                tax_reporting_us_1099_misc,
+                transfers,
+                treasury,
+                us_bank_account_ach_payments,
+                zip_payments,
             })
         }
     }
@@ -330,78 +421,62 @@ const _: () = {
             let mut b = AccountCapabilitiesBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "acss_debit_payments" => {
-                        b.acss_debit_payments = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "affirm_payments" => b.affirm_payments = Some(FromValueOpt::from_value(v)?),
+                    "acss_debit_payments" => b.acss_debit_payments = FromValueOpt::from_value(v),
+                    "affirm_payments" => b.affirm_payments = FromValueOpt::from_value(v),
                     "afterpay_clearpay_payments" => {
-                        b.afterpay_clearpay_payments = Some(FromValueOpt::from_value(v)?)
+                        b.afterpay_clearpay_payments = FromValueOpt::from_value(v)
                     }
-                    "amazon_pay_payments" => {
-                        b.amazon_pay_payments = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "amazon_pay_payments" => b.amazon_pay_payments = FromValueOpt::from_value(v),
                     "au_becs_debit_payments" => {
-                        b.au_becs_debit_payments = Some(FromValueOpt::from_value(v)?)
+                        b.au_becs_debit_payments = FromValueOpt::from_value(v)
                     }
-                    "bacs_debit_payments" => {
-                        b.bacs_debit_payments = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "bancontact_payments" => {
-                        b.bancontact_payments = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "bacs_debit_payments" => b.bacs_debit_payments = FromValueOpt::from_value(v),
+                    "bancontact_payments" => b.bancontact_payments = FromValueOpt::from_value(v),
                     "bank_transfer_payments" => {
-                        b.bank_transfer_payments = Some(FromValueOpt::from_value(v)?)
+                        b.bank_transfer_payments = FromValueOpt::from_value(v)
                     }
-                    "blik_payments" => b.blik_payments = Some(FromValueOpt::from_value(v)?),
-                    "boleto_payments" => b.boleto_payments = Some(FromValueOpt::from_value(v)?),
-                    "card_issuing" => b.card_issuing = Some(FromValueOpt::from_value(v)?),
-                    "card_payments" => b.card_payments = Some(FromValueOpt::from_value(v)?),
+                    "blik_payments" => b.blik_payments = FromValueOpt::from_value(v),
+                    "boleto_payments" => b.boleto_payments = FromValueOpt::from_value(v),
+                    "card_issuing" => b.card_issuing = FromValueOpt::from_value(v),
+                    "card_payments" => b.card_payments = FromValueOpt::from_value(v),
                     "cartes_bancaires_payments" => {
-                        b.cartes_bancaires_payments = Some(FromValueOpt::from_value(v)?)
+                        b.cartes_bancaires_payments = FromValueOpt::from_value(v)
                     }
-                    "cashapp_payments" => b.cashapp_payments = Some(FromValueOpt::from_value(v)?),
-                    "eps_payments" => b.eps_payments = Some(FromValueOpt::from_value(v)?),
-                    "fpx_payments" => b.fpx_payments = Some(FromValueOpt::from_value(v)?),
-                    "giropay_payments" => b.giropay_payments = Some(FromValueOpt::from_value(v)?),
-                    "grabpay_payments" => b.grabpay_payments = Some(FromValueOpt::from_value(v)?),
-                    "ideal_payments" => b.ideal_payments = Some(FromValueOpt::from_value(v)?),
+                    "cashapp_payments" => b.cashapp_payments = FromValueOpt::from_value(v),
+                    "eps_payments" => b.eps_payments = FromValueOpt::from_value(v),
+                    "fpx_payments" => b.fpx_payments = FromValueOpt::from_value(v),
+                    "giropay_payments" => b.giropay_payments = FromValueOpt::from_value(v),
+                    "grabpay_payments" => b.grabpay_payments = FromValueOpt::from_value(v),
+                    "ideal_payments" => b.ideal_payments = FromValueOpt::from_value(v),
                     "india_international_payments" => {
-                        b.india_international_payments = Some(FromValueOpt::from_value(v)?)
+                        b.india_international_payments = FromValueOpt::from_value(v)
                     }
-                    "jcb_payments" => b.jcb_payments = Some(FromValueOpt::from_value(v)?),
-                    "klarna_payments" => b.klarna_payments = Some(FromValueOpt::from_value(v)?),
-                    "konbini_payments" => b.konbini_payments = Some(FromValueOpt::from_value(v)?),
-                    "legacy_payments" => b.legacy_payments = Some(FromValueOpt::from_value(v)?),
-                    "link_payments" => b.link_payments = Some(FromValueOpt::from_value(v)?),
-                    "mobilepay_payments" => {
-                        b.mobilepay_payments = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "oxxo_payments" => b.oxxo_payments = Some(FromValueOpt::from_value(v)?),
-                    "p24_payments" => b.p24_payments = Some(FromValueOpt::from_value(v)?),
-                    "paynow_payments" => b.paynow_payments = Some(FromValueOpt::from_value(v)?),
-                    "promptpay_payments" => {
-                        b.promptpay_payments = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "revolut_pay_payments" => {
-                        b.revolut_pay_payments = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "sepa_debit_payments" => {
-                        b.sepa_debit_payments = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "sofort_payments" => b.sofort_payments = Some(FromValueOpt::from_value(v)?),
-                    "swish_payments" => b.swish_payments = Some(FromValueOpt::from_value(v)?),
+                    "jcb_payments" => b.jcb_payments = FromValueOpt::from_value(v),
+                    "klarna_payments" => b.klarna_payments = FromValueOpt::from_value(v),
+                    "konbini_payments" => b.konbini_payments = FromValueOpt::from_value(v),
+                    "legacy_payments" => b.legacy_payments = FromValueOpt::from_value(v),
+                    "link_payments" => b.link_payments = FromValueOpt::from_value(v),
+                    "mobilepay_payments" => b.mobilepay_payments = FromValueOpt::from_value(v),
+                    "oxxo_payments" => b.oxxo_payments = FromValueOpt::from_value(v),
+                    "p24_payments" => b.p24_payments = FromValueOpt::from_value(v),
+                    "paynow_payments" => b.paynow_payments = FromValueOpt::from_value(v),
+                    "promptpay_payments" => b.promptpay_payments = FromValueOpt::from_value(v),
+                    "revolut_pay_payments" => b.revolut_pay_payments = FromValueOpt::from_value(v),
+                    "sepa_debit_payments" => b.sepa_debit_payments = FromValueOpt::from_value(v),
+                    "sofort_payments" => b.sofort_payments = FromValueOpt::from_value(v),
+                    "swish_payments" => b.swish_payments = FromValueOpt::from_value(v),
                     "tax_reporting_us_1099_k" => {
-                        b.tax_reporting_us_1099_k = Some(FromValueOpt::from_value(v)?)
+                        b.tax_reporting_us_1099_k = FromValueOpt::from_value(v)
                     }
                     "tax_reporting_us_1099_misc" => {
-                        b.tax_reporting_us_1099_misc = Some(FromValueOpt::from_value(v)?)
+                        b.tax_reporting_us_1099_misc = FromValueOpt::from_value(v)
                     }
-                    "transfers" => b.transfers = Some(FromValueOpt::from_value(v)?),
-                    "treasury" => b.treasury = Some(FromValueOpt::from_value(v)?),
+                    "transfers" => b.transfers = FromValueOpt::from_value(v),
+                    "treasury" => b.treasury = FromValueOpt::from_value(v),
                     "us_bank_account_ach_payments" => {
-                        b.us_bank_account_ach_payments = Some(FromValueOpt::from_value(v)?)
+                        b.us_bank_account_ach_payments = FromValueOpt::from_value(v)
                     }
-                    "zip_payments" => b.zip_payments = Some(FromValueOpt::from_value(v)?),
+                    "zip_payments" => b.zip_payments = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

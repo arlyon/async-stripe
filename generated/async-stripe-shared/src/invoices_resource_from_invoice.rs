@@ -13,7 +13,12 @@ pub struct InvoicesResourceFromInvoiceBuilder {
     invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +64,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { action: self.action.take()?, invoice: self.invoice.take()? })
+            let (Some(action), Some(invoice)) = (self.action.take(), self.invoice.take()) else {
+                return None;
+            };
+            Some(Self::Out { action, invoice })
         }
     }
 
@@ -86,8 +94,8 @@ const _: () = {
             let mut b = InvoicesResourceFromInvoiceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "action" => b.action = Some(FromValueOpt::from_value(v)?),
-                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
+                    "action" => b.action = FromValueOpt::from_value(v),
+                    "invoice" => b.invoice = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -29,7 +29,12 @@ pub struct SetupIntentNextActionBuilder {
         Option<Option<stripe_shared::SetupIntentNextActionVerifyWithMicrodeposits>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -88,14 +93,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(cashapp_handle_redirect_or_display_qr_code),
+                Some(redirect_to_url),
+                Some(type_),
+                Some(use_stripe_sdk),
+                Some(verify_with_microdeposits),
+            ) = (
+                self.cashapp_handle_redirect_or_display_qr_code.take(),
+                self.redirect_to_url.take(),
+                self.type_.take(),
+                self.use_stripe_sdk.take(),
+                self.verify_with_microdeposits.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                cashapp_handle_redirect_or_display_qr_code: self
-                    .cashapp_handle_redirect_or_display_qr_code
-                    .take()?,
-                redirect_to_url: self.redirect_to_url.take()?,
-                type_: self.type_.take()?,
-                use_stripe_sdk: self.use_stripe_sdk.take()?,
-                verify_with_microdeposits: self.verify_with_microdeposits.take()?,
+                cashapp_handle_redirect_or_display_qr_code,
+                redirect_to_url,
+                type_,
+                use_stripe_sdk,
+                verify_with_microdeposits,
             })
         }
     }
@@ -124,14 +143,13 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "cashapp_handle_redirect_or_display_qr_code" => {
-                        b.cashapp_handle_redirect_or_display_qr_code =
-                            Some(FromValueOpt::from_value(v)?)
+                        b.cashapp_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
                     }
-                    "redirect_to_url" => b.redirect_to_url = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "use_stripe_sdk" => b.use_stripe_sdk = Some(FromValueOpt::from_value(v)?),
+                    "redirect_to_url" => b.redirect_to_url = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "use_stripe_sdk" => b.use_stripe_sdk = FromValueOpt::from_value(v),
                     "verify_with_microdeposits" => {
-                        b.verify_with_microdeposits = Some(FromValueOpt::from_value(v)?)
+                        b.verify_with_microdeposits = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

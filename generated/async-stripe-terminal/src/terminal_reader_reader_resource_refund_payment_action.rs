@@ -42,7 +42,12 @@ pub struct TerminalReaderReaderResourceRefundPaymentActionBuilder {
     reverse_transfer: Option<Option<bool>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -105,16 +110,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(charge),
+                Some(metadata),
+                Some(payment_intent),
+                Some(reason),
+                Some(refund),
+                Some(refund_application_fee),
+                Some(refund_payment_config),
+                Some(reverse_transfer),
+            ) = (
+                self.amount,
+                self.charge.take(),
+                self.metadata.take(),
+                self.payment_intent.take(),
+                self.reason,
+                self.refund.take(),
+                self.refund_application_fee,
+                self.refund_payment_config,
+                self.reverse_transfer,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                charge: self.charge.take()?,
-                metadata: self.metadata.take()?,
-                payment_intent: self.payment_intent.take()?,
-                reason: self.reason?,
-                refund: self.refund.take()?,
-                refund_application_fee: self.refund_application_fee?,
-                refund_payment_config: self.refund_payment_config?,
-                reverse_transfer: self.reverse_transfer?,
+                amount,
+                charge,
+                metadata,
+                payment_intent,
+                reason,
+                refund,
+                refund_application_fee,
+                refund_payment_config,
+                reverse_transfer,
             })
         }
     }
@@ -142,19 +171,19 @@ const _: () = {
             let mut b = TerminalReaderReaderResourceRefundPaymentActionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "charge" => b.charge = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "payment_intent" => b.payment_intent = Some(FromValueOpt::from_value(v)?),
-                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
-                    "refund" => b.refund = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "charge" => b.charge = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
+                    "reason" => b.reason = FromValueOpt::from_value(v),
+                    "refund" => b.refund = FromValueOpt::from_value(v),
                     "refund_application_fee" => {
-                        b.refund_application_fee = Some(FromValueOpt::from_value(v)?)
+                        b.refund_application_fee = FromValueOpt::from_value(v)
                     }
                     "refund_payment_config" => {
-                        b.refund_payment_config = Some(FromValueOpt::from_value(v)?)
+                        b.refund_payment_config = FromValueOpt::from_value(v)
                     }
-                    "reverse_transfer" => b.reverse_transfer = Some(FromValueOpt::from_value(v)?),
+                    "reverse_transfer" => b.reverse_transfer = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

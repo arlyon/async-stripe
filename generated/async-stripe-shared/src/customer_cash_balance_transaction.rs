@@ -58,7 +58,12 @@ unapplied_from_payment: Option<Option<stripe_shared::CustomerBalanceResourceCash
 
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -131,21 +136,55 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(adjusted_for_overdraft),
+                Some(applied_to_payment),
+                Some(created),
+                Some(currency),
+                Some(customer),
+                Some(ending_balance),
+                Some(funded),
+                Some(id),
+                Some(livemode),
+                Some(net_amount),
+                Some(refunded_from_payment),
+                Some(transferred_to_balance),
+                Some(type_),
+                Some(unapplied_from_payment),
+            ) = (
+                self.adjusted_for_overdraft.take(),
+                self.applied_to_payment.take(),
+                self.created,
+                self.currency,
+                self.customer.take(),
+                self.ending_balance,
+                self.funded.take(),
+                self.id.take(),
+                self.livemode,
+                self.net_amount,
+                self.refunded_from_payment.take(),
+                self.transferred_to_balance.take(),
+                self.type_,
+                self.unapplied_from_payment.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                adjusted_for_overdraft: self.adjusted_for_overdraft.take()?,
-                applied_to_payment: self.applied_to_payment.take()?,
-                created: self.created?,
-                currency: self.currency?,
-                customer: self.customer.take()?,
-                ending_balance: self.ending_balance?,
-                funded: self.funded.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                net_amount: self.net_amount?,
-                refunded_from_payment: self.refunded_from_payment.take()?,
-                transferred_to_balance: self.transferred_to_balance.take()?,
-                type_: self.type_?,
-                unapplied_from_payment: self.unapplied_from_payment.take()?,
+                adjusted_for_overdraft,
+                applied_to_payment,
+                created,
+                currency,
+                customer,
+                ending_balance,
+                funded,
+                id,
+                livemode,
+                net_amount,
+                refunded_from_payment,
+                transferred_to_balance,
+                type_,
+                unapplied_from_payment,
             })
         }
     }
@@ -174,28 +213,26 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "adjusted_for_overdraft" => {
-                        b.adjusted_for_overdraft = Some(FromValueOpt::from_value(v)?)
+                        b.adjusted_for_overdraft = FromValueOpt::from_value(v)
                     }
-                    "applied_to_payment" => {
-                        b.applied_to_payment = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "ending_balance" => b.ending_balance = Some(FromValueOpt::from_value(v)?),
-                    "funded" => b.funded = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "net_amount" => b.net_amount = Some(FromValueOpt::from_value(v)?),
+                    "applied_to_payment" => b.applied_to_payment = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "ending_balance" => b.ending_balance = FromValueOpt::from_value(v),
+                    "funded" => b.funded = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "net_amount" => b.net_amount = FromValueOpt::from_value(v),
                     "refunded_from_payment" => {
-                        b.refunded_from_payment = Some(FromValueOpt::from_value(v)?)
+                        b.refunded_from_payment = FromValueOpt::from_value(v)
                     }
                     "transferred_to_balance" => {
-                        b.transferred_to_balance = Some(FromValueOpt::from_value(v)?)
+                        b.transferred_to_balance = FromValueOpt::from_value(v)
                     }
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
                     "unapplied_from_payment" => {
-                        b.unapplied_from_payment = Some(FromValueOpt::from_value(v)?)
+                        b.unapplied_from_payment = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

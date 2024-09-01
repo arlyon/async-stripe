@@ -13,7 +13,12 @@ pub struct PaypalSellerProtectionBuilder {
     status: Option<PaypalSellerProtectionStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +64,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                dispute_categories: self.dispute_categories.take()?,
-                status: self.status?,
-            })
+            let (Some(dispute_categories), Some(status)) =
+                (self.dispute_categories.take(), self.status)
+            else {
+                return None;
+            };
+            Some(Self::Out { dispute_categories, status })
         }
     }
 
@@ -89,10 +96,8 @@ const _: () = {
             let mut b = PaypalSellerProtectionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "dispute_categories" => {
-                        b.dispute_categories = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "dispute_categories" => b.dispute_categories = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

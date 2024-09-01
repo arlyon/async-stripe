@@ -11,7 +11,12 @@ pub struct SourceTypeEpsBuilder {
     statement_descriptor: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -57,10 +62,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                reference: self.reference.take()?,
-                statement_descriptor: self.statement_descriptor.take()?,
-            })
+            let (Some(reference), Some(statement_descriptor)) =
+                (self.reference.take(), self.statement_descriptor.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { reference, statement_descriptor })
         }
     }
 
@@ -87,10 +94,8 @@ const _: () = {
             let mut b = SourceTypeEpsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
-                    "statement_descriptor" => {
-                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "reference" => b.reference = FromValueOpt::from_value(v),
+                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

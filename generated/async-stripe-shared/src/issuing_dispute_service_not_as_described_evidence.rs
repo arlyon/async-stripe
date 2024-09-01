@@ -22,7 +22,12 @@ pub struct IssuingDisputeServiceNotAsDescribedEvidenceBuilder {
     received_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -79,12 +84,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(additional_documentation),
+                Some(canceled_at),
+                Some(cancellation_reason),
+                Some(explanation),
+                Some(received_at),
+            ) = (
+                self.additional_documentation.take(),
+                self.canceled_at,
+                self.cancellation_reason.take(),
+                self.explanation.take(),
+                self.received_at,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                additional_documentation: self.additional_documentation.take()?,
-                canceled_at: self.canceled_at?,
-                cancellation_reason: self.cancellation_reason.take()?,
-                explanation: self.explanation.take()?,
-                received_at: self.received_at?,
+                additional_documentation,
+                canceled_at,
+                cancellation_reason,
+                explanation,
+                received_at,
             })
         }
     }
@@ -113,14 +134,12 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "additional_documentation" => {
-                        b.additional_documentation = Some(FromValueOpt::from_value(v)?)
+                        b.additional_documentation = FromValueOpt::from_value(v)
                     }
-                    "canceled_at" => b.canceled_at = Some(FromValueOpt::from_value(v)?),
-                    "cancellation_reason" => {
-                        b.cancellation_reason = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "explanation" => b.explanation = Some(FromValueOpt::from_value(v)?),
-                    "received_at" => b.received_at = Some(FromValueOpt::from_value(v)?),
+                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
+                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
+                    "explanation" => b.explanation = FromValueOpt::from_value(v),
+                    "received_at" => b.received_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

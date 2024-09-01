@@ -15,7 +15,12 @@ pub struct PaymentIntentNextActionCardAwaitNotificationBuilder {
     customer_approval_required: Option<Option<bool>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -66,10 +71,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                charge_attempt_at: self.charge_attempt_at?,
-                customer_approval_required: self.customer_approval_required?,
-            })
+            let (Some(charge_attempt_at), Some(customer_approval_required)) =
+                (self.charge_attempt_at, self.customer_approval_required)
+            else {
+                return None;
+            };
+            Some(Self::Out { charge_attempt_at, customer_approval_required })
         }
     }
 
@@ -96,9 +103,9 @@ const _: () = {
             let mut b = PaymentIntentNextActionCardAwaitNotificationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "charge_attempt_at" => b.charge_attempt_at = Some(FromValueOpt::from_value(v)?),
+                    "charge_attempt_at" => b.charge_attempt_at = FromValueOpt::from_value(v),
                     "customer_approval_required" => {
-                        b.customer_approval_required = Some(FromValueOpt::from_value(v)?)
+                        b.customer_approval_required = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

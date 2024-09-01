@@ -17,7 +17,12 @@ pub struct PortalFeaturesBuilder {
     subscription_update: Option<stripe_billing::PortalSubscriptionUpdate>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(customer_update),
+                Some(invoice_history),
+                Some(payment_method_update),
+                Some(subscription_cancel),
+                Some(subscription_update),
+            ) = (
+                self.customer_update.take(),
+                self.invoice_history,
+                self.payment_method_update,
+                self.subscription_cancel.take(),
+                self.subscription_update.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                customer_update: self.customer_update.take()?,
-                invoice_history: self.invoice_history?,
-                payment_method_update: self.payment_method_update?,
-                subscription_cancel: self.subscription_cancel.take()?,
-                subscription_update: self.subscription_update.take()?,
+                customer_update,
+                invoice_history,
+                payment_method_update,
+                subscription_cancel,
+                subscription_update,
             })
         }
     }
@@ -105,17 +126,13 @@ const _: () = {
             let mut b = PortalFeaturesBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "customer_update" => b.customer_update = Some(FromValueOpt::from_value(v)?),
-                    "invoice_history" => b.invoice_history = Some(FromValueOpt::from_value(v)?),
+                    "customer_update" => b.customer_update = FromValueOpt::from_value(v),
+                    "invoice_history" => b.invoice_history = FromValueOpt::from_value(v),
                     "payment_method_update" => {
-                        b.payment_method_update = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_update = FromValueOpt::from_value(v)
                     }
-                    "subscription_cancel" => {
-                        b.subscription_cancel = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "subscription_update" => {
-                        b.subscription_update = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "subscription_cancel" => b.subscription_cancel = FromValueOpt::from_value(v),
+                    "subscription_update" => b.subscription_update = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

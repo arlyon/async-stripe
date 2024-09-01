@@ -19,7 +19,12 @@ pub struct PaymentMethodDetailsAchCreditTransferBuilder {
     swift_code: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                account_number: self.account_number.take()?,
-                bank_name: self.bank_name.take()?,
-                routing_number: self.routing_number.take()?,
-                swift_code: self.swift_code.take()?,
-            })
+            let (Some(account_number), Some(bank_name), Some(routing_number), Some(swift_code)) = (
+                self.account_number.take(),
+                self.bank_name.take(),
+                self.routing_number.take(),
+                self.swift_code.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { account_number, bank_name, routing_number, swift_code })
         }
     }
 
@@ -104,10 +112,10 @@ const _: () = {
             let mut b = PaymentMethodDetailsAchCreditTransferBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_number" => b.account_number = Some(FromValueOpt::from_value(v)?),
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
-                    "routing_number" => b.routing_number = Some(FromValueOpt::from_value(v)?),
-                    "swift_code" => b.swift_code = Some(FromValueOpt::from_value(v)?),
+                    "account_number" => b.account_number = FromValueOpt::from_value(v),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
+                    "swift_code" => b.swift_code = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

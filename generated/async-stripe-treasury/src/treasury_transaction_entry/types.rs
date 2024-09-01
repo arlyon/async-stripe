@@ -44,7 +44,12 @@ pub struct TreasuryTransactionEntryBuilder {
     type_: Option<TreasuryTransactionEntryType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -113,19 +118,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(balance_impact),
+                Some(created),
+                Some(currency),
+                Some(effective_at),
+                Some(financial_account),
+                Some(flow),
+                Some(flow_details),
+                Some(flow_type),
+                Some(id),
+                Some(livemode),
+                Some(transaction),
+                Some(type_),
+            ) = (
+                self.balance_impact,
+                self.created,
+                self.currency,
+                self.effective_at,
+                self.financial_account.take(),
+                self.flow.take(),
+                self.flow_details.take(),
+                self.flow_type,
+                self.id.take(),
+                self.livemode,
+                self.transaction.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                balance_impact: self.balance_impact?,
-                created: self.created?,
-                currency: self.currency?,
-                effective_at: self.effective_at?,
-                financial_account: self.financial_account.take()?,
-                flow: self.flow.take()?,
-                flow_details: self.flow_details.take()?,
-                flow_type: self.flow_type?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                transaction: self.transaction.take()?,
-                type_: self.type_?,
+                balance_impact,
+                created,
+                currency,
+                effective_at,
+                financial_account,
+                flow,
+                flow_details,
+                flow_type,
+                id,
+                livemode,
+                transaction,
+                type_,
             })
         }
     }
@@ -153,18 +188,18 @@ const _: () = {
             let mut b = TreasuryTransactionEntryBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "balance_impact" => b.balance_impact = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "effective_at" => b.effective_at = Some(FromValueOpt::from_value(v)?),
-                    "financial_account" => b.financial_account = Some(FromValueOpt::from_value(v)?),
-                    "flow" => b.flow = Some(FromValueOpt::from_value(v)?),
-                    "flow_details" => b.flow_details = Some(FromValueOpt::from_value(v)?),
-                    "flow_type" => b.flow_type = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "transaction" => b.transaction = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "balance_impact" => b.balance_impact = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "effective_at" => b.effective_at = FromValueOpt::from_value(v),
+                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
+                    "flow" => b.flow = FromValueOpt::from_value(v),
+                    "flow_details" => b.flow_details = FromValueOpt::from_value(v),
+                    "flow_type" => b.flow_type = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "transaction" => b.transaction = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

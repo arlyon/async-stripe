@@ -13,7 +13,12 @@ pub struct PaymentMethodLinkBuilder {
     persistent_token: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +64,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                email: self.email.take()?,
-                persistent_token: self.persistent_token.take()?,
-            })
+            let (Some(email), Some(persistent_token)) =
+                (self.email.take(), self.persistent_token.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { email, persistent_token })
         }
     }
 
@@ -89,8 +96,8 @@ const _: () = {
             let mut b = PaymentMethodLinkBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
-                    "persistent_token" => b.persistent_token = Some(FromValueOpt::from_value(v)?),
+                    "email" => b.email = FromValueOpt::from_value(v),
+                    "persistent_token" => b.persistent_token = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

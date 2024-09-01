@@ -14,7 +14,12 @@ pub struct TaxProductResourceTaxSettingsDefaultsBuilder {
     tax_code: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -60,7 +65,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { tax_behavior: self.tax_behavior?, tax_code: self.tax_code.take()? })
+            let (Some(tax_behavior), Some(tax_code)) = (self.tax_behavior, self.tax_code.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { tax_behavior, tax_code })
         }
     }
 
@@ -87,8 +96,8 @@ const _: () = {
             let mut b = TaxProductResourceTaxSettingsDefaultsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "tax_behavior" => b.tax_behavior = Some(FromValueOpt::from_value(v)?),
-                    "tax_code" => b.tax_code = Some(FromValueOpt::from_value(v)?),
+                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
+                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

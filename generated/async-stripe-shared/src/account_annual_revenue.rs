@@ -19,7 +19,12 @@ pub struct AccountAnnualRevenueBuilder {
     fiscal_year_end: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -70,11 +75,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount: self.amount?,
-                currency: self.currency?,
-                fiscal_year_end: self.fiscal_year_end.take()?,
-            })
+            let (Some(amount), Some(currency), Some(fiscal_year_end)) =
+                (self.amount, self.currency, self.fiscal_year_end.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { amount, currency, fiscal_year_end })
         }
     }
 
@@ -101,9 +107,9 @@ const _: () = {
             let mut b = AccountAnnualRevenueBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "fiscal_year_end" => b.fiscal_year_end = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "fiscal_year_end" => b.fiscal_year_end = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

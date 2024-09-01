@@ -14,7 +14,12 @@ pub struct PaymentPagesCheckoutSessionCustomFieldsLabelBuilder {
     type_: Option<PaymentPagesCheckoutSessionCustomFieldsLabelType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -60,7 +65,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { custom: self.custom.take()?, type_: self.type_? })
+            let (Some(custom), Some(type_)) = (self.custom.take(), self.type_) else {
+                return None;
+            };
+            Some(Self::Out { custom, type_ })
         }
     }
 
@@ -87,8 +95,8 @@ const _: () = {
             let mut b = PaymentPagesCheckoutSessionCustomFieldsLabelBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "custom" => b.custom = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "custom" => b.custom = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

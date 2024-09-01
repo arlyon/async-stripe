@@ -10,7 +10,12 @@ pub struct SubscriptionItemBillingThresholdsBuilder {
     usage_gte: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { usage_gte: self.usage_gte? })
+            let (Some(usage_gte),) = (self.usage_gte,) else {
+                return None;
+            };
+            Some(Self::Out { usage_gte })
         }
     }
 
@@ -82,7 +90,7 @@ const _: () = {
             let mut b = SubscriptionItemBillingThresholdsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "usage_gte" => b.usage_gte = Some(FromValueOpt::from_value(v)?),
+                    "usage_gte" => b.usage_gte = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

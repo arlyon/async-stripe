@@ -16,7 +16,12 @@ pub struct PaymentIntentNextActionDisplayOxxoDetailsBuilder {
     number: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                expires_after: self.expires_after?,
-                hosted_voucher_url: self.hosted_voucher_url.take()?,
-                number: self.number.take()?,
-            })
+            let (Some(expires_after), Some(hosted_voucher_url), Some(number)) =
+                (self.expires_after, self.hosted_voucher_url.take(), self.number.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { expires_after, hosted_voucher_url, number })
         }
     }
 
@@ -98,11 +104,9 @@ const _: () = {
             let mut b = PaymentIntentNextActionDisplayOxxoDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "expires_after" => b.expires_after = Some(FromValueOpt::from_value(v)?),
-                    "hosted_voucher_url" => {
-                        b.hosted_voucher_url = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "number" => b.number = Some(FromValueOpt::from_value(v)?),
+                    "expires_after" => b.expires_after = FromValueOpt::from_value(v),
+                    "hosted_voucher_url" => b.hosted_voucher_url = FromValueOpt::from_value(v),
+                    "number" => b.number = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

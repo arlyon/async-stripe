@@ -20,7 +20,12 @@ pub struct MandateBacsDebitBuilder {
     url: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -73,12 +78,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                network_status: self.network_status?,
-                reference: self.reference.take()?,
-                revocation_reason: self.revocation_reason?,
-                url: self.url.take()?,
-            })
+            let (Some(network_status), Some(reference), Some(revocation_reason), Some(url)) = (
+                self.network_status,
+                self.reference.take(),
+                self.revocation_reason,
+                self.url.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { network_status, reference, revocation_reason, url })
         }
     }
 
@@ -105,10 +113,10 @@ const _: () = {
             let mut b = MandateBacsDebitBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "network_status" => b.network_status = Some(FromValueOpt::from_value(v)?),
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
-                    "revocation_reason" => b.revocation_reason = Some(FromValueOpt::from_value(v)?),
-                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+                    "network_status" => b.network_status = FromValueOpt::from_value(v),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
+                    "revocation_reason" => b.revocation_reason = FromValueOpt::from_value(v),
+                    "url" => b.url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

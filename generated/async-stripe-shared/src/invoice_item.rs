@@ -95,7 +95,12 @@ pub struct InvoiceItemBuilder {
     unit_amount_decimal: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -184,29 +189,79 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(currency),
+                Some(customer),
+                Some(date),
+                Some(description),
+                Some(discountable),
+                Some(discounts),
+                Some(id),
+                Some(invoice),
+                Some(livemode),
+                Some(metadata),
+                Some(period),
+                Some(plan),
+                Some(price),
+                Some(proration),
+                Some(quantity),
+                Some(subscription),
+                Some(subscription_item),
+                Some(tax_rates),
+                Some(test_clock),
+                Some(unit_amount),
+                Some(unit_amount_decimal),
+            ) = (
+                self.amount,
+                self.currency,
+                self.customer.take(),
+                self.date,
+                self.description.take(),
+                self.discountable,
+                self.discounts.take(),
+                self.id.take(),
+                self.invoice.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.period,
+                self.plan.take(),
+                self.price.take(),
+                self.proration,
+                self.quantity,
+                self.subscription.take(),
+                self.subscription_item.take(),
+                self.tax_rates.take(),
+                self.test_clock.take(),
+                self.unit_amount,
+                self.unit_amount_decimal.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                currency: self.currency?,
-                customer: self.customer.take()?,
-                date: self.date?,
-                description: self.description.take()?,
-                discountable: self.discountable?,
-                discounts: self.discounts.take()?,
-                id: self.id.take()?,
-                invoice: self.invoice.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                period: self.period?,
-                plan: self.plan.take()?,
-                price: self.price.take()?,
-                proration: self.proration?,
-                quantity: self.quantity?,
-                subscription: self.subscription.take()?,
-                subscription_item: self.subscription_item.take()?,
-                tax_rates: self.tax_rates.take()?,
-                test_clock: self.test_clock.take()?,
-                unit_amount: self.unit_amount?,
-                unit_amount_decimal: self.unit_amount_decimal.take()?,
+                amount,
+                currency,
+                customer,
+                date,
+                description,
+                discountable,
+                discounts,
+                id,
+                invoice,
+                livemode,
+                metadata,
+                period,
+                plan,
+                price,
+                proration,
+                quantity,
+                subscription,
+                subscription_item,
+                tax_rates,
+                test_clock,
+                unit_amount,
+                unit_amount_decimal,
             })
         }
     }
@@ -234,30 +289,28 @@ const _: () = {
             let mut b = InvoiceItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "date" => b.date = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "discountable" => b.discountable = Some(FromValueOpt::from_value(v)?),
-                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "period" => b.period = Some(FromValueOpt::from_value(v)?),
-                    "plan" => b.plan = Some(FromValueOpt::from_value(v)?),
-                    "price" => b.price = Some(FromValueOpt::from_value(v)?),
-                    "proration" => b.proration = Some(FromValueOpt::from_value(v)?),
-                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
-                    "subscription" => b.subscription = Some(FromValueOpt::from_value(v)?),
-                    "subscription_item" => b.subscription_item = Some(FromValueOpt::from_value(v)?),
-                    "tax_rates" => b.tax_rates = Some(FromValueOpt::from_value(v)?),
-                    "test_clock" => b.test_clock = Some(FromValueOpt::from_value(v)?),
-                    "unit_amount" => b.unit_amount = Some(FromValueOpt::from_value(v)?),
-                    "unit_amount_decimal" => {
-                        b.unit_amount_decimal = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "date" => b.date = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "discountable" => b.discountable = FromValueOpt::from_value(v),
+                    "discounts" => b.discounts = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "invoice" => b.invoice = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "period" => b.period = FromValueOpt::from_value(v),
+                    "plan" => b.plan = FromValueOpt::from_value(v),
+                    "price" => b.price = FromValueOpt::from_value(v),
+                    "proration" => b.proration = FromValueOpt::from_value(v),
+                    "quantity" => b.quantity = FromValueOpt::from_value(v),
+                    "subscription" => b.subscription = FromValueOpt::from_value(v),
+                    "subscription_item" => b.subscription_item = FromValueOpt::from_value(v),
+                    "tax_rates" => b.tax_rates = FromValueOpt::from_value(v),
+                    "test_clock" => b.test_clock = FromValueOpt::from_value(v),
+                    "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
+                    "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

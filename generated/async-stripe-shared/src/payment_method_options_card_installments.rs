@@ -16,7 +16,12 @@ pub struct PaymentMethodOptionsCardInstallmentsBuilder {
     plan: Option<Option<stripe_shared::PaymentMethodDetailsCardInstallmentsPlan>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                available_plans: self.available_plans.take()?,
-                enabled: self.enabled?,
-                plan: self.plan?,
-            })
+            let (Some(available_plans), Some(enabled), Some(plan)) =
+                (self.available_plans.take(), self.enabled, self.plan)
+            else {
+                return None;
+            };
+            Some(Self::Out { available_plans, enabled, plan })
         }
     }
 
@@ -98,9 +104,9 @@ const _: () = {
             let mut b = PaymentMethodOptionsCardInstallmentsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "available_plans" => b.available_plans = Some(FromValueOpt::from_value(v)?),
-                    "enabled" => b.enabled = Some(FromValueOpt::from_value(v)?),
-                    "plan" => b.plan = Some(FromValueOpt::from_value(v)?),
+                    "available_plans" => b.available_plans = FromValueOpt::from_value(v),
+                    "enabled" => b.enabled = FromValueOpt::from_value(v),
+                    "plan" => b.plan = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

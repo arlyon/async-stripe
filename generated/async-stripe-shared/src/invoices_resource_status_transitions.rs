@@ -19,7 +19,12 @@ pub struct InvoicesResourceStatusTransitionsBuilder {
     voided_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                finalized_at: self.finalized_at?,
-                marked_uncollectible_at: self.marked_uncollectible_at?,
-                paid_at: self.paid_at?,
-                voided_at: self.voided_at?,
-            })
+            let (Some(finalized_at), Some(marked_uncollectible_at), Some(paid_at), Some(voided_at)) =
+                (self.finalized_at, self.marked_uncollectible_at, self.paid_at, self.voided_at)
+            else {
+                return None;
+            };
+            Some(Self::Out { finalized_at, marked_uncollectible_at, paid_at, voided_at })
         }
     }
 
@@ -104,12 +109,12 @@ const _: () = {
             let mut b = InvoicesResourceStatusTransitionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "finalized_at" => b.finalized_at = Some(FromValueOpt::from_value(v)?),
+                    "finalized_at" => b.finalized_at = FromValueOpt::from_value(v),
                     "marked_uncollectible_at" => {
-                        b.marked_uncollectible_at = Some(FromValueOpt::from_value(v)?)
+                        b.marked_uncollectible_at = FromValueOpt::from_value(v)
                     }
-                    "paid_at" => b.paid_at = Some(FromValueOpt::from_value(v)?),
-                    "voided_at" => b.voided_at = Some(FromValueOpt::from_value(v)?),
+                    "paid_at" => b.paid_at = FromValueOpt::from_value(v),
+                    "voided_at" => b.voided_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

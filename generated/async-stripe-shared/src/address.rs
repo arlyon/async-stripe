@@ -25,7 +25,12 @@ pub struct AddressBuilder {
     state: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -79,14 +84,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                city: self.city.take()?,
-                country: self.country.take()?,
-                line1: self.line1.take()?,
-                line2: self.line2.take()?,
-                postal_code: self.postal_code.take()?,
-                state: self.state.take()?,
-            })
+            let (
+                Some(city),
+                Some(country),
+                Some(line1),
+                Some(line2),
+                Some(postal_code),
+                Some(state),
+            ) = (
+                self.city.take(),
+                self.country.take(),
+                self.line1.take(),
+                self.line2.take(),
+                self.postal_code.take(),
+                self.state.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { city, country, line1, line2, postal_code, state })
         }
     }
 
@@ -113,12 +129,12 @@ const _: () = {
             let mut b = AddressBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "city" => b.city = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "line1" => b.line1 = Some(FromValueOpt::from_value(v)?),
-                    "line2" => b.line2 = Some(FromValueOpt::from_value(v)?),
-                    "postal_code" => b.postal_code = Some(FromValueOpt::from_value(v)?),
-                    "state" => b.state = Some(FromValueOpt::from_value(v)?),
+                    "city" => b.city = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "line1" => b.line1 = FromValueOpt::from_value(v),
+                    "line2" => b.line2 = FromValueOpt::from_value(v),
+                    "postal_code" => b.postal_code = FromValueOpt::from_value(v),
+                    "state" => b.state = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

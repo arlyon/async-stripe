@@ -67,7 +67,12 @@ pub struct TaxRateBuilder {
     tax_type: Option<Option<stripe_shared::TaxRateTaxType>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -139,22 +144,58 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(active),
+                Some(country),
+                Some(created),
+                Some(description),
+                Some(display_name),
+                Some(effective_percentage),
+                Some(id),
+                Some(inclusive),
+                Some(jurisdiction),
+                Some(jurisdiction_level),
+                Some(livemode),
+                Some(metadata),
+                Some(percentage),
+                Some(state),
+                Some(tax_type),
+            ) = (
+                self.active,
+                self.country.take(),
+                self.created,
+                self.description.take(),
+                self.display_name.take(),
+                self.effective_percentage,
+                self.id.take(),
+                self.inclusive,
+                self.jurisdiction.take(),
+                self.jurisdiction_level,
+                self.livemode,
+                self.metadata.take(),
+                self.percentage,
+                self.state.take(),
+                self.tax_type,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                active: self.active?,
-                country: self.country.take()?,
-                created: self.created?,
-                description: self.description.take()?,
-                display_name: self.display_name.take()?,
-                effective_percentage: self.effective_percentage?,
-                id: self.id.take()?,
-                inclusive: self.inclusive?,
-                jurisdiction: self.jurisdiction.take()?,
-                jurisdiction_level: self.jurisdiction_level?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                percentage: self.percentage?,
-                state: self.state.take()?,
-                tax_type: self.tax_type?,
+                active,
+                country,
+                created,
+                description,
+                display_name,
+                effective_percentage,
+                id,
+                inclusive,
+                jurisdiction,
+                jurisdiction_level,
+                livemode,
+                metadata,
+                percentage,
+                state,
+                tax_type,
             })
         }
     }
@@ -182,25 +223,21 @@ const _: () = {
             let mut b = TaxRateBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "active" => b.active = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "display_name" => b.display_name = Some(FromValueOpt::from_value(v)?),
-                    "effective_percentage" => {
-                        b.effective_percentage = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "inclusive" => b.inclusive = Some(FromValueOpt::from_value(v)?),
-                    "jurisdiction" => b.jurisdiction = Some(FromValueOpt::from_value(v)?),
-                    "jurisdiction_level" => {
-                        b.jurisdiction_level = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "percentage" => b.percentage = Some(FromValueOpt::from_value(v)?),
-                    "state" => b.state = Some(FromValueOpt::from_value(v)?),
-                    "tax_type" => b.tax_type = Some(FromValueOpt::from_value(v)?),
+                    "active" => b.active = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "display_name" => b.display_name = FromValueOpt::from_value(v),
+                    "effective_percentage" => b.effective_percentage = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "inclusive" => b.inclusive = FromValueOpt::from_value(v),
+                    "jurisdiction" => b.jurisdiction = FromValueOpt::from_value(v),
+                    "jurisdiction_level" => b.jurisdiction_level = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "percentage" => b.percentage = FromValueOpt::from_value(v),
+                    "state" => b.state = FromValueOpt::from_value(v),
+                    "tax_type" => b.tax_type = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

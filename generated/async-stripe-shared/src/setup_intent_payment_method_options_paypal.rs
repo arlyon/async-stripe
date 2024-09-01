@@ -11,7 +11,12 @@ pub struct SetupIntentPaymentMethodOptionsPaypalBuilder {
     billing_agreement_id: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -56,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { billing_agreement_id: self.billing_agreement_id.take()? })
+            let (Some(billing_agreement_id),) = (self.billing_agreement_id.take(),) else {
+                return None;
+            };
+            Some(Self::Out { billing_agreement_id })
         }
     }
 
@@ -83,9 +91,7 @@ const _: () = {
             let mut b = SetupIntentPaymentMethodOptionsPaypalBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "billing_agreement_id" => {
-                        b.billing_agreement_id = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "billing_agreement_id" => b.billing_agreement_id = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -18,7 +18,12 @@ pub struct PortalFlowsFlowSubscriptionUpdateConfirmBuilder {
     subscription: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                discounts: self.discounts.take()?,
-                items: self.items.take()?,
-                subscription: self.subscription.take()?,
-            })
+            let (Some(discounts), Some(items), Some(subscription)) =
+                (self.discounts.take(), self.items.take(), self.subscription.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { discounts, items, subscription })
         }
     }
 
@@ -100,9 +106,9 @@ const _: () = {
             let mut b = PortalFlowsFlowSubscriptionUpdateConfirmBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
-                    "items" => b.items = Some(FromValueOpt::from_value(v)?),
-                    "subscription" => b.subscription = Some(FromValueOpt::from_value(v)?),
+                    "discounts" => b.discounts = FromValueOpt::from_value(v),
+                    "items" => b.items = FromValueOpt::from_value(v),
+                    "subscription" => b.subscription = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

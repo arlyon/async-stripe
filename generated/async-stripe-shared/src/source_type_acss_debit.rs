@@ -27,7 +27,12 @@ pub struct SourceTypeAcssDebitBuilder {
     routing_number: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -94,17 +99,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(bank_address_city),
+                Some(bank_address_line_1),
+                Some(bank_address_line_2),
+                Some(bank_address_postal_code),
+                Some(bank_name),
+                Some(category),
+                Some(country),
+                Some(fingerprint),
+                Some(last4),
+                Some(routing_number),
+            ) = (
+                self.bank_address_city.take(),
+                self.bank_address_line_1.take(),
+                self.bank_address_line_2.take(),
+                self.bank_address_postal_code.take(),
+                self.bank_name.take(),
+                self.category.take(),
+                self.country.take(),
+                self.fingerprint.take(),
+                self.last4.take(),
+                self.routing_number.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                bank_address_city: self.bank_address_city.take()?,
-                bank_address_line_1: self.bank_address_line_1.take()?,
-                bank_address_line_2: self.bank_address_line_2.take()?,
-                bank_address_postal_code: self.bank_address_postal_code.take()?,
-                bank_name: self.bank_name.take()?,
-                category: self.category.take()?,
-                country: self.country.take()?,
-                fingerprint: self.fingerprint.take()?,
-                last4: self.last4.take()?,
-                routing_number: self.routing_number.take()?,
+                bank_address_city,
+                bank_address_line_1,
+                bank_address_line_2,
+                bank_address_postal_code,
+                bank_name,
+                category,
+                country,
+                fingerprint,
+                last4,
+                routing_number,
             })
         }
     }
@@ -132,22 +163,18 @@ const _: () = {
             let mut b = SourceTypeAcssDebitBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank_address_city" => b.bank_address_city = Some(FromValueOpt::from_value(v)?),
-                    "bank_address_line_1" => {
-                        b.bank_address_line_1 = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "bank_address_line_2" => {
-                        b.bank_address_line_2 = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "bank_address_city" => b.bank_address_city = FromValueOpt::from_value(v),
+                    "bank_address_line_1" => b.bank_address_line_1 = FromValueOpt::from_value(v),
+                    "bank_address_line_2" => b.bank_address_line_2 = FromValueOpt::from_value(v),
                     "bank_address_postal_code" => {
-                        b.bank_address_postal_code = Some(FromValueOpt::from_value(v)?)
+                        b.bank_address_postal_code = FromValueOpt::from_value(v)
                     }
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
-                    "category" => b.category = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "routing_number" => b.routing_number = Some(FromValueOpt::from_value(v)?),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "category" => b.category = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

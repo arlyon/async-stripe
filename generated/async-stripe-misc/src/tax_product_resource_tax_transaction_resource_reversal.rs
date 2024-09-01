@@ -10,7 +10,12 @@ pub struct TaxProductResourceTaxTransactionResourceReversalBuilder {
     original_transaction: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { original_transaction: self.original_transaction.take()? })
+            let (Some(original_transaction),) = (self.original_transaction.take(),) else {
+                return None;
+            };
+            Some(Self::Out { original_transaction })
         }
     }
 
@@ -82,9 +90,7 @@ const _: () = {
             let mut b = TaxProductResourceTaxTransactionResourceReversalBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "original_transaction" => {
-                        b.original_transaction = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "original_transaction" => b.original_transaction = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

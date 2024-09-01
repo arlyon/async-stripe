@@ -47,7 +47,12 @@ pub struct ReportingReportRunBuilder {
     succeeded_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -110,16 +115,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(created),
+                Some(error),
+                Some(id),
+                Some(livemode),
+                Some(parameters),
+                Some(report_type),
+                Some(result),
+                Some(status),
+                Some(succeeded_at),
+            ) = (
+                self.created,
+                self.error.take(),
+                self.id.take(),
+                self.livemode,
+                self.parameters.take(),
+                self.report_type.take(),
+                self.result.take(),
+                self.status.take(),
+                self.succeeded_at,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                created: self.created?,
-                error: self.error.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                parameters: self.parameters.take()?,
-                report_type: self.report_type.take()?,
-                result: self.result.take()?,
-                status: self.status.take()?,
-                succeeded_at: self.succeeded_at?,
+                created,
+                error,
+                id,
+                livemode,
+                parameters,
+                report_type,
+                result,
+                status,
+                succeeded_at,
             })
         }
     }
@@ -147,15 +176,15 @@ const _: () = {
             let mut b = ReportingReportRunBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "error" => b.error = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "parameters" => b.parameters = Some(FromValueOpt::from_value(v)?),
-                    "report_type" => b.report_type = Some(FromValueOpt::from_value(v)?),
-                    "result" => b.result = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "succeeded_at" => b.succeeded_at = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "error" => b.error = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "parameters" => b.parameters = FromValueOpt::from_value(v),
+                    "report_type" => b.report_type = FromValueOpt::from_value(v),
+                    "result" => b.result = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "succeeded_at" => b.succeeded_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

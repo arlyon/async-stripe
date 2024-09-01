@@ -45,7 +45,12 @@ pub struct TerminalReaderBuilder {
     status: Option<Option<stripe_terminal::TerminalReaderStatus>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -112,18 +117,46 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(action),
+                Some(device_sw_version),
+                Some(device_type),
+                Some(id),
+                Some(ip_address),
+                Some(label),
+                Some(livemode),
+                Some(location),
+                Some(metadata),
+                Some(serial_number),
+                Some(status),
+            ) = (
+                self.action.take(),
+                self.device_sw_version.take(),
+                self.device_type,
+                self.id.take(),
+                self.ip_address.take(),
+                self.label.take(),
+                self.livemode,
+                self.location.take(),
+                self.metadata.take(),
+                self.serial_number.take(),
+                self.status,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                action: self.action.take()?,
-                device_sw_version: self.device_sw_version.take()?,
-                device_type: self.device_type?,
-                id: self.id.take()?,
-                ip_address: self.ip_address.take()?,
-                label: self.label.take()?,
-                livemode: self.livemode?,
-                location: self.location.take()?,
-                metadata: self.metadata.take()?,
-                serial_number: self.serial_number.take()?,
-                status: self.status?,
+                action,
+                device_sw_version,
+                device_type,
+                id,
+                ip_address,
+                label,
+                livemode,
+                location,
+                metadata,
+                serial_number,
+                status,
             })
         }
     }
@@ -151,17 +184,17 @@ const _: () = {
             let mut b = TerminalReaderBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "action" => b.action = Some(FromValueOpt::from_value(v)?),
-                    "device_sw_version" => b.device_sw_version = Some(FromValueOpt::from_value(v)?),
-                    "device_type" => b.device_type = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "ip_address" => b.ip_address = Some(FromValueOpt::from_value(v)?),
-                    "label" => b.label = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "location" => b.location = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "serial_number" => b.serial_number = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "action" => b.action = FromValueOpt::from_value(v),
+                    "device_sw_version" => b.device_sw_version = FromValueOpt::from_value(v),
+                    "device_type" => b.device_type = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
+                    "label" => b.label = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "location" => b.location = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "serial_number" => b.serial_number = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

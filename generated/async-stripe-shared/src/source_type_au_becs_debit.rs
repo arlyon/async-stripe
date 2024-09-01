@@ -13,7 +13,12 @@ pub struct SourceTypeAuBecsDebitBuilder {
     last4: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -64,11 +69,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                bsb_number: self.bsb_number.take()?,
-                fingerprint: self.fingerprint.take()?,
-                last4: self.last4.take()?,
-            })
+            let (Some(bsb_number), Some(fingerprint), Some(last4)) =
+                (self.bsb_number.take(), self.fingerprint.take(), self.last4.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { bsb_number, fingerprint, last4 })
         }
     }
 
@@ -95,9 +101,9 @@ const _: () = {
             let mut b = SourceTypeAuBecsDebitBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bsb_number" => b.bsb_number = Some(FromValueOpt::from_value(v)?),
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
+                    "bsb_number" => b.bsb_number = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

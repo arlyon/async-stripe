@@ -21,7 +21,12 @@ pub struct PaymentIntentPaymentMethodOptionsLinkBuilder {
     setup_future_usage: Option<Option<PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,11 +77,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                capture_method: self.capture_method?,
-                persistent_token: self.persistent_token.take()?,
-                setup_future_usage: self.setup_future_usage?,
-            })
+            let (Some(capture_method), Some(persistent_token), Some(setup_future_usage)) =
+                (self.capture_method, self.persistent_token.take(), self.setup_future_usage)
+            else {
+                return None;
+            };
+            Some(Self::Out { capture_method, persistent_token, setup_future_usage })
         }
     }
 
@@ -103,11 +109,9 @@ const _: () = {
             let mut b = PaymentIntentPaymentMethodOptionsLinkBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "capture_method" => b.capture_method = Some(FromValueOpt::from_value(v)?),
-                    "persistent_token" => b.persistent_token = Some(FromValueOpt::from_value(v)?),
-                    "setup_future_usage" => {
-                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
+                    "persistent_token" => b.persistent_token = FromValueOpt::from_value(v),
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -19,7 +19,12 @@ pub struct PaymentPagesCheckoutSessionCurrencyConversionBuilder {
     source_currency: Option<stripe_types::Currency>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +77,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount_subtotal: self.amount_subtotal?,
-                amount_total: self.amount_total?,
-                fx_rate: self.fx_rate.take()?,
-                source_currency: self.source_currency?,
-            })
+            let (Some(amount_subtotal), Some(amount_total), Some(fx_rate), Some(source_currency)) =
+                (self.amount_subtotal, self.amount_total, self.fx_rate.take(), self.source_currency)
+            else {
+                return None;
+            };
+            Some(Self::Out { amount_subtotal, amount_total, fx_rate, source_currency })
         }
     }
 
@@ -104,10 +109,10 @@ const _: () = {
             let mut b = PaymentPagesCheckoutSessionCurrencyConversionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_subtotal" => b.amount_subtotal = Some(FromValueOpt::from_value(v)?),
-                    "amount_total" => b.amount_total = Some(FromValueOpt::from_value(v)?),
-                    "fx_rate" => b.fx_rate = Some(FromValueOpt::from_value(v)?),
-                    "source_currency" => b.source_currency = Some(FromValueOpt::from_value(v)?),
+                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
+                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
+                    "fx_rate" => b.fx_rate = FromValueOpt::from_value(v),
+                    "source_currency" => b.source_currency = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

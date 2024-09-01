@@ -11,7 +11,12 @@ pub struct TaxProductResourceTaxSettingsStatusDetailsBuilder {
     pending: Option<Option<stripe_misc::TaxProductResourceTaxSettingsStatusDetailsResourcePending>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -57,7 +62,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { active: self.active?, pending: self.pending.take()? })
+            let (Some(active), Some(pending)) = (self.active, self.pending.take()) else {
+                return None;
+            };
+            Some(Self::Out { active, pending })
         }
     }
 
@@ -84,8 +92,8 @@ const _: () = {
             let mut b = TaxProductResourceTaxSettingsStatusDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "active" => b.active = Some(FromValueOpt::from_value(v)?),
-                    "pending" => b.pending = Some(FromValueOpt::from_value(v)?),
+                    "active" => b.active = FromValueOpt::from_value(v),
+                    "pending" => b.pending = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

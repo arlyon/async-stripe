@@ -220,7 +220,12 @@ pub struct CheckoutSessionBuilder {
     url: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -383,63 +388,175 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(after_expiration),
+                Some(allow_promotion_codes),
+                Some(amount_subtotal),
+                Some(amount_total),
+                Some(automatic_tax),
+                Some(billing_address_collection),
+                Some(cancel_url),
+                Some(client_reference_id),
+                Some(client_secret),
+                Some(consent),
+                Some(consent_collection),
+                Some(created),
+                Some(currency),
+                Some(currency_conversion),
+                Some(custom_fields),
+                Some(custom_text),
+                Some(customer),
+                Some(customer_creation),
+                Some(customer_details),
+                Some(customer_email),
+                Some(expires_at),
+                Some(id),
+                Some(invoice),
+                Some(invoice_creation),
+                Some(line_items),
+                Some(livemode),
+                Some(locale),
+                Some(metadata),
+                Some(mode),
+                Some(payment_intent),
+                Some(payment_link),
+                Some(payment_method_collection),
+                Some(payment_method_configuration_details),
+                Some(payment_method_options),
+                Some(payment_method_types),
+                Some(payment_status),
+                Some(phone_number_collection),
+                Some(recovered_from),
+                Some(redirect_on_completion),
+                Some(return_url),
+                Some(saved_payment_method_options),
+                Some(setup_intent),
+                Some(shipping_address_collection),
+                Some(shipping_cost),
+                Some(shipping_details),
+                Some(shipping_options),
+                Some(status),
+                Some(submit_type),
+                Some(subscription),
+                Some(success_url),
+                Some(tax_id_collection),
+                Some(total_details),
+                Some(ui_mode),
+                Some(url),
+            ) = (
+                self.after_expiration.take(),
+                self.allow_promotion_codes,
+                self.amount_subtotal,
+                self.amount_total,
+                self.automatic_tax.take(),
+                self.billing_address_collection,
+                self.cancel_url.take(),
+                self.client_reference_id.take(),
+                self.client_secret.take(),
+                self.consent,
+                self.consent_collection,
+                self.created,
+                self.currency,
+                self.currency_conversion.take(),
+                self.custom_fields.take(),
+                self.custom_text.take(),
+                self.customer.take(),
+                self.customer_creation,
+                self.customer_details.take(),
+                self.customer_email.take(),
+                self.expires_at,
+                self.id.take(),
+                self.invoice.take(),
+                self.invoice_creation.take(),
+                self.line_items.take(),
+                self.livemode,
+                self.locale,
+                self.metadata.take(),
+                self.mode,
+                self.payment_intent.take(),
+                self.payment_link.take(),
+                self.payment_method_collection,
+                self.payment_method_configuration_details.take(),
+                self.payment_method_options.take(),
+                self.payment_method_types.take(),
+                self.payment_status,
+                self.phone_number_collection,
+                self.recovered_from.take(),
+                self.redirect_on_completion,
+                self.return_url.take(),
+                self.saved_payment_method_options.take(),
+                self.setup_intent.take(),
+                self.shipping_address_collection.take(),
+                self.shipping_cost.take(),
+                self.shipping_details.take(),
+                self.shipping_options.take(),
+                self.status,
+                self.submit_type,
+                self.subscription.take(),
+                self.success_url.take(),
+                self.tax_id_collection,
+                self.total_details.take(),
+                self.ui_mode,
+                self.url.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                after_expiration: self.after_expiration.take()?,
-                allow_promotion_codes: self.allow_promotion_codes?,
-                amount_subtotal: self.amount_subtotal?,
-                amount_total: self.amount_total?,
-                automatic_tax: self.automatic_tax.take()?,
-                billing_address_collection: self.billing_address_collection?,
-                cancel_url: self.cancel_url.take()?,
-                client_reference_id: self.client_reference_id.take()?,
-                client_secret: self.client_secret.take()?,
-                consent: self.consent?,
-                consent_collection: self.consent_collection?,
-                created: self.created?,
-                currency: self.currency?,
-                currency_conversion: self.currency_conversion.take()?,
-                custom_fields: self.custom_fields.take()?,
-                custom_text: self.custom_text.take()?,
-                customer: self.customer.take()?,
-                customer_creation: self.customer_creation?,
-                customer_details: self.customer_details.take()?,
-                customer_email: self.customer_email.take()?,
-                expires_at: self.expires_at?,
-                id: self.id.take()?,
-                invoice: self.invoice.take()?,
-                invoice_creation: self.invoice_creation.take()?,
-                line_items: self.line_items.take()?,
-                livemode: self.livemode?,
-                locale: self.locale?,
-                metadata: self.metadata.take()?,
-                mode: self.mode?,
-                payment_intent: self.payment_intent.take()?,
-                payment_link: self.payment_link.take()?,
-                payment_method_collection: self.payment_method_collection?,
-                payment_method_configuration_details: self
-                    .payment_method_configuration_details
-                    .take()?,
-                payment_method_options: self.payment_method_options.take()?,
-                payment_method_types: self.payment_method_types.take()?,
-                payment_status: self.payment_status?,
-                phone_number_collection: self.phone_number_collection?,
-                recovered_from: self.recovered_from.take()?,
-                redirect_on_completion: self.redirect_on_completion?,
-                return_url: self.return_url.take()?,
-                saved_payment_method_options: self.saved_payment_method_options.take()?,
-                setup_intent: self.setup_intent.take()?,
-                shipping_address_collection: self.shipping_address_collection.take()?,
-                shipping_cost: self.shipping_cost.take()?,
-                shipping_details: self.shipping_details.take()?,
-                shipping_options: self.shipping_options.take()?,
-                status: self.status?,
-                submit_type: self.submit_type?,
-                subscription: self.subscription.take()?,
-                success_url: self.success_url.take()?,
-                tax_id_collection: self.tax_id_collection?,
-                total_details: self.total_details.take()?,
-                ui_mode: self.ui_mode?,
-                url: self.url.take()?,
+                after_expiration,
+                allow_promotion_codes,
+                amount_subtotal,
+                amount_total,
+                automatic_tax,
+                billing_address_collection,
+                cancel_url,
+                client_reference_id,
+                client_secret,
+                consent,
+                consent_collection,
+                created,
+                currency,
+                currency_conversion,
+                custom_fields,
+                custom_text,
+                customer,
+                customer_creation,
+                customer_details,
+                customer_email,
+                expires_at,
+                id,
+                invoice,
+                invoice_creation,
+                line_items,
+                livemode,
+                locale,
+                metadata,
+                mode,
+                payment_intent,
+                payment_link,
+                payment_method_collection,
+                payment_method_configuration_details,
+                payment_method_options,
+                payment_method_types,
+                payment_status,
+                phone_number_collection,
+                recovered_from,
+                redirect_on_completion,
+                return_url,
+                saved_payment_method_options,
+                setup_intent,
+                shipping_address_collection,
+                shipping_cost,
+                shipping_details,
+                shipping_options,
+                status,
+                submit_type,
+                subscription,
+                success_url,
+                tax_id_collection,
+                total_details,
+                ui_mode,
+                url,
             })
         }
     }
@@ -467,86 +584,78 @@ const _: () = {
             let mut b = CheckoutSessionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "after_expiration" => b.after_expiration = Some(FromValueOpt::from_value(v)?),
+                    "after_expiration" => b.after_expiration = FromValueOpt::from_value(v),
                     "allow_promotion_codes" => {
-                        b.allow_promotion_codes = Some(FromValueOpt::from_value(v)?)
+                        b.allow_promotion_codes = FromValueOpt::from_value(v)
                     }
-                    "amount_subtotal" => b.amount_subtotal = Some(FromValueOpt::from_value(v)?),
-                    "amount_total" => b.amount_total = Some(FromValueOpt::from_value(v)?),
-                    "automatic_tax" => b.automatic_tax = Some(FromValueOpt::from_value(v)?),
+                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
+                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
+                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
                     "billing_address_collection" => {
-                        b.billing_address_collection = Some(FromValueOpt::from_value(v)?)
+                        b.billing_address_collection = FromValueOpt::from_value(v)
                     }
-                    "cancel_url" => b.cancel_url = Some(FromValueOpt::from_value(v)?),
-                    "client_reference_id" => {
-                        b.client_reference_id = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "client_secret" => b.client_secret = Some(FromValueOpt::from_value(v)?),
-                    "consent" => b.consent = Some(FromValueOpt::from_value(v)?),
-                    "consent_collection" => {
-                        b.consent_collection = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "currency_conversion" => {
-                        b.currency_conversion = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "custom_fields" => b.custom_fields = Some(FromValueOpt::from_value(v)?),
-                    "custom_text" => b.custom_text = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "customer_creation" => b.customer_creation = Some(FromValueOpt::from_value(v)?),
-                    "customer_details" => b.customer_details = Some(FromValueOpt::from_value(v)?),
-                    "customer_email" => b.customer_email = Some(FromValueOpt::from_value(v)?),
-                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
-                    "invoice_creation" => b.invoice_creation = Some(FromValueOpt::from_value(v)?),
-                    "line_items" => b.line_items = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "locale" => b.locale = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "mode" => b.mode = Some(FromValueOpt::from_value(v)?),
-                    "payment_intent" => b.payment_intent = Some(FromValueOpt::from_value(v)?),
-                    "payment_link" => b.payment_link = Some(FromValueOpt::from_value(v)?),
+                    "cancel_url" => b.cancel_url = FromValueOpt::from_value(v),
+                    "client_reference_id" => b.client_reference_id = FromValueOpt::from_value(v),
+                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
+                    "consent" => b.consent = FromValueOpt::from_value(v),
+                    "consent_collection" => b.consent_collection = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "currency_conversion" => b.currency_conversion = FromValueOpt::from_value(v),
+                    "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
+                    "custom_text" => b.custom_text = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_creation" => b.customer_creation = FromValueOpt::from_value(v),
+                    "customer_details" => b.customer_details = FromValueOpt::from_value(v),
+                    "customer_email" => b.customer_email = FromValueOpt::from_value(v),
+                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "invoice" => b.invoice = FromValueOpt::from_value(v),
+                    "invoice_creation" => b.invoice_creation = FromValueOpt::from_value(v),
+                    "line_items" => b.line_items = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "locale" => b.locale = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "mode" => b.mode = FromValueOpt::from_value(v),
+                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
+                    "payment_link" => b.payment_link = FromValueOpt::from_value(v),
                     "payment_method_collection" => {
-                        b.payment_method_collection = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_collection = FromValueOpt::from_value(v)
                     }
                     "payment_method_configuration_details" => {
-                        b.payment_method_configuration_details = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_configuration_details = FromValueOpt::from_value(v)
                     }
                     "payment_method_options" => {
-                        b.payment_method_options = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_options = FromValueOpt::from_value(v)
                     }
-                    "payment_method_types" => {
-                        b.payment_method_types = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "payment_status" => b.payment_status = Some(FromValueOpt::from_value(v)?),
+                    "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
+                    "payment_status" => b.payment_status = FromValueOpt::from_value(v),
                     "phone_number_collection" => {
-                        b.phone_number_collection = Some(FromValueOpt::from_value(v)?)
+                        b.phone_number_collection = FromValueOpt::from_value(v)
                     }
-                    "recovered_from" => b.recovered_from = Some(FromValueOpt::from_value(v)?),
+                    "recovered_from" => b.recovered_from = FromValueOpt::from_value(v),
                     "redirect_on_completion" => {
-                        b.redirect_on_completion = Some(FromValueOpt::from_value(v)?)
+                        b.redirect_on_completion = FromValueOpt::from_value(v)
                     }
-                    "return_url" => b.return_url = Some(FromValueOpt::from_value(v)?),
+                    "return_url" => b.return_url = FromValueOpt::from_value(v),
                     "saved_payment_method_options" => {
-                        b.saved_payment_method_options = Some(FromValueOpt::from_value(v)?)
+                        b.saved_payment_method_options = FromValueOpt::from_value(v)
                     }
-                    "setup_intent" => b.setup_intent = Some(FromValueOpt::from_value(v)?),
+                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
                     "shipping_address_collection" => {
-                        b.shipping_address_collection = Some(FromValueOpt::from_value(v)?)
+                        b.shipping_address_collection = FromValueOpt::from_value(v)
                     }
-                    "shipping_cost" => b.shipping_cost = Some(FromValueOpt::from_value(v)?),
-                    "shipping_details" => b.shipping_details = Some(FromValueOpt::from_value(v)?),
-                    "shipping_options" => b.shipping_options = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "submit_type" => b.submit_type = Some(FromValueOpt::from_value(v)?),
-                    "subscription" => b.subscription = Some(FromValueOpt::from_value(v)?),
-                    "success_url" => b.success_url = Some(FromValueOpt::from_value(v)?),
-                    "tax_id_collection" => b.tax_id_collection = Some(FromValueOpt::from_value(v)?),
-                    "total_details" => b.total_details = Some(FromValueOpt::from_value(v)?),
-                    "ui_mode" => b.ui_mode = Some(FromValueOpt::from_value(v)?),
-                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+                    "shipping_cost" => b.shipping_cost = FromValueOpt::from_value(v),
+                    "shipping_details" => b.shipping_details = FromValueOpt::from_value(v),
+                    "shipping_options" => b.shipping_options = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "submit_type" => b.submit_type = FromValueOpt::from_value(v),
+                    "subscription" => b.subscription = FromValueOpt::from_value(v),
+                    "success_url" => b.success_url = FromValueOpt::from_value(v),
+                    "tax_id_collection" => b.tax_id_collection = FromValueOpt::from_value(v),
+                    "total_details" => b.total_details = FromValueOpt::from_value(v),
+                    "ui_mode" => b.ui_mode = FromValueOpt::from_value(v),
+                    "url" => b.url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

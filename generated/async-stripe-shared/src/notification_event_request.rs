@@ -16,7 +16,12 @@ pub struct NotificationEventRequestBuilder {
     idempotency_key: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -62,7 +67,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { id: self.id.take()?, idempotency_key: self.idempotency_key.take()? })
+            let (Some(id), Some(idempotency_key)) = (self.id.take(), self.idempotency_key.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { id, idempotency_key })
         }
     }
 
@@ -89,8 +98,8 @@ const _: () = {
             let mut b = NotificationEventRequestBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "idempotency_key" => b.idempotency_key = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "idempotency_key" => b.idempotency_key = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

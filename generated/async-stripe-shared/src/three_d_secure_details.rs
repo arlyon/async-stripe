@@ -29,7 +29,12 @@ pub struct ThreeDSecureDetailsBuilder {
     version: Option<Option<ThreeDSecureDetailsVersion>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -88,13 +93,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(authentication_flow),
+                Some(electronic_commerce_indicator),
+                Some(result),
+                Some(result_reason),
+                Some(transaction_id),
+                Some(version),
+            ) = (
+                self.authentication_flow,
+                self.electronic_commerce_indicator,
+                self.result,
+                self.result_reason,
+                self.transaction_id.take(),
+                self.version,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                authentication_flow: self.authentication_flow?,
-                electronic_commerce_indicator: self.electronic_commerce_indicator?,
-                result: self.result?,
-                result_reason: self.result_reason?,
-                transaction_id: self.transaction_id.take()?,
-                version: self.version?,
+                authentication_flow,
+                electronic_commerce_indicator,
+                result,
+                result_reason,
+                transaction_id,
+                version,
             })
         }
     }
@@ -122,16 +145,14 @@ const _: () = {
             let mut b = ThreeDSecureDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "authentication_flow" => {
-                        b.authentication_flow = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "authentication_flow" => b.authentication_flow = FromValueOpt::from_value(v),
                     "electronic_commerce_indicator" => {
-                        b.electronic_commerce_indicator = Some(FromValueOpt::from_value(v)?)
+                        b.electronic_commerce_indicator = FromValueOpt::from_value(v)
                     }
-                    "result" => b.result = Some(FromValueOpt::from_value(v)?),
-                    "result_reason" => b.result_reason = Some(FromValueOpt::from_value(v)?),
-                    "transaction_id" => b.transaction_id = Some(FromValueOpt::from_value(v)?),
-                    "version" => b.version = Some(FromValueOpt::from_value(v)?),
+                    "result" => b.result = FromValueOpt::from_value(v),
+                    "result_reason" => b.result_reason = FromValueOpt::from_value(v),
+                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
+                    "version" => b.version = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

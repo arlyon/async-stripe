@@ -13,7 +13,12 @@ pub struct ChargeFraudDetailsBuilder {
     user_report: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +64,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                stripe_report: self.stripe_report.take()?,
-                user_report: self.user_report.take()?,
-            })
+            let (Some(stripe_report), Some(user_report)) =
+                (self.stripe_report.take(), self.user_report.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { stripe_report, user_report })
         }
     }
 
@@ -89,8 +96,8 @@ const _: () = {
             let mut b = ChargeFraudDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "stripe_report" => b.stripe_report = Some(FromValueOpt::from_value(v)?),
-                    "user_report" => b.user_report = Some(FromValueOpt::from_value(v)?),
+                    "stripe_report" => b.stripe_report = FromValueOpt::from_value(v),
+                    "user_report" => b.user_report = FromValueOpt::from_value(v),
 
                     _ => {}
                 }
