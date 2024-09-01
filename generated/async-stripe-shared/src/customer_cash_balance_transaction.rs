@@ -61,6 +61,7 @@ unapplied_from_payment: Option<Option<stripe_shared::CustomerBalanceResourceCash
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]

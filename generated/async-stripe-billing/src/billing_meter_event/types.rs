@@ -32,6 +32,7 @@ pub struct BillingMeterEventBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
