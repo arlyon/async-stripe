@@ -588,9 +588,10 @@ impl CreateProductDefaultPriceDataCurrencyOptionsTiers {
 /// The lower bound of a tier is the upper bound of the previous tier adding one.
 /// Use `inf` to define a fallback tier.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo {
     Inf,
+    #[serde(untagged)]
     I64(i64),
 }
 /// The recurring components of a price such as `interval` and `interval_count`.

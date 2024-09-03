@@ -257,9 +257,10 @@ impl<'a> UpdateFileLinkBuilder<'a> {
 }
 /// A future timestamp after which the link will no longer be usable, or `now` to expire the link immediately.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpdateFileLinkExpiresAt {
     Now,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// Updates an existing file link object. Expired links can no longer be updated.

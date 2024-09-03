@@ -540,11 +540,12 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentMandateDataCustomerAcce
 /// Use this parameter in scenarios where you collect card details and [charge them later](https://stripe.com/docs/payments/cards/charging-saved-cards).
 /// This parameter can only be used with [`confirm=true`](https://stripe.com/docs/api/payment_intents/create#create_payment_intent-confirm).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreatePaymentIntentOffSession {
-    Bool(bool),
     OneOff,
     Recurring,
+    #[serde(untagged)]
+    Bool(bool),
 }
 /// If provided, this hash will be used to create a PaymentMethod. The new PaymentMethod will appear
 /// in the [payment_method](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-payment_method).
@@ -17864,9 +17865,11 @@ impl<'a> ConfirmPaymentIntentBuilder<'a> {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum ConfirmPaymentIntentMandateData<'a> {
+    #[serde(untagged)]
     SecretKeyParam(ConfirmPaymentIntentSecretKeyParam<'a>),
+    #[serde(untagged)]
     ClientKeyParam(ConfirmPaymentIntentClientKeyParam<'a>),
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -18070,11 +18073,12 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentClientKeyParamCustomer
 /// Set to `true` to indicate that the customer isn't in your checkout flow during this payment attempt and can't authenticate.
 /// Use this parameter in scenarios where you collect card details and [charge them later](https://stripe.com/docs/payments/cards/charging-saved-cards).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum ConfirmPaymentIntentOffSession {
-    Bool(bool),
     OneOff,
     Recurring,
+    #[serde(untagged)]
+    Bool(bool),
 }
 /// If provided, this hash will be used to create a PaymentMethod. The new PaymentMethod will appear
 /// in the [payment_method](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-payment_method).

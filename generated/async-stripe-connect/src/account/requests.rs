@@ -1514,9 +1514,10 @@ impl Default for CreateAccountSettingsPayoutsSchedule {
 /// The `delay_days` parameter remains at the last configured value if `interval` is `manual`.
 /// [Learn more about controlling payout delay days](https://docs.stripe.com/connect/manage-payout-schedule).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreateAccountSettingsPayoutsScheduleDelayDays {
     Minimum,
+    #[serde(untagged)]
     U32(u32),
 }
 /// How frequently available funds are paid out.
@@ -2629,9 +2630,10 @@ impl Default for UpdateAccountSettingsPayoutsSchedule {
 /// The `delay_days` parameter remains at the last configured value if `interval` is `manual`.
 /// [Learn more about controlling payout delay days](https://docs.stripe.com/connect/manage-payout-schedule).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpdateAccountSettingsPayoutsScheduleDelayDays {
     Minimum,
+    #[serde(untagged)]
     U32(u32),
 }
 /// How frequently available funds are paid out.

@@ -21,10 +21,13 @@ impl<'a> ObjectWriter<'a> {
 
         // Build the body of the enum definition
         let mut enum_body = String::with_capacity(64);
+        let mut variants = variants.iter().collect::<Vec<_>>();
+        variants.sort_by_key(|v| v.rust_type.is_some());
         for EnumVariant { variant, rust_type } in variants {
             if let Some(typ) = rust_type {
                 let printable = self.components.construct_printable_type(typ);
                 let typ = PrintableWithLifetime::new(&printable, self.lifetime);
+                let _ = writeln!(enum_body, "#[serde(untagged)]");
                 let _ = writeln!(enum_body, "{variant}({typ}),");
             } else {
                 let _ = writeln!(enum_body, "{variant},");
@@ -36,7 +39,7 @@ impl<'a> ObjectWriter<'a> {
         let _ = writedoc!(
             out,
             r#"
-            #[serde(untagged)]
+            #[serde(rename_all = "snake_case")]
             pub enum {enum_name}{lifetime_str} {{
             {enum_body}
             }}
