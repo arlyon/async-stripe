@@ -623,9 +623,11 @@ impl<'a> CreatePaymentMethodBoleto<'a> {
 /// When providing a card number, you must meet the requirements for [PCI compliance](https://stripe.com/docs/security#validating-pci-compliance).
 /// We strongly recommend using Stripe.js instead of interacting with this API directly.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreatePaymentMethodCard<'a> {
+    #[serde(untagged)]
     CardDetailsParams(CreatePaymentMethodCardDetailsParams<'a>),
+    #[serde(untagged)]
     TokenParams(CreatePaymentMethodTokenParams<'a>),
 }
 /// If this is a `card` PaymentMethod, this hash contains the user's card details.

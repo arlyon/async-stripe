@@ -1018,9 +1018,11 @@ impl<'de> serde::Deserialize<'de> for CreateTokenBankAccountAccountType {
 /// If you also pass in a customer, the card must be the ID of a card belonging to the customer.
 /// Otherwise, if you do not pass in a customer, this is a dictionary containing a user's credit card details, with the options described below.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreateTokenCard<'a> {
+    #[serde(untagged)]
     CreditCardSpecs(CreateTokenCreditCardSpecs<'a>),
+    #[serde(untagged)]
     Str(&'a str),
 }
 /// The card this token will represent.

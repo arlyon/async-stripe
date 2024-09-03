@@ -275,9 +275,11 @@ impl<'a> CreatePlanBuilder<'a> {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreatePlanProduct<'a> {
+    #[serde(untagged)]
     InlineProductParams(CreatePlanInlineProductParams<'a>),
+    #[serde(untagged)]
     Id(&'a str),
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -366,9 +368,10 @@ impl<'a> CreatePlanTiers<'a> {
 /// The lower bound of a tier is the upper bound of the previous tier adding one.
 /// Use `inf` to define a fallback tier.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreatePlanTiersUpTo {
     Inf,
+    #[serde(untagged)]
     I64(i64),
 }
 /// Apply a transformation to the reported usage or set quantity before computing the billed price.

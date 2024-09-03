@@ -2,6 +2,7 @@ use std::str::FromStr;
 
 use stripe_connect::AccountType;
 use stripe_core::EventType;
+use stripe_product::price::CreatePriceTiersUpTo;
 
 #[test]
 fn enums_basic() {
@@ -15,6 +16,12 @@ fn enums_basic() {
     assert_eq!(serde_json::from_str::<AccountType>(r#""express""#).unwrap(), AccountType::Express);
     assert_eq!(AccountType::Express.to_string(), "express");
     assert!(AccountType::from_str("unknown").is_err());
+}
+
+#[test]
+fn enums_requests() {
+    assert_eq!(serde_json::to_string(&CreatePriceTiersUpTo::Inf).unwrap(), r#""inf""#);
+    assert_eq!(serde_json::to_string(&CreatePriceTiersUpTo::I64(2)).unwrap(), r#"2"#);
 }
 
 #[test]

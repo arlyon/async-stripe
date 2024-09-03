@@ -234,9 +234,10 @@ impl<'a> CreateTaxRegistrationBuilder<'a> {
 /// Time at which the Tax Registration becomes active.
 /// It can be either `now` to indicate the current time, or a future timestamp measured in seconds since the Unix epoch.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreateTaxRegistrationActiveFrom {
     Now,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// Specific options for a registration in the specified `country`.
@@ -5952,18 +5953,20 @@ impl<'a> UpdateTaxRegistrationBuilder<'a> {
 /// Time at which the registration becomes active.
 /// It can be either `now` to indicate the current time, or a timestamp measured in seconds since the Unix epoch.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpdateTaxRegistrationActiveFrom {
     Now,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// If set, the registration stops being active at this time.
 /// If not set, the registration will be active indefinitely.
 /// It can be either `now` to indicate the current time, or a timestamp measured in seconds since the Unix epoch.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpdateTaxRegistrationExpiresAt {
     Now,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// Updates an existing Tax `Registration` object.

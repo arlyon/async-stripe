@@ -1681,10 +1681,11 @@ impl<'de> serde::Deserialize<'de> for UpcomingInvoiceScheduleDetailsPhasesBillin
 /// The date at which this phase of the subscription schedule ends.
 /// If set, `iterations` must not be set.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingInvoiceScheduleDetailsPhasesEndDate {
-    Timestamp(stripe_types::Timestamp),
     Now,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// All invoices will be billed using the specified settings.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -2095,18 +2096,20 @@ impl<'de> serde::Deserialize<'de> for UpcomingInvoiceScheduleDetailsPhasesProrat
 /// The date at which this phase of the subscription schedule starts or `now`.
 /// Must be set on the first phase.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingInvoiceScheduleDetailsPhasesStartDate {
-    Timestamp(stripe_types::Timestamp),
     Now,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// Sets the phase to trialing from the start date to this date.
 /// Must be before the phase end date, can not be combined with `trial`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingInvoiceScheduleDetailsPhasesTrialEnd {
-    Timestamp(stripe_types::Timestamp),
     Now,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// In cases where the `schedule_details` params update the currently active phase, specifies if and how to prorate at the time of the request.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -2175,10 +2178,11 @@ impl<'de> serde::Deserialize<'de> for UpcomingInvoiceScheduleDetailsProrationBeh
 /// This field has been deprecated and will be removed in a future API version.
 /// Use `subscription_details.billing_cycle_anchor` instead.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingInvoiceSubscriptionBillingCycleAnchor {
     Now,
     Unchanged,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// The subscription creation or modification params to apply as a preview.
@@ -2255,10 +2259,11 @@ impl<'a> Default for UpcomingInvoiceSubscriptionDetails<'a> {
 /// This is used to determine the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
 /// For existing subscriptions, the value can only be set to `now` or `unchanged`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingInvoiceSubscriptionDetailsBillingCycleAnchor {
     Now,
     Unchanged,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// A list of up to 20 subscription items, each with an attached price.
@@ -2630,9 +2635,10 @@ impl<'de> serde::Deserialize<'de> for UpcomingInvoiceSubscriptionDetailsResumeAt
 /// If provided, the invoice returned will preview updating or creating a subscription with that trial end.
 /// If set, one of `subscription_details.items` or `subscription` is required.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingInvoiceSubscriptionDetailsTrialEnd {
     Now,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// A list of up to 20 subscription items, each with an attached price.
@@ -3012,9 +3018,10 @@ impl<'de> serde::Deserialize<'de> for UpcomingInvoiceSubscriptionResumeAt {
 /// This field has been deprecated and will be removed in a future API version.
 /// Use `subscription_details.trial_end` instead.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingInvoiceSubscriptionTrialEnd {
     Now,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// At any time, you can preview the upcoming invoice for a customer.
@@ -4672,10 +4679,11 @@ impl<'de> serde::Deserialize<'de> for UpcomingLinesInvoiceScheduleDetailsPhasesB
 /// The date at which this phase of the subscription schedule ends.
 /// If set, `iterations` must not be set.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingLinesInvoiceScheduleDetailsPhasesEndDate {
-    Timestamp(stripe_types::Timestamp),
     Now,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// All invoices will be billed using the specified settings.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -5082,18 +5090,20 @@ impl<'de> serde::Deserialize<'de> for UpcomingLinesInvoiceScheduleDetailsPhasesP
 /// The date at which this phase of the subscription schedule starts or `now`.
 /// Must be set on the first phase.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingLinesInvoiceScheduleDetailsPhasesStartDate {
-    Timestamp(stripe_types::Timestamp),
     Now,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// Sets the phase to trialing from the start date to this date.
 /// Must be before the phase end date, can not be combined with `trial`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingLinesInvoiceScheduleDetailsPhasesTrialEnd {
-    Timestamp(stripe_types::Timestamp),
     Now,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// In cases where the `schedule_details` params update the currently active phase, specifies if and how to prorate at the time of the request.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -5162,10 +5172,11 @@ impl<'de> serde::Deserialize<'de> for UpcomingLinesInvoiceScheduleDetailsProrati
 /// This field has been deprecated and will be removed in a future API version.
 /// Use `subscription_details.billing_cycle_anchor` instead.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingLinesInvoiceSubscriptionBillingCycleAnchor {
     Now,
     Unchanged,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// The subscription creation or modification params to apply as a preview.
@@ -5242,10 +5253,11 @@ impl<'a> Default for UpcomingLinesInvoiceSubscriptionDetails<'a> {
 /// This is used to determine the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
 /// For existing subscriptions, the value can only be set to `now` or `unchanged`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingLinesInvoiceSubscriptionDetailsBillingCycleAnchor {
     Now,
     Unchanged,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// A list of up to 20 subscription items, each with an attached price.
@@ -5617,9 +5629,10 @@ impl<'de> serde::Deserialize<'de> for UpcomingLinesInvoiceSubscriptionDetailsRes
 /// If provided, the invoice returned will preview updating or creating a subscription with that trial end.
 /// If set, one of `subscription_details.items` or `subscription` is required.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingLinesInvoiceSubscriptionDetailsTrialEnd {
     Now,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// A list of up to 20 subscription items, each with an attached price.
@@ -6001,9 +6014,10 @@ impl<'de> serde::Deserialize<'de> for UpcomingLinesInvoiceSubscriptionResumeAt {
 /// This field has been deprecated and will be removed in a future API version.
 /// Use `subscription_details.trial_end` instead.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpcomingLinesInvoiceSubscriptionTrialEnd {
     Now,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// When retrieving an upcoming invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
@@ -12328,10 +12342,11 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceScheduleDetailsPhasesB
 /// The date at which this phase of the subscription schedule ends.
 /// If set, `iterations` must not be set.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreatePreviewInvoiceScheduleDetailsPhasesEndDate {
-    Timestamp(stripe_types::Timestamp),
     Now,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// All invoices will be billed using the specified settings.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -12738,18 +12753,20 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceScheduleDetailsPhasesP
 /// The date at which this phase of the subscription schedule starts or `now`.
 /// Must be set on the first phase.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreatePreviewInvoiceScheduleDetailsPhasesStartDate {
-    Timestamp(stripe_types::Timestamp),
     Now,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// Sets the phase to trialing from the start date to this date.
 /// Must be before the phase end date, can not be combined with `trial`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreatePreviewInvoiceScheduleDetailsPhasesTrialEnd {
-    Timestamp(stripe_types::Timestamp),
     Now,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// In cases where the `schedule_details` params update the currently active phase, specifies if and how to prorate at the time of the request.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -12886,10 +12903,11 @@ impl<'a> Default for CreatePreviewInvoiceSubscriptionDetails<'a> {
 /// This is used to determine the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
 /// For existing subscriptions, the value can only be set to `now` or `unchanged`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreatePreviewInvoiceSubscriptionDetailsBillingCycleAnchor {
     Now,
     Unchanged,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// A list of up to 20 subscription items, each with an attached price.
@@ -13261,9 +13279,10 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceSubscriptionDetailsRes
 /// If provided, the invoice returned will preview updating or creating a subscription with that trial end.
 /// If set, one of `subscription_details.items` or `subscription` is required.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreatePreviewInvoiceSubscriptionDetailsTrialEnd {
     Now,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// At any time, you can preview the upcoming invoice for a customer.

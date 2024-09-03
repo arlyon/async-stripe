@@ -883,9 +883,10 @@ impl<'a> Default for CreateQuoteSubscriptionData<'a> {
 /// The special value `current_period_end` can be provided to update a subscription at the end of its current period.
 /// The `effective_date` is ignored if it is in the past when the quote is accepted.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreateQuoteSubscriptionDataEffectiveDate {
     CurrentPeriodEnd,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// A quote models prices and services for a customer.
@@ -1563,9 +1564,10 @@ impl<'a> Default for UpdateQuoteSubscriptionData<'a> {
 /// The special value `current_period_end` can be provided to update a subscription at the end of its current period.
 /// The `effective_date` is ignored if it is in the past when the quote is accepted.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpdateQuoteSubscriptionDataEffectiveDate {
     CurrentPeriodEnd,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// A quote models prices and services for a customer.
