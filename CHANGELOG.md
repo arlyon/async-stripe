@@ -1,3 +1,10 @@
+## [0.39.1](https://github.com/arlyon/async-stripe/compare/v0.39.0...v0.39.1) (2024-09-03)
+
+
+### Bug Fixes
+
+* correct docs host and path for API references ([539836d](https://github.com/arlyon/async-stripe/commit/539836d01904742110171a9d6ef877b4cc3f87a3))
+
 # [0.39.0](https://github.com/arlyon/async-stripe/compare/v0.38.1...v0.39.0) (2024-08-31)
 
 
