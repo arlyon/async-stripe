@@ -32,7 +32,13 @@ pub struct TestHelpersTestClockBuilder {
     status: Option<TestHelpersTestClockStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -91,15 +97,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                created: self.created?,
-                deletes_after: self.deletes_after?,
-                frozen_time: self.frozen_time?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                name: self.name.take()?,
-                status: self.status?,
-            })
+            let (
+                Some(created),
+                Some(deletes_after),
+                Some(frozen_time),
+                Some(id),
+                Some(livemode),
+                Some(name),
+                Some(status),
+            ) = (
+                self.created,
+                self.deletes_after,
+                self.frozen_time,
+                self.id.take(),
+                self.livemode,
+                self.name.take(),
+                self.status,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { created, deletes_after, frozen_time, id, livemode, name, status })
         }
     }
 
@@ -126,13 +144,13 @@ const _: () = {
             let mut b = TestHelpersTestClockBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "deletes_after" => b.deletes_after = Some(FromValueOpt::from_value(v)?),
-                    "frozen_time" => b.frozen_time = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "deletes_after" => b.deletes_after = FromValueOpt::from_value(v),
+                    "frozen_time" => b.frozen_time = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

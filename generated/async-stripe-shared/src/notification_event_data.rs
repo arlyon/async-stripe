@@ -24,7 +24,13 @@ pub struct NotificationEventDataBuilder {
     previous_attributes: Option<Option<miniserde::json::Value>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -70,10 +76,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                object: self.object.take()?,
-                previous_attributes: self.previous_attributes.take()?,
-            })
+            let (Some(object), Some(previous_attributes)) =
+                (self.object.take(), self.previous_attributes.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { object, previous_attributes })
         }
     }
 
@@ -100,10 +108,8 @@ const _: () = {
             let mut b = NotificationEventDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "object" => b.object = Some(FromValueOpt::from_value(v)?),
-                    "previous_attributes" => {
-                        b.previous_attributes = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "object" => b.object = FromValueOpt::from_value(v),
+                    "previous_attributes" => b.previous_attributes = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

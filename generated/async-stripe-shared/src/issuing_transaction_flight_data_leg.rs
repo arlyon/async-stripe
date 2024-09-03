@@ -25,7 +25,13 @@ pub struct IssuingTransactionFlightDataLegBuilder {
     stopover_allowed: Option<Option<bool>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -82,13 +88,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(arrival_airport_code),
+                Some(carrier),
+                Some(departure_airport_code),
+                Some(flight_number),
+                Some(service_class),
+                Some(stopover_allowed),
+            ) = (
+                self.arrival_airport_code.take(),
+                self.carrier.take(),
+                self.departure_airport_code.take(),
+                self.flight_number.take(),
+                self.service_class.take(),
+                self.stopover_allowed,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                arrival_airport_code: self.arrival_airport_code.take()?,
-                carrier: self.carrier.take()?,
-                departure_airport_code: self.departure_airport_code.take()?,
-                flight_number: self.flight_number.take()?,
-                service_class: self.service_class.take()?,
-                stopover_allowed: self.stopover_allowed?,
+                arrival_airport_code,
+                carrier,
+                departure_airport_code,
+                flight_number,
+                service_class,
+                stopover_allowed,
             })
         }
     }
@@ -116,16 +140,14 @@ const _: () = {
             let mut b = IssuingTransactionFlightDataLegBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "arrival_airport_code" => {
-                        b.arrival_airport_code = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "carrier" => b.carrier = Some(FromValueOpt::from_value(v)?),
+                    "arrival_airport_code" => b.arrival_airport_code = FromValueOpt::from_value(v),
+                    "carrier" => b.carrier = FromValueOpt::from_value(v),
                     "departure_airport_code" => {
-                        b.departure_airport_code = Some(FromValueOpt::from_value(v)?)
+                        b.departure_airport_code = FromValueOpt::from_value(v)
                     }
-                    "flight_number" => b.flight_number = Some(FromValueOpt::from_value(v)?),
-                    "service_class" => b.service_class = Some(FromValueOpt::from_value(v)?),
-                    "stopover_allowed" => b.stopover_allowed = Some(FromValueOpt::from_value(v)?),
+                    "flight_number" => b.flight_number = FromValueOpt::from_value(v),
+                    "service_class" => b.service_class = FromValueOpt::from_value(v),
+                    "stopover_allowed" => b.stopover_allowed = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

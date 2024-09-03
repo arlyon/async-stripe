@@ -24,7 +24,13 @@ pub struct PortalFlowsFlowBuilder {
     type_: Option<PortalFlowsFlowType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -81,12 +87,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(after_completion),
+                Some(subscription_cancel),
+                Some(subscription_update),
+                Some(subscription_update_confirm),
+                Some(type_),
+            ) = (
+                self.after_completion.take(),
+                self.subscription_cancel.take(),
+                self.subscription_update.take(),
+                self.subscription_update_confirm.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                after_completion: self.after_completion.take()?,
-                subscription_cancel: self.subscription_cancel.take()?,
-                subscription_update: self.subscription_update.take()?,
-                subscription_update_confirm: self.subscription_update_confirm.take()?,
-                type_: self.type_?,
+                after_completion,
+                subscription_cancel,
+                subscription_update,
+                subscription_update_confirm,
+                type_,
             })
         }
     }
@@ -114,17 +136,13 @@ const _: () = {
             let mut b = PortalFlowsFlowBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "after_completion" => b.after_completion = Some(FromValueOpt::from_value(v)?),
-                    "subscription_cancel" => {
-                        b.subscription_cancel = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "subscription_update" => {
-                        b.subscription_update = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "after_completion" => b.after_completion = FromValueOpt::from_value(v),
+                    "subscription_cancel" => b.subscription_cancel = FromValueOpt::from_value(v),
+                    "subscription_update" => b.subscription_update = FromValueOpt::from_value(v),
                     "subscription_update_confirm" => {
-                        b.subscription_update_confirm = Some(FromValueOpt::from_value(v)?)
+                        b.subscription_update_confirm = FromValueOpt::from_value(v)
                     }
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

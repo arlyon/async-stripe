@@ -9,7 +9,13 @@ pub struct PaymentMethodUsBankAccountStatusDetailsBuilder {
     blocked: Option<Option<stripe_shared::PaymentMethodUsBankAccountBlocked>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -54,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { blocked: self.blocked? })
+            let (Some(blocked),) = (self.blocked,) else {
+                return None;
+            };
+            Some(Self::Out { blocked })
         }
     }
 
@@ -81,7 +90,7 @@ const _: () = {
             let mut b = PaymentMethodUsBankAccountStatusDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "blocked" => b.blocked = Some(FromValueOpt::from_value(v)?),
+                    "blocked" => b.blocked = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

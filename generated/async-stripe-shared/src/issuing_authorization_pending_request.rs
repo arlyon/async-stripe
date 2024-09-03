@@ -32,7 +32,13 @@ pub struct IssuingAuthorizationPendingRequestBuilder {
     network_risk_score: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -91,14 +97,34 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(amount_details),
+                Some(currency),
+                Some(is_amount_controllable),
+                Some(merchant_amount),
+                Some(merchant_currency),
+                Some(network_risk_score),
+            ) = (
+                self.amount,
+                self.amount_details,
+                self.currency,
+                self.is_amount_controllable,
+                self.merchant_amount,
+                self.merchant_currency,
+                self.network_risk_score,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                amount_details: self.amount_details?,
-                currency: self.currency?,
-                is_amount_controllable: self.is_amount_controllable?,
-                merchant_amount: self.merchant_amount?,
-                merchant_currency: self.merchant_currency?,
-                network_risk_score: self.network_risk_score?,
+                amount,
+                amount_details,
+                currency,
+                is_amount_controllable,
+                merchant_amount,
+                merchant_currency,
+                network_risk_score,
             })
         }
     }
@@ -126,17 +152,15 @@ const _: () = {
             let mut b = IssuingAuthorizationPendingRequestBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_details" => b.amount_details = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_details" => b.amount_details = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
                     "is_amount_controllable" => {
-                        b.is_amount_controllable = Some(FromValueOpt::from_value(v)?)
+                        b.is_amount_controllable = FromValueOpt::from_value(v)
                     }
-                    "merchant_amount" => b.merchant_amount = Some(FromValueOpt::from_value(v)?),
-                    "merchant_currency" => b.merchant_currency = Some(FromValueOpt::from_value(v)?),
-                    "network_risk_score" => {
-                        b.network_risk_score = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "merchant_amount" => b.merchant_amount = FromValueOpt::from_value(v),
+                    "merchant_currency" => b.merchant_currency = FromValueOpt::from_value(v),
+                    "network_risk_score" => b.network_risk_score = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

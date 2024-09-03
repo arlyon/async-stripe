@@ -65,7 +65,13 @@ pub struct LegalEntityCompanyBuilder {
     verification: Option<Option<stripe_shared::LegalEntityCompanyVerification>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -146,25 +152,67 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(address),
+                Some(address_kana),
+                Some(address_kanji),
+                Some(directors_provided),
+                Some(executives_provided),
+                Some(export_license_id),
+                Some(export_purpose_code),
+                Some(name),
+                Some(name_kana),
+                Some(name_kanji),
+                Some(owners_provided),
+                Some(ownership_declaration),
+                Some(phone),
+                Some(structure),
+                Some(tax_id_provided),
+                Some(tax_id_registrar),
+                Some(vat_id_provided),
+                Some(verification),
+            ) = (
+                self.address.take(),
+                self.address_kana.take(),
+                self.address_kanji.take(),
+                self.directors_provided,
+                self.executives_provided,
+                self.export_license_id.take(),
+                self.export_purpose_code.take(),
+                self.name.take(),
+                self.name_kana.take(),
+                self.name_kanji.take(),
+                self.owners_provided,
+                self.ownership_declaration.take(),
+                self.phone.take(),
+                self.structure,
+                self.tax_id_provided,
+                self.tax_id_registrar.take(),
+                self.vat_id_provided,
+                self.verification.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                address: self.address.take()?,
-                address_kana: self.address_kana.take()?,
-                address_kanji: self.address_kanji.take()?,
-                directors_provided: self.directors_provided?,
-                executives_provided: self.executives_provided?,
-                export_license_id: self.export_license_id.take()?,
-                export_purpose_code: self.export_purpose_code.take()?,
-                name: self.name.take()?,
-                name_kana: self.name_kana.take()?,
-                name_kanji: self.name_kanji.take()?,
-                owners_provided: self.owners_provided?,
-                ownership_declaration: self.ownership_declaration.take()?,
-                phone: self.phone.take()?,
-                structure: self.structure?,
-                tax_id_provided: self.tax_id_provided?,
-                tax_id_registrar: self.tax_id_registrar.take()?,
-                vat_id_provided: self.vat_id_provided?,
-                verification: self.verification.take()?,
+                address,
+                address_kana,
+                address_kanji,
+                directors_provided,
+                executives_provided,
+                export_license_id,
+                export_purpose_code,
+                name,
+                name_kana,
+                name_kanji,
+                owners_provided,
+                ownership_declaration,
+                phone,
+                structure,
+                tax_id_provided,
+                tax_id_registrar,
+                vat_id_provided,
+                verification,
             })
         }
     }
@@ -192,32 +240,26 @@ const _: () = {
             let mut b = LegalEntityCompanyBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
-                    "address_kana" => b.address_kana = Some(FromValueOpt::from_value(v)?),
-                    "address_kanji" => b.address_kanji = Some(FromValueOpt::from_value(v)?),
-                    "directors_provided" => {
-                        b.directors_provided = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "executives_provided" => {
-                        b.executives_provided = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "export_license_id" => b.export_license_id = Some(FromValueOpt::from_value(v)?),
-                    "export_purpose_code" => {
-                        b.export_purpose_code = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "name_kana" => b.name_kana = Some(FromValueOpt::from_value(v)?),
-                    "name_kanji" => b.name_kanji = Some(FromValueOpt::from_value(v)?),
-                    "owners_provided" => b.owners_provided = Some(FromValueOpt::from_value(v)?),
+                    "address" => b.address = FromValueOpt::from_value(v),
+                    "address_kana" => b.address_kana = FromValueOpt::from_value(v),
+                    "address_kanji" => b.address_kanji = FromValueOpt::from_value(v),
+                    "directors_provided" => b.directors_provided = FromValueOpt::from_value(v),
+                    "executives_provided" => b.executives_provided = FromValueOpt::from_value(v),
+                    "export_license_id" => b.export_license_id = FromValueOpt::from_value(v),
+                    "export_purpose_code" => b.export_purpose_code = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "name_kana" => b.name_kana = FromValueOpt::from_value(v),
+                    "name_kanji" => b.name_kanji = FromValueOpt::from_value(v),
+                    "owners_provided" => b.owners_provided = FromValueOpt::from_value(v),
                     "ownership_declaration" => {
-                        b.ownership_declaration = Some(FromValueOpt::from_value(v)?)
+                        b.ownership_declaration = FromValueOpt::from_value(v)
                     }
-                    "phone" => b.phone = Some(FromValueOpt::from_value(v)?),
-                    "structure" => b.structure = Some(FromValueOpt::from_value(v)?),
-                    "tax_id_provided" => b.tax_id_provided = Some(FromValueOpt::from_value(v)?),
-                    "tax_id_registrar" => b.tax_id_registrar = Some(FromValueOpt::from_value(v)?),
-                    "vat_id_provided" => b.vat_id_provided = Some(FromValueOpt::from_value(v)?),
-                    "verification" => b.verification = Some(FromValueOpt::from_value(v)?),
+                    "phone" => b.phone = FromValueOpt::from_value(v),
+                    "structure" => b.structure = FromValueOpt::from_value(v),
+                    "tax_id_provided" => b.tax_id_provided = FromValueOpt::from_value(v),
+                    "tax_id_registrar" => b.tax_id_registrar = FromValueOpt::from_value(v),
+                    "vat_id_provided" => b.vat_id_provided = FromValueOpt::from_value(v),
+                    "verification" => b.verification = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

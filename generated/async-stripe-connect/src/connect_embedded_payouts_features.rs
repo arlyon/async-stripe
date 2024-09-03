@@ -19,7 +19,13 @@ pub struct ConnectEmbeddedPayoutsFeaturesBuilder {
     standard_payouts: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -70,11 +76,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                edit_payout_schedule: self.edit_payout_schedule?,
-                instant_payouts: self.instant_payouts?,
-                standard_payouts: self.standard_payouts?,
-            })
+            let (Some(edit_payout_schedule), Some(instant_payouts), Some(standard_payouts)) =
+                (self.edit_payout_schedule, self.instant_payouts, self.standard_payouts)
+            else {
+                return None;
+            };
+            Some(Self::Out { edit_payout_schedule, instant_payouts, standard_payouts })
         }
     }
 
@@ -101,11 +108,9 @@ const _: () = {
             let mut b = ConnectEmbeddedPayoutsFeaturesBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "edit_payout_schedule" => {
-                        b.edit_payout_schedule = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "instant_payouts" => b.instant_payouts = Some(FromValueOpt::from_value(v)?),
-                    "standard_payouts" => b.standard_payouts = Some(FromValueOpt::from_value(v)?),
+                    "edit_payout_schedule" => b.edit_payout_schedule = FromValueOpt::from_value(v),
+                    "instant_payouts" => b.instant_payouts = FromValueOpt::from_value(v),
+                    "standard_payouts" => b.standard_payouts = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

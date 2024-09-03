@@ -41,7 +41,13 @@ pub struct ExchangeRateBuilder {
     rates: Option<std::collections::HashMap<String, f64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -87,7 +93,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { id: self.id.take()?, rates: self.rates.take()? })
+            let (Some(id), Some(rates)) = (self.id.take(), self.rates.take()) else {
+                return None;
+            };
+            Some(Self::Out { id, rates })
         }
     }
 
@@ -114,8 +123,8 @@ const _: () = {
             let mut b = ExchangeRateBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "rates" => b.rates = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "rates" => b.rates = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

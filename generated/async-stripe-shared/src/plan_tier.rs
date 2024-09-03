@@ -22,7 +22,13 @@ pub struct PlanTierBuilder {
     up_to: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -74,12 +80,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(flat_amount),
+                Some(flat_amount_decimal),
+                Some(unit_amount),
+                Some(unit_amount_decimal),
+                Some(up_to),
+            ) = (
+                self.flat_amount,
+                self.flat_amount_decimal.take(),
+                self.unit_amount,
+                self.unit_amount_decimal.take(),
+                self.up_to,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                flat_amount: self.flat_amount?,
-                flat_amount_decimal: self.flat_amount_decimal.take()?,
-                unit_amount: self.unit_amount?,
-                unit_amount_decimal: self.unit_amount_decimal.take()?,
-                up_to: self.up_to?,
+                flat_amount,
+                flat_amount_decimal,
+                unit_amount,
+                unit_amount_decimal,
+                up_to,
             })
         }
     }
@@ -107,15 +129,11 @@ const _: () = {
             let mut b = PlanTierBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "flat_amount" => b.flat_amount = Some(FromValueOpt::from_value(v)?),
-                    "flat_amount_decimal" => {
-                        b.flat_amount_decimal = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "unit_amount" => b.unit_amount = Some(FromValueOpt::from_value(v)?),
-                    "unit_amount_decimal" => {
-                        b.unit_amount_decimal = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "up_to" => b.up_to = Some(FromValueOpt::from_value(v)?),
+                    "flat_amount" => b.flat_amount = FromValueOpt::from_value(v),
+                    "flat_amount_decimal" => b.flat_amount_decimal = FromValueOpt::from_value(v),
+                    "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
+                    "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
+                    "up_to" => b.up_to = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

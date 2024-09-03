@@ -14,7 +14,13 @@ pub struct PaymentPagesCheckoutSessionTaxIdBuilder {
     value: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -60,7 +66,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { type_: self.type_?, value: self.value.take()? })
+            let (Some(type_), Some(value)) = (self.type_, self.value.take()) else {
+                return None;
+            };
+            Some(Self::Out { type_, value })
         }
     }
 
@@ -87,8 +96,8 @@ const _: () = {
             let mut b = PaymentPagesCheckoutSessionTaxIdBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "value" => b.value = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "value" => b.value = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

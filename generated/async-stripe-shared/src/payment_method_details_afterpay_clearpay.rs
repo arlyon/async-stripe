@@ -13,7 +13,13 @@ pub struct PaymentMethodDetailsAfterpayClearpayBuilder {
     reference: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +65,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { order_id: self.order_id.take()?, reference: self.reference.take()? })
+            let (Some(order_id), Some(reference)) = (self.order_id.take(), self.reference.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { order_id, reference })
         }
     }
 
@@ -86,8 +96,8 @@ const _: () = {
             let mut b = PaymentMethodDetailsAfterpayClearpayBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "order_id" => b.order_id = Some(FromValueOpt::from_value(v)?),
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
+                    "order_id" => b.order_id = FromValueOpt::from_value(v),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

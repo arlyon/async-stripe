@@ -24,7 +24,13 @@ pub struct FeeBuilder {
     type_: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -76,13 +82,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount: self.amount?,
-                application: self.application.take()?,
-                currency: self.currency?,
-                description: self.description.take()?,
-                type_: self.type_.take()?,
-            })
+            let (Some(amount), Some(application), Some(currency), Some(description), Some(type_)) = (
+                self.amount,
+                self.application.take(),
+                self.currency,
+                self.description.take(),
+                self.type_.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { amount, application, currency, description, type_ })
         }
     }
 
@@ -109,11 +118,11 @@ const _: () = {
             let mut b = FeeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "application" => b.application = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "application" => b.application = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

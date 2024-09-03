@@ -16,7 +16,13 @@ pub struct PaymentMethodDetailsSepaCreditTransferBuilder {
     iban: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +73,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                bank_name: self.bank_name.take()?,
-                bic: self.bic.take()?,
-                iban: self.iban.take()?,
-            })
+            let (Some(bank_name), Some(bic), Some(iban)) =
+                (self.bank_name.take(), self.bic.take(), self.iban.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { bank_name, bic, iban })
         }
     }
 
@@ -98,9 +105,9 @@ const _: () = {
             let mut b = PaymentMethodDetailsSepaCreditTransferBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
-                    "bic" => b.bic = Some(FromValueOpt::from_value(v)?),
-                    "iban" => b.iban = Some(FromValueOpt::from_value(v)?),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "bic" => b.bic = FromValueOpt::from_value(v),
+                    "iban" => b.iban = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

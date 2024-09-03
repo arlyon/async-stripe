@@ -15,7 +15,13 @@ pub struct PaymentMethodDetailsKlarnaBuilder {
     preferred_locale: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -64,10 +70,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                payment_method_category: self.payment_method_category.take()?,
-                preferred_locale: self.preferred_locale.take()?,
-            })
+            let (Some(payment_method_category), Some(preferred_locale)) =
+                (self.payment_method_category.take(), self.preferred_locale.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { payment_method_category, preferred_locale })
         }
     }
 
@@ -95,9 +103,9 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "payment_method_category" => {
-                        b.payment_method_category = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_category = FromValueOpt::from_value(v)
                     }
-                    "preferred_locale" => b.preferred_locale = Some(FromValueOpt::from_value(v)?),
+                    "preferred_locale" => b.preferred_locale = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

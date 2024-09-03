@@ -29,7 +29,13 @@ pub struct RadarValueListItemBuilder {
     value_list: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -86,14 +92,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                created: self.created?,
-                created_by: self.created_by.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                value: self.value.take()?,
-                value_list: self.value_list.take()?,
-            })
+            let (
+                Some(created),
+                Some(created_by),
+                Some(id),
+                Some(livemode),
+                Some(value),
+                Some(value_list),
+            ) = (
+                self.created,
+                self.created_by.take(),
+                self.id.take(),
+                self.livemode,
+                self.value.take(),
+                self.value_list.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { created, created_by, id, livemode, value, value_list })
         }
     }
 
@@ -120,12 +137,12 @@ const _: () = {
             let mut b = RadarValueListItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "created_by" => b.created_by = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "value" => b.value = Some(FromValueOpt::from_value(v)?),
-                    "value_list" => b.value_list = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "created_by" => b.created_by = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "value" => b.value = FromValueOpt::from_value(v),
+                    "value_list" => b.value_list = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

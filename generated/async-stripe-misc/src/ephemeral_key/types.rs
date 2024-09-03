@@ -21,7 +21,13 @@ pub struct EphemeralKeyBuilder {
     secret: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -76,13 +82,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                created: self.created?,
-                expires: self.expires?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                secret: self.secret.take()?,
-            })
+            let (Some(created), Some(expires), Some(id), Some(livemode), Some(secret)) =
+                (self.created, self.expires, self.id.take(), self.livemode, self.secret.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { created, expires, id, livemode, secret })
         }
     }
 
@@ -109,11 +114,11 @@ const _: () = {
             let mut b = EphemeralKeyBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "expires" => b.expires = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "secret" => b.secret = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "expires" => b.expires = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "secret" => b.secret = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

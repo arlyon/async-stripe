@@ -15,7 +15,13 @@ pub struct PaymentIntentNextActionSwishHandleRedirectOrDisplayQrCodeBuilder {
     qr_code: Option<stripe_shared::PaymentIntentNextActionSwishQrCode>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +74,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                hosted_instructions_url: self.hosted_instructions_url.take()?,
-                mobile_auth_url: self.mobile_auth_url.take()?,
-                qr_code: self.qr_code.take()?,
-            })
+            let (Some(hosted_instructions_url), Some(mobile_auth_url), Some(qr_code)) = (
+                self.hosted_instructions_url.take(),
+                self.mobile_auth_url.take(),
+                self.qr_code.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { hosted_instructions_url, mobile_auth_url, qr_code })
         }
     }
 
@@ -101,10 +110,10 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "hosted_instructions_url" => {
-                        b.hosted_instructions_url = Some(FromValueOpt::from_value(v)?)
+                        b.hosted_instructions_url = FromValueOpt::from_value(v)
                     }
-                    "mobile_auth_url" => b.mobile_auth_url = Some(FromValueOpt::from_value(v)?),
-                    "qr_code" => b.qr_code = Some(FromValueOpt::from_value(v)?),
+                    "mobile_auth_url" => b.mobile_auth_url = FromValueOpt::from_value(v),
+                    "qr_code" => b.qr_code = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

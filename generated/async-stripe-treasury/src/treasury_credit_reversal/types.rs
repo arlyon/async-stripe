@@ -48,7 +48,13 @@ pub struct TreasuryCreditReversalBuilder {
     transaction: Option<Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -121,20 +127,52 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(created),
+                Some(currency),
+                Some(financial_account),
+                Some(hosted_regulatory_receipt_url),
+                Some(id),
+                Some(livemode),
+                Some(metadata),
+                Some(network),
+                Some(received_credit),
+                Some(status),
+                Some(status_transitions),
+                Some(transaction),
+            ) = (
+                self.amount,
+                self.created,
+                self.currency,
+                self.financial_account.take(),
+                self.hosted_regulatory_receipt_url.take(),
+                self.id.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.network,
+                self.received_credit.take(),
+                self.status,
+                self.status_transitions,
+                self.transaction.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                created: self.created?,
-                currency: self.currency?,
-                financial_account: self.financial_account.take()?,
-                hosted_regulatory_receipt_url: self.hosted_regulatory_receipt_url.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                network: self.network?,
-                received_credit: self.received_credit.take()?,
-                status: self.status?,
-                status_transitions: self.status_transitions?,
-                transaction: self.transaction.take()?,
+                amount,
+                created,
+                currency,
+                financial_account,
+                hosted_regulatory_receipt_url,
+                id,
+                livemode,
+                metadata,
+                network,
+                received_credit,
+                status,
+                status_transitions,
+                transaction,
             })
         }
     }
@@ -162,23 +200,21 @@ const _: () = {
             let mut b = TreasuryCreditReversalBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "financial_account" => b.financial_account = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
                     "hosted_regulatory_receipt_url" => {
-                        b.hosted_regulatory_receipt_url = Some(FromValueOpt::from_value(v)?)
+                        b.hosted_regulatory_receipt_url = FromValueOpt::from_value(v)
                     }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "network" => b.network = Some(FromValueOpt::from_value(v)?),
-                    "received_credit" => b.received_credit = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "status_transitions" => {
-                        b.status_transitions = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "transaction" => b.transaction = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "network" => b.network = FromValueOpt::from_value(v),
+                    "received_credit" => b.received_credit = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
+                    "transaction" => b.transaction = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

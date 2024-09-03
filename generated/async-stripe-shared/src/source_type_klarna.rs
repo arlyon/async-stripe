@@ -59,7 +59,13 @@ pub struct SourceTypeKlarnaBuilder {
     shipping_last_name: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -172,35 +178,91 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(background_image_url),
+                Some(client_token),
+                Some(first_name),
+                Some(last_name),
+                Some(locale),
+                Some(logo_url),
+                Some(page_title),
+                Some(pay_later_asset_urls_descriptive),
+                Some(pay_later_asset_urls_standard),
+                Some(pay_later_name),
+                Some(pay_later_redirect_url),
+                Some(pay_now_asset_urls_descriptive),
+                Some(pay_now_asset_urls_standard),
+                Some(pay_now_name),
+                Some(pay_now_redirect_url),
+                Some(pay_over_time_asset_urls_descriptive),
+                Some(pay_over_time_asset_urls_standard),
+                Some(pay_over_time_name),
+                Some(pay_over_time_redirect_url),
+                Some(payment_method_categories),
+                Some(purchase_country),
+                Some(purchase_type),
+                Some(redirect_url),
+                Some(shipping_delay),
+                Some(shipping_first_name),
+                Some(shipping_last_name),
+            ) = (
+                self.background_image_url.take(),
+                self.client_token.take(),
+                self.first_name.take(),
+                self.last_name.take(),
+                self.locale.take(),
+                self.logo_url.take(),
+                self.page_title.take(),
+                self.pay_later_asset_urls_descriptive.take(),
+                self.pay_later_asset_urls_standard.take(),
+                self.pay_later_name.take(),
+                self.pay_later_redirect_url.take(),
+                self.pay_now_asset_urls_descriptive.take(),
+                self.pay_now_asset_urls_standard.take(),
+                self.pay_now_name.take(),
+                self.pay_now_redirect_url.take(),
+                self.pay_over_time_asset_urls_descriptive.take(),
+                self.pay_over_time_asset_urls_standard.take(),
+                self.pay_over_time_name.take(),
+                self.pay_over_time_redirect_url.take(),
+                self.payment_method_categories.take(),
+                self.purchase_country.take(),
+                self.purchase_type.take(),
+                self.redirect_url.take(),
+                self.shipping_delay,
+                self.shipping_first_name.take(),
+                self.shipping_last_name.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                background_image_url: self.background_image_url.take()?,
-                client_token: self.client_token.take()?,
-                first_name: self.first_name.take()?,
-                last_name: self.last_name.take()?,
-                locale: self.locale.take()?,
-                logo_url: self.logo_url.take()?,
-                page_title: self.page_title.take()?,
-                pay_later_asset_urls_descriptive: self.pay_later_asset_urls_descriptive.take()?,
-                pay_later_asset_urls_standard: self.pay_later_asset_urls_standard.take()?,
-                pay_later_name: self.pay_later_name.take()?,
-                pay_later_redirect_url: self.pay_later_redirect_url.take()?,
-                pay_now_asset_urls_descriptive: self.pay_now_asset_urls_descriptive.take()?,
-                pay_now_asset_urls_standard: self.pay_now_asset_urls_standard.take()?,
-                pay_now_name: self.pay_now_name.take()?,
-                pay_now_redirect_url: self.pay_now_redirect_url.take()?,
-                pay_over_time_asset_urls_descriptive: self
-                    .pay_over_time_asset_urls_descriptive
-                    .take()?,
-                pay_over_time_asset_urls_standard: self.pay_over_time_asset_urls_standard.take()?,
-                pay_over_time_name: self.pay_over_time_name.take()?,
-                pay_over_time_redirect_url: self.pay_over_time_redirect_url.take()?,
-                payment_method_categories: self.payment_method_categories.take()?,
-                purchase_country: self.purchase_country.take()?,
-                purchase_type: self.purchase_type.take()?,
-                redirect_url: self.redirect_url.take()?,
-                shipping_delay: self.shipping_delay?,
-                shipping_first_name: self.shipping_first_name.take()?,
-                shipping_last_name: self.shipping_last_name.take()?,
+                background_image_url,
+                client_token,
+                first_name,
+                last_name,
+                locale,
+                logo_url,
+                page_title,
+                pay_later_asset_urls_descriptive,
+                pay_later_asset_urls_standard,
+                pay_later_name,
+                pay_later_redirect_url,
+                pay_now_asset_urls_descriptive,
+                pay_now_asset_urls_standard,
+                pay_now_name,
+                pay_now_redirect_url,
+                pay_over_time_asset_urls_descriptive,
+                pay_over_time_asset_urls_standard,
+                pay_over_time_name,
+                pay_over_time_redirect_url,
+                payment_method_categories,
+                purchase_country,
+                purchase_type,
+                redirect_url,
+                shipping_delay,
+                shipping_first_name,
+                shipping_last_name,
             })
         }
     }
@@ -228,60 +290,50 @@ const _: () = {
             let mut b = SourceTypeKlarnaBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "background_image_url" => {
-                        b.background_image_url = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "client_token" => b.client_token = Some(FromValueOpt::from_value(v)?),
-                    "first_name" => b.first_name = Some(FromValueOpt::from_value(v)?),
-                    "last_name" => b.last_name = Some(FromValueOpt::from_value(v)?),
-                    "locale" => b.locale = Some(FromValueOpt::from_value(v)?),
-                    "logo_url" => b.logo_url = Some(FromValueOpt::from_value(v)?),
-                    "page_title" => b.page_title = Some(FromValueOpt::from_value(v)?),
+                    "background_image_url" => b.background_image_url = FromValueOpt::from_value(v),
+                    "client_token" => b.client_token = FromValueOpt::from_value(v),
+                    "first_name" => b.first_name = FromValueOpt::from_value(v),
+                    "last_name" => b.last_name = FromValueOpt::from_value(v),
+                    "locale" => b.locale = FromValueOpt::from_value(v),
+                    "logo_url" => b.logo_url = FromValueOpt::from_value(v),
+                    "page_title" => b.page_title = FromValueOpt::from_value(v),
                     "pay_later_asset_urls_descriptive" => {
-                        b.pay_later_asset_urls_descriptive = Some(FromValueOpt::from_value(v)?)
+                        b.pay_later_asset_urls_descriptive = FromValueOpt::from_value(v)
                     }
                     "pay_later_asset_urls_standard" => {
-                        b.pay_later_asset_urls_standard = Some(FromValueOpt::from_value(v)?)
+                        b.pay_later_asset_urls_standard = FromValueOpt::from_value(v)
                     }
-                    "pay_later_name" => b.pay_later_name = Some(FromValueOpt::from_value(v)?),
+                    "pay_later_name" => b.pay_later_name = FromValueOpt::from_value(v),
                     "pay_later_redirect_url" => {
-                        b.pay_later_redirect_url = Some(FromValueOpt::from_value(v)?)
+                        b.pay_later_redirect_url = FromValueOpt::from_value(v)
                     }
                     "pay_now_asset_urls_descriptive" => {
-                        b.pay_now_asset_urls_descriptive = Some(FromValueOpt::from_value(v)?)
+                        b.pay_now_asset_urls_descriptive = FromValueOpt::from_value(v)
                     }
                     "pay_now_asset_urls_standard" => {
-                        b.pay_now_asset_urls_standard = Some(FromValueOpt::from_value(v)?)
+                        b.pay_now_asset_urls_standard = FromValueOpt::from_value(v)
                     }
-                    "pay_now_name" => b.pay_now_name = Some(FromValueOpt::from_value(v)?),
-                    "pay_now_redirect_url" => {
-                        b.pay_now_redirect_url = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "pay_now_name" => b.pay_now_name = FromValueOpt::from_value(v),
+                    "pay_now_redirect_url" => b.pay_now_redirect_url = FromValueOpt::from_value(v),
                     "pay_over_time_asset_urls_descriptive" => {
-                        b.pay_over_time_asset_urls_descriptive = Some(FromValueOpt::from_value(v)?)
+                        b.pay_over_time_asset_urls_descriptive = FromValueOpt::from_value(v)
                     }
                     "pay_over_time_asset_urls_standard" => {
-                        b.pay_over_time_asset_urls_standard = Some(FromValueOpt::from_value(v)?)
+                        b.pay_over_time_asset_urls_standard = FromValueOpt::from_value(v)
                     }
-                    "pay_over_time_name" => {
-                        b.pay_over_time_name = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "pay_over_time_name" => b.pay_over_time_name = FromValueOpt::from_value(v),
                     "pay_over_time_redirect_url" => {
-                        b.pay_over_time_redirect_url = Some(FromValueOpt::from_value(v)?)
+                        b.pay_over_time_redirect_url = FromValueOpt::from_value(v)
                     }
                     "payment_method_categories" => {
-                        b.payment_method_categories = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_categories = FromValueOpt::from_value(v)
                     }
-                    "purchase_country" => b.purchase_country = Some(FromValueOpt::from_value(v)?),
-                    "purchase_type" => b.purchase_type = Some(FromValueOpt::from_value(v)?),
-                    "redirect_url" => b.redirect_url = Some(FromValueOpt::from_value(v)?),
-                    "shipping_delay" => b.shipping_delay = Some(FromValueOpt::from_value(v)?),
-                    "shipping_first_name" => {
-                        b.shipping_first_name = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "shipping_last_name" => {
-                        b.shipping_last_name = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "purchase_country" => b.purchase_country = FromValueOpt::from_value(v),
+                    "purchase_type" => b.purchase_type = FromValueOpt::from_value(v),
+                    "redirect_url" => b.redirect_url = FromValueOpt::from_value(v),
+                    "shipping_delay" => b.shipping_delay = FromValueOpt::from_value(v),
+                    "shipping_first_name" => b.shipping_first_name = FromValueOpt::from_value(v),
+                    "shipping_last_name" => b.shipping_last_name = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

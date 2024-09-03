@@ -13,7 +13,13 @@ pub struct ShippingRateDeliveryEstimateBuilder {
     minimum: Option<Option<stripe_shared::ShippingRateDeliveryEstimateBound>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +65,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { maximum: self.maximum?, minimum: self.minimum? })
+            let (Some(maximum), Some(minimum)) = (self.maximum, self.minimum) else {
+                return None;
+            };
+            Some(Self::Out { maximum, minimum })
         }
     }
 
@@ -86,8 +95,8 @@ const _: () = {
             let mut b = ShippingRateDeliveryEstimateBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "maximum" => b.maximum = Some(FromValueOpt::from_value(v)?),
-                    "minimum" => b.minimum = Some(FromValueOpt::from_value(v)?),
+                    "maximum" => b.maximum = FromValueOpt::from_value(v),
+                    "minimum" => b.minimum = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -14,7 +14,13 @@ pub struct ShippingRateCurrencyOptionBuilder {
     tax_behavior: Option<ShippingRateCurrencyOptionTaxBehavior>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -60,7 +66,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { amount: self.amount?, tax_behavior: self.tax_behavior? })
+            let (Some(amount), Some(tax_behavior)) = (self.amount, self.tax_behavior) else {
+                return None;
+            };
+            Some(Self::Out { amount, tax_behavior })
         }
     }
 
@@ -87,8 +96,8 @@ const _: () = {
             let mut b = ShippingRateCurrencyOptionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "tax_behavior" => b.tax_behavior = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

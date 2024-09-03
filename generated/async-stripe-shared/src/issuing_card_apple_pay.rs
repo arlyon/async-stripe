@@ -13,7 +13,13 @@ pub struct IssuingCardApplePayBuilder {
     ineligible_reason: Option<Option<IssuingCardApplePayIneligibleReason>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +65,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { eligible: self.eligible?, ineligible_reason: self.ineligible_reason? })
+            let (Some(eligible), Some(ineligible_reason)) = (self.eligible, self.ineligible_reason)
+            else {
+                return None;
+            };
+            Some(Self::Out { eligible, ineligible_reason })
         }
     }
 
@@ -86,8 +96,8 @@ const _: () = {
             let mut b = IssuingCardApplePayBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "eligible" => b.eligible = Some(FromValueOpt::from_value(v)?),
-                    "ineligible_reason" => b.ineligible_reason = Some(FromValueOpt::from_value(v)?),
+                    "eligible" => b.eligible = FromValueOpt::from_value(v),
+                    "ineligible_reason" => b.ineligible_reason = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

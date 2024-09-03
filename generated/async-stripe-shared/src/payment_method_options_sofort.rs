@@ -18,7 +18,13 @@ pub struct PaymentMethodOptionsSofortBuilder {
     setup_future_usage: Option<Option<PaymentMethodOptionsSofortSetupFutureUsage>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,10 +73,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                preferred_language: self.preferred_language?,
-                setup_future_usage: self.setup_future_usage?,
-            })
+            let (Some(preferred_language), Some(setup_future_usage)) =
+                (self.preferred_language, self.setup_future_usage)
+            else {
+                return None;
+            };
+            Some(Self::Out { preferred_language, setup_future_usage })
         }
     }
 
@@ -97,12 +105,8 @@ const _: () = {
             let mut b = PaymentMethodOptionsSofortBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "preferred_language" => {
-                        b.preferred_language = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "setup_future_usage" => {
-                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "preferred_language" => b.preferred_language = FromValueOpt::from_value(v),
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

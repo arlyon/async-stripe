@@ -18,7 +18,13 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactio
     sender_name: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -70,10 +76,16 @@ sender_name: Deserialize::default(),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        Some(Self::Out { sender_bank: self.sender_bank.take()?,
-sender_branch: self.sender_branch.take()?,
-sender_name: self.sender_name.take()?,
- })
+        let (Some(sender_bank),
+Some(sender_branch),
+Some(sender_name),
+) = (self.sender_bank.take(),
+self.sender_branch.take(),
+self.sender_name.take(),
+) else {
+            return None;
+        };
+        Some(Self::Out { sender_bank,sender_branch,sender_name })
     }
 }
 
@@ -100,9 +112,9 @@ sender_name: self.sender_name.take()?,
         let mut b = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransferBuilder::deser_default();
         for (k, v) in obj {
             match k.as_str() {
-                "sender_bank" => b.sender_bank = Some(FromValueOpt::from_value(v)?),
-"sender_branch" => b.sender_branch = Some(FromValueOpt::from_value(v)?),
-"sender_name" => b.sender_name = Some(FromValueOpt::from_value(v)?),
+                "sender_bank" => b.sender_bank = FromValueOpt::from_value(v),
+"sender_branch" => b.sender_branch = FromValueOpt::from_value(v),
+"sender_name" => b.sender_name = FromValueOpt::from_value(v),
 
                 _ => {}
             }

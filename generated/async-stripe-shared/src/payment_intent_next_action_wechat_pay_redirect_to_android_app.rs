@@ -28,7 +28,13 @@ pub struct PaymentIntentNextActionWechatPayRedirectToAndroidAppBuilder {
     timestamp: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -88,15 +94,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                app_id: self.app_id.take()?,
-                nonce_str: self.nonce_str.take()?,
-                package: self.package.take()?,
-                partner_id: self.partner_id.take()?,
-                prepay_id: self.prepay_id.take()?,
-                sign: self.sign.take()?,
-                timestamp: self.timestamp.take()?,
-            })
+            let (
+                Some(app_id),
+                Some(nonce_str),
+                Some(package),
+                Some(partner_id),
+                Some(prepay_id),
+                Some(sign),
+                Some(timestamp),
+            ) = (
+                self.app_id.take(),
+                self.nonce_str.take(),
+                self.package.take(),
+                self.partner_id.take(),
+                self.prepay_id.take(),
+                self.sign.take(),
+                self.timestamp.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { app_id, nonce_str, package, partner_id, prepay_id, sign, timestamp })
         }
     }
 
@@ -124,13 +142,13 @@ const _: () = {
                 PaymentIntentNextActionWechatPayRedirectToAndroidAppBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "app_id" => b.app_id = Some(FromValueOpt::from_value(v)?),
-                    "nonce_str" => b.nonce_str = Some(FromValueOpt::from_value(v)?),
-                    "package" => b.package = Some(FromValueOpt::from_value(v)?),
-                    "partner_id" => b.partner_id = Some(FromValueOpt::from_value(v)?),
-                    "prepay_id" => b.prepay_id = Some(FromValueOpt::from_value(v)?),
-                    "sign" => b.sign = Some(FromValueOpt::from_value(v)?),
-                    "timestamp" => b.timestamp = Some(FromValueOpt::from_value(v)?),
+                    "app_id" => b.app_id = FromValueOpt::from_value(v),
+                    "nonce_str" => b.nonce_str = FromValueOpt::from_value(v),
+                    "package" => b.package = FromValueOpt::from_value(v),
+                    "partner_id" => b.partner_id = FromValueOpt::from_value(v),
+                    "prepay_id" => b.prepay_id = FromValueOpt::from_value(v),
+                    "sign" => b.sign = FromValueOpt::from_value(v),
+                    "timestamp" => b.timestamp = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

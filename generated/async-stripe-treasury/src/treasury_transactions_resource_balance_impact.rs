@@ -17,7 +17,13 @@ pub struct TreasuryTransactionsResourceBalanceImpactBuilder {
     outbound_pending: Option<i64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                cash: self.cash?,
-                inbound_pending: self.inbound_pending?,
-                outbound_pending: self.outbound_pending?,
-            })
+            let (Some(cash), Some(inbound_pending), Some(outbound_pending)) =
+                (self.cash, self.inbound_pending, self.outbound_pending)
+            else {
+                return None;
+            };
+            Some(Self::Out { cash, inbound_pending, outbound_pending })
         }
     }
 
@@ -99,9 +106,9 @@ const _: () = {
             let mut b = TreasuryTransactionsResourceBalanceImpactBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "cash" => b.cash = Some(FromValueOpt::from_value(v)?),
-                    "inbound_pending" => b.inbound_pending = Some(FromValueOpt::from_value(v)?),
-                    "outbound_pending" => b.outbound_pending = Some(FromValueOpt::from_value(v)?),
+                    "cash" => b.cash = FromValueOpt::from_value(v),
+                    "inbound_pending" => b.inbound_pending = FromValueOpt::from_value(v),
+                    "outbound_pending" => b.outbound_pending = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

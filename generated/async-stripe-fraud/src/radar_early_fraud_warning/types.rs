@@ -33,7 +33,13 @@ pub struct RadarEarlyFraudWarningBuilder {
     payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -92,14 +98,34 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(actionable),
+                Some(charge),
+                Some(created),
+                Some(fraud_type),
+                Some(id),
+                Some(livemode),
+                Some(payment_intent),
+            ) = (
+                self.actionable,
+                self.charge.take(),
+                self.created,
+                self.fraud_type.take(),
+                self.id.take(),
+                self.livemode,
+                self.payment_intent.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                actionable: self.actionable?,
-                charge: self.charge.take()?,
-                created: self.created?,
-                fraud_type: self.fraud_type.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                payment_intent: self.payment_intent.take()?,
+                actionable,
+                charge,
+                created,
+                fraud_type,
+                id,
+                livemode,
+                payment_intent,
             })
         }
     }
@@ -127,13 +153,13 @@ const _: () = {
             let mut b = RadarEarlyFraudWarningBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "actionable" => b.actionable = Some(FromValueOpt::from_value(v)?),
-                    "charge" => b.charge = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "fraud_type" => b.fraud_type = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "payment_intent" => b.payment_intent = Some(FromValueOpt::from_value(v)?),
+                    "actionable" => b.actionable = FromValueOpt::from_value(v),
+                    "charge" => b.charge = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "fraud_type" => b.fraud_type = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

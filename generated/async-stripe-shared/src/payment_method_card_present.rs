@@ -58,7 +58,13 @@ pub struct PaymentMethodCardPresentBuilder {
     read_method: Option<Option<PaymentMethodCardPresentReadMethod>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -129,20 +135,52 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(brand),
+                Some(cardholder_name),
+                Some(country),
+                Some(description),
+                Some(exp_month),
+                Some(exp_year),
+                Some(fingerprint),
+                Some(funding),
+                Some(iin),
+                Some(issuer),
+                Some(last4),
+                Some(networks),
+                Some(read_method),
+            ) = (
+                self.brand.take(),
+                self.cardholder_name.take(),
+                self.country.take(),
+                self.description.take(),
+                self.exp_month,
+                self.exp_year,
+                self.fingerprint.take(),
+                self.funding.take(),
+                self.iin.take(),
+                self.issuer.take(),
+                self.last4.take(),
+                self.networks.take(),
+                self.read_method,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                brand: self.brand.take()?,
-                cardholder_name: self.cardholder_name.take()?,
-                country: self.country.take()?,
-                description: self.description.take()?,
-                exp_month: self.exp_month?,
-                exp_year: self.exp_year?,
-                fingerprint: self.fingerprint.take()?,
-                funding: self.funding.take()?,
-                iin: self.iin.take()?,
-                issuer: self.issuer.take()?,
-                last4: self.last4.take()?,
-                networks: self.networks.take()?,
-                read_method: self.read_method?,
+                brand,
+                cardholder_name,
+                country,
+                description,
+                exp_month,
+                exp_year,
+                fingerprint,
+                funding,
+                iin,
+                issuer,
+                last4,
+                networks,
+                read_method,
             })
         }
     }
@@ -170,19 +208,19 @@ const _: () = {
             let mut b = PaymentMethodCardPresentBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "brand" => b.brand = Some(FromValueOpt::from_value(v)?),
-                    "cardholder_name" => b.cardholder_name = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "exp_month" => b.exp_month = Some(FromValueOpt::from_value(v)?),
-                    "exp_year" => b.exp_year = Some(FromValueOpt::from_value(v)?),
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "funding" => b.funding = Some(FromValueOpt::from_value(v)?),
-                    "iin" => b.iin = Some(FromValueOpt::from_value(v)?),
-                    "issuer" => b.issuer = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "networks" => b.networks = Some(FromValueOpt::from_value(v)?),
-                    "read_method" => b.read_method = Some(FromValueOpt::from_value(v)?),
+                    "brand" => b.brand = FromValueOpt::from_value(v),
+                    "cardholder_name" => b.cardholder_name = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
+                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "funding" => b.funding = FromValueOpt::from_value(v),
+                    "iin" => b.iin = FromValueOpt::from_value(v),
+                    "issuer" => b.issuer = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "networks" => b.networks = FromValueOpt::from_value(v),
+                    "read_method" => b.read_method = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

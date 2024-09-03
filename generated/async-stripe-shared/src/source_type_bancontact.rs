@@ -19,7 +19,13 @@ pub struct SourceTypeBancontactBuilder {
     statement_descriptor: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -76,13 +82,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(bank_code),
+                Some(bank_name),
+                Some(bic),
+                Some(iban_last4),
+                Some(preferred_language),
+                Some(statement_descriptor),
+            ) = (
+                self.bank_code.take(),
+                self.bank_name.take(),
+                self.bic.take(),
+                self.iban_last4.take(),
+                self.preferred_language.take(),
+                self.statement_descriptor.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                bank_code: self.bank_code.take()?,
-                bank_name: self.bank_name.take()?,
-                bic: self.bic.take()?,
-                iban_last4: self.iban_last4.take()?,
-                preferred_language: self.preferred_language.take()?,
-                statement_descriptor: self.statement_descriptor.take()?,
+                bank_code,
+                bank_name,
+                bic,
+                iban_last4,
+                preferred_language,
+                statement_descriptor,
             })
         }
     }
@@ -110,16 +134,12 @@ const _: () = {
             let mut b = SourceTypeBancontactBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank_code" => b.bank_code = Some(FromValueOpt::from_value(v)?),
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
-                    "bic" => b.bic = Some(FromValueOpt::from_value(v)?),
-                    "iban_last4" => b.iban_last4 = Some(FromValueOpt::from_value(v)?),
-                    "preferred_language" => {
-                        b.preferred_language = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "statement_descriptor" => {
-                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "bic" => b.bic = FromValueOpt::from_value(v),
+                    "iban_last4" => b.iban_last4 = FromValueOpt::from_value(v),
+                    "preferred_language" => b.preferred_language = FromValueOpt::from_value(v),
+                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

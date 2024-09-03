@@ -18,7 +18,13 @@ pub struct InvoiceMandateOptionsCardBuilder {
     description: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,11 +75,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount: self.amount?,
-                amount_type: self.amount_type?,
-                description: self.description.take()?,
-            })
+            let (Some(amount), Some(amount_type), Some(description)) =
+                (self.amount, self.amount_type, self.description.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { amount, amount_type, description })
         }
     }
 
@@ -100,9 +107,9 @@ const _: () = {
             let mut b = InvoiceMandateOptionsCardBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_type" => b.amount_type = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_type" => b.amount_type = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

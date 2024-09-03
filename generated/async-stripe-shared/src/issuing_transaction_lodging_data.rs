@@ -13,7 +13,13 @@ pub struct IssuingTransactionLodgingDataBuilder {
     nights: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +65,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { check_in_at: self.check_in_at?, nights: self.nights? })
+            let (Some(check_in_at), Some(nights)) = (self.check_in_at, self.nights) else {
+                return None;
+            };
+            Some(Self::Out { check_in_at, nights })
         }
     }
 
@@ -86,8 +95,8 @@ const _: () = {
             let mut b = IssuingTransactionLodgingDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "check_in_at" => b.check_in_at = Some(FromValueOpt::from_value(v)?),
-                    "nights" => b.nights = Some(FromValueOpt::from_value(v)?),
+                    "check_in_at" => b.check_in_at = FromValueOpt::from_value(v),
+                    "nights" => b.nights = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

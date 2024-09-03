@@ -19,7 +19,13 @@ pub struct TreasuryFinancialAccountsResourceToggleSettingsBuilder {
         Option<Vec<stripe_treasury::TreasuryFinancialAccountsResourceTogglesSettingStatusDetails>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -70,11 +76,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                requested: self.requested?,
-                status: self.status?,
-                status_details: self.status_details.take()?,
-            })
+            let (Some(requested), Some(status), Some(status_details)) =
+                (self.requested, self.status, self.status_details.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { requested, status, status_details })
         }
     }
 
@@ -101,9 +108,9 @@ const _: () = {
             let mut b = TreasuryFinancialAccountsResourceToggleSettingsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "requested" => b.requested = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "status_details" => b.status_details = Some(FromValueOpt::from_value(v)?),
+                    "requested" => b.requested = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "status_details" => b.status_details = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

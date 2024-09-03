@@ -47,7 +47,13 @@ pub struct TaxTransactionLineItemBuilder {
     type_: Option<TaxTransactionLineItemType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -116,19 +122,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(amount_tax),
+                Some(id),
+                Some(livemode),
+                Some(metadata),
+                Some(product),
+                Some(quantity),
+                Some(reference),
+                Some(reversal),
+                Some(tax_behavior),
+                Some(tax_code),
+                Some(type_),
+            ) = (
+                self.amount,
+                self.amount_tax,
+                self.id.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.product.take(),
+                self.quantity,
+                self.reference.take(),
+                self.reversal.take(),
+                self.tax_behavior,
+                self.tax_code.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                amount_tax: self.amount_tax?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                product: self.product.take()?,
-                quantity: self.quantity?,
-                reference: self.reference.take()?,
-                reversal: self.reversal.take()?,
-                tax_behavior: self.tax_behavior?,
-                tax_code: self.tax_code.take()?,
-                type_: self.type_?,
+                amount,
+                amount_tax,
+                id,
+                livemode,
+                metadata,
+                product,
+                quantity,
+                reference,
+                reversal,
+                tax_behavior,
+                tax_code,
+                type_,
             })
         }
     }
@@ -156,18 +192,18 @@ const _: () = {
             let mut b = TaxTransactionLineItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_tax" => b.amount_tax = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "product" => b.product = Some(FromValueOpt::from_value(v)?),
-                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
-                    "reversal" => b.reversal = Some(FromValueOpt::from_value(v)?),
-                    "tax_behavior" => b.tax_behavior = Some(FromValueOpt::from_value(v)?),
-                    "tax_code" => b.tax_code = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "product" => b.product = FromValueOpt::from_value(v),
+                    "quantity" => b.quantity = FromValueOpt::from_value(v),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
+                    "reversal" => b.reversal = FromValueOpt::from_value(v),
+                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
+                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

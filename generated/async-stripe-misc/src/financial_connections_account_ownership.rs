@@ -16,7 +16,13 @@ pub struct FinancialConnectionsAccountOwnershipBuilder {
     owners: Option<stripe_types::List<stripe_misc::FinancialConnectionsAccountOwner>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +73,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                created: self.created?,
-                id: self.id.take()?,
-                owners: self.owners.take()?,
-            })
+            let (Some(created), Some(id), Some(owners)) =
+                (self.created, self.id.take(), self.owners.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { created, id, owners })
         }
     }
 
@@ -98,9 +105,9 @@ const _: () = {
             let mut b = FinancialConnectionsAccountOwnershipBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "owners" => b.owners = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "owners" => b.owners = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -21,7 +21,13 @@ pub struct PaymentMethodDetailsGiropayBuilder {
     verified_name: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -74,12 +80,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                bank_code: self.bank_code.take()?,
-                bank_name: self.bank_name.take()?,
-                bic: self.bic.take()?,
-                verified_name: self.verified_name.take()?,
-            })
+            let (Some(bank_code), Some(bank_name), Some(bic), Some(verified_name)) = (
+                self.bank_code.take(),
+                self.bank_name.take(),
+                self.bic.take(),
+                self.verified_name.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { bank_code, bank_name, bic, verified_name })
         }
     }
 
@@ -106,10 +115,10 @@ const _: () = {
             let mut b = PaymentMethodDetailsGiropayBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank_code" => b.bank_code = Some(FromValueOpt::from_value(v)?),
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
-                    "bic" => b.bic = Some(FromValueOpt::from_value(v)?),
-                    "verified_name" => b.verified_name = Some(FromValueOpt::from_value(v)?),
+                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "bic" => b.bic = FromValueOpt::from_value(v),
+                    "verified_name" => b.verified_name = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

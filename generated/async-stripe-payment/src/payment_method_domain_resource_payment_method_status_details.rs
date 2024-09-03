@@ -11,7 +11,13 @@ pub struct PaymentMethodDomainResourcePaymentMethodStatusDetailsBuilder {
     error_message: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -57,7 +63,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { error_message: self.error_message.take()? })
+            let (Some(error_message),) = (self.error_message.take(),) else {
+                return None;
+            };
+            Some(Self::Out { error_message })
         }
     }
 
@@ -85,7 +94,7 @@ const _: () = {
                 PaymentMethodDomainResourcePaymentMethodStatusDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "error_message" => b.error_message = Some(FromValueOpt::from_value(v)?),
+                    "error_message" => b.error_message = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

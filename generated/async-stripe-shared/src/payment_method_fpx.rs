@@ -14,7 +14,13 @@ pub struct PaymentMethodFpxBuilder {
     bank: Option<PaymentMethodFpxBank>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -60,7 +66,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { account_holder_type: self.account_holder_type?, bank: self.bank? })
+            let (Some(account_holder_type), Some(bank)) = (self.account_holder_type, self.bank)
+            else {
+                return None;
+            };
+            Some(Self::Out { account_holder_type, bank })
         }
     }
 
@@ -87,10 +97,8 @@ const _: () = {
             let mut b = PaymentMethodFpxBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_holder_type" => {
-                        b.account_holder_type = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "bank" => b.bank = Some(FromValueOpt::from_value(v)?),
+                    "account_holder_type" => b.account_holder_type = FromValueOpt::from_value(v),
+                    "bank" => b.bank = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

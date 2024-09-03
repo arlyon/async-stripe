@@ -5,7 +5,13 @@ pub struct PaymentMethodDetailsZip {}
 #[doc(hidden)]
 pub struct PaymentMethodDetailsZipBuilder {}
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -48,6 +54,9 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let () = () else {
+                return None;
+            };
             Some(Self::Out {})
         }
     }

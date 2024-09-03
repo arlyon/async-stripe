@@ -70,7 +70,13 @@ pub struct PaymentIntentPaymentMethodOptionsCardBuilder {
     statement_descriptor_suffix_kanji: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -151,20 +157,52 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(capture_method),
+                Some(installments),
+                Some(mandate_options),
+                Some(network),
+                Some(request_extended_authorization),
+                Some(request_incremental_authorization),
+                Some(request_multicapture),
+                Some(request_overcapture),
+                Some(request_three_d_secure),
+                Some(require_cvc_recollection),
+                Some(setup_future_usage),
+                Some(statement_descriptor_suffix_kana),
+                Some(statement_descriptor_suffix_kanji),
+            ) = (
+                self.capture_method,
+                self.installments.take(),
+                self.mandate_options.take(),
+                self.network,
+                self.request_extended_authorization,
+                self.request_incremental_authorization,
+                self.request_multicapture,
+                self.request_overcapture,
+                self.request_three_d_secure,
+                self.require_cvc_recollection,
+                self.setup_future_usage,
+                self.statement_descriptor_suffix_kana.take(),
+                self.statement_descriptor_suffix_kanji.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                capture_method: self.capture_method?,
-                installments: self.installments.take()?,
-                mandate_options: self.mandate_options.take()?,
-                network: self.network?,
-                request_extended_authorization: self.request_extended_authorization?,
-                request_incremental_authorization: self.request_incremental_authorization?,
-                request_multicapture: self.request_multicapture?,
-                request_overcapture: self.request_overcapture?,
-                request_three_d_secure: self.request_three_d_secure?,
-                require_cvc_recollection: self.require_cvc_recollection?,
-                setup_future_usage: self.setup_future_usage?,
-                statement_descriptor_suffix_kana: self.statement_descriptor_suffix_kana.take()?,
-                statement_descriptor_suffix_kanji: self.statement_descriptor_suffix_kanji.take()?,
+                capture_method,
+                installments,
+                mandate_options,
+                network,
+                request_extended_authorization,
+                request_incremental_authorization,
+                request_multicapture,
+                request_overcapture,
+                request_three_d_secure,
+                require_cvc_recollection,
+                setup_future_usage,
+                statement_descriptor_suffix_kana,
+                statement_descriptor_suffix_kanji,
             })
         }
     }
@@ -192,36 +230,30 @@ const _: () = {
             let mut b = PaymentIntentPaymentMethodOptionsCardBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "capture_method" => b.capture_method = Some(FromValueOpt::from_value(v)?),
-                    "installments" => b.installments = Some(FromValueOpt::from_value(v)?),
-                    "mandate_options" => b.mandate_options = Some(FromValueOpt::from_value(v)?),
-                    "network" => b.network = Some(FromValueOpt::from_value(v)?),
+                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
+                    "installments" => b.installments = FromValueOpt::from_value(v),
+                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
+                    "network" => b.network = FromValueOpt::from_value(v),
                     "request_extended_authorization" => {
-                        b.request_extended_authorization = Some(FromValueOpt::from_value(v)?)
+                        b.request_extended_authorization = FromValueOpt::from_value(v)
                     }
                     "request_incremental_authorization" => {
-                        b.request_incremental_authorization = Some(FromValueOpt::from_value(v)?)
+                        b.request_incremental_authorization = FromValueOpt::from_value(v)
                     }
-                    "request_multicapture" => {
-                        b.request_multicapture = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "request_overcapture" => {
-                        b.request_overcapture = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "request_multicapture" => b.request_multicapture = FromValueOpt::from_value(v),
+                    "request_overcapture" => b.request_overcapture = FromValueOpt::from_value(v),
                     "request_three_d_secure" => {
-                        b.request_three_d_secure = Some(FromValueOpt::from_value(v)?)
+                        b.request_three_d_secure = FromValueOpt::from_value(v)
                     }
                     "require_cvc_recollection" => {
-                        b.require_cvc_recollection = Some(FromValueOpt::from_value(v)?)
+                        b.require_cvc_recollection = FromValueOpt::from_value(v)
                     }
-                    "setup_future_usage" => {
-                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
                     "statement_descriptor_suffix_kana" => {
-                        b.statement_descriptor_suffix_kana = Some(FromValueOpt::from_value(v)?)
+                        b.statement_descriptor_suffix_kana = FromValueOpt::from_value(v)
                     }
                     "statement_descriptor_suffix_kanji" => {
-                        b.statement_descriptor_suffix_kanji = Some(FromValueOpt::from_value(v)?)
+                        b.statement_descriptor_suffix_kanji = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

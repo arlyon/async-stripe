@@ -10,7 +10,13 @@ pub struct IssuingCardholderCompanyBuilder {
     tax_id_provided: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { tax_id_provided: self.tax_id_provided? })
+            let (Some(tax_id_provided),) = (self.tax_id_provided,) else {
+                return None;
+            };
+            Some(Self::Out { tax_id_provided })
         }
     }
 
@@ -82,7 +91,7 @@ const _: () = {
             let mut b = IssuingCardholderCompanyBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "tax_id_provided" => b.tax_id_provided = Some(FromValueOpt::from_value(v)?),
+                    "tax_id_provided" => b.tax_id_provided = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

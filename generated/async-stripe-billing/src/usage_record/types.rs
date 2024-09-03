@@ -30,7 +30,13 @@ pub struct UsageRecordBuilder {
     timestamp: Option<stripe_types::Timestamp>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -85,13 +91,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                quantity: self.quantity?,
-                subscription_item: self.subscription_item.take()?,
-                timestamp: self.timestamp?,
-            })
+            let (
+                Some(id),
+                Some(livemode),
+                Some(quantity),
+                Some(subscription_item),
+                Some(timestamp),
+            ) = (
+                self.id.take(),
+                self.livemode,
+                self.quantity,
+                self.subscription_item.take(),
+                self.timestamp,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { id, livemode, quantity, subscription_item, timestamp })
         }
     }
 
@@ -118,11 +134,11 @@ const _: () = {
             let mut b = UsageRecordBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
-                    "subscription_item" => b.subscription_item = Some(FromValueOpt::from_value(v)?),
-                    "timestamp" => b.timestamp = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "quantity" => b.quantity = FromValueOpt::from_value(v),
+                    "subscription_item" => b.subscription_item = FromValueOpt::from_value(v),
+                    "timestamp" => b.timestamp = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

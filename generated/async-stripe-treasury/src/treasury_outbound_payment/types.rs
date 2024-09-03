@@ -88,7 +88,13 @@ pub struct TreasuryOutboundPaymentBuilder {
     transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -179,29 +185,73 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(cancelable),
+                Some(created),
+                Some(currency),
+                Some(customer),
+                Some(description),
+                Some(destination_payment_method),
+                Some(destination_payment_method_details),
+                Some(end_user_details),
+                Some(expected_arrival_date),
+                Some(financial_account),
+                Some(hosted_regulatory_receipt_url),
+                Some(id),
+                Some(livemode),
+                Some(metadata),
+                Some(returned_details),
+                Some(statement_descriptor),
+                Some(status),
+                Some(status_transitions),
+                Some(transaction),
+            ) = (
+                self.amount,
+                self.cancelable,
+                self.created,
+                self.currency,
+                self.customer.take(),
+                self.description.take(),
+                self.destination_payment_method.take(),
+                self.destination_payment_method_details.take(),
+                self.end_user_details.take(),
+                self.expected_arrival_date,
+                self.financial_account.take(),
+                self.hosted_regulatory_receipt_url.take(),
+                self.id.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.returned_details.take(),
+                self.statement_descriptor.take(),
+                self.status,
+                self.status_transitions,
+                self.transaction.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                cancelable: self.cancelable?,
-                created: self.created?,
-                currency: self.currency?,
-                customer: self.customer.take()?,
-                description: self.description.take()?,
-                destination_payment_method: self.destination_payment_method.take()?,
-                destination_payment_method_details: self
-                    .destination_payment_method_details
-                    .take()?,
-                end_user_details: self.end_user_details.take()?,
-                expected_arrival_date: self.expected_arrival_date?,
-                financial_account: self.financial_account.take()?,
-                hosted_regulatory_receipt_url: self.hosted_regulatory_receipt_url.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                returned_details: self.returned_details.take()?,
-                statement_descriptor: self.statement_descriptor.take()?,
-                status: self.status?,
-                status_transitions: self.status_transitions?,
-                transaction: self.transaction.take()?,
+                amount,
+                cancelable,
+                created,
+                currency,
+                customer,
+                description,
+                destination_payment_method,
+                destination_payment_method_details,
+                end_user_details,
+                expected_arrival_date,
+                financial_account,
+                hosted_regulatory_receipt_url,
+                id,
+                livemode,
+                metadata,
+                returned_details,
+                statement_descriptor,
+                status,
+                status_transitions,
+                transaction,
             })
         }
     }
@@ -229,38 +279,34 @@ const _: () = {
             let mut b = TreasuryOutboundPaymentBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "cancelable" => b.cancelable = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "cancelable" => b.cancelable = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
                     "destination_payment_method" => {
-                        b.destination_payment_method = Some(FromValueOpt::from_value(v)?)
+                        b.destination_payment_method = FromValueOpt::from_value(v)
                     }
                     "destination_payment_method_details" => {
-                        b.destination_payment_method_details = Some(FromValueOpt::from_value(v)?)
+                        b.destination_payment_method_details = FromValueOpt::from_value(v)
                     }
-                    "end_user_details" => b.end_user_details = Some(FromValueOpt::from_value(v)?),
+                    "end_user_details" => b.end_user_details = FromValueOpt::from_value(v),
                     "expected_arrival_date" => {
-                        b.expected_arrival_date = Some(FromValueOpt::from_value(v)?)
+                        b.expected_arrival_date = FromValueOpt::from_value(v)
                     }
-                    "financial_account" => b.financial_account = Some(FromValueOpt::from_value(v)?),
+                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
                     "hosted_regulatory_receipt_url" => {
-                        b.hosted_regulatory_receipt_url = Some(FromValueOpt::from_value(v)?)
+                        b.hosted_regulatory_receipt_url = FromValueOpt::from_value(v)
                     }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "returned_details" => b.returned_details = Some(FromValueOpt::from_value(v)?),
-                    "statement_descriptor" => {
-                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "status_transitions" => {
-                        b.status_transitions = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "transaction" => b.transaction = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "returned_details" => b.returned_details = FromValueOpt::from_value(v),
+                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
+                    "transaction" => b.transaction = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

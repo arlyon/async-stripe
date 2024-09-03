@@ -22,7 +22,13 @@ pub struct TreasuryReceivedDebitsResourceLinkedFlowsBuilder {
     payout: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,12 +83,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(debit_reversal),
+                Some(inbound_transfer),
+                Some(issuing_authorization),
+                Some(issuing_transaction),
+                Some(payout),
+            ) = (
+                self.debit_reversal.take(),
+                self.inbound_transfer.take(),
+                self.issuing_authorization.take(),
+                self.issuing_transaction.take(),
+                self.payout.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                debit_reversal: self.debit_reversal.take()?,
-                inbound_transfer: self.inbound_transfer.take()?,
-                issuing_authorization: self.issuing_authorization.take()?,
-                issuing_transaction: self.issuing_transaction.take()?,
-                payout: self.payout.take()?,
+                debit_reversal,
+                inbound_transfer,
+                issuing_authorization,
+                issuing_transaction,
+                payout,
             })
         }
     }
@@ -110,15 +132,13 @@ const _: () = {
             let mut b = TreasuryReceivedDebitsResourceLinkedFlowsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "debit_reversal" => b.debit_reversal = Some(FromValueOpt::from_value(v)?),
-                    "inbound_transfer" => b.inbound_transfer = Some(FromValueOpt::from_value(v)?),
+                    "debit_reversal" => b.debit_reversal = FromValueOpt::from_value(v),
+                    "inbound_transfer" => b.inbound_transfer = FromValueOpt::from_value(v),
                     "issuing_authorization" => {
-                        b.issuing_authorization = Some(FromValueOpt::from_value(v)?)
+                        b.issuing_authorization = FromValueOpt::from_value(v)
                     }
-                    "issuing_transaction" => {
-                        b.issuing_transaction = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "payout" => b.payout = Some(FromValueOpt::from_value(v)?),
+                    "issuing_transaction" => b.issuing_transaction = FromValueOpt::from_value(v),
+                    "payout" => b.payout = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

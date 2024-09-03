@@ -13,7 +13,13 @@ pub struct SourceTypeAlipayBuilder {
     statement_descriptor: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -64,11 +70,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                data_string: self.data_string.take()?,
-                native_url: self.native_url.take()?,
-                statement_descriptor: self.statement_descriptor.take()?,
-            })
+            let (Some(data_string), Some(native_url), Some(statement_descriptor)) =
+                (self.data_string.take(), self.native_url.take(), self.statement_descriptor.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { data_string, native_url, statement_descriptor })
         }
     }
 
@@ -95,11 +102,9 @@ const _: () = {
             let mut b = SourceTypeAlipayBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "data_string" => b.data_string = Some(FromValueOpt::from_value(v)?),
-                    "native_url" => b.native_url = Some(FromValueOpt::from_value(v)?),
-                    "statement_descriptor" => {
-                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "data_string" => b.data_string = FromValueOpt::from_value(v),
+                    "native_url" => b.native_url = FromValueOpt::from_value(v),
+                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

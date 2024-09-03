@@ -22,7 +22,13 @@ pub struct SourceTransactionChfCreditTransferDataBuilder {
     sender_name: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,12 +83,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(reference),
+                Some(sender_address_country),
+                Some(sender_address_line1),
+                Some(sender_iban),
+                Some(sender_name),
+            ) = (
+                self.reference.take(),
+                self.sender_address_country.take(),
+                self.sender_address_line1.take(),
+                self.sender_iban.take(),
+                self.sender_name.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                reference: self.reference.take()?,
-                sender_address_country: self.sender_address_country.take()?,
-                sender_address_line1: self.sender_address_line1.take()?,
-                sender_iban: self.sender_iban.take()?,
-                sender_name: self.sender_name.take()?,
+                reference,
+                sender_address_country,
+                sender_address_line1,
+                sender_iban,
+                sender_name,
             })
         }
     }
@@ -110,15 +132,13 @@ const _: () = {
             let mut b = SourceTransactionChfCreditTransferDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
                     "sender_address_country" => {
-                        b.sender_address_country = Some(FromValueOpt::from_value(v)?)
+                        b.sender_address_country = FromValueOpt::from_value(v)
                     }
-                    "sender_address_line1" => {
-                        b.sender_address_line1 = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "sender_iban" => b.sender_iban = Some(FromValueOpt::from_value(v)?),
-                    "sender_name" => b.sender_name = Some(FromValueOpt::from_value(v)?),
+                    "sender_address_line1" => b.sender_address_line1 = FromValueOpt::from_value(v),
+                    "sender_iban" => b.sender_iban = FromValueOpt::from_value(v),
+                    "sender_name" => b.sender_name = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

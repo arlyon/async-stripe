@@ -27,7 +27,13 @@ pub struct EntitlementsFeatureBuilder {
     name: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -84,14 +90,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                active: self.active?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                lookup_key: self.lookup_key.take()?,
-                metadata: self.metadata.take()?,
-                name: self.name.take()?,
-            })
+            let (
+                Some(active),
+                Some(id),
+                Some(livemode),
+                Some(lookup_key),
+                Some(metadata),
+                Some(name),
+            ) = (
+                self.active,
+                self.id.take(),
+                self.livemode,
+                self.lookup_key.take(),
+                self.metadata.take(),
+                self.name.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { active, id, livemode, lookup_key, metadata, name })
         }
     }
 
@@ -118,12 +135,12 @@ const _: () = {
             let mut b = EntitlementsFeatureBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "active" => b.active = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "lookup_key" => b.lookup_key = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
+                    "active" => b.active = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "lookup_key" => b.lookup_key = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

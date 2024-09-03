@@ -15,7 +15,13 @@ pub struct SubscriptionBillingThresholdsBuilder {
     reset_billing_cycle_anchor: Option<Option<bool>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -66,10 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount_gte: self.amount_gte?,
-                reset_billing_cycle_anchor: self.reset_billing_cycle_anchor?,
-            })
+            let (Some(amount_gte), Some(reset_billing_cycle_anchor)) =
+                (self.amount_gte, self.reset_billing_cycle_anchor)
+            else {
+                return None;
+            };
+            Some(Self::Out { amount_gte, reset_billing_cycle_anchor })
         }
     }
 
@@ -96,9 +104,9 @@ const _: () = {
             let mut b = SubscriptionBillingThresholdsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_gte" => b.amount_gte = Some(FromValueOpt::from_value(v)?),
+                    "amount_gte" => b.amount_gte = FromValueOpt::from_value(v),
                     "reset_billing_cycle_anchor" => {
-                        b.reset_billing_cycle_anchor = Some(FromValueOpt::from_value(v)?)
+                        b.reset_billing_cycle_anchor = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

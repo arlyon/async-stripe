@@ -10,7 +10,13 @@ pub struct PaymentLinksResourceCompletionBehaviorConfirmationPageBuilder {
     custom_message: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -56,7 +62,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { custom_message: self.custom_message.take()? })
+            let (Some(custom_message),) = (self.custom_message.take(),) else {
+                return None;
+            };
+            Some(Self::Out { custom_message })
         }
     }
 
@@ -84,7 +93,7 @@ const _: () = {
                 PaymentLinksResourceCompletionBehaviorConfirmationPageBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "custom_message" => b.custom_message = Some(FromValueOpt::from_value(v)?),
+                    "custom_message" => b.custom_message = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

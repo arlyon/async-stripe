@@ -89,7 +89,13 @@ wallet: Option<Option<stripe_shared::PaymentMethodDetailsCardWallet>>,
 
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -184,31 +190,85 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount_authorized),
+                Some(brand),
+                Some(capture_before),
+                Some(checks),
+                Some(country),
+                Some(description),
+                Some(exp_month),
+                Some(exp_year),
+                Some(extended_authorization),
+                Some(fingerprint),
+                Some(funding),
+                Some(iin),
+                Some(incremental_authorization),
+                Some(installments),
+                Some(issuer),
+                Some(last4),
+                Some(mandate),
+                Some(moto),
+                Some(multicapture),
+                Some(network),
+                Some(network_token),
+                Some(overcapture),
+                Some(three_d_secure),
+                Some(wallet),
+            ) = (
+                self.amount_authorized,
+                self.brand.take(),
+                self.capture_before,
+                self.checks.take(),
+                self.country.take(),
+                self.description.take(),
+                self.exp_month,
+                self.exp_year,
+                self.extended_authorization,
+                self.fingerprint.take(),
+                self.funding.take(),
+                self.iin.take(),
+                self.incremental_authorization,
+                self.installments,
+                self.issuer.take(),
+                self.last4.take(),
+                self.mandate.take(),
+                self.moto,
+                self.multicapture,
+                self.network.take(),
+                self.network_token,
+                self.overcapture,
+                self.three_d_secure.take(),
+                self.wallet.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount_authorized: self.amount_authorized?,
-                brand: self.brand.take()?,
-                capture_before: self.capture_before?,
-                checks: self.checks.take()?,
-                country: self.country.take()?,
-                description: self.description.take()?,
-                exp_month: self.exp_month?,
-                exp_year: self.exp_year?,
-                extended_authorization: self.extended_authorization?,
-                fingerprint: self.fingerprint.take()?,
-                funding: self.funding.take()?,
-                iin: self.iin.take()?,
-                incremental_authorization: self.incremental_authorization?,
-                installments: self.installments?,
-                issuer: self.issuer.take()?,
-                last4: self.last4.take()?,
-                mandate: self.mandate.take()?,
-                moto: self.moto?,
-                multicapture: self.multicapture?,
-                network: self.network.take()?,
-                network_token: self.network_token?,
-                overcapture: self.overcapture?,
-                three_d_secure: self.three_d_secure.take()?,
-                wallet: self.wallet.take()?,
+                amount_authorized,
+                brand,
+                capture_before,
+                checks,
+                country,
+                description,
+                exp_month,
+                exp_year,
+                extended_authorization,
+                fingerprint,
+                funding,
+                iin,
+                incremental_authorization,
+                installments,
+                issuer,
+                last4,
+                mandate,
+                moto,
+                multicapture,
+                network,
+                network_token,
+                overcapture,
+                three_d_secure,
+                wallet,
             })
         }
     }
@@ -236,34 +296,34 @@ const _: () = {
             let mut b = PaymentMethodDetailsCardBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_authorized" => b.amount_authorized = Some(FromValueOpt::from_value(v)?),
-                    "brand" => b.brand = Some(FromValueOpt::from_value(v)?),
-                    "capture_before" => b.capture_before = Some(FromValueOpt::from_value(v)?),
-                    "checks" => b.checks = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "exp_month" => b.exp_month = Some(FromValueOpt::from_value(v)?),
-                    "exp_year" => b.exp_year = Some(FromValueOpt::from_value(v)?),
+                    "amount_authorized" => b.amount_authorized = FromValueOpt::from_value(v),
+                    "brand" => b.brand = FromValueOpt::from_value(v),
+                    "capture_before" => b.capture_before = FromValueOpt::from_value(v),
+                    "checks" => b.checks = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
+                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
                     "extended_authorization" => {
-                        b.extended_authorization = Some(FromValueOpt::from_value(v)?)
+                        b.extended_authorization = FromValueOpt::from_value(v)
                     }
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "funding" => b.funding = Some(FromValueOpt::from_value(v)?),
-                    "iin" => b.iin = Some(FromValueOpt::from_value(v)?),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "funding" => b.funding = FromValueOpt::from_value(v),
+                    "iin" => b.iin = FromValueOpt::from_value(v),
                     "incremental_authorization" => {
-                        b.incremental_authorization = Some(FromValueOpt::from_value(v)?)
+                        b.incremental_authorization = FromValueOpt::from_value(v)
                     }
-                    "installments" => b.installments = Some(FromValueOpt::from_value(v)?),
-                    "issuer" => b.issuer = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "mandate" => b.mandate = Some(FromValueOpt::from_value(v)?),
-                    "moto" => b.moto = Some(FromValueOpt::from_value(v)?),
-                    "multicapture" => b.multicapture = Some(FromValueOpt::from_value(v)?),
-                    "network" => b.network = Some(FromValueOpt::from_value(v)?),
-                    "network_token" => b.network_token = Some(FromValueOpt::from_value(v)?),
-                    "overcapture" => b.overcapture = Some(FromValueOpt::from_value(v)?),
-                    "three_d_secure" => b.three_d_secure = Some(FromValueOpt::from_value(v)?),
-                    "wallet" => b.wallet = Some(FromValueOpt::from_value(v)?),
+                    "installments" => b.installments = FromValueOpt::from_value(v),
+                    "issuer" => b.issuer = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "mandate" => b.mandate = FromValueOpt::from_value(v),
+                    "moto" => b.moto = FromValueOpt::from_value(v),
+                    "multicapture" => b.multicapture = FromValueOpt::from_value(v),
+                    "network" => b.network = FromValueOpt::from_value(v),
+                    "network_token" => b.network_token = FromValueOpt::from_value(v),
+                    "overcapture" => b.overcapture = FromValueOpt::from_value(v),
+                    "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
+                    "wallet" => b.wallet = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -17,7 +17,13 @@ pub struct GelatoEmailReportBuilder {
     status: Option<GelatoEmailReportStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                email: self.email.take()?,
-                error: self.error.take()?,
-                status: self.status?,
-            })
+            let (Some(email), Some(error), Some(status)) =
+                (self.email.take(), self.error.take(), self.status)
+            else {
+                return None;
+            };
+            Some(Self::Out { email, error, status })
         }
     }
 
@@ -99,9 +106,9 @@ const _: () = {
             let mut b = GelatoEmailReportBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
-                    "error" => b.error = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "email" => b.email = FromValueOpt::from_value(v),
+                    "error" => b.error = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

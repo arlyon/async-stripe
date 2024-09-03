@@ -22,7 +22,13 @@ pub struct PortalSubscriptionUpdateBuilder {
     proration_behavior: Option<PortalSubscriptionUpdateProrationBehavior>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -75,12 +81,21 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                default_allowed_updates: self.default_allowed_updates.take()?,
-                enabled: self.enabled?,
-                products: self.products.take()?,
-                proration_behavior: self.proration_behavior?,
-            })
+            let (
+                Some(default_allowed_updates),
+                Some(enabled),
+                Some(products),
+                Some(proration_behavior),
+            ) = (
+                self.default_allowed_updates.take(),
+                self.enabled,
+                self.products.take(),
+                self.proration_behavior,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { default_allowed_updates, enabled, products, proration_behavior })
         }
     }
 
@@ -108,13 +123,11 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "default_allowed_updates" => {
-                        b.default_allowed_updates = Some(FromValueOpt::from_value(v)?)
+                        b.default_allowed_updates = FromValueOpt::from_value(v)
                     }
-                    "enabled" => b.enabled = Some(FromValueOpt::from_value(v)?),
-                    "products" => b.products = Some(FromValueOpt::from_value(v)?),
-                    "proration_behavior" => {
-                        b.proration_behavior = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "enabled" => b.enabled = FromValueOpt::from_value(v),
+                    "products" => b.products = FromValueOpt::from_value(v),
+                    "proration_behavior" => b.proration_behavior = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

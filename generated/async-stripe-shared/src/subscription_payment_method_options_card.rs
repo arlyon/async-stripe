@@ -19,7 +19,13 @@ pub struct SubscriptionPaymentMethodOptionsCardBuilder {
     request_three_d_secure: Option<Option<SubscriptionPaymentMethodOptionsCardRequestThreeDSecure>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -70,11 +76,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                mandate_options: self.mandate_options.take()?,
-                network: self.network?,
-                request_three_d_secure: self.request_three_d_secure?,
-            })
+            let (Some(mandate_options), Some(network), Some(request_three_d_secure)) =
+                (self.mandate_options.take(), self.network, self.request_three_d_secure)
+            else {
+                return None;
+            };
+            Some(Self::Out { mandate_options, network, request_three_d_secure })
         }
     }
 
@@ -101,10 +108,10 @@ const _: () = {
             let mut b = SubscriptionPaymentMethodOptionsCardBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "mandate_options" => b.mandate_options = Some(FromValueOpt::from_value(v)?),
-                    "network" => b.network = Some(FromValueOpt::from_value(v)?),
+                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
+                    "network" => b.network = FromValueOpt::from_value(v),
                     "request_three_d_secure" => {
-                        b.request_three_d_secure = Some(FromValueOpt::from_value(v)?)
+                        b.request_three_d_secure = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

@@ -13,7 +13,13 @@ pub struct QuotesResourceFromQuoteBuilder {
     quote: Option<stripe_types::Expandable<stripe_shared::Quote>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +65,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { is_revision: self.is_revision?, quote: self.quote.take()? })
+            let (Some(is_revision), Some(quote)) = (self.is_revision, self.quote.take()) else {
+                return None;
+            };
+            Some(Self::Out { is_revision, quote })
         }
     }
 
@@ -86,8 +95,8 @@ const _: () = {
             let mut b = QuotesResourceFromQuoteBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "is_revision" => b.is_revision = Some(FromValueOpt::from_value(v)?),
-                    "quote" => b.quote = Some(FromValueOpt::from_value(v)?),
+                    "is_revision" => b.is_revision = FromValueOpt::from_value(v),
+                    "quote" => b.quote = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

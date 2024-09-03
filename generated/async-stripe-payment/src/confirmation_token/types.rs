@@ -54,7 +54,13 @@ pub struct ConfirmationTokenBuilder {
     use_stripe_sdk: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -123,19 +129,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(created),
+                Some(expires_at),
+                Some(id),
+                Some(livemode),
+                Some(mandate_data),
+                Some(payment_intent),
+                Some(payment_method_preview),
+                Some(return_url),
+                Some(setup_future_usage),
+                Some(setup_intent),
+                Some(shipping),
+                Some(use_stripe_sdk),
+            ) = (
+                self.created,
+                self.expires_at,
+                self.id.take(),
+                self.livemode,
+                self.mandate_data.take(),
+                self.payment_intent.take(),
+                self.payment_method_preview.take(),
+                self.return_url.take(),
+                self.setup_future_usage,
+                self.setup_intent.take(),
+                self.shipping.take(),
+                self.use_stripe_sdk,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                created: self.created?,
-                expires_at: self.expires_at?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                mandate_data: self.mandate_data.take()?,
-                payment_intent: self.payment_intent.take()?,
-                payment_method_preview: self.payment_method_preview.take()?,
-                return_url: self.return_url.take()?,
-                setup_future_usage: self.setup_future_usage?,
-                setup_intent: self.setup_intent.take()?,
-                shipping: self.shipping.take()?,
-                use_stripe_sdk: self.use_stripe_sdk?,
+                created,
+                expires_at,
+                id,
+                livemode,
+                mandate_data,
+                payment_intent,
+                payment_method_preview,
+                return_url,
+                setup_future_usage,
+                setup_intent,
+                shipping,
+                use_stripe_sdk,
             })
         }
     }
@@ -163,22 +199,20 @@ const _: () = {
             let mut b = ConfirmationTokenBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "mandate_data" => b.mandate_data = Some(FromValueOpt::from_value(v)?),
-                    "payment_intent" => b.payment_intent = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "mandate_data" => b.mandate_data = FromValueOpt::from_value(v),
+                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
                     "payment_method_preview" => {
-                        b.payment_method_preview = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_preview = FromValueOpt::from_value(v)
                     }
-                    "return_url" => b.return_url = Some(FromValueOpt::from_value(v)?),
-                    "setup_future_usage" => {
-                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "setup_intent" => b.setup_intent = Some(FromValueOpt::from_value(v)?),
-                    "shipping" => b.shipping = Some(FromValueOpt::from_value(v)?),
-                    "use_stripe_sdk" => b.use_stripe_sdk = Some(FromValueOpt::from_value(v)?),
+                    "return_url" => b.return_url = FromValueOpt::from_value(v),
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
+                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
+                    "shipping" => b.shipping = FromValueOpt::from_value(v),
+                    "use_stripe_sdk" => b.use_stripe_sdk = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

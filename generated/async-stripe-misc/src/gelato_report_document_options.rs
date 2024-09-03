@@ -21,7 +21,13 @@ pub struct GelatoReportDocumentOptionsBuilder {
     require_matching_selfie: Option<Option<bool>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -74,11 +80,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(allowed_types),
+                Some(require_id_number),
+                Some(require_live_capture),
+                Some(require_matching_selfie),
+            ) = (
+                self.allowed_types.take(),
+                self.require_id_number,
+                self.require_live_capture,
+                self.require_matching_selfie,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                allowed_types: self.allowed_types.take()?,
-                require_id_number: self.require_id_number?,
-                require_live_capture: self.require_live_capture?,
-                require_matching_selfie: self.require_matching_selfie?,
+                allowed_types,
+                require_id_number,
+                require_live_capture,
+                require_matching_selfie,
             })
         }
     }
@@ -106,13 +126,11 @@ const _: () = {
             let mut b = GelatoReportDocumentOptionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "allowed_types" => b.allowed_types = Some(FromValueOpt::from_value(v)?),
-                    "require_id_number" => b.require_id_number = Some(FromValueOpt::from_value(v)?),
-                    "require_live_capture" => {
-                        b.require_live_capture = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "allowed_types" => b.allowed_types = FromValueOpt::from_value(v),
+                    "require_id_number" => b.require_id_number = FromValueOpt::from_value(v),
+                    "require_live_capture" => b.require_live_capture = FromValueOpt::from_value(v),
                     "require_matching_selfie" => {
-                        b.require_matching_selfie = Some(FromValueOpt::from_value(v)?)
+                        b.require_matching_selfie = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

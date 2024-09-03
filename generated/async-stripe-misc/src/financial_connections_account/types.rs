@@ -79,7 +79,13 @@ pub struct FinancialConnectionsAccountBuilder {
     transaction_refresh: Option<Option<stripe_misc::BankConnectionsResourceTransactionRefresh>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -162,25 +168,67 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account_holder),
+                Some(balance),
+                Some(balance_refresh),
+                Some(category),
+                Some(created),
+                Some(display_name),
+                Some(id),
+                Some(institution_name),
+                Some(last4),
+                Some(livemode),
+                Some(ownership),
+                Some(ownership_refresh),
+                Some(permissions),
+                Some(status),
+                Some(subcategory),
+                Some(subscriptions),
+                Some(supported_payment_method_types),
+                Some(transaction_refresh),
+            ) = (
+                self.account_holder.take(),
+                self.balance.take(),
+                self.balance_refresh,
+                self.category,
+                self.created,
+                self.display_name.take(),
+                self.id.take(),
+                self.institution_name.take(),
+                self.last4.take(),
+                self.livemode,
+                self.ownership.take(),
+                self.ownership_refresh,
+                self.permissions.take(),
+                self.status,
+                self.subcategory,
+                self.subscriptions.take(),
+                self.supported_payment_method_types.take(),
+                self.transaction_refresh.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account_holder: self.account_holder.take()?,
-                balance: self.balance.take()?,
-                balance_refresh: self.balance_refresh?,
-                category: self.category?,
-                created: self.created?,
-                display_name: self.display_name.take()?,
-                id: self.id.take()?,
-                institution_name: self.institution_name.take()?,
-                last4: self.last4.take()?,
-                livemode: self.livemode?,
-                ownership: self.ownership.take()?,
-                ownership_refresh: self.ownership_refresh?,
-                permissions: self.permissions.take()?,
-                status: self.status?,
-                subcategory: self.subcategory?,
-                subscriptions: self.subscriptions.take()?,
-                supported_payment_method_types: self.supported_payment_method_types.take()?,
-                transaction_refresh: self.transaction_refresh.take()?,
+                account_holder,
+                balance,
+                balance_refresh,
+                category,
+                created,
+                display_name,
+                id,
+                institution_name,
+                last4,
+                livemode,
+                ownership,
+                ownership_refresh,
+                permissions,
+                status,
+                subcategory,
+                subscriptions,
+                supported_payment_method_types,
+                transaction_refresh,
             })
         }
     }
@@ -208,28 +256,26 @@ const _: () = {
             let mut b = FinancialConnectionsAccountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_holder" => b.account_holder = Some(FromValueOpt::from_value(v)?),
-                    "balance" => b.balance = Some(FromValueOpt::from_value(v)?),
-                    "balance_refresh" => b.balance_refresh = Some(FromValueOpt::from_value(v)?),
-                    "category" => b.category = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "display_name" => b.display_name = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "institution_name" => b.institution_name = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "ownership" => b.ownership = Some(FromValueOpt::from_value(v)?),
-                    "ownership_refresh" => b.ownership_refresh = Some(FromValueOpt::from_value(v)?),
-                    "permissions" => b.permissions = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "subcategory" => b.subcategory = Some(FromValueOpt::from_value(v)?),
-                    "subscriptions" => b.subscriptions = Some(FromValueOpt::from_value(v)?),
+                    "account_holder" => b.account_holder = FromValueOpt::from_value(v),
+                    "balance" => b.balance = FromValueOpt::from_value(v),
+                    "balance_refresh" => b.balance_refresh = FromValueOpt::from_value(v),
+                    "category" => b.category = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "display_name" => b.display_name = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "institution_name" => b.institution_name = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "ownership" => b.ownership = FromValueOpt::from_value(v),
+                    "ownership_refresh" => b.ownership_refresh = FromValueOpt::from_value(v),
+                    "permissions" => b.permissions = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "subcategory" => b.subcategory = FromValueOpt::from_value(v),
+                    "subscriptions" => b.subscriptions = FromValueOpt::from_value(v),
                     "supported_payment_method_types" => {
-                        b.supported_payment_method_types = Some(FromValueOpt::from_value(v)?)
+                        b.supported_payment_method_types = FromValueOpt::from_value(v)
                     }
-                    "transaction_refresh" => {
-                        b.transaction_refresh = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "transaction_refresh" => b.transaction_refresh = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

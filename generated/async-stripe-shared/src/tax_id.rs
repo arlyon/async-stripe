@@ -41,7 +41,13 @@ pub struct TaxIdBuilder {
     verification: Option<Option<stripe_shared::TaxIdVerification>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -101,16 +107,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(country),
+                Some(created),
+                Some(customer),
+                Some(id),
+                Some(livemode),
+                Some(owner),
+                Some(type_),
+                Some(value),
+                Some(verification),
+            ) = (
+                self.country.take(),
+                self.created,
+                self.customer.take(),
+                self.id.take(),
+                self.livemode,
+                self.owner.take(),
+                self.type_,
+                self.value.take(),
+                self.verification.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                country: self.country.take()?,
-                created: self.created?,
-                customer: self.customer.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                owner: self.owner.take()?,
-                type_: self.type_?,
-                value: self.value.take()?,
-                verification: self.verification.take()?,
+                country,
+                created,
+                customer,
+                id,
+                livemode,
+                owner,
+                type_,
+                value,
+                verification,
             })
         }
     }
@@ -138,15 +168,15 @@ const _: () = {
             let mut b = TaxIdBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "owner" => b.owner = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "value" => b.value = Some(FromValueOpt::from_value(v)?),
-                    "verification" => b.verification = Some(FromValueOpt::from_value(v)?),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "owner" => b.owner = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "value" => b.value = FromValueOpt::from_value(v),
+                    "verification" => b.verification = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

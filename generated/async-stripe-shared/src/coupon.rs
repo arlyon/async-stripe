@@ -71,7 +71,13 @@ pub struct CouponBuilder {
     valid: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -145,23 +151,61 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount_off),
+                Some(applies_to),
+                Some(created),
+                Some(currency),
+                Some(currency_options),
+                Some(duration),
+                Some(duration_in_months),
+                Some(id),
+                Some(livemode),
+                Some(max_redemptions),
+                Some(metadata),
+                Some(name),
+                Some(percent_off),
+                Some(redeem_by),
+                Some(times_redeemed),
+                Some(valid),
+            ) = (
+                self.amount_off,
+                self.applies_to.take(),
+                self.created,
+                self.currency,
+                self.currency_options.take(),
+                self.duration,
+                self.duration_in_months,
+                self.id.take(),
+                self.livemode,
+                self.max_redemptions,
+                self.metadata.take(),
+                self.name.take(),
+                self.percent_off,
+                self.redeem_by,
+                self.times_redeemed,
+                self.valid,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount_off: self.amount_off?,
-                applies_to: self.applies_to.take()?,
-                created: self.created?,
-                currency: self.currency?,
-                currency_options: self.currency_options.take()?,
-                duration: self.duration?,
-                duration_in_months: self.duration_in_months?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                max_redemptions: self.max_redemptions?,
-                metadata: self.metadata.take()?,
-                name: self.name.take()?,
-                percent_off: self.percent_off?,
-                redeem_by: self.redeem_by?,
-                times_redeemed: self.times_redeemed?,
-                valid: self.valid?,
+                amount_off,
+                applies_to,
+                created,
+                currency,
+                currency_options,
+                duration,
+                duration_in_months,
+                id,
+                livemode,
+                max_redemptions,
+                metadata,
+                name,
+                percent_off,
+                redeem_by,
+                times_redeemed,
+                valid,
             })
         }
     }
@@ -189,24 +233,22 @@ const _: () = {
             let mut b = CouponBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_off" => b.amount_off = Some(FromValueOpt::from_value(v)?),
-                    "applies_to" => b.applies_to = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "currency_options" => b.currency_options = Some(FromValueOpt::from_value(v)?),
-                    "duration" => b.duration = Some(FromValueOpt::from_value(v)?),
-                    "duration_in_months" => {
-                        b.duration_in_months = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "max_redemptions" => b.max_redemptions = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "percent_off" => b.percent_off = Some(FromValueOpt::from_value(v)?),
-                    "redeem_by" => b.redeem_by = Some(FromValueOpt::from_value(v)?),
-                    "times_redeemed" => b.times_redeemed = Some(FromValueOpt::from_value(v)?),
-                    "valid" => b.valid = Some(FromValueOpt::from_value(v)?),
+                    "amount_off" => b.amount_off = FromValueOpt::from_value(v),
+                    "applies_to" => b.applies_to = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "currency_options" => b.currency_options = FromValueOpt::from_value(v),
+                    "duration" => b.duration = FromValueOpt::from_value(v),
+                    "duration_in_months" => b.duration_in_months = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "max_redemptions" => b.max_redemptions = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "percent_off" => b.percent_off = FromValueOpt::from_value(v),
+                    "redeem_by" => b.redeem_by = FromValueOpt::from_value(v),
+                    "times_redeemed" => b.times_redeemed = FromValueOpt::from_value(v),
+                    "valid" => b.valid = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

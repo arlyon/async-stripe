@@ -43,7 +43,13 @@ pub struct CheckoutSessionItemBuilder {
     taxes: Option<Option<Vec<stripe_shared::LineItemsTaxAmount>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -110,18 +116,46 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount_discount),
+                Some(amount_subtotal),
+                Some(amount_tax),
+                Some(amount_total),
+                Some(currency),
+                Some(description),
+                Some(discounts),
+                Some(id),
+                Some(price),
+                Some(quantity),
+                Some(taxes),
+            ) = (
+                self.amount_discount,
+                self.amount_subtotal,
+                self.amount_tax,
+                self.amount_total,
+                self.currency,
+                self.description.take(),
+                self.discounts.take(),
+                self.id.take(),
+                self.price.take(),
+                self.quantity,
+                self.taxes.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount_discount: self.amount_discount?,
-                amount_subtotal: self.amount_subtotal?,
-                amount_tax: self.amount_tax?,
-                amount_total: self.amount_total?,
-                currency: self.currency?,
-                description: self.description.take()?,
-                discounts: self.discounts.take()?,
-                id: self.id.take()?,
-                price: self.price.take()?,
-                quantity: self.quantity?,
-                taxes: self.taxes.take()?,
+                amount_discount,
+                amount_subtotal,
+                amount_tax,
+                amount_total,
+                currency,
+                description,
+                discounts,
+                id,
+                price,
+                quantity,
+                taxes,
             })
         }
     }
@@ -149,17 +183,17 @@ const _: () = {
             let mut b = CheckoutSessionItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_discount" => b.amount_discount = Some(FromValueOpt::from_value(v)?),
-                    "amount_subtotal" => b.amount_subtotal = Some(FromValueOpt::from_value(v)?),
-                    "amount_tax" => b.amount_tax = Some(FromValueOpt::from_value(v)?),
-                    "amount_total" => b.amount_total = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "price" => b.price = Some(FromValueOpt::from_value(v)?),
-                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
-                    "taxes" => b.taxes = Some(FromValueOpt::from_value(v)?),
+                    "amount_discount" => b.amount_discount = FromValueOpt::from_value(v),
+                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
+                    "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
+                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "discounts" => b.discounts = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "price" => b.price = FromValueOpt::from_value(v),
+                    "quantity" => b.quantity = FromValueOpt::from_value(v),
+                    "taxes" => b.taxes = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

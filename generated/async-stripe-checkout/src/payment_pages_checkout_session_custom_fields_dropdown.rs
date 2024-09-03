@@ -13,7 +13,13 @@ pub struct PaymentPagesCheckoutSessionCustomFieldsDropdownBuilder {
     value: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +65,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { options: self.options.take()?, value: self.value.take()? })
+            let (Some(options), Some(value)) = (self.options.take(), self.value.take()) else {
+                return None;
+            };
+            Some(Self::Out { options, value })
         }
     }
 
@@ -86,8 +95,8 @@ const _: () = {
             let mut b = PaymentPagesCheckoutSessionCustomFieldsDropdownBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "options" => b.options = Some(FromValueOpt::from_value(v)?),
-                    "value" => b.value = Some(FromValueOpt::from_value(v)?),
+                    "options" => b.options = FromValueOpt::from_value(v),
+                    "value" => b.value = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

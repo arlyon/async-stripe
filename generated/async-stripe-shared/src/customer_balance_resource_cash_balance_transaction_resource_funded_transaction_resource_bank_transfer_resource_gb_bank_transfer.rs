@@ -18,7 +18,13 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactio
     sort_code: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -70,10 +76,16 @@ sort_code: Deserialize::default(),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        Some(Self::Out { account_number_last4: self.account_number_last4.take()?,
-sender_name: self.sender_name.take()?,
-sort_code: self.sort_code.take()?,
- })
+        let (Some(account_number_last4),
+Some(sender_name),
+Some(sort_code),
+) = (self.account_number_last4.take(),
+self.sender_name.take(),
+self.sort_code.take(),
+) else {
+            return None;
+        };
+        Some(Self::Out { account_number_last4,sender_name,sort_code })
     }
 }
 
@@ -100,9 +112,9 @@ sort_code: self.sort_code.take()?,
         let mut b = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceGbBankTransferBuilder::deser_default();
         for (k, v) in obj {
             match k.as_str() {
-                "account_number_last4" => b.account_number_last4 = Some(FromValueOpt::from_value(v)?),
-"sender_name" => b.sender_name = Some(FromValueOpt::from_value(v)?),
-"sort_code" => b.sort_code = Some(FromValueOpt::from_value(v)?),
+                "account_number_last4" => b.account_number_last4 = FromValueOpt::from_value(v),
+"sender_name" => b.sender_name = FromValueOpt::from_value(v),
+"sort_code" => b.sort_code = FromValueOpt::from_value(v),
 
                 _ => {}
             }

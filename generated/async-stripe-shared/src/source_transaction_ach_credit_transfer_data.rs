@@ -19,7 +19,13 @@ pub struct SourceTransactionAchCreditTransferDataBuilder {
     routing_number: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +78,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                customer_data: self.customer_data.take()?,
-                fingerprint: self.fingerprint.take()?,
-                last4: self.last4.take()?,
-                routing_number: self.routing_number.take()?,
-            })
+            let (Some(customer_data), Some(fingerprint), Some(last4), Some(routing_number)) = (
+                self.customer_data.take(),
+                self.fingerprint.take(),
+                self.last4.take(),
+                self.routing_number.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { customer_data, fingerprint, last4, routing_number })
         }
     }
 
@@ -104,10 +113,10 @@ const _: () = {
             let mut b = SourceTransactionAchCreditTransferDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "customer_data" => b.customer_data = Some(FromValueOpt::from_value(v)?),
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "routing_number" => b.routing_number = Some(FromValueOpt::from_value(v)?),
+                    "customer_data" => b.customer_data = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

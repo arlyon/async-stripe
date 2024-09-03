@@ -16,7 +16,13 @@ pub struct CancellationDetailsBuilder {
     reason: Option<Option<CancellationDetailsReason>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +73,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                comment: self.comment.take()?,
-                feedback: self.feedback?,
-                reason: self.reason?,
-            })
+            let (Some(comment), Some(feedback), Some(reason)) =
+                (self.comment.take(), self.feedback, self.reason)
+            else {
+                return None;
+            };
+            Some(Self::Out { comment, feedback, reason })
         }
     }
 
@@ -98,9 +105,9 @@ const _: () = {
             let mut b = CancellationDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "comment" => b.comment = Some(FromValueOpt::from_value(v)?),
-                    "feedback" => b.feedback = Some(FromValueOpt::from_value(v)?),
-                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
+                    "comment" => b.comment = FromValueOpt::from_value(v),
+                    "feedback" => b.feedback = FromValueOpt::from_value(v),
+                    "reason" => b.reason = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

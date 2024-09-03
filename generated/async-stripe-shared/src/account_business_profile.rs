@@ -42,7 +42,13 @@ pub struct AccountBusinessProfileBuilder {
     url: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -111,18 +117,46 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(annual_revenue),
+                Some(estimated_worker_count),
+                Some(mcc),
+                Some(monthly_estimated_revenue),
+                Some(name),
+                Some(product_description),
+                Some(support_address),
+                Some(support_email),
+                Some(support_phone),
+                Some(support_url),
+                Some(url),
+            ) = (
+                self.annual_revenue.take(),
+                self.estimated_worker_count,
+                self.mcc.take(),
+                self.monthly_estimated_revenue,
+                self.name.take(),
+                self.product_description.take(),
+                self.support_address.take(),
+                self.support_email.take(),
+                self.support_phone.take(),
+                self.support_url.take(),
+                self.url.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                annual_revenue: self.annual_revenue.take()?,
-                estimated_worker_count: self.estimated_worker_count?,
-                mcc: self.mcc.take()?,
-                monthly_estimated_revenue: self.monthly_estimated_revenue?,
-                name: self.name.take()?,
-                product_description: self.product_description.take()?,
-                support_address: self.support_address.take()?,
-                support_email: self.support_email.take()?,
-                support_phone: self.support_phone.take()?,
-                support_url: self.support_url.take()?,
-                url: self.url.take()?,
+                annual_revenue,
+                estimated_worker_count,
+                mcc,
+                monthly_estimated_revenue,
+                name,
+                product_description,
+                support_address,
+                support_email,
+                support_phone,
+                support_url,
+                url,
             })
         }
     }
@@ -150,23 +184,21 @@ const _: () = {
             let mut b = AccountBusinessProfileBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "annual_revenue" => b.annual_revenue = Some(FromValueOpt::from_value(v)?),
+                    "annual_revenue" => b.annual_revenue = FromValueOpt::from_value(v),
                     "estimated_worker_count" => {
-                        b.estimated_worker_count = Some(FromValueOpt::from_value(v)?)
+                        b.estimated_worker_count = FromValueOpt::from_value(v)
                     }
-                    "mcc" => b.mcc = Some(FromValueOpt::from_value(v)?),
+                    "mcc" => b.mcc = FromValueOpt::from_value(v),
                     "monthly_estimated_revenue" => {
-                        b.monthly_estimated_revenue = Some(FromValueOpt::from_value(v)?)
+                        b.monthly_estimated_revenue = FromValueOpt::from_value(v)
                     }
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "product_description" => {
-                        b.product_description = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "support_address" => b.support_address = Some(FromValueOpt::from_value(v)?),
-                    "support_email" => b.support_email = Some(FromValueOpt::from_value(v)?),
-                    "support_phone" => b.support_phone = Some(FromValueOpt::from_value(v)?),
-                    "support_url" => b.support_url = Some(FromValueOpt::from_value(v)?),
-                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "product_description" => b.product_description = FromValueOpt::from_value(v),
+                    "support_address" => b.support_address = FromValueOpt::from_value(v),
+                    "support_email" => b.support_email = FromValueOpt::from_value(v),
+                    "support_phone" => b.support_phone = FromValueOpt::from_value(v),
+                    "support_url" => b.support_url = FromValueOpt::from_value(v),
+                    "url" => b.url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

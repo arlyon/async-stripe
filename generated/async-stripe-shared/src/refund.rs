@@ -80,7 +80,13 @@ pub struct RefundBuilder {
     transfer_reversal: Option<Option<stripe_types::Expandable<stripe_shared::TransferReversal>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -164,26 +170,70 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(balance_transaction),
+                Some(charge),
+                Some(created),
+                Some(currency),
+                Some(description),
+                Some(destination_details),
+                Some(failure_balance_transaction),
+                Some(failure_reason),
+                Some(id),
+                Some(instructions_email),
+                Some(metadata),
+                Some(next_action),
+                Some(payment_intent),
+                Some(reason),
+                Some(receipt_number),
+                Some(source_transfer_reversal),
+                Some(status),
+                Some(transfer_reversal),
+            ) = (
+                self.amount,
+                self.balance_transaction.take(),
+                self.charge.take(),
+                self.created,
+                self.currency,
+                self.description.take(),
+                self.destination_details.take(),
+                self.failure_balance_transaction.take(),
+                self.failure_reason.take(),
+                self.id.take(),
+                self.instructions_email.take(),
+                self.metadata.take(),
+                self.next_action.take(),
+                self.payment_intent.take(),
+                self.reason,
+                self.receipt_number.take(),
+                self.source_transfer_reversal.take(),
+                self.status.take(),
+                self.transfer_reversal.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                balance_transaction: self.balance_transaction.take()?,
-                charge: self.charge.take()?,
-                created: self.created?,
-                currency: self.currency?,
-                description: self.description.take()?,
-                destination_details: self.destination_details.take()?,
-                failure_balance_transaction: self.failure_balance_transaction.take()?,
-                failure_reason: self.failure_reason.take()?,
-                id: self.id.take()?,
-                instructions_email: self.instructions_email.take()?,
-                metadata: self.metadata.take()?,
-                next_action: self.next_action.take()?,
-                payment_intent: self.payment_intent.take()?,
-                reason: self.reason?,
-                receipt_number: self.receipt_number.take()?,
-                source_transfer_reversal: self.source_transfer_reversal.take()?,
-                status: self.status.take()?,
-                transfer_reversal: self.transfer_reversal.take()?,
+                amount,
+                balance_transaction,
+                charge,
+                created,
+                currency,
+                description,
+                destination_details,
+                failure_balance_transaction,
+                failure_reason,
+                id,
+                instructions_email,
+                metadata,
+                next_action,
+                payment_intent,
+                reason,
+                receipt_number,
+                source_transfer_reversal,
+                status,
+                transfer_reversal,
             })
         }
     }
@@ -211,35 +261,29 @@ const _: () = {
             let mut b = RefundBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "balance_transaction" => {
-                        b.balance_transaction = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "charge" => b.charge = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "destination_details" => {
-                        b.destination_details = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
+                    "charge" => b.charge = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "destination_details" => b.destination_details = FromValueOpt::from_value(v),
                     "failure_balance_transaction" => {
-                        b.failure_balance_transaction = Some(FromValueOpt::from_value(v)?)
+                        b.failure_balance_transaction = FromValueOpt::from_value(v)
                     }
-                    "failure_reason" => b.failure_reason = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "instructions_email" => {
-                        b.instructions_email = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "next_action" => b.next_action = Some(FromValueOpt::from_value(v)?),
-                    "payment_intent" => b.payment_intent = Some(FromValueOpt::from_value(v)?),
-                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
-                    "receipt_number" => b.receipt_number = Some(FromValueOpt::from_value(v)?),
+                    "failure_reason" => b.failure_reason = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "instructions_email" => b.instructions_email = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "next_action" => b.next_action = FromValueOpt::from_value(v),
+                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
+                    "reason" => b.reason = FromValueOpt::from_value(v),
+                    "receipt_number" => b.receipt_number = FromValueOpt::from_value(v),
                     "source_transfer_reversal" => {
-                        b.source_transfer_reversal = Some(FromValueOpt::from_value(v)?)
+                        b.source_transfer_reversal = FromValueOpt::from_value(v)
                     }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "transfer_reversal" => b.transfer_reversal = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "transfer_reversal" => b.transfer_reversal = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

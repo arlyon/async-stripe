@@ -22,7 +22,13 @@ pub struct SubscriptionsResourceBillingCycleAnchorConfigBuilder {
     second: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,13 +83,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                day_of_month: self.day_of_month?,
-                hour: self.hour?,
-                minute: self.minute?,
-                month: self.month?,
-                second: self.second?,
-            })
+            let (Some(day_of_month), Some(hour), Some(minute), Some(month), Some(second)) =
+                (self.day_of_month, self.hour, self.minute, self.month, self.second)
+            else {
+                return None;
+            };
+            Some(Self::Out { day_of_month, hour, minute, month, second })
         }
     }
 
@@ -110,11 +115,11 @@ const _: () = {
             let mut b = SubscriptionsResourceBillingCycleAnchorConfigBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "day_of_month" => b.day_of_month = Some(FromValueOpt::from_value(v)?),
-                    "hour" => b.hour = Some(FromValueOpt::from_value(v)?),
-                    "minute" => b.minute = Some(FromValueOpt::from_value(v)?),
-                    "month" => b.month = Some(FromValueOpt::from_value(v)?),
-                    "second" => b.second = Some(FromValueOpt::from_value(v)?),
+                    "day_of_month" => b.day_of_month = FromValueOpt::from_value(v),
+                    "hour" => b.hour = FromValueOpt::from_value(v),
+                    "minute" => b.minute = FromValueOpt::from_value(v),
+                    "month" => b.month = FromValueOpt::from_value(v),
+                    "second" => b.second = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

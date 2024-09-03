@@ -19,7 +19,13 @@ pub struct CheckoutKonbiniPaymentMethodOptionsBuilder {
     setup_future_usage: Option<Option<CheckoutKonbiniPaymentMethodOptionsSetupFutureUsage>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,10 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                expires_after_days: self.expires_after_days?,
-                setup_future_usage: self.setup_future_usage?,
-            })
+            let (Some(expires_after_days), Some(setup_future_usage)) =
+                (self.expires_after_days, self.setup_future_usage)
+            else {
+                return None;
+            };
+            Some(Self::Out { expires_after_days, setup_future_usage })
         }
     }
 
@@ -98,12 +106,8 @@ const _: () = {
             let mut b = CheckoutKonbiniPaymentMethodOptionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "expires_after_days" => {
-                        b.expires_after_days = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "setup_future_usage" => {
-                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "expires_after_days" => b.expires_after_days = FromValueOpt::from_value(v),
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

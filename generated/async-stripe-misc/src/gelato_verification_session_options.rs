@@ -15,7 +15,13 @@ pub struct GelatoVerificationSessionOptionsBuilder {
     phone: Option<Option<stripe_misc::GelatoSessionPhoneOptions>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,12 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                document: self.document.take()?,
-                email: self.email?,
-                id_number: self.id_number?,
-                phone: self.phone?,
-            })
+            let (Some(document), Some(email), Some(id_number), Some(phone)) =
+                (self.document.take(), self.email, self.id_number, self.phone)
+            else {
+                return None;
+            };
+            Some(Self::Out { document, email, id_number, phone })
         }
     }
 
@@ -100,10 +106,10 @@ const _: () = {
             let mut b = GelatoVerificationSessionOptionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "document" => b.document = Some(FromValueOpt::from_value(v)?),
-                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
-                    "id_number" => b.id_number = Some(FromValueOpt::from_value(v)?),
-                    "phone" => b.phone = Some(FromValueOpt::from_value(v)?),
+                    "document" => b.document = FromValueOpt::from_value(v),
+                    "email" => b.email = FromValueOpt::from_value(v),
+                    "id_number" => b.id_number = FromValueOpt::from_value(v),
+                    "phone" => b.phone = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

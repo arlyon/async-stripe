@@ -22,7 +22,13 @@ pub struct DisputeEvidenceDetailsBuilder {
     submission_count: Option<u64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -75,12 +81,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                due_by: self.due_by?,
-                has_evidence: self.has_evidence?,
-                past_due: self.past_due?,
-                submission_count: self.submission_count?,
-            })
+            let (Some(due_by), Some(has_evidence), Some(past_due), Some(submission_count)) =
+                (self.due_by, self.has_evidence, self.past_due, self.submission_count)
+            else {
+                return None;
+            };
+            Some(Self::Out { due_by, has_evidence, past_due, submission_count })
         }
     }
 
@@ -107,10 +113,10 @@ const _: () = {
             let mut b = DisputeEvidenceDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "due_by" => b.due_by = Some(FromValueOpt::from_value(v)?),
-                    "has_evidence" => b.has_evidence = Some(FromValueOpt::from_value(v)?),
-                    "past_due" => b.past_due = Some(FromValueOpt::from_value(v)?),
-                    "submission_count" => b.submission_count = Some(FromValueOpt::from_value(v)?),
+                    "due_by" => b.due_by = FromValueOpt::from_value(v),
+                    "has_evidence" => b.has_evidence = FromValueOpt::from_value(v),
+                    "past_due" => b.past_due = FromValueOpt::from_value(v),
+                    "submission_count" => b.submission_count = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -28,7 +28,13 @@ pub struct FinancialConnectionsAccountOwnerBuilder {
     refreshed_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -87,15 +93,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                email: self.email.take()?,
-                id: self.id.take()?,
-                name: self.name.take()?,
-                ownership: self.ownership.take()?,
-                phone: self.phone.take()?,
-                raw_address: self.raw_address.take()?,
-                refreshed_at: self.refreshed_at?,
-            })
+            let (
+                Some(email),
+                Some(id),
+                Some(name),
+                Some(ownership),
+                Some(phone),
+                Some(raw_address),
+                Some(refreshed_at),
+            ) = (
+                self.email.take(),
+                self.id.take(),
+                self.name.take(),
+                self.ownership.take(),
+                self.phone.take(),
+                self.raw_address.take(),
+                self.refreshed_at,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { email, id, name, ownership, phone, raw_address, refreshed_at })
         }
     }
 
@@ -122,13 +140,13 @@ const _: () = {
             let mut b = FinancialConnectionsAccountOwnerBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "ownership" => b.ownership = Some(FromValueOpt::from_value(v)?),
-                    "phone" => b.phone = Some(FromValueOpt::from_value(v)?),
-                    "raw_address" => b.raw_address = Some(FromValueOpt::from_value(v)?),
-                    "refreshed_at" => b.refreshed_at = Some(FromValueOpt::from_value(v)?),
+                    "email" => b.email = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "ownership" => b.ownership = FromValueOpt::from_value(v),
+                    "phone" => b.phone = FromValueOpt::from_value(v),
+                    "raw_address" => b.raw_address = FromValueOpt::from_value(v),
+                    "refreshed_at" => b.refreshed_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

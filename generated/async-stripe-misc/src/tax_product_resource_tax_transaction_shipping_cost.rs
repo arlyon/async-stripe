@@ -29,7 +29,13 @@ pub struct TaxProductResourceTaxTransactionShippingCostBuilder {
     tax_code: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -86,13 +92,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(amount_tax),
+                Some(shipping_rate),
+                Some(tax_behavior),
+                Some(tax_breakdown),
+                Some(tax_code),
+            ) = (
+                self.amount,
+                self.amount_tax,
+                self.shipping_rate.take(),
+                self.tax_behavior,
+                self.tax_breakdown.take(),
+                self.tax_code.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                amount_tax: self.amount_tax?,
-                shipping_rate: self.shipping_rate.take()?,
-                tax_behavior: self.tax_behavior?,
-                tax_breakdown: self.tax_breakdown.take()?,
-                tax_code: self.tax_code.take()?,
+                amount,
+                amount_tax,
+                shipping_rate,
+                tax_behavior,
+                tax_breakdown,
+                tax_code,
             })
         }
     }
@@ -120,12 +144,12 @@ const _: () = {
             let mut b = TaxProductResourceTaxTransactionShippingCostBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_tax" => b.amount_tax = Some(FromValueOpt::from_value(v)?),
-                    "shipping_rate" => b.shipping_rate = Some(FromValueOpt::from_value(v)?),
-                    "tax_behavior" => b.tax_behavior = Some(FromValueOpt::from_value(v)?),
-                    "tax_breakdown" => b.tax_breakdown = Some(FromValueOpt::from_value(v)?),
-                    "tax_code" => b.tax_code = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
+                    "shipping_rate" => b.shipping_rate = FromValueOpt::from_value(v),
+                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
+                    "tax_breakdown" => b.tax_breakdown = FromValueOpt::from_value(v),
+                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

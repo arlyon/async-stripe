@@ -28,7 +28,13 @@ pub struct PaymentPagesCheckoutSessionCustomerDetailsBuilder {
     tax_ids: Option<Option<Vec<stripe_checkout::PaymentPagesCheckoutSessionTaxId>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -85,14 +91,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                address: self.address.take()?,
-                email: self.email.take()?,
-                name: self.name.take()?,
-                phone: self.phone.take()?,
-                tax_exempt: self.tax_exempt?,
-                tax_ids: self.tax_ids.take()?,
-            })
+            let (
+                Some(address),
+                Some(email),
+                Some(name),
+                Some(phone),
+                Some(tax_exempt),
+                Some(tax_ids),
+            ) = (
+                self.address.take(),
+                self.email.take(),
+                self.name.take(),
+                self.phone.take(),
+                self.tax_exempt,
+                self.tax_ids.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { address, email, name, phone, tax_exempt, tax_ids })
         }
     }
 
@@ -119,12 +136,12 @@ const _: () = {
             let mut b = PaymentPagesCheckoutSessionCustomerDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
-                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "phone" => b.phone = Some(FromValueOpt::from_value(v)?),
-                    "tax_exempt" => b.tax_exempt = Some(FromValueOpt::from_value(v)?),
-                    "tax_ids" => b.tax_ids = Some(FromValueOpt::from_value(v)?),
+                    "address" => b.address = FromValueOpt::from_value(v),
+                    "email" => b.email = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "phone" => b.phone = FromValueOpt::from_value(v),
+                    "tax_exempt" => b.tax_exempt = FromValueOpt::from_value(v),
+                    "tax_ids" => b.tax_ids = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -22,7 +22,13 @@ pub struct TaxProductResourceCustomerDetailsBuilder {
     taxability_override: Option<TaxProductResourceCustomerDetailsTaxabilityOverride>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,13 +83,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                address: self.address.take()?,
-                address_source: self.address_source?,
-                ip_address: self.ip_address.take()?,
-                tax_ids: self.tax_ids.take()?,
-                taxability_override: self.taxability_override?,
-            })
+            let (
+                Some(address),
+                Some(address_source),
+                Some(ip_address),
+                Some(tax_ids),
+                Some(taxability_override),
+            ) = (
+                self.address.take(),
+                self.address_source,
+                self.ip_address.take(),
+                self.tax_ids.take(),
+                self.taxability_override,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { address, address_source, ip_address, tax_ids, taxability_override })
         }
     }
 
@@ -110,13 +126,11 @@ const _: () = {
             let mut b = TaxProductResourceCustomerDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
-                    "address_source" => b.address_source = Some(FromValueOpt::from_value(v)?),
-                    "ip_address" => b.ip_address = Some(FromValueOpt::from_value(v)?),
-                    "tax_ids" => b.tax_ids = Some(FromValueOpt::from_value(v)?),
-                    "taxability_override" => {
-                        b.taxability_override = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "address" => b.address = FromValueOpt::from_value(v),
+                    "address_source" => b.address_source = FromValueOpt::from_value(v),
+                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
+                    "tax_ids" => b.tax_ids = FromValueOpt::from_value(v),
+                    "taxability_override" => b.taxability_override = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

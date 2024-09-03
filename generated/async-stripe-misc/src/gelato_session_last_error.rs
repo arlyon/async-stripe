@@ -14,7 +14,13 @@ pub struct GelatoSessionLastErrorBuilder {
     reason: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -60,7 +66,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { code: self.code?, reason: self.reason.take()? })
+            let (Some(code), Some(reason)) = (self.code, self.reason.take()) else {
+                return None;
+            };
+            Some(Self::Out { code, reason })
         }
     }
 
@@ -87,8 +96,8 @@ const _: () = {
             let mut b = GelatoSessionLastErrorBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "code" => b.code = Some(FromValueOpt::from_value(v)?),
-                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
+                    "code" => b.code = FromValueOpt::from_value(v),
+                    "reason" => b.reason = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

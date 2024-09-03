@@ -23,7 +23,13 @@ pub struct PaymentIntentPaymentMethodOptionsAcssDebitBuilder {
         Option<Option<PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -74,11 +80,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                mandate_options: self.mandate_options.take()?,
-                setup_future_usage: self.setup_future_usage?,
-                verification_method: self.verification_method?,
-            })
+            let (Some(mandate_options), Some(setup_future_usage), Some(verification_method)) =
+                (self.mandate_options.take(), self.setup_future_usage, self.verification_method)
+            else {
+                return None;
+            };
+            Some(Self::Out { mandate_options, setup_future_usage, verification_method })
         }
     }
 
@@ -105,13 +112,9 @@ const _: () = {
             let mut b = PaymentIntentPaymentMethodOptionsAcssDebitBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "mandate_options" => b.mandate_options = Some(FromValueOpt::from_value(v)?),
-                    "setup_future_usage" => {
-                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "verification_method" => {
-                        b.verification_method = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
+                    "verification_method" => b.verification_method = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -39,7 +39,13 @@ pub struct BalanceBuilder {
     pending: Option<Vec<stripe_core::BalanceAmount>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -93,13 +99,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(available),
+                Some(connect_reserved),
+                Some(instant_available),
+                Some(issuing),
+                Some(livemode),
+                Some(pending),
+            ) = (
+                self.available.take(),
+                self.connect_reserved.take(),
+                self.instant_available.take(),
+                self.issuing.take(),
+                self.livemode,
+                self.pending.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                available: self.available.take()?,
-                connect_reserved: self.connect_reserved.take()?,
-                instant_available: self.instant_available.take()?,
-                issuing: self.issuing.take()?,
-                livemode: self.livemode?,
-                pending: self.pending.take()?,
+                available,
+                connect_reserved,
+                instant_available,
+                issuing,
+                livemode,
+                pending,
             })
         }
     }
@@ -127,12 +151,12 @@ const _: () = {
             let mut b = BalanceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "available" => b.available = Some(FromValueOpt::from_value(v)?),
-                    "connect_reserved" => b.connect_reserved = Some(FromValueOpt::from_value(v)?),
-                    "instant_available" => b.instant_available = Some(FromValueOpt::from_value(v)?),
-                    "issuing" => b.issuing = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "pending" => b.pending = Some(FromValueOpt::from_value(v)?),
+                    "available" => b.available = FromValueOpt::from_value(v),
+                    "connect_reserved" => b.connect_reserved = FromValueOpt::from_value(v),
+                    "instant_available" => b.instant_available = FromValueOpt::from_value(v),
+                    "issuing" => b.issuing = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "pending" => b.pending = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

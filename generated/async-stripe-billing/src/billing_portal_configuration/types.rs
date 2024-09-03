@@ -43,7 +43,13 @@ pub struct BillingPortalConfigurationBuilder {
     updated: Option<stripe_types::Timestamp>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -112,19 +118,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(active),
+                Some(application),
+                Some(business_profile),
+                Some(created),
+                Some(default_return_url),
+                Some(features),
+                Some(id),
+                Some(is_default),
+                Some(livemode),
+                Some(login_page),
+                Some(metadata),
+                Some(updated),
+            ) = (
+                self.active,
+                self.application.take(),
+                self.business_profile.take(),
+                self.created,
+                self.default_return_url.take(),
+                self.features.take(),
+                self.id.take(),
+                self.is_default,
+                self.livemode,
+                self.login_page.take(),
+                self.metadata.take(),
+                self.updated,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                active: self.active?,
-                application: self.application.take()?,
-                business_profile: self.business_profile.take()?,
-                created: self.created?,
-                default_return_url: self.default_return_url.take()?,
-                features: self.features.take()?,
-                id: self.id.take()?,
-                is_default: self.is_default?,
-                livemode: self.livemode?,
-                login_page: self.login_page.take()?,
-                metadata: self.metadata.take()?,
-                updated: self.updated?,
+                active,
+                application,
+                business_profile,
+                created,
+                default_return_url,
+                features,
+                id,
+                is_default,
+                livemode,
+                login_page,
+                metadata,
+                updated,
             })
         }
     }
@@ -152,20 +188,18 @@ const _: () = {
             let mut b = BillingPortalConfigurationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "active" => b.active = Some(FromValueOpt::from_value(v)?),
-                    "application" => b.application = Some(FromValueOpt::from_value(v)?),
-                    "business_profile" => b.business_profile = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "default_return_url" => {
-                        b.default_return_url = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "features" => b.features = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "is_default" => b.is_default = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "login_page" => b.login_page = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "updated" => b.updated = Some(FromValueOpt::from_value(v)?),
+                    "active" => b.active = FromValueOpt::from_value(v),
+                    "application" => b.application = FromValueOpt::from_value(v),
+                    "business_profile" => b.business_profile = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "default_return_url" => b.default_return_url = FromValueOpt::from_value(v),
+                    "features" => b.features = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "is_default" => b.is_default = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "login_page" => b.login_page = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "updated" => b.updated = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -26,7 +26,13 @@ pub struct IssuingCardholderIndividualBuilder {
     verification: Option<Option<stripe_shared::IssuingCardholderVerification>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -81,13 +87,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                card_issuing: self.card_issuing.take()?,
-                dob: self.dob?,
-                first_name: self.first_name.take()?,
-                last_name: self.last_name.take()?,
-                verification: self.verification.take()?,
-            })
+            let (
+                Some(card_issuing),
+                Some(dob),
+                Some(first_name),
+                Some(last_name),
+                Some(verification),
+            ) = (
+                self.card_issuing.take(),
+                self.dob,
+                self.first_name.take(),
+                self.last_name.take(),
+                self.verification.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { card_issuing, dob, first_name, last_name, verification })
         }
     }
 
@@ -114,11 +130,11 @@ const _: () = {
             let mut b = IssuingCardholderIndividualBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "card_issuing" => b.card_issuing = Some(FromValueOpt::from_value(v)?),
-                    "dob" => b.dob = Some(FromValueOpt::from_value(v)?),
-                    "first_name" => b.first_name = Some(FromValueOpt::from_value(v)?),
-                    "last_name" => b.last_name = Some(FromValueOpt::from_value(v)?),
-                    "verification" => b.verification = Some(FromValueOpt::from_value(v)?),
+                    "card_issuing" => b.card_issuing = FromValueOpt::from_value(v),
+                    "dob" => b.dob = FromValueOpt::from_value(v),
+                    "first_name" => b.first_name = FromValueOpt::from_value(v),
+                    "last_name" => b.last_name = FromValueOpt::from_value(v),
+                    "verification" => b.verification = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

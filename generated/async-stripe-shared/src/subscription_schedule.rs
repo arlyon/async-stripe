@@ -67,7 +67,13 @@ pub struct SubscriptionScheduleBuilder {
     test_clock: Option<Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -146,24 +152,64 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(application),
+                Some(canceled_at),
+                Some(completed_at),
+                Some(created),
+                Some(current_phase),
+                Some(customer),
+                Some(default_settings),
+                Some(end_behavior),
+                Some(id),
+                Some(livemode),
+                Some(metadata),
+                Some(phases),
+                Some(released_at),
+                Some(released_subscription),
+                Some(status),
+                Some(subscription),
+                Some(test_clock),
+            ) = (
+                self.application.take(),
+                self.canceled_at,
+                self.completed_at,
+                self.created,
+                self.current_phase,
+                self.customer.take(),
+                self.default_settings.take(),
+                self.end_behavior,
+                self.id.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.phases.take(),
+                self.released_at,
+                self.released_subscription.take(),
+                self.status,
+                self.subscription.take(),
+                self.test_clock.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                application: self.application.take()?,
-                canceled_at: self.canceled_at?,
-                completed_at: self.completed_at?,
-                created: self.created?,
-                current_phase: self.current_phase?,
-                customer: self.customer.take()?,
-                default_settings: self.default_settings.take()?,
-                end_behavior: self.end_behavior?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                phases: self.phases.take()?,
-                released_at: self.released_at?,
-                released_subscription: self.released_subscription.take()?,
-                status: self.status?,
-                subscription: self.subscription.take()?,
-                test_clock: self.test_clock.take()?,
+                application,
+                canceled_at,
+                completed_at,
+                created,
+                current_phase,
+                customer,
+                default_settings,
+                end_behavior,
+                id,
+                livemode,
+                metadata,
+                phases,
+                released_at,
+                released_subscription,
+                status,
+                subscription,
+                test_clock,
             })
         }
     }
@@ -191,25 +237,25 @@ const _: () = {
             let mut b = SubscriptionScheduleBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "application" => b.application = Some(FromValueOpt::from_value(v)?),
-                    "canceled_at" => b.canceled_at = Some(FromValueOpt::from_value(v)?),
-                    "completed_at" => b.completed_at = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "current_phase" => b.current_phase = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "default_settings" => b.default_settings = Some(FromValueOpt::from_value(v)?),
-                    "end_behavior" => b.end_behavior = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "phases" => b.phases = Some(FromValueOpt::from_value(v)?),
-                    "released_at" => b.released_at = Some(FromValueOpt::from_value(v)?),
+                    "application" => b.application = FromValueOpt::from_value(v),
+                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
+                    "completed_at" => b.completed_at = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "current_phase" => b.current_phase = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "default_settings" => b.default_settings = FromValueOpt::from_value(v),
+                    "end_behavior" => b.end_behavior = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "phases" => b.phases = FromValueOpt::from_value(v),
+                    "released_at" => b.released_at = FromValueOpt::from_value(v),
                     "released_subscription" => {
-                        b.released_subscription = Some(FromValueOpt::from_value(v)?)
+                        b.released_subscription = FromValueOpt::from_value(v)
                     }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "subscription" => b.subscription = Some(FromValueOpt::from_value(v)?),
-                    "test_clock" => b.test_clock = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "subscription" => b.subscription = FromValueOpt::from_value(v),
+                    "test_clock" => b.test_clock = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

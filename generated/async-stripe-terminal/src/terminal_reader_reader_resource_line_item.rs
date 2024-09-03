@@ -18,7 +18,13 @@ pub struct TerminalReaderReaderResourceLineItemBuilder {
     quantity: Option<u64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,11 +75,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount: self.amount?,
-                description: self.description.take()?,
-                quantity: self.quantity?,
-            })
+            let (Some(amount), Some(description), Some(quantity)) =
+                (self.amount, self.description.take(), self.quantity)
+            else {
+                return None;
+            };
+            Some(Self::Out { amount, description, quantity })
         }
     }
 
@@ -100,9 +107,9 @@ const _: () = {
             let mut b = TerminalReaderReaderResourceLineItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "quantity" => b.quantity = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

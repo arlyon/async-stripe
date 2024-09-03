@@ -39,7 +39,13 @@ pub struct SourceOwnerBuilder {
     verified_phone: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -100,15 +106,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(address),
+                Some(email),
+                Some(name),
+                Some(phone),
+                Some(verified_address),
+                Some(verified_email),
+                Some(verified_name),
+                Some(verified_phone),
+            ) = (
+                self.address.take(),
+                self.email.take(),
+                self.name.take(),
+                self.phone.take(),
+                self.verified_address.take(),
+                self.verified_email.take(),
+                self.verified_name.take(),
+                self.verified_phone.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                address: self.address.take()?,
-                email: self.email.take()?,
-                name: self.name.take()?,
-                phone: self.phone.take()?,
-                verified_address: self.verified_address.take()?,
-                verified_email: self.verified_email.take()?,
-                verified_name: self.verified_name.take()?,
-                verified_phone: self.verified_phone.take()?,
+                address,
+                email,
+                name,
+                phone,
+                verified_address,
+                verified_email,
+                verified_name,
+                verified_phone,
             })
         }
     }
@@ -136,14 +164,14 @@ const _: () = {
             let mut b = SourceOwnerBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
-                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "phone" => b.phone = Some(FromValueOpt::from_value(v)?),
-                    "verified_address" => b.verified_address = Some(FromValueOpt::from_value(v)?),
-                    "verified_email" => b.verified_email = Some(FromValueOpt::from_value(v)?),
-                    "verified_name" => b.verified_name = Some(FromValueOpt::from_value(v)?),
-                    "verified_phone" => b.verified_phone = Some(FromValueOpt::from_value(v)?),
+                    "address" => b.address = FromValueOpt::from_value(v),
+                    "email" => b.email = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "phone" => b.phone = FromValueOpt::from_value(v),
+                    "verified_address" => b.verified_address = FromValueOpt::from_value(v),
+                    "verified_email" => b.verified_email = FromValueOpt::from_value(v),
+                    "verified_name" => b.verified_name = FromValueOpt::from_value(v),
+                    "verified_phone" => b.verified_phone = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -19,7 +19,13 @@ pub struct TaxProductResourceTaxRateDetailsBuilder {
     tax_type: Option<Option<TaxProductResourceTaxRateDetailsTaxType>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +78,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                country: self.country.take()?,
-                percentage_decimal: self.percentage_decimal.take()?,
-                state: self.state.take()?,
-                tax_type: self.tax_type?,
-            })
+            let (Some(country), Some(percentage_decimal), Some(state), Some(tax_type)) = (
+                self.country.take(),
+                self.percentage_decimal.take(),
+                self.state.take(),
+                self.tax_type,
+            ) else {
+                return None;
+            };
+            Some(Self::Out { country, percentage_decimal, state, tax_type })
         }
     }
 
@@ -104,12 +113,10 @@ const _: () = {
             let mut b = TaxProductResourceTaxRateDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "percentage_decimal" => {
-                        b.percentage_decimal = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "state" => b.state = Some(FromValueOpt::from_value(v)?),
-                    "tax_type" => b.tax_type = Some(FromValueOpt::from_value(v)?),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "percentage_decimal" => b.percentage_decimal = FromValueOpt::from_value(v),
+                    "state" => b.state = FromValueOpt::from_value(v),
+                    "tax_type" => b.tax_type = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

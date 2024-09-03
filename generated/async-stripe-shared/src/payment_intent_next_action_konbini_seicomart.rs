@@ -13,7 +13,13 @@ pub struct PaymentIntentNextActionKonbiniSeicomartBuilder {
     payment_code: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -62,10 +68,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                confirmation_number: self.confirmation_number.take()?,
-                payment_code: self.payment_code.take()?,
-            })
+            let (Some(confirmation_number), Some(payment_code)) =
+                (self.confirmation_number.take(), self.payment_code.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { confirmation_number, payment_code })
         }
     }
 
@@ -92,10 +100,8 @@ const _: () = {
             let mut b = PaymentIntentNextActionKonbiniSeicomartBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "confirmation_number" => {
-                        b.confirmation_number = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "payment_code" => b.payment_code = Some(FromValueOpt::from_value(v)?),
+                    "confirmation_number" => b.confirmation_number = FromValueOpt::from_value(v),
+                    "payment_code" => b.payment_code = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

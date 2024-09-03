@@ -10,7 +10,13 @@ pub struct InvoicesResourceLineItemsProrationDetailsBuilder {
     credited_items: Option<Option<stripe_shared::InvoicesResourceLineItemsCreditedItems>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { credited_items: self.credited_items.take()? })
+            let (Some(credited_items),) = (self.credited_items.take(),) else {
+                return None;
+            };
+            Some(Self::Out { credited_items })
         }
     }
 
@@ -82,7 +91,7 @@ const _: () = {
             let mut b = InvoicesResourceLineItemsProrationDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "credited_items" => b.credited_items = Some(FromValueOpt::from_value(v)?),
+                    "credited_items" => b.credited_items = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

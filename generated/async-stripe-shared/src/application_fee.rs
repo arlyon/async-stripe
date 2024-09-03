@@ -49,7 +49,13 @@ pub struct ApplicationFeeBuilder {
     refunds: Option<stripe_types::List<stripe_shared::ApplicationFeeRefund>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -120,20 +126,52 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account),
+                Some(amount),
+                Some(amount_refunded),
+                Some(application),
+                Some(balance_transaction),
+                Some(charge),
+                Some(created),
+                Some(currency),
+                Some(id),
+                Some(livemode),
+                Some(originating_transaction),
+                Some(refunded),
+                Some(refunds),
+            ) = (
+                self.account.take(),
+                self.amount,
+                self.amount_refunded,
+                self.application.take(),
+                self.balance_transaction.take(),
+                self.charge.take(),
+                self.created,
+                self.currency,
+                self.id.take(),
+                self.livemode,
+                self.originating_transaction.take(),
+                self.refunded,
+                self.refunds.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account: self.account.take()?,
-                amount: self.amount?,
-                amount_refunded: self.amount_refunded?,
-                application: self.application.take()?,
-                balance_transaction: self.balance_transaction.take()?,
-                charge: self.charge.take()?,
-                created: self.created?,
-                currency: self.currency?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                originating_transaction: self.originating_transaction.take()?,
-                refunded: self.refunded?,
-                refunds: self.refunds.take()?,
+                account,
+                amount,
+                amount_refunded,
+                application,
+                balance_transaction,
+                charge,
+                created,
+                currency,
+                id,
+                livemode,
+                originating_transaction,
+                refunded,
+                refunds,
             })
         }
     }
@@ -161,23 +199,21 @@ const _: () = {
             let mut b = ApplicationFeeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account" => b.account = Some(FromValueOpt::from_value(v)?),
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_refunded" => b.amount_refunded = Some(FromValueOpt::from_value(v)?),
-                    "application" => b.application = Some(FromValueOpt::from_value(v)?),
-                    "balance_transaction" => {
-                        b.balance_transaction = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "charge" => b.charge = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "account" => b.account = FromValueOpt::from_value(v),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_refunded" => b.amount_refunded = FromValueOpt::from_value(v),
+                    "application" => b.application = FromValueOpt::from_value(v),
+                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
+                    "charge" => b.charge = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "originating_transaction" => {
-                        b.originating_transaction = Some(FromValueOpt::from_value(v)?)
+                        b.originating_transaction = FromValueOpt::from_value(v)
                     }
-                    "refunded" => b.refunded = Some(FromValueOpt::from_value(v)?),
-                    "refunds" => b.refunds = Some(FromValueOpt::from_value(v)?),
+                    "refunded" => b.refunded = FromValueOpt::from_value(v),
+                    "refunds" => b.refunds = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

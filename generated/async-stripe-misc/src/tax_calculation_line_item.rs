@@ -39,7 +39,13 @@ pub struct TaxCalculationLineItemBuilder {
     tax_code: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -104,17 +110,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(amount_tax),
+                Some(id),
+                Some(livemode),
+                Some(product),
+                Some(quantity),
+                Some(reference),
+                Some(tax_behavior),
+                Some(tax_breakdown),
+                Some(tax_code),
+            ) = (
+                self.amount,
+                self.amount_tax,
+                self.id.take(),
+                self.livemode,
+                self.product.take(),
+                self.quantity,
+                self.reference.take(),
+                self.tax_behavior,
+                self.tax_breakdown.take(),
+                self.tax_code.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                amount_tax: self.amount_tax?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                product: self.product.take()?,
-                quantity: self.quantity?,
-                reference: self.reference.take()?,
-                tax_behavior: self.tax_behavior?,
-                tax_breakdown: self.tax_breakdown.take()?,
-                tax_code: self.tax_code.take()?,
+                amount,
+                amount_tax,
+                id,
+                livemode,
+                product,
+                quantity,
+                reference,
+                tax_behavior,
+                tax_breakdown,
+                tax_code,
             })
         }
     }
@@ -142,16 +174,16 @@ const _: () = {
             let mut b = TaxCalculationLineItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_tax" => b.amount_tax = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "product" => b.product = Some(FromValueOpt::from_value(v)?),
-                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
-                    "tax_behavior" => b.tax_behavior = Some(FromValueOpt::from_value(v)?),
-                    "tax_breakdown" => b.tax_breakdown = Some(FromValueOpt::from_value(v)?),
-                    "tax_code" => b.tax_code = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "product" => b.product = FromValueOpt::from_value(v),
+                    "quantity" => b.quantity = FromValueOpt::from_value(v),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
+                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
+                    "tax_breakdown" => b.tax_breakdown = FromValueOpt::from_value(v),
+                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

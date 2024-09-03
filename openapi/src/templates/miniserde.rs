@@ -170,7 +170,7 @@ impl<'a> ObjectWriter<'a> {
             {builder_inner}
         }}
 
-        #[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+        #[allow(unused_variables, irrefutable_let_patterns, clippy::let_unit_value, clippy::match_single_binding, clippy::single_match)]
         const _: () = {{
             use miniserde::de::{{Map, Visitor}};
             use miniserde::json::Value;
@@ -193,36 +193,38 @@ fn miniserde_struct_inner(
     fields: &[StructField],
     components: &Components,
 ) -> String {
-    let mut finish_inner = String::new();
     let mut key_inner = String::new();
     let mut builder_new_inner = String::new();
     let mut from_obj_inner = String::new();
+
+    let mut take_out_left = String::new();
+    let mut take_out_right = String::new();
     for field in fields {
         let f_name = &field.field_name;
+        let wire_name = field.wire_name();
 
-        let _ = writeln!(
-            key_inner,
-            r#""{}" => Deserialize::begin(&mut self.{f_name}),"#,
-            field.wire_name()
-        );
+        let _ = writeln!(key_inner, r#""{wire_name}" => Deserialize::begin(&mut self.{f_name}),"#);
         let _ = writeln!(
             from_obj_inner,
-            r#""{}" => b.{f_name} = Some(FromValueOpt::from_value(v)?),"#,
-            field.wire_name()
+            r#""{wire_name}" => b.{f_name} = FromValueOpt::from_value(v),"#
         );
         let is_copy = field.rust_type.is_copy(components);
 
+        let _ = writeln!(take_out_left, "Some({f_name}),");
         // For types which implement `Copy`, we don't need to call `.take()`. Does not affect
         // behavior, but helps a bit according to `llvm-lines` and binary size, so may as well since
         // unnecessary `take()` is not optimized out
         let take = if is_copy { "" } else { ".take()" };
-        let _ = writeln!(finish_inner, "{f_name}: self.{f_name}{take}?,");
+        let _ = writeln!(take_out_right, "self.{f_name}{take},");
 
         // NB: using miniserde::Deserialize::default() instead of `None` is very important - this copies
         // the miniserde derives in defaulting `Option<Option<T>>` to `Ok(Some)` so that missing
         // values are allowed for option types
         let _ = writeln!(builder_new_inner, "{f_name}: Deserialize::default(),");
     }
+
+    let comma_sep_fields =
+        fields.iter().map(|f| f.field_name.clone()).collect::<Vec<_>>().join(",");
 
     formatdoc! {r#"
     impl Deserialize for {ident} {{
@@ -261,7 +263,10 @@ fn miniserde_struct_inner(
         }}
 
         fn take_out(&mut self) -> Option<Self::Out> {{
-            Some(Self::Out {{ {finish_inner} }})
+            let ({take_out_left}) = ({take_out_right}) else {{
+                return None;
+            }};
+            Some(Self::Out {{ {comma_sep_fields} }})
         }}
     }}
 

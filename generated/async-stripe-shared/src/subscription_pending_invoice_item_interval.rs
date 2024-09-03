@@ -15,7 +15,13 @@ pub struct SubscriptionPendingInvoiceItemIntervalBuilder {
     interval_count: Option<u64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -61,7 +67,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { interval: self.interval?, interval_count: self.interval_count? })
+            let (Some(interval), Some(interval_count)) = (self.interval, self.interval_count)
+            else {
+                return None;
+            };
+            Some(Self::Out { interval, interval_count })
         }
     }
 
@@ -88,8 +98,8 @@ const _: () = {
             let mut b = SubscriptionPendingInvoiceItemIntervalBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "interval" => b.interval = Some(FromValueOpt::from_value(v)?),
-                    "interval_count" => b.interval_count = Some(FromValueOpt::from_value(v)?),
+                    "interval" => b.interval = FromValueOpt::from_value(v),
+                    "interval_count" => b.interval_count = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

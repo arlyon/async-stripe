@@ -77,7 +77,13 @@ pub struct TerminalConfigurationConfigurationResourceTippingBuilder {
     >,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -150,22 +156,41 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                aud: self.aud.take()?,
-                cad: self.cad.take()?,
-                chf: self.chf.take()?,
-                czk: self.czk.take()?,
-                dkk: self.dkk.take()?,
-                eur: self.eur.take()?,
-                gbp: self.gbp.take()?,
-                hkd: self.hkd.take()?,
-                myr: self.myr.take()?,
-                nok: self.nok.take()?,
-                nzd: self.nzd.take()?,
-                sek: self.sek.take()?,
-                sgd: self.sgd.take()?,
-                usd: self.usd.take()?,
-            })
+            let (
+                Some(aud),
+                Some(cad),
+                Some(chf),
+                Some(czk),
+                Some(dkk),
+                Some(eur),
+                Some(gbp),
+                Some(hkd),
+                Some(myr),
+                Some(nok),
+                Some(nzd),
+                Some(sek),
+                Some(sgd),
+                Some(usd),
+            ) = (
+                self.aud.take(),
+                self.cad.take(),
+                self.chf.take(),
+                self.czk.take(),
+                self.dkk.take(),
+                self.eur.take(),
+                self.gbp.take(),
+                self.hkd.take(),
+                self.myr.take(),
+                self.nok.take(),
+                self.nzd.take(),
+                self.sek.take(),
+                self.sgd.take(),
+                self.usd.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { aud, cad, chf, czk, dkk, eur, gbp, hkd, myr, nok, nzd, sek, sgd, usd })
         }
     }
 
@@ -192,20 +217,20 @@ const _: () = {
             let mut b = TerminalConfigurationConfigurationResourceTippingBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "aud" => b.aud = Some(FromValueOpt::from_value(v)?),
-                    "cad" => b.cad = Some(FromValueOpt::from_value(v)?),
-                    "chf" => b.chf = Some(FromValueOpt::from_value(v)?),
-                    "czk" => b.czk = Some(FromValueOpt::from_value(v)?),
-                    "dkk" => b.dkk = Some(FromValueOpt::from_value(v)?),
-                    "eur" => b.eur = Some(FromValueOpt::from_value(v)?),
-                    "gbp" => b.gbp = Some(FromValueOpt::from_value(v)?),
-                    "hkd" => b.hkd = Some(FromValueOpt::from_value(v)?),
-                    "myr" => b.myr = Some(FromValueOpt::from_value(v)?),
-                    "nok" => b.nok = Some(FromValueOpt::from_value(v)?),
-                    "nzd" => b.nzd = Some(FromValueOpt::from_value(v)?),
-                    "sek" => b.sek = Some(FromValueOpt::from_value(v)?),
-                    "sgd" => b.sgd = Some(FromValueOpt::from_value(v)?),
-                    "usd" => b.usd = Some(FromValueOpt::from_value(v)?),
+                    "aud" => b.aud = FromValueOpt::from_value(v),
+                    "cad" => b.cad = FromValueOpt::from_value(v),
+                    "chf" => b.chf = FromValueOpt::from_value(v),
+                    "czk" => b.czk = FromValueOpt::from_value(v),
+                    "dkk" => b.dkk = FromValueOpt::from_value(v),
+                    "eur" => b.eur = FromValueOpt::from_value(v),
+                    "gbp" => b.gbp = FromValueOpt::from_value(v),
+                    "hkd" => b.hkd = FromValueOpt::from_value(v),
+                    "myr" => b.myr = FromValueOpt::from_value(v),
+                    "nok" => b.nok = FromValueOpt::from_value(v),
+                    "nzd" => b.nzd = FromValueOpt::from_value(v),
+                    "sek" => b.sek = FromValueOpt::from_value(v),
+                    "sgd" => b.sgd = FromValueOpt::from_value(v),
+                    "usd" => b.usd = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

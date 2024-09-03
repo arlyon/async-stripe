@@ -12,7 +12,13 @@ pub struct CustomerSessionResourceComponentsBuilder {
     pricing_table: Option<stripe_core::CustomerSessionResourceComponentsResourcePricingTable>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -58,7 +64,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { buy_button: self.buy_button?, pricing_table: self.pricing_table? })
+            let (Some(buy_button), Some(pricing_table)) = (self.buy_button, self.pricing_table)
+            else {
+                return None;
+            };
+            Some(Self::Out { buy_button, pricing_table })
         }
     }
 
@@ -85,8 +95,8 @@ const _: () = {
             let mut b = CustomerSessionResourceComponentsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "buy_button" => b.buy_button = Some(FromValueOpt::from_value(v)?),
-                    "pricing_table" => b.pricing_table = Some(FromValueOpt::from_value(v)?),
+                    "buy_button" => b.buy_button = FromValueOpt::from_value(v),
+                    "pricing_table" => b.pricing_table = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

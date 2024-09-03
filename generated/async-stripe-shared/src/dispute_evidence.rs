@@ -98,7 +98,13 @@ pub struct DisputeEvidenceBuilder {
     uncategorized_text: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -209,34 +215,94 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(access_activity_log),
+                Some(billing_address),
+                Some(cancellation_policy),
+                Some(cancellation_policy_disclosure),
+                Some(cancellation_rebuttal),
+                Some(customer_communication),
+                Some(customer_email_address),
+                Some(customer_name),
+                Some(customer_purchase_ip),
+                Some(customer_signature),
+                Some(duplicate_charge_documentation),
+                Some(duplicate_charge_explanation),
+                Some(duplicate_charge_id),
+                Some(product_description),
+                Some(receipt),
+                Some(refund_policy),
+                Some(refund_policy_disclosure),
+                Some(refund_refusal_explanation),
+                Some(service_date),
+                Some(service_documentation),
+                Some(shipping_address),
+                Some(shipping_carrier),
+                Some(shipping_date),
+                Some(shipping_documentation),
+                Some(shipping_tracking_number),
+                Some(uncategorized_file),
+                Some(uncategorized_text),
+            ) = (
+                self.access_activity_log.take(),
+                self.billing_address.take(),
+                self.cancellation_policy.take(),
+                self.cancellation_policy_disclosure.take(),
+                self.cancellation_rebuttal.take(),
+                self.customer_communication.take(),
+                self.customer_email_address.take(),
+                self.customer_name.take(),
+                self.customer_purchase_ip.take(),
+                self.customer_signature.take(),
+                self.duplicate_charge_documentation.take(),
+                self.duplicate_charge_explanation.take(),
+                self.duplicate_charge_id.take(),
+                self.product_description.take(),
+                self.receipt.take(),
+                self.refund_policy.take(),
+                self.refund_policy_disclosure.take(),
+                self.refund_refusal_explanation.take(),
+                self.service_date.take(),
+                self.service_documentation.take(),
+                self.shipping_address.take(),
+                self.shipping_carrier.take(),
+                self.shipping_date.take(),
+                self.shipping_documentation.take(),
+                self.shipping_tracking_number.take(),
+                self.uncategorized_file.take(),
+                self.uncategorized_text.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                access_activity_log: self.access_activity_log.take()?,
-                billing_address: self.billing_address.take()?,
-                cancellation_policy: self.cancellation_policy.take()?,
-                cancellation_policy_disclosure: self.cancellation_policy_disclosure.take()?,
-                cancellation_rebuttal: self.cancellation_rebuttal.take()?,
-                customer_communication: self.customer_communication.take()?,
-                customer_email_address: self.customer_email_address.take()?,
-                customer_name: self.customer_name.take()?,
-                customer_purchase_ip: self.customer_purchase_ip.take()?,
-                customer_signature: self.customer_signature.take()?,
-                duplicate_charge_documentation: self.duplicate_charge_documentation.take()?,
-                duplicate_charge_explanation: self.duplicate_charge_explanation.take()?,
-                duplicate_charge_id: self.duplicate_charge_id.take()?,
-                product_description: self.product_description.take()?,
-                receipt: self.receipt.take()?,
-                refund_policy: self.refund_policy.take()?,
-                refund_policy_disclosure: self.refund_policy_disclosure.take()?,
-                refund_refusal_explanation: self.refund_refusal_explanation.take()?,
-                service_date: self.service_date.take()?,
-                service_documentation: self.service_documentation.take()?,
-                shipping_address: self.shipping_address.take()?,
-                shipping_carrier: self.shipping_carrier.take()?,
-                shipping_date: self.shipping_date.take()?,
-                shipping_documentation: self.shipping_documentation.take()?,
-                shipping_tracking_number: self.shipping_tracking_number.take()?,
-                uncategorized_file: self.uncategorized_file.take()?,
-                uncategorized_text: self.uncategorized_text.take()?,
+                access_activity_log,
+                billing_address,
+                cancellation_policy,
+                cancellation_policy_disclosure,
+                cancellation_rebuttal,
+                customer_communication,
+                customer_email_address,
+                customer_name,
+                customer_purchase_ip,
+                customer_signature,
+                duplicate_charge_documentation,
+                duplicate_charge_explanation,
+                duplicate_charge_id,
+                product_description,
+                receipt,
+                refund_policy,
+                refund_policy_disclosure,
+                refund_refusal_explanation,
+                service_date,
+                service_documentation,
+                shipping_address,
+                shipping_carrier,
+                shipping_date,
+                shipping_documentation,
+                shipping_tracking_number,
+                uncategorized_file,
+                uncategorized_text,
             })
         }
     }
@@ -264,71 +330,55 @@ const _: () = {
             let mut b = DisputeEvidenceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "access_activity_log" => {
-                        b.access_activity_log = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "billing_address" => b.billing_address = Some(FromValueOpt::from_value(v)?),
-                    "cancellation_policy" => {
-                        b.cancellation_policy = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "access_activity_log" => b.access_activity_log = FromValueOpt::from_value(v),
+                    "billing_address" => b.billing_address = FromValueOpt::from_value(v),
+                    "cancellation_policy" => b.cancellation_policy = FromValueOpt::from_value(v),
                     "cancellation_policy_disclosure" => {
-                        b.cancellation_policy_disclosure = Some(FromValueOpt::from_value(v)?)
+                        b.cancellation_policy_disclosure = FromValueOpt::from_value(v)
                     }
                     "cancellation_rebuttal" => {
-                        b.cancellation_rebuttal = Some(FromValueOpt::from_value(v)?)
+                        b.cancellation_rebuttal = FromValueOpt::from_value(v)
                     }
                     "customer_communication" => {
-                        b.customer_communication = Some(FromValueOpt::from_value(v)?)
+                        b.customer_communication = FromValueOpt::from_value(v)
                     }
                     "customer_email_address" => {
-                        b.customer_email_address = Some(FromValueOpt::from_value(v)?)
+                        b.customer_email_address = FromValueOpt::from_value(v)
                     }
-                    "customer_name" => b.customer_name = Some(FromValueOpt::from_value(v)?),
-                    "customer_purchase_ip" => {
-                        b.customer_purchase_ip = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "customer_signature" => {
-                        b.customer_signature = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "customer_name" => b.customer_name = FromValueOpt::from_value(v),
+                    "customer_purchase_ip" => b.customer_purchase_ip = FromValueOpt::from_value(v),
+                    "customer_signature" => b.customer_signature = FromValueOpt::from_value(v),
                     "duplicate_charge_documentation" => {
-                        b.duplicate_charge_documentation = Some(FromValueOpt::from_value(v)?)
+                        b.duplicate_charge_documentation = FromValueOpt::from_value(v)
                     }
                     "duplicate_charge_explanation" => {
-                        b.duplicate_charge_explanation = Some(FromValueOpt::from_value(v)?)
+                        b.duplicate_charge_explanation = FromValueOpt::from_value(v)
                     }
-                    "duplicate_charge_id" => {
-                        b.duplicate_charge_id = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "product_description" => {
-                        b.product_description = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "receipt" => b.receipt = Some(FromValueOpt::from_value(v)?),
-                    "refund_policy" => b.refund_policy = Some(FromValueOpt::from_value(v)?),
+                    "duplicate_charge_id" => b.duplicate_charge_id = FromValueOpt::from_value(v),
+                    "product_description" => b.product_description = FromValueOpt::from_value(v),
+                    "receipt" => b.receipt = FromValueOpt::from_value(v),
+                    "refund_policy" => b.refund_policy = FromValueOpt::from_value(v),
                     "refund_policy_disclosure" => {
-                        b.refund_policy_disclosure = Some(FromValueOpt::from_value(v)?)
+                        b.refund_policy_disclosure = FromValueOpt::from_value(v)
                     }
                     "refund_refusal_explanation" => {
-                        b.refund_refusal_explanation = Some(FromValueOpt::from_value(v)?)
+                        b.refund_refusal_explanation = FromValueOpt::from_value(v)
                     }
-                    "service_date" => b.service_date = Some(FromValueOpt::from_value(v)?),
+                    "service_date" => b.service_date = FromValueOpt::from_value(v),
                     "service_documentation" => {
-                        b.service_documentation = Some(FromValueOpt::from_value(v)?)
+                        b.service_documentation = FromValueOpt::from_value(v)
                     }
-                    "shipping_address" => b.shipping_address = Some(FromValueOpt::from_value(v)?),
-                    "shipping_carrier" => b.shipping_carrier = Some(FromValueOpt::from_value(v)?),
-                    "shipping_date" => b.shipping_date = Some(FromValueOpt::from_value(v)?),
+                    "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
+                    "shipping_carrier" => b.shipping_carrier = FromValueOpt::from_value(v),
+                    "shipping_date" => b.shipping_date = FromValueOpt::from_value(v),
                     "shipping_documentation" => {
-                        b.shipping_documentation = Some(FromValueOpt::from_value(v)?)
+                        b.shipping_documentation = FromValueOpt::from_value(v)
                     }
                     "shipping_tracking_number" => {
-                        b.shipping_tracking_number = Some(FromValueOpt::from_value(v)?)
+                        b.shipping_tracking_number = FromValueOpt::from_value(v)
                     }
-                    "uncategorized_file" => {
-                        b.uncategorized_file = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "uncategorized_text" => {
-                        b.uncategorized_text = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "uncategorized_file" => b.uncategorized_file = FromValueOpt::from_value(v),
+                    "uncategorized_text" => b.uncategorized_text = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

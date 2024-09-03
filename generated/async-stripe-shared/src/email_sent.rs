@@ -13,7 +13,13 @@ pub struct EmailSentBuilder {
     email_sent_to: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -56,10 +62,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                email_sent_at: self.email_sent_at?,
-                email_sent_to: self.email_sent_to.take()?,
-            })
+            let (Some(email_sent_at), Some(email_sent_to)) =
+                (self.email_sent_at, self.email_sent_to.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { email_sent_at, email_sent_to })
         }
     }
 
@@ -86,8 +94,8 @@ const _: () = {
             let mut b = EmailSentBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "email_sent_at" => b.email_sent_at = Some(FromValueOpt::from_value(v)?),
-                    "email_sent_to" => b.email_sent_to = Some(FromValueOpt::from_value(v)?),
+                    "email_sent_at" => b.email_sent_at = FromValueOpt::from_value(v),
+                    "email_sent_to" => b.email_sent_to = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

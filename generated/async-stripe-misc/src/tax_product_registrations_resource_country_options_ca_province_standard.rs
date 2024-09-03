@@ -10,7 +10,13 @@ pub struct TaxProductRegistrationsResourceCountryOptionsCaProvinceStandardBuilde
     province: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { province: self.province.take()? })
+            let (Some(province),) = (self.province.take(),) else {
+                return None;
+            };
+            Some(Self::Out { province })
         }
     }
 
@@ -82,7 +91,7 @@ const _: () = {
             let mut b = TaxProductRegistrationsResourceCountryOptionsCaProvinceStandardBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "province" => b.province = Some(FromValueOpt::from_value(v)?),
+                    "province" => b.province = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

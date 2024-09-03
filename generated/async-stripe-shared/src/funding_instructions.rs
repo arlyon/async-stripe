@@ -23,7 +23,13 @@ pub struct FundingInstructionsBuilder {
     livemode: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -76,12 +82,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                bank_transfer: self.bank_transfer.take()?,
-                currency: self.currency?,
-                funding_type: self.funding_type?,
-                livemode: self.livemode?,
-            })
+            let (Some(bank_transfer), Some(currency), Some(funding_type), Some(livemode)) =
+                (self.bank_transfer.take(), self.currency, self.funding_type, self.livemode)
+            else {
+                return None;
+            };
+            Some(Self::Out { bank_transfer, currency, funding_type, livemode })
         }
     }
 
@@ -108,10 +114,10 @@ const _: () = {
             let mut b = FundingInstructionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank_transfer" => b.bank_transfer = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "funding_type" => b.funding_type = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "bank_transfer" => b.bank_transfer = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "funding_type" => b.funding_type = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

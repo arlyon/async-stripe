@@ -16,7 +16,13 @@ pub struct BalanceAmountBySourceTypeBuilder {
     fpx: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,7 +73,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { bank_account: self.bank_account?, card: self.card?, fpx: self.fpx? })
+            let (Some(bank_account), Some(card), Some(fpx)) =
+                (self.bank_account, self.card, self.fpx)
+            else {
+                return None;
+            };
+            Some(Self::Out { bank_account, card, fpx })
         }
     }
 
@@ -94,9 +105,9 @@ const _: () = {
             let mut b = BalanceAmountBySourceTypeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank_account" => b.bank_account = Some(FromValueOpt::from_value(v)?),
-                    "card" => b.card = Some(FromValueOpt::from_value(v)?),
-                    "fpx" => b.fpx = Some(FromValueOpt::from_value(v)?),
+                    "bank_account" => b.bank_account = FromValueOpt::from_value(v),
+                    "card" => b.card = FromValueOpt::from_value(v),
+                    "fpx" => b.fpx = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -30,7 +30,13 @@ pub struct PaymentLinksResourceInvoiceSettingsBuilder {
     rendering_options: Option<Option<stripe_shared::InvoiceSettingRenderingOptions>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -89,14 +95,34 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account_tax_ids),
+                Some(custom_fields),
+                Some(description),
+                Some(footer),
+                Some(issuer),
+                Some(metadata),
+                Some(rendering_options),
+            ) = (
+                self.account_tax_ids.take(),
+                self.custom_fields.take(),
+                self.description.take(),
+                self.footer.take(),
+                self.issuer.take(),
+                self.metadata.take(),
+                self.rendering_options.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account_tax_ids: self.account_tax_ids.take()?,
-                custom_fields: self.custom_fields.take()?,
-                description: self.description.take()?,
-                footer: self.footer.take()?,
-                issuer: self.issuer.take()?,
-                metadata: self.metadata.take()?,
-                rendering_options: self.rendering_options.take()?,
+                account_tax_ids,
+                custom_fields,
+                description,
+                footer,
+                issuer,
+                metadata,
+                rendering_options,
             })
         }
     }
@@ -124,13 +150,13 @@ const _: () = {
             let mut b = PaymentLinksResourceInvoiceSettingsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_tax_ids" => b.account_tax_ids = Some(FromValueOpt::from_value(v)?),
-                    "custom_fields" => b.custom_fields = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "footer" => b.footer = Some(FromValueOpt::from_value(v)?),
-                    "issuer" => b.issuer = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "rendering_options" => b.rendering_options = Some(FromValueOpt::from_value(v)?),
+                    "account_tax_ids" => b.account_tax_ids = FromValueOpt::from_value(v),
+                    "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "footer" => b.footer = FromValueOpt::from_value(v),
+                    "issuer" => b.issuer = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "rendering_options" => b.rendering_options = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

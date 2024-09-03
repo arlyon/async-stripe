@@ -28,7 +28,13 @@ pub struct SubscriptionsResourcePendingUpdateBuilder {
     trial_from_plan: Option<Option<bool>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -83,12 +89,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(billing_cycle_anchor),
+                Some(expires_at),
+                Some(subscription_items),
+                Some(trial_end),
+                Some(trial_from_plan),
+            ) = (
+                self.billing_cycle_anchor,
+                self.expires_at,
+                self.subscription_items.take(),
+                self.trial_end,
+                self.trial_from_plan,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                billing_cycle_anchor: self.billing_cycle_anchor?,
-                expires_at: self.expires_at?,
-                subscription_items: self.subscription_items.take()?,
-                trial_end: self.trial_end?,
-                trial_from_plan: self.trial_from_plan?,
+                billing_cycle_anchor,
+                expires_at,
+                subscription_items,
+                trial_end,
+                trial_from_plan,
             })
         }
     }
@@ -116,15 +138,11 @@ const _: () = {
             let mut b = SubscriptionsResourcePendingUpdateBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "billing_cycle_anchor" => {
-                        b.billing_cycle_anchor = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
-                    "subscription_items" => {
-                        b.subscription_items = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "trial_end" => b.trial_end = Some(FromValueOpt::from_value(v)?),
-                    "trial_from_plan" => b.trial_from_plan = Some(FromValueOpt::from_value(v)?),
+                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
+                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
+                    "subscription_items" => b.subscription_items = FromValueOpt::from_value(v),
+                    "trial_end" => b.trial_end = FromValueOpt::from_value(v),
+                    "trial_from_plan" => b.trial_from_plan = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

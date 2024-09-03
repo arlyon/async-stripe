@@ -13,7 +13,13 @@ pub struct TransformUsageBuilder {
     round: Option<TransformUsageRound>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +65,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { divide_by: self.divide_by?, round: self.round? })
+            let (Some(divide_by), Some(round)) = (self.divide_by, self.round) else {
+                return None;
+            };
+            Some(Self::Out { divide_by, round })
         }
     }
 
@@ -86,8 +95,8 @@ const _: () = {
             let mut b = TransformUsageBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "divide_by" => b.divide_by = Some(FromValueOpt::from_value(v)?),
-                    "round" => b.round = Some(FromValueOpt::from_value(v)?),
+                    "divide_by" => b.divide_by = FromValueOpt::from_value(v),
+                    "round" => b.round = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

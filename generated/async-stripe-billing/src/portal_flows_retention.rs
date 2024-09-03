@@ -14,7 +14,13 @@ pub struct PortalFlowsRetentionBuilder {
     type_: Option<PortalFlowsRetentionType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -60,7 +66,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { coupon_offer: self.coupon_offer.take()?, type_: self.type_? })
+            let (Some(coupon_offer), Some(type_)) = (self.coupon_offer.take(), self.type_) else {
+                return None;
+            };
+            Some(Self::Out { coupon_offer, type_ })
         }
     }
 
@@ -87,8 +96,8 @@ const _: () = {
             let mut b = PortalFlowsRetentionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "coupon_offer" => b.coupon_offer = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "coupon_offer" => b.coupon_offer = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

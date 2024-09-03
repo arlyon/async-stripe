@@ -15,7 +15,13 @@ pub struct AccountDeclineChargeOnBuilder {
     cvc_failure: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -61,7 +67,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { avs_failure: self.avs_failure?, cvc_failure: self.cvc_failure? })
+            let (Some(avs_failure), Some(cvc_failure)) = (self.avs_failure, self.cvc_failure)
+            else {
+                return None;
+            };
+            Some(Self::Out { avs_failure, cvc_failure })
         }
     }
 
@@ -88,8 +98,8 @@ const _: () = {
             let mut b = AccountDeclineChargeOnBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "avs_failure" => b.avs_failure = Some(FromValueOpt::from_value(v)?),
-                    "cvc_failure" => b.cvc_failure = Some(FromValueOpt::from_value(v)?),
+                    "avs_failure" => b.avs_failure = FromValueOpt::from_value(v),
+                    "cvc_failure" => b.cvc_failure = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

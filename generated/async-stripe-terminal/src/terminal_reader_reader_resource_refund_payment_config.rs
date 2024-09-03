@@ -11,7 +11,13 @@ pub struct TerminalReaderReaderResourceRefundPaymentConfigBuilder {
     enable_customer_cancellation: Option<Option<bool>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -58,7 +64,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { enable_customer_cancellation: self.enable_customer_cancellation? })
+            let (Some(enable_customer_cancellation),) = (self.enable_customer_cancellation,) else {
+                return None;
+            };
+            Some(Self::Out { enable_customer_cancellation })
         }
     }
 
@@ -86,7 +95,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "enable_customer_cancellation" => {
-                        b.enable_customer_cancellation = Some(FromValueOpt::from_value(v)?)
+                        b.enable_customer_cancellation = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

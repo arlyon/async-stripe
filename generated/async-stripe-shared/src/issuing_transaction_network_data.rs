@@ -21,7 +21,13 @@ pub struct IssuingTransactionNetworkDataBuilder {
     transaction_id: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,11 +78,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                authorization_code: self.authorization_code.take()?,
-                processing_date: self.processing_date.take()?,
-                transaction_id: self.transaction_id.take()?,
-            })
+            let (Some(authorization_code), Some(processing_date), Some(transaction_id)) = (
+                self.authorization_code.take(),
+                self.processing_date.take(),
+                self.transaction_id.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { authorization_code, processing_date, transaction_id })
         }
     }
 
@@ -103,11 +112,9 @@ const _: () = {
             let mut b = IssuingTransactionNetworkDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "authorization_code" => {
-                        b.authorization_code = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "processing_date" => b.processing_date = Some(FromValueOpt::from_value(v)?),
-                    "transaction_id" => b.transaction_id = Some(FromValueOpt::from_value(v)?),
+                    "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
+                    "processing_date" => b.processing_date = FromValueOpt::from_value(v),
+                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

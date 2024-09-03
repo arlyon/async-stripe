@@ -13,7 +13,13 @@ pub struct PaymentLinksResourcePaymentMethodReuseAgreementBuilder {
     position: Option<PaymentLinksResourcePaymentMethodReuseAgreementPosition>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -58,7 +64,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { position: self.position? })
+            let (Some(position),) = (self.position,) else {
+                return None;
+            };
+            Some(Self::Out { position })
         }
     }
 
@@ -85,7 +94,7 @@ const _: () = {
             let mut b = PaymentLinksResourcePaymentMethodReuseAgreementBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "position" => b.position = Some(FromValueOpt::from_value(v)?),
+                    "position" => b.position = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

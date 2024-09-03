@@ -17,7 +17,13 @@ pub struct PaymentLinksResourceAfterCompletionBuilder {
     type_: Option<PaymentLinksResourceAfterCompletionType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                hosted_confirmation: self.hosted_confirmation.take()?,
-                redirect: self.redirect.take()?,
-                type_: self.type_?,
-            })
+            let (Some(hosted_confirmation), Some(redirect), Some(type_)) =
+                (self.hosted_confirmation.take(), self.redirect.take(), self.type_)
+            else {
+                return None;
+            };
+            Some(Self::Out { hosted_confirmation, redirect, type_ })
         }
     }
 
@@ -99,11 +106,9 @@ const _: () = {
             let mut b = PaymentLinksResourceAfterCompletionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "hosted_confirmation" => {
-                        b.hosted_confirmation = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "redirect" => b.redirect = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "hosted_confirmation" => b.hosted_confirmation = FromValueOpt::from_value(v),
+                    "redirect" => b.redirect = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

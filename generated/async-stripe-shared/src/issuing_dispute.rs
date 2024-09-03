@@ -45,7 +45,13 @@ pub struct IssuingDisputeBuilder {
     treasury: Option<Option<stripe_shared::IssuingDisputeTreasury>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -112,18 +118,46 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(balance_transactions),
+                Some(created),
+                Some(currency),
+                Some(evidence),
+                Some(id),
+                Some(livemode),
+                Some(metadata),
+                Some(status),
+                Some(transaction),
+                Some(treasury),
+            ) = (
+                self.amount,
+                self.balance_transactions.take(),
+                self.created,
+                self.currency,
+                self.evidence.take(),
+                self.id.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.status,
+                self.transaction.take(),
+                self.treasury.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                balance_transactions: self.balance_transactions.take()?,
-                created: self.created?,
-                currency: self.currency?,
-                evidence: self.evidence.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                status: self.status?,
-                transaction: self.transaction.take()?,
-                treasury: self.treasury.take()?,
+                amount,
+                balance_transactions,
+                created,
+                currency,
+                evidence,
+                id,
+                livemode,
+                metadata,
+                status,
+                transaction,
+                treasury,
             })
         }
     }
@@ -151,19 +185,17 @@ const _: () = {
             let mut b = IssuingDisputeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "balance_transactions" => {
-                        b.balance_transactions = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "evidence" => b.evidence = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "transaction" => b.transaction = Some(FromValueOpt::from_value(v)?),
-                    "treasury" => b.treasury = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "balance_transactions" => b.balance_transactions = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "evidence" => b.evidence = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "transaction" => b.transaction = FromValueOpt::from_value(v),
+                    "treasury" => b.treasury = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

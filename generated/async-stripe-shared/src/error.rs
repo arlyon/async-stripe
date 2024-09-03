@@ -10,7 +10,13 @@ pub struct ErrorBuilder {
     error: Option<Box<stripe_shared::ApiErrors>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -52,7 +58,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { error: self.error.take()? })
+            let (Some(error),) = (self.error.take(),) else {
+                return None;
+            };
+            Some(Self::Out { error })
         }
     }
 
@@ -79,7 +88,7 @@ const _: () = {
             let mut b = ErrorBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "error" => b.error = Some(FromValueOpt::from_value(v)?),
+                    "error" => b.error = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

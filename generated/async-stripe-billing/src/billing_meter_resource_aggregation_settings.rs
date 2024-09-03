@@ -10,7 +10,13 @@ pub struct BillingMeterResourceAggregationSettingsBuilder {
     formula: Option<BillingMeterResourceAggregationSettingsFormula>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { formula: self.formula? })
+            let (Some(formula),) = (self.formula,) else {
+                return None;
+            };
+            Some(Self::Out { formula })
         }
     }
 
@@ -82,7 +91,7 @@ const _: () = {
             let mut b = BillingMeterResourceAggregationSettingsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "formula" => b.formula = Some(FromValueOpt::from_value(v)?),
+                    "formula" => b.formula = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

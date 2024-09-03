@@ -102,7 +102,13 @@ pub struct IssuingAuthorizationBuilder {
     wallet: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -195,31 +201,85 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(amount_details),
+                Some(approved),
+                Some(authorization_method),
+                Some(balance_transactions),
+                Some(card),
+                Some(cardholder),
+                Some(created),
+                Some(currency),
+                Some(id),
+                Some(livemode),
+                Some(merchant_amount),
+                Some(merchant_currency),
+                Some(merchant_data),
+                Some(metadata),
+                Some(network_data),
+                Some(pending_request),
+                Some(request_history),
+                Some(status),
+                Some(token),
+                Some(transactions),
+                Some(treasury),
+                Some(verification_data),
+                Some(wallet),
+            ) = (
+                self.amount,
+                self.amount_details,
+                self.approved,
+                self.authorization_method,
+                self.balance_transactions.take(),
+                self.card.take(),
+                self.cardholder.take(),
+                self.created,
+                self.currency,
+                self.id.take(),
+                self.livemode,
+                self.merchant_amount,
+                self.merchant_currency,
+                self.merchant_data.take(),
+                self.metadata.take(),
+                self.network_data.take(),
+                self.pending_request,
+                self.request_history.take(),
+                self.status,
+                self.token.take(),
+                self.transactions.take(),
+                self.treasury.take(),
+                self.verification_data.take(),
+                self.wallet.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                amount_details: self.amount_details?,
-                approved: self.approved?,
-                authorization_method: self.authorization_method?,
-                balance_transactions: self.balance_transactions.take()?,
-                card: self.card.take()?,
-                cardholder: self.cardholder.take()?,
-                created: self.created?,
-                currency: self.currency?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                merchant_amount: self.merchant_amount?,
-                merchant_currency: self.merchant_currency?,
-                merchant_data: self.merchant_data.take()?,
-                metadata: self.metadata.take()?,
-                network_data: self.network_data.take()?,
-                pending_request: self.pending_request?,
-                request_history: self.request_history.take()?,
-                status: self.status?,
-                token: self.token.take()?,
-                transactions: self.transactions.take()?,
-                treasury: self.treasury.take()?,
-                verification_data: self.verification_data.take()?,
-                wallet: self.wallet.take()?,
+                amount,
+                amount_details,
+                approved,
+                authorization_method,
+                balance_transactions,
+                card,
+                cardholder,
+                created,
+                currency,
+                id,
+                livemode,
+                merchant_amount,
+                merchant_currency,
+                merchant_data,
+                metadata,
+                network_data,
+                pending_request,
+                request_history,
+                status,
+                token,
+                transactions,
+                treasury,
+                verification_data,
+                wallet,
             })
         }
     }
@@ -247,34 +307,30 @@ const _: () = {
             let mut b = IssuingAuthorizationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_details" => b.amount_details = Some(FromValueOpt::from_value(v)?),
-                    "approved" => b.approved = Some(FromValueOpt::from_value(v)?),
-                    "authorization_method" => {
-                        b.authorization_method = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "balance_transactions" => {
-                        b.balance_transactions = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "card" => b.card = Some(FromValueOpt::from_value(v)?),
-                    "cardholder" => b.cardholder = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "merchant_amount" => b.merchant_amount = Some(FromValueOpt::from_value(v)?),
-                    "merchant_currency" => b.merchant_currency = Some(FromValueOpt::from_value(v)?),
-                    "merchant_data" => b.merchant_data = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "network_data" => b.network_data = Some(FromValueOpt::from_value(v)?),
-                    "pending_request" => b.pending_request = Some(FromValueOpt::from_value(v)?),
-                    "request_history" => b.request_history = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "token" => b.token = Some(FromValueOpt::from_value(v)?),
-                    "transactions" => b.transactions = Some(FromValueOpt::from_value(v)?),
-                    "treasury" => b.treasury = Some(FromValueOpt::from_value(v)?),
-                    "verification_data" => b.verification_data = Some(FromValueOpt::from_value(v)?),
-                    "wallet" => b.wallet = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_details" => b.amount_details = FromValueOpt::from_value(v),
+                    "approved" => b.approved = FromValueOpt::from_value(v),
+                    "authorization_method" => b.authorization_method = FromValueOpt::from_value(v),
+                    "balance_transactions" => b.balance_transactions = FromValueOpt::from_value(v),
+                    "card" => b.card = FromValueOpt::from_value(v),
+                    "cardholder" => b.cardholder = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "merchant_amount" => b.merchant_amount = FromValueOpt::from_value(v),
+                    "merchant_currency" => b.merchant_currency = FromValueOpt::from_value(v),
+                    "merchant_data" => b.merchant_data = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "network_data" => b.network_data = FromValueOpt::from_value(v),
+                    "pending_request" => b.pending_request = FromValueOpt::from_value(v),
+                    "request_history" => b.request_history = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "token" => b.token = FromValueOpt::from_value(v),
+                    "transactions" => b.transactions = FromValueOpt::from_value(v),
+                    "treasury" => b.treasury = FromValueOpt::from_value(v),
+                    "verification_data" => b.verification_data = FromValueOpt::from_value(v),
+                    "wallet" => b.wallet = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

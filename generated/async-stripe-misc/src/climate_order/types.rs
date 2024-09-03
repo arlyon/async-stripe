@@ -74,7 +74,13 @@ pub struct ClimateOrderBuilder {
     status: Option<ClimateOrderStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -161,28 +167,76 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount_fees),
+                Some(amount_subtotal),
+                Some(amount_total),
+                Some(beneficiary),
+                Some(canceled_at),
+                Some(cancellation_reason),
+                Some(certificate),
+                Some(confirmed_at),
+                Some(created),
+                Some(currency),
+                Some(delayed_at),
+                Some(delivered_at),
+                Some(delivery_details),
+                Some(expected_delivery_year),
+                Some(id),
+                Some(livemode),
+                Some(metadata),
+                Some(metric_tons),
+                Some(product),
+                Some(product_substituted_at),
+                Some(status),
+            ) = (
+                self.amount_fees,
+                self.amount_subtotal,
+                self.amount_total,
+                self.beneficiary.take(),
+                self.canceled_at,
+                self.cancellation_reason,
+                self.certificate.take(),
+                self.confirmed_at,
+                self.created,
+                self.currency,
+                self.delayed_at,
+                self.delivered_at,
+                self.delivery_details.take(),
+                self.expected_delivery_year,
+                self.id.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.metric_tons.take(),
+                self.product.take(),
+                self.product_substituted_at,
+                self.status,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount_fees: self.amount_fees?,
-                amount_subtotal: self.amount_subtotal?,
-                amount_total: self.amount_total?,
-                beneficiary: self.beneficiary.take()?,
-                canceled_at: self.canceled_at?,
-                cancellation_reason: self.cancellation_reason?,
-                certificate: self.certificate.take()?,
-                confirmed_at: self.confirmed_at?,
-                created: self.created?,
-                currency: self.currency?,
-                delayed_at: self.delayed_at?,
-                delivered_at: self.delivered_at?,
-                delivery_details: self.delivery_details.take()?,
-                expected_delivery_year: self.expected_delivery_year?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                metric_tons: self.metric_tons.take()?,
-                product: self.product.take()?,
-                product_substituted_at: self.product_substituted_at?,
-                status: self.status?,
+                amount_fees,
+                amount_subtotal,
+                amount_total,
+                beneficiary,
+                canceled_at,
+                cancellation_reason,
+                certificate,
+                confirmed_at,
+                created,
+                currency,
+                delayed_at,
+                delivered_at,
+                delivery_details,
+                expected_delivery_year,
+                id,
+                livemode,
+                metadata,
+                metric_tons,
+                product,
+                product_substituted_at,
+                status,
             })
         }
     }
@@ -210,33 +264,31 @@ const _: () = {
             let mut b = ClimateOrderBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_fees" => b.amount_fees = Some(FromValueOpt::from_value(v)?),
-                    "amount_subtotal" => b.amount_subtotal = Some(FromValueOpt::from_value(v)?),
-                    "amount_total" => b.amount_total = Some(FromValueOpt::from_value(v)?),
-                    "beneficiary" => b.beneficiary = Some(FromValueOpt::from_value(v)?),
-                    "canceled_at" => b.canceled_at = Some(FromValueOpt::from_value(v)?),
-                    "cancellation_reason" => {
-                        b.cancellation_reason = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "certificate" => b.certificate = Some(FromValueOpt::from_value(v)?),
-                    "confirmed_at" => b.confirmed_at = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "delayed_at" => b.delayed_at = Some(FromValueOpt::from_value(v)?),
-                    "delivered_at" => b.delivered_at = Some(FromValueOpt::from_value(v)?),
-                    "delivery_details" => b.delivery_details = Some(FromValueOpt::from_value(v)?),
+                    "amount_fees" => b.amount_fees = FromValueOpt::from_value(v),
+                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
+                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
+                    "beneficiary" => b.beneficiary = FromValueOpt::from_value(v),
+                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
+                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
+                    "certificate" => b.certificate = FromValueOpt::from_value(v),
+                    "confirmed_at" => b.confirmed_at = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "delayed_at" => b.delayed_at = FromValueOpt::from_value(v),
+                    "delivered_at" => b.delivered_at = FromValueOpt::from_value(v),
+                    "delivery_details" => b.delivery_details = FromValueOpt::from_value(v),
                     "expected_delivery_year" => {
-                        b.expected_delivery_year = Some(FromValueOpt::from_value(v)?)
+                        b.expected_delivery_year = FromValueOpt::from_value(v)
                     }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "metric_tons" => b.metric_tons = Some(FromValueOpt::from_value(v)?),
-                    "product" => b.product = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "metric_tons" => b.metric_tons = FromValueOpt::from_value(v),
+                    "product" => b.product = FromValueOpt::from_value(v),
                     "product_substituted_at" => {
-                        b.product_substituted_at = Some(FromValueOpt::from_value(v)?)
+                        b.product_substituted_at = FromValueOpt::from_value(v)
                     }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

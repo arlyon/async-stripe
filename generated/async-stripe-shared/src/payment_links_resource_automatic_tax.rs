@@ -15,7 +15,13 @@ pub struct PaymentLinksResourceAutomaticTaxBuilder {
     liability: Option<Option<stripe_shared::ConnectAccountReference>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -61,7 +67,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { enabled: self.enabled?, liability: self.liability.take()? })
+            let (Some(enabled), Some(liability)) = (self.enabled, self.liability.take()) else {
+                return None;
+            };
+            Some(Self::Out { enabled, liability })
         }
     }
 
@@ -88,8 +97,8 @@ const _: () = {
             let mut b = PaymentLinksResourceAutomaticTaxBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "enabled" => b.enabled = Some(FromValueOpt::from_value(v)?),
-                    "liability" => b.liability = Some(FromValueOpt::from_value(v)?),
+                    "enabled" => b.enabled = FromValueOpt::from_value(v),
+                    "liability" => b.liability = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

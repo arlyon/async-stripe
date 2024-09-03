@@ -30,7 +30,13 @@ us_bank_account: Option<Option<stripe_treasury::TreasurySharedResourceInitiating
 
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -94,13 +100,22 @@ us_bank_account: Deserialize::default(),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        Some(Self::Out { balance: self.balance?,
-billing_details: self.billing_details.take()?,
-financial_account: self.financial_account.take()?,
-issuing_card: self.issuing_card.take()?,
-type_: self.type_?,
-us_bank_account: self.us_bank_account.take()?,
- })
+        let (Some(balance),
+Some(billing_details),
+Some(financial_account),
+Some(issuing_card),
+Some(type_),
+Some(us_bank_account),
+) = (self.balance,
+self.billing_details.take(),
+self.financial_account.take(),
+self.issuing_card.take(),
+self.type_,
+self.us_bank_account.take(),
+) else {
+            return None;
+        };
+        Some(Self::Out { balance,billing_details,financial_account,issuing_card,type_,us_bank_account })
     }
 }
 
@@ -131,12 +146,12 @@ us_bank_account: self.us_bank_account.take()?,
             let mut b = TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "balance" => b.balance = Some(FromValueOpt::from_value(v)?),
-                    "billing_details" => b.billing_details = Some(FromValueOpt::from_value(v)?),
-                    "financial_account" => b.financial_account = Some(FromValueOpt::from_value(v)?),
-                    "issuing_card" => b.issuing_card = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "us_bank_account" => b.us_bank_account = Some(FromValueOpt::from_value(v)?),
+                    "balance" => b.balance = FromValueOpt::from_value(v),
+                    "billing_details" => b.billing_details = FromValueOpt::from_value(v),
+                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
+                    "issuing_card" => b.issuing_card = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

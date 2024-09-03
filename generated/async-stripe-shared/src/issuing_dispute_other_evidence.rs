@@ -19,7 +19,13 @@ pub struct IssuingDisputeOtherEvidenceBuilder {
     product_type: Option<Option<IssuingDisputeOtherEvidenceProductType>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -74,11 +80,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(additional_documentation),
+                Some(explanation),
+                Some(product_description),
+                Some(product_type),
+            ) = (
+                self.additional_documentation.take(),
+                self.explanation.take(),
+                self.product_description.take(),
+                self.product_type,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                additional_documentation: self.additional_documentation.take()?,
-                explanation: self.explanation.take()?,
-                product_description: self.product_description.take()?,
-                product_type: self.product_type?,
+                additional_documentation,
+                explanation,
+                product_description,
+                product_type,
             })
         }
     }
@@ -107,13 +127,11 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "additional_documentation" => {
-                        b.additional_documentation = Some(FromValueOpt::from_value(v)?)
+                        b.additional_documentation = FromValueOpt::from_value(v)
                     }
-                    "explanation" => b.explanation = Some(FromValueOpt::from_value(v)?),
-                    "product_description" => {
-                        b.product_description = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "product_type" => b.product_type = Some(FromValueOpt::from_value(v)?),
+                    "explanation" => b.explanation = FromValueOpt::from_value(v),
+                    "product_description" => b.product_description = FromValueOpt::from_value(v),
+                    "product_type" => b.product_type = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

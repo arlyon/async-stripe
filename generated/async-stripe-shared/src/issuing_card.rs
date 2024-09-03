@@ -87,7 +87,13 @@ pub struct IssuingCardBuilder {
     wallets: Option<Option<stripe_shared::IssuingCardWallets>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -178,30 +184,82 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(brand),
+                Some(cancellation_reason),
+                Some(cardholder),
+                Some(created),
+                Some(currency),
+                Some(cvc),
+                Some(exp_month),
+                Some(exp_year),
+                Some(financial_account),
+                Some(id),
+                Some(last4),
+                Some(livemode),
+                Some(metadata),
+                Some(number),
+                Some(personalization_design),
+                Some(replaced_by),
+                Some(replacement_for),
+                Some(replacement_reason),
+                Some(shipping),
+                Some(spending_controls),
+                Some(status),
+                Some(type_),
+                Some(wallets),
+            ) = (
+                self.brand.take(),
+                self.cancellation_reason,
+                self.cardholder.take(),
+                self.created,
+                self.currency,
+                self.cvc.take(),
+                self.exp_month,
+                self.exp_year,
+                self.financial_account.take(),
+                self.id.take(),
+                self.last4.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.number.take(),
+                self.personalization_design.take(),
+                self.replaced_by.take(),
+                self.replacement_for.take(),
+                self.replacement_reason,
+                self.shipping.take(),
+                self.spending_controls.take(),
+                self.status,
+                self.type_,
+                self.wallets.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                brand: self.brand.take()?,
-                cancellation_reason: self.cancellation_reason?,
-                cardholder: self.cardholder.take()?,
-                created: self.created?,
-                currency: self.currency?,
-                cvc: self.cvc.take()?,
-                exp_month: self.exp_month?,
-                exp_year: self.exp_year?,
-                financial_account: self.financial_account.take()?,
-                id: self.id.take()?,
-                last4: self.last4.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                number: self.number.take()?,
-                personalization_design: self.personalization_design.take()?,
-                replaced_by: self.replaced_by.take()?,
-                replacement_for: self.replacement_for.take()?,
-                replacement_reason: self.replacement_reason?,
-                shipping: self.shipping.take()?,
-                spending_controls: self.spending_controls.take()?,
-                status: self.status?,
-                type_: self.type_?,
-                wallets: self.wallets.take()?,
+                brand,
+                cancellation_reason,
+                cardholder,
+                created,
+                currency,
+                cvc,
+                exp_month,
+                exp_year,
+                financial_account,
+                id,
+                last4,
+                livemode,
+                metadata,
+                number,
+                personalization_design,
+                replaced_by,
+                replacement_for,
+                replacement_reason,
+                shipping,
+                spending_controls,
+                status,
+                type_,
+                wallets,
             })
         }
     }
@@ -229,35 +287,31 @@ const _: () = {
             let mut b = IssuingCardBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "brand" => b.brand = Some(FromValueOpt::from_value(v)?),
-                    "cancellation_reason" => {
-                        b.cancellation_reason = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "cardholder" => b.cardholder = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "cvc" => b.cvc = Some(FromValueOpt::from_value(v)?),
-                    "exp_month" => b.exp_month = Some(FromValueOpt::from_value(v)?),
-                    "exp_year" => b.exp_year = Some(FromValueOpt::from_value(v)?),
-                    "financial_account" => b.financial_account = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "number" => b.number = Some(FromValueOpt::from_value(v)?),
+                    "brand" => b.brand = FromValueOpt::from_value(v),
+                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
+                    "cardholder" => b.cardholder = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "cvc" => b.cvc = FromValueOpt::from_value(v),
+                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
+                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
+                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "number" => b.number = FromValueOpt::from_value(v),
                     "personalization_design" => {
-                        b.personalization_design = Some(FromValueOpt::from_value(v)?)
+                        b.personalization_design = FromValueOpt::from_value(v)
                     }
-                    "replaced_by" => b.replaced_by = Some(FromValueOpt::from_value(v)?),
-                    "replacement_for" => b.replacement_for = Some(FromValueOpt::from_value(v)?),
-                    "replacement_reason" => {
-                        b.replacement_reason = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "shipping" => b.shipping = Some(FromValueOpt::from_value(v)?),
-                    "spending_controls" => b.spending_controls = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "wallets" => b.wallets = Some(FromValueOpt::from_value(v)?),
+                    "replaced_by" => b.replaced_by = FromValueOpt::from_value(v),
+                    "replacement_for" => b.replacement_for = FromValueOpt::from_value(v),
+                    "replacement_reason" => b.replacement_reason = FromValueOpt::from_value(v),
+                    "shipping" => b.shipping = FromValueOpt::from_value(v),
+                    "spending_controls" => b.spending_controls = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "wallets" => b.wallets = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

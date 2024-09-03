@@ -14,7 +14,13 @@ pub struct ForwardedRequestContextBuilder {
     destination_ip_address: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -63,10 +69,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                destination_duration: self.destination_duration?,
-                destination_ip_address: self.destination_ip_address.take()?,
-            })
+            let (Some(destination_duration), Some(destination_ip_address)) =
+                (self.destination_duration, self.destination_ip_address.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { destination_duration, destination_ip_address })
         }
     }
 
@@ -93,11 +101,9 @@ const _: () = {
             let mut b = ForwardedRequestContextBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "destination_duration" => {
-                        b.destination_duration = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "destination_duration" => b.destination_duration = FromValueOpt::from_value(v),
                     "destination_ip_address" => {
-                        b.destination_ip_address = Some(FromValueOpt::from_value(v)?)
+                        b.destination_ip_address = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

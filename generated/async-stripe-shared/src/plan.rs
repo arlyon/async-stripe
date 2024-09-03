@@ -98,7 +98,13 @@ pub struct PlanBuilder {
     usage_type: Option<stripe_shared::PlanUsageType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -180,27 +186,73 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(active),
+                Some(aggregate_usage),
+                Some(amount),
+                Some(amount_decimal),
+                Some(billing_scheme),
+                Some(created),
+                Some(currency),
+                Some(id),
+                Some(interval),
+                Some(interval_count),
+                Some(livemode),
+                Some(metadata),
+                Some(meter),
+                Some(nickname),
+                Some(product),
+                Some(tiers),
+                Some(tiers_mode),
+                Some(transform_usage),
+                Some(trial_period_days),
+                Some(usage_type),
+            ) = (
+                self.active,
+                self.aggregate_usage,
+                self.amount,
+                self.amount_decimal.take(),
+                self.billing_scheme,
+                self.created,
+                self.currency,
+                self.id.take(),
+                self.interval,
+                self.interval_count,
+                self.livemode,
+                self.metadata.take(),
+                self.meter.take(),
+                self.nickname.take(),
+                self.product.take(),
+                self.tiers.take(),
+                self.tiers_mode,
+                self.transform_usage,
+                self.trial_period_days,
+                self.usage_type,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                active: self.active?,
-                aggregate_usage: self.aggregate_usage?,
-                amount: self.amount?,
-                amount_decimal: self.amount_decimal.take()?,
-                billing_scheme: self.billing_scheme?,
-                created: self.created?,
-                currency: self.currency?,
-                id: self.id.take()?,
-                interval: self.interval?,
-                interval_count: self.interval_count?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                meter: self.meter.take()?,
-                nickname: self.nickname.take()?,
-                product: self.product.take()?,
-                tiers: self.tiers.take()?,
-                tiers_mode: self.tiers_mode?,
-                transform_usage: self.transform_usage?,
-                trial_period_days: self.trial_period_days?,
-                usage_type: self.usage_type?,
+                active,
+                aggregate_usage,
+                amount,
+                amount_decimal,
+                billing_scheme,
+                created,
+                currency,
+                id,
+                interval,
+                interval_count,
+                livemode,
+                metadata,
+                meter,
+                nickname,
+                product,
+                tiers,
+                tiers_mode,
+                transform_usage,
+                trial_period_days,
+                usage_type,
             })
         }
     }
@@ -228,26 +280,26 @@ const _: () = {
             let mut b = PlanBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "active" => b.active = Some(FromValueOpt::from_value(v)?),
-                    "aggregate_usage" => b.aggregate_usage = Some(FromValueOpt::from_value(v)?),
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_decimal" => b.amount_decimal = Some(FromValueOpt::from_value(v)?),
-                    "billing_scheme" => b.billing_scheme = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "interval" => b.interval = Some(FromValueOpt::from_value(v)?),
-                    "interval_count" => b.interval_count = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "meter" => b.meter = Some(FromValueOpt::from_value(v)?),
-                    "nickname" => b.nickname = Some(FromValueOpt::from_value(v)?),
-                    "product" => b.product = Some(FromValueOpt::from_value(v)?),
-                    "tiers" => b.tiers = Some(FromValueOpt::from_value(v)?),
-                    "tiers_mode" => b.tiers_mode = Some(FromValueOpt::from_value(v)?),
-                    "transform_usage" => b.transform_usage = Some(FromValueOpt::from_value(v)?),
-                    "trial_period_days" => b.trial_period_days = Some(FromValueOpt::from_value(v)?),
-                    "usage_type" => b.usage_type = Some(FromValueOpt::from_value(v)?),
+                    "active" => b.active = FromValueOpt::from_value(v),
+                    "aggregate_usage" => b.aggregate_usage = FromValueOpt::from_value(v),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_decimal" => b.amount_decimal = FromValueOpt::from_value(v),
+                    "billing_scheme" => b.billing_scheme = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "interval" => b.interval = FromValueOpt::from_value(v),
+                    "interval_count" => b.interval_count = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "meter" => b.meter = FromValueOpt::from_value(v),
+                    "nickname" => b.nickname = FromValueOpt::from_value(v),
+                    "product" => b.product = FromValueOpt::from_value(v),
+                    "tiers" => b.tiers = FromValueOpt::from_value(v),
+                    "tiers_mode" => b.tiers_mode = FromValueOpt::from_value(v),
+                    "transform_usage" => b.transform_usage = FromValueOpt::from_value(v),
+                    "trial_period_days" => b.trial_period_days = FromValueOpt::from_value(v),
+                    "usage_type" => b.usage_type = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

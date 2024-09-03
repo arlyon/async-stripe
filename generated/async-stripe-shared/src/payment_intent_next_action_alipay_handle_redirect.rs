@@ -19,7 +19,13 @@ pub struct PaymentIntentNextActionAlipayHandleRedirectBuilder {
     url: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,12 +78,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                native_data: self.native_data.take()?,
-                native_url: self.native_url.take()?,
-                return_url: self.return_url.take()?,
-                url: self.url.take()?,
-            })
+            let (Some(native_data), Some(native_url), Some(return_url), Some(url)) = (
+                self.native_data.take(),
+                self.native_url.take(),
+                self.return_url.take(),
+                self.url.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { native_data, native_url, return_url, url })
         }
     }
 
@@ -104,10 +113,10 @@ const _: () = {
             let mut b = PaymentIntentNextActionAlipayHandleRedirectBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "native_data" => b.native_data = Some(FromValueOpt::from_value(v)?),
-                    "native_url" => b.native_url = Some(FromValueOpt::from_value(v)?),
-                    "return_url" => b.return_url = Some(FromValueOpt::from_value(v)?),
-                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+                    "native_data" => b.native_data = FromValueOpt::from_value(v),
+                    "native_url" => b.native_url = FromValueOpt::from_value(v),
+                    "return_url" => b.return_url = FromValueOpt::from_value(v),
+                    "url" => b.url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

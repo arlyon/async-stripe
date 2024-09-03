@@ -32,7 +32,13 @@ pub struct PromotionCodesResourceRestrictionsBuilder {
     minimum_amount_currency: Option<Option<stripe_types::Currency>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -85,11 +91,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(currency_options),
+                Some(first_time_transaction),
+                Some(minimum_amount),
+                Some(minimum_amount_currency),
+            ) = (
+                self.currency_options.take(),
+                self.first_time_transaction,
+                self.minimum_amount,
+                self.minimum_amount_currency,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                currency_options: self.currency_options.take()?,
-                first_time_transaction: self.first_time_transaction?,
-                minimum_amount: self.minimum_amount?,
-                minimum_amount_currency: self.minimum_amount_currency?,
+                currency_options,
+                first_time_transaction,
+                minimum_amount,
+                minimum_amount_currency,
             })
         }
     }
@@ -117,13 +137,13 @@ const _: () = {
             let mut b = PromotionCodesResourceRestrictionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "currency_options" => b.currency_options = Some(FromValueOpt::from_value(v)?),
+                    "currency_options" => b.currency_options = FromValueOpt::from_value(v),
                     "first_time_transaction" => {
-                        b.first_time_transaction = Some(FromValueOpt::from_value(v)?)
+                        b.first_time_transaction = FromValueOpt::from_value(v)
                     }
-                    "minimum_amount" => b.minimum_amount = Some(FromValueOpt::from_value(v)?),
+                    "minimum_amount" => b.minimum_amount = FromValueOpt::from_value(v),
                     "minimum_amount_currency" => {
-                        b.minimum_amount_currency = Some(FromValueOpt::from_value(v)?)
+                        b.minimum_amount_currency = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

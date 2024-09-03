@@ -46,7 +46,13 @@ pub struct SourceTransactionBuilder {
     type_: Option<SourceTransactionType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -117,20 +123,52 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(ach_credit_transfer),
+                Some(amount),
+                Some(chf_credit_transfer),
+                Some(created),
+                Some(currency),
+                Some(gbp_credit_transfer),
+                Some(id),
+                Some(livemode),
+                Some(paper_check),
+                Some(sepa_credit_transfer),
+                Some(source),
+                Some(status),
+                Some(type_),
+            ) = (
+                self.ach_credit_transfer.take(),
+                self.amount,
+                self.chf_credit_transfer.take(),
+                self.created,
+                self.currency,
+                self.gbp_credit_transfer.take(),
+                self.id.take(),
+                self.livemode,
+                self.paper_check.take(),
+                self.sepa_credit_transfer.take(),
+                self.source.take(),
+                self.status.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                ach_credit_transfer: self.ach_credit_transfer.take()?,
-                amount: self.amount?,
-                chf_credit_transfer: self.chf_credit_transfer.take()?,
-                created: self.created?,
-                currency: self.currency?,
-                gbp_credit_transfer: self.gbp_credit_transfer.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                paper_check: self.paper_check.take()?,
-                sepa_credit_transfer: self.sepa_credit_transfer.take()?,
-                source: self.source.take()?,
-                status: self.status.take()?,
-                type_: self.type_?,
+                ach_credit_transfer,
+                amount,
+                chf_credit_transfer,
+                created,
+                currency,
+                gbp_credit_transfer,
+                id,
+                livemode,
+                paper_check,
+                sepa_credit_transfer,
+                source,
+                status,
+                type_,
             })
         }
     }
@@ -158,27 +196,19 @@ const _: () = {
             let mut b = SourceTransactionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "ach_credit_transfer" => {
-                        b.ach_credit_transfer = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "chf_credit_transfer" => {
-                        b.chf_credit_transfer = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "gbp_credit_transfer" => {
-                        b.gbp_credit_transfer = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "paper_check" => b.paper_check = Some(FromValueOpt::from_value(v)?),
-                    "sepa_credit_transfer" => {
-                        b.sepa_credit_transfer = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "source" => b.source = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "ach_credit_transfer" => b.ach_credit_transfer = FromValueOpt::from_value(v),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "chf_credit_transfer" => b.chf_credit_transfer = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "gbp_credit_transfer" => b.gbp_credit_transfer = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "paper_check" => b.paper_check = FromValueOpt::from_value(v),
+                    "sepa_credit_transfer" => b.sepa_credit_transfer = FromValueOpt::from_value(v),
+                    "source" => b.source = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

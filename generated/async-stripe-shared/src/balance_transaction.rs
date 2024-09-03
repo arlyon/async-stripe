@@ -65,7 +65,13 @@ pub struct BalanceTransactionBuilder {
     type_: Option<BalanceTransactionType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -138,21 +144,55 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(available_on),
+                Some(created),
+                Some(currency),
+                Some(description),
+                Some(exchange_rate),
+                Some(fee),
+                Some(fee_details),
+                Some(id),
+                Some(net),
+                Some(reporting_category),
+                Some(source),
+                Some(status),
+                Some(type_),
+            ) = (
+                self.amount,
+                self.available_on,
+                self.created,
+                self.currency,
+                self.description.take(),
+                self.exchange_rate,
+                self.fee,
+                self.fee_details.take(),
+                self.id.take(),
+                self.net,
+                self.reporting_category.take(),
+                self.source.take(),
+                self.status.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                available_on: self.available_on?,
-                created: self.created?,
-                currency: self.currency?,
-                description: self.description.take()?,
-                exchange_rate: self.exchange_rate?,
-                fee: self.fee?,
-                fee_details: self.fee_details.take()?,
-                id: self.id.take()?,
-                net: self.net?,
-                reporting_category: self.reporting_category.take()?,
-                source: self.source.take()?,
-                status: self.status.take()?,
-                type_: self.type_?,
+                amount,
+                available_on,
+                created,
+                currency,
+                description,
+                exchange_rate,
+                fee,
+                fee_details,
+                id,
+                net,
+                reporting_category,
+                source,
+                status,
+                type_,
             })
         }
     }
@@ -180,22 +220,20 @@ const _: () = {
             let mut b = BalanceTransactionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "available_on" => b.available_on = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "exchange_rate" => b.exchange_rate = Some(FromValueOpt::from_value(v)?),
-                    "fee" => b.fee = Some(FromValueOpt::from_value(v)?),
-                    "fee_details" => b.fee_details = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "net" => b.net = Some(FromValueOpt::from_value(v)?),
-                    "reporting_category" => {
-                        b.reporting_category = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "source" => b.source = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "available_on" => b.available_on = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "exchange_rate" => b.exchange_rate = FromValueOpt::from_value(v),
+                    "fee" => b.fee = FromValueOpt::from_value(v),
+                    "fee_details" => b.fee_details = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "net" => b.net = FromValueOpt::from_value(v),
+                    "reporting_category" => b.reporting_category = FromValueOpt::from_value(v),
+                    "source" => b.source = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

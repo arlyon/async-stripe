@@ -18,7 +18,13 @@ pub struct QuotesResourceAutomaticTaxBuilder {
     status: Option<Option<QuotesResourceAutomaticTaxStatus>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,11 +75,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                enabled: self.enabled?,
-                liability: self.liability.take()?,
-                status: self.status?,
-            })
+            let (Some(enabled), Some(liability), Some(status)) =
+                (self.enabled, self.liability.take(), self.status)
+            else {
+                return None;
+            };
+            Some(Self::Out { enabled, liability, status })
         }
     }
 
@@ -100,9 +107,9 @@ const _: () = {
             let mut b = QuotesResourceAutomaticTaxBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "enabled" => b.enabled = Some(FromValueOpt::from_value(v)?),
-                    "liability" => b.liability = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "enabled" => b.enabled = FromValueOpt::from_value(v),
+                    "liability" => b.liability = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

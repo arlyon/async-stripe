@@ -30,7 +30,13 @@ pub struct CapabilityBuilder {
     status: Option<CapabilityStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -89,14 +95,34 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account),
+                Some(future_requirements),
+                Some(id),
+                Some(requested),
+                Some(requested_at),
+                Some(requirements),
+                Some(status),
+            ) = (
+                self.account.take(),
+                self.future_requirements.take(),
+                self.id.take(),
+                self.requested,
+                self.requested_at,
+                self.requirements.take(),
+                self.status,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account: self.account.take()?,
-                future_requirements: self.future_requirements.take()?,
-                id: self.id.take()?,
-                requested: self.requested?,
-                requested_at: self.requested_at?,
-                requirements: self.requirements.take()?,
-                status: self.status?,
+                account,
+                future_requirements,
+                id,
+                requested,
+                requested_at,
+                requirements,
+                status,
             })
         }
     }
@@ -124,15 +150,13 @@ const _: () = {
             let mut b = CapabilityBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account" => b.account = Some(FromValueOpt::from_value(v)?),
-                    "future_requirements" => {
-                        b.future_requirements = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "requested" => b.requested = Some(FromValueOpt::from_value(v)?),
-                    "requested_at" => b.requested_at = Some(FromValueOpt::from_value(v)?),
-                    "requirements" => b.requirements = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "account" => b.account = FromValueOpt::from_value(v),
+                    "future_requirements" => b.future_requirements = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "requested" => b.requested = FromValueOpt::from_value(v),
+                    "requested_at" => b.requested_at = FromValueOpt::from_value(v),
+                    "requirements" => b.requirements = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

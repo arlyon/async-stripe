@@ -28,7 +28,13 @@ pub struct InvoicesPaymentMethodOptionsBuilder {
     us_bank_account: Option<Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccount>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -87,14 +93,34 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(acss_debit),
+                Some(bancontact),
+                Some(card),
+                Some(customer_balance),
+                Some(konbini),
+                Some(sepa_debit),
+                Some(us_bank_account),
+            ) = (
+                self.acss_debit,
+                self.bancontact,
+                self.card,
+                self.customer_balance.take(),
+                self.konbini,
+                self.sepa_debit,
+                self.us_bank_account.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                acss_debit: self.acss_debit?,
-                bancontact: self.bancontact?,
-                card: self.card?,
-                customer_balance: self.customer_balance.take()?,
-                konbini: self.konbini?,
-                sepa_debit: self.sepa_debit?,
-                us_bank_account: self.us_bank_account.take()?,
+                acss_debit,
+                bancontact,
+                card,
+                customer_balance,
+                konbini,
+                sepa_debit,
+                us_bank_account,
             })
         }
     }
@@ -122,13 +148,13 @@ const _: () = {
             let mut b = InvoicesPaymentMethodOptionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "acss_debit" => b.acss_debit = Some(FromValueOpt::from_value(v)?),
-                    "bancontact" => b.bancontact = Some(FromValueOpt::from_value(v)?),
-                    "card" => b.card = Some(FromValueOpt::from_value(v)?),
-                    "customer_balance" => b.customer_balance = Some(FromValueOpt::from_value(v)?),
-                    "konbini" => b.konbini = Some(FromValueOpt::from_value(v)?),
-                    "sepa_debit" => b.sepa_debit = Some(FromValueOpt::from_value(v)?),
-                    "us_bank_account" => b.us_bank_account = Some(FromValueOpt::from_value(v)?),
+                    "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
+                    "bancontact" => b.bancontact = FromValueOpt::from_value(v),
+                    "card" => b.card = FromValueOpt::from_value(v),
+                    "customer_balance" => b.customer_balance = FromValueOpt::from_value(v),
+                    "konbini" => b.konbini = FromValueOpt::from_value(v),
+                    "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
+                    "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

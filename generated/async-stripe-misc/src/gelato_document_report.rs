@@ -45,7 +45,13 @@ pub struct GelatoDocumentReportBuilder {
     type_: Option<Option<GelatoDocumentReportType>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -114,19 +120,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(address),
+                Some(dob),
+                Some(error),
+                Some(expiration_date),
+                Some(files),
+                Some(first_name),
+                Some(issued_date),
+                Some(issuing_country),
+                Some(last_name),
+                Some(number),
+                Some(status),
+                Some(type_),
+            ) = (
+                self.address.take(),
+                self.dob,
+                self.error.take(),
+                self.expiration_date,
+                self.files.take(),
+                self.first_name.take(),
+                self.issued_date,
+                self.issuing_country.take(),
+                self.last_name.take(),
+                self.number.take(),
+                self.status,
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                address: self.address.take()?,
-                dob: self.dob?,
-                error: self.error.take()?,
-                expiration_date: self.expiration_date?,
-                files: self.files.take()?,
-                first_name: self.first_name.take()?,
-                issued_date: self.issued_date?,
-                issuing_country: self.issuing_country.take()?,
-                last_name: self.last_name.take()?,
-                number: self.number.take()?,
-                status: self.status?,
-                type_: self.type_?,
+                address,
+                dob,
+                error,
+                expiration_date,
+                files,
+                first_name,
+                issued_date,
+                issuing_country,
+                last_name,
+                number,
+                status,
+                type_,
             })
         }
     }
@@ -154,18 +190,18 @@ const _: () = {
             let mut b = GelatoDocumentReportBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
-                    "dob" => b.dob = Some(FromValueOpt::from_value(v)?),
-                    "error" => b.error = Some(FromValueOpt::from_value(v)?),
-                    "expiration_date" => b.expiration_date = Some(FromValueOpt::from_value(v)?),
-                    "files" => b.files = Some(FromValueOpt::from_value(v)?),
-                    "first_name" => b.first_name = Some(FromValueOpt::from_value(v)?),
-                    "issued_date" => b.issued_date = Some(FromValueOpt::from_value(v)?),
-                    "issuing_country" => b.issuing_country = Some(FromValueOpt::from_value(v)?),
-                    "last_name" => b.last_name = Some(FromValueOpt::from_value(v)?),
-                    "number" => b.number = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "address" => b.address = FromValueOpt::from_value(v),
+                    "dob" => b.dob = FromValueOpt::from_value(v),
+                    "error" => b.error = FromValueOpt::from_value(v),
+                    "expiration_date" => b.expiration_date = FromValueOpt::from_value(v),
+                    "files" => b.files = FromValueOpt::from_value(v),
+                    "first_name" => b.first_name = FromValueOpt::from_value(v),
+                    "issued_date" => b.issued_date = FromValueOpt::from_value(v),
+                    "issuing_country" => b.issuing_country = FromValueOpt::from_value(v),
+                    "last_name" => b.last_name = FromValueOpt::from_value(v),
+                    "number" => b.number = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

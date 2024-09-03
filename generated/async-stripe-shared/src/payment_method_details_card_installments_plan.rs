@@ -18,7 +18,13 @@ pub struct PaymentMethodDetailsCardInstallmentsPlanBuilder {
     type_: Option<PaymentMethodDetailsCardInstallmentsPlanType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -69,7 +75,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { count: self.count?, interval: self.interval?, type_: self.type_? })
+            let (Some(count), Some(interval), Some(type_)) =
+                (self.count, self.interval, self.type_)
+            else {
+                return None;
+            };
+            Some(Self::Out { count, interval, type_ })
         }
     }
 
@@ -96,9 +107,9 @@ const _: () = {
             let mut b = PaymentMethodDetailsCardInstallmentsPlanBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "count" => b.count = Some(FromValueOpt::from_value(v)?),
-                    "interval" => b.interval = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "count" => b.count = FromValueOpt::from_value(v),
+                    "interval" => b.interval = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

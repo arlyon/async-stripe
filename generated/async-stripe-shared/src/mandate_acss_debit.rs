@@ -20,7 +20,13 @@ pub struct MandateAcssDebitBuilder {
     transaction_type: Option<MandateAcssDebitTransactionType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -73,11 +79,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(default_for),
+                Some(interval_description),
+                Some(payment_schedule),
+                Some(transaction_type),
+            ) = (
+                self.default_for.take(),
+                self.interval_description.take(),
+                self.payment_schedule,
+                self.transaction_type,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                default_for: self.default_for.take()?,
-                interval_description: self.interval_description.take()?,
-                payment_schedule: self.payment_schedule?,
-                transaction_type: self.transaction_type?,
+                default_for,
+                interval_description,
+                payment_schedule,
+                transaction_type,
             })
         }
     }
@@ -105,12 +125,10 @@ const _: () = {
             let mut b = MandateAcssDebitBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "default_for" => b.default_for = Some(FromValueOpt::from_value(v)?),
-                    "interval_description" => {
-                        b.interval_description = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "payment_schedule" => b.payment_schedule = Some(FromValueOpt::from_value(v)?),
-                    "transaction_type" => b.transaction_type = Some(FromValueOpt::from_value(v)?),
+                    "default_for" => b.default_for = FromValueOpt::from_value(v),
+                    "interval_description" => b.interval_description = FromValueOpt::from_value(v),
+                    "payment_schedule" => b.payment_schedule = FromValueOpt::from_value(v),
+                    "transaction_type" => b.transaction_type = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

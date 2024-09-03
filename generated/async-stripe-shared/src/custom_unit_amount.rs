@@ -17,7 +17,13 @@ pub struct CustomUnitAmountBuilder {
     preset: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,7 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { maximum: self.maximum?, minimum: self.minimum?, preset: self.preset? })
+            let (Some(maximum), Some(minimum), Some(preset)) =
+                (self.maximum, self.minimum, self.preset)
+            else {
+                return None;
+            };
+            Some(Self::Out { maximum, minimum, preset })
         }
     }
 
@@ -95,9 +106,9 @@ const _: () = {
             let mut b = CustomUnitAmountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "maximum" => b.maximum = Some(FromValueOpt::from_value(v)?),
-                    "minimum" => b.minimum = Some(FromValueOpt::from_value(v)?),
-                    "preset" => b.preset = Some(FromValueOpt::from_value(v)?),
+                    "maximum" => b.maximum = FromValueOpt::from_value(v),
+                    "minimum" => b.minimum = FromValueOpt::from_value(v),
+                    "preset" => b.preset = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

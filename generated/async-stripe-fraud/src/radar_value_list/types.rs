@@ -40,7 +40,13 @@ pub struct RadarValueListBuilder {
     name: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -103,16 +109,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(alias),
+                Some(created),
+                Some(created_by),
+                Some(id),
+                Some(item_type),
+                Some(list_items),
+                Some(livemode),
+                Some(metadata),
+                Some(name),
+            ) = (
+                self.alias.take(),
+                self.created,
+                self.created_by.take(),
+                self.id.take(),
+                self.item_type,
+                self.list_items.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.name.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                alias: self.alias.take()?,
-                created: self.created?,
-                created_by: self.created_by.take()?,
-                id: self.id.take()?,
-                item_type: self.item_type?,
-                list_items: self.list_items.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                name: self.name.take()?,
+                alias,
+                created,
+                created_by,
+                id,
+                item_type,
+                list_items,
+                livemode,
+                metadata,
+                name,
             })
         }
     }
@@ -140,15 +170,15 @@ const _: () = {
             let mut b = RadarValueListBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "alias" => b.alias = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "created_by" => b.created_by = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "item_type" => b.item_type = Some(FromValueOpt::from_value(v)?),
-                    "list_items" => b.list_items = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
+                    "alias" => b.alias = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "created_by" => b.created_by = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "item_type" => b.item_type = FromValueOpt::from_value(v),
+                    "list_items" => b.list_items = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

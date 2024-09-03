@@ -13,7 +13,13 @@ pub struct InvoiceItemThresholdReasonBuilder {
     usage_gte: Option<i64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +65,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                line_item_ids: self.line_item_ids.take()?,
-                usage_gte: self.usage_gte?,
-            })
+            let (Some(line_item_ids), Some(usage_gte)) =
+                (self.line_item_ids.take(), self.usage_gte)
+            else {
+                return None;
+            };
+            Some(Self::Out { line_item_ids, usage_gte })
         }
     }
 
@@ -89,8 +97,8 @@ const _: () = {
             let mut b = InvoiceItemThresholdReasonBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "line_item_ids" => b.line_item_ids = Some(FromValueOpt::from_value(v)?),
-                    "usage_gte" => b.usage_gte = Some(FromValueOpt::from_value(v)?),
+                    "line_item_ids" => b.line_item_ids = FromValueOpt::from_value(v),
+                    "usage_gte" => b.usage_gte = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

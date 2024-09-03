@@ -17,7 +17,13 @@ pub struct SetupAttemptPaymentMethodDetailsCardWalletBuilder {
     type_: Option<SetupAttemptPaymentMethodDetailsCardWalletType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                apple_pay: self.apple_pay?,
-                google_pay: self.google_pay?,
-                type_: self.type_?,
-            })
+            let (Some(apple_pay), Some(google_pay), Some(type_)) =
+                (self.apple_pay, self.google_pay, self.type_)
+            else {
+                return None;
+            };
+            Some(Self::Out { apple_pay, google_pay, type_ })
         }
     }
 
@@ -99,9 +106,9 @@ const _: () = {
             let mut b = SetupAttemptPaymentMethodDetailsCardWalletBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "apple_pay" => b.apple_pay = Some(FromValueOpt::from_value(v)?),
-                    "google_pay" => b.google_pay = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
+                    "google_pay" => b.google_pay = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

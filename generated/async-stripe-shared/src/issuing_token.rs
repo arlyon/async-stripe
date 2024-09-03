@@ -43,7 +43,13 @@ pub struct IssuingTokenBuilder {
     wallet_provider: Option<Option<IssuingTokenWalletProvider>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -110,18 +116,46 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(card),
+                Some(created),
+                Some(device_fingerprint),
+                Some(id),
+                Some(last4),
+                Some(livemode),
+                Some(network),
+                Some(network_data),
+                Some(network_updated_at),
+                Some(status),
+                Some(wallet_provider),
+            ) = (
+                self.card.take(),
+                self.created,
+                self.device_fingerprint.take(),
+                self.id.take(),
+                self.last4.take(),
+                self.livemode,
+                self.network,
+                self.network_data.take(),
+                self.network_updated_at,
+                self.status,
+                self.wallet_provider,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                card: self.card.take()?,
-                created: self.created?,
-                device_fingerprint: self.device_fingerprint.take()?,
-                id: self.id.take()?,
-                last4: self.last4.take()?,
-                livemode: self.livemode?,
-                network: self.network?,
-                network_data: self.network_data.take()?,
-                network_updated_at: self.network_updated_at?,
-                status: self.status?,
-                wallet_provider: self.wallet_provider?,
+                card,
+                created,
+                device_fingerprint,
+                id,
+                last4,
+                livemode,
+                network,
+                network_data,
+                network_updated_at,
+                status,
+                wallet_provider,
             })
         }
     }
@@ -149,21 +183,17 @@ const _: () = {
             let mut b = IssuingTokenBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "card" => b.card = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "device_fingerprint" => {
-                        b.device_fingerprint = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "network" => b.network = Some(FromValueOpt::from_value(v)?),
-                    "network_data" => b.network_data = Some(FromValueOpt::from_value(v)?),
-                    "network_updated_at" => {
-                        b.network_updated_at = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "wallet_provider" => b.wallet_provider = Some(FromValueOpt::from_value(v)?),
+                    "card" => b.card = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "device_fingerprint" => b.device_fingerprint = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "network" => b.network = FromValueOpt::from_value(v),
+                    "network_data" => b.network_data = FromValueOpt::from_value(v),
+                    "network_updated_at" => b.network_updated_at = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "wallet_provider" => b.wallet_provider = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

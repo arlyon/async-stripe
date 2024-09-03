@@ -28,7 +28,13 @@ pub struct IssuingDisputeEvidenceBuilder {
         Option<Option<stripe_shared::IssuingDisputeServiceNotAsDescribedEvidence>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -93,15 +99,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(canceled),
+                Some(duplicate),
+                Some(fraudulent),
+                Some(merchandise_not_as_described),
+                Some(not_received),
+                Some(other),
+                Some(reason),
+                Some(service_not_as_described),
+            ) = (
+                self.canceled.take(),
+                self.duplicate.take(),
+                self.fraudulent.take(),
+                self.merchandise_not_as_described.take(),
+                self.not_received.take(),
+                self.other.take(),
+                self.reason,
+                self.service_not_as_described.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                canceled: self.canceled.take()?,
-                duplicate: self.duplicate.take()?,
-                fraudulent: self.fraudulent.take()?,
-                merchandise_not_as_described: self.merchandise_not_as_described.take()?,
-                not_received: self.not_received.take()?,
-                other: self.other.take()?,
-                reason: self.reason?,
-                service_not_as_described: self.service_not_as_described.take()?,
+                canceled,
+                duplicate,
+                fraudulent,
+                merchandise_not_as_described,
+                not_received,
+                other,
+                reason,
+                service_not_as_described,
             })
         }
     }
@@ -129,17 +157,17 @@ const _: () = {
             let mut b = IssuingDisputeEvidenceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "canceled" => b.canceled = Some(FromValueOpt::from_value(v)?),
-                    "duplicate" => b.duplicate = Some(FromValueOpt::from_value(v)?),
-                    "fraudulent" => b.fraudulent = Some(FromValueOpt::from_value(v)?),
+                    "canceled" => b.canceled = FromValueOpt::from_value(v),
+                    "duplicate" => b.duplicate = FromValueOpt::from_value(v),
+                    "fraudulent" => b.fraudulent = FromValueOpt::from_value(v),
                     "merchandise_not_as_described" => {
-                        b.merchandise_not_as_described = Some(FromValueOpt::from_value(v)?)
+                        b.merchandise_not_as_described = FromValueOpt::from_value(v)
                     }
-                    "not_received" => b.not_received = Some(FromValueOpt::from_value(v)?),
-                    "other" => b.other = Some(FromValueOpt::from_value(v)?),
-                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
+                    "not_received" => b.not_received = FromValueOpt::from_value(v),
+                    "other" => b.other = FromValueOpt::from_value(v),
+                    "reason" => b.reason = FromValueOpt::from_value(v),
                     "service_not_as_described" => {
-                        b.service_not_as_described = Some(FromValueOpt::from_value(v)?)
+                        b.service_not_as_described = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

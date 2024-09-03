@@ -56,7 +56,13 @@ pub struct TreasuryFinancialAccountBuilder {
     supported_currencies: Option<Vec<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -131,22 +137,58 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(active_features),
+                Some(balance),
+                Some(country),
+                Some(created),
+                Some(features),
+                Some(financial_addresses),
+                Some(id),
+                Some(livemode),
+                Some(metadata),
+                Some(pending_features),
+                Some(platform_restrictions),
+                Some(restricted_features),
+                Some(status),
+                Some(status_details),
+                Some(supported_currencies),
+            ) = (
+                self.active_features.take(),
+                self.balance.take(),
+                self.country.take(),
+                self.created,
+                self.features.take(),
+                self.financial_addresses.take(),
+                self.id.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.pending_features.take(),
+                self.platform_restrictions,
+                self.restricted_features.take(),
+                self.status,
+                self.status_details.take(),
+                self.supported_currencies.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                active_features: self.active_features.take()?,
-                balance: self.balance.take()?,
-                country: self.country.take()?,
-                created: self.created?,
-                features: self.features.take()?,
-                financial_addresses: self.financial_addresses.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                pending_features: self.pending_features.take()?,
-                platform_restrictions: self.platform_restrictions?,
-                restricted_features: self.restricted_features.take()?,
-                status: self.status?,
-                status_details: self.status_details.take()?,
-                supported_currencies: self.supported_currencies.take()?,
+                active_features,
+                balance,
+                country,
+                created,
+                features,
+                financial_addresses,
+                id,
+                livemode,
+                metadata,
+                pending_features,
+                platform_restrictions,
+                restricted_features,
+                status,
+                status_details,
+                supported_currencies,
             })
         }
     }
@@ -174,29 +216,23 @@ const _: () = {
             let mut b = TreasuryFinancialAccountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "active_features" => b.active_features = Some(FromValueOpt::from_value(v)?),
-                    "balance" => b.balance = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "features" => b.features = Some(FromValueOpt::from_value(v)?),
-                    "financial_addresses" => {
-                        b.financial_addresses = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "pending_features" => b.pending_features = Some(FromValueOpt::from_value(v)?),
+                    "active_features" => b.active_features = FromValueOpt::from_value(v),
+                    "balance" => b.balance = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "features" => b.features = FromValueOpt::from_value(v),
+                    "financial_addresses" => b.financial_addresses = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "pending_features" => b.pending_features = FromValueOpt::from_value(v),
                     "platform_restrictions" => {
-                        b.platform_restrictions = Some(FromValueOpt::from_value(v)?)
+                        b.platform_restrictions = FromValueOpt::from_value(v)
                     }
-                    "restricted_features" => {
-                        b.restricted_features = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "status_details" => b.status_details = Some(FromValueOpt::from_value(v)?),
-                    "supported_currencies" => {
-                        b.supported_currencies = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "restricted_features" => b.restricted_features = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "status_details" => b.status_details = FromValueOpt::from_value(v),
+                    "supported_currencies" => b.supported_currencies = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

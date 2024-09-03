@@ -26,7 +26,13 @@ pub struct IssuingDisputeDuplicateEvidenceBuilder {
     original_transaction: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -85,13 +91,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(additional_documentation),
+                Some(card_statement),
+                Some(cash_receipt),
+                Some(check_image),
+                Some(explanation),
+                Some(original_transaction),
+            ) = (
+                self.additional_documentation.take(),
+                self.card_statement.take(),
+                self.cash_receipt.take(),
+                self.check_image.take(),
+                self.explanation.take(),
+                self.original_transaction.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                additional_documentation: self.additional_documentation.take()?,
-                card_statement: self.card_statement.take()?,
-                cash_receipt: self.cash_receipt.take()?,
-                check_image: self.check_image.take()?,
-                explanation: self.explanation.take()?,
-                original_transaction: self.original_transaction.take()?,
+                additional_documentation,
+                card_statement,
+                cash_receipt,
+                check_image,
+                explanation,
+                original_transaction,
             })
         }
     }
@@ -120,15 +144,13 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "additional_documentation" => {
-                        b.additional_documentation = Some(FromValueOpt::from_value(v)?)
+                        b.additional_documentation = FromValueOpt::from_value(v)
                     }
-                    "card_statement" => b.card_statement = Some(FromValueOpt::from_value(v)?),
-                    "cash_receipt" => b.cash_receipt = Some(FromValueOpt::from_value(v)?),
-                    "check_image" => b.check_image = Some(FromValueOpt::from_value(v)?),
-                    "explanation" => b.explanation = Some(FromValueOpt::from_value(v)?),
-                    "original_transaction" => {
-                        b.original_transaction = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "card_statement" => b.card_statement = FromValueOpt::from_value(v),
+                    "cash_receipt" => b.cash_receipt = FromValueOpt::from_value(v),
+                    "check_image" => b.check_image = FromValueOpt::from_value(v),
+                    "explanation" => b.explanation = FromValueOpt::from_value(v),
+                    "original_transaction" => b.original_transaction = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -42,7 +42,13 @@ pub struct ReportingReportTypeBuilder {
     version: Option<i64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -103,15 +109,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(data_available_end),
+                Some(data_available_start),
+                Some(default_columns),
+                Some(id),
+                Some(livemode),
+                Some(name),
+                Some(updated),
+                Some(version),
+            ) = (
+                self.data_available_end,
+                self.data_available_start,
+                self.default_columns.take(),
+                self.id.take(),
+                self.livemode,
+                self.name.take(),
+                self.updated,
+                self.version,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                data_available_end: self.data_available_end?,
-                data_available_start: self.data_available_start?,
-                default_columns: self.default_columns.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                name: self.name.take()?,
-                updated: self.updated?,
-                version: self.version?,
+                data_available_end,
+                data_available_start,
+                default_columns,
+                id,
+                livemode,
+                name,
+                updated,
+                version,
             })
         }
     }
@@ -139,18 +167,14 @@ const _: () = {
             let mut b = ReportingReportTypeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "data_available_end" => {
-                        b.data_available_end = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "data_available_start" => {
-                        b.data_available_start = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "default_columns" => b.default_columns = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "updated" => b.updated = Some(FromValueOpt::from_value(v)?),
-                    "version" => b.version = Some(FromValueOpt::from_value(v)?),
+                    "data_available_end" => b.data_available_end = FromValueOpt::from_value(v),
+                    "data_available_start" => b.data_available_start = FromValueOpt::from_value(v),
+                    "default_columns" => b.default_columns = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "updated" => b.updated = FromValueOpt::from_value(v),
+                    "version" => b.version = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

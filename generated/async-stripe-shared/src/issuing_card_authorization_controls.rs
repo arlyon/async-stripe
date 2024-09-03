@@ -38,7 +38,13 @@ pub struct IssuingCardAuthorizationControlsBuilder {
     spending_limits_currency: Option<Option<stripe_types::Currency>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -101,13 +107,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(allowed_categories),
+                Some(allowed_merchant_countries),
+                Some(blocked_categories),
+                Some(blocked_merchant_countries),
+                Some(spending_limits),
+                Some(spending_limits_currency),
+            ) = (
+                self.allowed_categories.take(),
+                self.allowed_merchant_countries.take(),
+                self.blocked_categories.take(),
+                self.blocked_merchant_countries.take(),
+                self.spending_limits.take(),
+                self.spending_limits_currency,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                allowed_categories: self.allowed_categories.take()?,
-                allowed_merchant_countries: self.allowed_merchant_countries.take()?,
-                blocked_categories: self.blocked_categories.take()?,
-                blocked_merchant_countries: self.blocked_merchant_countries.take()?,
-                spending_limits: self.spending_limits.take()?,
-                spending_limits_currency: self.spending_limits_currency?,
+                allowed_categories,
+                allowed_merchant_countries,
+                blocked_categories,
+                blocked_merchant_countries,
+                spending_limits,
+                spending_limits_currency,
             })
         }
     }
@@ -135,21 +159,17 @@ const _: () = {
             let mut b = IssuingCardAuthorizationControlsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "allowed_categories" => {
-                        b.allowed_categories = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "allowed_categories" => b.allowed_categories = FromValueOpt::from_value(v),
                     "allowed_merchant_countries" => {
-                        b.allowed_merchant_countries = Some(FromValueOpt::from_value(v)?)
+                        b.allowed_merchant_countries = FromValueOpt::from_value(v)
                     }
-                    "blocked_categories" => {
-                        b.blocked_categories = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "blocked_categories" => b.blocked_categories = FromValueOpt::from_value(v),
                     "blocked_merchant_countries" => {
-                        b.blocked_merchant_countries = Some(FromValueOpt::from_value(v)?)
+                        b.blocked_merchant_countries = FromValueOpt::from_value(v)
                     }
-                    "spending_limits" => b.spending_limits = Some(FromValueOpt::from_value(v)?),
+                    "spending_limits" => b.spending_limits = FromValueOpt::from_value(v),
                     "spending_limits_currency" => {
-                        b.spending_limits_currency = Some(FromValueOpt::from_value(v)?)
+                        b.spending_limits_currency = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

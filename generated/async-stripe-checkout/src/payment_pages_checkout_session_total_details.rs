@@ -20,7 +20,13 @@ pub struct PaymentPagesCheckoutSessionTotalDetailsBuilder {
         Option<Option<stripe_checkout::PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -73,12 +79,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount_discount: self.amount_discount?,
-                amount_shipping: self.amount_shipping?,
-                amount_tax: self.amount_tax?,
-                breakdown: self.breakdown.take()?,
-            })
+            let (Some(amount_discount), Some(amount_shipping), Some(amount_tax), Some(breakdown)) =
+                (self.amount_discount, self.amount_shipping, self.amount_tax, self.breakdown.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { amount_discount, amount_shipping, amount_tax, breakdown })
         }
     }
 
@@ -105,10 +111,10 @@ const _: () = {
             let mut b = PaymentPagesCheckoutSessionTotalDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_discount" => b.amount_discount = Some(FromValueOpt::from_value(v)?),
-                    "amount_shipping" => b.amount_shipping = Some(FromValueOpt::from_value(v)?),
-                    "amount_tax" => b.amount_tax = Some(FromValueOpt::from_value(v)?),
-                    "breakdown" => b.breakdown = Some(FromValueOpt::from_value(v)?),
+                    "amount_discount" => b.amount_discount = FromValueOpt::from_value(v),
+                    "amount_shipping" => b.amount_shipping = FromValueOpt::from_value(v),
+                    "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
+                    "breakdown" => b.breakdown = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

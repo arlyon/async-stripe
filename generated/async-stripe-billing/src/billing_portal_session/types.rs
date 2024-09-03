@@ -55,7 +55,13 @@ pub struct BillingPortalSessionBuilder {
     url: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -120,17 +126,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(configuration),
+                Some(created),
+                Some(customer),
+                Some(flow),
+                Some(id),
+                Some(livemode),
+                Some(locale),
+                Some(on_behalf_of),
+                Some(return_url),
+                Some(url),
+            ) = (
+                self.configuration.take(),
+                self.created,
+                self.customer.take(),
+                self.flow.take(),
+                self.id.take(),
+                self.livemode,
+                self.locale,
+                self.on_behalf_of.take(),
+                self.return_url.take(),
+                self.url.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                configuration: self.configuration.take()?,
-                created: self.created?,
-                customer: self.customer.take()?,
-                flow: self.flow.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                locale: self.locale?,
-                on_behalf_of: self.on_behalf_of.take()?,
-                return_url: self.return_url.take()?,
-                url: self.url.take()?,
+                configuration,
+                created,
+                customer,
+                flow,
+                id,
+                livemode,
+                locale,
+                on_behalf_of,
+                return_url,
+                url,
             })
         }
     }
@@ -158,16 +190,16 @@ const _: () = {
             let mut b = BillingPortalSessionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "configuration" => b.configuration = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "flow" => b.flow = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "locale" => b.locale = Some(FromValueOpt::from_value(v)?),
-                    "on_behalf_of" => b.on_behalf_of = Some(FromValueOpt::from_value(v)?),
-                    "return_url" => b.return_url = Some(FromValueOpt::from_value(v)?),
-                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+                    "configuration" => b.configuration = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "flow" => b.flow = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "locale" => b.locale = FromValueOpt::from_value(v),
+                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
+                    "return_url" => b.return_url = FromValueOpt::from_value(v),
+                    "url" => b.url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

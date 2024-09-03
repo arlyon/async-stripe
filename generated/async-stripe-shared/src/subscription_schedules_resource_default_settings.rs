@@ -46,7 +46,13 @@ pub struct SubscriptionSchedulesResourceDefaultSettingsBuilder {
     transfer_data: Option<Option<stripe_shared::SubscriptionTransferData>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -111,17 +117,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(application_fee_percent),
+                Some(automatic_tax),
+                Some(billing_cycle_anchor),
+                Some(billing_thresholds),
+                Some(collection_method),
+                Some(default_payment_method),
+                Some(description),
+                Some(invoice_settings),
+                Some(on_behalf_of),
+                Some(transfer_data),
+            ) = (
+                self.application_fee_percent,
+                self.automatic_tax.take(),
+                self.billing_cycle_anchor,
+                self.billing_thresholds,
+                self.collection_method,
+                self.default_payment_method.take(),
+                self.description.take(),
+                self.invoice_settings.take(),
+                self.on_behalf_of.take(),
+                self.transfer_data.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                application_fee_percent: self.application_fee_percent?,
-                automatic_tax: self.automatic_tax.take()?,
-                billing_cycle_anchor: self.billing_cycle_anchor?,
-                billing_thresholds: self.billing_thresholds?,
-                collection_method: self.collection_method?,
-                default_payment_method: self.default_payment_method.take()?,
-                description: self.description.take()?,
-                invoice_settings: self.invoice_settings.take()?,
-                on_behalf_of: self.on_behalf_of.take()?,
-                transfer_data: self.transfer_data.take()?,
+                application_fee_percent,
+                automatic_tax,
+                billing_cycle_anchor,
+                billing_thresholds,
+                collection_method,
+                default_payment_method,
+                description,
+                invoice_settings,
+                on_behalf_of,
+                transfer_data,
             })
         }
     }
@@ -150,23 +182,19 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "application_fee_percent" => {
-                        b.application_fee_percent = Some(FromValueOpt::from_value(v)?)
+                        b.application_fee_percent = FromValueOpt::from_value(v)
                     }
-                    "automatic_tax" => b.automatic_tax = Some(FromValueOpt::from_value(v)?),
-                    "billing_cycle_anchor" => {
-                        b.billing_cycle_anchor = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "billing_thresholds" => {
-                        b.billing_thresholds = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "collection_method" => b.collection_method = Some(FromValueOpt::from_value(v)?),
+                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
+                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
+                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
+                    "collection_method" => b.collection_method = FromValueOpt::from_value(v),
                     "default_payment_method" => {
-                        b.default_payment_method = Some(FromValueOpt::from_value(v)?)
+                        b.default_payment_method = FromValueOpt::from_value(v)
                     }
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "invoice_settings" => b.invoice_settings = Some(FromValueOpt::from_value(v)?),
-                    "on_behalf_of" => b.on_behalf_of = Some(FromValueOpt::from_value(v)?),
-                    "transfer_data" => b.transfer_data = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "invoice_settings" => b.invoice_settings = FromValueOpt::from_value(v),
+                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
+                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

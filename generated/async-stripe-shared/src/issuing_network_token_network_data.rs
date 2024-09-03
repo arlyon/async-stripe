@@ -20,7 +20,13 @@ pub struct IssuingNetworkTokenNetworkDataBuilder {
     wallet_provider: Option<Option<stripe_shared::IssuingNetworkTokenWalletProvider>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -75,13 +81,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                device: self.device.take()?,
-                mastercard: self.mastercard.take()?,
-                type_: self.type_?,
-                visa: self.visa.take()?,
-                wallet_provider: self.wallet_provider.take()?,
-            })
+            let (Some(device), Some(mastercard), Some(type_), Some(visa), Some(wallet_provider)) = (
+                self.device.take(),
+                self.mastercard.take(),
+                self.type_,
+                self.visa.take(),
+                self.wallet_provider.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { device, mastercard, type_, visa, wallet_provider })
         }
     }
 
@@ -108,11 +117,11 @@ const _: () = {
             let mut b = IssuingNetworkTokenNetworkDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "device" => b.device = Some(FromValueOpt::from_value(v)?),
-                    "mastercard" => b.mastercard = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "visa" => b.visa = Some(FromValueOpt::from_value(v)?),
-                    "wallet_provider" => b.wallet_provider = Some(FromValueOpt::from_value(v)?),
+                    "device" => b.device = FromValueOpt::from_value(v),
+                    "mastercard" => b.mastercard = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "visa" => b.visa = FromValueOpt::from_value(v),
+                    "wallet_provider" => b.wallet_provider = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -29,7 +29,13 @@ pub struct FundingInstructionsBankTransferFinancialAddressBuilder {
     zengin: Option<Option<stripe_shared::FundingInstructionsBankTransferZenginRecord>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -90,16 +96,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                aba: self.aba.take()?,
-                iban: self.iban.take()?,
-                sort_code: self.sort_code.take()?,
-                spei: self.spei.take()?,
-                supported_networks: self.supported_networks.take()?,
-                swift: self.swift.take()?,
-                type_: self.type_?,
-                zengin: self.zengin.take()?,
-            })
+            let (
+                Some(aba),
+                Some(iban),
+                Some(sort_code),
+                Some(spei),
+                Some(supported_networks),
+                Some(swift),
+                Some(type_),
+                Some(zengin),
+            ) = (
+                self.aba.take(),
+                self.iban.take(),
+                self.sort_code.take(),
+                self.spei.take(),
+                self.supported_networks.take(),
+                self.swift.take(),
+                self.type_,
+                self.zengin.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { aba, iban, sort_code, spei, supported_networks, swift, type_, zengin })
         }
     }
 
@@ -126,16 +145,14 @@ const _: () = {
             let mut b = FundingInstructionsBankTransferFinancialAddressBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "aba" => b.aba = Some(FromValueOpt::from_value(v)?),
-                    "iban" => b.iban = Some(FromValueOpt::from_value(v)?),
-                    "sort_code" => b.sort_code = Some(FromValueOpt::from_value(v)?),
-                    "spei" => b.spei = Some(FromValueOpt::from_value(v)?),
-                    "supported_networks" => {
-                        b.supported_networks = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "swift" => b.swift = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "zengin" => b.zengin = Some(FromValueOpt::from_value(v)?),
+                    "aba" => b.aba = FromValueOpt::from_value(v),
+                    "iban" => b.iban = FromValueOpt::from_value(v),
+                    "sort_code" => b.sort_code = FromValueOpt::from_value(v),
+                    "spei" => b.spei = FromValueOpt::from_value(v),
+                    "supported_networks" => b.supported_networks = FromValueOpt::from_value(v),
+                    "swift" => b.swift = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "zengin" => b.zengin = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

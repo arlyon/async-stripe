@@ -23,7 +23,13 @@ pub struct TransferScheduleBuilder {
     weekly_anchor: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -76,12 +82,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                delay_days: self.delay_days?,
-                interval: self.interval.take()?,
-                monthly_anchor: self.monthly_anchor?,
-                weekly_anchor: self.weekly_anchor.take()?,
-            })
+            let (Some(delay_days), Some(interval), Some(monthly_anchor), Some(weekly_anchor)) = (
+                self.delay_days,
+                self.interval.take(),
+                self.monthly_anchor,
+                self.weekly_anchor.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { delay_days, interval, monthly_anchor, weekly_anchor })
         }
     }
 
@@ -108,10 +117,10 @@ const _: () = {
             let mut b = TransferScheduleBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "delay_days" => b.delay_days = Some(FromValueOpt::from_value(v)?),
-                    "interval" => b.interval = Some(FromValueOpt::from_value(v)?),
-                    "monthly_anchor" => b.monthly_anchor = Some(FromValueOpt::from_value(v)?),
-                    "weekly_anchor" => b.weekly_anchor = Some(FromValueOpt::from_value(v)?),
+                    "delay_days" => b.delay_days = FromValueOpt::from_value(v),
+                    "interval" => b.interval = FromValueOpt::from_value(v),
+                    "monthly_anchor" => b.monthly_anchor = FromValueOpt::from_value(v),
+                    "weekly_anchor" => b.weekly_anchor = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

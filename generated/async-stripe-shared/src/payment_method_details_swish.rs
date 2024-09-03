@@ -17,7 +17,13 @@ pub struct PaymentMethodDetailsSwishBuilder {
     verified_phone_last4: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +74,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                fingerprint: self.fingerprint.take()?,
-                payment_reference: self.payment_reference.take()?,
-                verified_phone_last4: self.verified_phone_last4.take()?,
-            })
+            let (Some(fingerprint), Some(payment_reference), Some(verified_phone_last4)) = (
+                self.fingerprint.take(),
+                self.payment_reference.take(),
+                self.verified_phone_last4.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { fingerprint, payment_reference, verified_phone_last4 })
         }
     }
 
@@ -99,11 +108,9 @@ const _: () = {
             let mut b = PaymentMethodDetailsSwishBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "payment_reference" => b.payment_reference = Some(FromValueOpt::from_value(v)?),
-                    "verified_phone_last4" => {
-                        b.verified_phone_last4 = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "payment_reference" => b.payment_reference = FromValueOpt::from_value(v),
+                    "verified_phone_last4" => b.verified_phone_last4 = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

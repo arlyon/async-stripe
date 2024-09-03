@@ -22,7 +22,13 @@ pub struct ClimateRemovalsOrderDeliveriesBuilder {
     supplier: Option<stripe_misc::ClimateSupplier>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,13 +83,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                delivered_at: self.delivered_at?,
-                location: self.location.take()?,
-                metric_tons: self.metric_tons.take()?,
-                registry_url: self.registry_url.take()?,
-                supplier: self.supplier.take()?,
-            })
+            let (
+                Some(delivered_at),
+                Some(location),
+                Some(metric_tons),
+                Some(registry_url),
+                Some(supplier),
+            ) = (
+                self.delivered_at,
+                self.location.take(),
+                self.metric_tons.take(),
+                self.registry_url.take(),
+                self.supplier.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { delivered_at, location, metric_tons, registry_url, supplier })
         }
     }
 
@@ -110,11 +126,11 @@ const _: () = {
             let mut b = ClimateRemovalsOrderDeliveriesBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "delivered_at" => b.delivered_at = Some(FromValueOpt::from_value(v)?),
-                    "location" => b.location = Some(FromValueOpt::from_value(v)?),
-                    "metric_tons" => b.metric_tons = Some(FromValueOpt::from_value(v)?),
-                    "registry_url" => b.registry_url = Some(FromValueOpt::from_value(v)?),
-                    "supplier" => b.supplier = Some(FromValueOpt::from_value(v)?),
+                    "delivered_at" => b.delivered_at = FromValueOpt::from_value(v),
+                    "location" => b.location = FromValueOpt::from_value(v),
+                    "metric_tons" => b.metric_tons = FromValueOpt::from_value(v),
+                    "registry_url" => b.registry_url = FromValueOpt::from_value(v),
+                    "supplier" => b.supplier = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

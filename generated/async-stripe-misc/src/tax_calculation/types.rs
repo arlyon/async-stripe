@@ -53,7 +53,13 @@ pub struct TaxCalculationBuilder {
     tax_date: Option<stripe_types::Timestamp>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -126,21 +132,55 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount_total),
+                Some(currency),
+                Some(customer),
+                Some(customer_details),
+                Some(expires_at),
+                Some(id),
+                Some(line_items),
+                Some(livemode),
+                Some(ship_from_details),
+                Some(shipping_cost),
+                Some(tax_amount_exclusive),
+                Some(tax_amount_inclusive),
+                Some(tax_breakdown),
+                Some(tax_date),
+            ) = (
+                self.amount_total,
+                self.currency,
+                self.customer.take(),
+                self.customer_details.take(),
+                self.expires_at,
+                self.id.take(),
+                self.line_items.take(),
+                self.livemode,
+                self.ship_from_details.take(),
+                self.shipping_cost.take(),
+                self.tax_amount_exclusive,
+                self.tax_amount_inclusive,
+                self.tax_breakdown.take(),
+                self.tax_date,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount_total: self.amount_total?,
-                currency: self.currency?,
-                customer: self.customer.take()?,
-                customer_details: self.customer_details.take()?,
-                expires_at: self.expires_at?,
-                id: self.id.take()?,
-                line_items: self.line_items.take()?,
-                livemode: self.livemode?,
-                ship_from_details: self.ship_from_details.take()?,
-                shipping_cost: self.shipping_cost.take()?,
-                tax_amount_exclusive: self.tax_amount_exclusive?,
-                tax_amount_inclusive: self.tax_amount_inclusive?,
-                tax_breakdown: self.tax_breakdown.take()?,
-                tax_date: self.tax_date?,
+                amount_total,
+                currency,
+                customer,
+                customer_details,
+                expires_at,
+                id,
+                line_items,
+                livemode,
+                ship_from_details,
+                shipping_cost,
+                tax_amount_exclusive,
+                tax_amount_inclusive,
+                tax_breakdown,
+                tax_date,
             })
         }
     }
@@ -168,24 +208,20 @@ const _: () = {
             let mut b = TaxCalculationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_total" => b.amount_total = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "customer_details" => b.customer_details = Some(FromValueOpt::from_value(v)?),
-                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "line_items" => b.line_items = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "ship_from_details" => b.ship_from_details = Some(FromValueOpt::from_value(v)?),
-                    "shipping_cost" => b.shipping_cost = Some(FromValueOpt::from_value(v)?),
-                    "tax_amount_exclusive" => {
-                        b.tax_amount_exclusive = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "tax_amount_inclusive" => {
-                        b.tax_amount_inclusive = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "tax_breakdown" => b.tax_breakdown = Some(FromValueOpt::from_value(v)?),
-                    "tax_date" => b.tax_date = Some(FromValueOpt::from_value(v)?),
+                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_details" => b.customer_details = FromValueOpt::from_value(v),
+                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "line_items" => b.line_items = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "ship_from_details" => b.ship_from_details = FromValueOpt::from_value(v),
+                    "shipping_cost" => b.shipping_cost = FromValueOpt::from_value(v),
+                    "tax_amount_exclusive" => b.tax_amount_exclusive = FromValueOpt::from_value(v),
+                    "tax_amount_inclusive" => b.tax_amount_inclusive = FromValueOpt::from_value(v),
+                    "tax_breakdown" => b.tax_breakdown = FromValueOpt::from_value(v),
+                    "tax_date" => b.tax_date = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

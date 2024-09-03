@@ -16,7 +16,13 @@ pub struct TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccountBuil
     routing_number: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +73,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                bank_name: self.bank_name.take()?,
-                last4: self.last4.take()?,
-                routing_number: self.routing_number.take()?,
-            })
+            let (Some(bank_name), Some(last4), Some(routing_number)) =
+                (self.bank_name.take(), self.last4.take(), self.routing_number.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { bank_name, last4, routing_number })
         }
     }
 
@@ -98,9 +105,9 @@ const _: () = {
             let mut b = TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "routing_number" => b.routing_number = Some(FromValueOpt::from_value(v)?),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

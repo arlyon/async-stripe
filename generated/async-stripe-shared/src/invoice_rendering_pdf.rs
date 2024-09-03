@@ -12,7 +12,13 @@ pub struct InvoiceRenderingPdfBuilder {
     page_size: Option<Option<InvoiceRenderingPdfPageSize>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -57,7 +63,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { page_size: self.page_size? })
+            let (Some(page_size),) = (self.page_size,) else {
+                return None;
+            };
+            Some(Self::Out { page_size })
         }
     }
 
@@ -84,7 +93,7 @@ const _: () = {
             let mut b = InvoiceRenderingPdfBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "page_size" => b.page_size = Some(FromValueOpt::from_value(v)?),
+                    "page_size" => b.page_size = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

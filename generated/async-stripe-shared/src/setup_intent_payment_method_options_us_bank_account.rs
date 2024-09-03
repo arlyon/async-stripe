@@ -15,7 +15,13 @@ pub struct SetupIntentPaymentMethodOptionsUsBankAccountBuilder {
         Option<Option<SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -66,11 +72,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                financial_connections: self.financial_connections.take()?,
-                mandate_options: self.mandate_options?,
-                verification_method: self.verification_method?,
-            })
+            let (Some(financial_connections), Some(mandate_options), Some(verification_method)) =
+                (self.financial_connections.take(), self.mandate_options, self.verification_method)
+            else {
+                return None;
+            };
+            Some(Self::Out { financial_connections, mandate_options, verification_method })
         }
     }
 
@@ -98,12 +105,10 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "financial_connections" => {
-                        b.financial_connections = Some(FromValueOpt::from_value(v)?)
+                        b.financial_connections = FromValueOpt::from_value(v)
                     }
-                    "mandate_options" => b.mandate_options = Some(FromValueOpt::from_value(v)?),
-                    "verification_method" => {
-                        b.verification_method = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
+                    "verification_method" => b.verification_method = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

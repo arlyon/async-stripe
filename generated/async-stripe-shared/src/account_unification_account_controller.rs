@@ -28,7 +28,13 @@ pub struct AccountUnificationAccountControllerBuilder {
     type_: Option<AccountUnificationAccountControllerType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -85,13 +91,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(fees),
+                Some(is_controller),
+                Some(losses),
+                Some(requirement_collection),
+                Some(stripe_dashboard),
+                Some(type_),
+            ) = (
+                self.fees,
+                self.is_controller,
+                self.losses,
+                self.requirement_collection,
+                self.stripe_dashboard,
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                fees: self.fees?,
-                is_controller: self.is_controller?,
-                losses: self.losses?,
-                requirement_collection: self.requirement_collection?,
-                stripe_dashboard: self.stripe_dashboard?,
-                type_: self.type_?,
+                fees,
+                is_controller,
+                losses,
+                requirement_collection,
+                stripe_dashboard,
+                type_,
             })
         }
     }
@@ -119,14 +143,14 @@ const _: () = {
             let mut b = AccountUnificationAccountControllerBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "fees" => b.fees = Some(FromValueOpt::from_value(v)?),
-                    "is_controller" => b.is_controller = Some(FromValueOpt::from_value(v)?),
-                    "losses" => b.losses = Some(FromValueOpt::from_value(v)?),
+                    "fees" => b.fees = FromValueOpt::from_value(v),
+                    "is_controller" => b.is_controller = FromValueOpt::from_value(v),
+                    "losses" => b.losses = FromValueOpt::from_value(v),
                     "requirement_collection" => {
-                        b.requirement_collection = Some(FromValueOpt::from_value(v)?)
+                        b.requirement_collection = FromValueOpt::from_value(v)
                     }
-                    "stripe_dashboard" => b.stripe_dashboard = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "stripe_dashboard" => b.stripe_dashboard = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -71,7 +71,13 @@ pub struct PaymentIntentNextActionBuilder {
         Option<Option<stripe_shared::PaymentIntentNextActionWechatPayRedirectToIosApp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -168,33 +174,67 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(alipay_handle_redirect),
+                Some(boleto_display_details),
+                Some(card_await_notification),
+                Some(cashapp_handle_redirect_or_display_qr_code),
+                Some(display_bank_transfer_instructions),
+                Some(konbini_display_details),
+                Some(oxxo_display_details),
+                Some(paynow_display_qr_code),
+                Some(pix_display_qr_code),
+                Some(promptpay_display_qr_code),
+                Some(redirect_to_url),
+                Some(swish_handle_redirect_or_display_qr_code),
+                Some(type_),
+                Some(use_stripe_sdk),
+                Some(verify_with_microdeposits),
+                Some(wechat_pay_display_qr_code),
+                Some(wechat_pay_redirect_to_android_app),
+                Some(wechat_pay_redirect_to_ios_app),
+            ) = (
+                self.alipay_handle_redirect.take(),
+                self.boleto_display_details.take(),
+                self.card_await_notification,
+                self.cashapp_handle_redirect_or_display_qr_code.take(),
+                self.display_bank_transfer_instructions.take(),
+                self.konbini_display_details.take(),
+                self.oxxo_display_details.take(),
+                self.paynow_display_qr_code.take(),
+                self.pix_display_qr_code.take(),
+                self.promptpay_display_qr_code.take(),
+                self.redirect_to_url.take(),
+                self.swish_handle_redirect_or_display_qr_code.take(),
+                self.type_.take(),
+                self.use_stripe_sdk.take(),
+                self.verify_with_microdeposits.take(),
+                self.wechat_pay_display_qr_code.take(),
+                self.wechat_pay_redirect_to_android_app.take(),
+                self.wechat_pay_redirect_to_ios_app.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                alipay_handle_redirect: self.alipay_handle_redirect.take()?,
-                boleto_display_details: self.boleto_display_details.take()?,
-                card_await_notification: self.card_await_notification?,
-                cashapp_handle_redirect_or_display_qr_code: self
-                    .cashapp_handle_redirect_or_display_qr_code
-                    .take()?,
-                display_bank_transfer_instructions: self
-                    .display_bank_transfer_instructions
-                    .take()?,
-                konbini_display_details: self.konbini_display_details.take()?,
-                oxxo_display_details: self.oxxo_display_details.take()?,
-                paynow_display_qr_code: self.paynow_display_qr_code.take()?,
-                pix_display_qr_code: self.pix_display_qr_code.take()?,
-                promptpay_display_qr_code: self.promptpay_display_qr_code.take()?,
-                redirect_to_url: self.redirect_to_url.take()?,
-                swish_handle_redirect_or_display_qr_code: self
-                    .swish_handle_redirect_or_display_qr_code
-                    .take()?,
-                type_: self.type_.take()?,
-                use_stripe_sdk: self.use_stripe_sdk.take()?,
-                verify_with_microdeposits: self.verify_with_microdeposits.take()?,
-                wechat_pay_display_qr_code: self.wechat_pay_display_qr_code.take()?,
-                wechat_pay_redirect_to_android_app: self
-                    .wechat_pay_redirect_to_android_app
-                    .take()?,
-                wechat_pay_redirect_to_ios_app: self.wechat_pay_redirect_to_ios_app.take()?,
+                alipay_handle_redirect,
+                boleto_display_details,
+                card_await_notification,
+                cashapp_handle_redirect_or_display_qr_code,
+                display_bank_transfer_instructions,
+                konbini_display_details,
+                oxxo_display_details,
+                paynow_display_qr_code,
+                pix_display_qr_code,
+                promptpay_display_qr_code,
+                redirect_to_url,
+                swish_handle_redirect_or_display_qr_code,
+                type_,
+                use_stripe_sdk,
+                verify_with_microdeposits,
+                wechat_pay_display_qr_code,
+                wechat_pay_redirect_to_android_app,
+                wechat_pay_redirect_to_ios_app,
             })
         }
     }
@@ -223,54 +263,48 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "alipay_handle_redirect" => {
-                        b.alipay_handle_redirect = Some(FromValueOpt::from_value(v)?)
+                        b.alipay_handle_redirect = FromValueOpt::from_value(v)
                     }
                     "boleto_display_details" => {
-                        b.boleto_display_details = Some(FromValueOpt::from_value(v)?)
+                        b.boleto_display_details = FromValueOpt::from_value(v)
                     }
                     "card_await_notification" => {
-                        b.card_await_notification = Some(FromValueOpt::from_value(v)?)
+                        b.card_await_notification = FromValueOpt::from_value(v)
                     }
                     "cashapp_handle_redirect_or_display_qr_code" => {
-                        b.cashapp_handle_redirect_or_display_qr_code =
-                            Some(FromValueOpt::from_value(v)?)
+                        b.cashapp_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
                     }
                     "display_bank_transfer_instructions" => {
-                        b.display_bank_transfer_instructions = Some(FromValueOpt::from_value(v)?)
+                        b.display_bank_transfer_instructions = FromValueOpt::from_value(v)
                     }
                     "konbini_display_details" => {
-                        b.konbini_display_details = Some(FromValueOpt::from_value(v)?)
+                        b.konbini_display_details = FromValueOpt::from_value(v)
                     }
-                    "oxxo_display_details" => {
-                        b.oxxo_display_details = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "oxxo_display_details" => b.oxxo_display_details = FromValueOpt::from_value(v),
                     "paynow_display_qr_code" => {
-                        b.paynow_display_qr_code = Some(FromValueOpt::from_value(v)?)
+                        b.paynow_display_qr_code = FromValueOpt::from_value(v)
                     }
-                    "pix_display_qr_code" => {
-                        b.pix_display_qr_code = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "pix_display_qr_code" => b.pix_display_qr_code = FromValueOpt::from_value(v),
                     "promptpay_display_qr_code" => {
-                        b.promptpay_display_qr_code = Some(FromValueOpt::from_value(v)?)
+                        b.promptpay_display_qr_code = FromValueOpt::from_value(v)
                     }
-                    "redirect_to_url" => b.redirect_to_url = Some(FromValueOpt::from_value(v)?),
+                    "redirect_to_url" => b.redirect_to_url = FromValueOpt::from_value(v),
                     "swish_handle_redirect_or_display_qr_code" => {
-                        b.swish_handle_redirect_or_display_qr_code =
-                            Some(FromValueOpt::from_value(v)?)
+                        b.swish_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
                     }
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "use_stripe_sdk" => b.use_stripe_sdk = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "use_stripe_sdk" => b.use_stripe_sdk = FromValueOpt::from_value(v),
                     "verify_with_microdeposits" => {
-                        b.verify_with_microdeposits = Some(FromValueOpt::from_value(v)?)
+                        b.verify_with_microdeposits = FromValueOpt::from_value(v)
                     }
                     "wechat_pay_display_qr_code" => {
-                        b.wechat_pay_display_qr_code = Some(FromValueOpt::from_value(v)?)
+                        b.wechat_pay_display_qr_code = FromValueOpt::from_value(v)
                     }
                     "wechat_pay_redirect_to_android_app" => {
-                        b.wechat_pay_redirect_to_android_app = Some(FromValueOpt::from_value(v)?)
+                        b.wechat_pay_redirect_to_android_app = FromValueOpt::from_value(v)
                     }
                     "wechat_pay_redirect_to_ios_app" => {
-                        b.wechat_pay_redirect_to_ios_app = Some(FromValueOpt::from_value(v)?)
+                        b.wechat_pay_redirect_to_ios_app = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

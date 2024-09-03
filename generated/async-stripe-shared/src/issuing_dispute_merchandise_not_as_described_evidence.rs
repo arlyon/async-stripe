@@ -25,7 +25,13 @@ pub struct IssuingDisputeMerchandiseNotAsDescribedEvidenceBuilder {
     returned_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -84,13 +90,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(additional_documentation),
+                Some(explanation),
+                Some(received_at),
+                Some(return_description),
+                Some(return_status),
+                Some(returned_at),
+            ) = (
+                self.additional_documentation.take(),
+                self.explanation.take(),
+                self.received_at,
+                self.return_description.take(),
+                self.return_status,
+                self.returned_at,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                additional_documentation: self.additional_documentation.take()?,
-                explanation: self.explanation.take()?,
-                received_at: self.received_at?,
-                return_description: self.return_description.take()?,
-                return_status: self.return_status?,
-                returned_at: self.returned_at?,
+                additional_documentation,
+                explanation,
+                received_at,
+                return_description,
+                return_status,
+                returned_at,
             })
         }
     }
@@ -119,15 +143,13 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "additional_documentation" => {
-                        b.additional_documentation = Some(FromValueOpt::from_value(v)?)
+                        b.additional_documentation = FromValueOpt::from_value(v)
                     }
-                    "explanation" => b.explanation = Some(FromValueOpt::from_value(v)?),
-                    "received_at" => b.received_at = Some(FromValueOpt::from_value(v)?),
-                    "return_description" => {
-                        b.return_description = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "return_status" => b.return_status = Some(FromValueOpt::from_value(v)?),
-                    "returned_at" => b.returned_at = Some(FromValueOpt::from_value(v)?),
+                    "explanation" => b.explanation = FromValueOpt::from_value(v),
+                    "received_at" => b.received_at = FromValueOpt::from_value(v),
+                    "return_description" => b.return_description = FromValueOpt::from_value(v),
+                    "return_status" => b.return_status = FromValueOpt::from_value(v),
+                    "returned_at" => b.returned_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

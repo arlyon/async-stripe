@@ -42,7 +42,13 @@ pub struct SubscriptionItemBuilder {
     tax_rates: Option<Option<Vec<stripe_shared::TaxRate>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -107,17 +113,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(billing_thresholds),
+                Some(created),
+                Some(discounts),
+                Some(id),
+                Some(metadata),
+                Some(plan),
+                Some(price),
+                Some(quantity),
+                Some(subscription),
+                Some(tax_rates),
+            ) = (
+                self.billing_thresholds,
+                self.created,
+                self.discounts.take(),
+                self.id.take(),
+                self.metadata.take(),
+                self.plan.take(),
+                self.price.take(),
+                self.quantity,
+                self.subscription.take(),
+                self.tax_rates.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                billing_thresholds: self.billing_thresholds?,
-                created: self.created?,
-                discounts: self.discounts.take()?,
-                id: self.id.take()?,
-                metadata: self.metadata.take()?,
-                plan: self.plan.take()?,
-                price: self.price.take()?,
-                quantity: self.quantity?,
-                subscription: self.subscription.take()?,
-                tax_rates: self.tax_rates.take()?,
+                billing_thresholds,
+                created,
+                discounts,
+                id,
+                metadata,
+                plan,
+                price,
+                quantity,
+                subscription,
+                tax_rates,
             })
         }
     }
@@ -145,18 +177,16 @@ const _: () = {
             let mut b = SubscriptionItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "billing_thresholds" => {
-                        b.billing_thresholds = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "plan" => b.plan = Some(FromValueOpt::from_value(v)?),
-                    "price" => b.price = Some(FromValueOpt::from_value(v)?),
-                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
-                    "subscription" => b.subscription = Some(FromValueOpt::from_value(v)?),
-                    "tax_rates" => b.tax_rates = Some(FromValueOpt::from_value(v)?),
+                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "discounts" => b.discounts = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "plan" => b.plan = FromValueOpt::from_value(v),
+                    "price" => b.price = FromValueOpt::from_value(v),
+                    "quantity" => b.quantity = FromValueOpt::from_value(v),
+                    "subscription" => b.subscription = FromValueOpt::from_value(v),
+                    "tax_rates" => b.tax_rates = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

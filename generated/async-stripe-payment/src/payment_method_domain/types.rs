@@ -36,7 +36,13 @@ pub struct PaymentMethodDomainBuilder {
     paypal: Option<stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -99,16 +105,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(apple_pay),
+                Some(created),
+                Some(domain_name),
+                Some(enabled),
+                Some(google_pay),
+                Some(id),
+                Some(link),
+                Some(livemode),
+                Some(paypal),
+            ) = (
+                self.apple_pay.take(),
+                self.created,
+                self.domain_name.take(),
+                self.enabled,
+                self.google_pay.take(),
+                self.id.take(),
+                self.link.take(),
+                self.livemode,
+                self.paypal.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                apple_pay: self.apple_pay.take()?,
-                created: self.created?,
-                domain_name: self.domain_name.take()?,
-                enabled: self.enabled?,
-                google_pay: self.google_pay.take()?,
-                id: self.id.take()?,
-                link: self.link.take()?,
-                livemode: self.livemode?,
-                paypal: self.paypal.take()?,
+                apple_pay,
+                created,
+                domain_name,
+                enabled,
+                google_pay,
+                id,
+                link,
+                livemode,
+                paypal,
             })
         }
     }
@@ -136,15 +166,15 @@ const _: () = {
             let mut b = PaymentMethodDomainBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "apple_pay" => b.apple_pay = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "domain_name" => b.domain_name = Some(FromValueOpt::from_value(v)?),
-                    "enabled" => b.enabled = Some(FromValueOpt::from_value(v)?),
-                    "google_pay" => b.google_pay = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "link" => b.link = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "paypal" => b.paypal = Some(FromValueOpt::from_value(v)?),
+                    "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "domain_name" => b.domain_name = FromValueOpt::from_value(v),
+                    "enabled" => b.enabled = FromValueOpt::from_value(v),
+                    "google_pay" => b.google_pay = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "link" => b.link = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "paypal" => b.paypal = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -42,7 +42,13 @@ pub struct FinancialConnectionsTransactionBuilder {
     updated: Option<stripe_types::Timestamp>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -109,18 +115,46 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account),
+                Some(amount),
+                Some(currency),
+                Some(description),
+                Some(id),
+                Some(livemode),
+                Some(status),
+                Some(status_transitions),
+                Some(transacted_at),
+                Some(transaction_refresh),
+                Some(updated),
+            ) = (
+                self.account.take(),
+                self.amount,
+                self.currency,
+                self.description.take(),
+                self.id.take(),
+                self.livemode,
+                self.status,
+                self.status_transitions,
+                self.transacted_at,
+                self.transaction_refresh.take(),
+                self.updated,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account: self.account.take()?,
-                amount: self.amount?,
-                currency: self.currency?,
-                description: self.description.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                status: self.status?,
-                status_transitions: self.status_transitions?,
-                transacted_at: self.transacted_at?,
-                transaction_refresh: self.transaction_refresh.take()?,
-                updated: self.updated?,
+                account,
+                amount,
+                currency,
+                description,
+                id,
+                livemode,
+                status,
+                status_transitions,
+                transacted_at,
+                transaction_refresh,
+                updated,
             })
         }
     }
@@ -148,21 +182,17 @@ const _: () = {
             let mut b = FinancialConnectionsTransactionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account" => b.account = Some(FromValueOpt::from_value(v)?),
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "status_transitions" => {
-                        b.status_transitions = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "transacted_at" => b.transacted_at = Some(FromValueOpt::from_value(v)?),
-                    "transaction_refresh" => {
-                        b.transaction_refresh = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "updated" => b.updated = Some(FromValueOpt::from_value(v)?),
+                    "account" => b.account = FromValueOpt::from_value(v),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
+                    "transacted_at" => b.transacted_at = FromValueOpt::from_value(v),
+                    "transaction_refresh" => b.transaction_refresh = FromValueOpt::from_value(v),
+                    "updated" => b.updated = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

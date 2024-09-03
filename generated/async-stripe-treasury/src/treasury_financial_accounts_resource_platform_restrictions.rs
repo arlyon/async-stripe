@@ -16,7 +16,13 @@ pub struct TreasuryFinancialAccountsResourcePlatformRestrictionsBuilder {
         Option<Option<TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -63,10 +69,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                inbound_flows: self.inbound_flows?,
-                outbound_flows: self.outbound_flows?,
-            })
+            let (Some(inbound_flows), Some(outbound_flows)) =
+                (self.inbound_flows, self.outbound_flows)
+            else {
+                return None;
+            };
+            Some(Self::Out { inbound_flows, outbound_flows })
         }
     }
 
@@ -94,8 +102,8 @@ const _: () = {
                 TreasuryFinancialAccountsResourcePlatformRestrictionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "inbound_flows" => b.inbound_flows = Some(FromValueOpt::from_value(v)?),
-                    "outbound_flows" => b.outbound_flows = Some(FromValueOpt::from_value(v)?),
+                    "inbound_flows" => b.inbound_flows = FromValueOpt::from_value(v),
+                    "outbound_flows" => b.outbound_flows = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

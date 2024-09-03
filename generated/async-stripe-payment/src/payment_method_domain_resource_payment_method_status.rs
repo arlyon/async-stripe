@@ -15,7 +15,13 @@ pub struct PaymentMethodDomainResourcePaymentMethodStatusBuilder {
         Option<Option<stripe_payment::PaymentMethodDomainResourcePaymentMethodStatusDetails>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -61,7 +67,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { status: self.status?, status_details: self.status_details.take()? })
+            let (Some(status), Some(status_details)) = (self.status, self.status_details.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { status, status_details })
         }
     }
 
@@ -88,8 +98,8 @@ const _: () = {
             let mut b = PaymentMethodDomainResourcePaymentMethodStatusBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "status_details" => b.status_details = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "status_details" => b.status_details = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

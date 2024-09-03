@@ -32,7 +32,13 @@ pub struct PaymentLinksResourcePaymentIntentDataBuilder {
     transfer_group: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -93,14 +99,34 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(capture_method),
+                Some(description),
+                Some(metadata),
+                Some(setup_future_usage),
+                Some(statement_descriptor),
+                Some(statement_descriptor_suffix),
+                Some(transfer_group),
+            ) = (
+                self.capture_method,
+                self.description.take(),
+                self.metadata.take(),
+                self.setup_future_usage,
+                self.statement_descriptor.take(),
+                self.statement_descriptor_suffix.take(),
+                self.transfer_group.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                capture_method: self.capture_method?,
-                description: self.description.take()?,
-                metadata: self.metadata.take()?,
-                setup_future_usage: self.setup_future_usage?,
-                statement_descriptor: self.statement_descriptor.take()?,
-                statement_descriptor_suffix: self.statement_descriptor_suffix.take()?,
-                transfer_group: self.transfer_group.take()?,
+                capture_method,
+                description,
+                metadata,
+                setup_future_usage,
+                statement_descriptor,
+                statement_descriptor_suffix,
+                transfer_group,
             })
         }
     }
@@ -128,19 +154,15 @@ const _: () = {
             let mut b = PaymentLinksResourcePaymentIntentDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "capture_method" => b.capture_method = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "setup_future_usage" => {
-                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "statement_descriptor" => {
-                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
+                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
                     "statement_descriptor_suffix" => {
-                        b.statement_descriptor_suffix = Some(FromValueOpt::from_value(v)?)
+                        b.statement_descriptor_suffix = FromValueOpt::from_value(v)
                     }
-                    "transfer_group" => b.transfer_group = Some(FromValueOpt::from_value(v)?),
+                    "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

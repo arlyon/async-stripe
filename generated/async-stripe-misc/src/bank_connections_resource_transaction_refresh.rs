@@ -21,7 +21,13 @@ pub struct BankConnectionsResourceTransactionRefreshBuilder {
     status: Option<BankConnectionsResourceTransactionRefreshStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -76,12 +82,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                id: self.id.take()?,
-                last_attempted_at: self.last_attempted_at?,
-                next_refresh_available_at: self.next_refresh_available_at?,
-                status: self.status?,
-            })
+            let (Some(id), Some(last_attempted_at), Some(next_refresh_available_at), Some(status)) = (
+                self.id.take(),
+                self.last_attempted_at,
+                self.next_refresh_available_at,
+                self.status,
+            ) else {
+                return None;
+            };
+            Some(Self::Out { id, last_attempted_at, next_refresh_available_at, status })
         }
     }
 
@@ -108,12 +117,12 @@ const _: () = {
             let mut b = BankConnectionsResourceTransactionRefreshBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "last_attempted_at" => b.last_attempted_at = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "last_attempted_at" => b.last_attempted_at = FromValueOpt::from_value(v),
                     "next_refresh_available_at" => {
-                        b.next_refresh_available_at = Some(FromValueOpt::from_value(v)?)
+                        b.next_refresh_available_at = FromValueOpt::from_value(v)
                     }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

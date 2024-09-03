@@ -14,7 +14,13 @@ pub struct IssuingPersonalizationDesignPreferencesBuilder {
     is_platform_default: Option<Option<bool>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -60,10 +66,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                is_default: self.is_default?,
-                is_platform_default: self.is_platform_default?,
-            })
+            let (Some(is_default), Some(is_platform_default)) =
+                (self.is_default, self.is_platform_default)
+            else {
+                return None;
+            };
+            Some(Self::Out { is_default, is_platform_default })
         }
     }
 
@@ -90,10 +98,8 @@ const _: () = {
             let mut b = IssuingPersonalizationDesignPreferencesBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "is_default" => b.is_default = Some(FromValueOpt::from_value(v)?),
-                    "is_platform_default" => {
-                        b.is_platform_default = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "is_default" => b.is_default = FromValueOpt::from_value(v),
+                    "is_platform_default" => b.is_platform_default = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

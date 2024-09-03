@@ -35,7 +35,13 @@ pub struct PaymentMethodUsBankAccountBuilder {
     status_details: Option<Option<stripe_shared::PaymentMethodUsBankAccountStatusDetails>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -100,16 +106,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account_holder_type),
+                Some(account_type),
+                Some(bank_name),
+                Some(financial_connections_account),
+                Some(fingerprint),
+                Some(last4),
+                Some(networks),
+                Some(routing_number),
+                Some(status_details),
+            ) = (
+                self.account_holder_type,
+                self.account_type,
+                self.bank_name.take(),
+                self.financial_connections_account.take(),
+                self.fingerprint.take(),
+                self.last4.take(),
+                self.networks.take(),
+                self.routing_number.take(),
+                self.status_details,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account_holder_type: self.account_holder_type?,
-                account_type: self.account_type?,
-                bank_name: self.bank_name.take()?,
-                financial_connections_account: self.financial_connections_account.take()?,
-                fingerprint: self.fingerprint.take()?,
-                last4: self.last4.take()?,
-                networks: self.networks.take()?,
-                routing_number: self.routing_number.take()?,
-                status_details: self.status_details?,
+                account_holder_type,
+                account_type,
+                bank_name,
+                financial_connections_account,
+                fingerprint,
+                last4,
+                networks,
+                routing_number,
+                status_details,
             })
         }
     }
@@ -137,19 +167,17 @@ const _: () = {
             let mut b = PaymentMethodUsBankAccountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_holder_type" => {
-                        b.account_holder_type = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "account_type" => b.account_type = Some(FromValueOpt::from_value(v)?),
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
+                    "account_holder_type" => b.account_holder_type = FromValueOpt::from_value(v),
+                    "account_type" => b.account_type = FromValueOpt::from_value(v),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
                     "financial_connections_account" => {
-                        b.financial_connections_account = Some(FromValueOpt::from_value(v)?)
+                        b.financial_connections_account = FromValueOpt::from_value(v)
                     }
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "networks" => b.networks = Some(FromValueOpt::from_value(v)?),
-                    "routing_number" => b.routing_number = Some(FromValueOpt::from_value(v)?),
-                    "status_details" => b.status_details = Some(FromValueOpt::from_value(v)?),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "networks" => b.networks = FromValueOpt::from_value(v),
+                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
+                    "status_details" => b.status_details = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

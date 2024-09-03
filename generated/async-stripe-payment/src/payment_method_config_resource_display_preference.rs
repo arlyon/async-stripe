@@ -17,7 +17,13 @@ pub struct PaymentMethodConfigResourceDisplayPreferenceBuilder {
     value: Option<PaymentMethodConfigResourceDisplayPreferenceValue>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                overridable: self.overridable?,
-                preference: self.preference?,
-                value: self.value?,
-            })
+            let (Some(overridable), Some(preference), Some(value)) =
+                (self.overridable, self.preference, self.value)
+            else {
+                return None;
+            };
+            Some(Self::Out { overridable, preference, value })
         }
     }
 
@@ -99,9 +106,9 @@ const _: () = {
             let mut b = PaymentMethodConfigResourceDisplayPreferenceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "overridable" => b.overridable = Some(FromValueOpt::from_value(v)?),
-                    "preference" => b.preference = Some(FromValueOpt::from_value(v)?),
-                    "value" => b.value = Some(FromValueOpt::from_value(v)?),
+                    "overridable" => b.overridable = FromValueOpt::from_value(v),
+                    "preference" => b.preference = FromValueOpt::from_value(v),
+                    "value" => b.value = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

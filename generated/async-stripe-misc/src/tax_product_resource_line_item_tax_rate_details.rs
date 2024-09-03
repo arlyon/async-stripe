@@ -17,7 +17,13 @@ pub struct TaxProductResourceLineItemTaxRateDetailsBuilder {
     tax_type: Option<TaxProductResourceLineItemTaxRateDetailsTaxType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                display_name: self.display_name.take()?,
-                percentage_decimal: self.percentage_decimal.take()?,
-                tax_type: self.tax_type?,
-            })
+            let (Some(display_name), Some(percentage_decimal), Some(tax_type)) =
+                (self.display_name.take(), self.percentage_decimal.take(), self.tax_type)
+            else {
+                return None;
+            };
+            Some(Self::Out { display_name, percentage_decimal, tax_type })
         }
     }
 
@@ -99,11 +106,9 @@ const _: () = {
             let mut b = TaxProductResourceLineItemTaxRateDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "display_name" => b.display_name = Some(FromValueOpt::from_value(v)?),
-                    "percentage_decimal" => {
-                        b.percentage_decimal = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "tax_type" => b.tax_type = Some(FromValueOpt::from_value(v)?),
+                    "display_name" => b.display_name = FromValueOpt::from_value(v),
+                    "percentage_decimal" => b.percentage_decimal = FromValueOpt::from_value(v),
+                    "tax_type" => b.tax_type = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

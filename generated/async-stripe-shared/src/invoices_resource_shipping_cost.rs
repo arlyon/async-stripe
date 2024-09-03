@@ -22,7 +22,13 @@ pub struct InvoicesResourceShippingCostBuilder {
     taxes: Option<Option<Vec<stripe_shared::LineItemsTaxAmount>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,13 +83,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount_subtotal: self.amount_subtotal?,
-                amount_tax: self.amount_tax?,
-                amount_total: self.amount_total?,
-                shipping_rate: self.shipping_rate.take()?,
-                taxes: self.taxes.take()?,
-            })
+            let (
+                Some(amount_subtotal),
+                Some(amount_tax),
+                Some(amount_total),
+                Some(shipping_rate),
+                Some(taxes),
+            ) = (
+                self.amount_subtotal,
+                self.amount_tax,
+                self.amount_total,
+                self.shipping_rate.take(),
+                self.taxes.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { amount_subtotal, amount_tax, amount_total, shipping_rate, taxes })
         }
     }
 
@@ -110,11 +126,11 @@ const _: () = {
             let mut b = InvoicesResourceShippingCostBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount_subtotal" => b.amount_subtotal = Some(FromValueOpt::from_value(v)?),
-                    "amount_tax" => b.amount_tax = Some(FromValueOpt::from_value(v)?),
-                    "amount_total" => b.amount_total = Some(FromValueOpt::from_value(v)?),
-                    "shipping_rate" => b.shipping_rate = Some(FromValueOpt::from_value(v)?),
-                    "taxes" => b.taxes = Some(FromValueOpt::from_value(v)?),
+                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
+                    "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
+                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
+                    "shipping_rate" => b.shipping_rate = FromValueOpt::from_value(v),
+                    "taxes" => b.taxes = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

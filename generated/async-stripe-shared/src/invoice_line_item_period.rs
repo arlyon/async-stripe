@@ -13,7 +13,13 @@ pub struct InvoiceLineItemPeriodBuilder {
     start: Option<stripe_types::Timestamp>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +65,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { end: self.end?, start: self.start? })
+            let (Some(end), Some(start)) = (self.end, self.start) else {
+                return None;
+            };
+            Some(Self::Out { end, start })
         }
     }
 
@@ -86,8 +95,8 @@ const _: () = {
             let mut b = InvoiceLineItemPeriodBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "end" => b.end = Some(FromValueOpt::from_value(v)?),
-                    "start" => b.start = Some(FromValueOpt::from_value(v)?),
+                    "end" => b.end = FromValueOpt::from_value(v),
+                    "start" => b.start = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

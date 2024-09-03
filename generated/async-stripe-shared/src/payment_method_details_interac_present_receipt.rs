@@ -35,7 +35,13 @@ pub struct PaymentMethodDetailsInteracPresentReceiptBuilder {
     transaction_status_information: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -108,16 +114,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account_type),
+                Some(application_cryptogram),
+                Some(application_preferred_name),
+                Some(authorization_code),
+                Some(authorization_response_code),
+                Some(cardholder_verification_method),
+                Some(dedicated_file_name),
+                Some(terminal_verification_results),
+                Some(transaction_status_information),
+            ) = (
+                self.account_type,
+                self.application_cryptogram.take(),
+                self.application_preferred_name.take(),
+                self.authorization_code.take(),
+                self.authorization_response_code.take(),
+                self.cardholder_verification_method.take(),
+                self.dedicated_file_name.take(),
+                self.terminal_verification_results.take(),
+                self.transaction_status_information.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account_type: self.account_type?,
-                application_cryptogram: self.application_cryptogram.take()?,
-                application_preferred_name: self.application_preferred_name.take()?,
-                authorization_code: self.authorization_code.take()?,
-                authorization_response_code: self.authorization_response_code.take()?,
-                cardholder_verification_method: self.cardholder_verification_method.take()?,
-                dedicated_file_name: self.dedicated_file_name.take()?,
-                terminal_verification_results: self.terminal_verification_results.take()?,
-                transaction_status_information: self.transaction_status_information.take()?,
+                account_type,
+                application_cryptogram,
+                application_preferred_name,
+                authorization_code,
+                authorization_response_code,
+                cardholder_verification_method,
+                dedicated_file_name,
+                terminal_verification_results,
+                transaction_status_information,
             })
         }
     }
@@ -145,30 +175,26 @@ const _: () = {
             let mut b = PaymentMethodDetailsInteracPresentReceiptBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_type" => b.account_type = Some(FromValueOpt::from_value(v)?),
+                    "account_type" => b.account_type = FromValueOpt::from_value(v),
                     "application_cryptogram" => {
-                        b.application_cryptogram = Some(FromValueOpt::from_value(v)?)
+                        b.application_cryptogram = FromValueOpt::from_value(v)
                     }
                     "application_preferred_name" => {
-                        b.application_preferred_name = Some(FromValueOpt::from_value(v)?)
+                        b.application_preferred_name = FromValueOpt::from_value(v)
                     }
-                    "authorization_code" => {
-                        b.authorization_code = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
                     "authorization_response_code" => {
-                        b.authorization_response_code = Some(FromValueOpt::from_value(v)?)
+                        b.authorization_response_code = FromValueOpt::from_value(v)
                     }
                     "cardholder_verification_method" => {
-                        b.cardholder_verification_method = Some(FromValueOpt::from_value(v)?)
+                        b.cardholder_verification_method = FromValueOpt::from_value(v)
                     }
-                    "dedicated_file_name" => {
-                        b.dedicated_file_name = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "dedicated_file_name" => b.dedicated_file_name = FromValueOpt::from_value(v),
                     "terminal_verification_results" => {
-                        b.terminal_verification_results = Some(FromValueOpt::from_value(v)?)
+                        b.terminal_verification_results = FromValueOpt::from_value(v)
                     }
                     "transaction_status_information" => {
-                        b.transaction_status_information = Some(FromValueOpt::from_value(v)?)
+                        b.transaction_status_information = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

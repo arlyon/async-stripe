@@ -19,7 +19,13 @@ pub struct Level3LineItemsBuilder {
     unit_cost: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -76,13 +82,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(discount_amount),
+                Some(product_code),
+                Some(product_description),
+                Some(quantity),
+                Some(tax_amount),
+                Some(unit_cost),
+            ) = (
+                self.discount_amount,
+                self.product_code.take(),
+                self.product_description.take(),
+                self.quantity,
+                self.tax_amount,
+                self.unit_cost,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                discount_amount: self.discount_amount?,
-                product_code: self.product_code.take()?,
-                product_description: self.product_description.take()?,
-                quantity: self.quantity?,
-                tax_amount: self.tax_amount?,
-                unit_cost: self.unit_cost?,
+                discount_amount,
+                product_code,
+                product_description,
+                quantity,
+                tax_amount,
+                unit_cost,
             })
         }
     }
@@ -110,14 +134,12 @@ const _: () = {
             let mut b = Level3LineItemsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "discount_amount" => b.discount_amount = Some(FromValueOpt::from_value(v)?),
-                    "product_code" => b.product_code = Some(FromValueOpt::from_value(v)?),
-                    "product_description" => {
-                        b.product_description = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
-                    "tax_amount" => b.tax_amount = Some(FromValueOpt::from_value(v)?),
-                    "unit_cost" => b.unit_cost = Some(FromValueOpt::from_value(v)?),
+                    "discount_amount" => b.discount_amount = FromValueOpt::from_value(v),
+                    "product_code" => b.product_code = FromValueOpt::from_value(v),
+                    "product_description" => b.product_description = FromValueOpt::from_value(v),
+                    "quantity" => b.quantity = FromValueOpt::from_value(v),
+                    "tax_amount" => b.tax_amount = FromValueOpt::from_value(v),
+                    "unit_cost" => b.unit_cost = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

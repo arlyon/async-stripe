@@ -16,7 +16,13 @@ pub struct PaymentFlowsPrivatePaymentMethodsKlarnaDobBuilder {
     year: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,7 +73,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { day: self.day?, month: self.month?, year: self.year? })
+            let (Some(day), Some(month), Some(year)) = (self.day, self.month, self.year) else {
+                return None;
+            };
+            Some(Self::Out { day, month, year })
         }
     }
 
@@ -94,9 +103,9 @@ const _: () = {
             let mut b = PaymentFlowsPrivatePaymentMethodsKlarnaDobBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "day" => b.day = Some(FromValueOpt::from_value(v)?),
-                    "month" => b.month = Some(FromValueOpt::from_value(v)?),
-                    "year" => b.year = Some(FromValueOpt::from_value(v)?),
+                    "day" => b.day = FromValueOpt::from_value(v),
+                    "month" => b.month = FromValueOpt::from_value(v),
+                    "year" => b.year = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

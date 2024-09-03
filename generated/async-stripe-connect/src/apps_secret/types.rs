@@ -42,7 +42,13 @@ pub struct AppsSecretBuilder {
     scope: Option<stripe_connect::SecretServiceResourceScope>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -103,16 +109,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                created: self.created?,
-                deleted: self.deleted?,
-                expires_at: self.expires_at?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                name: self.name.take()?,
-                payload: self.payload.take()?,
-                scope: self.scope.take()?,
-            })
+            let (
+                Some(created),
+                Some(deleted),
+                Some(expires_at),
+                Some(id),
+                Some(livemode),
+                Some(name),
+                Some(payload),
+                Some(scope),
+            ) = (
+                self.created,
+                self.deleted,
+                self.expires_at,
+                self.id.take(),
+                self.livemode,
+                self.name.take(),
+                self.payload.take(),
+                self.scope.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { created, deleted, expires_at, id, livemode, name, payload, scope })
         }
     }
 
@@ -139,14 +158,14 @@ const _: () = {
             let mut b = AppsSecretBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "deleted" => b.deleted = Some(FromValueOpt::from_value(v)?),
-                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "payload" => b.payload = Some(FromValueOpt::from_value(v)?),
-                    "scope" => b.scope = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "deleted" => b.deleted = FromValueOpt::from_value(v),
+                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "payload" => b.payload = FromValueOpt::from_value(v),
+                    "scope" => b.scope = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

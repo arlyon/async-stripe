@@ -85,7 +85,13 @@ pub struct SubscriptionSchedulePhaseConfigurationBuilder {
     trial_end: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -172,28 +178,76 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(add_invoice_items),
+                Some(application_fee_percent),
+                Some(automatic_tax),
+                Some(billing_cycle_anchor),
+                Some(billing_thresholds),
+                Some(collection_method),
+                Some(coupon),
+                Some(currency),
+                Some(default_payment_method),
+                Some(default_tax_rates),
+                Some(description),
+                Some(discounts),
+                Some(end_date),
+                Some(invoice_settings),
+                Some(items),
+                Some(metadata),
+                Some(on_behalf_of),
+                Some(proration_behavior),
+                Some(start_date),
+                Some(transfer_data),
+                Some(trial_end),
+            ) = (
+                self.add_invoice_items.take(),
+                self.application_fee_percent,
+                self.automatic_tax.take(),
+                self.billing_cycle_anchor,
+                self.billing_thresholds,
+                self.collection_method,
+                self.coupon.take(),
+                self.currency,
+                self.default_payment_method.take(),
+                self.default_tax_rates.take(),
+                self.description.take(),
+                self.discounts.take(),
+                self.end_date,
+                self.invoice_settings.take(),
+                self.items.take(),
+                self.metadata.take(),
+                self.on_behalf_of.take(),
+                self.proration_behavior,
+                self.start_date,
+                self.transfer_data.take(),
+                self.trial_end,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                add_invoice_items: self.add_invoice_items.take()?,
-                application_fee_percent: self.application_fee_percent?,
-                automatic_tax: self.automatic_tax.take()?,
-                billing_cycle_anchor: self.billing_cycle_anchor?,
-                billing_thresholds: self.billing_thresholds?,
-                collection_method: self.collection_method?,
-                coupon: self.coupon.take()?,
-                currency: self.currency?,
-                default_payment_method: self.default_payment_method.take()?,
-                default_tax_rates: self.default_tax_rates.take()?,
-                description: self.description.take()?,
-                discounts: self.discounts.take()?,
-                end_date: self.end_date?,
-                invoice_settings: self.invoice_settings.take()?,
-                items: self.items.take()?,
-                metadata: self.metadata.take()?,
-                on_behalf_of: self.on_behalf_of.take()?,
-                proration_behavior: self.proration_behavior?,
-                start_date: self.start_date?,
-                transfer_data: self.transfer_data.take()?,
-                trial_end: self.trial_end?,
+                add_invoice_items,
+                application_fee_percent,
+                automatic_tax,
+                billing_cycle_anchor,
+                billing_thresholds,
+                collection_method,
+                coupon,
+                currency,
+                default_payment_method,
+                default_tax_rates,
+                description,
+                discounts,
+                end_date,
+                invoice_settings,
+                items,
+                metadata,
+                on_behalf_of,
+                proration_behavior,
+                start_date,
+                transfer_data,
+                trial_end,
             })
         }
     }
@@ -221,37 +275,31 @@ const _: () = {
             let mut b = SubscriptionSchedulePhaseConfigurationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "add_invoice_items" => b.add_invoice_items = Some(FromValueOpt::from_value(v)?),
+                    "add_invoice_items" => b.add_invoice_items = FromValueOpt::from_value(v),
                     "application_fee_percent" => {
-                        b.application_fee_percent = Some(FromValueOpt::from_value(v)?)
+                        b.application_fee_percent = FromValueOpt::from_value(v)
                     }
-                    "automatic_tax" => b.automatic_tax = Some(FromValueOpt::from_value(v)?),
-                    "billing_cycle_anchor" => {
-                        b.billing_cycle_anchor = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "billing_thresholds" => {
-                        b.billing_thresholds = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "collection_method" => b.collection_method = Some(FromValueOpt::from_value(v)?),
-                    "coupon" => b.coupon = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
+                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
+                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
+                    "collection_method" => b.collection_method = FromValueOpt::from_value(v),
+                    "coupon" => b.coupon = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
                     "default_payment_method" => {
-                        b.default_payment_method = Some(FromValueOpt::from_value(v)?)
+                        b.default_payment_method = FromValueOpt::from_value(v)
                     }
-                    "default_tax_rates" => b.default_tax_rates = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
-                    "end_date" => b.end_date = Some(FromValueOpt::from_value(v)?),
-                    "invoice_settings" => b.invoice_settings = Some(FromValueOpt::from_value(v)?),
-                    "items" => b.items = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "on_behalf_of" => b.on_behalf_of = Some(FromValueOpt::from_value(v)?),
-                    "proration_behavior" => {
-                        b.proration_behavior = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "start_date" => b.start_date = Some(FromValueOpt::from_value(v)?),
-                    "transfer_data" => b.transfer_data = Some(FromValueOpt::from_value(v)?),
-                    "trial_end" => b.trial_end = Some(FromValueOpt::from_value(v)?),
+                    "default_tax_rates" => b.default_tax_rates = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "discounts" => b.discounts = FromValueOpt::from_value(v),
+                    "end_date" => b.end_date = FromValueOpt::from_value(v),
+                    "invoice_settings" => b.invoice_settings = FromValueOpt::from_value(v),
+                    "items" => b.items = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
+                    "proration_behavior" => b.proration_behavior = FromValueOpt::from_value(v),
+                    "start_date" => b.start_date = FromValueOpt::from_value(v),
+                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
+                    "trial_end" => b.trial_end = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

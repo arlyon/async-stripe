@@ -30,7 +30,13 @@ pub struct RecurringBuilder {
     usage_type: Option<RecurringUsageType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -84,13 +90,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(aggregate_usage),
+                Some(interval),
+                Some(interval_count),
+                Some(meter),
+                Some(trial_period_days),
+                Some(usage_type),
+            ) = (
+                self.aggregate_usage,
+                self.interval,
+                self.interval_count,
+                self.meter.take(),
+                self.trial_period_days,
+                self.usage_type,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                aggregate_usage: self.aggregate_usage?,
-                interval: self.interval?,
-                interval_count: self.interval_count?,
-                meter: self.meter.take()?,
-                trial_period_days: self.trial_period_days?,
-                usage_type: self.usage_type?,
+                aggregate_usage,
+                interval,
+                interval_count,
+                meter,
+                trial_period_days,
+                usage_type,
             })
         }
     }
@@ -118,12 +142,12 @@ const _: () = {
             let mut b = RecurringBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "aggregate_usage" => b.aggregate_usage = Some(FromValueOpt::from_value(v)?),
-                    "interval" => b.interval = Some(FromValueOpt::from_value(v)?),
-                    "interval_count" => b.interval_count = Some(FromValueOpt::from_value(v)?),
-                    "meter" => b.meter = Some(FromValueOpt::from_value(v)?),
-                    "trial_period_days" => b.trial_period_days = Some(FromValueOpt::from_value(v)?),
-                    "usage_type" => b.usage_type = Some(FromValueOpt::from_value(v)?),
+                    "aggregate_usage" => b.aggregate_usage = FromValueOpt::from_value(v),
+                    "interval" => b.interval = FromValueOpt::from_value(v),
+                    "interval_count" => b.interval_count = FromValueOpt::from_value(v),
+                    "meter" => b.meter = FromValueOpt::from_value(v),
+                    "trial_period_days" => b.trial_period_days = FromValueOpt::from_value(v),
+                    "usage_type" => b.usage_type = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -47,7 +47,13 @@ pub struct ApiErrorsBuilder {
     type_: Option<ApiErrorsType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -115,20 +121,52 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(charge),
+                Some(code),
+                Some(decline_code),
+                Some(doc_url),
+                Some(message),
+                Some(param),
+                Some(payment_intent),
+                Some(payment_method),
+                Some(payment_method_type),
+                Some(request_log_url),
+                Some(setup_intent),
+                Some(source),
+                Some(type_),
+            ) = (
+                self.charge.take(),
+                self.code,
+                self.decline_code.take(),
+                self.doc_url.take(),
+                self.message.take(),
+                self.param.take(),
+                self.payment_intent.take(),
+                self.payment_method.take(),
+                self.payment_method_type.take(),
+                self.request_log_url.take(),
+                self.setup_intent.take(),
+                self.source.take(),
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                charge: self.charge.take()?,
-                code: self.code?,
-                decline_code: self.decline_code.take()?,
-                doc_url: self.doc_url.take()?,
-                message: self.message.take()?,
-                param: self.param.take()?,
-                payment_intent: self.payment_intent.take()?,
-                payment_method: self.payment_method.take()?,
-                payment_method_type: self.payment_method_type.take()?,
-                request_log_url: self.request_log_url.take()?,
-                setup_intent: self.setup_intent.take()?,
-                source: self.source.take()?,
-                type_: self.type_?,
+                charge,
+                code,
+                decline_code,
+                doc_url,
+                message,
+                param,
+                payment_intent,
+                payment_method,
+                payment_method_type,
+                request_log_url,
+                setup_intent,
+                source,
+                type_,
             })
         }
     }
@@ -156,21 +194,19 @@ const _: () = {
             let mut b = ApiErrorsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "charge" => b.charge = Some(FromValueOpt::from_value(v)?),
-                    "code" => b.code = Some(FromValueOpt::from_value(v)?),
-                    "decline_code" => b.decline_code = Some(FromValueOpt::from_value(v)?),
-                    "doc_url" => b.doc_url = Some(FromValueOpt::from_value(v)?),
-                    "message" => b.message = Some(FromValueOpt::from_value(v)?),
-                    "param" => b.param = Some(FromValueOpt::from_value(v)?),
-                    "payment_intent" => b.payment_intent = Some(FromValueOpt::from_value(v)?),
-                    "payment_method" => b.payment_method = Some(FromValueOpt::from_value(v)?),
-                    "payment_method_type" => {
-                        b.payment_method_type = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "request_log_url" => b.request_log_url = Some(FromValueOpt::from_value(v)?),
-                    "setup_intent" => b.setup_intent = Some(FromValueOpt::from_value(v)?),
-                    "source" => b.source = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "charge" => b.charge = FromValueOpt::from_value(v),
+                    "code" => b.code = FromValueOpt::from_value(v),
+                    "decline_code" => b.decline_code = FromValueOpt::from_value(v),
+                    "doc_url" => b.doc_url = FromValueOpt::from_value(v),
+                    "message" => b.message = FromValueOpt::from_value(v),
+                    "param" => b.param = FromValueOpt::from_value(v),
+                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
+                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
+                    "payment_method_type" => b.payment_method_type = FromValueOpt::from_value(v),
+                    "request_log_url" => b.request_log_url = FromValueOpt::from_value(v),
+                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
+                    "source" => b.source = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

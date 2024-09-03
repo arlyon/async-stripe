@@ -17,7 +17,13 @@ pub struct ForwardedResponseDetailsBuilder {
     status: Option<i64>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                body: self.body.take()?,
-                headers: self.headers.take()?,
-                status: self.status?,
-            })
+            let (Some(body), Some(headers), Some(status)) =
+                (self.body.take(), self.headers.take(), self.status)
+            else {
+                return None;
+            };
+            Some(Self::Out { body, headers, status })
         }
     }
 
@@ -99,9 +106,9 @@ const _: () = {
             let mut b = ForwardedResponseDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "body" => b.body = Some(FromValueOpt::from_value(v)?),
-                    "headers" => b.headers = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "body" => b.body = FromValueOpt::from_value(v),
+                    "headers" => b.headers = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

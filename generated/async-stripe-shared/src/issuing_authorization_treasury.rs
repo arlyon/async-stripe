@@ -16,7 +16,13 @@ pub struct IssuingAuthorizationTreasuryBuilder {
     transaction: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +73,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                received_credits: self.received_credits.take()?,
-                received_debits: self.received_debits.take()?,
-                transaction: self.transaction.take()?,
-            })
+            let (Some(received_credits), Some(received_debits), Some(transaction)) = (
+                self.received_credits.take(),
+                self.received_debits.take(),
+                self.transaction.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { received_credits, received_debits, transaction })
         }
     }
 
@@ -98,9 +107,9 @@ const _: () = {
             let mut b = IssuingAuthorizationTreasuryBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "received_credits" => b.received_credits = Some(FromValueOpt::from_value(v)?),
-                    "received_debits" => b.received_debits = Some(FromValueOpt::from_value(v)?),
-                    "transaction" => b.transaction = Some(FromValueOpt::from_value(v)?),
+                    "received_credits" => b.received_credits = FromValueOpt::from_value(v),
+                    "received_debits" => b.received_debits = FromValueOpt::from_value(v),
+                    "transaction" => b.transaction = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

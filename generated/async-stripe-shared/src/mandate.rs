@@ -36,7 +36,13 @@ pub struct MandateBuilder {
     type_: Option<MandateType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -98,17 +104,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(customer_acceptance),
+                Some(id),
+                Some(livemode),
+                Some(multi_use),
+                Some(on_behalf_of),
+                Some(payment_method),
+                Some(payment_method_details),
+                Some(single_use),
+                Some(status),
+                Some(type_),
+            ) = (
+                self.customer_acceptance.take(),
+                self.id.take(),
+                self.livemode,
+                self.multi_use,
+                self.on_behalf_of.take(),
+                self.payment_method.take(),
+                self.payment_method_details.take(),
+                self.single_use,
+                self.status,
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                customer_acceptance: self.customer_acceptance.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                multi_use: self.multi_use?,
-                on_behalf_of: self.on_behalf_of.take()?,
-                payment_method: self.payment_method.take()?,
-                payment_method_details: self.payment_method_details.take()?,
-                single_use: self.single_use?,
-                status: self.status?,
-                type_: self.type_?,
+                customer_acceptance,
+                id,
+                livemode,
+                multi_use,
+                on_behalf_of,
+                payment_method,
+                payment_method_details,
+                single_use,
+                status,
+                type_,
             })
         }
     }
@@ -136,20 +168,18 @@ const _: () = {
             let mut b = MandateBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "customer_acceptance" => {
-                        b.customer_acceptance = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "multi_use" => b.multi_use = Some(FromValueOpt::from_value(v)?),
-                    "on_behalf_of" => b.on_behalf_of = Some(FromValueOpt::from_value(v)?),
-                    "payment_method" => b.payment_method = Some(FromValueOpt::from_value(v)?),
+                    "customer_acceptance" => b.customer_acceptance = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "multi_use" => b.multi_use = FromValueOpt::from_value(v),
+                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
+                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
                     "payment_method_details" => {
-                        b.payment_method_details = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_details = FromValueOpt::from_value(v)
                     }
-                    "single_use" => b.single_use = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "single_use" => b.single_use = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

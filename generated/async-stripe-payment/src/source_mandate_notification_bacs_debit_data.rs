@@ -10,7 +10,13 @@ pub struct SourceMandateNotificationBacsDebitDataBuilder {
     last4: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { last4: self.last4.take()? })
+            let (Some(last4),) = (self.last4.take(),) else {
+                return None;
+            };
+            Some(Self::Out { last4 })
         }
     }
 
@@ -82,7 +91,7 @@ const _: () = {
             let mut b = SourceMandateNotificationBacsDebitDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

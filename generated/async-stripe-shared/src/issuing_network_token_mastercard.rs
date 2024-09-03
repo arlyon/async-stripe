@@ -20,7 +20,13 @@ pub struct IssuingNetworkTokenMastercardBuilder {
     token_requestor_name: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -73,11 +79,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(card_reference_id),
+                Some(token_reference_id),
+                Some(token_requestor_id),
+                Some(token_requestor_name),
+            ) = (
+                self.card_reference_id.take(),
+                self.token_reference_id.take(),
+                self.token_requestor_id.take(),
+                self.token_requestor_name.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                card_reference_id: self.card_reference_id.take()?,
-                token_reference_id: self.token_reference_id.take()?,
-                token_requestor_id: self.token_requestor_id.take()?,
-                token_requestor_name: self.token_requestor_name.take()?,
+                card_reference_id,
+                token_reference_id,
+                token_requestor_id,
+                token_requestor_name,
             })
         }
     }
@@ -105,16 +125,10 @@ const _: () = {
             let mut b = IssuingNetworkTokenMastercardBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "card_reference_id" => b.card_reference_id = Some(FromValueOpt::from_value(v)?),
-                    "token_reference_id" => {
-                        b.token_reference_id = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "token_requestor_id" => {
-                        b.token_requestor_id = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "token_requestor_name" => {
-                        b.token_requestor_name = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "card_reference_id" => b.card_reference_id = FromValueOpt::from_value(v),
+                    "token_reference_id" => b.token_reference_id = FromValueOpt::from_value(v),
+                    "token_requestor_id" => b.token_requestor_id = FromValueOpt::from_value(v),
+                    "token_requestor_name" => b.token_requestor_name = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

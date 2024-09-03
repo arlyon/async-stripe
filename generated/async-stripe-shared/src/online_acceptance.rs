@@ -13,7 +13,13 @@ pub struct OnlineAcceptanceBuilder {
     user_agent: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +65,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                ip_address: self.ip_address.take()?,
-                user_agent: self.user_agent.take()?,
-            })
+            let (Some(ip_address), Some(user_agent)) =
+                (self.ip_address.take(), self.user_agent.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { ip_address, user_agent })
         }
     }
 
@@ -89,8 +97,8 @@ const _: () = {
             let mut b = OnlineAcceptanceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "ip_address" => b.ip_address = Some(FromValueOpt::from_value(v)?),
-                    "user_agent" => b.user_agent = Some(FromValueOpt::from_value(v)?),
+                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
+                    "user_agent" => b.user_agent = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

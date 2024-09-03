@@ -14,7 +14,13 @@ pub struct PaymentMethodOptionsCardPresentBuilder {
     request_incremental_authorization_support: Option<Option<bool>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,10 +73,19 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(request_extended_authorization),
+                Some(request_incremental_authorization_support),
+            ) = (
+                self.request_extended_authorization,
+                self.request_incremental_authorization_support,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                request_extended_authorization: self.request_extended_authorization?,
-                request_incremental_authorization_support: self
-                    .request_incremental_authorization_support?,
+                request_extended_authorization,
+                request_incremental_authorization_support,
             })
         }
     }
@@ -99,11 +114,10 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "request_extended_authorization" => {
-                        b.request_extended_authorization = Some(FromValueOpt::from_value(v)?)
+                        b.request_extended_authorization = FromValueOpt::from_value(v)
                     }
                     "request_incremental_authorization_support" => {
-                        b.request_incremental_authorization_support =
-                            Some(FromValueOpt::from_value(v)?)
+                        b.request_incremental_authorization_support = FromValueOpt::from_value(v)
                     }
 
                     _ => {}

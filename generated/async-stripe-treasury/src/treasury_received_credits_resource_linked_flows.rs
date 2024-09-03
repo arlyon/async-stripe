@@ -29,7 +29,13 @@ pub struct TreasuryReceivedCreditsResourceLinkedFlowsBuilder {
     source_flow_type: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -86,13 +92,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(credit_reversal),
+                Some(issuing_authorization),
+                Some(issuing_transaction),
+                Some(source_flow),
+                Some(source_flow_details),
+                Some(source_flow_type),
+            ) = (
+                self.credit_reversal.take(),
+                self.issuing_authorization.take(),
+                self.issuing_transaction.take(),
+                self.source_flow.take(),
+                self.source_flow_details.take(),
+                self.source_flow_type.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                credit_reversal: self.credit_reversal.take()?,
-                issuing_authorization: self.issuing_authorization.take()?,
-                issuing_transaction: self.issuing_transaction.take()?,
-                source_flow: self.source_flow.take()?,
-                source_flow_details: self.source_flow_details.take()?,
-                source_flow_type: self.source_flow_type.take()?,
+                credit_reversal,
+                issuing_authorization,
+                issuing_transaction,
+                source_flow,
+                source_flow_details,
+                source_flow_type,
             })
         }
     }
@@ -120,18 +144,14 @@ const _: () = {
             let mut b = TreasuryReceivedCreditsResourceLinkedFlowsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "credit_reversal" => b.credit_reversal = Some(FromValueOpt::from_value(v)?),
+                    "credit_reversal" => b.credit_reversal = FromValueOpt::from_value(v),
                     "issuing_authorization" => {
-                        b.issuing_authorization = Some(FromValueOpt::from_value(v)?)
+                        b.issuing_authorization = FromValueOpt::from_value(v)
                     }
-                    "issuing_transaction" => {
-                        b.issuing_transaction = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "source_flow" => b.source_flow = Some(FromValueOpt::from_value(v)?),
-                    "source_flow_details" => {
-                        b.source_flow_details = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "source_flow_type" => b.source_flow_type = Some(FromValueOpt::from_value(v)?),
+                    "issuing_transaction" => b.issuing_transaction = FromValueOpt::from_value(v),
+                    "source_flow" => b.source_flow = FromValueOpt::from_value(v),
+                    "source_flow_details" => b.source_flow_details = FromValueOpt::from_value(v),
+                    "source_flow_type" => b.source_flow_type = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

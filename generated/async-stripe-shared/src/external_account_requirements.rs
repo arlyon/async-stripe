@@ -24,7 +24,13 @@ pub struct ExternalAccountRequirementsBuilder {
     pending_verification: Option<Option<Vec<String>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,12 +83,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                currently_due: self.currently_due.take()?,
-                errors: self.errors.take()?,
-                past_due: self.past_due.take()?,
-                pending_verification: self.pending_verification.take()?,
-            })
+            let (Some(currently_due), Some(errors), Some(past_due), Some(pending_verification)) = (
+                self.currently_due.take(),
+                self.errors.take(),
+                self.past_due.take(),
+                self.pending_verification.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { currently_due, errors, past_due, pending_verification })
         }
     }
 
@@ -109,12 +118,10 @@ const _: () = {
             let mut b = ExternalAccountRequirementsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "currently_due" => b.currently_due = Some(FromValueOpt::from_value(v)?),
-                    "errors" => b.errors = Some(FromValueOpt::from_value(v)?),
-                    "past_due" => b.past_due = Some(FromValueOpt::from_value(v)?),
-                    "pending_verification" => {
-                        b.pending_verification = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "currently_due" => b.currently_due = FromValueOpt::from_value(v),
+                    "errors" => b.errors = FromValueOpt::from_value(v),
+                    "past_due" => b.past_due = FromValueOpt::from_value(v),
+                    "pending_verification" => b.pending_verification = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

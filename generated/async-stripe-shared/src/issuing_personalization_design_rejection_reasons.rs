@@ -13,7 +13,13 @@ pub struct IssuingPersonalizationDesignRejectionReasonsBuilder {
     carrier_text: Option<Option<Vec<IssuingPersonalizationDesignRejectionReasonsCarrierText>>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +65,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                card_logo: self.card_logo.take()?,
-                carrier_text: self.carrier_text.take()?,
-            })
+            let (Some(card_logo), Some(carrier_text)) =
+                (self.card_logo.take(), self.carrier_text.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { card_logo, carrier_text })
         }
     }
 
@@ -89,8 +97,8 @@ const _: () = {
             let mut b = IssuingPersonalizationDesignRejectionReasonsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "card_logo" => b.card_logo = Some(FromValueOpt::from_value(v)?),
-                    "carrier_text" => b.carrier_text = Some(FromValueOpt::from_value(v)?),
+                    "card_logo" => b.card_logo = FromValueOpt::from_value(v),
+                    "carrier_text" => b.carrier_text = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

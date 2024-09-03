@@ -27,7 +27,13 @@ pub struct SetupAttemptPaymentMethodDetailsIdealBuilder {
     verified_name: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -86,13 +92,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(bank),
+                Some(bic),
+                Some(generated_sepa_debit),
+                Some(generated_sepa_debit_mandate),
+                Some(iban_last4),
+                Some(verified_name),
+            ) = (
+                self.bank,
+                self.bic,
+                self.generated_sepa_debit.take(),
+                self.generated_sepa_debit_mandate.take(),
+                self.iban_last4.take(),
+                self.verified_name.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                bank: self.bank?,
-                bic: self.bic?,
-                generated_sepa_debit: self.generated_sepa_debit.take()?,
-                generated_sepa_debit_mandate: self.generated_sepa_debit_mandate.take()?,
-                iban_last4: self.iban_last4.take()?,
-                verified_name: self.verified_name.take()?,
+                bank,
+                bic,
+                generated_sepa_debit,
+                generated_sepa_debit_mandate,
+                iban_last4,
+                verified_name,
             })
         }
     }
@@ -120,16 +144,14 @@ const _: () = {
             let mut b = SetupAttemptPaymentMethodDetailsIdealBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank" => b.bank = Some(FromValueOpt::from_value(v)?),
-                    "bic" => b.bic = Some(FromValueOpt::from_value(v)?),
-                    "generated_sepa_debit" => {
-                        b.generated_sepa_debit = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "bank" => b.bank = FromValueOpt::from_value(v),
+                    "bic" => b.bic = FromValueOpt::from_value(v),
+                    "generated_sepa_debit" => b.generated_sepa_debit = FromValueOpt::from_value(v),
                     "generated_sepa_debit_mandate" => {
-                        b.generated_sepa_debit_mandate = Some(FromValueOpt::from_value(v)?)
+                        b.generated_sepa_debit_mandate = FromValueOpt::from_value(v)
                     }
-                    "iban_last4" => b.iban_last4 = Some(FromValueOpt::from_value(v)?),
-                    "verified_name" => b.verified_name = Some(FromValueOpt::from_value(v)?),
+                    "iban_last4" => b.iban_last4 = FromValueOpt::from_value(v),
+                    "verified_name" => b.verified_name = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

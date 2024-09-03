@@ -42,7 +42,13 @@ pub struct BillingMeterBuilder {
     value_settings: Option<stripe_billing::BillingMeterResourceBillingMeterValue>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -111,19 +117,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(created),
+                Some(customer_mapping),
+                Some(default_aggregation),
+                Some(display_name),
+                Some(event_name),
+                Some(event_time_window),
+                Some(id),
+                Some(livemode),
+                Some(status),
+                Some(status_transitions),
+                Some(updated),
+                Some(value_settings),
+            ) = (
+                self.created,
+                self.customer_mapping.take(),
+                self.default_aggregation,
+                self.display_name.take(),
+                self.event_name.take(),
+                self.event_time_window,
+                self.id.take(),
+                self.livemode,
+                self.status,
+                self.status_transitions,
+                self.updated,
+                self.value_settings.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                created: self.created?,
-                customer_mapping: self.customer_mapping.take()?,
-                default_aggregation: self.default_aggregation?,
-                display_name: self.display_name.take()?,
-                event_name: self.event_name.take()?,
-                event_time_window: self.event_time_window?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                status: self.status?,
-                status_transitions: self.status_transitions?,
-                updated: self.updated?,
-                value_settings: self.value_settings.take()?,
+                created,
+                customer_mapping,
+                default_aggregation,
+                display_name,
+                event_name,
+                event_time_window,
+                id,
+                livemode,
+                status,
+                status_transitions,
+                updated,
+                value_settings,
             })
         }
     }
@@ -151,22 +187,18 @@ const _: () = {
             let mut b = BillingMeterBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "customer_mapping" => b.customer_mapping = Some(FromValueOpt::from_value(v)?),
-                    "default_aggregation" => {
-                        b.default_aggregation = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "display_name" => b.display_name = Some(FromValueOpt::from_value(v)?),
-                    "event_name" => b.event_name = Some(FromValueOpt::from_value(v)?),
-                    "event_time_window" => b.event_time_window = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "status_transitions" => {
-                        b.status_transitions = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "updated" => b.updated = Some(FromValueOpt::from_value(v)?),
-                    "value_settings" => b.value_settings = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "customer_mapping" => b.customer_mapping = FromValueOpt::from_value(v),
+                    "default_aggregation" => b.default_aggregation = FromValueOpt::from_value(v),
+                    "display_name" => b.display_name = FromValueOpt::from_value(v),
+                    "event_name" => b.event_name = FromValueOpt::from_value(v),
+                    "event_time_window" => b.event_time_window = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
+                    "updated" => b.updated = FromValueOpt::from_value(v),
+                    "value_settings" => b.value_settings = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

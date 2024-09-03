@@ -39,7 +39,13 @@ pub struct IssuingAuthorizationMerchantDataBuilder {
     url: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -104,17 +110,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(category),
+                Some(category_code),
+                Some(city),
+                Some(country),
+                Some(name),
+                Some(network_id),
+                Some(postal_code),
+                Some(state),
+                Some(terminal_id),
+                Some(url),
+            ) = (
+                self.category.take(),
+                self.category_code.take(),
+                self.city.take(),
+                self.country.take(),
+                self.name.take(),
+                self.network_id.take(),
+                self.postal_code.take(),
+                self.state.take(),
+                self.terminal_id.take(),
+                self.url.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                category: self.category.take()?,
-                category_code: self.category_code.take()?,
-                city: self.city.take()?,
-                country: self.country.take()?,
-                name: self.name.take()?,
-                network_id: self.network_id.take()?,
-                postal_code: self.postal_code.take()?,
-                state: self.state.take()?,
-                terminal_id: self.terminal_id.take()?,
-                url: self.url.take()?,
+                category,
+                category_code,
+                city,
+                country,
+                name,
+                network_id,
+                postal_code,
+                state,
+                terminal_id,
+                url,
             })
         }
     }
@@ -142,16 +174,16 @@ const _: () = {
             let mut b = IssuingAuthorizationMerchantDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "category" => b.category = Some(FromValueOpt::from_value(v)?),
-                    "category_code" => b.category_code = Some(FromValueOpt::from_value(v)?),
-                    "city" => b.city = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "network_id" => b.network_id = Some(FromValueOpt::from_value(v)?),
-                    "postal_code" => b.postal_code = Some(FromValueOpt::from_value(v)?),
-                    "state" => b.state = Some(FromValueOpt::from_value(v)?),
-                    "terminal_id" => b.terminal_id = Some(FromValueOpt::from_value(v)?),
-                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+                    "category" => b.category = FromValueOpt::from_value(v),
+                    "category_code" => b.category_code = FromValueOpt::from_value(v),
+                    "city" => b.city = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "network_id" => b.network_id = FromValueOpt::from_value(v),
+                    "postal_code" => b.postal_code = FromValueOpt::from_value(v),
+                    "state" => b.state = FromValueOpt::from_value(v),
+                    "terminal_id" => b.terminal_id = FromValueOpt::from_value(v),
+                    "url" => b.url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

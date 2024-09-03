@@ -55,7 +55,13 @@ pub struct TaxTransactionBuilder {
     type_: Option<TaxTransactionType>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -128,21 +134,55 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(created),
+                Some(currency),
+                Some(customer),
+                Some(customer_details),
+                Some(id),
+                Some(line_items),
+                Some(livemode),
+                Some(metadata),
+                Some(reference),
+                Some(reversal),
+                Some(ship_from_details),
+                Some(shipping_cost),
+                Some(tax_date),
+                Some(type_),
+            ) = (
+                self.created,
+                self.currency,
+                self.customer.take(),
+                self.customer_details.take(),
+                self.id.take(),
+                self.line_items.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.reference.take(),
+                self.reversal.take(),
+                self.ship_from_details.take(),
+                self.shipping_cost.take(),
+                self.tax_date,
+                self.type_,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                created: self.created?,
-                currency: self.currency?,
-                customer: self.customer.take()?,
-                customer_details: self.customer_details.take()?,
-                id: self.id.take()?,
-                line_items: self.line_items.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                reference: self.reference.take()?,
-                reversal: self.reversal.take()?,
-                ship_from_details: self.ship_from_details.take()?,
-                shipping_cost: self.shipping_cost.take()?,
-                tax_date: self.tax_date?,
-                type_: self.type_?,
+                created,
+                currency,
+                customer,
+                customer_details,
+                id,
+                line_items,
+                livemode,
+                metadata,
+                reference,
+                reversal,
+                ship_from_details,
+                shipping_cost,
+                tax_date,
+                type_,
             })
         }
     }
@@ -170,20 +210,20 @@ const _: () = {
             let mut b = TaxTransactionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "customer_details" => b.customer_details = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "line_items" => b.line_items = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
-                    "reversal" => b.reversal = Some(FromValueOpt::from_value(v)?),
-                    "ship_from_details" => b.ship_from_details = Some(FromValueOpt::from_value(v)?),
-                    "shipping_cost" => b.shipping_cost = Some(FromValueOpt::from_value(v)?),
-                    "tax_date" => b.tax_date = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_details" => b.customer_details = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "line_items" => b.line_items = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
+                    "reversal" => b.reversal = FromValueOpt::from_value(v),
+                    "ship_from_details" => b.ship_from_details = FromValueOpt::from_value(v),
+                    "shipping_cost" => b.shipping_cost = FromValueOpt::from_value(v),
+                    "tax_date" => b.tax_date = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -10,7 +10,13 @@ pub struct BillingMeterResourceBillingMeterValueBuilder {
     event_payload_key: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { event_payload_key: self.event_payload_key.take()? })
+            let (Some(event_payload_key),) = (self.event_payload_key.take(),) else {
+                return None;
+            };
+            Some(Self::Out { event_payload_key })
         }
     }
 
@@ -82,7 +91,7 @@ const _: () = {
             let mut b = BillingMeterResourceBillingMeterValueBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "event_payload_key" => b.event_payload_key = Some(FromValueOpt::from_value(v)?),
+                    "event_payload_key" => b.event_payload_key = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

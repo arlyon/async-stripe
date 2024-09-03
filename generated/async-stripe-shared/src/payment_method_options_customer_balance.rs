@@ -21,7 +21,13 @@ pub struct PaymentMethodOptionsCustomerBalanceBuilder {
     setup_future_usage: Option<Option<PaymentMethodOptionsCustomerBalanceSetupFutureUsage>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -72,11 +78,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                bank_transfer: self.bank_transfer.take()?,
-                funding_type: self.funding_type?,
-                setup_future_usage: self.setup_future_usage?,
-            })
+            let (Some(bank_transfer), Some(funding_type), Some(setup_future_usage)) =
+                (self.bank_transfer.take(), self.funding_type, self.setup_future_usage)
+            else {
+                return None;
+            };
+            Some(Self::Out { bank_transfer, funding_type, setup_future_usage })
         }
     }
 
@@ -103,11 +110,9 @@ const _: () = {
             let mut b = PaymentMethodOptionsCustomerBalanceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank_transfer" => b.bank_transfer = Some(FromValueOpt::from_value(v)?),
-                    "funding_type" => b.funding_type = Some(FromValueOpt::from_value(v)?),
-                    "setup_future_usage" => {
-                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "bank_transfer" => b.bank_transfer = FromValueOpt::from_value(v),
+                    "funding_type" => b.funding_type = FromValueOpt::from_value(v),
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

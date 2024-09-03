@@ -10,7 +10,13 @@ pub struct TreasuryReceivedCreditsResourceStatusTransitionsBuilder {
     posted_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { posted_at: self.posted_at? })
+            let (Some(posted_at),) = (self.posted_at,) else {
+                return None;
+            };
+            Some(Self::Out { posted_at })
         }
     }
 
@@ -82,7 +91,7 @@ const _: () = {
             let mut b = TreasuryReceivedCreditsResourceStatusTransitionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "posted_at" => b.posted_at = Some(FromValueOpt::from_value(v)?),
+                    "posted_at" => b.posted_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -36,7 +36,13 @@ pub struct FinancialConnectionsSessionBuilder {
     return_url: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -99,16 +105,40 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account_holder),
+                Some(accounts),
+                Some(client_secret),
+                Some(filters),
+                Some(id),
+                Some(livemode),
+                Some(permissions),
+                Some(prefetch),
+                Some(return_url),
+            ) = (
+                self.account_holder.take(),
+                self.accounts.take(),
+                self.client_secret.take(),
+                self.filters.take(),
+                self.id.take(),
+                self.livemode,
+                self.permissions.take(),
+                self.prefetch.take(),
+                self.return_url.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account_holder: self.account_holder.take()?,
-                accounts: self.accounts.take()?,
-                client_secret: self.client_secret.take()?,
-                filters: self.filters.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                permissions: self.permissions.take()?,
-                prefetch: self.prefetch.take()?,
-                return_url: self.return_url.take()?,
+                account_holder,
+                accounts,
+                client_secret,
+                filters,
+                id,
+                livemode,
+                permissions,
+                prefetch,
+                return_url,
             })
         }
     }
@@ -136,15 +166,15 @@ const _: () = {
             let mut b = FinancialConnectionsSessionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_holder" => b.account_holder = Some(FromValueOpt::from_value(v)?),
-                    "accounts" => b.accounts = Some(FromValueOpt::from_value(v)?),
-                    "client_secret" => b.client_secret = Some(FromValueOpt::from_value(v)?),
-                    "filters" => b.filters = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "permissions" => b.permissions = Some(FromValueOpt::from_value(v)?),
-                    "prefetch" => b.prefetch = Some(FromValueOpt::from_value(v)?),
-                    "return_url" => b.return_url = Some(FromValueOpt::from_value(v)?),
+                    "account_holder" => b.account_holder = FromValueOpt::from_value(v),
+                    "accounts" => b.accounts = FromValueOpt::from_value(v),
+                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
+                    "filters" => b.filters = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "permissions" => b.permissions = FromValueOpt::from_value(v),
+                    "prefetch" => b.prefetch = FromValueOpt::from_value(v),
+                    "return_url" => b.return_url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

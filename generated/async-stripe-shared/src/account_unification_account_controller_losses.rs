@@ -10,7 +10,13 @@ pub struct AccountUnificationAccountControllerLossesBuilder {
     payments: Option<AccountUnificationAccountControllerLossesPayments>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -55,7 +61,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { payments: self.payments? })
+            let (Some(payments),) = (self.payments,) else {
+                return None;
+            };
+            Some(Self::Out { payments })
         }
     }
 
@@ -82,7 +91,7 @@ const _: () = {
             let mut b = AccountUnificationAccountControllerLossesBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "payments" => b.payments = Some(FromValueOpt::from_value(v)?),
+                    "payments" => b.payments = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

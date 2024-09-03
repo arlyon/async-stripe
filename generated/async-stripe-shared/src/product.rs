@@ -77,7 +77,13 @@ pub struct ProductBuilder {
     url: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -155,25 +161,67 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(active),
+                Some(created),
+                Some(default_price),
+                Some(description),
+                Some(id),
+                Some(images),
+                Some(livemode),
+                Some(marketing_features),
+                Some(metadata),
+                Some(name),
+                Some(package_dimensions),
+                Some(shippable),
+                Some(statement_descriptor),
+                Some(tax_code),
+                Some(type_),
+                Some(unit_label),
+                Some(updated),
+                Some(url),
+            ) = (
+                self.active,
+                self.created,
+                self.default_price.take(),
+                self.description.take(),
+                self.id.take(),
+                self.images.take(),
+                self.livemode,
+                self.marketing_features.take(),
+                self.metadata.take(),
+                self.name.take(),
+                self.package_dimensions,
+                self.shippable,
+                self.statement_descriptor.take(),
+                self.tax_code.take(),
+                self.type_,
+                self.unit_label.take(),
+                self.updated,
+                self.url.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                active: self.active?,
-                created: self.created?,
-                default_price: self.default_price.take()?,
-                description: self.description.take()?,
-                id: self.id.take()?,
-                images: self.images.take()?,
-                livemode: self.livemode?,
-                marketing_features: self.marketing_features.take()?,
-                metadata: self.metadata.take()?,
-                name: self.name.take()?,
-                package_dimensions: self.package_dimensions?,
-                shippable: self.shippable?,
-                statement_descriptor: self.statement_descriptor.take()?,
-                tax_code: self.tax_code.take()?,
-                type_: self.type_?,
-                unit_label: self.unit_label.take()?,
-                updated: self.updated?,
-                url: self.url.take()?,
+                active,
+                created,
+                default_price,
+                description,
+                id,
+                images,
+                livemode,
+                marketing_features,
+                metadata,
+                name,
+                package_dimensions,
+                shippable,
+                statement_descriptor,
+                tax_code,
+                type_,
+                unit_label,
+                updated,
+                url,
             })
         }
     }
@@ -201,30 +249,24 @@ const _: () = {
             let mut b = ProductBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "active" => b.active = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "default_price" => b.default_price = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "images" => b.images = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "marketing_features" => {
-                        b.marketing_features = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "package_dimensions" => {
-                        b.package_dimensions = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "shippable" => b.shippable = Some(FromValueOpt::from_value(v)?),
-                    "statement_descriptor" => {
-                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "tax_code" => b.tax_code = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
-                    "unit_label" => b.unit_label = Some(FromValueOpt::from_value(v)?),
-                    "updated" => b.updated = Some(FromValueOpt::from_value(v)?),
-                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+                    "active" => b.active = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "default_price" => b.default_price = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "images" => b.images = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "marketing_features" => b.marketing_features = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "package_dimensions" => b.package_dimensions = FromValueOpt::from_value(v),
+                    "shippable" => b.shippable = FromValueOpt::from_value(v),
+                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
+                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "unit_label" => b.unit_label = FromValueOpt::from_value(v),
+                    "updated" => b.updated = FromValueOpt::from_value(v),
+                    "url" => b.url = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

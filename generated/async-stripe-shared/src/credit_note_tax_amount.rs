@@ -23,7 +23,13 @@ pub struct CreditNoteTaxAmountBuilder {
     taxable_amount: Option<Option<i64>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -78,13 +84,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                amount: self.amount?,
-                inclusive: self.inclusive?,
-                tax_rate: self.tax_rate.take()?,
-                taxability_reason: self.taxability_reason?,
-                taxable_amount: self.taxable_amount?,
-            })
+            let (
+                Some(amount),
+                Some(inclusive),
+                Some(tax_rate),
+                Some(taxability_reason),
+                Some(taxable_amount),
+            ) = (
+                self.amount,
+                self.inclusive,
+                self.tax_rate.take(),
+                self.taxability_reason,
+                self.taxable_amount,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { amount, inclusive, tax_rate, taxability_reason, taxable_amount })
         }
     }
 
@@ -111,11 +127,11 @@ const _: () = {
             let mut b = CreditNoteTaxAmountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "inclusive" => b.inclusive = Some(FromValueOpt::from_value(v)?),
-                    "tax_rate" => b.tax_rate = Some(FromValueOpt::from_value(v)?),
-                    "taxability_reason" => b.taxability_reason = Some(FromValueOpt::from_value(v)?),
-                    "taxable_amount" => b.taxable_amount = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "inclusive" => b.inclusive = FromValueOpt::from_value(v),
+                    "tax_rate" => b.tax_rate = FromValueOpt::from_value(v),
+                    "taxability_reason" => b.taxability_reason = FromValueOpt::from_value(v),
+                    "taxable_amount" => b.taxable_amount = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

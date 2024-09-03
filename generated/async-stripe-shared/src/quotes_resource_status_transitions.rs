@@ -16,7 +16,13 @@ pub struct QuotesResourceStatusTransitionsBuilder {
     finalized_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -67,11 +73,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                accepted_at: self.accepted_at?,
-                canceled_at: self.canceled_at?,
-                finalized_at: self.finalized_at?,
-            })
+            let (Some(accepted_at), Some(canceled_at), Some(finalized_at)) =
+                (self.accepted_at, self.canceled_at, self.finalized_at)
+            else {
+                return None;
+            };
+            Some(Self::Out { accepted_at, canceled_at, finalized_at })
         }
     }
 
@@ -98,9 +105,9 @@ const _: () = {
             let mut b = QuotesResourceStatusTransitionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "accepted_at" => b.accepted_at = Some(FromValueOpt::from_value(v)?),
-                    "canceled_at" => b.canceled_at = Some(FromValueOpt::from_value(v)?),
-                    "finalized_at" => b.finalized_at = Some(FromValueOpt::from_value(v)?),
+                    "accepted_at" => b.accepted_at = FromValueOpt::from_value(v),
+                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
+                    "finalized_at" => b.finalized_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

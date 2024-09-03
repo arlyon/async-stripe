@@ -32,7 +32,13 @@ pub struct PaymentMethodDetailsUsBankAccountBuilder {
     routing_number: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -93,15 +99,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account_holder_type),
+                Some(account_type),
+                Some(bank_name),
+                Some(fingerprint),
+                Some(last4),
+                Some(mandate),
+                Some(payment_reference),
+                Some(routing_number),
+            ) = (
+                self.account_holder_type,
+                self.account_type,
+                self.bank_name.take(),
+                self.fingerprint.take(),
+                self.last4.take(),
+                self.mandate.take(),
+                self.payment_reference.take(),
+                self.routing_number.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                account_holder_type: self.account_holder_type?,
-                account_type: self.account_type?,
-                bank_name: self.bank_name.take()?,
-                fingerprint: self.fingerprint.take()?,
-                last4: self.last4.take()?,
-                mandate: self.mandate.take()?,
-                payment_reference: self.payment_reference.take()?,
-                routing_number: self.routing_number.take()?,
+                account_holder_type,
+                account_type,
+                bank_name,
+                fingerprint,
+                last4,
+                mandate,
+                payment_reference,
+                routing_number,
             })
         }
     }
@@ -129,16 +157,14 @@ const _: () = {
             let mut b = PaymentMethodDetailsUsBankAccountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_holder_type" => {
-                        b.account_holder_type = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "account_type" => b.account_type = Some(FromValueOpt::from_value(v)?),
-                    "bank_name" => b.bank_name = Some(FromValueOpt::from_value(v)?),
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
-                    "mandate" => b.mandate = Some(FromValueOpt::from_value(v)?),
-                    "payment_reference" => b.payment_reference = Some(FromValueOpt::from_value(v)?),
-                    "routing_number" => b.routing_number = Some(FromValueOpt::from_value(v)?),
+                    "account_holder_type" => b.account_holder_type = FromValueOpt::from_value(v),
+                    "account_type" => b.account_type = FromValueOpt::from_value(v),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "mandate" => b.mandate = FromValueOpt::from_value(v),
+                    "payment_reference" => b.payment_reference = FromValueOpt::from_value(v),
+                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -17,7 +17,13 @@ pub struct InvoicePaymentMethodOptionsCustomerBalanceBankTransferBuilder {
     type_: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -64,7 +70,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { eu_bank_transfer: self.eu_bank_transfer?, type_: self.type_.take()? })
+            let (Some(eu_bank_transfer), Some(type_)) = (self.eu_bank_transfer, self.type_.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { eu_bank_transfer, type_ })
         }
     }
 
@@ -92,8 +102,8 @@ const _: () = {
                 InvoicePaymentMethodOptionsCustomerBalanceBankTransferBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "eu_bank_transfer" => b.eu_bank_transfer = Some(FromValueOpt::from_value(v)?),
-                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "eu_bank_transfer" => b.eu_bank_transfer = FromValueOpt::from_value(v),
+                    "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

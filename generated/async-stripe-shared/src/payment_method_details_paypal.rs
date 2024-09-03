@@ -24,7 +24,13 @@ pub struct PaymentMethodDetailsPaypalBuilder {
     transaction_id: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -79,13 +85,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                payer_email: self.payer_email.take()?,
-                payer_id: self.payer_id.take()?,
-                payer_name: self.payer_name.take()?,
-                seller_protection: self.seller_protection.take()?,
-                transaction_id: self.transaction_id.take()?,
-            })
+            let (
+                Some(payer_email),
+                Some(payer_id),
+                Some(payer_name),
+                Some(seller_protection),
+                Some(transaction_id),
+            ) = (
+                self.payer_email.take(),
+                self.payer_id.take(),
+                self.payer_name.take(),
+                self.seller_protection.take(),
+                self.transaction_id.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { payer_email, payer_id, payer_name, seller_protection, transaction_id })
         }
     }
 
@@ -112,11 +128,11 @@ const _: () = {
             let mut b = PaymentMethodDetailsPaypalBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "payer_email" => b.payer_email = Some(FromValueOpt::from_value(v)?),
-                    "payer_id" => b.payer_id = Some(FromValueOpt::from_value(v)?),
-                    "payer_name" => b.payer_name = Some(FromValueOpt::from_value(v)?),
-                    "seller_protection" => b.seller_protection = Some(FromValueOpt::from_value(v)?),
-                    "transaction_id" => b.transaction_id = Some(FromValueOpt::from_value(v)?),
+                    "payer_email" => b.payer_email = FromValueOpt::from_value(v),
+                    "payer_id" => b.payer_id = FromValueOpt::from_value(v),
+                    "payer_name" => b.payer_name = FromValueOpt::from_value(v),
+                    "seller_protection" => b.seller_protection = FromValueOpt::from_value(v),
+                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

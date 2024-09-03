@@ -29,7 +29,13 @@ pub struct BillingMeterEventBuilder {
     timestamp: Option<stripe_types::Timestamp>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -86,14 +92,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                created: self.created?,
-                event_name: self.event_name.take()?,
-                identifier: self.identifier.take()?,
-                livemode: self.livemode?,
-                payload: self.payload.take()?,
-                timestamp: self.timestamp?,
-            })
+            let (
+                Some(created),
+                Some(event_name),
+                Some(identifier),
+                Some(livemode),
+                Some(payload),
+                Some(timestamp),
+            ) = (
+                self.created,
+                self.event_name.take(),
+                self.identifier.take(),
+                self.livemode,
+                self.payload.take(),
+                self.timestamp,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { created, event_name, identifier, livemode, payload, timestamp })
         }
     }
 
@@ -120,12 +137,12 @@ const _: () = {
             let mut b = BillingMeterEventBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "event_name" => b.event_name = Some(FromValueOpt::from_value(v)?),
-                    "identifier" => b.identifier = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "payload" => b.payload = Some(FromValueOpt::from_value(v)?),
-                    "timestamp" => b.timestamp = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "event_name" => b.event_name = FromValueOpt::from_value(v),
+                    "identifier" => b.identifier = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "payload" => b.payload = FromValueOpt::from_value(v),
+                    "timestamp" => b.timestamp = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

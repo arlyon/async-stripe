@@ -13,7 +13,13 @@ pub struct SourceCodeVerificationFlowBuilder {
     status: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +65,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                attempts_remaining: self.attempts_remaining?,
-                status: self.status.take()?,
-            })
+            let (Some(attempts_remaining), Some(status)) =
+                (self.attempts_remaining, self.status.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { attempts_remaining, status })
         }
     }
 
@@ -89,10 +97,8 @@ const _: () = {
             let mut b = SourceCodeVerificationFlowBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "attempts_remaining" => {
-                        b.attempts_remaining = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "attempts_remaining" => b.attempts_remaining = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

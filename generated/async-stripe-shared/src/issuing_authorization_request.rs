@@ -54,7 +54,13 @@ pub struct IssuingAuthorizationRequestBuilder {
     requested_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -123,19 +129,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(amount_details),
+                Some(approved),
+                Some(authorization_code),
+                Some(created),
+                Some(currency),
+                Some(merchant_amount),
+                Some(merchant_currency),
+                Some(network_risk_score),
+                Some(reason),
+                Some(reason_message),
+                Some(requested_at),
+            ) = (
+                self.amount,
+                self.amount_details,
+                self.approved,
+                self.authorization_code.take(),
+                self.created,
+                self.currency,
+                self.merchant_amount,
+                self.merchant_currency,
+                self.network_risk_score,
+                self.reason,
+                self.reason_message.take(),
+                self.requested_at,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                amount_details: self.amount_details?,
-                approved: self.approved?,
-                authorization_code: self.authorization_code.take()?,
-                created: self.created?,
-                currency: self.currency?,
-                merchant_amount: self.merchant_amount?,
-                merchant_currency: self.merchant_currency?,
-                network_risk_score: self.network_risk_score?,
-                reason: self.reason?,
-                reason_message: self.reason_message.take()?,
-                requested_at: self.requested_at?,
+                amount,
+                amount_details,
+                approved,
+                authorization_code,
+                created,
+                currency,
+                merchant_amount,
+                merchant_currency,
+                network_risk_score,
+                reason,
+                reason_message,
+                requested_at,
             })
         }
     }
@@ -163,22 +199,18 @@ const _: () = {
             let mut b = IssuingAuthorizationRequestBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "amount_details" => b.amount_details = Some(FromValueOpt::from_value(v)?),
-                    "approved" => b.approved = Some(FromValueOpt::from_value(v)?),
-                    "authorization_code" => {
-                        b.authorization_code = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "merchant_amount" => b.merchant_amount = Some(FromValueOpt::from_value(v)?),
-                    "merchant_currency" => b.merchant_currency = Some(FromValueOpt::from_value(v)?),
-                    "network_risk_score" => {
-                        b.network_risk_score = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
-                    "reason_message" => b.reason_message = Some(FromValueOpt::from_value(v)?),
-                    "requested_at" => b.requested_at = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "amount_details" => b.amount_details = FromValueOpt::from_value(v),
+                    "approved" => b.approved = FromValueOpt::from_value(v),
+                    "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "merchant_amount" => b.merchant_amount = FromValueOpt::from_value(v),
+                    "merchant_currency" => b.merchant_currency = FromValueOpt::from_value(v),
+                    "network_risk_score" => b.network_risk_score = FromValueOpt::from_value(v),
+                    "reason" => b.reason = FromValueOpt::from_value(v),
+                    "reason_message" => b.reason_message = FromValueOpt::from_value(v),
+                    "requested_at" => b.requested_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

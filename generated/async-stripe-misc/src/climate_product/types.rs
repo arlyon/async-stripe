@@ -37,7 +37,13 @@ pub struct ClimateProductBuilder {
     suppliers: Option<Vec<stripe_misc::ClimateSupplier>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -100,15 +106,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(created),
+                Some(current_prices_per_metric_ton),
+                Some(delivery_year),
+                Some(id),
+                Some(livemode),
+                Some(metric_tons_available),
+                Some(name),
+                Some(suppliers),
+            ) = (
+                self.created,
+                self.current_prices_per_metric_ton.take(),
+                self.delivery_year,
+                self.id.take(),
+                self.livemode,
+                self.metric_tons_available.take(),
+                self.name.take(),
+                self.suppliers.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                created: self.created?,
-                current_prices_per_metric_ton: self.current_prices_per_metric_ton.take()?,
-                delivery_year: self.delivery_year?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metric_tons_available: self.metric_tons_available.take()?,
-                name: self.name.take()?,
-                suppliers: self.suppliers.take()?,
+                created,
+                current_prices_per_metric_ton,
+                delivery_year,
+                id,
+                livemode,
+                metric_tons_available,
+                name,
+                suppliers,
             })
         }
     }
@@ -136,18 +164,18 @@ const _: () = {
             let mut b = ClimateProductBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = FromValueOpt::from_value(v),
                     "current_prices_per_metric_ton" => {
-                        b.current_prices_per_metric_ton = Some(FromValueOpt::from_value(v)?)
+                        b.current_prices_per_metric_ton = FromValueOpt::from_value(v)
                     }
-                    "delivery_year" => b.delivery_year = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "delivery_year" => b.delivery_year = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metric_tons_available" => {
-                        b.metric_tons_available = Some(FromValueOpt::from_value(v)?)
+                        b.metric_tons_available = FromValueOpt::from_value(v)
                     }
-                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
-                    "suppliers" => b.suppliers = Some(FromValueOpt::from_value(v)?),
+                    "name" => b.name = FromValueOpt::from_value(v),
+                    "suppliers" => b.suppliers = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

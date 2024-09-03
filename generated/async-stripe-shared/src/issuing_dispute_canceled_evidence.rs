@@ -37,7 +37,13 @@ pub struct IssuingDisputeCanceledEvidenceBuilder {
     returned_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -106,17 +112,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(additional_documentation),
+                Some(canceled_at),
+                Some(cancellation_policy_provided),
+                Some(cancellation_reason),
+                Some(expected_at),
+                Some(explanation),
+                Some(product_description),
+                Some(product_type),
+                Some(return_status),
+                Some(returned_at),
+            ) = (
+                self.additional_documentation.take(),
+                self.canceled_at,
+                self.cancellation_policy_provided,
+                self.cancellation_reason.take(),
+                self.expected_at,
+                self.explanation.take(),
+                self.product_description.take(),
+                self.product_type,
+                self.return_status,
+                self.returned_at,
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                additional_documentation: self.additional_documentation.take()?,
-                canceled_at: self.canceled_at?,
-                cancellation_policy_provided: self.cancellation_policy_provided?,
-                cancellation_reason: self.cancellation_reason.take()?,
-                expected_at: self.expected_at?,
-                explanation: self.explanation.take()?,
-                product_description: self.product_description.take()?,
-                product_type: self.product_type?,
-                return_status: self.return_status?,
-                returned_at: self.returned_at?,
+                additional_documentation,
+                canceled_at,
+                cancellation_policy_provided,
+                cancellation_reason,
+                expected_at,
+                explanation,
+                product_description,
+                product_type,
+                return_status,
+                returned_at,
             })
         }
     }
@@ -145,23 +177,19 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "additional_documentation" => {
-                        b.additional_documentation = Some(FromValueOpt::from_value(v)?)
+                        b.additional_documentation = FromValueOpt::from_value(v)
                     }
-                    "canceled_at" => b.canceled_at = Some(FromValueOpt::from_value(v)?),
+                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
                     "cancellation_policy_provided" => {
-                        b.cancellation_policy_provided = Some(FromValueOpt::from_value(v)?)
+                        b.cancellation_policy_provided = FromValueOpt::from_value(v)
                     }
-                    "cancellation_reason" => {
-                        b.cancellation_reason = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "expected_at" => b.expected_at = Some(FromValueOpt::from_value(v)?),
-                    "explanation" => b.explanation = Some(FromValueOpt::from_value(v)?),
-                    "product_description" => {
-                        b.product_description = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "product_type" => b.product_type = Some(FromValueOpt::from_value(v)?),
-                    "return_status" => b.return_status = Some(FromValueOpt::from_value(v)?),
-                    "returned_at" => b.returned_at = Some(FromValueOpt::from_value(v)?),
+                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
+                    "expected_at" => b.expected_at = FromValueOpt::from_value(v),
+                    "explanation" => b.explanation = FromValueOpt::from_value(v),
+                    "product_description" => b.product_description = FromValueOpt::from_value(v),
+                    "product_type" => b.product_type = FromValueOpt::from_value(v),
+                    "return_status" => b.return_status = FromValueOpt::from_value(v),
+                    "returned_at" => b.returned_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

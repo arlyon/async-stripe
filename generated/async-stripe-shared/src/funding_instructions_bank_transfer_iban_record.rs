@@ -20,7 +20,13 @@ pub struct FundingInstructionsBankTransferIbanRecordBuilder {
     iban: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -73,12 +79,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                account_holder_name: self.account_holder_name.take()?,
-                bic: self.bic.take()?,
-                country: self.country.take()?,
-                iban: self.iban.take()?,
-            })
+            let (Some(account_holder_name), Some(bic), Some(country), Some(iban)) = (
+                self.account_holder_name.take(),
+                self.bic.take(),
+                self.country.take(),
+                self.iban.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { account_holder_name, bic, country, iban })
         }
     }
 
@@ -105,12 +114,10 @@ const _: () = {
             let mut b = FundingInstructionsBankTransferIbanRecordBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "account_holder_name" => {
-                        b.account_holder_name = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "bic" => b.bic = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "iban" => b.iban = Some(FromValueOpt::from_value(v)?),
+                    "account_holder_name" => b.account_holder_name = FromValueOpt::from_value(v),
+                    "bic" => b.bic = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "iban" => b.iban = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -26,7 +26,13 @@ pub struct PaymentMethodSepaDebitBuilder {
     last4: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -83,14 +89,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                bank_code: self.bank_code.take()?,
-                branch_code: self.branch_code.take()?,
-                country: self.country.take()?,
-                fingerprint: self.fingerprint.take()?,
-                generated_from: self.generated_from.take()?,
-                last4: self.last4.take()?,
-            })
+            let (
+                Some(bank_code),
+                Some(branch_code),
+                Some(country),
+                Some(fingerprint),
+                Some(generated_from),
+                Some(last4),
+            ) = (
+                self.bank_code.take(),
+                self.branch_code.take(),
+                self.country.take(),
+                self.fingerprint.take(),
+                self.generated_from.take(),
+                self.last4.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { bank_code, branch_code, country, fingerprint, generated_from, last4 })
         }
     }
 
@@ -117,12 +134,12 @@ const _: () = {
             let mut b = PaymentMethodSepaDebitBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "bank_code" => b.bank_code = Some(FromValueOpt::from_value(v)?),
-                    "branch_code" => b.branch_code = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
-                    "generated_from" => b.generated_from = Some(FromValueOpt::from_value(v)?),
-                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
+                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
+                    "branch_code" => b.branch_code = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "generated_from" => b.generated_from = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

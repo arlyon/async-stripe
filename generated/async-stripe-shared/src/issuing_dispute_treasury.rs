@@ -13,7 +13,13 @@ pub struct IssuingDisputeTreasuryBuilder {
     received_debit: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,10 +65,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                debit_reversal: self.debit_reversal.take()?,
-                received_debit: self.received_debit.take()?,
-            })
+            let (Some(debit_reversal), Some(received_debit)) =
+                (self.debit_reversal.take(), self.received_debit.take())
+            else {
+                return None;
+            };
+            Some(Self::Out { debit_reversal, received_debit })
         }
     }
 
@@ -89,8 +97,8 @@ const _: () = {
             let mut b = IssuingDisputeTreasuryBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "debit_reversal" => b.debit_reversal = Some(FromValueOpt::from_value(v)?),
-                    "received_debit" => b.received_debit = Some(FromValueOpt::from_value(v)?),
+                    "debit_reversal" => b.debit_reversal = FromValueOpt::from_value(v),
+                    "received_debit" => b.received_debit = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

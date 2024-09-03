@@ -20,7 +20,13 @@ pub struct GelatoSelfieReportBuilder {
     status: Option<GelatoSelfieReportStatus>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -73,12 +79,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                document: self.document.take()?,
-                error: self.error.take()?,
-                selfie: self.selfie.take()?,
-                status: self.status?,
-            })
+            let (Some(document), Some(error), Some(selfie), Some(status)) =
+                (self.document.take(), self.error.take(), self.selfie.take(), self.status)
+            else {
+                return None;
+            };
+            Some(Self::Out { document, error, selfie, status })
         }
     }
 
@@ -105,10 +111,10 @@ const _: () = {
             let mut b = GelatoSelfieReportBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "document" => b.document = Some(FromValueOpt::from_value(v)?),
-                    "error" => b.error = Some(FromValueOpt::from_value(v)?),
-                    "selfie" => b.selfie = Some(FromValueOpt::from_value(v)?),
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "document" => b.document = FromValueOpt::from_value(v),
+                    "error" => b.error = FromValueOpt::from_value(v),
+                    "selfie" => b.selfie = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

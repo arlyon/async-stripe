@@ -9,7 +9,13 @@ pub struct PaymentLinksResourceRestrictionsBuilder {
     completed_sessions: Option<stripe_shared::PaymentLinksResourceCompletedSessions>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -54,7 +60,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { completed_sessions: self.completed_sessions? })
+            let (Some(completed_sessions),) = (self.completed_sessions,) else {
+                return None;
+            };
+            Some(Self::Out { completed_sessions })
         }
     }
 
@@ -81,9 +90,7 @@ const _: () = {
             let mut b = PaymentLinksResourceRestrictionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "completed_sessions" => {
-                        b.completed_sessions = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "completed_sessions" => b.completed_sessions = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

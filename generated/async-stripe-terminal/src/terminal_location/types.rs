@@ -29,7 +29,13 @@ pub struct TerminalLocationBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -86,13 +92,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(address),
+                Some(configuration_overrides),
+                Some(display_name),
+                Some(id),
+                Some(livemode),
+                Some(metadata),
+            ) = (
+                self.address.take(),
+                self.configuration_overrides.take(),
+                self.display_name.take(),
+                self.id.take(),
+                self.livemode,
+                self.metadata.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                address: self.address.take()?,
-                configuration_overrides: self.configuration_overrides.take()?,
-                display_name: self.display_name.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
+                address,
+                configuration_overrides,
+                display_name,
+                id,
+                livemode,
+                metadata,
             })
         }
     }
@@ -120,14 +144,14 @@ const _: () = {
             let mut b = TerminalLocationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
+                    "address" => b.address = FromValueOpt::from_value(v),
                     "configuration_overrides" => {
-                        b.configuration_overrides = Some(FromValueOpt::from_value(v)?)
+                        b.configuration_overrides = FromValueOpt::from_value(v)
                     }
-                    "display_name" => b.display_name = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "display_name" => b.display_name = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

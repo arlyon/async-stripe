@@ -66,7 +66,13 @@ pub struct TopupBuilder {
     transfer_group: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -140,22 +146,58 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount),
+                Some(balance_transaction),
+                Some(created),
+                Some(currency),
+                Some(description),
+                Some(expected_availability_date),
+                Some(failure_code),
+                Some(failure_message),
+                Some(id),
+                Some(livemode),
+                Some(metadata),
+                Some(source),
+                Some(statement_descriptor),
+                Some(status),
+                Some(transfer_group),
+            ) = (
+                self.amount,
+                self.balance_transaction.take(),
+                self.created,
+                self.currency,
+                self.description.take(),
+                self.expected_availability_date,
+                self.failure_code.take(),
+                self.failure_message.take(),
+                self.id.take(),
+                self.livemode,
+                self.metadata.take(),
+                self.source.take(),
+                self.statement_descriptor.take(),
+                self.status,
+                self.transfer_group.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                amount: self.amount?,
-                balance_transaction: self.balance_transaction.take()?,
-                created: self.created?,
-                currency: self.currency?,
-                description: self.description.take()?,
-                expected_availability_date: self.expected_availability_date?,
-                failure_code: self.failure_code.take()?,
-                failure_message: self.failure_message.take()?,
-                id: self.id.take()?,
-                livemode: self.livemode?,
-                metadata: self.metadata.take()?,
-                source: self.source.take()?,
-                statement_descriptor: self.statement_descriptor.take()?,
-                status: self.status?,
-                transfer_group: self.transfer_group.take()?,
+                amount,
+                balance_transaction,
+                created,
+                currency,
+                description,
+                expected_availability_date,
+                failure_code,
+                failure_message,
+                id,
+                livemode,
+                metadata,
+                source,
+                statement_descriptor,
+                status,
+                transfer_group,
             })
         }
     }
@@ -183,27 +225,23 @@ const _: () = {
             let mut b = TopupBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "balance_transaction" => {
-                        b.balance_transaction = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
                     "expected_availability_date" => {
-                        b.expected_availability_date = Some(FromValueOpt::from_value(v)?)
+                        b.expected_availability_date = FromValueOpt::from_value(v)
                     }
-                    "failure_code" => b.failure_code = Some(FromValueOpt::from_value(v)?),
-                    "failure_message" => b.failure_message = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "source" => b.source = Some(FromValueOpt::from_value(v)?),
-                    "statement_descriptor" => {
-                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "transfer_group" => b.transfer_group = Some(FromValueOpt::from_value(v)?),
+                    "failure_code" => b.failure_code = FromValueOpt::from_value(v),
+                    "failure_message" => b.failure_message = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "source" => b.source = FromValueOpt::from_value(v),
+                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

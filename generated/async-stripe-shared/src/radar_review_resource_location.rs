@@ -22,7 +22,13 @@ pub struct RadarReviewResourceLocationBuilder {
     region: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -77,13 +83,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                city: self.city.take()?,
-                country: self.country.take()?,
-                latitude: self.latitude?,
-                longitude: self.longitude?,
-                region: self.region.take()?,
-            })
+            let (Some(city), Some(country), Some(latitude), Some(longitude), Some(region)) = (
+                self.city.take(),
+                self.country.take(),
+                self.latitude,
+                self.longitude,
+                self.region.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { city, country, latitude, longitude, region })
         }
     }
 
@@ -110,11 +119,11 @@ const _: () = {
             let mut b = RadarReviewResourceLocationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "city" => b.city = Some(FromValueOpt::from_value(v)?),
-                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
-                    "latitude" => b.latitude = Some(FromValueOpt::from_value(v)?),
-                    "longitude" => b.longitude = Some(FromValueOpt::from_value(v)?),
-                    "region" => b.region = Some(FromValueOpt::from_value(v)?),
+                    "city" => b.city = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "latitude" => b.latitude = FromValueOpt::from_value(v),
+                    "longitude" => b.longitude = FromValueOpt::from_value(v),
+                    "region" => b.region = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

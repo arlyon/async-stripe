@@ -16,7 +16,13 @@ pub struct TreasuryInboundTransfersResourceInboundTransferResourceStatusTransiti
     succeeded_at: Option<Option<stripe_types::Timestamp>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -71,11 +77,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                canceled_at: self.canceled_at?,
-                failed_at: self.failed_at?,
-                succeeded_at: self.succeeded_at?,
-            })
+            let (Some(canceled_at), Some(failed_at), Some(succeeded_at)) =
+                (self.canceled_at, self.failed_at, self.succeeded_at)
+            else {
+                return None;
+            };
+            Some(Self::Out { canceled_at, failed_at, succeeded_at })
         }
     }
 
@@ -103,9 +110,9 @@ const _: () = {
             let mut b = TreasuryInboundTransfersResourceInboundTransferResourceStatusTransitionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "canceled_at" => b.canceled_at = Some(FromValueOpt::from_value(v)?),
-                    "failed_at" => b.failed_at = Some(FromValueOpt::from_value(v)?),
-                    "succeeded_at" => b.succeeded_at = Some(FromValueOpt::from_value(v)?),
+                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
+                    "failed_at" => b.failed_at = FromValueOpt::from_value(v),
+                    "succeeded_at" => b.succeeded_at = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

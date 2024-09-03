@@ -30,7 +30,13 @@ pub struct CustomerSessionBuilder {
     livemode: Option<bool>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -87,14 +93,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                client_secret: self.client_secret.take()?,
-                components: self.components?,
-                created: self.created?,
-                customer: self.customer.take()?,
-                expires_at: self.expires_at?,
-                livemode: self.livemode?,
-            })
+            let (
+                Some(client_secret),
+                Some(components),
+                Some(created),
+                Some(customer),
+                Some(expires_at),
+                Some(livemode),
+            ) = (
+                self.client_secret.take(),
+                self.components,
+                self.created,
+                self.customer.take(),
+                self.expires_at,
+                self.livemode,
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out { client_secret, components, created, customer, expires_at, livemode })
         }
     }
 
@@ -121,12 +138,12 @@ const _: () = {
             let mut b = CustomerSessionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "client_secret" => b.client_secret = Some(FromValueOpt::from_value(v)?),
-                    "components" => b.components = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
+                    "components" => b.components = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

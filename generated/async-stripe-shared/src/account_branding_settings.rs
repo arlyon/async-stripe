@@ -21,7 +21,13 @@ pub struct AccountBrandingSettingsBuilder {
     secondary_color: Option<Option<String>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -74,12 +80,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                icon: self.icon.take()?,
-                logo: self.logo.take()?,
-                primary_color: self.primary_color.take()?,
-                secondary_color: self.secondary_color.take()?,
-            })
+            let (Some(icon), Some(logo), Some(primary_color), Some(secondary_color)) = (
+                self.icon.take(),
+                self.logo.take(),
+                self.primary_color.take(),
+                self.secondary_color.take(),
+            ) else {
+                return None;
+            };
+            Some(Self::Out { icon, logo, primary_color, secondary_color })
         }
     }
 
@@ -106,10 +115,10 @@ const _: () = {
             let mut b = AccountBrandingSettingsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "icon" => b.icon = Some(FromValueOpt::from_value(v)?),
-                    "logo" => b.logo = Some(FromValueOpt::from_value(v)?),
-                    "primary_color" => b.primary_color = Some(FromValueOpt::from_value(v)?),
-                    "secondary_color" => b.secondary_color = Some(FromValueOpt::from_value(v)?),
+                    "icon" => b.icon = FromValueOpt::from_value(v),
+                    "logo" => b.logo = FromValueOpt::from_value(v),
+                    "primary_color" => b.primary_color = FromValueOpt::from_value(v),
+                    "secondary_color" => b.secondary_color = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

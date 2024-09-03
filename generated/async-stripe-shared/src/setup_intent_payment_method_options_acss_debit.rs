@@ -17,7 +17,13 @@ pub struct SetupIntentPaymentMethodOptionsAcssDebitBuilder {
     verification_method: Option<Option<SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -68,11 +74,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out {
-                currency: self.currency?,
-                mandate_options: self.mandate_options.take()?,
-                verification_method: self.verification_method?,
-            })
+            let (Some(currency), Some(mandate_options), Some(verification_method)) =
+                (self.currency, self.mandate_options.take(), self.verification_method)
+            else {
+                return None;
+            };
+            Some(Self::Out { currency, mandate_options, verification_method })
         }
     }
 
@@ -99,11 +106,9 @@ const _: () = {
             let mut b = SetupIntentPaymentMethodOptionsAcssDebitBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
-                    "mandate_options" => b.mandate_options = Some(FromValueOpt::from_value(v)?),
-                    "verification_method" => {
-                        b.verification_method = Some(FromValueOpt::from_value(v)?)
-                    }
+                    "currency" => b.currency = FromValueOpt::from_value(v),
+                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
+                    "verification_method" => b.verification_method = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

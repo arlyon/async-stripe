@@ -124,7 +124,13 @@ pub struct SetupIntentBuilder {
     usage: Option<String>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -221,33 +227,85 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(application),
+                Some(attach_to_self),
+                Some(automatic_payment_methods),
+                Some(cancellation_reason),
+                Some(client_secret),
+                Some(created),
+                Some(customer),
+                Some(description),
+                Some(flow_directions),
+                Some(id),
+                Some(last_setup_error),
+                Some(latest_attempt),
+                Some(livemode),
+                Some(mandate),
+                Some(metadata),
+                Some(next_action),
+                Some(on_behalf_of),
+                Some(payment_method),
+                Some(payment_method_configuration_details),
+                Some(payment_method_options),
+                Some(payment_method_types),
+                Some(single_use_mandate),
+                Some(status),
+                Some(usage),
+            ) = (
+                self.application.take(),
+                self.attach_to_self,
+                self.automatic_payment_methods,
+                self.cancellation_reason,
+                self.client_secret.take(),
+                self.created,
+                self.customer.take(),
+                self.description.take(),
+                self.flow_directions.take(),
+                self.id.take(),
+                self.last_setup_error.take(),
+                self.latest_attempt.take(),
+                self.livemode,
+                self.mandate.take(),
+                self.metadata.take(),
+                self.next_action.take(),
+                self.on_behalf_of.take(),
+                self.payment_method.take(),
+                self.payment_method_configuration_details.take(),
+                self.payment_method_options.take(),
+                self.payment_method_types.take(),
+                self.single_use_mandate.take(),
+                self.status,
+                self.usage.take(),
+            )
+            else {
+                return None;
+            };
             Some(Self::Out {
-                application: self.application.take()?,
-                attach_to_self: self.attach_to_self?,
-                automatic_payment_methods: self.automatic_payment_methods?,
-                cancellation_reason: self.cancellation_reason?,
-                client_secret: self.client_secret.take()?,
-                created: self.created?,
-                customer: self.customer.take()?,
-                description: self.description.take()?,
-                flow_directions: self.flow_directions.take()?,
-                id: self.id.take()?,
-                last_setup_error: self.last_setup_error.take()?,
-                latest_attempt: self.latest_attempt.take()?,
-                livemode: self.livemode?,
-                mandate: self.mandate.take()?,
-                metadata: self.metadata.take()?,
-                next_action: self.next_action.take()?,
-                on_behalf_of: self.on_behalf_of.take()?,
-                payment_method: self.payment_method.take()?,
-                payment_method_configuration_details: self
-                    .payment_method_configuration_details
-                    .take()?,
-                payment_method_options: self.payment_method_options.take()?,
-                payment_method_types: self.payment_method_types.take()?,
-                single_use_mandate: self.single_use_mandate.take()?,
-                status: self.status?,
-                usage: self.usage.take()?,
+                application,
+                attach_to_self,
+                automatic_payment_methods,
+                cancellation_reason,
+                client_secret,
+                created,
+                customer,
+                description,
+                flow_directions,
+                id,
+                last_setup_error,
+                latest_attempt,
+                livemode,
+                mandate,
+                metadata,
+                next_action,
+                on_behalf_of,
+                payment_method,
+                payment_method_configuration_details,
+                payment_method_options,
+                payment_method_types,
+                single_use_mandate,
+                status,
+                usage,
             })
         }
     }
@@ -275,42 +333,36 @@ const _: () = {
             let mut b = SetupIntentBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "application" => b.application = Some(FromValueOpt::from_value(v)?),
-                    "attach_to_self" => b.attach_to_self = Some(FromValueOpt::from_value(v)?),
+                    "application" => b.application = FromValueOpt::from_value(v),
+                    "attach_to_self" => b.attach_to_self = FromValueOpt::from_value(v),
                     "automatic_payment_methods" => {
-                        b.automatic_payment_methods = Some(FromValueOpt::from_value(v)?)
+                        b.automatic_payment_methods = FromValueOpt::from_value(v)
                     }
-                    "cancellation_reason" => {
-                        b.cancellation_reason = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "client_secret" => b.client_secret = Some(FromValueOpt::from_value(v)?),
-                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
-                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
-                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
-                    "flow_directions" => b.flow_directions = Some(FromValueOpt::from_value(v)?),
-                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
-                    "last_setup_error" => b.last_setup_error = Some(FromValueOpt::from_value(v)?),
-                    "latest_attempt" => b.latest_attempt = Some(FromValueOpt::from_value(v)?),
-                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
-                    "mandate" => b.mandate = Some(FromValueOpt::from_value(v)?),
-                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
-                    "next_action" => b.next_action = Some(FromValueOpt::from_value(v)?),
-                    "on_behalf_of" => b.on_behalf_of = Some(FromValueOpt::from_value(v)?),
-                    "payment_method" => b.payment_method = Some(FromValueOpt::from_value(v)?),
+                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
+                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
+                    "created" => b.created = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "flow_directions" => b.flow_directions = FromValueOpt::from_value(v),
+                    "id" => b.id = FromValueOpt::from_value(v),
+                    "last_setup_error" => b.last_setup_error = FromValueOpt::from_value(v),
+                    "latest_attempt" => b.latest_attempt = FromValueOpt::from_value(v),
+                    "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "mandate" => b.mandate = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "next_action" => b.next_action = FromValueOpt::from_value(v),
+                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
+                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
                     "payment_method_configuration_details" => {
-                        b.payment_method_configuration_details = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_configuration_details = FromValueOpt::from_value(v)
                     }
                     "payment_method_options" => {
-                        b.payment_method_options = Some(FromValueOpt::from_value(v)?)
+                        b.payment_method_options = FromValueOpt::from_value(v)
                     }
-                    "payment_method_types" => {
-                        b.payment_method_types = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "single_use_mandate" => {
-                        b.single_use_mandate = Some(FromValueOpt::from_value(v)?)
-                    }
-                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
-                    "usage" => b.usage = Some(FromValueOpt::from_value(v)?),
+                    "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
+                    "single_use_mandate" => b.single_use_mandate = FromValueOpt::from_value(v),
+                    "status" => b.status = FromValueOpt::from_value(v),
+                    "usage" => b.usage = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

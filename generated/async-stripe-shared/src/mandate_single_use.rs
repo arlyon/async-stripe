@@ -13,7 +13,13 @@ pub struct MandateSingleUseBuilder {
     currency: Option<stripe_types::Currency>,
 }
 
-#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
@@ -59,7 +65,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            Some(Self::Out { amount: self.amount?, currency: self.currency? })
+            let (Some(amount), Some(currency)) = (self.amount, self.currency) else {
+                return None;
+            };
+            Some(Self::Out { amount, currency })
         }
     }
 
@@ -86,8 +95,8 @@ const _: () = {
             let mut b = MandateSingleUseBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
-                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
 
                     _ => {}
                 }
