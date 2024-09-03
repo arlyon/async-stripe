@@ -2602,9 +2602,10 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionProrationBehavior {
 /// Can be at most two years from `billing_cycle_anchor`.
 /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreateSubscriptionTrialEnd {
     Now,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// Settings related to subscription trials.
@@ -5380,9 +5381,10 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionProrationBehavior {
 /// The special value `now` can be provided to end the customer's trial immediately.
 /// Can be at most two years from `billing_cycle_anchor`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpdateSubscriptionTrialEnd {
     Now,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// Settings related to subscription trials.

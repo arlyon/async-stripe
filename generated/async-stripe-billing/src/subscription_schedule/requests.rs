@@ -1474,10 +1474,11 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesProrationB
 /// We recommend using `now` so that it starts the subscription immediately.
 /// You can also use a Unix timestamp to backdate the subscription so that it starts on a past date, or set a future date for the subscription to start on.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreateSubscriptionScheduleStartDate {
-    Timestamp(stripe_types::Timestamp),
     Now,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// Creates a new subscription schedule object.
 /// Each customer can have up to 500 active or scheduled subscriptions.
@@ -2450,10 +2451,11 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesCollection
 /// The date at which this phase of the subscription schedule ends.
 /// If set, `iterations` must not be set.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpdateSubscriptionSchedulePhasesEndDate {
-    Timestamp(stripe_types::Timestamp),
     Now,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// All invoices will be billed using the specified settings.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -2862,18 +2864,20 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesProrationB
 /// The date at which this phase of the subscription schedule starts or `now`.
 /// Must be set on the first phase.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpdateSubscriptionSchedulePhasesStartDate {
-    Timestamp(stripe_types::Timestamp),
     Now,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// Sets the phase to trialing from the start date to this date.
 /// Must be before the phase end date, can not be combined with `trial`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum UpdateSubscriptionSchedulePhasesTrialEnd {
-    Timestamp(stripe_types::Timestamp),
     Now,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// If the update changes the current phase, indicates whether the changes should be prorated.
 /// The default value is `create_prorations`.

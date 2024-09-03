@@ -81,9 +81,10 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemUsageRecordAction {
 /// When passing `"now"`, Stripe records usage for the current time.
 /// Default is `"now"` if a value is not provided.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum CreateSubscriptionItemUsageRecordTimestamp {
     Now,
+    #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
 /// Creates a usage record for a specified subscription item and date, and fills it with a quantity.

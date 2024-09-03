@@ -6966,9 +6966,11 @@ impl<'a> ConfirmSetupIntentBuilder<'a> {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum ConfirmSetupIntentMandateData<'a> {
+    #[serde(untagged)]
     SecretKeyParam(ConfirmSetupIntentSecretKeyParam<'a>),
+    #[serde(untagged)]
     ClientKeyParam(ConfirmSetupIntentClientKeyParam<'a>),
 }
 #[derive(Clone, Debug, serde::Serialize)]
