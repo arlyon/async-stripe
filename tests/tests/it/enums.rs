@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+use stripe_billing::plan::{CreatePlanInlineProductParams, CreatePlanProduct};
 use stripe_connect::AccountType;
 use stripe_core::EventType;
 use stripe_product::price::CreatePriceTiersUpTo;
@@ -22,6 +23,15 @@ fn enums_basic() {
 fn enums_requests() {
     assert_eq!(serde_json::to_string(&CreatePriceTiersUpTo::Inf).unwrap(), r#""inf""#);
     assert_eq!(serde_json::to_string(&CreatePriceTiersUpTo::I64(2)).unwrap(), r#"2"#);
+
+    assert_eq!(serde_json::to_string(&CreatePlanProduct::Id("id".into())).unwrap(), r#""id""#);
+    assert_eq!(
+        serde_json::to_string(&CreatePlanProduct::InlineProductParams(
+            CreatePlanInlineProductParams::new("my name".into())
+        ))
+        .unwrap(),
+        r#"{"name":"my name"}"#
+    );
 }
 
 #[test]
