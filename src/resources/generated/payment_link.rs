@@ -14,7 +14,7 @@ use crate::resources::{
 
 /// The resource representing a Stripe "PaymentLink".
 ///
-/// For more details see <https://stripe.com/docs/api/payment_links/payment_links/object>
+/// For more details see <https://stripe.com/docs/api/payment-link/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLink {
     /// Unique identifier for the object.

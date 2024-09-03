@@ -42,7 +42,7 @@ impl UrlFinder {
         let object_names = [format!("{}_object", object_name), object_name];
         for name in object_names {
             if let Some(path) = self.url_lookup.get(&name) {
-                return Some(format!("https://stripe.com{}", path));
+                return Some(format!("https://stripe.com/docs{}", path));
             }
         }
 
