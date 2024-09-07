@@ -2,60 +2,60 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListLineItemsTaxCalculationBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListLineItemsTaxCalculationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListLineItemsTaxCalculationBuilder<'a> {
+impl ListLineItemsTaxCalculationBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Retrieves the line items of a persisted tax calculation as a collection.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListLineItemsTaxCalculation<'a> {
-    inner: ListLineItemsTaxCalculationBuilder<'a>,
-    calculation: &'a stripe_misc::TaxCalculationId,
+pub struct ListLineItemsTaxCalculation {
+    inner: ListLineItemsTaxCalculationBuilder,
+    calculation: stripe_misc::TaxCalculationId,
 }
-impl<'a> ListLineItemsTaxCalculation<'a> {
+impl ListLineItemsTaxCalculation {
     /// Construct a new `ListLineItemsTaxCalculation`.
-    pub fn new(calculation: &'a stripe_misc::TaxCalculationId) -> Self {
-        Self { calculation, inner: ListLineItemsTaxCalculationBuilder::new() }
+    pub fn new(calculation: impl Into<stripe_misc::TaxCalculationId>) -> Self {
+        Self { calculation: calculation.into(), inner: ListLineItemsTaxCalculationBuilder::new() }
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl ListLineItemsTaxCalculation<'_> {
+impl ListLineItemsTaxCalculation {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -76,20 +76,20 @@ impl ListLineItemsTaxCalculation<'_> {
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_misc::TaxCalculationLineItem>>
     {
-        let calculation = self.calculation;
+        let calculation = &self.calculation;
 
         stripe_client_core::ListPaginator::new_list(
             format!("/tax/calculations/{calculation}/line_items"),
-            self.inner,
+            &self.inner,
         )
     }
 }
 
-impl StripeRequest for ListLineItemsTaxCalculation<'_> {
+impl StripeRequest for ListLineItemsTaxCalculation {
     type Output = stripe_types::List<stripe_misc::TaxCalculationLineItem>;
 
     fn build(&self) -> RequestBuilder {
-        let calculation = self.calculation;
+        let calculation = &self.calculation;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/tax/calculations/{calculation}/line_items"),
@@ -97,34 +97,34 @@ impl StripeRequest for ListLineItemsTaxCalculation<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateTaxCalculationBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateTaxCalculationBuilder {
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<&'a str>,
+    customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer_details: Option<CreateTaxCalculationCustomerDetails<'a>>,
+    customer_details: Option<CreateTaxCalculationCustomerDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
-    line_items: &'a [CreateTaxCalculationLineItems<'a>],
+    expand: Option<Vec<String>>,
+    line_items: Vec<CreateTaxCalculationLineItems>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ship_from_details: Option<CreateTaxCalculationShipFromDetails<'a>>,
+    ship_from_details: Option<CreateTaxCalculationShipFromDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping_cost: Option<CreateTaxCalculationShippingCost<'a>>,
+    shipping_cost: Option<CreateTaxCalculationShippingCost>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_date: Option<stripe_types::Timestamp>,
 }
-impl<'a> CreateTaxCalculationBuilder<'a> {
+impl CreateTaxCalculationBuilder {
     fn new(
-        currency: stripe_types::Currency,
-        line_items: &'a [CreateTaxCalculationLineItems<'a>],
+        currency: impl Into<stripe_types::Currency>,
+        line_items: impl Into<Vec<CreateTaxCalculationLineItems>>,
     ) -> Self {
         Self {
-            currency,
+            currency: currency.into(),
             customer: None,
             customer_details: None,
             expand: None,
-            line_items,
+            line_items: line_items.into(),
             ship_from_details: None,
             shipping_cost: None,
             tax_date: None,
@@ -132,29 +132,29 @@ impl<'a> CreateTaxCalculationBuilder<'a> {
     }
 }
 /// Details about the customer, including address and tax IDs.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTaxCalculationCustomerDetails<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTaxCalculationCustomerDetails {
     /// The customer's postal address (for example, home or business location).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<CreateTaxCalculationCustomerDetailsAddress<'a>>,
+    pub address: Option<CreateTaxCalculationCustomerDetailsAddress>,
     /// The type of customer address provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_source: Option<CreateTaxCalculationCustomerDetailsAddressSource>,
     /// The customer's IP address (IPv4 or IPv6).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<&'a str>,
+    pub ip_address: Option<String>,
     /// The customer's tax IDs.
     /// Stripe Tax might consider a transaction with applicable tax IDs to be B2B, which might affect the tax calculation result.
     /// Stripe Tax doesn't validate tax IDs for correctness.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_ids: Option<&'a [CreateTaxCalculationCustomerDetailsTaxIds<'a>]>,
+    pub tax_ids: Option<Vec<CreateTaxCalculationCustomerDetailsTaxIds>>,
     /// Overrides the tax calculation result to allow you to not collect tax from your customer.
     /// Use this if you've manually checked your customer's tax exemptions.
     /// Prefer providing the customer's `tax_ids` where possible, which automatically determines whether `reverse_charge` applies.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub taxability_override: Option<CreateTaxCalculationCustomerDetailsTaxabilityOverride>,
 }
-impl<'a> CreateTaxCalculationCustomerDetails<'a> {
+impl CreateTaxCalculationCustomerDetails {
     pub fn new() -> Self {
         Self {
             address: None,
@@ -165,36 +165,43 @@ impl<'a> CreateTaxCalculationCustomerDetails<'a> {
         }
     }
 }
-impl<'a> Default for CreateTaxCalculationCustomerDetails<'a> {
+impl Default for CreateTaxCalculationCustomerDetails {
     fn default() -> Self {
         Self::new()
     }
 }
 /// The customer's postal address (for example, home or business location).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTaxCalculationCustomerDetailsAddress<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTaxCalculationCustomerDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
+    pub city: Option<String>,
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    pub country: &'a str,
+    pub country: String,
     /// Address line 1 (e.g., street, PO Box, or company name).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
+    pub line1: Option<String>,
     /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
+    pub line2: Option<String>,
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
+    pub postal_code: Option<String>,
     /// State, county, province, or region.
     /// We recommend sending [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code value when possible.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
+    pub state: Option<String>,
 }
-impl<'a> CreateTaxCalculationCustomerDetailsAddress<'a> {
-    pub fn new(country: &'a str) -> Self {
-        Self { city: None, country, line1: None, line2: None, postal_code: None, state: None }
+impl CreateTaxCalculationCustomerDetailsAddress {
+    pub fn new(country: impl Into<String>) -> Self {
+        Self {
+            city: None,
+            country: country.into(),
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+        }
     }
 }
 /// The type of customer address provided.
@@ -258,17 +265,20 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationCustomerDetailsAddress
 /// The customer's tax IDs.
 /// Stripe Tax might consider a transaction with applicable tax IDs to be B2B, which might affect the tax calculation result.
 /// Stripe Tax doesn't validate tax IDs for correctness.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTaxCalculationCustomerDetailsTaxIds<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTaxCalculationCustomerDetailsTaxIds {
     /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
     #[serde(rename = "type")]
     pub type_: CreateTaxCalculationCustomerDetailsTaxIdsType,
     /// Value of the tax ID.
-    pub value: &'a str,
+    pub value: String,
 }
-impl<'a> CreateTaxCalculationCustomerDetailsTaxIds<'a> {
-    pub fn new(type_: CreateTaxCalculationCustomerDetailsTaxIdsType, value: &'a str) -> Self {
-        Self { type_, value }
+impl CreateTaxCalculationCustomerDetailsTaxIds {
+    pub fn new(
+        type_: impl Into<CreateTaxCalculationCustomerDetailsTaxIdsType>,
+        value: impl Into<String>,
+    ) -> Self {
+        Self { type_: type_.into(), value: value.into() }
     }
 }
 /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
@@ -600,8 +610,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationCustomerDetailsTaxabil
     }
 }
 /// A list of items the customer is purchasing.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTaxCalculationLineItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTaxCalculationLineItems {
     /// A positive integer representing the line item's total price in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
     /// The minimum amount is $0.0 US or [equivalent in charge currency](https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts).
     /// The amount value supports up to twelve digits (e.g., a value of 999999999999 for a USD charge of $9,999,999,999.99).
@@ -610,7 +620,7 @@ pub struct CreateTaxCalculationLineItems<'a> {
     pub amount: i64,
     /// If provided, the product's `tax_code` will be used as the line item's `tax_code`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub product: Option<&'a str>,
+    pub product: Option<String>,
     /// The number of units of the item being purchased.
     /// Used to calculate the per-unit price from the total `amount` for the line.
     /// For example, if `amount=100` and `quantity=4`, the calculated unit price is 25.
@@ -619,7 +629,7 @@ pub struct CreateTaxCalculationLineItems<'a> {
     /// A custom identifier for this line item, which must be unique across the line items in the calculation.
     /// The reference helps identify each line item in exported [tax reports](https://stripe.com/docs/tax/reports).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reference: Option<&'a str>,
+    pub reference: Option<String>,
     /// Specifies whether the `amount` includes taxes. Defaults to `exclusive`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreateTaxCalculationLineItemsTaxBehavior>,
@@ -627,12 +637,12 @@ pub struct CreateTaxCalculationLineItems<'a> {
     /// If not provided, we will use the tax code from the provided `product` param.
     /// If neither `tax_code` nor `product` is provided, we will use the default tax code from your Tax Settings.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_code: Option<&'a str>,
+    pub tax_code: Option<String>,
 }
-impl<'a> CreateTaxCalculationLineItems<'a> {
-    pub fn new(amount: i64) -> Self {
+impl CreateTaxCalculationLineItems {
+    pub fn new(amount: impl Into<i64>) -> Self {
         Self {
-            amount,
+            amount: amount.into(),
             product: None,
             quantity: None,
             reference: None,
@@ -698,46 +708,53 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationLineItemsTaxBehavior {
     }
 }
 /// Details about the address from which the goods are being shipped.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTaxCalculationShipFromDetails<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTaxCalculationShipFromDetails {
     /// The address from which the goods are being shipped from.
-    pub address: CreateTaxCalculationShipFromDetailsAddress<'a>,
+    pub address: CreateTaxCalculationShipFromDetailsAddress,
 }
-impl<'a> CreateTaxCalculationShipFromDetails<'a> {
-    pub fn new(address: CreateTaxCalculationShipFromDetailsAddress<'a>) -> Self {
-        Self { address }
+impl CreateTaxCalculationShipFromDetails {
+    pub fn new(address: impl Into<CreateTaxCalculationShipFromDetailsAddress>) -> Self {
+        Self { address: address.into() }
     }
 }
 /// The address from which the goods are being shipped from.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTaxCalculationShipFromDetailsAddress<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTaxCalculationShipFromDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
+    pub city: Option<String>,
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    pub country: &'a str,
+    pub country: String,
     /// Address line 1 (e.g., street, PO Box, or company name).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
+    pub line1: Option<String>,
     /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
+    pub line2: Option<String>,
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
+    pub postal_code: Option<String>,
     /// State/province as an [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code, without country prefix.
     /// Example: "NY" or "TX".
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
+    pub state: Option<String>,
 }
-impl<'a> CreateTaxCalculationShipFromDetailsAddress<'a> {
-    pub fn new(country: &'a str) -> Self {
-        Self { city: None, country, line1: None, line2: None, postal_code: None, state: None }
+impl CreateTaxCalculationShipFromDetailsAddress {
+    pub fn new(country: impl Into<String>) -> Self {
+        Self {
+            city: None,
+            country: country.into(),
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+        }
     }
 }
 /// Shipping cost details to be used for the calculation.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTaxCalculationShippingCost<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTaxCalculationShippingCost {
     /// A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) representing the shipping charge.
     /// If `tax_behavior=inclusive`, then this amount includes taxes.
     /// Otherwise, taxes are calculated on top of this amount.
@@ -746,7 +763,7 @@ pub struct CreateTaxCalculationShippingCost<'a> {
     /// If provided, the [shipping rate](https://stripe.com/docs/api/shipping_rates/object)'s `amount`, `tax_code` and `tax_behavior` are used.
     /// If you provide a shipping rate, then you cannot pass the `amount`, `tax_code`, or `tax_behavior` parameters.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_rate: Option<&'a str>,
+    pub shipping_rate: Option<String>,
     /// Specifies whether the `amount` includes taxes.
     /// If `tax_behavior=inclusive`, then the amount includes taxes.
     /// Defaults to `exclusive`.
@@ -755,14 +772,14 @@ pub struct CreateTaxCalculationShippingCost<'a> {
     /// The [tax code](https://stripe.com/docs/tax/tax-categories) used to calculate tax on shipping.
     /// If not provided, the default shipping tax code from your [Tax Settings](/settings/tax) is used.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_code: Option<&'a str>,
+    pub tax_code: Option<String>,
 }
-impl<'a> CreateTaxCalculationShippingCost<'a> {
+impl CreateTaxCalculationShippingCost {
     pub fn new() -> Self {
         Self { amount: None, shipping_rate: None, tax_behavior: None, tax_code: None }
     }
 }
-impl<'a> Default for CreateTaxCalculationShippingCost<'a> {
+impl Default for CreateTaxCalculationShippingCost {
     fn default() -> Self {
         Self::new()
     }
@@ -829,58 +846,61 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationShippingCostTaxBehavio
 }
 /// Calculates tax based on input and returns a Tax `Calculation` object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateTaxCalculation<'a> {
-    inner: CreateTaxCalculationBuilder<'a>,
+pub struct CreateTaxCalculation {
+    inner: CreateTaxCalculationBuilder,
 }
-impl<'a> CreateTaxCalculation<'a> {
+impl CreateTaxCalculation {
     /// Construct a new `CreateTaxCalculation`.
     pub fn new(
-        currency: stripe_types::Currency,
-        line_items: &'a [CreateTaxCalculationLineItems<'a>],
+        currency: impl Into<stripe_types::Currency>,
+        line_items: impl Into<Vec<CreateTaxCalculationLineItems>>,
     ) -> Self {
-        Self { inner: CreateTaxCalculationBuilder::new(currency, line_items) }
+        Self { inner: CreateTaxCalculationBuilder::new(currency.into(), line_items.into()) }
     }
     /// The ID of an existing customer to use for this calculation.
     /// If provided, the customer's address and tax IDs are copied to `customer_details`.
-    pub fn customer(mut self, customer: &'a str) -> Self {
-        self.inner.customer = Some(customer);
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
         self
     }
     /// Details about the customer, including address and tax IDs.
     pub fn customer_details(
         mut self,
-        customer_details: CreateTaxCalculationCustomerDetails<'a>,
+        customer_details: impl Into<CreateTaxCalculationCustomerDetails>,
     ) -> Self {
-        self.inner.customer_details = Some(customer_details);
+        self.inner.customer_details = Some(customer_details.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Details about the address from which the goods are being shipped.
     pub fn ship_from_details(
         mut self,
-        ship_from_details: CreateTaxCalculationShipFromDetails<'a>,
+        ship_from_details: impl Into<CreateTaxCalculationShipFromDetails>,
     ) -> Self {
-        self.inner.ship_from_details = Some(ship_from_details);
+        self.inner.ship_from_details = Some(ship_from_details.into());
         self
     }
     /// Shipping cost details to be used for the calculation.
-    pub fn shipping_cost(mut self, shipping_cost: CreateTaxCalculationShippingCost<'a>) -> Self {
-        self.inner.shipping_cost = Some(shipping_cost);
+    pub fn shipping_cost(
+        mut self,
+        shipping_cost: impl Into<CreateTaxCalculationShippingCost>,
+    ) -> Self {
+        self.inner.shipping_cost = Some(shipping_cost.into());
         self
     }
     /// Timestamp of date at which the tax rules and rates in effect applies for the calculation.
     /// Measured in seconds since the Unix epoch.
     /// Can be up to 48 hours in the past, and up to 48 hours in the future.
-    pub fn tax_date(mut self, tax_date: stripe_types::Timestamp) -> Self {
-        self.inner.tax_date = Some(tax_date);
+    pub fn tax_date(mut self, tax_date: impl Into<stripe_types::Timestamp>) -> Self {
+        self.inner.tax_date = Some(tax_date.into());
         self
     }
 }
-impl CreateTaxCalculation<'_> {
+impl CreateTaxCalculation {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -898,7 +918,7 @@ impl CreateTaxCalculation<'_> {
     }
 }
 
-impl StripeRequest for CreateTaxCalculation<'_> {
+impl StripeRequest for CreateTaxCalculation {
     type Output = stripe_misc::TaxCalculation;
 
     fn build(&self) -> RequestBuilder {

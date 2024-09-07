@@ -6,16 +6,16 @@ use stripe_client_core::{
 /// This cannot be undone.
 /// Attempts to delete invoices that are no longer in a draft state will fail; once an invoice has been finalized or if an invoice is for a subscription, it must be [voided](https://stripe.com/docs/api#void_invoice).
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeleteInvoice<'a> {
-    invoice: &'a stripe_shared::InvoiceId,
+pub struct DeleteInvoice {
+    invoice: stripe_shared::InvoiceId,
 }
-impl<'a> DeleteInvoice<'a> {
+impl DeleteInvoice {
     /// Construct a new `DeleteInvoice`.
-    pub fn new(invoice: &'a stripe_shared::InvoiceId) -> Self {
-        Self { invoice }
+    pub fn new(invoice: impl Into<stripe_shared::InvoiceId>) -> Self {
+        Self { invoice: invoice.into() }
     }
 }
-impl DeleteInvoice<'_> {
+impl DeleteInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -33,38 +33,38 @@ impl DeleteInvoice<'_> {
     }
 }
 
-impl StripeRequest for DeleteInvoice<'_> {
+impl StripeRequest for DeleteInvoice {
     type Output = stripe_shared::DeletedInvoice;
 
     fn build(&self) -> RequestBuilder {
-        let invoice = self.invoice;
+        let invoice = &self.invoice;
         RequestBuilder::new(StripeMethod::Delete, format!("/invoices/{invoice}"))
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListInvoiceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     collection_method: Option<stripe_shared::InvoiceCollectionMethod>,
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<&'a str>,
+    customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     due_date: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_shared::InvoiceStatus>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription: Option<&'a str>,
+    subscription: Option<String>,
 }
-impl<'a> ListInvoiceBuilder<'a> {
+impl ListInvoiceBuilder {
     fn new() -> Self {
         Self {
             collection_method: None,
@@ -83,10 +83,10 @@ impl<'a> ListInvoiceBuilder<'a> {
 /// You can list all invoices, or list the invoices for a specific customer.
 /// The invoices are returned sorted by creation date, with the most recently created invoices appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListInvoice<'a> {
-    inner: ListInvoiceBuilder<'a>,
+pub struct ListInvoice {
+    inner: ListInvoiceBuilder,
 }
-impl<'a> ListInvoice<'a> {
+impl ListInvoice {
     /// Construct a new `ListInvoice`.
     pub fn new() -> Self {
         Self { inner: ListInvoiceBuilder::new() }
@@ -94,68 +94,68 @@ impl<'a> ListInvoice<'a> {
     /// The collection method of the invoice to retrieve. Either `charge_automatically` or `send_invoice`.
     pub fn collection_method(
         mut self,
-        collection_method: stripe_shared::InvoiceCollectionMethod,
+        collection_method: impl Into<stripe_shared::InvoiceCollectionMethod>,
     ) -> Self {
-        self.inner.collection_method = Some(collection_method);
+        self.inner.collection_method = Some(collection_method.into());
         self
     }
     /// Only return invoices that were created during the given date interval.
-    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
-        self.inner.created = Some(created);
+    pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.created = Some(created.into());
         self
     }
     /// Only return invoices for the customer specified by this customer ID.
-    pub fn customer(mut self, customer: &'a str) -> Self {
-        self.inner.customer = Some(customer);
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
         self
     }
-    pub fn due_date(mut self, due_date: stripe_types::RangeQueryTs) -> Self {
-        self.inner.due_date = Some(due_date);
+    pub fn due_date(mut self, due_date: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.due_date = Some(due_date.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
     /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
-    pub fn status(mut self, status: stripe_shared::InvoiceStatus) -> Self {
-        self.inner.status = Some(status);
+    pub fn status(mut self, status: impl Into<stripe_shared::InvoiceStatus>) -> Self {
+        self.inner.status = Some(status.into());
         self
     }
     /// Only return invoices for the subscription specified by this subscription ID.
-    pub fn subscription(mut self, subscription: &'a str) -> Self {
-        self.inner.subscription = Some(subscription);
+    pub fn subscription(mut self, subscription: impl Into<String>) -> Self {
+        self.inner.subscription = Some(subscription.into());
         self
     }
 }
-impl<'a> Default for ListInvoice<'a> {
+impl Default for ListInvoice {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListInvoice<'_> {
+impl ListInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -175,45 +175,45 @@ impl ListInvoice<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::Invoice>> {
-        stripe_client_core::ListPaginator::new_list("/invoices", self.inner)
+        stripe_client_core::ListPaginator::new_list("/invoices", &self.inner)
     }
 }
 
-impl StripeRequest for ListInvoice<'_> {
+impl StripeRequest for ListInvoice {
     type Output = stripe_types::List<stripe_shared::Invoice>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/invoices").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveInvoiceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveInvoiceBuilder<'a> {
+impl RetrieveInvoiceBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves the invoice with the given ID.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveInvoice<'a> {
-    inner: RetrieveInvoiceBuilder<'a>,
-    invoice: &'a stripe_shared::InvoiceId,
+pub struct RetrieveInvoice {
+    inner: RetrieveInvoiceBuilder,
+    invoice: stripe_shared::InvoiceId,
 }
-impl<'a> RetrieveInvoice<'a> {
+impl RetrieveInvoice {
     /// Construct a new `RetrieveInvoice`.
-    pub fn new(invoice: &'a stripe_shared::InvoiceId) -> Self {
-        Self { invoice, inner: RetrieveInvoiceBuilder::new() }
+    pub fn new(invoice: impl Into<stripe_shared::InvoiceId>) -> Self {
+        Self { invoice: invoice.into(), inner: RetrieveInvoiceBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveInvoice<'_> {
+impl RetrieveInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -231,27 +231,27 @@ impl RetrieveInvoice<'_> {
     }
 }
 
-impl StripeRequest for RetrieveInvoice<'_> {
+impl StripeRequest for RetrieveInvoice {
     type Output = stripe_shared::Invoice;
 
     fn build(&self) -> RequestBuilder {
-        let invoice = self.invoice;
+        let invoice = &self.invoice;
         RequestBuilder::new(StripeMethod::Get, format!("/invoices/{invoice}")).query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct SearchInvoiceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct SearchInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    page: Option<&'a str>,
-    query: &'a str,
+    page: Option<String>,
+    query: String,
 }
-impl<'a> SearchInvoiceBuilder<'a> {
-    fn new(query: &'a str) -> Self {
-        Self { expand: None, limit: None, page: None, query }
+impl SearchInvoiceBuilder {
+    fn new(query: impl Into<String>) -> Self {
+        Self { expand: None, limit: None, page: None, query: query.into() }
     }
 }
 /// Search for invoices you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
@@ -261,34 +261,34 @@ impl<'a> SearchInvoiceBuilder<'a> {
 /// Occasionally, propagation of new or updated data can be up.
 /// to an hour behind during outages. Search functionality is not available to merchants in India.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct SearchInvoice<'a> {
-    inner: SearchInvoiceBuilder<'a>,
+pub struct SearchInvoice {
+    inner: SearchInvoiceBuilder,
 }
-impl<'a> SearchInvoice<'a> {
+impl SearchInvoice {
     /// Construct a new `SearchInvoice`.
-    pub fn new(query: &'a str) -> Self {
-        Self { inner: SearchInvoiceBuilder::new(query) }
+    pub fn new(query: impl Into<String>) -> Self {
+        Self { inner: SearchInvoiceBuilder::new(query.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for pagination across multiple pages of results.
     /// Don't include this parameter on the first call.
     /// Use the next_page value returned in a previous response to request subsequent results.
-    pub fn page(mut self, page: &'a str) -> Self {
-        self.inner.page = Some(page);
+    pub fn page(mut self, page: impl Into<String>) -> Self {
+        self.inner.page = Some(page.into());
         self
     }
 }
-impl SearchInvoice<'_> {
+impl SearchInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -308,45 +308,45 @@ impl SearchInvoice<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::SearchList<stripe_shared::Invoice>> {
-        stripe_client_core::ListPaginator::new_search_list("/invoices/search", self.inner)
+        stripe_client_core::ListPaginator::new_search_list("/invoices/search", &self.inner)
     }
 }
 
-impl StripeRequest for SearchInvoice<'_> {
+impl StripeRequest for SearchInvoice {
     type Output = stripe_types::SearchList<stripe_shared::Invoice>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/invoices/search").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpcomingInvoiceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpcomingInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    automatic_tax: Option<UpcomingInvoiceAutomaticTax<'a>>,
+    automatic_tax: Option<UpcomingInvoiceAutomaticTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    coupon: Option<&'a str>,
+    coupon: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<&'a str>,
+    customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer_details: Option<UpcomingInvoiceCustomerDetails<'a>>,
+    customer_details: Option<UpcomingInvoiceCustomerDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    discounts: Option<Vec<DiscountsDataParam>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    invoice_items: Option<&'a [UpcomingInvoiceInvoiceItems<'a>]>,
+    invoice_items: Option<Vec<UpcomingInvoiceInvoiceItems>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    issuer: Option<UpcomingInvoiceIssuer<'a>>,
+    issuer: Option<UpcomingInvoiceIssuer>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    on_behalf_of: Option<&'a str>,
+    on_behalf_of: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    schedule: Option<&'a str>,
+    schedule: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    schedule_details: Option<UpcomingInvoiceScheduleDetails<'a>>,
+    schedule_details: Option<UpcomingInvoiceScheduleDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription: Option<&'a str>,
+    subscription: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     subscription_billing_cycle_anchor: Option<UpcomingInvoiceSubscriptionBillingCycleAnchor>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -356,11 +356,11 @@ struct UpcomingInvoiceBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     subscription_cancel_now: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription_default_tax_rates: Option<&'a [&'a str]>,
+    subscription_default_tax_rates: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription_details: Option<UpcomingInvoiceSubscriptionDetails<'a>>,
+    subscription_details: Option<UpcomingInvoiceSubscriptionDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription_items: Option<&'a [UpcomingInvoiceSubscriptionItems<'a>]>,
+    subscription_items: Option<Vec<UpcomingInvoiceSubscriptionItems>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     subscription_proration_behavior: Option<UpcomingInvoiceSubscriptionProrationBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -374,7 +374,7 @@ struct UpcomingInvoiceBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     subscription_trial_from_plan: Option<bool>,
 }
-impl<'a> UpcomingInvoiceBuilder<'a> {
+impl UpcomingInvoiceBuilder {
     fn new() -> Self {
         Self {
             automatic_tax: None,
@@ -407,8 +407,8 @@ impl<'a> UpcomingInvoiceBuilder<'a> {
     }
 }
 /// Settings for automatic tax lookup for this invoice preview.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceAutomaticTax<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceAutomaticTax {
     /// Whether Stripe automatically computes tax on this invoice.
     /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://stripe.com/docs/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
     pub enabled: bool,
@@ -416,28 +416,28 @@ pub struct UpcomingInvoiceAutomaticTax<'a> {
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
     /// The tax transaction is returned in the report of the connected account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub liability: Option<UpcomingInvoiceAutomaticTaxLiability<'a>>,
+    pub liability: Option<UpcomingInvoiceAutomaticTaxLiability>,
 }
-impl<'a> UpcomingInvoiceAutomaticTax<'a> {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, liability: None }
+impl UpcomingInvoiceAutomaticTax {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), liability: None }
     }
 }
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceAutomaticTaxLiability<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpcomingInvoiceAutomaticTaxLiabilityType,
 }
-impl<'a> UpcomingInvoiceAutomaticTaxLiability<'a> {
-    pub fn new(type_: UpcomingInvoiceAutomaticTaxLiabilityType) -> Self {
-        Self { account: None, type_ }
+impl UpcomingInvoiceAutomaticTaxLiability {
+    pub fn new(type_: impl Into<UpcomingInvoiceAutomaticTaxLiabilityType>) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -498,30 +498,30 @@ impl<'de> serde::Deserialize<'de> for UpcomingInvoiceAutomaticTaxLiabilityType {
 }
 /// Details about the customer you want to invoice or overrides for an existing customer.
 /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceCustomerDetails<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceCustomerDetails {
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<OptionalFieldsAddress<'a>>,
+    pub address: Option<OptionalFieldsAddress>,
     /// The customer's shipping information. Appears on invoices emailed to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<CustomerShipping<'a>>,
+    pub shipping: Option<CustomerShipping>,
     /// Tax details about the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax: Option<TaxParam<'a>>,
+    pub tax: Option<TaxParam>,
     /// The customer's tax exemption. One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<UpcomingInvoiceCustomerDetailsTaxExempt>,
     /// The customer's tax IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_ids: Option<&'a [UpcomingInvoiceCustomerDetailsTaxIds<'a>]>,
+    pub tax_ids: Option<Vec<UpcomingInvoiceCustomerDetailsTaxIds>>,
 }
-impl<'a> UpcomingInvoiceCustomerDetails<'a> {
+impl UpcomingInvoiceCustomerDetails {
     pub fn new() -> Self {
         Self { address: None, shipping: None, tax: None, tax_exempt: None, tax_ids: None }
     }
 }
-impl<'a> Default for UpcomingInvoiceCustomerDetails<'a> {
+impl Default for UpcomingInvoiceCustomerDetails {
     fn default() -> Self {
         Self::new()
     }
@@ -586,17 +586,20 @@ impl<'de> serde::Deserialize<'de> for UpcomingInvoiceCustomerDetailsTaxExempt {
     }
 }
 /// The customer's tax IDs.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceCustomerDetailsTaxIds<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceCustomerDetailsTaxIds {
     /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
     #[serde(rename = "type")]
     pub type_: UpcomingInvoiceCustomerDetailsTaxIdsType,
     /// Value of the tax ID.
-    pub value: &'a str,
+    pub value: String,
 }
-impl<'a> UpcomingInvoiceCustomerDetailsTaxIds<'a> {
-    pub fn new(type_: UpcomingInvoiceCustomerDetailsTaxIdsType, value: &'a str) -> Self {
-        Self { type_, value }
+impl UpcomingInvoiceCustomerDetailsTaxIds {
+    pub fn new(
+        type_: impl Into<UpcomingInvoiceCustomerDetailsTaxIdsType>,
+        value: impl Into<String>,
+    ) -> Self {
+        Self { type_: type_.into(), value: value.into() }
     }
 }
 /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
@@ -865,8 +868,8 @@ impl<'de> serde::Deserialize<'de> for UpcomingInvoiceCustomerDetailsTaxIdsType {
     }
 }
 /// List of invoice items to add or update in the upcoming invoice preview.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceInvoiceItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceInvoiceItems {
     /// The integer amount in cents (or local equivalent) of previewed invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -878,24 +881,24 @@ pub struct UpcomingInvoiceInvoiceItems<'a> {
     /// An arbitrary string which you can attach to the invoice item.
     /// The description is displayed in the invoice for easy tracking.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
     /// Explicitly controls whether discounts apply to this invoice item.
     /// Defaults to true, except for negative invoice items.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discountable: Option<bool>,
     /// The coupons to redeem into discounts for the invoice item in the preview.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// The ID of the invoice item to update in preview.
     /// If not specified, a new invoice item will be added to the preview of the upcoming invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoiceitem: Option<&'a str>,
+    pub invoiceitem: Option<String>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The period associated with this invoice item.
     /// When set to different values, the period will be rendered on the invoice.
     /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
@@ -904,10 +907,10 @@ pub struct UpcomingInvoiceInvoiceItems<'a> {
     pub period: Option<Period>,
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpcomingInvoiceInvoiceItemsPriceData<'a>>,
+    pub price_data: Option<UpcomingInvoiceInvoiceItemsPriceData>,
     /// Non-negative integer. The quantity of units for the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -919,10 +922,10 @@ pub struct UpcomingInvoiceInvoiceItems<'a> {
     pub tax_behavior: Option<UpcomingInvoiceInvoiceItemsTaxBehavior>,
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_code: Option<&'a str>,
+    pub tax_code: Option<String>,
     /// The tax rates that apply to the item. When set, any `default_tax_rates` do not apply to this item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
     /// The integer unit amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
     /// This unit_amount will be multiplied by the quantity to get the full amount.
     /// If you want to apply a credit to the customer's account, pass a negative unit_amount.
@@ -931,9 +934,9 @@ pub struct UpcomingInvoiceInvoiceItems<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> UpcomingInvoiceInvoiceItems<'a> {
+impl UpcomingInvoiceInvoiceItems {
     pub fn new() -> Self {
         Self {
             amount: None,
@@ -955,19 +958,19 @@ impl<'a> UpcomingInvoiceInvoiceItems<'a> {
         }
     }
 }
-impl<'a> Default for UpcomingInvoiceInvoiceItems<'a> {
+impl Default for UpcomingInvoiceInvoiceItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceInvoiceItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceInvoiceItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -980,11 +983,17 @@ pub struct UpcomingInvoiceInvoiceItemsPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> UpcomingInvoiceInvoiceItemsPriceData<'a> {
-    pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self { currency, product, tax_behavior: None, unit_amount: None, unit_amount_decimal: None }
+impl UpcomingInvoiceInvoiceItemsPriceData {
+    pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
+        Self {
+            currency: currency.into(),
+            product: product.into(),
+            tax_behavior: None,
+            unit_amount: None,
+            unit_amount_decimal: None,
+        }
     }
 }
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -1115,18 +1124,18 @@ impl<'de> serde::Deserialize<'de> for UpcomingInvoiceInvoiceItemsTaxBehavior {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceIssuer<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpcomingInvoiceIssuerType,
 }
-impl<'a> UpcomingInvoiceIssuer<'a> {
-    pub fn new(type_: UpcomingInvoiceIssuerType) -> Self {
-        Self { account: None, type_ }
+impl UpcomingInvoiceIssuer {
+    pub fn new(type_: impl Into<UpcomingInvoiceIssuerType>) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -1186,8 +1195,8 @@ impl<'de> serde::Deserialize<'de> for UpcomingInvoiceIssuerType {
 }
 /// The schedule creation or modification params to apply as a preview.
 /// Cannot be used with `subscription` or `subscription_` prefixed fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceScheduleDetails<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceScheduleDetails {
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     /// Possible values are `release` or `cancel` with the default being `release`.
     /// `release` will end the subscription schedule and keep the underlying subscription running.
@@ -1198,17 +1207,17 @@ pub struct UpcomingInvoiceScheduleDetails<'a> {
     /// Each phase can be customized to have different durations, plans, and coupons.
     /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phases: Option<&'a [UpcomingInvoiceScheduleDetailsPhases<'a>]>,
+    pub phases: Option<Vec<UpcomingInvoiceScheduleDetailsPhases>>,
     /// In cases where the `schedule_details` params update the currently active phase, specifies if and how to prorate at the time of the request.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<UpcomingInvoiceScheduleDetailsProrationBehavior>,
 }
-impl<'a> UpcomingInvoiceScheduleDetails<'a> {
+impl UpcomingInvoiceScheduleDetails {
     pub fn new() -> Self {
         Self { end_behavior: None, phases: None, proration_behavior: None }
     }
 }
-impl<'a> Default for UpcomingInvoiceScheduleDetails<'a> {
+impl Default for UpcomingInvoiceScheduleDetails {
     fn default() -> Self {
         Self::new()
     }
@@ -1275,12 +1284,12 @@ impl<'de> serde::Deserialize<'de> for UpcomingInvoiceScheduleDetailsEndBehavior 
 /// List representing phases of the subscription schedule.
 /// Each phase can be customized to have different durations, plans, and coupons.
 /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceScheduleDetailsPhases<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceScheduleDetailsPhases {
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
     /// You may pass up to 20 items.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub add_invoice_items: Option<&'a [UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItems<'a>]>,
+    pub add_invoice_items: Option<Vec<UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItems>>,
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// The request must be made by a platform account on a connected account in order to set an application fee percentage.
@@ -1289,7 +1298,7 @@ pub struct UpcomingInvoiceScheduleDetailsPhases<'a> {
     pub application_fee_percent: Option<f64>,
     /// Automatic tax settings for this phase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<UpcomingInvoiceScheduleDetailsPhasesAutomaticTax<'a>>,
+    pub automatic_tax: Option<UpcomingInvoiceScheduleDetailsPhasesAutomaticTax>,
     /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
     /// Cannot be set to `phase_start` if this phase specifies a trial.
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
@@ -1309,7 +1318,7 @@ pub struct UpcomingInvoiceScheduleDetailsPhases<'a> {
     /// This field has been deprecated and will be removed in a future API version.
     /// Use `discounts` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<&'a str>,
+    pub coupon: Option<String>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1318,29 +1327,29 @@ pub struct UpcomingInvoiceScheduleDetailsPhases<'a> {
     /// It must belong to the customer associated with the subscription schedule.
     /// If not set, invoices will use the default payment method in the customer's invoice settings.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_payment_method: Option<&'a str>,
+    pub default_payment_method: Option<String>,
     /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
     /// These Tax Rates will set the Subscription's [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates), which means they will be the Invoice's [`default_tax_rates`](https://stripe.com/docs/api/invoices/create#create_invoice-default_tax_rates) for any Invoices issued by the Subscription during this Phase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<&'a [&'a str]>,
+    pub default_tax_rates: Option<Vec<String>>,
     /// Subscription description, meant to be displayable to the customer.
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
     /// The coupons to redeem into discounts for the schedule phase.
     /// If not specified, inherits the discount from the subscription's customer.
     /// Pass an empty string to avoid inheriting any discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// The date at which this phase of the subscription schedule ends.
     /// If set, `iterations` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<UpcomingInvoiceScheduleDetailsPhasesEndDate>,
     /// All invoices will be billed using the specified settings.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<UpcomingInvoiceScheduleDetailsPhasesInvoiceSettings<'a>>,
+    pub invoice_settings: Option<UpcomingInvoiceScheduleDetailsPhasesInvoiceSettings>,
     /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
-    pub items: &'a [UpcomingInvoiceScheduleDetailsPhasesItems<'a>],
+    pub items: Vec<UpcomingInvoiceScheduleDetailsPhasesItems>,
     /// Integer representing the multiplier applied to the price interval.
     /// For example, `iterations=2` applied to a price with `interval=month` and `interval_count=3` results in a phase of duration `2 * 3 months = 6 months`.
     /// If set, `end_date` must not be set.
@@ -1351,10 +1360,10 @@ pub struct UpcomingInvoiceScheduleDetailsPhases<'a> {
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
     /// To unset all keys in the subscription's `metadata`, update the subscription directly or unset every key individually from the phase's `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<&'a str>,
+    pub on_behalf_of: Option<String>,
     /// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
     /// The default value is `create_prorations`.
     /// This setting controls prorations when a phase is started asynchronously and it is persisted as a field on the phase.
@@ -1367,7 +1376,7 @@ pub struct UpcomingInvoiceScheduleDetailsPhases<'a> {
     pub start_date: Option<UpcomingInvoiceScheduleDetailsPhasesStartDate>,
     /// The data with which to automatically create a Transfer for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<TransferDataSpecs<'a>>,
+    pub transfer_data: Option<TransferDataSpecs>,
     /// If set to true the entire phase is counted as a trial and the customer will not be charged for any fees.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial: Option<bool>,
@@ -1376,8 +1385,8 @@ pub struct UpcomingInvoiceScheduleDetailsPhases<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<UpcomingInvoiceScheduleDetailsPhasesTrialEnd>,
 }
-impl<'a> UpcomingInvoiceScheduleDetailsPhases<'a> {
-    pub fn new(items: &'a [UpcomingInvoiceScheduleDetailsPhasesItems<'a>]) -> Self {
+impl UpcomingInvoiceScheduleDetailsPhases {
+    pub fn new(items: impl Into<Vec<UpcomingInvoiceScheduleDetailsPhasesItems>>) -> Self {
         Self {
             add_invoice_items: None,
             application_fee_percent: None,
@@ -1393,7 +1402,7 @@ impl<'a> UpcomingInvoiceScheduleDetailsPhases<'a> {
             discounts: None,
             end_date: None,
             invoice_settings: None,
-            items,
+            items: items.into(),
             iterations: None,
             metadata: None,
             on_behalf_of: None,
@@ -1407,42 +1416,42 @@ impl<'a> UpcomingInvoiceScheduleDetailsPhases<'a> {
 }
 /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
 /// You may pass up to 20 items.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData<'a>>,
+    pub price_data: Option<UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData>,
     /// Quantity for this item. Defaults to 1.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
     /// The tax rates which apply to the item. When set, the `default_tax_rates` do not apply to this item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
 }
-impl<'a> UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItems<'a> {
+impl UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItems {
     pub fn new() -> Self {
         Self { discounts: None, price: None, price_data: None, quantity: None, tax_rates: None }
     }
 }
-impl<'a> Default for UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItems<'a> {
+impl Default for UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -1456,11 +1465,17 @@ pub struct UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData<'a> {
-    pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self { currency, product, tax_behavior: None, unit_amount: None, unit_amount_decimal: None }
+impl UpcomingInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData {
+    pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
+        Self {
+            currency: currency.into(),
+            product: product.into(),
+            tax_behavior: None,
+            unit_amount: None,
+            unit_amount_decimal: None,
+        }
     }
 }
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -1526,36 +1541,38 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Automatic tax settings for this phase.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceScheduleDetailsPhasesAutomaticTax<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceScheduleDetailsPhasesAutomaticTax {
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
     /// The account that's liable for tax.
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
     /// The tax transaction is returned in the report of the connected account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub liability: Option<UpcomingInvoiceScheduleDetailsPhasesAutomaticTaxLiability<'a>>,
+    pub liability: Option<UpcomingInvoiceScheduleDetailsPhasesAutomaticTaxLiability>,
 }
-impl<'a> UpcomingInvoiceScheduleDetailsPhasesAutomaticTax<'a> {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, liability: None }
+impl UpcomingInvoiceScheduleDetailsPhasesAutomaticTax {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), liability: None }
     }
 }
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceScheduleDetailsPhasesAutomaticTaxLiability<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceScheduleDetailsPhasesAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpcomingInvoiceScheduleDetailsPhasesAutomaticTaxLiabilityType,
 }
-impl<'a> UpcomingInvoiceScheduleDetailsPhasesAutomaticTaxLiability<'a> {
-    pub fn new(type_: UpcomingInvoiceScheduleDetailsPhasesAutomaticTaxLiabilityType) -> Self {
-        Self { account: None, type_ }
+impl UpcomingInvoiceScheduleDetailsPhasesAutomaticTaxLiability {
+    pub fn new(
+        type_: impl Into<UpcomingInvoiceScheduleDetailsPhasesAutomaticTaxLiabilityType>,
+    ) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -1688,12 +1705,12 @@ pub enum UpcomingInvoiceScheduleDetailsPhasesEndDate {
     Timestamp(stripe_types::Timestamp),
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceScheduleDetailsPhasesInvoiceSettings<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceScheduleDetailsPhasesInvoiceSettings {
     /// The account tax IDs associated with this phase of the subscription schedule.
     /// Will be set on invoices generated by this phase of the subscription schedule.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_tax_ids: Option<&'a [&'a str]>,
+    pub account_tax_ids: Option<Vec<String>>,
     /// Number of days within which a customer must pay invoices generated by this subscription schedule.
     /// This value will be `null` for subscription schedules where `billing=charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1701,32 +1718,34 @@ pub struct UpcomingInvoiceScheduleDetailsPhasesInvoiceSettings<'a> {
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub issuer: Option<UpcomingInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer<'a>>,
+    pub issuer: Option<UpcomingInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer>,
 }
-impl<'a> UpcomingInvoiceScheduleDetailsPhasesInvoiceSettings<'a> {
+impl UpcomingInvoiceScheduleDetailsPhasesInvoiceSettings {
     pub fn new() -> Self {
         Self { account_tax_ids: None, days_until_due: None, issuer: None }
     }
 }
-impl<'a> Default for UpcomingInvoiceScheduleDetailsPhasesInvoiceSettings<'a> {
+impl Default for UpcomingInvoiceScheduleDetailsPhasesInvoiceSettings {
     fn default() -> Self {
         Self::new()
     }
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpcomingInvoiceScheduleDetailsPhasesInvoiceSettingsIssuerType,
 }
-impl<'a> UpcomingInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer<'a> {
-    pub fn new(type_: UpcomingInvoiceScheduleDetailsPhasesInvoiceSettingsIssuerType) -> Self {
-        Self { account: None, type_ }
+impl UpcomingInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer {
+    pub fn new(
+        type_: impl Into<UpcomingInvoiceScheduleDetailsPhasesInvoiceSettingsIssuerType>,
+    ) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -1790,30 +1809,30 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceScheduleDetailsPhasesItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceScheduleDetailsPhasesItems {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
     /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The plan ID to subscribe to. You may specify the same ID in `plan` and `price`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<&'a str>,
+    pub plan: Option<String>,
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpcomingInvoiceScheduleDetailsPhasesItemsPriceData<'a>>,
+    pub price_data: Option<UpcomingInvoiceScheduleDetailsPhasesItemsPriceData>,
     /// Quantity for the given price.
     /// Can be set only if the price's `usage_type` is `licensed` and not `metered`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1822,9 +1841,9 @@ pub struct UpcomingInvoiceScheduleDetailsPhasesItems<'a> {
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
 }
-impl<'a> UpcomingInvoiceScheduleDetailsPhasesItems<'a> {
+impl UpcomingInvoiceScheduleDetailsPhasesItems {
     pub fn new() -> Self {
         Self {
             billing_thresholds: None,
@@ -1838,19 +1857,19 @@ impl<'a> UpcomingInvoiceScheduleDetailsPhasesItems<'a> {
         }
     }
 }
-impl<'a> Default for UpcomingInvoiceScheduleDetailsPhasesItems<'a> {
+impl Default for UpcomingInvoiceScheduleDetailsPhasesItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceScheduleDetailsPhasesItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceScheduleDetailsPhasesItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: UpcomingInvoiceScheduleDetailsPhasesItemsPriceDataRecurring,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -1865,18 +1884,18 @@ pub struct UpcomingInvoiceScheduleDetailsPhasesItemsPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> UpcomingInvoiceScheduleDetailsPhasesItemsPriceData<'a> {
+impl UpcomingInvoiceScheduleDetailsPhasesItemsPriceData {
     pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: UpcomingInvoiceScheduleDetailsPhasesItemsPriceDataRecurring,
+        currency: impl Into<stripe_types::Currency>,
+        product: impl Into<String>,
+        recurring: impl Into<UpcomingInvoiceScheduleDetailsPhasesItemsPriceDataRecurring>,
     ) -> Self {
         Self {
-            currency,
-            product,
-            recurring,
+            currency: currency.into(),
+            product: product.into(),
+            recurring: recurring.into(),
             tax_behavior: None,
             unit_amount: None,
             unit_amount_decimal: None,
@@ -1896,9 +1915,9 @@ pub struct UpcomingInvoiceScheduleDetailsPhasesItemsPriceDataRecurring {
 }
 impl UpcomingInvoiceScheduleDetailsPhasesItemsPriceDataRecurring {
     pub fn new(
-        interval: UpcomingInvoiceScheduleDetailsPhasesItemsPriceDataRecurringInterval,
+        interval: impl Into<UpcomingInvoiceScheduleDetailsPhasesItemsPriceDataRecurringInterval>,
     ) -> Self {
-        Self { interval, interval_count: None }
+        Self { interval: interval.into(), interval_count: None }
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
@@ -2187,8 +2206,8 @@ pub enum UpcomingInvoiceSubscriptionBillingCycleAnchor {
 }
 /// The subscription creation or modification params to apply as a preview.
 /// Cannot be used with `schedule` or `schedule_details` fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceSubscriptionDetails<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceSubscriptionDetails {
     /// For new subscriptions, a future timestamp to anchor the subscription's [billing cycle](https://stripe.com/docs/subscriptions/billing-cycle).
     /// This is used to determine the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
     /// For existing subscriptions, the value can only be set to `now` or `unchanged`.
@@ -2208,10 +2227,10 @@ pub struct UpcomingInvoiceSubscriptionDetails<'a> {
     /// If provided, the invoice returned will preview updating or creating a subscription with these default tax rates.
     /// The default tax rates will apply to any line item that does not have `tax_rates` set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<&'a [&'a str]>,
+    pub default_tax_rates: Option<Vec<String>>,
     /// A list of up to 20 subscription items, each with an attached price.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub items: Option<&'a [UpcomingInvoiceSubscriptionDetailsItems<'a>]>,
+    pub items: Option<Vec<UpcomingInvoiceSubscriptionDetailsItems>>,
     /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     /// The default value is `create_prorations`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2233,7 +2252,7 @@ pub struct UpcomingInvoiceSubscriptionDetails<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<UpcomingInvoiceSubscriptionDetailsTrialEnd>,
 }
-impl<'a> UpcomingInvoiceSubscriptionDetails<'a> {
+impl UpcomingInvoiceSubscriptionDetails {
     pub fn new() -> Self {
         Self {
             billing_cycle_anchor: None,
@@ -2250,7 +2269,7 @@ impl<'a> UpcomingInvoiceSubscriptionDetails<'a> {
         }
     }
 }
-impl<'a> Default for UpcomingInvoiceSubscriptionDetails<'a> {
+impl Default for UpcomingInvoiceSubscriptionDetails {
     fn default() -> Self {
         Self::new()
     }
@@ -2267,8 +2286,8 @@ pub enum UpcomingInvoiceSubscriptionDetailsBillingCycleAnchor {
     Timestamp(stripe_types::Timestamp),
 }
 /// A list of up to 20 subscription items, each with an attached price.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceSubscriptionDetailsItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceSubscriptionDetailsItems {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2282,26 +2301,26 @@ pub struct UpcomingInvoiceSubscriptionDetailsItems<'a> {
     pub deleted: Option<bool>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// Subscription item to update.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<&'a str>,
+    pub id: Option<String>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Plan ID for this item, as a string.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<&'a str>,
+    pub plan: Option<String>,
     /// The ID of the price object.
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpcomingInvoiceSubscriptionDetailsItemsPriceData<'a>>,
+    pub price_data: Option<UpcomingInvoiceSubscriptionDetailsItemsPriceData>,
     /// Quantity for this item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -2309,9 +2328,9 @@ pub struct UpcomingInvoiceSubscriptionDetailsItems<'a> {
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
 }
-impl<'a> UpcomingInvoiceSubscriptionDetailsItems<'a> {
+impl UpcomingInvoiceSubscriptionDetailsItems {
     pub fn new() -> Self {
         Self {
             billing_thresholds: None,
@@ -2328,19 +2347,19 @@ impl<'a> UpcomingInvoiceSubscriptionDetailsItems<'a> {
         }
     }
 }
-impl<'a> Default for UpcomingInvoiceSubscriptionDetailsItems<'a> {
+impl Default for UpcomingInvoiceSubscriptionDetailsItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceSubscriptionDetailsItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceSubscriptionDetailsItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: UpcomingInvoiceSubscriptionDetailsItemsPriceDataRecurring,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -2355,18 +2374,18 @@ pub struct UpcomingInvoiceSubscriptionDetailsItemsPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> UpcomingInvoiceSubscriptionDetailsItemsPriceData<'a> {
+impl UpcomingInvoiceSubscriptionDetailsItemsPriceData {
     pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: UpcomingInvoiceSubscriptionDetailsItemsPriceDataRecurring,
+        currency: impl Into<stripe_types::Currency>,
+        product: impl Into<String>,
+        recurring: impl Into<UpcomingInvoiceSubscriptionDetailsItemsPriceDataRecurring>,
     ) -> Self {
         Self {
-            currency,
-            product,
-            recurring,
+            currency: currency.into(),
+            product: product.into(),
+            recurring: recurring.into(),
             tax_behavior: None,
             unit_amount: None,
             unit_amount_decimal: None,
@@ -2386,9 +2405,9 @@ pub struct UpcomingInvoiceSubscriptionDetailsItemsPriceDataRecurring {
 }
 impl UpcomingInvoiceSubscriptionDetailsItemsPriceDataRecurring {
     pub fn new(
-        interval: UpcomingInvoiceSubscriptionDetailsItemsPriceDataRecurringInterval,
+        interval: impl Into<UpcomingInvoiceSubscriptionDetailsItemsPriceDataRecurringInterval>,
     ) -> Self {
-        Self { interval, interval_count: None }
+        Self { interval: interval.into(), interval_count: None }
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
@@ -2644,8 +2663,8 @@ pub enum UpcomingInvoiceSubscriptionDetailsTrialEnd {
 /// A list of up to 20 subscription items, each with an attached price.
 /// This field has been deprecated and will be removed in a future API version.
 /// Use `subscription_details.items` instead.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceSubscriptionItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceSubscriptionItems {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2659,26 +2678,26 @@ pub struct UpcomingInvoiceSubscriptionItems<'a> {
     pub deleted: Option<bool>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// Subscription item to update.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<&'a str>,
+    pub id: Option<String>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Plan ID for this item, as a string.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<&'a str>,
+    pub plan: Option<String>,
     /// The ID of the price object.
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpcomingInvoiceSubscriptionItemsPriceData<'a>>,
+    pub price_data: Option<UpcomingInvoiceSubscriptionItemsPriceData>,
     /// Quantity for this item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -2686,9 +2705,9 @@ pub struct UpcomingInvoiceSubscriptionItems<'a> {
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
 }
-impl<'a> UpcomingInvoiceSubscriptionItems<'a> {
+impl UpcomingInvoiceSubscriptionItems {
     pub fn new() -> Self {
         Self {
             billing_thresholds: None,
@@ -2705,19 +2724,19 @@ impl<'a> UpcomingInvoiceSubscriptionItems<'a> {
         }
     }
 }
-impl<'a> Default for UpcomingInvoiceSubscriptionItems<'a> {
+impl Default for UpcomingInvoiceSubscriptionItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoiceSubscriptionItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingInvoiceSubscriptionItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: UpcomingInvoiceSubscriptionItemsPriceDataRecurring,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -2732,18 +2751,18 @@ pub struct UpcomingInvoiceSubscriptionItemsPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> UpcomingInvoiceSubscriptionItemsPriceData<'a> {
+impl UpcomingInvoiceSubscriptionItemsPriceData {
     pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: UpcomingInvoiceSubscriptionItemsPriceDataRecurring,
+        currency: impl Into<stripe_types::Currency>,
+        product: impl Into<String>,
+        recurring: impl Into<UpcomingInvoiceSubscriptionItemsPriceDataRecurring>,
     ) -> Self {
         Self {
-            currency,
-            product,
-            recurring,
+            currency: currency.into(),
+            product: product.into(),
+            recurring: recurring.into(),
             tax_behavior: None,
             unit_amount: None,
             unit_amount_decimal: None,
@@ -2762,8 +2781,10 @@ pub struct UpcomingInvoiceSubscriptionItemsPriceDataRecurring {
     pub interval_count: Option<u64>,
 }
 impl UpcomingInvoiceSubscriptionItemsPriceDataRecurring {
-    pub fn new(interval: UpcomingInvoiceSubscriptionItemsPriceDataRecurringInterval) -> Self {
-        Self { interval, interval_count: None }
+    pub fn new(
+        interval: impl Into<UpcomingInvoiceSubscriptionItemsPriceDataRecurringInterval>,
+    ) -> Self {
+        Self { interval: interval.into(), interval_count: None }
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
@@ -3036,97 +3057,100 @@ pub enum UpcomingInvoiceSubscriptionTrialEnd {
 /// To ensure that the actual proration is calculated exactly the same as the previewed proration, you should pass the `subscription_details.proration_date` parameter when doing the actual subscription update.
 /// The recommended way to get only the prorations being previewed is to consider only proration line items where `period[start]` is equal to the `subscription_details.proration_date` value passed in the request.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpcomingInvoice<'a> {
-    inner: UpcomingInvoiceBuilder<'a>,
+pub struct UpcomingInvoice {
+    inner: UpcomingInvoiceBuilder,
 }
-impl<'a> UpcomingInvoice<'a> {
+impl UpcomingInvoice {
     /// Construct a new `UpcomingInvoice`.
     pub fn new() -> Self {
         Self { inner: UpcomingInvoiceBuilder::new() }
     }
     /// Settings for automatic tax lookup for this invoice preview.
-    pub fn automatic_tax(mut self, automatic_tax: UpcomingInvoiceAutomaticTax<'a>) -> Self {
-        self.inner.automatic_tax = Some(automatic_tax);
+    pub fn automatic_tax(mut self, automatic_tax: impl Into<UpcomingInvoiceAutomaticTax>) -> Self {
+        self.inner.automatic_tax = Some(automatic_tax.into());
         self
     }
     /// The ID of the coupon to apply to this phase of the subscription schedule.
     /// This field has been deprecated and will be removed in a future API version.
     /// Use `discounts` instead.
-    pub fn coupon(mut self, coupon: &'a str) -> Self {
-        self.inner.coupon = Some(coupon);
+    pub fn coupon(mut self, coupon: impl Into<String>) -> Self {
+        self.inner.coupon = Some(coupon.into());
         self
     }
     /// The currency to preview this invoice in. Defaults to that of `customer` if not specified.
-    pub fn currency(mut self, currency: stripe_types::Currency) -> Self {
-        self.inner.currency = Some(currency);
+    pub fn currency(mut self, currency: impl Into<stripe_types::Currency>) -> Self {
+        self.inner.currency = Some(currency.into());
         self
     }
     /// The identifier of the customer whose upcoming invoice you'd like to retrieve.
     /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
-    pub fn customer(mut self, customer: &'a str) -> Self {
-        self.inner.customer = Some(customer);
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
         self
     }
     /// Details about the customer you want to invoice or overrides for an existing customer.
     /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
     pub fn customer_details(
         mut self,
-        customer_details: UpcomingInvoiceCustomerDetails<'a>,
+        customer_details: impl Into<UpcomingInvoiceCustomerDetails>,
     ) -> Self {
-        self.inner.customer_details = Some(customer_details);
+        self.inner.customer_details = Some(customer_details.into());
         self
     }
     /// The coupons to redeem into discounts for the invoice preview.
     /// If not specified, inherits the discount from the subscription or customer.
     /// This works for both coupons directly applied to an invoice and coupons applied to a subscription.
     /// Pass an empty string to avoid inheriting any discounts.
-    pub fn discounts(mut self, discounts: &'a [DiscountsDataParam<'a>]) -> Self {
-        self.inner.discounts = Some(discounts);
+    pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
+        self.inner.discounts = Some(discounts.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// List of invoice items to add or update in the upcoming invoice preview.
-    pub fn invoice_items(mut self, invoice_items: &'a [UpcomingInvoiceInvoiceItems<'a>]) -> Self {
-        self.inner.invoice_items = Some(invoice_items);
+    pub fn invoice_items(
+        mut self,
+        invoice_items: impl Into<Vec<UpcomingInvoiceInvoiceItems>>,
+    ) -> Self {
+        self.inner.invoice_items = Some(invoice_items.into());
         self
     }
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
-    pub fn issuer(mut self, issuer: UpcomingInvoiceIssuer<'a>) -> Self {
-        self.inner.issuer = Some(issuer);
+    pub fn issuer(mut self, issuer: impl Into<UpcomingInvoiceIssuer>) -> Self {
+        self.inner.issuer = Some(issuer.into());
         self
     }
     /// The account (if any) for which the funds of the invoice payment are intended.
     /// If set, the invoice will be presented with the branding and support information of the specified account.
     /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
-    pub fn on_behalf_of(mut self, on_behalf_of: &'a str) -> Self {
-        self.inner.on_behalf_of = Some(on_behalf_of);
+    pub fn on_behalf_of(mut self, on_behalf_of: impl Into<String>) -> Self {
+        self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
     }
     /// The identifier of the schedule whose upcoming invoice you'd like to retrieve.
     /// Cannot be used with subscription or subscription fields.
-    pub fn schedule(mut self, schedule: &'a str) -> Self {
-        self.inner.schedule = Some(schedule);
+    pub fn schedule(mut self, schedule: impl Into<String>) -> Self {
+        self.inner.schedule = Some(schedule.into());
         self
     }
     /// The schedule creation or modification params to apply as a preview.
     /// Cannot be used with `subscription` or `subscription_` prefixed fields.
     pub fn schedule_details(
         mut self,
-        schedule_details: UpcomingInvoiceScheduleDetails<'a>,
+        schedule_details: impl Into<UpcomingInvoiceScheduleDetails>,
     ) -> Self {
-        self.inner.schedule_details = Some(schedule_details);
+        self.inner.schedule_details = Some(schedule_details.into());
         self
     }
     /// The identifier of the subscription for which you'd like to retrieve the upcoming invoice.
     /// If not provided, but a `subscription_items` is provided, you will preview creating a subscription with those items.
     /// If neither `subscription` nor `subscription_items` is provided, you will retrieve the next upcoming invoice from among the customer's subscriptions.
-    pub fn subscription(mut self, subscription: &'a str) -> Self {
-        self.inner.subscription = Some(subscription);
+    pub fn subscription(mut self, subscription: impl Into<String>) -> Self {
+        self.inner.subscription = Some(subscription.into());
         self
     }
     /// For new subscriptions, a future timestamp to anchor the subscription's [billing cycle](https://stripe.com/docs/subscriptions/billing-cycle).
@@ -3136,9 +3160,10 @@ impl<'a> UpcomingInvoice<'a> {
     /// Use `subscription_details.billing_cycle_anchor` instead.
     pub fn subscription_billing_cycle_anchor(
         mut self,
-        subscription_billing_cycle_anchor: UpcomingInvoiceSubscriptionBillingCycleAnchor,
+        subscription_billing_cycle_anchor: impl Into<UpcomingInvoiceSubscriptionBillingCycleAnchor>,
     ) -> Self {
-        self.inner.subscription_billing_cycle_anchor = Some(subscription_billing_cycle_anchor);
+        self.inner.subscription_billing_cycle_anchor =
+            Some(subscription_billing_cycle_anchor.into());
         self
     }
     /// A timestamp at which the subscription should cancel.
@@ -3148,9 +3173,9 @@ impl<'a> UpcomingInvoice<'a> {
     /// Use `subscription_details.cancel_at` instead.
     pub fn subscription_cancel_at(
         mut self,
-        subscription_cancel_at: stripe_types::Timestamp,
+        subscription_cancel_at: impl Into<stripe_types::Timestamp>,
     ) -> Self {
-        self.inner.subscription_cancel_at = Some(subscription_cancel_at);
+        self.inner.subscription_cancel_at = Some(subscription_cancel_at.into());
         self
     }
     /// Boolean indicating whether this subscription should cancel at the end of the current period.
@@ -3158,16 +3183,17 @@ impl<'a> UpcomingInvoice<'a> {
     /// Use `subscription_details.cancel_at_period_end` instead.
     pub fn subscription_cancel_at_period_end(
         mut self,
-        subscription_cancel_at_period_end: bool,
+        subscription_cancel_at_period_end: impl Into<bool>,
     ) -> Self {
-        self.inner.subscription_cancel_at_period_end = Some(subscription_cancel_at_period_end);
+        self.inner.subscription_cancel_at_period_end =
+            Some(subscription_cancel_at_period_end.into());
         self
     }
     /// This simulates the subscription being canceled or expired immediately.
     /// This field has been deprecated and will be removed in a future API version.
     /// Use `subscription_details.cancel_now` instead.
-    pub fn subscription_cancel_now(mut self, subscription_cancel_now: bool) -> Self {
-        self.inner.subscription_cancel_now = Some(subscription_cancel_now);
+    pub fn subscription_cancel_now(mut self, subscription_cancel_now: impl Into<bool>) -> Self {
+        self.inner.subscription_cancel_now = Some(subscription_cancel_now.into());
         self
     }
     /// If provided, the invoice returned will preview updating or creating a subscription with these default tax rates.
@@ -3176,18 +3202,18 @@ impl<'a> UpcomingInvoice<'a> {
     /// Use `subscription_details.default_tax_rates` instead.
     pub fn subscription_default_tax_rates(
         mut self,
-        subscription_default_tax_rates: &'a [&'a str],
+        subscription_default_tax_rates: impl Into<Vec<String>>,
     ) -> Self {
-        self.inner.subscription_default_tax_rates = Some(subscription_default_tax_rates);
+        self.inner.subscription_default_tax_rates = Some(subscription_default_tax_rates.into());
         self
     }
     /// The subscription creation or modification params to apply as a preview.
     /// Cannot be used with `schedule` or `schedule_details` fields.
     pub fn subscription_details(
         mut self,
-        subscription_details: UpcomingInvoiceSubscriptionDetails<'a>,
+        subscription_details: impl Into<UpcomingInvoiceSubscriptionDetails>,
     ) -> Self {
-        self.inner.subscription_details = Some(subscription_details);
+        self.inner.subscription_details = Some(subscription_details.into());
         self
     }
     /// A list of up to 20 subscription items, each with an attached price.
@@ -3195,9 +3221,9 @@ impl<'a> UpcomingInvoice<'a> {
     /// Use `subscription_details.items` instead.
     pub fn subscription_items(
         mut self,
-        subscription_items: &'a [UpcomingInvoiceSubscriptionItems<'a>],
+        subscription_items: impl Into<Vec<UpcomingInvoiceSubscriptionItems>>,
     ) -> Self {
-        self.inner.subscription_items = Some(subscription_items);
+        self.inner.subscription_items = Some(subscription_items.into());
         self
     }
     /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
@@ -3206,9 +3232,9 @@ impl<'a> UpcomingInvoice<'a> {
     /// Use `subscription_details.proration_behavior` instead.
     pub fn subscription_proration_behavior(
         mut self,
-        subscription_proration_behavior: UpcomingInvoiceSubscriptionProrationBehavior,
+        subscription_proration_behavior: impl Into<UpcomingInvoiceSubscriptionProrationBehavior>,
     ) -> Self {
-        self.inner.subscription_proration_behavior = Some(subscription_proration_behavior);
+        self.inner.subscription_proration_behavior = Some(subscription_proration_behavior.into());
         self
     }
     /// If previewing an update to a subscription, and doing proration, `subscription_proration_date` forces the proration to be calculated as though the update was done at the specified time.
@@ -3219,9 +3245,9 @@ impl<'a> UpcomingInvoice<'a> {
     /// Use `subscription_details.proration_date` instead.
     pub fn subscription_proration_date(
         mut self,
-        subscription_proration_date: stripe_types::Timestamp,
+        subscription_proration_date: impl Into<stripe_types::Timestamp>,
     ) -> Self {
-        self.inner.subscription_proration_date = Some(subscription_proration_date);
+        self.inner.subscription_proration_date = Some(subscription_proration_date.into());
         self
     }
     /// For paused subscriptions, setting `subscription_resume_at` to `now` will preview the invoice that will be generated if the subscription is resumed.
@@ -3229,9 +3255,9 @@ impl<'a> UpcomingInvoice<'a> {
     /// Use `subscription_details.resume_at` instead.
     pub fn subscription_resume_at(
         mut self,
-        subscription_resume_at: UpcomingInvoiceSubscriptionResumeAt,
+        subscription_resume_at: impl Into<UpcomingInvoiceSubscriptionResumeAt>,
     ) -> Self {
-        self.inner.subscription_resume_at = Some(subscription_resume_at);
+        self.inner.subscription_resume_at = Some(subscription_resume_at.into());
         self
     }
     /// Date a subscription is intended to start (can be future or past).
@@ -3239,9 +3265,9 @@ impl<'a> UpcomingInvoice<'a> {
     /// Use `subscription_details.start_date` instead.
     pub fn subscription_start_date(
         mut self,
-        subscription_start_date: stripe_types::Timestamp,
+        subscription_start_date: impl Into<stripe_types::Timestamp>,
     ) -> Self {
-        self.inner.subscription_start_date = Some(subscription_start_date);
+        self.inner.subscription_start_date = Some(subscription_start_date.into());
         self
     }
     /// If provided, the invoice returned will preview updating or creating a subscription with that trial end.
@@ -3250,26 +3276,29 @@ impl<'a> UpcomingInvoice<'a> {
     /// Use `subscription_details.trial_end` instead.
     pub fn subscription_trial_end(
         mut self,
-        subscription_trial_end: UpcomingInvoiceSubscriptionTrialEnd,
+        subscription_trial_end: impl Into<UpcomingInvoiceSubscriptionTrialEnd>,
     ) -> Self {
-        self.inner.subscription_trial_end = Some(subscription_trial_end);
+        self.inner.subscription_trial_end = Some(subscription_trial_end.into());
         self
     }
     /// Indicates if a plan's `trial_period_days` should be applied to the subscription.
     /// Setting `subscription_trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `subscription_trial_end` is not allowed.
     /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
-    pub fn subscription_trial_from_plan(mut self, subscription_trial_from_plan: bool) -> Self {
-        self.inner.subscription_trial_from_plan = Some(subscription_trial_from_plan);
+    pub fn subscription_trial_from_plan(
+        mut self,
+        subscription_trial_from_plan: impl Into<bool>,
+    ) -> Self {
+        self.inner.subscription_trial_from_plan = Some(subscription_trial_from_plan.into());
         self
     }
 }
-impl<'a> Default for UpcomingInvoice<'a> {
+impl Default for UpcomingInvoice {
     fn default() -> Self {
         Self::new()
     }
 }
-impl UpcomingInvoice<'_> {
+impl UpcomingInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -3287,47 +3316,47 @@ impl UpcomingInvoice<'_> {
     }
 }
 
-impl StripeRequest for UpcomingInvoice<'_> {
+impl StripeRequest for UpcomingInvoice {
     type Output = stripe_shared::Invoice;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/invoices/upcoming").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpcomingLinesInvoiceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpcomingLinesInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    automatic_tax: Option<UpcomingLinesInvoiceAutomaticTax<'a>>,
+    automatic_tax: Option<UpcomingLinesInvoiceAutomaticTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    coupon: Option<&'a str>,
+    coupon: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<&'a str>,
+    customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer_details: Option<UpcomingLinesInvoiceCustomerDetails<'a>>,
+    customer_details: Option<UpcomingLinesInvoiceCustomerDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    discounts: Option<Vec<DiscountsDataParam>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    invoice_items: Option<&'a [UpcomingLinesInvoiceInvoiceItems<'a>]>,
+    invoice_items: Option<Vec<UpcomingLinesInvoiceInvoiceItems>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    issuer: Option<UpcomingLinesInvoiceIssuer<'a>>,
+    issuer: Option<UpcomingLinesInvoiceIssuer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    on_behalf_of: Option<&'a str>,
+    on_behalf_of: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    schedule: Option<&'a str>,
+    schedule: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    schedule_details: Option<UpcomingLinesInvoiceScheduleDetails<'a>>,
+    schedule_details: Option<UpcomingLinesInvoiceScheduleDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription: Option<&'a str>,
+    subscription: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     subscription_billing_cycle_anchor: Option<UpcomingLinesInvoiceSubscriptionBillingCycleAnchor>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3337,11 +3366,11 @@ struct UpcomingLinesInvoiceBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     subscription_cancel_now: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription_default_tax_rates: Option<&'a [&'a str]>,
+    subscription_default_tax_rates: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription_details: Option<UpcomingLinesInvoiceSubscriptionDetails<'a>>,
+    subscription_details: Option<UpcomingLinesInvoiceSubscriptionDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription_items: Option<&'a [UpcomingLinesInvoiceSubscriptionItems<'a>]>,
+    subscription_items: Option<Vec<UpcomingLinesInvoiceSubscriptionItems>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     subscription_proration_behavior: Option<UpcomingLinesInvoiceSubscriptionProrationBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3355,7 +3384,7 @@ struct UpcomingLinesInvoiceBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     subscription_trial_from_plan: Option<bool>,
 }
-impl<'a> UpcomingLinesInvoiceBuilder<'a> {
+impl UpcomingLinesInvoiceBuilder {
     fn new() -> Self {
         Self {
             automatic_tax: None,
@@ -3391,8 +3420,8 @@ impl<'a> UpcomingLinesInvoiceBuilder<'a> {
     }
 }
 /// Settings for automatic tax lookup for this invoice preview.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceAutomaticTax<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceAutomaticTax {
     /// Whether Stripe automatically computes tax on this invoice.
     /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://stripe.com/docs/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
     pub enabled: bool,
@@ -3400,28 +3429,28 @@ pub struct UpcomingLinesInvoiceAutomaticTax<'a> {
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
     /// The tax transaction is returned in the report of the connected account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub liability: Option<UpcomingLinesInvoiceAutomaticTaxLiability<'a>>,
+    pub liability: Option<UpcomingLinesInvoiceAutomaticTaxLiability>,
 }
-impl<'a> UpcomingLinesInvoiceAutomaticTax<'a> {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, liability: None }
+impl UpcomingLinesInvoiceAutomaticTax {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), liability: None }
     }
 }
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceAutomaticTaxLiability<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpcomingLinesInvoiceAutomaticTaxLiabilityType,
 }
-impl<'a> UpcomingLinesInvoiceAutomaticTaxLiability<'a> {
-    pub fn new(type_: UpcomingLinesInvoiceAutomaticTaxLiabilityType) -> Self {
-        Self { account: None, type_ }
+impl UpcomingLinesInvoiceAutomaticTaxLiability {
+    pub fn new(type_: impl Into<UpcomingLinesInvoiceAutomaticTaxLiabilityType>) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -3484,30 +3513,30 @@ impl<'de> serde::Deserialize<'de> for UpcomingLinesInvoiceAutomaticTaxLiabilityT
 }
 /// Details about the customer you want to invoice or overrides for an existing customer.
 /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceCustomerDetails<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceCustomerDetails {
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<OptionalFieldsAddress<'a>>,
+    pub address: Option<OptionalFieldsAddress>,
     /// The customer's shipping information. Appears on invoices emailed to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<CustomerShipping<'a>>,
+    pub shipping: Option<CustomerShipping>,
     /// Tax details about the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax: Option<TaxParam<'a>>,
+    pub tax: Option<TaxParam>,
     /// The customer's tax exemption. One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<UpcomingLinesInvoiceCustomerDetailsTaxExempt>,
     /// The customer's tax IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_ids: Option<&'a [UpcomingLinesInvoiceCustomerDetailsTaxIds<'a>]>,
+    pub tax_ids: Option<Vec<UpcomingLinesInvoiceCustomerDetailsTaxIds>>,
 }
-impl<'a> UpcomingLinesInvoiceCustomerDetails<'a> {
+impl UpcomingLinesInvoiceCustomerDetails {
     pub fn new() -> Self {
         Self { address: None, shipping: None, tax: None, tax_exempt: None, tax_ids: None }
     }
 }
-impl<'a> Default for UpcomingLinesInvoiceCustomerDetails<'a> {
+impl Default for UpcomingLinesInvoiceCustomerDetails {
     fn default() -> Self {
         Self::new()
     }
@@ -3574,17 +3603,20 @@ impl<'de> serde::Deserialize<'de> for UpcomingLinesInvoiceCustomerDetailsTaxExem
     }
 }
 /// The customer's tax IDs.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceCustomerDetailsTaxIds<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceCustomerDetailsTaxIds {
     /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
     #[serde(rename = "type")]
     pub type_: UpcomingLinesInvoiceCustomerDetailsTaxIdsType,
     /// Value of the tax ID.
-    pub value: &'a str,
+    pub value: String,
 }
-impl<'a> UpcomingLinesInvoiceCustomerDetailsTaxIds<'a> {
-    pub fn new(type_: UpcomingLinesInvoiceCustomerDetailsTaxIdsType, value: &'a str) -> Self {
-        Self { type_, value }
+impl UpcomingLinesInvoiceCustomerDetailsTaxIds {
+    pub fn new(
+        type_: impl Into<UpcomingLinesInvoiceCustomerDetailsTaxIdsType>,
+        value: impl Into<String>,
+    ) -> Self {
+        Self { type_: type_.into(), value: value.into() }
     }
 }
 /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
@@ -3853,8 +3885,8 @@ impl<'de> serde::Deserialize<'de> for UpcomingLinesInvoiceCustomerDetailsTaxIdsT
     }
 }
 /// List of invoice items to add or update in the upcoming invoice preview.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceInvoiceItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceInvoiceItems {
     /// The integer amount in cents (or local equivalent) of previewed invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -3866,24 +3898,24 @@ pub struct UpcomingLinesInvoiceInvoiceItems<'a> {
     /// An arbitrary string which you can attach to the invoice item.
     /// The description is displayed in the invoice for easy tracking.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
     /// Explicitly controls whether discounts apply to this invoice item.
     /// Defaults to true, except for negative invoice items.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discountable: Option<bool>,
     /// The coupons to redeem into discounts for the invoice item in the preview.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// The ID of the invoice item to update in preview.
     /// If not specified, a new invoice item will be added to the preview of the upcoming invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoiceitem: Option<&'a str>,
+    pub invoiceitem: Option<String>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The period associated with this invoice item.
     /// When set to different values, the period will be rendered on the invoice.
     /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
@@ -3892,10 +3924,10 @@ pub struct UpcomingLinesInvoiceInvoiceItems<'a> {
     pub period: Option<Period>,
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpcomingLinesInvoiceInvoiceItemsPriceData<'a>>,
+    pub price_data: Option<UpcomingLinesInvoiceInvoiceItemsPriceData>,
     /// Non-negative integer. The quantity of units for the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -3907,10 +3939,10 @@ pub struct UpcomingLinesInvoiceInvoiceItems<'a> {
     pub tax_behavior: Option<UpcomingLinesInvoiceInvoiceItemsTaxBehavior>,
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_code: Option<&'a str>,
+    pub tax_code: Option<String>,
     /// The tax rates that apply to the item. When set, any `default_tax_rates` do not apply to this item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
     /// The integer unit amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
     /// This unit_amount will be multiplied by the quantity to get the full amount.
     /// If you want to apply a credit to the customer's account, pass a negative unit_amount.
@@ -3919,9 +3951,9 @@ pub struct UpcomingLinesInvoiceInvoiceItems<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> UpcomingLinesInvoiceInvoiceItems<'a> {
+impl UpcomingLinesInvoiceInvoiceItems {
     pub fn new() -> Self {
         Self {
             amount: None,
@@ -3943,19 +3975,19 @@ impl<'a> UpcomingLinesInvoiceInvoiceItems<'a> {
         }
     }
 }
-impl<'a> Default for UpcomingLinesInvoiceInvoiceItems<'a> {
+impl Default for UpcomingLinesInvoiceInvoiceItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceInvoiceItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceInvoiceItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -3968,11 +4000,17 @@ pub struct UpcomingLinesInvoiceInvoiceItemsPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> UpcomingLinesInvoiceInvoiceItemsPriceData<'a> {
-    pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self { currency, product, tax_behavior: None, unit_amount: None, unit_amount_decimal: None }
+impl UpcomingLinesInvoiceInvoiceItemsPriceData {
+    pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
+        Self {
+            currency: currency.into(),
+            product: product.into(),
+            tax_behavior: None,
+            unit_amount: None,
+            unit_amount_decimal: None,
+        }
     }
 }
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -4105,18 +4143,18 @@ impl<'de> serde::Deserialize<'de> for UpcomingLinesInvoiceInvoiceItemsTaxBehavio
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceIssuer<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpcomingLinesInvoiceIssuerType,
 }
-impl<'a> UpcomingLinesInvoiceIssuer<'a> {
-    pub fn new(type_: UpcomingLinesInvoiceIssuerType) -> Self {
-        Self { account: None, type_ }
+impl UpcomingLinesInvoiceIssuer {
+    pub fn new(type_: impl Into<UpcomingLinesInvoiceIssuerType>) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -4177,8 +4215,8 @@ impl<'de> serde::Deserialize<'de> for UpcomingLinesInvoiceIssuerType {
 }
 /// The schedule creation or modification params to apply as a preview.
 /// Cannot be used with `subscription` or `subscription_` prefixed fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceScheduleDetails<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceScheduleDetails {
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     /// Possible values are `release` or `cancel` with the default being `release`.
     /// `release` will end the subscription schedule and keep the underlying subscription running.
@@ -4189,17 +4227,17 @@ pub struct UpcomingLinesInvoiceScheduleDetails<'a> {
     /// Each phase can be customized to have different durations, plans, and coupons.
     /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phases: Option<&'a [UpcomingLinesInvoiceScheduleDetailsPhases<'a>]>,
+    pub phases: Option<Vec<UpcomingLinesInvoiceScheduleDetailsPhases>>,
     /// In cases where the `schedule_details` params update the currently active phase, specifies if and how to prorate at the time of the request.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<UpcomingLinesInvoiceScheduleDetailsProrationBehavior>,
 }
-impl<'a> UpcomingLinesInvoiceScheduleDetails<'a> {
+impl UpcomingLinesInvoiceScheduleDetails {
     pub fn new() -> Self {
         Self { end_behavior: None, phases: None, proration_behavior: None }
     }
 }
-impl<'a> Default for UpcomingLinesInvoiceScheduleDetails<'a> {
+impl Default for UpcomingLinesInvoiceScheduleDetails {
     fn default() -> Self {
         Self::new()
     }
@@ -4268,13 +4306,12 @@ impl<'de> serde::Deserialize<'de> for UpcomingLinesInvoiceScheduleDetailsEndBeha
 /// List representing phases of the subscription schedule.
 /// Each phase can be customized to have different durations, plans, and coupons.
 /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceScheduleDetailsPhases<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceScheduleDetailsPhases {
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
     /// You may pass up to 20 items.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub add_invoice_items:
-        Option<&'a [UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItems<'a>]>,
+    pub add_invoice_items: Option<Vec<UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItems>>,
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// The request must be made by a platform account on a connected account in order to set an application fee percentage.
@@ -4283,7 +4320,7 @@ pub struct UpcomingLinesInvoiceScheduleDetailsPhases<'a> {
     pub application_fee_percent: Option<f64>,
     /// Automatic tax settings for this phase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTax<'a>>,
+    pub automatic_tax: Option<UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTax>,
     /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
     /// Cannot be set to `phase_start` if this phase specifies a trial.
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
@@ -4303,7 +4340,7 @@ pub struct UpcomingLinesInvoiceScheduleDetailsPhases<'a> {
     /// This field has been deprecated and will be removed in a future API version.
     /// Use `discounts` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<&'a str>,
+    pub coupon: Option<String>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4312,29 +4349,29 @@ pub struct UpcomingLinesInvoiceScheduleDetailsPhases<'a> {
     /// It must belong to the customer associated with the subscription schedule.
     /// If not set, invoices will use the default payment method in the customer's invoice settings.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_payment_method: Option<&'a str>,
+    pub default_payment_method: Option<String>,
     /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
     /// These Tax Rates will set the Subscription's [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates), which means they will be the Invoice's [`default_tax_rates`](https://stripe.com/docs/api/invoices/create#create_invoice-default_tax_rates) for any Invoices issued by the Subscription during this Phase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<&'a [&'a str]>,
+    pub default_tax_rates: Option<Vec<String>>,
     /// Subscription description, meant to be displayable to the customer.
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
     /// The coupons to redeem into discounts for the schedule phase.
     /// If not specified, inherits the discount from the subscription's customer.
     /// Pass an empty string to avoid inheriting any discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// The date at which this phase of the subscription schedule ends.
     /// If set, `iterations` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<UpcomingLinesInvoiceScheduleDetailsPhasesEndDate>,
     /// All invoices will be billed using the specified settings.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettings<'a>>,
+    pub invoice_settings: Option<UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettings>,
     /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
-    pub items: &'a [UpcomingLinesInvoiceScheduleDetailsPhasesItems<'a>],
+    pub items: Vec<UpcomingLinesInvoiceScheduleDetailsPhasesItems>,
     /// Integer representing the multiplier applied to the price interval.
     /// For example, `iterations=2` applied to a price with `interval=month` and `interval_count=3` results in a phase of duration `2 * 3 months = 6 months`.
     /// If set, `end_date` must not be set.
@@ -4345,10 +4382,10 @@ pub struct UpcomingLinesInvoiceScheduleDetailsPhases<'a> {
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
     /// To unset all keys in the subscription's `metadata`, update the subscription directly or unset every key individually from the phase's `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<&'a str>,
+    pub on_behalf_of: Option<String>,
     /// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
     /// The default value is `create_prorations`.
     /// This setting controls prorations when a phase is started asynchronously and it is persisted as a field on the phase.
@@ -4361,7 +4398,7 @@ pub struct UpcomingLinesInvoiceScheduleDetailsPhases<'a> {
     pub start_date: Option<UpcomingLinesInvoiceScheduleDetailsPhasesStartDate>,
     /// The data with which to automatically create a Transfer for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<TransferDataSpecs<'a>>,
+    pub transfer_data: Option<TransferDataSpecs>,
     /// If set to true the entire phase is counted as a trial and the customer will not be charged for any fees.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial: Option<bool>,
@@ -4370,8 +4407,8 @@ pub struct UpcomingLinesInvoiceScheduleDetailsPhases<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<UpcomingLinesInvoiceScheduleDetailsPhasesTrialEnd>,
 }
-impl<'a> UpcomingLinesInvoiceScheduleDetailsPhases<'a> {
-    pub fn new(items: &'a [UpcomingLinesInvoiceScheduleDetailsPhasesItems<'a>]) -> Self {
+impl UpcomingLinesInvoiceScheduleDetailsPhases {
+    pub fn new(items: impl Into<Vec<UpcomingLinesInvoiceScheduleDetailsPhasesItems>>) -> Self {
         Self {
             add_invoice_items: None,
             application_fee_percent: None,
@@ -4387,7 +4424,7 @@ impl<'a> UpcomingLinesInvoiceScheduleDetailsPhases<'a> {
             discounts: None,
             end_date: None,
             invoice_settings: None,
-            items,
+            items: items.into(),
             iterations: None,
             metadata: None,
             on_behalf_of: None,
@@ -4401,42 +4438,42 @@ impl<'a> UpcomingLinesInvoiceScheduleDetailsPhases<'a> {
 }
 /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
 /// You may pass up to 20 items.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData<'a>>,
+    pub price_data: Option<UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData>,
     /// Quantity for this item. Defaults to 1.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
     /// The tax rates which apply to the item. When set, the `default_tax_rates` do not apply to this item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
 }
-impl<'a> UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItems<'a> {
+impl UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItems {
     pub fn new() -> Self {
         Self { discounts: None, price: None, price_data: None, quantity: None, tax_rates: None }
     }
 }
-impl<'a> Default for UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItems<'a> {
+impl Default for UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -4450,11 +4487,17 @@ pub struct UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData<'a>
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData<'a> {
-    pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self { currency, product, tax_behavior: None, unit_amount: None, unit_amount_decimal: None }
+impl UpcomingLinesInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData {
+    pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
+        Self {
+            currency: currency.into(),
+            product: product.into(),
+            tax_behavior: None,
+            unit_amount: None,
+            unit_amount_decimal: None,
+        }
     }
 }
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -4528,36 +4571,38 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Automatic tax settings for this phase.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTax<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTax {
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
     /// The account that's liable for tax.
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
     /// The tax transaction is returned in the report of the connected account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub liability: Option<UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTaxLiability<'a>>,
+    pub liability: Option<UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTaxLiability>,
 }
-impl<'a> UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTax<'a> {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, liability: None }
+impl UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTax {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), liability: None }
     }
 }
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTaxLiability<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTaxLiabilityType,
 }
-impl<'a> UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTaxLiability<'a> {
-    pub fn new(type_: UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTaxLiabilityType) -> Self {
-        Self { account: None, type_ }
+impl UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTaxLiability {
+    pub fn new(
+        type_: impl Into<UpcomingLinesInvoiceScheduleDetailsPhasesAutomaticTaxLiabilityType>,
+    ) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -4686,12 +4731,12 @@ pub enum UpcomingLinesInvoiceScheduleDetailsPhasesEndDate {
     Timestamp(stripe_types::Timestamp),
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettings<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettings {
     /// The account tax IDs associated with this phase of the subscription schedule.
     /// Will be set on invoices generated by this phase of the subscription schedule.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_tax_ids: Option<&'a [&'a str]>,
+    pub account_tax_ids: Option<Vec<String>>,
     /// Number of days within which a customer must pay invoices generated by this subscription schedule.
     /// This value will be `null` for subscription schedules where `billing=charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4699,32 +4744,34 @@ pub struct UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettings<'a> {
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub issuer: Option<UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer<'a>>,
+    pub issuer: Option<UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer>,
 }
-impl<'a> UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettings<'a> {
+impl UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettings {
     pub fn new() -> Self {
         Self { account_tax_ids: None, days_until_due: None, issuer: None }
     }
 }
-impl<'a> Default for UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettings<'a> {
+impl Default for UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettings {
     fn default() -> Self {
         Self::new()
     }
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettingsIssuerType,
 }
-impl<'a> UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer<'a> {
-    pub fn new(type_: UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettingsIssuerType) -> Self {
-        Self { account: None, type_ }
+impl UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer {
+    pub fn new(
+        type_: impl Into<UpcomingLinesInvoiceScheduleDetailsPhasesInvoiceSettingsIssuerType>,
+    ) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -4784,30 +4831,30 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceScheduleDetailsPhasesItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceScheduleDetailsPhasesItems {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
     /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The plan ID to subscribe to. You may specify the same ID in `plan` and `price`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<&'a str>,
+    pub plan: Option<String>,
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceData<'a>>,
+    pub price_data: Option<UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceData>,
     /// Quantity for the given price.
     /// Can be set only if the price's `usage_type` is `licensed` and not `metered`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4816,9 +4863,9 @@ pub struct UpcomingLinesInvoiceScheduleDetailsPhasesItems<'a> {
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
 }
-impl<'a> UpcomingLinesInvoiceScheduleDetailsPhasesItems<'a> {
+impl UpcomingLinesInvoiceScheduleDetailsPhasesItems {
     pub fn new() -> Self {
         Self {
             billing_thresholds: None,
@@ -4832,19 +4879,19 @@ impl<'a> UpcomingLinesInvoiceScheduleDetailsPhasesItems<'a> {
         }
     }
 }
-impl<'a> Default for UpcomingLinesInvoiceScheduleDetailsPhasesItems<'a> {
+impl Default for UpcomingLinesInvoiceScheduleDetailsPhasesItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceDataRecurring,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -4859,18 +4906,18 @@ pub struct UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceData<'a> {
+impl UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceData {
     pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceDataRecurring,
+        currency: impl Into<stripe_types::Currency>,
+        product: impl Into<String>,
+        recurring: impl Into<UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceDataRecurring>,
     ) -> Self {
         Self {
-            currency,
-            product,
-            recurring,
+            currency: currency.into(),
+            product: product.into(),
+            recurring: recurring.into(),
             tax_behavior: None,
             unit_amount: None,
             unit_amount_decimal: None,
@@ -4890,9 +4937,9 @@ pub struct UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceDataRecurring {
 }
 impl UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceDataRecurring {
     pub fn new(
-        interval: UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceDataRecurringInterval,
+        interval: impl Into<UpcomingLinesInvoiceScheduleDetailsPhasesItemsPriceDataRecurringInterval>,
     ) -> Self {
-        Self { interval, interval_count: None }
+        Self { interval: interval.into(), interval_count: None }
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
@@ -5181,8 +5228,8 @@ pub enum UpcomingLinesInvoiceSubscriptionBillingCycleAnchor {
 }
 /// The subscription creation or modification params to apply as a preview.
 /// Cannot be used with `schedule` or `schedule_details` fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceSubscriptionDetails<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceSubscriptionDetails {
     /// For new subscriptions, a future timestamp to anchor the subscription's [billing cycle](https://stripe.com/docs/subscriptions/billing-cycle).
     /// This is used to determine the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
     /// For existing subscriptions, the value can only be set to `now` or `unchanged`.
@@ -5202,10 +5249,10 @@ pub struct UpcomingLinesInvoiceSubscriptionDetails<'a> {
     /// If provided, the invoice returned will preview updating or creating a subscription with these default tax rates.
     /// The default tax rates will apply to any line item that does not have `tax_rates` set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<&'a [&'a str]>,
+    pub default_tax_rates: Option<Vec<String>>,
     /// A list of up to 20 subscription items, each with an attached price.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub items: Option<&'a [UpcomingLinesInvoiceSubscriptionDetailsItems<'a>]>,
+    pub items: Option<Vec<UpcomingLinesInvoiceSubscriptionDetailsItems>>,
     /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     /// The default value is `create_prorations`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5227,7 +5274,7 @@ pub struct UpcomingLinesInvoiceSubscriptionDetails<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<UpcomingLinesInvoiceSubscriptionDetailsTrialEnd>,
 }
-impl<'a> UpcomingLinesInvoiceSubscriptionDetails<'a> {
+impl UpcomingLinesInvoiceSubscriptionDetails {
     pub fn new() -> Self {
         Self {
             billing_cycle_anchor: None,
@@ -5244,7 +5291,7 @@ impl<'a> UpcomingLinesInvoiceSubscriptionDetails<'a> {
         }
     }
 }
-impl<'a> Default for UpcomingLinesInvoiceSubscriptionDetails<'a> {
+impl Default for UpcomingLinesInvoiceSubscriptionDetails {
     fn default() -> Self {
         Self::new()
     }
@@ -5261,8 +5308,8 @@ pub enum UpcomingLinesInvoiceSubscriptionDetailsBillingCycleAnchor {
     Timestamp(stripe_types::Timestamp),
 }
 /// A list of up to 20 subscription items, each with an attached price.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceSubscriptionDetailsItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceSubscriptionDetailsItems {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5276,26 +5323,26 @@ pub struct UpcomingLinesInvoiceSubscriptionDetailsItems<'a> {
     pub deleted: Option<bool>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// Subscription item to update.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<&'a str>,
+    pub id: Option<String>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Plan ID for this item, as a string.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<&'a str>,
+    pub plan: Option<String>,
     /// The ID of the price object.
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpcomingLinesInvoiceSubscriptionDetailsItemsPriceData<'a>>,
+    pub price_data: Option<UpcomingLinesInvoiceSubscriptionDetailsItemsPriceData>,
     /// Quantity for this item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -5303,9 +5350,9 @@ pub struct UpcomingLinesInvoiceSubscriptionDetailsItems<'a> {
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
 }
-impl<'a> UpcomingLinesInvoiceSubscriptionDetailsItems<'a> {
+impl UpcomingLinesInvoiceSubscriptionDetailsItems {
     pub fn new() -> Self {
         Self {
             billing_thresholds: None,
@@ -5322,19 +5369,19 @@ impl<'a> UpcomingLinesInvoiceSubscriptionDetailsItems<'a> {
         }
     }
 }
-impl<'a> Default for UpcomingLinesInvoiceSubscriptionDetailsItems<'a> {
+impl Default for UpcomingLinesInvoiceSubscriptionDetailsItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceSubscriptionDetailsItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceSubscriptionDetailsItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: UpcomingLinesInvoiceSubscriptionDetailsItemsPriceDataRecurring,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -5349,18 +5396,18 @@ pub struct UpcomingLinesInvoiceSubscriptionDetailsItemsPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> UpcomingLinesInvoiceSubscriptionDetailsItemsPriceData<'a> {
+impl UpcomingLinesInvoiceSubscriptionDetailsItemsPriceData {
     pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: UpcomingLinesInvoiceSubscriptionDetailsItemsPriceDataRecurring,
+        currency: impl Into<stripe_types::Currency>,
+        product: impl Into<String>,
+        recurring: impl Into<UpcomingLinesInvoiceSubscriptionDetailsItemsPriceDataRecurring>,
     ) -> Self {
         Self {
-            currency,
-            product,
-            recurring,
+            currency: currency.into(),
+            product: product.into(),
+            recurring: recurring.into(),
             tax_behavior: None,
             unit_amount: None,
             unit_amount_decimal: None,
@@ -5380,9 +5427,9 @@ pub struct UpcomingLinesInvoiceSubscriptionDetailsItemsPriceDataRecurring {
 }
 impl UpcomingLinesInvoiceSubscriptionDetailsItemsPriceDataRecurring {
     pub fn new(
-        interval: UpcomingLinesInvoiceSubscriptionDetailsItemsPriceDataRecurringInterval,
+        interval: impl Into<UpcomingLinesInvoiceSubscriptionDetailsItemsPriceDataRecurringInterval>,
     ) -> Self {
-        Self { interval, interval_count: None }
+        Self { interval: interval.into(), interval_count: None }
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
@@ -5638,8 +5685,8 @@ pub enum UpcomingLinesInvoiceSubscriptionDetailsTrialEnd {
 /// A list of up to 20 subscription items, each with an attached price.
 /// This field has been deprecated and will be removed in a future API version.
 /// Use `subscription_details.items` instead.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceSubscriptionItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceSubscriptionItems {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5653,26 +5700,26 @@ pub struct UpcomingLinesInvoiceSubscriptionItems<'a> {
     pub deleted: Option<bool>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// Subscription item to update.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<&'a str>,
+    pub id: Option<String>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Plan ID for this item, as a string.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<&'a str>,
+    pub plan: Option<String>,
     /// The ID of the price object.
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpcomingLinesInvoiceSubscriptionItemsPriceData<'a>>,
+    pub price_data: Option<UpcomingLinesInvoiceSubscriptionItemsPriceData>,
     /// Quantity for this item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -5680,9 +5727,9 @@ pub struct UpcomingLinesInvoiceSubscriptionItems<'a> {
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
 }
-impl<'a> UpcomingLinesInvoiceSubscriptionItems<'a> {
+impl UpcomingLinesInvoiceSubscriptionItems {
     pub fn new() -> Self {
         Self {
             billing_thresholds: None,
@@ -5699,19 +5746,19 @@ impl<'a> UpcomingLinesInvoiceSubscriptionItems<'a> {
         }
     }
 }
-impl<'a> Default for UpcomingLinesInvoiceSubscriptionItems<'a> {
+impl Default for UpcomingLinesInvoiceSubscriptionItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoiceSubscriptionItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpcomingLinesInvoiceSubscriptionItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: UpcomingLinesInvoiceSubscriptionItemsPriceDataRecurring,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -5726,18 +5773,18 @@ pub struct UpcomingLinesInvoiceSubscriptionItemsPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> UpcomingLinesInvoiceSubscriptionItemsPriceData<'a> {
+impl UpcomingLinesInvoiceSubscriptionItemsPriceData {
     pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: UpcomingLinesInvoiceSubscriptionItemsPriceDataRecurring,
+        currency: impl Into<stripe_types::Currency>,
+        product: impl Into<String>,
+        recurring: impl Into<UpcomingLinesInvoiceSubscriptionItemsPriceDataRecurring>,
     ) -> Self {
         Self {
-            currency,
-            product,
-            recurring,
+            currency: currency.into(),
+            product: product.into(),
+            recurring: recurring.into(),
             tax_behavior: None,
             unit_amount: None,
             unit_amount_decimal: None,
@@ -5756,8 +5803,10 @@ pub struct UpcomingLinesInvoiceSubscriptionItemsPriceDataRecurring {
     pub interval_count: Option<u64>,
 }
 impl UpcomingLinesInvoiceSubscriptionItemsPriceDataRecurring {
-    pub fn new(interval: UpcomingLinesInvoiceSubscriptionItemsPriceDataRecurringInterval) -> Self {
-        Self { interval, interval_count: None }
+    pub fn new(
+        interval: impl Into<UpcomingLinesInvoiceSubscriptionItemsPriceDataRecurringInterval>,
+    ) -> Self {
+        Self { interval: interval.into(), interval_count: None }
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
@@ -6023,120 +6072,123 @@ pub enum UpcomingLinesInvoiceSubscriptionTrialEnd {
 /// When retrieving an upcoming invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpcomingLinesInvoice<'a> {
-    inner: UpcomingLinesInvoiceBuilder<'a>,
+pub struct UpcomingLinesInvoice {
+    inner: UpcomingLinesInvoiceBuilder,
 }
-impl<'a> UpcomingLinesInvoice<'a> {
+impl UpcomingLinesInvoice {
     /// Construct a new `UpcomingLinesInvoice`.
     pub fn new() -> Self {
         Self { inner: UpcomingLinesInvoiceBuilder::new() }
     }
     /// Settings for automatic tax lookup for this invoice preview.
-    pub fn automatic_tax(mut self, automatic_tax: UpcomingLinesInvoiceAutomaticTax<'a>) -> Self {
-        self.inner.automatic_tax = Some(automatic_tax);
+    pub fn automatic_tax(
+        mut self,
+        automatic_tax: impl Into<UpcomingLinesInvoiceAutomaticTax>,
+    ) -> Self {
+        self.inner.automatic_tax = Some(automatic_tax.into());
         self
     }
     /// The ID of the coupon to apply to this phase of the subscription schedule.
     /// This field has been deprecated and will be removed in a future API version.
     /// Use `discounts` instead.
-    pub fn coupon(mut self, coupon: &'a str) -> Self {
-        self.inner.coupon = Some(coupon);
+    pub fn coupon(mut self, coupon: impl Into<String>) -> Self {
+        self.inner.coupon = Some(coupon.into());
         self
     }
     /// The currency to preview this invoice in. Defaults to that of `customer` if not specified.
-    pub fn currency(mut self, currency: stripe_types::Currency) -> Self {
-        self.inner.currency = Some(currency);
+    pub fn currency(mut self, currency: impl Into<stripe_types::Currency>) -> Self {
+        self.inner.currency = Some(currency.into());
         self
     }
     /// The identifier of the customer whose upcoming invoice you'd like to retrieve.
     /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
-    pub fn customer(mut self, customer: &'a str) -> Self {
-        self.inner.customer = Some(customer);
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
         self
     }
     /// Details about the customer you want to invoice or overrides for an existing customer.
     /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
     pub fn customer_details(
         mut self,
-        customer_details: UpcomingLinesInvoiceCustomerDetails<'a>,
+        customer_details: impl Into<UpcomingLinesInvoiceCustomerDetails>,
     ) -> Self {
-        self.inner.customer_details = Some(customer_details);
+        self.inner.customer_details = Some(customer_details.into());
         self
     }
     /// The coupons to redeem into discounts for the invoice preview.
     /// If not specified, inherits the discount from the subscription or customer.
     /// This works for both coupons directly applied to an invoice and coupons applied to a subscription.
     /// Pass an empty string to avoid inheriting any discounts.
-    pub fn discounts(mut self, discounts: &'a [DiscountsDataParam<'a>]) -> Self {
-        self.inner.discounts = Some(discounts);
+    pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
+        self.inner.discounts = Some(discounts.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// List of invoice items to add or update in the upcoming invoice preview.
     pub fn invoice_items(
         mut self,
-        invoice_items: &'a [UpcomingLinesInvoiceInvoiceItems<'a>],
+        invoice_items: impl Into<Vec<UpcomingLinesInvoiceInvoiceItems>>,
     ) -> Self {
-        self.inner.invoice_items = Some(invoice_items);
+        self.inner.invoice_items = Some(invoice_items.into());
         self
     }
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
-    pub fn issuer(mut self, issuer: UpcomingLinesInvoiceIssuer<'a>) -> Self {
-        self.inner.issuer = Some(issuer);
+    pub fn issuer(mut self, issuer: impl Into<UpcomingLinesInvoiceIssuer>) -> Self {
+        self.inner.issuer = Some(issuer.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// The account (if any) for which the funds of the invoice payment are intended.
     /// If set, the invoice will be presented with the branding and support information of the specified account.
     /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
-    pub fn on_behalf_of(mut self, on_behalf_of: &'a str) -> Self {
-        self.inner.on_behalf_of = Some(on_behalf_of);
+    pub fn on_behalf_of(mut self, on_behalf_of: impl Into<String>) -> Self {
+        self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
     }
     /// The identifier of the schedule whose upcoming invoice you'd like to retrieve.
     /// Cannot be used with subscription or subscription fields.
-    pub fn schedule(mut self, schedule: &'a str) -> Self {
-        self.inner.schedule = Some(schedule);
+    pub fn schedule(mut self, schedule: impl Into<String>) -> Self {
+        self.inner.schedule = Some(schedule.into());
         self
     }
     /// The schedule creation or modification params to apply as a preview.
     /// Cannot be used with `subscription` or `subscription_` prefixed fields.
     pub fn schedule_details(
         mut self,
-        schedule_details: UpcomingLinesInvoiceScheduleDetails<'a>,
+        schedule_details: impl Into<UpcomingLinesInvoiceScheduleDetails>,
     ) -> Self {
-        self.inner.schedule_details = Some(schedule_details);
+        self.inner.schedule_details = Some(schedule_details.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// The identifier of the subscription for which you'd like to retrieve the upcoming invoice.
     /// If not provided, but a `subscription_items` is provided, you will preview creating a subscription with those items.
     /// If neither `subscription` nor `subscription_items` is provided, you will retrieve the next upcoming invoice from among the customer's subscriptions.
-    pub fn subscription(mut self, subscription: &'a str) -> Self {
-        self.inner.subscription = Some(subscription);
+    pub fn subscription(mut self, subscription: impl Into<String>) -> Self {
+        self.inner.subscription = Some(subscription.into());
         self
     }
     /// For new subscriptions, a future timestamp to anchor the subscription's [billing cycle](https://stripe.com/docs/subscriptions/billing-cycle).
@@ -6146,9 +6198,10 @@ impl<'a> UpcomingLinesInvoice<'a> {
     /// Use `subscription_details.billing_cycle_anchor` instead.
     pub fn subscription_billing_cycle_anchor(
         mut self,
-        subscription_billing_cycle_anchor: UpcomingLinesInvoiceSubscriptionBillingCycleAnchor,
+        subscription_billing_cycle_anchor: impl Into<UpcomingLinesInvoiceSubscriptionBillingCycleAnchor>,
     ) -> Self {
-        self.inner.subscription_billing_cycle_anchor = Some(subscription_billing_cycle_anchor);
+        self.inner.subscription_billing_cycle_anchor =
+            Some(subscription_billing_cycle_anchor.into());
         self
     }
     /// A timestamp at which the subscription should cancel.
@@ -6158,9 +6211,9 @@ impl<'a> UpcomingLinesInvoice<'a> {
     /// Use `subscription_details.cancel_at` instead.
     pub fn subscription_cancel_at(
         mut self,
-        subscription_cancel_at: stripe_types::Timestamp,
+        subscription_cancel_at: impl Into<stripe_types::Timestamp>,
     ) -> Self {
-        self.inner.subscription_cancel_at = Some(subscription_cancel_at);
+        self.inner.subscription_cancel_at = Some(subscription_cancel_at.into());
         self
     }
     /// Boolean indicating whether this subscription should cancel at the end of the current period.
@@ -6168,16 +6221,17 @@ impl<'a> UpcomingLinesInvoice<'a> {
     /// Use `subscription_details.cancel_at_period_end` instead.
     pub fn subscription_cancel_at_period_end(
         mut self,
-        subscription_cancel_at_period_end: bool,
+        subscription_cancel_at_period_end: impl Into<bool>,
     ) -> Self {
-        self.inner.subscription_cancel_at_period_end = Some(subscription_cancel_at_period_end);
+        self.inner.subscription_cancel_at_period_end =
+            Some(subscription_cancel_at_period_end.into());
         self
     }
     /// This simulates the subscription being canceled or expired immediately.
     /// This field has been deprecated and will be removed in a future API version.
     /// Use `subscription_details.cancel_now` instead.
-    pub fn subscription_cancel_now(mut self, subscription_cancel_now: bool) -> Self {
-        self.inner.subscription_cancel_now = Some(subscription_cancel_now);
+    pub fn subscription_cancel_now(mut self, subscription_cancel_now: impl Into<bool>) -> Self {
+        self.inner.subscription_cancel_now = Some(subscription_cancel_now.into());
         self
     }
     /// If provided, the invoice returned will preview updating or creating a subscription with these default tax rates.
@@ -6186,18 +6240,18 @@ impl<'a> UpcomingLinesInvoice<'a> {
     /// Use `subscription_details.default_tax_rates` instead.
     pub fn subscription_default_tax_rates(
         mut self,
-        subscription_default_tax_rates: &'a [&'a str],
+        subscription_default_tax_rates: impl Into<Vec<String>>,
     ) -> Self {
-        self.inner.subscription_default_tax_rates = Some(subscription_default_tax_rates);
+        self.inner.subscription_default_tax_rates = Some(subscription_default_tax_rates.into());
         self
     }
     /// The subscription creation or modification params to apply as a preview.
     /// Cannot be used with `schedule` or `schedule_details` fields.
     pub fn subscription_details(
         mut self,
-        subscription_details: UpcomingLinesInvoiceSubscriptionDetails<'a>,
+        subscription_details: impl Into<UpcomingLinesInvoiceSubscriptionDetails>,
     ) -> Self {
-        self.inner.subscription_details = Some(subscription_details);
+        self.inner.subscription_details = Some(subscription_details.into());
         self
     }
     /// A list of up to 20 subscription items, each with an attached price.
@@ -6205,9 +6259,9 @@ impl<'a> UpcomingLinesInvoice<'a> {
     /// Use `subscription_details.items` instead.
     pub fn subscription_items(
         mut self,
-        subscription_items: &'a [UpcomingLinesInvoiceSubscriptionItems<'a>],
+        subscription_items: impl Into<Vec<UpcomingLinesInvoiceSubscriptionItems>>,
     ) -> Self {
-        self.inner.subscription_items = Some(subscription_items);
+        self.inner.subscription_items = Some(subscription_items.into());
         self
     }
     /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
@@ -6216,9 +6270,9 @@ impl<'a> UpcomingLinesInvoice<'a> {
     /// Use `subscription_details.proration_behavior` instead.
     pub fn subscription_proration_behavior(
         mut self,
-        subscription_proration_behavior: UpcomingLinesInvoiceSubscriptionProrationBehavior,
+        subscription_proration_behavior: impl Into<UpcomingLinesInvoiceSubscriptionProrationBehavior>,
     ) -> Self {
-        self.inner.subscription_proration_behavior = Some(subscription_proration_behavior);
+        self.inner.subscription_proration_behavior = Some(subscription_proration_behavior.into());
         self
     }
     /// If previewing an update to a subscription, and doing proration, `subscription_proration_date` forces the proration to be calculated as though the update was done at the specified time.
@@ -6229,9 +6283,9 @@ impl<'a> UpcomingLinesInvoice<'a> {
     /// Use `subscription_details.proration_date` instead.
     pub fn subscription_proration_date(
         mut self,
-        subscription_proration_date: stripe_types::Timestamp,
+        subscription_proration_date: impl Into<stripe_types::Timestamp>,
     ) -> Self {
-        self.inner.subscription_proration_date = Some(subscription_proration_date);
+        self.inner.subscription_proration_date = Some(subscription_proration_date.into());
         self
     }
     /// For paused subscriptions, setting `subscription_resume_at` to `now` will preview the invoice that will be generated if the subscription is resumed.
@@ -6239,9 +6293,9 @@ impl<'a> UpcomingLinesInvoice<'a> {
     /// Use `subscription_details.resume_at` instead.
     pub fn subscription_resume_at(
         mut self,
-        subscription_resume_at: UpcomingLinesInvoiceSubscriptionResumeAt,
+        subscription_resume_at: impl Into<UpcomingLinesInvoiceSubscriptionResumeAt>,
     ) -> Self {
-        self.inner.subscription_resume_at = Some(subscription_resume_at);
+        self.inner.subscription_resume_at = Some(subscription_resume_at.into());
         self
     }
     /// Date a subscription is intended to start (can be future or past).
@@ -6249,9 +6303,9 @@ impl<'a> UpcomingLinesInvoice<'a> {
     /// Use `subscription_details.start_date` instead.
     pub fn subscription_start_date(
         mut self,
-        subscription_start_date: stripe_types::Timestamp,
+        subscription_start_date: impl Into<stripe_types::Timestamp>,
     ) -> Self {
-        self.inner.subscription_start_date = Some(subscription_start_date);
+        self.inner.subscription_start_date = Some(subscription_start_date.into());
         self
     }
     /// If provided, the invoice returned will preview updating or creating a subscription with that trial end.
@@ -6260,26 +6314,29 @@ impl<'a> UpcomingLinesInvoice<'a> {
     /// Use `subscription_details.trial_end` instead.
     pub fn subscription_trial_end(
         mut self,
-        subscription_trial_end: UpcomingLinesInvoiceSubscriptionTrialEnd,
+        subscription_trial_end: impl Into<UpcomingLinesInvoiceSubscriptionTrialEnd>,
     ) -> Self {
-        self.inner.subscription_trial_end = Some(subscription_trial_end);
+        self.inner.subscription_trial_end = Some(subscription_trial_end.into());
         self
     }
     /// Indicates if a plan's `trial_period_days` should be applied to the subscription.
     /// Setting `subscription_trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `subscription_trial_end` is not allowed.
     /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
-    pub fn subscription_trial_from_plan(mut self, subscription_trial_from_plan: bool) -> Self {
-        self.inner.subscription_trial_from_plan = Some(subscription_trial_from_plan);
+    pub fn subscription_trial_from_plan(
+        mut self,
+        subscription_trial_from_plan: impl Into<bool>,
+    ) -> Self {
+        self.inner.subscription_trial_from_plan = Some(subscription_trial_from_plan.into());
         self
     }
 }
-impl<'a> Default for UpcomingLinesInvoice<'a> {
+impl Default for UpcomingLinesInvoice {
     fn default() -> Self {
         Self::new()
     }
 }
-impl UpcomingLinesInvoice<'_> {
+impl UpcomingLinesInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -6299,11 +6356,11 @@ impl UpcomingLinesInvoice<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::InvoiceLineItem>> {
-        stripe_client_core::ListPaginator::new_list("/invoices/upcoming/lines", self.inner)
+        stripe_client_core::ListPaginator::new_list("/invoices/upcoming/lines", &self.inner)
     }
 }
 
-impl StripeRequest for UpcomingLinesInvoice<'_> {
+impl StripeRequest for UpcomingLinesInvoice {
     type Output = stripe_types::List<stripe_shared::InvoiceLineItem>;
 
     fn build(&self) -> RequestBuilder {
@@ -6311,71 +6368,71 @@ impl StripeRequest for UpcomingLinesInvoice<'_> {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
-struct CreateInvoiceBuilder<'a> {
+struct CreateInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_tax_ids: Option<&'a [&'a str]>,
+    account_tax_ids: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     application_fee_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     auto_advance: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    automatic_tax: Option<CreateInvoiceAutomaticTax<'a>>,
+    automatic_tax: Option<CreateInvoiceAutomaticTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
     collection_method: Option<stripe_shared::InvoiceCollectionMethod>,
     #[serde(skip_serializing_if = "Option::is_none")]
     currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    custom_fields: Option<&'a [CustomFieldParams<'a>]>,
+    custom_fields: Option<Vec<CustomFieldParams>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<&'a str>,
+    customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     days_until_due: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_payment_method: Option<&'a str>,
+    default_payment_method: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_source: Option<&'a str>,
+    default_source: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_tax_rates: Option<&'a [&'a str]>,
+    default_tax_rates: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    discounts: Option<Vec<DiscountsDataParam>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     due_date: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
     effective_at: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    footer: Option<&'a str>,
+    footer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    from_invoice: Option<CreateInvoiceFromInvoice<'a>>,
+    from_invoice: Option<CreateInvoiceFromInvoice>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    issuer: Option<CreateInvoiceIssuer<'a>>,
+    issuer: Option<CreateInvoiceIssuer>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    number: Option<&'a str>,
+    number: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    on_behalf_of: Option<&'a str>,
+    on_behalf_of: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    payment_settings: Option<CreateInvoicePaymentSettings<'a>>,
+    payment_settings: Option<CreateInvoicePaymentSettings>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pending_invoice_items_behavior: Option<CreateInvoicePendingInvoiceItemsBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     rendering: Option<CreateInvoiceRendering>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping_cost: Option<CreateInvoiceShippingCost<'a>>,
+    shipping_cost: Option<CreateInvoiceShippingCost>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping_details: Option<RecipientShippingWithOptionalFieldsAddress<'a>>,
+    shipping_details: Option<RecipientShippingWithOptionalFieldsAddress>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    statement_descriptor: Option<&'a str>,
+    statement_descriptor: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription: Option<&'a str>,
+    subscription: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    transfer_data: Option<CreateInvoiceTransferData<'a>>,
+    transfer_data: Option<CreateInvoiceTransferData>,
 }
-impl<'a> CreateInvoiceBuilder<'a> {
+impl CreateInvoiceBuilder {
     fn new() -> Self {
         Self {
             account_tax_ids: None,
@@ -6413,8 +6470,8 @@ impl<'a> CreateInvoiceBuilder<'a> {
     }
 }
 /// Settings for automatic tax lookup for this invoice.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateInvoiceAutomaticTax<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateInvoiceAutomaticTax {
     /// Whether Stripe automatically computes tax on this invoice.
     /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://stripe.com/docs/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
     pub enabled: bool,
@@ -6422,28 +6479,28 @@ pub struct CreateInvoiceAutomaticTax<'a> {
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
     /// The tax transaction is returned in the report of the connected account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub liability: Option<CreateInvoiceAutomaticTaxLiability<'a>>,
+    pub liability: Option<CreateInvoiceAutomaticTaxLiability>,
 }
-impl<'a> CreateInvoiceAutomaticTax<'a> {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, liability: None }
+impl CreateInvoiceAutomaticTax {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), liability: None }
     }
 }
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateInvoiceAutomaticTaxLiability<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateInvoiceAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreateInvoiceAutomaticTaxLiabilityType,
 }
-impl<'a> CreateInvoiceAutomaticTaxLiability<'a> {
-    pub fn new(type_: CreateInvoiceAutomaticTaxLiabilityType) -> Self {
-        Self { account: None, type_ }
+impl CreateInvoiceAutomaticTaxLiability {
+    pub fn new(type_: impl Into<CreateInvoiceAutomaticTaxLiabilityType>) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -6505,17 +6562,20 @@ impl<'de> serde::Deserialize<'de> for CreateInvoiceAutomaticTaxLiabilityType {
 /// Revise an existing invoice.
 /// The new invoice will be created in `status=draft`.
 /// See the [revision documentation](https://stripe.com/docs/invoicing/invoice-revisions) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateInvoiceFromInvoice<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateInvoiceFromInvoice {
     /// The relation between the new invoice and the original invoice.
     /// Currently, only 'revision' is permitted.
     pub action: CreateInvoiceFromInvoiceAction,
     /// The `id` of the invoice that will be cloned.
-    pub invoice: &'a str,
+    pub invoice: String,
 }
-impl<'a> CreateInvoiceFromInvoice<'a> {
-    pub fn new(action: CreateInvoiceFromInvoiceAction, invoice: &'a str) -> Self {
-        Self { action, invoice }
+impl CreateInvoiceFromInvoice {
+    pub fn new(
+        action: impl Into<CreateInvoiceFromInvoiceAction>,
+        invoice: impl Into<String>,
+    ) -> Self {
+        Self { action: action.into(), invoice: invoice.into() }
     }
 }
 /// The relation between the new invoice and the original invoice.
@@ -6574,18 +6634,18 @@ impl<'de> serde::Deserialize<'de> for CreateInvoiceFromInvoiceAction {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateInvoiceIssuer<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateInvoiceIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreateInvoiceIssuerType,
 }
-impl<'a> CreateInvoiceIssuer<'a> {
-    pub fn new(type_: CreateInvoiceIssuerType) -> Self {
-        Self { account: None, type_ }
+impl CreateInvoiceIssuer {
+    pub fn new(type_: impl Into<CreateInvoiceIssuerType>) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -6645,33 +6705,33 @@ impl<'de> serde::Deserialize<'de> for CreateInvoiceIssuerType {
 }
 /// Configuration settings for the PaymentIntent that is generated when the invoice is finalized.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateInvoicePaymentSettings<'a> {
+pub struct CreateInvoicePaymentSettings {
     /// ID of the mandate to be used for this invoice.
     /// It must correspond to the payment method used to pay the invoice, including the invoice's default_payment_method or default_source, if set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_mandate: Option<&'a str>,
+    pub default_mandate: Option<String>,
     /// Payment-method-specific configuration to provide to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_options: Option<CreateInvoicePaymentSettingsPaymentMethodOptions<'a>>,
+    pub payment_method_options: Option<CreateInvoicePaymentSettingsPaymentMethodOptions>,
     /// The list of payment method types (e.g.
     /// card) to provide to the invoice’s PaymentIntent.
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<&'a [CreateInvoicePaymentSettingsPaymentMethodTypes]>,
+    pub payment_method_types: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodTypes>>,
 }
-impl<'a> CreateInvoicePaymentSettings<'a> {
+impl CreateInvoicePaymentSettings {
     pub fn new() -> Self {
         Self { default_mandate: None, payment_method_options: None, payment_method_types: None }
     }
 }
-impl<'a> Default for CreateInvoicePaymentSettings<'a> {
+impl Default for CreateInvoicePaymentSettings {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Payment-method-specific configuration to provide to the invoice’s PaymentIntent.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateInvoicePaymentSettingsPaymentMethodOptions<'a> {
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
     /// If paying by `acss_debit`, this sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebit>,
@@ -6683,7 +6743,7 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions<'a> {
     pub card: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCard>,
     /// If paying by `customer_balance`, this sub-hash contains details about the Bank transfer payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<InvoicePaymentMethodOptionsParam<'a>>,
+    pub customer_balance: Option<InvoicePaymentMethodOptionsParam>,
     /// If paying by `konbini`, this sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -6694,9 +6754,9 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions<'a> {
     pub sepa_debit: Option<miniserde::json::Value>,
     /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_bank_account: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount<'a>>,
+    pub us_bank_account: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount>,
 }
-impl<'a> CreateInvoicePaymentSettingsPaymentMethodOptions<'a> {
+impl CreateInvoicePaymentSettingsPaymentMethodOptions {
     pub fn new() -> Self {
         Self {
             acss_debit: None,
@@ -6709,7 +6769,7 @@ impl<'a> CreateInvoicePaymentSettingsPaymentMethodOptions<'a> {
         }
     }
 }
-impl<'a> Default for CreateInvoicePaymentSettingsPaymentMethodOptions<'a> {
+impl Default for CreateInvoicePaymentSettingsPaymentMethodOptions {
     fn default() -> Self {
         Self::new()
     }
@@ -7036,11 +7096,13 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan 
 }
 impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan {
     pub fn new(
-        count: u64,
-        interval: CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval,
-        type_: CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType,
+        count: impl Into<u64>,
+        interval: impl Into<
+            CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval,
+        >,
+        type_: impl Into<CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType>,
     ) -> Self {
-        Self { count, interval, type_ }
+        Self { count: count.into(), interval: interval.into(), type_: type_.into() }
     }
 }
 /// For `fixed_count` installment plans, this is the interval between installment payments your customer will make to their credit card.
@@ -7224,49 +7286,46 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub financial_connections: Option<
-        CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections<'a>,
-    >,
+    pub financial_connections:
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections>,
     /// Verification method for the intent
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
-impl<'a> CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount<'a> {
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount {
     pub fn new() -> Self {
         Self { financial_connections: None, verification_method: None }
     }
 }
-impl<'a> Default for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount<'a> {
+impl Default for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Additional fields for Financial Connections Session creation
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
         /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
 #[serde(skip_serializing_if = "Option::is_none")]
-pub permissions: Option<&'a [CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
+pub permissions: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
     /// List of data features that you would like to retrieve upon account creation.
 #[serde(skip_serializing_if = "Option::is_none")]
-pub prefetch: Option<&'a [CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch]>,
+pub prefetch: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch>>,
 
 }
-impl<'a> CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections<'a> {
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
     pub fn new() -> Self {
         Self { permissions: None, prefetch: None }
     }
 }
-impl<'a> Default
-    for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections<'a>
-{
+impl Default for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
     fn default() -> Self {
         Self::new()
     }
@@ -7836,44 +7895,44 @@ impl<'de> serde::Deserialize<'de> for CreateInvoiceRenderingPdfPageSize {
     }
 }
 /// Settings for the cost of shipping for this invoice.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateInvoiceShippingCost<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateInvoiceShippingCost {
     /// The ID of the shipping rate to use for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_rate: Option<&'a str>,
+    pub shipping_rate: Option<String>,
     /// Parameters to create a new ad-hoc shipping rate for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_rate_data: Option<CreateInvoiceShippingCostShippingRateData<'a>>,
+    pub shipping_rate_data: Option<CreateInvoiceShippingCostShippingRateData>,
 }
-impl<'a> CreateInvoiceShippingCost<'a> {
+impl CreateInvoiceShippingCost {
     pub fn new() -> Self {
         Self { shipping_rate: None, shipping_rate_data: None }
     }
 }
-impl<'a> Default for CreateInvoiceShippingCost<'a> {
+impl Default for CreateInvoiceShippingCost {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Parameters to create a new ad-hoc shipping rate for this order.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateInvoiceShippingCostShippingRateData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateInvoiceShippingCostShippingRateData {
     /// The estimated range for how long shipping will take, meant to be displayable to the customer.
     /// This will appear on CheckoutSessions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delivery_estimate: Option<CreateInvoiceShippingCostShippingRateDataDeliveryEstimate>,
     /// The name of the shipping rate, meant to be displayable to the customer.
     /// This will appear on CheckoutSessions.
-    pub display_name: &'a str,
+    pub display_name: String,
     /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amount: Option<CreateInvoiceShippingCostShippingRateDataFixedAmount<'a>>,
+    pub fixed_amount: Option<CreateInvoiceShippingCostShippingRateDataFixedAmount>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7881,17 +7940,17 @@ pub struct CreateInvoiceShippingCostShippingRateData<'a> {
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     /// The Shipping tax code is `txcd_92010001`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_code: Option<&'a str>,
+    pub tax_code: Option<String>,
     /// The type of calculation to use on the shipping rate. Can only be `fixed_amount` for now.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreateInvoiceShippingCostShippingRateDataType>,
 }
-impl<'a> CreateInvoiceShippingCostShippingRateData<'a> {
-    pub fn new(display_name: &'a str) -> Self {
+impl CreateInvoiceShippingCostShippingRateData {
+    pub fn new(display_name: impl Into<String>) -> Self {
         Self {
             delivery_estimate: None,
-            display_name,
+            display_name: display_name.into(),
             fixed_amount: None,
             metadata: None,
             tax_behavior: None,
@@ -7931,10 +7990,10 @@ pub struct CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximum {
 }
 impl CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximum {
     pub fn new(
-        unit: CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit,
-        value: i64,
+        unit: impl Into<CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit>,
+        value: impl Into<i64>,
     ) -> Self {
-        Self { unit, value }
+        Self { unit: unit.into(), value: value.into() }
     }
 }
 /// A unit of time.
@@ -8012,10 +8071,10 @@ pub struct CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimum {
 }
 impl CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimum {
     pub fn new(
-        unit: CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit,
-        value: i64,
+        unit: impl Into<CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit>,
+        value: impl Into<i64>,
     ) -> Self {
-        Self { unit, value }
+        Self { unit: unit.into(), value: value.into() }
     }
 }
 /// A unit of time.
@@ -8084,8 +8143,8 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateInvoiceShippingCostShippingRateDataFixedAmount<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateInvoiceShippingCostShippingRateDataFixedAmount {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -8095,15 +8154,15 @@ pub struct CreateInvoiceShippingCostShippingRateDataFixedAmount<'a> {
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<
-        &'a std::collections::HashMap<
+        std::collections::HashMap<
             stripe_types::Currency,
             CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptions,
         >,
     >,
 }
-impl<'a> CreateInvoiceShippingCostShippingRateDataFixedAmount<'a> {
-    pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
-        Self { amount, currency, currency_options: None }
+impl CreateInvoiceShippingCostShippingRateDataFixedAmount {
+    pub fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
+        Self { amount: amount.into(), currency: currency.into(), currency_options: None }
     }
 }
 /// Shipping rates defined in each available currency option.
@@ -8119,8 +8178,8 @@ pub struct CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptions {
         Option<CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior>,
 }
 impl CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptions {
-    pub fn new(amount: i64) -> Self {
-        Self { amount, tax_behavior: None }
+    pub fn new(amount: impl Into<i64>) -> Self {
+        Self { amount: amount.into(), tax_behavior: None }
     }
 }
 /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
@@ -8309,52 +8368,52 @@ impl<'de> serde::Deserialize<'de> for CreateInvoiceShippingCostShippingRateDataT
     }
 }
 /// If specified, the funds from the invoice will be transferred to the destination and the ID of the resulting transfer will be found on the invoice's charge.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateInvoiceTransferData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateInvoiceTransferData {
     /// The amount that will be transferred automatically when the invoice is paid.
     /// If no amount is set, the full amount is transferred.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
     /// ID of an existing, connected Stripe account.
-    pub destination: &'a str,
+    pub destination: String,
 }
-impl<'a> CreateInvoiceTransferData<'a> {
-    pub fn new(destination: &'a str) -> Self {
-        Self { amount: None, destination }
+impl CreateInvoiceTransferData {
+    pub fn new(destination: impl Into<String>) -> Self {
+        Self { amount: None, destination: destination.into() }
     }
 }
 /// This endpoint creates a draft invoice for a given customer.
 /// The invoice remains a draft until you [finalize](https://stripe.com/docs/api#finalize_invoice) the invoice, which allows you to [pay](https://stripe.com/docs/api#pay_invoice) or [send](https://stripe.com/docs/api#send_invoice) the invoice to your customers.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateInvoice<'a> {
-    inner: CreateInvoiceBuilder<'a>,
+pub struct CreateInvoice {
+    inner: CreateInvoiceBuilder,
 }
-impl<'a> CreateInvoice<'a> {
+impl CreateInvoice {
     /// Construct a new `CreateInvoice`.
     pub fn new() -> Self {
         Self { inner: CreateInvoiceBuilder::new() }
     }
     /// The account tax IDs associated with the invoice. Only editable when the invoice is a draft.
-    pub fn account_tax_ids(mut self, account_tax_ids: &'a [&'a str]) -> Self {
-        self.inner.account_tax_ids = Some(account_tax_ids);
+    pub fn account_tax_ids(mut self, account_tax_ids: impl Into<Vec<String>>) -> Self {
+        self.inner.account_tax_ids = Some(account_tax_ids.into());
         self
     }
     /// A fee in cents (or local equivalent) that will be applied to the invoice and transferred to the application owner's Stripe account.
     /// The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee.
     /// For more information, see the application fees [documentation](https://stripe.com/docs/billing/invoices/connect#collecting-fees).
-    pub fn application_fee_amount(mut self, application_fee_amount: i64) -> Self {
-        self.inner.application_fee_amount = Some(application_fee_amount);
+    pub fn application_fee_amount(mut self, application_fee_amount: impl Into<i64>) -> Self {
+        self.inner.application_fee_amount = Some(application_fee_amount.into());
         self
     }
     /// Controls whether Stripe performs [automatic collection](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection) of the invoice.
     /// If `false`, the invoice's state doesn't automatically advance without an explicit action.
-    pub fn auto_advance(mut self, auto_advance: bool) -> Self {
-        self.inner.auto_advance = Some(auto_advance);
+    pub fn auto_advance(mut self, auto_advance: impl Into<bool>) -> Self {
+        self.inner.auto_advance = Some(auto_advance.into());
         self
     }
     /// Settings for automatic tax lookup for this invoice.
-    pub fn automatic_tax(mut self, automatic_tax: CreateInvoiceAutomaticTax<'a>) -> Self {
-        self.inner.automatic_tax = Some(automatic_tax);
+    pub fn automatic_tax(mut self, automatic_tax: impl Into<CreateInvoiceAutomaticTax>) -> Self {
+        self.inner.automatic_tax = Some(automatic_tax.into());
         self
     }
     /// Either `charge_automatically`, or `send_invoice`.
@@ -8363,107 +8422,110 @@ impl<'a> CreateInvoice<'a> {
     /// Defaults to `charge_automatically`.
     pub fn collection_method(
         mut self,
-        collection_method: stripe_shared::InvoiceCollectionMethod,
+        collection_method: impl Into<stripe_shared::InvoiceCollectionMethod>,
     ) -> Self {
-        self.inner.collection_method = Some(collection_method);
+        self.inner.collection_method = Some(collection_method.into());
         self
     }
     /// The currency to create this invoice in. Defaults to that of `customer` if not specified.
-    pub fn currency(mut self, currency: stripe_types::Currency) -> Self {
-        self.inner.currency = Some(currency);
+    pub fn currency(mut self, currency: impl Into<stripe_types::Currency>) -> Self {
+        self.inner.currency = Some(currency.into());
         self
     }
     /// A list of up to 4 custom fields to be displayed on the invoice.
-    pub fn custom_fields(mut self, custom_fields: &'a [CustomFieldParams<'a>]) -> Self {
-        self.inner.custom_fields = Some(custom_fields);
+    pub fn custom_fields(mut self, custom_fields: impl Into<Vec<CustomFieldParams>>) -> Self {
+        self.inner.custom_fields = Some(custom_fields.into());
         self
     }
     /// The ID of the customer who will be billed.
-    pub fn customer(mut self, customer: &'a str) -> Self {
-        self.inner.customer = Some(customer);
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
         self
     }
     /// The number of days from when the invoice is created until it is due.
     /// Valid only for invoices where `collection_method=send_invoice`.
-    pub fn days_until_due(mut self, days_until_due: u32) -> Self {
-        self.inner.days_until_due = Some(days_until_due);
+    pub fn days_until_due(mut self, days_until_due: impl Into<u32>) -> Self {
+        self.inner.days_until_due = Some(days_until_due.into());
         self
     }
     /// ID of the default payment method for the invoice.
     /// It must belong to the customer associated with the invoice.
     /// If not set, defaults to the subscription's default payment method, if any, or to the default payment method in the customer's invoice settings.
-    pub fn default_payment_method(mut self, default_payment_method: &'a str) -> Self {
-        self.inner.default_payment_method = Some(default_payment_method);
+    pub fn default_payment_method(mut self, default_payment_method: impl Into<String>) -> Self {
+        self.inner.default_payment_method = Some(default_payment_method.into());
         self
     }
     /// ID of the default payment source for the invoice.
     /// It must belong to the customer associated with the invoice and be in a chargeable state.
     /// If not set, defaults to the subscription's default source, if any, or to the customer's default source.
-    pub fn default_source(mut self, default_source: &'a str) -> Self {
-        self.inner.default_source = Some(default_source);
+    pub fn default_source(mut self, default_source: impl Into<String>) -> Self {
+        self.inner.default_source = Some(default_source.into());
         self
     }
     /// The tax rates that will apply to any line item that does not have `tax_rates` set.
-    pub fn default_tax_rates(mut self, default_tax_rates: &'a [&'a str]) -> Self {
-        self.inner.default_tax_rates = Some(default_tax_rates);
+    pub fn default_tax_rates(mut self, default_tax_rates: impl Into<Vec<String>>) -> Self {
+        self.inner.default_tax_rates = Some(default_tax_rates.into());
         self
     }
     /// An arbitrary string attached to the object.
     /// Often useful for displaying to users.
     /// Referenced as 'memo' in the Dashboard.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.inner.description = Some(description);
+    pub fn description(mut self, description: impl Into<String>) -> Self {
+        self.inner.description = Some(description.into());
         self
     }
     /// The coupons and promotion codes to redeem into discounts for the invoice.
     /// If not specified, inherits the discount from the invoice's customer.
     /// Pass an empty string to avoid inheriting any discounts.
-    pub fn discounts(mut self, discounts: &'a [DiscountsDataParam<'a>]) -> Self {
-        self.inner.discounts = Some(discounts);
+    pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
+        self.inner.discounts = Some(discounts.into());
         self
     }
     /// The date on which payment for this invoice is due.
     /// Valid only for invoices where `collection_method=send_invoice`.
-    pub fn due_date(mut self, due_date: stripe_types::Timestamp) -> Self {
-        self.inner.due_date = Some(due_date);
+    pub fn due_date(mut self, due_date: impl Into<stripe_types::Timestamp>) -> Self {
+        self.inner.due_date = Some(due_date.into());
         self
     }
     /// The date when this invoice is in effect.
     /// Same as `finalized_at` unless overwritten.
     /// When defined, this value replaces the system-generated 'Date of issue' printed on the invoice PDF and receipt.
-    pub fn effective_at(mut self, effective_at: stripe_types::Timestamp) -> Self {
-        self.inner.effective_at = Some(effective_at);
+    pub fn effective_at(mut self, effective_at: impl Into<stripe_types::Timestamp>) -> Self {
+        self.inner.effective_at = Some(effective_at.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Footer to be displayed on the invoice.
-    pub fn footer(mut self, footer: &'a str) -> Self {
-        self.inner.footer = Some(footer);
+    pub fn footer(mut self, footer: impl Into<String>) -> Self {
+        self.inner.footer = Some(footer.into());
         self
     }
     /// Revise an existing invoice.
     /// The new invoice will be created in `status=draft`.
     /// See the [revision documentation](https://stripe.com/docs/invoicing/invoice-revisions) for more details.
-    pub fn from_invoice(mut self, from_invoice: CreateInvoiceFromInvoice<'a>) -> Self {
-        self.inner.from_invoice = Some(from_invoice);
+    pub fn from_invoice(mut self, from_invoice: impl Into<CreateInvoiceFromInvoice>) -> Self {
+        self.inner.from_invoice = Some(from_invoice.into());
         self
     }
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
-    pub fn issuer(mut self, issuer: CreateInvoiceIssuer<'a>) -> Self {
-        self.inner.issuer = Some(issuer);
+    pub fn issuer(mut self, issuer: impl Into<CreateInvoiceIssuer>) -> Self {
+        self.inner.issuer = Some(issuer.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// Set the number for this invoice.
@@ -8471,76 +8533,79 @@ impl<'a> CreateInvoice<'a> {
     /// In many markets, regulations require invoices to be unique, sequential and / or gapless.
     /// You are responsible for ensuring this is true across all your different invoicing systems in the event that you edit the invoice number using our API.
     /// If you use only Stripe for your invoices and do not change invoice numbers, Stripe handles this aspect of compliance for you automatically.
-    pub fn number(mut self, number: &'a str) -> Self {
-        self.inner.number = Some(number);
+    pub fn number(mut self, number: impl Into<String>) -> Self {
+        self.inner.number = Some(number.into());
         self
     }
     /// The account (if any) for which the funds of the invoice payment are intended.
     /// If set, the invoice will be presented with the branding and support information of the specified account.
     /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
-    pub fn on_behalf_of(mut self, on_behalf_of: &'a str) -> Self {
-        self.inner.on_behalf_of = Some(on_behalf_of);
+    pub fn on_behalf_of(mut self, on_behalf_of: impl Into<String>) -> Self {
+        self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
     }
     /// Configuration settings for the PaymentIntent that is generated when the invoice is finalized.
-    pub fn payment_settings(mut self, payment_settings: CreateInvoicePaymentSettings<'a>) -> Self {
-        self.inner.payment_settings = Some(payment_settings);
+    pub fn payment_settings(
+        mut self,
+        payment_settings: impl Into<CreateInvoicePaymentSettings>,
+    ) -> Self {
+        self.inner.payment_settings = Some(payment_settings.into());
         self
     }
     /// How to handle pending invoice items on invoice creation.
     /// Defaults to `exclude` if the parameter is omitted.
     pub fn pending_invoice_items_behavior(
         mut self,
-        pending_invoice_items_behavior: CreateInvoicePendingInvoiceItemsBehavior,
+        pending_invoice_items_behavior: impl Into<CreateInvoicePendingInvoiceItemsBehavior>,
     ) -> Self {
-        self.inner.pending_invoice_items_behavior = Some(pending_invoice_items_behavior);
+        self.inner.pending_invoice_items_behavior = Some(pending_invoice_items_behavior.into());
         self
     }
     /// The rendering-related settings that control how the invoice is displayed on customer-facing surfaces such as PDF and Hosted Invoice Page.
-    pub fn rendering(mut self, rendering: CreateInvoiceRendering) -> Self {
-        self.inner.rendering = Some(rendering);
+    pub fn rendering(mut self, rendering: impl Into<CreateInvoiceRendering>) -> Self {
+        self.inner.rendering = Some(rendering.into());
         self
     }
     /// Settings for the cost of shipping for this invoice.
-    pub fn shipping_cost(mut self, shipping_cost: CreateInvoiceShippingCost<'a>) -> Self {
-        self.inner.shipping_cost = Some(shipping_cost);
+    pub fn shipping_cost(mut self, shipping_cost: impl Into<CreateInvoiceShippingCost>) -> Self {
+        self.inner.shipping_cost = Some(shipping_cost.into());
         self
     }
     /// Shipping details for the invoice.
     /// The Invoice PDF will use the `shipping_details` value if it is set, otherwise the PDF will render the shipping address from the customer.
     pub fn shipping_details(
         mut self,
-        shipping_details: RecipientShippingWithOptionalFieldsAddress<'a>,
+        shipping_details: impl Into<RecipientShippingWithOptionalFieldsAddress>,
     ) -> Self {
-        self.inner.shipping_details = Some(shipping_details);
+        self.inner.shipping_details = Some(shipping_details.into());
         self
     }
     /// Extra information about a charge for the customer's credit card statement.
     /// It must contain at least one letter.
     /// If not specified and this invoice is part of a subscription, the default `statement_descriptor` will be set to the first subscription item's product's `statement_descriptor`.
-    pub fn statement_descriptor(mut self, statement_descriptor: &'a str) -> Self {
-        self.inner.statement_descriptor = Some(statement_descriptor);
+    pub fn statement_descriptor(mut self, statement_descriptor: impl Into<String>) -> Self {
+        self.inner.statement_descriptor = Some(statement_descriptor.into());
         self
     }
     /// The ID of the subscription to invoice, if any.
     /// If set, the created invoice will only include pending invoice items for that subscription.
     /// The subscription's billing cycle and regular subscription events won't be affected.
-    pub fn subscription(mut self, subscription: &'a str) -> Self {
-        self.inner.subscription = Some(subscription);
+    pub fn subscription(mut self, subscription: impl Into<String>) -> Self {
+        self.inner.subscription = Some(subscription.into());
         self
     }
     /// If specified, the funds from the invoice will be transferred to the destination and the ID of the resulting transfer will be found on the invoice's charge.
-    pub fn transfer_data(mut self, transfer_data: CreateInvoiceTransferData<'a>) -> Self {
-        self.inner.transfer_data = Some(transfer_data);
+    pub fn transfer_data(mut self, transfer_data: impl Into<CreateInvoiceTransferData>) -> Self {
+        self.inner.transfer_data = Some(transfer_data.into());
         self
     }
 }
-impl<'a> Default for CreateInvoice<'a> {
+impl Default for CreateInvoice {
     fn default() -> Self {
         Self::new()
     }
 }
-impl CreateInvoice<'_> {
+impl CreateInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -8558,7 +8623,7 @@ impl CreateInvoice<'_> {
     }
 }
 
-impl StripeRequest for CreateInvoice<'_> {
+impl StripeRequest for CreateInvoice {
     type Output = stripe_shared::Invoice;
 
     fn build(&self) -> RequestBuilder {
@@ -8566,61 +8631,61 @@ impl StripeRequest for CreateInvoice<'_> {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
-struct UpdateInvoiceBuilder<'a> {
+struct UpdateInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_tax_ids: Option<&'a [&'a str]>,
+    account_tax_ids: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     application_fee_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     auto_advance: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    automatic_tax: Option<UpdateInvoiceAutomaticTax<'a>>,
+    automatic_tax: Option<UpdateInvoiceAutomaticTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
     collection_method: Option<stripe_shared::InvoiceCollectionMethod>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    custom_fields: Option<&'a [CustomFieldParams<'a>]>,
+    custom_fields: Option<Vec<CustomFieldParams>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     days_until_due: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_payment_method: Option<&'a str>,
+    default_payment_method: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_source: Option<&'a str>,
+    default_source: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_tax_rates: Option<&'a [&'a str]>,
+    default_tax_rates: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    discounts: Option<Vec<DiscountsDataParam>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     due_date: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
     effective_at: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    footer: Option<&'a str>,
+    footer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    issuer: Option<UpdateInvoiceIssuer<'a>>,
+    issuer: Option<UpdateInvoiceIssuer>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    number: Option<&'a str>,
+    number: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    on_behalf_of: Option<&'a str>,
+    on_behalf_of: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    payment_settings: Option<UpdateInvoicePaymentSettings<'a>>,
+    payment_settings: Option<UpdateInvoicePaymentSettings>,
     #[serde(skip_serializing_if = "Option::is_none")]
     rendering: Option<UpdateInvoiceRendering>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping_cost: Option<UpdateInvoiceShippingCost<'a>>,
+    shipping_cost: Option<UpdateInvoiceShippingCost>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping_details: Option<RecipientShippingWithOptionalFieldsAddress<'a>>,
+    shipping_details: Option<RecipientShippingWithOptionalFieldsAddress>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    statement_descriptor: Option<&'a str>,
+    statement_descriptor: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    transfer_data: Option<UpdateInvoiceTransferData<'a>>,
+    transfer_data: Option<UpdateInvoiceTransferData>,
 }
-impl<'a> UpdateInvoiceBuilder<'a> {
+impl UpdateInvoiceBuilder {
     fn new() -> Self {
         Self {
             account_tax_ids: None,
@@ -8653,8 +8718,8 @@ impl<'a> UpdateInvoiceBuilder<'a> {
     }
 }
 /// Settings for automatic tax lookup for this invoice.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoiceAutomaticTax<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateInvoiceAutomaticTax {
     /// Whether Stripe automatically computes tax on this invoice.
     /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://stripe.com/docs/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
     pub enabled: bool,
@@ -8662,28 +8727,28 @@ pub struct UpdateInvoiceAutomaticTax<'a> {
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
     /// The tax transaction is returned in the report of the connected account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub liability: Option<UpdateInvoiceAutomaticTaxLiability<'a>>,
+    pub liability: Option<UpdateInvoiceAutomaticTaxLiability>,
 }
-impl<'a> UpdateInvoiceAutomaticTax<'a> {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, liability: None }
+impl UpdateInvoiceAutomaticTax {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), liability: None }
     }
 }
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoiceAutomaticTaxLiability<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateInvoiceAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpdateInvoiceAutomaticTaxLiabilityType,
 }
-impl<'a> UpdateInvoiceAutomaticTaxLiability<'a> {
-    pub fn new(type_: UpdateInvoiceAutomaticTaxLiabilityType) -> Self {
-        Self { account: None, type_ }
+impl UpdateInvoiceAutomaticTaxLiability {
+    pub fn new(type_: impl Into<UpdateInvoiceAutomaticTaxLiabilityType>) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -8744,18 +8809,18 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceAutomaticTaxLiabilityType {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoiceIssuer<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateInvoiceIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpdateInvoiceIssuerType,
 }
-impl<'a> UpdateInvoiceIssuer<'a> {
-    pub fn new(type_: UpdateInvoiceIssuerType) -> Self {
-        Self { account: None, type_ }
+impl UpdateInvoiceIssuer {
+    pub fn new(type_: impl Into<UpdateInvoiceIssuerType>) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -8815,33 +8880,33 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceIssuerType {
 }
 /// Configuration settings for the PaymentIntent that is generated when the invoice is finalized.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoicePaymentSettings<'a> {
+pub struct UpdateInvoicePaymentSettings {
     /// ID of the mandate to be used for this invoice.
     /// It must correspond to the payment method used to pay the invoice, including the invoice's default_payment_method or default_source, if set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_mandate: Option<&'a str>,
+    pub default_mandate: Option<String>,
     /// Payment-method-specific configuration to provide to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_options: Option<UpdateInvoicePaymentSettingsPaymentMethodOptions<'a>>,
+    pub payment_method_options: Option<UpdateInvoicePaymentSettingsPaymentMethodOptions>,
     /// The list of payment method types (e.g.
     /// card) to provide to the invoice’s PaymentIntent.
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<&'a [UpdateInvoicePaymentSettingsPaymentMethodTypes]>,
+    pub payment_method_types: Option<Vec<UpdateInvoicePaymentSettingsPaymentMethodTypes>>,
 }
-impl<'a> UpdateInvoicePaymentSettings<'a> {
+impl UpdateInvoicePaymentSettings {
     pub fn new() -> Self {
         Self { default_mandate: None, payment_method_options: None, payment_method_types: None }
     }
 }
-impl<'a> Default for UpdateInvoicePaymentSettings<'a> {
+impl Default for UpdateInvoicePaymentSettings {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Payment-method-specific configuration to provide to the invoice’s PaymentIntent.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoicePaymentSettingsPaymentMethodOptions<'a> {
+pub struct UpdateInvoicePaymentSettingsPaymentMethodOptions {
     /// If paying by `acss_debit`, this sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsAcssDebit>,
@@ -8853,7 +8918,7 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptions<'a> {
     pub card: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsCard>,
     /// If paying by `customer_balance`, this sub-hash contains details about the Bank transfer payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<InvoicePaymentMethodOptionsParam<'a>>,
+    pub customer_balance: Option<InvoicePaymentMethodOptionsParam>,
     /// If paying by `konbini`, this sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -8864,9 +8929,9 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptions<'a> {
     pub sepa_debit: Option<miniserde::json::Value>,
     /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_bank_account: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount<'a>>,
+    pub us_bank_account: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount>,
 }
-impl<'a> UpdateInvoicePaymentSettingsPaymentMethodOptions<'a> {
+impl UpdateInvoicePaymentSettingsPaymentMethodOptions {
     pub fn new() -> Self {
         Self {
             acss_debit: None,
@@ -8879,7 +8944,7 @@ impl<'a> UpdateInvoicePaymentSettingsPaymentMethodOptions<'a> {
         }
     }
 }
-impl<'a> Default for UpdateInvoicePaymentSettingsPaymentMethodOptions<'a> {
+impl Default for UpdateInvoicePaymentSettingsPaymentMethodOptions {
     fn default() -> Self {
         Self::new()
     }
@@ -9206,11 +9271,13 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan 
 }
 impl UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan {
     pub fn new(
-        count: u64,
-        interval: UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval,
-        type_: UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType,
+        count: impl Into<u64>,
+        interval: impl Into<
+            UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval,
+        >,
+        type_: impl Into<UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType>,
     ) -> Self {
-        Self { count, interval, type_ }
+        Self { count: count.into(), interval: interval.into(), type_: type_.into() }
     }
 }
 /// For `fixed_count` installment plans, this is the interval between installment payments your customer will make to their credit card.
@@ -9394,49 +9461,46 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub financial_connections: Option<
-        UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections<'a>,
-    >,
+    pub financial_connections:
+        Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections>,
     /// Verification method for the intent
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
-impl<'a> UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount<'a> {
+impl UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount {
     pub fn new() -> Self {
         Self { financial_connections: None, verification_method: None }
     }
 }
-impl<'a> Default for UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount<'a> {
+impl Default for UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Additional fields for Financial Connections Session creation
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
         /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
 #[serde(skip_serializing_if = "Option::is_none")]
-pub permissions: Option<&'a [UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
+pub permissions: Option<Vec<UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
     /// List of data features that you would like to retrieve upon account creation.
 #[serde(skip_serializing_if = "Option::is_none")]
-pub prefetch: Option<&'a [UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch]>,
+pub prefetch: Option<Vec<UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch>>,
 
 }
-impl<'a> UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections<'a> {
+impl UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
     pub fn new() -> Self {
         Self { permissions: None, prefetch: None }
     }
 }
-impl<'a> Default
-    for UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections<'a>
-{
+impl Default for UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
     fn default() -> Self {
         Self::new()
     }
@@ -9949,44 +10013,44 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceRenderingPdfPageSize {
     }
 }
 /// Settings for the cost of shipping for this invoice.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoiceShippingCost<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateInvoiceShippingCost {
     /// The ID of the shipping rate to use for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_rate: Option<&'a str>,
+    pub shipping_rate: Option<String>,
     /// Parameters to create a new ad-hoc shipping rate for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_rate_data: Option<UpdateInvoiceShippingCostShippingRateData<'a>>,
+    pub shipping_rate_data: Option<UpdateInvoiceShippingCostShippingRateData>,
 }
-impl<'a> UpdateInvoiceShippingCost<'a> {
+impl UpdateInvoiceShippingCost {
     pub fn new() -> Self {
         Self { shipping_rate: None, shipping_rate_data: None }
     }
 }
-impl<'a> Default for UpdateInvoiceShippingCost<'a> {
+impl Default for UpdateInvoiceShippingCost {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Parameters to create a new ad-hoc shipping rate for this order.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoiceShippingCostShippingRateData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateInvoiceShippingCostShippingRateData {
     /// The estimated range for how long shipping will take, meant to be displayable to the customer.
     /// This will appear on CheckoutSessions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delivery_estimate: Option<UpdateInvoiceShippingCostShippingRateDataDeliveryEstimate>,
     /// The name of the shipping rate, meant to be displayable to the customer.
     /// This will appear on CheckoutSessions.
-    pub display_name: &'a str,
+    pub display_name: String,
     /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amount: Option<UpdateInvoiceShippingCostShippingRateDataFixedAmount<'a>>,
+    pub fixed_amount: Option<UpdateInvoiceShippingCostShippingRateDataFixedAmount>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9994,17 +10058,17 @@ pub struct UpdateInvoiceShippingCostShippingRateData<'a> {
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     /// The Shipping tax code is `txcd_92010001`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_code: Option<&'a str>,
+    pub tax_code: Option<String>,
     /// The type of calculation to use on the shipping rate. Can only be `fixed_amount` for now.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<UpdateInvoiceShippingCostShippingRateDataType>,
 }
-impl<'a> UpdateInvoiceShippingCostShippingRateData<'a> {
-    pub fn new(display_name: &'a str) -> Self {
+impl UpdateInvoiceShippingCostShippingRateData {
+    pub fn new(display_name: impl Into<String>) -> Self {
         Self {
             delivery_estimate: None,
-            display_name,
+            display_name: display_name.into(),
             fixed_amount: None,
             metadata: None,
             tax_behavior: None,
@@ -10044,10 +10108,10 @@ pub struct UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximum {
 }
 impl UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximum {
     pub fn new(
-        unit: UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit,
-        value: i64,
+        unit: impl Into<UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit>,
+        value: impl Into<i64>,
     ) -> Self {
-        Self { unit, value }
+        Self { unit: unit.into(), value: value.into() }
     }
 }
 /// A unit of time.
@@ -10125,10 +10189,10 @@ pub struct UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimum {
 }
 impl UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimum {
     pub fn new(
-        unit: UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit,
-        value: i64,
+        unit: impl Into<UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit>,
+        value: impl Into<i64>,
     ) -> Self {
-        Self { unit, value }
+        Self { unit: unit.into(), value: value.into() }
     }
 }
 /// A unit of time.
@@ -10197,8 +10261,8 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoiceShippingCostShippingRateDataFixedAmount<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateInvoiceShippingCostShippingRateDataFixedAmount {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -10208,15 +10272,15 @@ pub struct UpdateInvoiceShippingCostShippingRateDataFixedAmount<'a> {
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<
-        &'a std::collections::HashMap<
+        std::collections::HashMap<
             stripe_types::Currency,
             UpdateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptions,
         >,
     >,
 }
-impl<'a> UpdateInvoiceShippingCostShippingRateDataFixedAmount<'a> {
-    pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
-        Self { amount, currency, currency_options: None }
+impl UpdateInvoiceShippingCostShippingRateDataFixedAmount {
+    pub fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
+        Self { amount: amount.into(), currency: currency.into(), currency_options: None }
     }
 }
 /// Shipping rates defined in each available currency option.
@@ -10232,8 +10296,8 @@ pub struct UpdateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptions {
         Option<UpdateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior>,
 }
 impl UpdateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptions {
-    pub fn new(amount: i64) -> Self {
-        Self { amount, tax_behavior: None }
+    pub fn new(amount: impl Into<i64>) -> Self {
+        Self { amount: amount.into(), tax_behavior: None }
     }
 }
 /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
@@ -10423,18 +10487,18 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceShippingCostShippingRateDataT
 }
 /// If specified, the funds from the invoice will be transferred to the destination and the ID of the resulting transfer will be found on the invoice's charge.
 /// This will be unset if you POST an empty value.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoiceTransferData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateInvoiceTransferData {
     /// The amount that will be transferred automatically when the invoice is paid.
     /// If no amount is set, the full amount is transferred.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
     /// ID of an existing, connected Stripe account.
-    pub destination: &'a str,
+    pub destination: String,
 }
-impl<'a> UpdateInvoiceTransferData<'a> {
-    pub fn new(destination: &'a str) -> Self {
-        Self { amount: None, destination }
+impl UpdateInvoiceTransferData {
+    pub fn new(destination: impl Into<String>) -> Self {
+        Self { amount: None, destination: destination.into() }
     }
 }
 /// Draft invoices are fully editable.
@@ -10445,129 +10509,132 @@ impl<'a> UpdateInvoiceTransferData<'a> {
 /// sending reminders for, or [automatically reconciling](https://stripe.com/docs/billing/invoices/reconciliation) invoices, pass.
 /// `auto_advance=false`.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoice<'a> {
-    inner: UpdateInvoiceBuilder<'a>,
-    invoice: &'a stripe_shared::InvoiceId,
+pub struct UpdateInvoice {
+    inner: UpdateInvoiceBuilder,
+    invoice: stripe_shared::InvoiceId,
 }
-impl<'a> UpdateInvoice<'a> {
+impl UpdateInvoice {
     /// Construct a new `UpdateInvoice`.
-    pub fn new(invoice: &'a stripe_shared::InvoiceId) -> Self {
-        Self { invoice, inner: UpdateInvoiceBuilder::new() }
+    pub fn new(invoice: impl Into<stripe_shared::InvoiceId>) -> Self {
+        Self { invoice: invoice.into(), inner: UpdateInvoiceBuilder::new() }
     }
     /// The account tax IDs associated with the invoice. Only editable when the invoice is a draft.
-    pub fn account_tax_ids(mut self, account_tax_ids: &'a [&'a str]) -> Self {
-        self.inner.account_tax_ids = Some(account_tax_ids);
+    pub fn account_tax_ids(mut self, account_tax_ids: impl Into<Vec<String>>) -> Self {
+        self.inner.account_tax_ids = Some(account_tax_ids.into());
         self
     }
     /// A fee in cents (or local equivalent) that will be applied to the invoice and transferred to the application owner's Stripe account.
     /// The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee.
     /// For more information, see the application fees [documentation](https://stripe.com/docs/billing/invoices/connect#collecting-fees).
-    pub fn application_fee_amount(mut self, application_fee_amount: i64) -> Self {
-        self.inner.application_fee_amount = Some(application_fee_amount);
+    pub fn application_fee_amount(mut self, application_fee_amount: impl Into<i64>) -> Self {
+        self.inner.application_fee_amount = Some(application_fee_amount.into());
         self
     }
     /// Controls whether Stripe performs [automatic collection](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection) of the invoice.
-    pub fn auto_advance(mut self, auto_advance: bool) -> Self {
-        self.inner.auto_advance = Some(auto_advance);
+    pub fn auto_advance(mut self, auto_advance: impl Into<bool>) -> Self {
+        self.inner.auto_advance = Some(auto_advance.into());
         self
     }
     /// Settings for automatic tax lookup for this invoice.
-    pub fn automatic_tax(mut self, automatic_tax: UpdateInvoiceAutomaticTax<'a>) -> Self {
-        self.inner.automatic_tax = Some(automatic_tax);
+    pub fn automatic_tax(mut self, automatic_tax: impl Into<UpdateInvoiceAutomaticTax>) -> Self {
+        self.inner.automatic_tax = Some(automatic_tax.into());
         self
     }
     /// Either `charge_automatically` or `send_invoice`.
     /// This field can be updated only on `draft` invoices.
     pub fn collection_method(
         mut self,
-        collection_method: stripe_shared::InvoiceCollectionMethod,
+        collection_method: impl Into<stripe_shared::InvoiceCollectionMethod>,
     ) -> Self {
-        self.inner.collection_method = Some(collection_method);
+        self.inner.collection_method = Some(collection_method.into());
         self
     }
     /// A list of up to 4 custom fields to be displayed on the invoice.
     /// If a value for `custom_fields` is specified, the list specified will replace the existing custom field list on this invoice.
     /// Pass an empty string to remove previously-defined fields.
-    pub fn custom_fields(mut self, custom_fields: &'a [CustomFieldParams<'a>]) -> Self {
-        self.inner.custom_fields = Some(custom_fields);
+    pub fn custom_fields(mut self, custom_fields: impl Into<Vec<CustomFieldParams>>) -> Self {
+        self.inner.custom_fields = Some(custom_fields.into());
         self
     }
     /// The number of days from which the invoice is created until it is due.
     /// Only valid for invoices where `collection_method=send_invoice`.
     /// This field can only be updated on `draft` invoices.
-    pub fn days_until_due(mut self, days_until_due: u32) -> Self {
-        self.inner.days_until_due = Some(days_until_due);
+    pub fn days_until_due(mut self, days_until_due: impl Into<u32>) -> Self {
+        self.inner.days_until_due = Some(days_until_due.into());
         self
     }
     /// ID of the default payment method for the invoice.
     /// It must belong to the customer associated with the invoice.
     /// If not set, defaults to the subscription's default payment method, if any, or to the default payment method in the customer's invoice settings.
-    pub fn default_payment_method(mut self, default_payment_method: &'a str) -> Self {
-        self.inner.default_payment_method = Some(default_payment_method);
+    pub fn default_payment_method(mut self, default_payment_method: impl Into<String>) -> Self {
+        self.inner.default_payment_method = Some(default_payment_method.into());
         self
     }
     /// ID of the default payment source for the invoice.
     /// It must belong to the customer associated with the invoice and be in a chargeable state.
     /// If not set, defaults to the subscription's default source, if any, or to the customer's default source.
-    pub fn default_source(mut self, default_source: &'a str) -> Self {
-        self.inner.default_source = Some(default_source);
+    pub fn default_source(mut self, default_source: impl Into<String>) -> Self {
+        self.inner.default_source = Some(default_source.into());
         self
     }
     /// The tax rates that will apply to any line item that does not have `tax_rates` set.
     /// Pass an empty string to remove previously-defined tax rates.
-    pub fn default_tax_rates(mut self, default_tax_rates: &'a [&'a str]) -> Self {
-        self.inner.default_tax_rates = Some(default_tax_rates);
+    pub fn default_tax_rates(mut self, default_tax_rates: impl Into<Vec<String>>) -> Self {
+        self.inner.default_tax_rates = Some(default_tax_rates.into());
         self
     }
     /// An arbitrary string attached to the object.
     /// Often useful for displaying to users.
     /// Referenced as 'memo' in the Dashboard.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.inner.description = Some(description);
+    pub fn description(mut self, description: impl Into<String>) -> Self {
+        self.inner.description = Some(description.into());
         self
     }
     /// The discounts that will apply to the invoice.
     /// Pass an empty string to remove previously-defined discounts.
-    pub fn discounts(mut self, discounts: &'a [DiscountsDataParam<'a>]) -> Self {
-        self.inner.discounts = Some(discounts);
+    pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
+        self.inner.discounts = Some(discounts.into());
         self
     }
     /// The date on which payment for this invoice is due.
     /// Only valid for invoices where `collection_method=send_invoice`.
     /// This field can only be updated on `draft` invoices.
-    pub fn due_date(mut self, due_date: stripe_types::Timestamp) -> Self {
-        self.inner.due_date = Some(due_date);
+    pub fn due_date(mut self, due_date: impl Into<stripe_types::Timestamp>) -> Self {
+        self.inner.due_date = Some(due_date.into());
         self
     }
     /// The date when this invoice is in effect.
     /// Same as `finalized_at` unless overwritten.
     /// When defined, this value replaces the system-generated 'Date of issue' printed on the invoice PDF and receipt.
-    pub fn effective_at(mut self, effective_at: stripe_types::Timestamp) -> Self {
-        self.inner.effective_at = Some(effective_at);
+    pub fn effective_at(mut self, effective_at: impl Into<stripe_types::Timestamp>) -> Self {
+        self.inner.effective_at = Some(effective_at.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Footer to be displayed on the invoice.
-    pub fn footer(mut self, footer: &'a str) -> Self {
-        self.inner.footer = Some(footer);
+    pub fn footer(mut self, footer: impl Into<String>) -> Self {
+        self.inner.footer = Some(footer.into());
         self
     }
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
-    pub fn issuer(mut self, issuer: UpdateInvoiceIssuer<'a>) -> Self {
-        self.inner.issuer = Some(issuer);
+    pub fn issuer(mut self, issuer: impl Into<UpdateInvoiceIssuer>) -> Self {
+        self.inner.issuer = Some(issuer.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// Set the number for this invoice.
@@ -10575,56 +10642,59 @@ impl<'a> UpdateInvoice<'a> {
     /// In many markets, regulations require invoices to be unique, sequential and / or gapless.
     /// You are responsible for ensuring this is true across all your different invoicing systems in the event that you edit the invoice number using our API.
     /// If you use only Stripe for your invoices and do not change invoice numbers, Stripe handles this aspect of compliance for you automatically.
-    pub fn number(mut self, number: &'a str) -> Self {
-        self.inner.number = Some(number);
+    pub fn number(mut self, number: impl Into<String>) -> Self {
+        self.inner.number = Some(number.into());
         self
     }
     /// The account (if any) for which the funds of the invoice payment are intended.
     /// If set, the invoice will be presented with the branding and support information of the specified account.
     /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
-    pub fn on_behalf_of(mut self, on_behalf_of: &'a str) -> Self {
-        self.inner.on_behalf_of = Some(on_behalf_of);
+    pub fn on_behalf_of(mut self, on_behalf_of: impl Into<String>) -> Self {
+        self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
     }
     /// Configuration settings for the PaymentIntent that is generated when the invoice is finalized.
-    pub fn payment_settings(mut self, payment_settings: UpdateInvoicePaymentSettings<'a>) -> Self {
-        self.inner.payment_settings = Some(payment_settings);
+    pub fn payment_settings(
+        mut self,
+        payment_settings: impl Into<UpdateInvoicePaymentSettings>,
+    ) -> Self {
+        self.inner.payment_settings = Some(payment_settings.into());
         self
     }
     /// The rendering-related settings that control how the invoice is displayed on customer-facing surfaces such as PDF and Hosted Invoice Page.
-    pub fn rendering(mut self, rendering: UpdateInvoiceRendering) -> Self {
-        self.inner.rendering = Some(rendering);
+    pub fn rendering(mut self, rendering: impl Into<UpdateInvoiceRendering>) -> Self {
+        self.inner.rendering = Some(rendering.into());
         self
     }
     /// Settings for the cost of shipping for this invoice.
-    pub fn shipping_cost(mut self, shipping_cost: UpdateInvoiceShippingCost<'a>) -> Self {
-        self.inner.shipping_cost = Some(shipping_cost);
+    pub fn shipping_cost(mut self, shipping_cost: impl Into<UpdateInvoiceShippingCost>) -> Self {
+        self.inner.shipping_cost = Some(shipping_cost.into());
         self
     }
     /// Shipping details for the invoice.
     /// The Invoice PDF will use the `shipping_details` value if it is set, otherwise the PDF will render the shipping address from the customer.
     pub fn shipping_details(
         mut self,
-        shipping_details: RecipientShippingWithOptionalFieldsAddress<'a>,
+        shipping_details: impl Into<RecipientShippingWithOptionalFieldsAddress>,
     ) -> Self {
-        self.inner.shipping_details = Some(shipping_details);
+        self.inner.shipping_details = Some(shipping_details.into());
         self
     }
     /// Extra information about a charge for the customer's credit card statement.
     /// It must contain at least one letter.
     /// If not specified and this invoice is part of a subscription, the default `statement_descriptor` will be set to the first subscription item's product's `statement_descriptor`.
-    pub fn statement_descriptor(mut self, statement_descriptor: &'a str) -> Self {
-        self.inner.statement_descriptor = Some(statement_descriptor);
+    pub fn statement_descriptor(mut self, statement_descriptor: impl Into<String>) -> Self {
+        self.inner.statement_descriptor = Some(statement_descriptor.into());
         self
     }
     /// If specified, the funds from the invoice will be transferred to the destination and the ID of the resulting transfer will be found on the invoice's charge.
     /// This will be unset if you POST an empty value.
-    pub fn transfer_data(mut self, transfer_data: UpdateInvoiceTransferData<'a>) -> Self {
-        self.inner.transfer_data = Some(transfer_data);
+    pub fn transfer_data(mut self, transfer_data: impl Into<UpdateInvoiceTransferData>) -> Self {
+        self.inner.transfer_data = Some(transfer_data.into());
         self
     }
 }
-impl UpdateInvoice<'_> {
+impl UpdateInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -10642,22 +10712,22 @@ impl UpdateInvoice<'_> {
     }
 }
 
-impl StripeRequest for UpdateInvoice<'_> {
+impl StripeRequest for UpdateInvoice {
     type Output = stripe_shared::Invoice;
 
     fn build(&self) -> RequestBuilder {
-        let invoice = self.invoice;
+        let invoice = &self.invoice;
         RequestBuilder::new(StripeMethod::Post, format!("/invoices/{invoice}")).form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct FinalizeInvoiceInvoiceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct FinalizeInvoiceInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     auto_advance: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> FinalizeInvoiceInvoiceBuilder<'a> {
+impl FinalizeInvoiceInvoiceBuilder {
     fn new() -> Self {
         Self { auto_advance: None, expand: None }
     }
@@ -10665,28 +10735,28 @@ impl<'a> FinalizeInvoiceInvoiceBuilder<'a> {
 /// Stripe automatically finalizes drafts before sending and attempting payment on invoices.
 /// However, if you’d like to finalize a draft invoice manually, you can do so using this method.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct FinalizeInvoiceInvoice<'a> {
-    inner: FinalizeInvoiceInvoiceBuilder<'a>,
-    invoice: &'a stripe_shared::InvoiceId,
+pub struct FinalizeInvoiceInvoice {
+    inner: FinalizeInvoiceInvoiceBuilder,
+    invoice: stripe_shared::InvoiceId,
 }
-impl<'a> FinalizeInvoiceInvoice<'a> {
+impl FinalizeInvoiceInvoice {
     /// Construct a new `FinalizeInvoiceInvoice`.
-    pub fn new(invoice: &'a stripe_shared::InvoiceId) -> Self {
-        Self { invoice, inner: FinalizeInvoiceInvoiceBuilder::new() }
+    pub fn new(invoice: impl Into<stripe_shared::InvoiceId>) -> Self {
+        Self { invoice: invoice.into(), inner: FinalizeInvoiceInvoiceBuilder::new() }
     }
     /// Controls whether Stripe performs [automatic collection](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection) of the invoice.
     /// If `false`, the invoice's state doesn't automatically advance without an explicit action.
-    pub fn auto_advance(mut self, auto_advance: bool) -> Self {
-        self.inner.auto_advance = Some(auto_advance);
+    pub fn auto_advance(mut self, auto_advance: impl Into<bool>) -> Self {
+        self.inner.auto_advance = Some(auto_advance.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl FinalizeInvoiceInvoice<'_> {
+impl FinalizeInvoiceInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -10704,43 +10774,43 @@ impl FinalizeInvoiceInvoice<'_> {
     }
 }
 
-impl StripeRequest for FinalizeInvoiceInvoice<'_> {
+impl StripeRequest for FinalizeInvoiceInvoice {
     type Output = stripe_shared::Invoice;
 
     fn build(&self) -> RequestBuilder {
-        let invoice = self.invoice;
+        let invoice = &self.invoice;
         RequestBuilder::new(StripeMethod::Post, format!("/invoices/{invoice}/finalize"))
             .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct MarkUncollectibleInvoiceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct MarkUncollectibleInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> MarkUncollectibleInvoiceBuilder<'a> {
+impl MarkUncollectibleInvoiceBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Marking an invoice as uncollectible is useful for keeping track of bad debts that can be written off for accounting purposes.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct MarkUncollectibleInvoice<'a> {
-    inner: MarkUncollectibleInvoiceBuilder<'a>,
-    invoice: &'a stripe_shared::InvoiceId,
+pub struct MarkUncollectibleInvoice {
+    inner: MarkUncollectibleInvoiceBuilder,
+    invoice: stripe_shared::InvoiceId,
 }
-impl<'a> MarkUncollectibleInvoice<'a> {
+impl MarkUncollectibleInvoice {
     /// Construct a new `MarkUncollectibleInvoice`.
-    pub fn new(invoice: &'a stripe_shared::InvoiceId) -> Self {
-        Self { invoice, inner: MarkUncollectibleInvoiceBuilder::new() }
+    pub fn new(invoice: impl Into<stripe_shared::InvoiceId>) -> Self {
+        Self { invoice: invoice.into(), inner: MarkUncollectibleInvoiceBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl MarkUncollectibleInvoice<'_> {
+impl MarkUncollectibleInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -10758,33 +10828,33 @@ impl MarkUncollectibleInvoice<'_> {
     }
 }
 
-impl StripeRequest for MarkUncollectibleInvoice<'_> {
+impl StripeRequest for MarkUncollectibleInvoice {
     type Output = stripe_shared::Invoice;
 
     fn build(&self) -> RequestBuilder {
-        let invoice = self.invoice;
+        let invoice = &self.invoice;
         RequestBuilder::new(StripeMethod::Post, format!("/invoices/{invoice}/mark_uncollectible"))
             .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct PayInvoiceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct PayInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     forgive: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    mandate: Option<&'a str>,
+    mandate: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     off_session: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     paid_out_of_band: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    payment_method: Option<&'a str>,
+    payment_method: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    source: Option<&'a str>,
+    source: Option<String>,
 }
-impl<'a> PayInvoiceBuilder<'a> {
+impl PayInvoiceBuilder {
     fn new() -> Self {
         Self {
             expand: None,
@@ -10800,18 +10870,18 @@ impl<'a> PayInvoiceBuilder<'a> {
 /// Stripe automatically creates and then attempts to collect payment on invoices for customers on subscriptions according to your [subscriptions settings](https://dashboard.stripe.com/account/billing/automatic).
 /// However, if you’d like to attempt payment on an invoice out of the normal collection schedule or for some other reason, you can do so.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct PayInvoice<'a> {
-    inner: PayInvoiceBuilder<'a>,
-    invoice: &'a stripe_shared::InvoiceId,
+pub struct PayInvoice {
+    inner: PayInvoiceBuilder,
+    invoice: stripe_shared::InvoiceId,
 }
-impl<'a> PayInvoice<'a> {
+impl PayInvoice {
     /// Construct a new `PayInvoice`.
-    pub fn new(invoice: &'a stripe_shared::InvoiceId) -> Self {
-        Self { invoice, inner: PayInvoiceBuilder::new() }
+    pub fn new(invoice: impl Into<stripe_shared::InvoiceId>) -> Self {
+        Self { invoice: invoice.into(), inner: PayInvoiceBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// In cases where the source used to pay the invoice has insufficient funds, passing `forgive=true` controls whether a charge should be attempted for the full amount available on the source, up to the amount to fully pay the invoice.
@@ -10821,43 +10891,43 @@ impl<'a> PayInvoice<'a> {
     /// Passing `forgive=false` will fail the charge if the source hasn't been pre-funded with the right amount.
     /// An example for this case is with ACH Credit Transfers and wires: if the amount wired is less than the amount due by a small amount, you might want to forgive the difference.
     /// Defaults to `false`.
-    pub fn forgive(mut self, forgive: bool) -> Self {
-        self.inner.forgive = Some(forgive);
+    pub fn forgive(mut self, forgive: impl Into<bool>) -> Self {
+        self.inner.forgive = Some(forgive.into());
         self
     }
     /// ID of the mandate to be used for this invoice.
     /// It must correspond to the payment method used to pay the invoice, including the payment_method param or the invoice's default_payment_method or default_source, if set.
-    pub fn mandate(mut self, mandate: &'a str) -> Self {
-        self.inner.mandate = Some(mandate);
+    pub fn mandate(mut self, mandate: impl Into<String>) -> Self {
+        self.inner.mandate = Some(mandate.into());
         self
     }
     /// Indicates if a customer is on or off-session while an invoice payment is attempted.
     /// Defaults to `true` (off-session).
-    pub fn off_session(mut self, off_session: bool) -> Self {
-        self.inner.off_session = Some(off_session);
+    pub fn off_session(mut self, off_session: impl Into<bool>) -> Self {
+        self.inner.off_session = Some(off_session.into());
         self
     }
     /// Boolean representing whether an invoice is paid outside of Stripe.
     /// This will result in no charge being made.
     /// Defaults to `false`.
-    pub fn paid_out_of_band(mut self, paid_out_of_band: bool) -> Self {
-        self.inner.paid_out_of_band = Some(paid_out_of_band);
+    pub fn paid_out_of_band(mut self, paid_out_of_band: impl Into<bool>) -> Self {
+        self.inner.paid_out_of_band = Some(paid_out_of_band.into());
         self
     }
     /// A PaymentMethod to be charged.
     /// The PaymentMethod must be the ID of a PaymentMethod belonging to the customer associated with the invoice being paid.
-    pub fn payment_method(mut self, payment_method: &'a str) -> Self {
-        self.inner.payment_method = Some(payment_method);
+    pub fn payment_method(mut self, payment_method: impl Into<String>) -> Self {
+        self.inner.payment_method = Some(payment_method.into());
         self
     }
     /// A payment source to be charged.
     /// The source must be the ID of a source belonging to the customer associated with the invoice being paid.
-    pub fn source(mut self, source: &'a str) -> Self {
-        self.inner.source = Some(source);
+    pub fn source(mut self, source: impl Into<String>) -> Self {
+        self.inner.source = Some(source.into());
         self
     }
 }
-impl PayInvoice<'_> {
+impl PayInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -10875,21 +10945,21 @@ impl PayInvoice<'_> {
     }
 }
 
-impl StripeRequest for PayInvoice<'_> {
+impl StripeRequest for PayInvoice {
     type Output = stripe_shared::Invoice;
 
     fn build(&self) -> RequestBuilder {
-        let invoice = self.invoice;
+        let invoice = &self.invoice;
         RequestBuilder::new(StripeMethod::Post, format!("/invoices/{invoice}/pay"))
             .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct SendInvoiceInvoiceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct SendInvoiceInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> SendInvoiceInvoiceBuilder<'a> {
+impl SendInvoiceInvoiceBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
@@ -10900,22 +10970,22 @@ impl<'a> SendInvoiceInvoiceBuilder<'a> {
 ///
 /// Requests made in test-mode result in no emails being sent, despite sending an `invoice.sent` event.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct SendInvoiceInvoice<'a> {
-    inner: SendInvoiceInvoiceBuilder<'a>,
-    invoice: &'a stripe_shared::InvoiceId,
+pub struct SendInvoiceInvoice {
+    inner: SendInvoiceInvoiceBuilder,
+    invoice: stripe_shared::InvoiceId,
 }
-impl<'a> SendInvoiceInvoice<'a> {
+impl SendInvoiceInvoice {
     /// Construct a new `SendInvoiceInvoice`.
-    pub fn new(invoice: &'a stripe_shared::InvoiceId) -> Self {
-        Self { invoice, inner: SendInvoiceInvoiceBuilder::new() }
+    pub fn new(invoice: impl Into<stripe_shared::InvoiceId>) -> Self {
+        Self { invoice: invoice.into(), inner: SendInvoiceInvoiceBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl SendInvoiceInvoice<'_> {
+impl SendInvoiceInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -10933,21 +11003,21 @@ impl SendInvoiceInvoice<'_> {
     }
 }
 
-impl StripeRequest for SendInvoiceInvoice<'_> {
+impl StripeRequest for SendInvoiceInvoice {
     type Output = stripe_shared::Invoice;
 
     fn build(&self) -> RequestBuilder {
-        let invoice = self.invoice;
+        let invoice = &self.invoice;
         RequestBuilder::new(StripeMethod::Post, format!("/invoices/{invoice}/send"))
             .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct VoidInvoiceInvoiceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct VoidInvoiceInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> VoidInvoiceInvoiceBuilder<'a> {
+impl VoidInvoiceInvoiceBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
@@ -10960,22 +11030,22 @@ impl<'a> VoidInvoiceInvoiceBuilder<'a> {
 /// You might need to [issue another invoice](https://stripe.com/docs/api#create_invoice) or [credit note](https://stripe.com/docs/api#create_credit_note) instead.
 /// Stripe recommends that you consult with your legal counsel for advice specific to your business.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct VoidInvoiceInvoice<'a> {
-    inner: VoidInvoiceInvoiceBuilder<'a>,
-    invoice: &'a stripe_shared::InvoiceId,
+pub struct VoidInvoiceInvoice {
+    inner: VoidInvoiceInvoiceBuilder,
+    invoice: stripe_shared::InvoiceId,
 }
-impl<'a> VoidInvoiceInvoice<'a> {
+impl VoidInvoiceInvoice {
     /// Construct a new `VoidInvoiceInvoice`.
-    pub fn new(invoice: &'a stripe_shared::InvoiceId) -> Self {
-        Self { invoice, inner: VoidInvoiceInvoiceBuilder::new() }
+    pub fn new(invoice: impl Into<stripe_shared::InvoiceId>) -> Self {
+        Self { invoice: invoice.into(), inner: VoidInvoiceInvoiceBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl VoidInvoiceInvoice<'_> {
+impl VoidInvoiceInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -10993,47 +11063,47 @@ impl VoidInvoiceInvoice<'_> {
     }
 }
 
-impl StripeRequest for VoidInvoiceInvoice<'_> {
+impl StripeRequest for VoidInvoiceInvoice {
     type Output = stripe_shared::Invoice;
 
     fn build(&self) -> RequestBuilder {
-        let invoice = self.invoice;
+        let invoice = &self.invoice;
         RequestBuilder::new(StripeMethod::Post, format!("/invoices/{invoice}/void"))
             .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreatePreviewInvoiceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreatePreviewInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    automatic_tax: Option<CreatePreviewInvoiceAutomaticTax<'a>>,
+    automatic_tax: Option<CreatePreviewInvoiceAutomaticTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    coupon: Option<&'a str>,
+    coupon: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<&'a str>,
+    customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer_details: Option<CreatePreviewInvoiceCustomerDetails<'a>>,
+    customer_details: Option<CreatePreviewInvoiceCustomerDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    discounts: Option<Vec<DiscountsDataParam>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    invoice_items: Option<&'a [CreatePreviewInvoiceInvoiceItems<'a>]>,
+    invoice_items: Option<Vec<CreatePreviewInvoiceInvoiceItems>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    issuer: Option<CreatePreviewInvoiceIssuer<'a>>,
+    issuer: Option<CreatePreviewInvoiceIssuer>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    on_behalf_of: Option<&'a str>,
+    on_behalf_of: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    schedule: Option<&'a str>,
+    schedule: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    schedule_details: Option<CreatePreviewInvoiceScheduleDetails<'a>>,
+    schedule_details: Option<CreatePreviewInvoiceScheduleDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription: Option<&'a str>,
+    subscription: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription_details: Option<CreatePreviewInvoiceSubscriptionDetails<'a>>,
+    subscription_details: Option<CreatePreviewInvoiceSubscriptionDetails>,
 }
-impl<'a> CreatePreviewInvoiceBuilder<'a> {
+impl CreatePreviewInvoiceBuilder {
     fn new() -> Self {
         Self {
             automatic_tax: None,
@@ -11054,8 +11124,8 @@ impl<'a> CreatePreviewInvoiceBuilder<'a> {
     }
 }
 /// Settings for automatic tax lookup for this invoice preview.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceAutomaticTax<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceAutomaticTax {
     /// Whether Stripe automatically computes tax on this invoice.
     /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://stripe.com/docs/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
     pub enabled: bool,
@@ -11063,28 +11133,28 @@ pub struct CreatePreviewInvoiceAutomaticTax<'a> {
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
     /// The tax transaction is returned in the report of the connected account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub liability: Option<CreatePreviewInvoiceAutomaticTaxLiability<'a>>,
+    pub liability: Option<CreatePreviewInvoiceAutomaticTaxLiability>,
 }
-impl<'a> CreatePreviewInvoiceAutomaticTax<'a> {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, liability: None }
+impl CreatePreviewInvoiceAutomaticTax {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), liability: None }
     }
 }
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceAutomaticTaxLiability<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreatePreviewInvoiceAutomaticTaxLiabilityType,
 }
-impl<'a> CreatePreviewInvoiceAutomaticTaxLiability<'a> {
-    pub fn new(type_: CreatePreviewInvoiceAutomaticTaxLiabilityType) -> Self {
-        Self { account: None, type_ }
+impl CreatePreviewInvoiceAutomaticTaxLiability {
+    pub fn new(type_: impl Into<CreatePreviewInvoiceAutomaticTaxLiabilityType>) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -11147,30 +11217,30 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceAutomaticTaxLiabilityT
 }
 /// Details about the customer you want to invoice or overrides for an existing customer.
 /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceCustomerDetails<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceCustomerDetails {
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<OptionalFieldsAddress<'a>>,
+    pub address: Option<OptionalFieldsAddress>,
     /// The customer's shipping information. Appears on invoices emailed to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<CustomerShipping<'a>>,
+    pub shipping: Option<CustomerShipping>,
     /// Tax details about the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax: Option<TaxParam<'a>>,
+    pub tax: Option<TaxParam>,
     /// The customer's tax exemption. One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<CreatePreviewInvoiceCustomerDetailsTaxExempt>,
     /// The customer's tax IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_ids: Option<&'a [CreatePreviewInvoiceCustomerDetailsTaxIds<'a>]>,
+    pub tax_ids: Option<Vec<CreatePreviewInvoiceCustomerDetailsTaxIds>>,
 }
-impl<'a> CreatePreviewInvoiceCustomerDetails<'a> {
+impl CreatePreviewInvoiceCustomerDetails {
     pub fn new() -> Self {
         Self { address: None, shipping: None, tax: None, tax_exempt: None, tax_ids: None }
     }
 }
-impl<'a> Default for CreatePreviewInvoiceCustomerDetails<'a> {
+impl Default for CreatePreviewInvoiceCustomerDetails {
     fn default() -> Self {
         Self::new()
     }
@@ -11237,17 +11307,20 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceCustomerDetailsTaxExem
     }
 }
 /// The customer's tax IDs.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceCustomerDetailsTaxIds<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceCustomerDetailsTaxIds {
     /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
     #[serde(rename = "type")]
     pub type_: CreatePreviewInvoiceCustomerDetailsTaxIdsType,
     /// Value of the tax ID.
-    pub value: &'a str,
+    pub value: String,
 }
-impl<'a> CreatePreviewInvoiceCustomerDetailsTaxIds<'a> {
-    pub fn new(type_: CreatePreviewInvoiceCustomerDetailsTaxIdsType, value: &'a str) -> Self {
-        Self { type_, value }
+impl CreatePreviewInvoiceCustomerDetailsTaxIds {
+    pub fn new(
+        type_: impl Into<CreatePreviewInvoiceCustomerDetailsTaxIdsType>,
+        value: impl Into<String>,
+    ) -> Self {
+        Self { type_: type_.into(), value: value.into() }
     }
 }
 /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
@@ -11516,8 +11589,8 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceCustomerDetailsTaxIdsT
     }
 }
 /// List of invoice items to add or update in the upcoming invoice preview.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceInvoiceItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceInvoiceItems {
     /// The integer amount in cents (or local equivalent) of previewed invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -11529,24 +11602,24 @@ pub struct CreatePreviewInvoiceInvoiceItems<'a> {
     /// An arbitrary string which you can attach to the invoice item.
     /// The description is displayed in the invoice for easy tracking.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
     /// Explicitly controls whether discounts apply to this invoice item.
     /// Defaults to true, except for negative invoice items.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discountable: Option<bool>,
     /// The coupons to redeem into discounts for the invoice item in the preview.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// The ID of the invoice item to update in preview.
     /// If not specified, a new invoice item will be added to the preview of the upcoming invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoiceitem: Option<&'a str>,
+    pub invoiceitem: Option<String>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The period associated with this invoice item.
     /// When set to different values, the period will be rendered on the invoice.
     /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
@@ -11555,10 +11628,10 @@ pub struct CreatePreviewInvoiceInvoiceItems<'a> {
     pub period: Option<Period>,
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<CreatePreviewInvoiceInvoiceItemsPriceData<'a>>,
+    pub price_data: Option<CreatePreviewInvoiceInvoiceItemsPriceData>,
     /// Non-negative integer. The quantity of units for the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -11570,10 +11643,10 @@ pub struct CreatePreviewInvoiceInvoiceItems<'a> {
     pub tax_behavior: Option<CreatePreviewInvoiceInvoiceItemsTaxBehavior>,
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_code: Option<&'a str>,
+    pub tax_code: Option<String>,
     /// The tax rates that apply to the item. When set, any `default_tax_rates` do not apply to this item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
     /// The integer unit amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
     /// This unit_amount will be multiplied by the quantity to get the full amount.
     /// If you want to apply a credit to the customer's account, pass a negative unit_amount.
@@ -11582,9 +11655,9 @@ pub struct CreatePreviewInvoiceInvoiceItems<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> CreatePreviewInvoiceInvoiceItems<'a> {
+impl CreatePreviewInvoiceInvoiceItems {
     pub fn new() -> Self {
         Self {
             amount: None,
@@ -11606,19 +11679,19 @@ impl<'a> CreatePreviewInvoiceInvoiceItems<'a> {
         }
     }
 }
-impl<'a> Default for CreatePreviewInvoiceInvoiceItems<'a> {
+impl Default for CreatePreviewInvoiceInvoiceItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceInvoiceItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceInvoiceItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -11631,11 +11704,17 @@ pub struct CreatePreviewInvoiceInvoiceItemsPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> CreatePreviewInvoiceInvoiceItemsPriceData<'a> {
-    pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self { currency, product, tax_behavior: None, unit_amount: None, unit_amount_decimal: None }
+impl CreatePreviewInvoiceInvoiceItemsPriceData {
+    pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
+        Self {
+            currency: currency.into(),
+            product: product.into(),
+            tax_behavior: None,
+            unit_amount: None,
+            unit_amount_decimal: None,
+        }
     }
 }
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -11768,18 +11847,18 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceInvoiceItemsTaxBehavio
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceIssuer<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreatePreviewInvoiceIssuerType,
 }
-impl<'a> CreatePreviewInvoiceIssuer<'a> {
-    pub fn new(type_: CreatePreviewInvoiceIssuerType) -> Self {
-        Self { account: None, type_ }
+impl CreatePreviewInvoiceIssuer {
+    pub fn new(type_: impl Into<CreatePreviewInvoiceIssuerType>) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -11840,8 +11919,8 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceIssuerType {
 }
 /// The schedule creation or modification params to apply as a preview.
 /// Cannot be used with `subscription` or `subscription_` prefixed fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceScheduleDetails<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetails {
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     /// Possible values are `release` or `cancel` with the default being `release`.
     /// `release` will end the subscription schedule and keep the underlying subscription running.
@@ -11852,17 +11931,17 @@ pub struct CreatePreviewInvoiceScheduleDetails<'a> {
     /// Each phase can be customized to have different durations, plans, and coupons.
     /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phases: Option<&'a [CreatePreviewInvoiceScheduleDetailsPhases<'a>]>,
+    pub phases: Option<Vec<CreatePreviewInvoiceScheduleDetailsPhases>>,
     /// In cases where the `schedule_details` params update the currently active phase, specifies if and how to prorate at the time of the request.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<CreatePreviewInvoiceScheduleDetailsProrationBehavior>,
 }
-impl<'a> CreatePreviewInvoiceScheduleDetails<'a> {
+impl CreatePreviewInvoiceScheduleDetails {
     pub fn new() -> Self {
         Self { end_behavior: None, phases: None, proration_behavior: None }
     }
 }
-impl<'a> Default for CreatePreviewInvoiceScheduleDetails<'a> {
+impl Default for CreatePreviewInvoiceScheduleDetails {
     fn default() -> Self {
         Self::new()
     }
@@ -11931,13 +12010,12 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceScheduleDetailsEndBeha
 /// List representing phases of the subscription schedule.
 /// Each phase can be customized to have different durations, plans, and coupons.
 /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceScheduleDetailsPhases<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
     /// You may pass up to 20 items.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub add_invoice_items:
-        Option<&'a [CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems<'a>]>,
+    pub add_invoice_items: Option<Vec<CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems>>,
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// The request must be made by a platform account on a connected account in order to set an application fee percentage.
@@ -11946,7 +12024,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases<'a> {
     pub application_fee_percent: Option<f64>,
     /// Automatic tax settings for this phase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTax<'a>>,
+    pub automatic_tax: Option<CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTax>,
     /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
     /// Cannot be set to `phase_start` if this phase specifies a trial.
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
@@ -11966,7 +12044,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases<'a> {
     /// This field has been deprecated and will be removed in a future API version.
     /// Use `discounts` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<&'a str>,
+    pub coupon: Option<String>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11975,29 +12053,29 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases<'a> {
     /// It must belong to the customer associated with the subscription schedule.
     /// If not set, invoices will use the default payment method in the customer's invoice settings.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_payment_method: Option<&'a str>,
+    pub default_payment_method: Option<String>,
     /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
     /// These Tax Rates will set the Subscription's [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates), which means they will be the Invoice's [`default_tax_rates`](https://stripe.com/docs/api/invoices/create#create_invoice-default_tax_rates) for any Invoices issued by the Subscription during this Phase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<&'a [&'a str]>,
+    pub default_tax_rates: Option<Vec<String>>,
     /// Subscription description, meant to be displayable to the customer.
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
     /// The coupons to redeem into discounts for the schedule phase.
     /// If not specified, inherits the discount from the subscription's customer.
     /// Pass an empty string to avoid inheriting any discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// The date at which this phase of the subscription schedule ends.
     /// If set, `iterations` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<CreatePreviewInvoiceScheduleDetailsPhasesEndDate>,
     /// All invoices will be billed using the specified settings.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettings<'a>>,
+    pub invoice_settings: Option<CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettings>,
     /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
-    pub items: &'a [CreatePreviewInvoiceScheduleDetailsPhasesItems<'a>],
+    pub items: Vec<CreatePreviewInvoiceScheduleDetailsPhasesItems>,
     /// Integer representing the multiplier applied to the price interval.
     /// For example, `iterations=2` applied to a price with `interval=month` and `interval_count=3` results in a phase of duration `2 * 3 months = 6 months`.
     /// If set, `end_date` must not be set.
@@ -12008,10 +12086,10 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases<'a> {
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
     /// To unset all keys in the subscription's `metadata`, update the subscription directly or unset every key individually from the phase's `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<&'a str>,
+    pub on_behalf_of: Option<String>,
     /// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
     /// The default value is `create_prorations`.
     /// This setting controls prorations when a phase is started asynchronously and it is persisted as a field on the phase.
@@ -12024,7 +12102,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases<'a> {
     pub start_date: Option<CreatePreviewInvoiceScheduleDetailsPhasesStartDate>,
     /// The data with which to automatically create a Transfer for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<TransferDataSpecs<'a>>,
+    pub transfer_data: Option<TransferDataSpecs>,
     /// If set to true the entire phase is counted as a trial and the customer will not be charged for any fees.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial: Option<bool>,
@@ -12033,8 +12111,8 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<CreatePreviewInvoiceScheduleDetailsPhasesTrialEnd>,
 }
-impl<'a> CreatePreviewInvoiceScheduleDetailsPhases<'a> {
-    pub fn new(items: &'a [CreatePreviewInvoiceScheduleDetailsPhasesItems<'a>]) -> Self {
+impl CreatePreviewInvoiceScheduleDetailsPhases {
+    pub fn new(items: impl Into<Vec<CreatePreviewInvoiceScheduleDetailsPhasesItems>>) -> Self {
         Self {
             add_invoice_items: None,
             application_fee_percent: None,
@@ -12050,7 +12128,7 @@ impl<'a> CreatePreviewInvoiceScheduleDetailsPhases<'a> {
             discounts: None,
             end_date: None,
             invoice_settings: None,
-            items,
+            items: items.into(),
             iterations: None,
             metadata: None,
             on_behalf_of: None,
@@ -12064,42 +12142,42 @@ impl<'a> CreatePreviewInvoiceScheduleDetailsPhases<'a> {
 }
 /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
 /// You may pass up to 20 items.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData<'a>>,
+    pub price_data: Option<CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData>,
     /// Quantity for this item. Defaults to 1.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
     /// The tax rates which apply to the item. When set, the `default_tax_rates` do not apply to this item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
 }
-impl<'a> CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems<'a> {
+impl CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
     pub fn new() -> Self {
         Self { discounts: None, price: None, price_data: None, quantity: None, tax_rates: None }
     }
 }
-impl<'a> Default for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems<'a> {
+impl Default for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -12113,11 +12191,17 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData<'a>
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData<'a> {
-    pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self { currency, product, tax_behavior: None, unit_amount: None, unit_amount_decimal: None }
+impl CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData {
+    pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
+        Self {
+            currency: currency.into(),
+            product: product.into(),
+            tax_behavior: None,
+            unit_amount: None,
+            unit_amount_decimal: None,
+        }
     }
 }
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -12191,36 +12275,38 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Automatic tax settings for this phase.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTax<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTax {
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
     /// The account that's liable for tax.
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
     /// The tax transaction is returned in the report of the connected account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub liability: Option<CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTaxLiability<'a>>,
+    pub liability: Option<CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTaxLiability>,
 }
-impl<'a> CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTax<'a> {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, liability: None }
+impl CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTax {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), liability: None }
     }
 }
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTaxLiability<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTaxLiabilityType,
 }
-impl<'a> CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTaxLiability<'a> {
-    pub fn new(type_: CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTaxLiabilityType) -> Self {
-        Self { account: None, type_ }
+impl CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTaxLiability {
+    pub fn new(
+        type_: impl Into<CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTaxLiabilityType>,
+    ) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -12349,12 +12435,12 @@ pub enum CreatePreviewInvoiceScheduleDetailsPhasesEndDate {
     Timestamp(stripe_types::Timestamp),
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettings<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettings {
     /// The account tax IDs associated with this phase of the subscription schedule.
     /// Will be set on invoices generated by this phase of the subscription schedule.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_tax_ids: Option<&'a [&'a str]>,
+    pub account_tax_ids: Option<Vec<String>>,
     /// Number of days within which a customer must pay invoices generated by this subscription schedule.
     /// This value will be `null` for subscription schedules where `billing=charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12362,32 +12448,34 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettings<'a> {
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub issuer: Option<CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer<'a>>,
+    pub issuer: Option<CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer>,
 }
-impl<'a> CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettings<'a> {
+impl CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettings {
     pub fn new() -> Self {
         Self { account_tax_ids: None, days_until_due: None, issuer: None }
     }
 }
-impl<'a> Default for CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettings<'a> {
+impl Default for CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettings {
     fn default() -> Self {
         Self::new()
     }
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
+    pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettingsIssuerType,
 }
-impl<'a> CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer<'a> {
-    pub fn new(type_: CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettingsIssuerType) -> Self {
-        Self { account: None, type_ }
+impl CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettingsIssuer {
+    pub fn new(
+        type_: impl Into<CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettingsIssuerType>,
+    ) -> Self {
+        Self { account: None, type_: type_.into() }
     }
 }
 /// Type of the account referenced in the request.
@@ -12447,30 +12535,30 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceScheduleDetailsPhasesItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesItems {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
     /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The plan ID to subscribe to. You may specify the same ID in `plan` and `price`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<&'a str>,
+    pub plan: Option<String>,
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceData<'a>>,
+    pub price_data: Option<CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceData>,
     /// Quantity for the given price.
     /// Can be set only if the price's `usage_type` is `licensed` and not `metered`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12479,9 +12567,9 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesItems<'a> {
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
 }
-impl<'a> CreatePreviewInvoiceScheduleDetailsPhasesItems<'a> {
+impl CreatePreviewInvoiceScheduleDetailsPhasesItems {
     pub fn new() -> Self {
         Self {
             billing_thresholds: None,
@@ -12495,19 +12583,19 @@ impl<'a> CreatePreviewInvoiceScheduleDetailsPhasesItems<'a> {
         }
     }
 }
-impl<'a> Default for CreatePreviewInvoiceScheduleDetailsPhasesItems<'a> {
+impl Default for CreatePreviewInvoiceScheduleDetailsPhasesItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceDataRecurring,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -12522,18 +12610,18 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceData<'a> {
+impl CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceData {
     pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceDataRecurring,
+        currency: impl Into<stripe_types::Currency>,
+        product: impl Into<String>,
+        recurring: impl Into<CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceDataRecurring>,
     ) -> Self {
         Self {
-            currency,
-            product,
-            recurring,
+            currency: currency.into(),
+            product: product.into(),
+            recurring: recurring.into(),
             tax_behavior: None,
             unit_amount: None,
             unit_amount_decimal: None,
@@ -12553,9 +12641,9 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceDataRecurring {
 }
 impl CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceDataRecurring {
     pub fn new(
-        interval: CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceDataRecurringInterval,
+        interval: impl Into<CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceDataRecurringInterval>,
     ) -> Self {
-        Self { interval, interval_count: None }
+        Self { interval: interval.into(), interval_count: None }
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
@@ -12831,8 +12919,8 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceScheduleDetailsProrati
 }
 /// The subscription creation or modification params to apply as a preview.
 /// Cannot be used with `schedule` or `schedule_details` fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceSubscriptionDetails<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceSubscriptionDetails {
     /// For new subscriptions, a future timestamp to anchor the subscription's [billing cycle](https://stripe.com/docs/subscriptions/billing-cycle).
     /// This is used to determine the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
     /// For existing subscriptions, the value can only be set to `now` or `unchanged`.
@@ -12852,10 +12940,10 @@ pub struct CreatePreviewInvoiceSubscriptionDetails<'a> {
     /// If provided, the invoice returned will preview updating or creating a subscription with these default tax rates.
     /// The default tax rates will apply to any line item that does not have `tax_rates` set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<&'a [&'a str]>,
+    pub default_tax_rates: Option<Vec<String>>,
     /// A list of up to 20 subscription items, each with an attached price.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub items: Option<&'a [CreatePreviewInvoiceSubscriptionDetailsItems<'a>]>,
+    pub items: Option<Vec<CreatePreviewInvoiceSubscriptionDetailsItems>>,
     /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     /// The default value is `create_prorations`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12877,7 +12965,7 @@ pub struct CreatePreviewInvoiceSubscriptionDetails<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<CreatePreviewInvoiceSubscriptionDetailsTrialEnd>,
 }
-impl<'a> CreatePreviewInvoiceSubscriptionDetails<'a> {
+impl CreatePreviewInvoiceSubscriptionDetails {
     pub fn new() -> Self {
         Self {
             billing_cycle_anchor: None,
@@ -12894,7 +12982,7 @@ impl<'a> CreatePreviewInvoiceSubscriptionDetails<'a> {
         }
     }
 }
-impl<'a> Default for CreatePreviewInvoiceSubscriptionDetails<'a> {
+impl Default for CreatePreviewInvoiceSubscriptionDetails {
     fn default() -> Self {
         Self::new()
     }
@@ -12911,8 +12999,8 @@ pub enum CreatePreviewInvoiceSubscriptionDetailsBillingCycleAnchor {
     Timestamp(stripe_types::Timestamp),
 }
 /// A list of up to 20 subscription items, each with an attached price.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceSubscriptionDetailsItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceSubscriptionDetailsItems {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12926,26 +13014,26 @@ pub struct CreatePreviewInvoiceSubscriptionDetailsItems<'a> {
     pub deleted: Option<bool>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    pub discounts: Option<Vec<DiscountsDataParam>>,
     /// Subscription item to update.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<&'a str>,
+    pub id: Option<String>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Plan ID for this item, as a string.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<&'a str>,
+    pub plan: Option<String>,
     /// The ID of the price object.
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<&'a str>,
+    pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<CreatePreviewInvoiceSubscriptionDetailsItemsPriceData<'a>>,
+    pub price_data: Option<CreatePreviewInvoiceSubscriptionDetailsItemsPriceData>,
     /// Quantity for this item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -12953,9 +13041,9 @@ pub struct CreatePreviewInvoiceSubscriptionDetailsItems<'a> {
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
+    pub tax_rates: Option<Vec<String>>,
 }
-impl<'a> CreatePreviewInvoiceSubscriptionDetailsItems<'a> {
+impl CreatePreviewInvoiceSubscriptionDetailsItems {
     pub fn new() -> Self {
         Self {
             billing_thresholds: None,
@@ -12972,19 +13060,19 @@ impl<'a> CreatePreviewInvoiceSubscriptionDetailsItems<'a> {
         }
     }
 }
-impl<'a> Default for CreatePreviewInvoiceSubscriptionDetailsItems<'a> {
+impl Default for CreatePreviewInvoiceSubscriptionDetailsItems {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoiceSubscriptionDetailsItemsPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceSubscriptionDetailsItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: CreatePreviewInvoiceSubscriptionDetailsItemsPriceDataRecurring,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -12999,18 +13087,18 @@ pub struct CreatePreviewInvoiceSubscriptionDetailsItemsPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> CreatePreviewInvoiceSubscriptionDetailsItemsPriceData<'a> {
+impl CreatePreviewInvoiceSubscriptionDetailsItemsPriceData {
     pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: CreatePreviewInvoiceSubscriptionDetailsItemsPriceDataRecurring,
+        currency: impl Into<stripe_types::Currency>,
+        product: impl Into<String>,
+        recurring: impl Into<CreatePreviewInvoiceSubscriptionDetailsItemsPriceDataRecurring>,
     ) -> Self {
         Self {
-            currency,
-            product,
-            recurring,
+            currency: currency.into(),
+            product: product.into(),
+            recurring: recurring.into(),
             tax_behavior: None,
             unit_amount: None,
             unit_amount_decimal: None,
@@ -13030,9 +13118,9 @@ pub struct CreatePreviewInvoiceSubscriptionDetailsItemsPriceDataRecurring {
 }
 impl CreatePreviewInvoiceSubscriptionDetailsItemsPriceDataRecurring {
     pub fn new(
-        interval: CreatePreviewInvoiceSubscriptionDetailsItemsPriceDataRecurringInterval,
+        interval: impl Into<CreatePreviewInvoiceSubscriptionDetailsItemsPriceDataRecurringInterval>,
     ) -> Self {
-        Self { interval, interval_count: None }
+        Self { interval: interval.into(), interval_count: None }
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
@@ -13297,118 +13385,121 @@ pub enum CreatePreviewInvoiceSubscriptionDetailsTrialEnd {
 /// To ensure that the actual proration is calculated exactly the same as the previewed proration, you should pass the `subscription_details.proration_date` parameter when doing the actual subscription update.
 /// The recommended way to get only the prorations being previewed is to consider only proration line items where `period[start]` is equal to the `subscription_details.proration_date` value passed in the request.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreatePreviewInvoice<'a> {
-    inner: CreatePreviewInvoiceBuilder<'a>,
+pub struct CreatePreviewInvoice {
+    inner: CreatePreviewInvoiceBuilder,
 }
-impl<'a> CreatePreviewInvoice<'a> {
+impl CreatePreviewInvoice {
     /// Construct a new `CreatePreviewInvoice`.
     pub fn new() -> Self {
         Self { inner: CreatePreviewInvoiceBuilder::new() }
     }
     /// Settings for automatic tax lookup for this invoice preview.
-    pub fn automatic_tax(mut self, automatic_tax: CreatePreviewInvoiceAutomaticTax<'a>) -> Self {
-        self.inner.automatic_tax = Some(automatic_tax);
+    pub fn automatic_tax(
+        mut self,
+        automatic_tax: impl Into<CreatePreviewInvoiceAutomaticTax>,
+    ) -> Self {
+        self.inner.automatic_tax = Some(automatic_tax.into());
         self
     }
     /// The ID of the coupon to apply to this phase of the subscription schedule.
     /// This field has been deprecated and will be removed in a future API version.
     /// Use `discounts` instead.
-    pub fn coupon(mut self, coupon: &'a str) -> Self {
-        self.inner.coupon = Some(coupon);
+    pub fn coupon(mut self, coupon: impl Into<String>) -> Self {
+        self.inner.coupon = Some(coupon.into());
         self
     }
     /// The currency to preview this invoice in. Defaults to that of `customer` if not specified.
-    pub fn currency(mut self, currency: stripe_types::Currency) -> Self {
-        self.inner.currency = Some(currency);
+    pub fn currency(mut self, currency: impl Into<stripe_types::Currency>) -> Self {
+        self.inner.currency = Some(currency.into());
         self
     }
     /// The identifier of the customer whose upcoming invoice you'd like to retrieve.
     /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
-    pub fn customer(mut self, customer: &'a str) -> Self {
-        self.inner.customer = Some(customer);
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
         self
     }
     /// Details about the customer you want to invoice or overrides for an existing customer.
     /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
     pub fn customer_details(
         mut self,
-        customer_details: CreatePreviewInvoiceCustomerDetails<'a>,
+        customer_details: impl Into<CreatePreviewInvoiceCustomerDetails>,
     ) -> Self {
-        self.inner.customer_details = Some(customer_details);
+        self.inner.customer_details = Some(customer_details.into());
         self
     }
     /// The coupons to redeem into discounts for the invoice preview.
     /// If not specified, inherits the discount from the subscription or customer.
     /// This works for both coupons directly applied to an invoice and coupons applied to a subscription.
     /// Pass an empty string to avoid inheriting any discounts.
-    pub fn discounts(mut self, discounts: &'a [DiscountsDataParam<'a>]) -> Self {
-        self.inner.discounts = Some(discounts);
+    pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
+        self.inner.discounts = Some(discounts.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// List of invoice items to add or update in the upcoming invoice preview.
     pub fn invoice_items(
         mut self,
-        invoice_items: &'a [CreatePreviewInvoiceInvoiceItems<'a>],
+        invoice_items: impl Into<Vec<CreatePreviewInvoiceInvoiceItems>>,
     ) -> Self {
-        self.inner.invoice_items = Some(invoice_items);
+        self.inner.invoice_items = Some(invoice_items.into());
         self
     }
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
-    pub fn issuer(mut self, issuer: CreatePreviewInvoiceIssuer<'a>) -> Self {
-        self.inner.issuer = Some(issuer);
+    pub fn issuer(mut self, issuer: impl Into<CreatePreviewInvoiceIssuer>) -> Self {
+        self.inner.issuer = Some(issuer.into());
         self
     }
     /// The account (if any) for which the funds of the invoice payment are intended.
     /// If set, the invoice will be presented with the branding and support information of the specified account.
     /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
-    pub fn on_behalf_of(mut self, on_behalf_of: &'a str) -> Self {
-        self.inner.on_behalf_of = Some(on_behalf_of);
+    pub fn on_behalf_of(mut self, on_behalf_of: impl Into<String>) -> Self {
+        self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
     }
     /// The identifier of the schedule whose upcoming invoice you'd like to retrieve.
     /// Cannot be used with subscription or subscription fields.
-    pub fn schedule(mut self, schedule: &'a str) -> Self {
-        self.inner.schedule = Some(schedule);
+    pub fn schedule(mut self, schedule: impl Into<String>) -> Self {
+        self.inner.schedule = Some(schedule.into());
         self
     }
     /// The schedule creation or modification params to apply as a preview.
     /// Cannot be used with `subscription` or `subscription_` prefixed fields.
     pub fn schedule_details(
         mut self,
-        schedule_details: CreatePreviewInvoiceScheduleDetails<'a>,
+        schedule_details: impl Into<CreatePreviewInvoiceScheduleDetails>,
     ) -> Self {
-        self.inner.schedule_details = Some(schedule_details);
+        self.inner.schedule_details = Some(schedule_details.into());
         self
     }
     /// The identifier of the subscription for which you'd like to retrieve the upcoming invoice.
     /// If not provided, but a `subscription_items` is provided, you will preview creating a subscription with those items.
     /// If neither `subscription` nor `subscription_items` is provided, you will retrieve the next upcoming invoice from among the customer's subscriptions.
-    pub fn subscription(mut self, subscription: &'a str) -> Self {
-        self.inner.subscription = Some(subscription);
+    pub fn subscription(mut self, subscription: impl Into<String>) -> Self {
+        self.inner.subscription = Some(subscription.into());
         self
     }
     /// The subscription creation or modification params to apply as a preview.
     /// Cannot be used with `schedule` or `schedule_details` fields.
     pub fn subscription_details(
         mut self,
-        subscription_details: CreatePreviewInvoiceSubscriptionDetails<'a>,
+        subscription_details: impl Into<CreatePreviewInvoiceSubscriptionDetails>,
     ) -> Self {
-        self.inner.subscription_details = Some(subscription_details);
+        self.inner.subscription_details = Some(subscription_details.into());
         self
     }
 }
-impl<'a> Default for CreatePreviewInvoice<'a> {
+impl Default for CreatePreviewInvoice {
     fn default() -> Self {
         Self::new()
     }
 }
-impl CreatePreviewInvoice<'_> {
+impl CreatePreviewInvoice {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -13426,7 +13517,7 @@ impl CreatePreviewInvoice<'_> {
     }
 }
 
-impl StripeRequest for CreatePreviewInvoice<'_> {
+impl StripeRequest for CreatePreviewInvoice {
     type Output = stripe_shared::Invoice;
 
     fn build(&self) -> RequestBuilder {
@@ -13434,73 +13525,73 @@ impl StripeRequest for CreatePreviewInvoice<'_> {
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct OptionalFieldsAddress<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct OptionalFieldsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
+    pub city: Option<String>,
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
+    pub country: Option<String>,
     /// Address line 1 (e.g., street, PO Box, or company name).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
+    pub line1: Option<String>,
     /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
+    pub line2: Option<String>,
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
+    pub postal_code: Option<String>,
     /// State, county, province, or region.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
+    pub state: Option<String>,
 }
-impl<'a> OptionalFieldsAddress<'a> {
+impl OptionalFieldsAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
     }
 }
-impl<'a> Default for OptionalFieldsAddress<'a> {
+impl Default for OptionalFieldsAddress {
     fn default() -> Self {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct TaxParam<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct TaxParam {
     /// A recent IP address of the customer used for tax reporting and tax location inference.
     /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
     /// We recommend against updating this field more frequently since it could result in unexpected tax location/reporting outcomes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<&'a str>,
+    pub ip_address: Option<String>,
 }
-impl<'a> TaxParam<'a> {
+impl TaxParam {
     pub fn new() -> Self {
         Self { ip_address: None }
     }
 }
-impl<'a> Default for TaxParam<'a> {
+impl Default for TaxParam {
     fn default() -> Self {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct DiscountsDataParam<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DiscountsDataParam {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<&'a str>,
+    pub coupon: Option<String>,
     /// ID of an existing discount on the object (or one of its ancestors) to reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<&'a str>,
+    pub discount: Option<String>,
     /// ID of the promotion code to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub promotion_code: Option<&'a str>,
+    pub promotion_code: Option<String>,
 }
-impl<'a> DiscountsDataParam<'a> {
+impl DiscountsDataParam {
     pub fn new() -> Self {
         Self { coupon: None, discount: None, promotion_code: None }
     }
 }
-impl<'a> Default for DiscountsDataParam<'a> {
+impl Default for DiscountsDataParam {
     fn default() -> Self {
         Self::new()
     }
@@ -13513,8 +13604,11 @@ pub struct Period {
     pub start: stripe_types::Timestamp,
 }
 impl Period {
-    pub fn new(end: stripe_types::Timestamp, start: stripe_types::Timestamp) -> Self {
-        Self { end, start }
+    pub fn new(
+        end: impl Into<stripe_types::Timestamp>,
+        start: impl Into<stripe_types::Timestamp>,
+    ) -> Self {
+        Self { end: end.into(), start: start.into() }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -13543,115 +13637,115 @@ pub struct ItemBillingThresholdsParam {
     pub usage_gte: i64,
 }
 impl ItemBillingThresholdsParam {
-    pub fn new(usage_gte: i64) -> Self {
-        Self { usage_gte }
+    pub fn new(usage_gte: impl Into<i64>) -> Self {
+        Self { usage_gte: usage_gte.into() }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct TransferDataSpecs<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct TransferDataSpecs {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
     /// By default, the entire amount is transferred to the destination.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,
     /// ID of an existing, connected Stripe account.
-    pub destination: &'a str,
+    pub destination: String,
 }
-impl<'a> TransferDataSpecs<'a> {
-    pub fn new(destination: &'a str) -> Self {
-        Self { amount_percent: None, destination }
+impl TransferDataSpecs {
+    pub fn new(destination: impl Into<String>) -> Self {
+        Self { amount_percent: None, destination: destination.into() }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CustomFieldParams<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CustomFieldParams {
     /// The name of the custom field. This may be up to 40 characters.
-    pub name: &'a str,
+    pub name: String,
     /// The value of the custom field. This may be up to 140 characters.
-    pub value: &'a str,
+    pub value: String,
 }
-impl<'a> CustomFieldParams<'a> {
-    pub fn new(name: &'a str, value: &'a str) -> Self {
-        Self { name, value }
+impl CustomFieldParams {
+    pub fn new(name: impl Into<String>, value: impl Into<String>) -> Self {
+        Self { name: name.into(), value: value.into() }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct EuBankTransferParam<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct EuBankTransferParam {
     /// The desired country code of the bank account information.
     /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
-    pub country: &'a str,
+    pub country: String,
 }
-impl<'a> EuBankTransferParam<'a> {
-    pub fn new(country: &'a str) -> Self {
-        Self { country }
+impl EuBankTransferParam {
+    pub fn new(country: impl Into<String>) -> Self {
+        Self { country: country.into() }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CustomerShipping<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CustomerShipping {
     /// Customer shipping address.
-    pub address: OptionalFieldsAddress<'a>,
+    pub address: OptionalFieldsAddress,
     /// Customer name.
-    pub name: &'a str,
+    pub name: String,
     /// Customer phone (including extension).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
+    pub phone: Option<String>,
 }
-impl<'a> CustomerShipping<'a> {
-    pub fn new(address: OptionalFieldsAddress<'a>, name: &'a str) -> Self {
-        Self { address, name, phone: None }
+impl CustomerShipping {
+    pub fn new(address: impl Into<OptionalFieldsAddress>, name: impl Into<String>) -> Self {
+        Self { address: address.into(), name: name.into(), phone: None }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct BankTransferParam<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct BankTransferParam {
     /// Configuration for eu_bank_transfer funding type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub eu_bank_transfer: Option<EuBankTransferParam<'a>>,
+    pub eu_bank_transfer: Option<EuBankTransferParam>,
     /// The bank transfer type that can be used for funding.
     /// Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<&'a str>,
+    pub type_: Option<String>,
 }
-impl<'a> BankTransferParam<'a> {
+impl BankTransferParam {
     pub fn new() -> Self {
         Self { eu_bank_transfer: None, type_: None }
     }
 }
-impl<'a> Default for BankTransferParam<'a> {
+impl Default for BankTransferParam {
     fn default() -> Self {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct RecipientShippingWithOptionalFieldsAddress<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RecipientShippingWithOptionalFieldsAddress {
     /// Shipping address
-    pub address: OptionalFieldsAddress<'a>,
+    pub address: OptionalFieldsAddress,
     /// Recipient name.
-    pub name: &'a str,
+    pub name: String,
     /// Recipient phone (including extension)
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
+    pub phone: Option<String>,
 }
-impl<'a> RecipientShippingWithOptionalFieldsAddress<'a> {
-    pub fn new(address: OptionalFieldsAddress<'a>, name: &'a str) -> Self {
-        Self { address, name, phone: None }
+impl RecipientShippingWithOptionalFieldsAddress {
+    pub fn new(address: impl Into<OptionalFieldsAddress>, name: impl Into<String>) -> Self {
+        Self { address: address.into(), name: name.into(), phone: None }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct InvoicePaymentMethodOptionsParam<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct InvoicePaymentMethodOptionsParam {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_transfer: Option<BankTransferParam<'a>>,
+    pub bank_transfer: Option<BankTransferParam>,
     /// The funding method type to be used when there are not enough funds in the customer balance.
     /// Permitted values include: `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub funding_type: Option<&'a str>,
+    pub funding_type: Option<String>,
 }
-impl<'a> InvoicePaymentMethodOptionsParam<'a> {
+impl InvoicePaymentMethodOptionsParam {
     pub fn new() -> Self {
         Self { bank_transfer: None, funding_type: None }
     }
 }
-impl<'a> Default for InvoicePaymentMethodOptionsParam<'a> {
+impl Default for InvoicePaymentMethodOptionsParam {
     fn default() -> Self {
         Self::new()
     }

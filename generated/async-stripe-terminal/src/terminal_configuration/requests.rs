@@ -4,16 +4,16 @@ use stripe_client_core::{
 
 /// Deletes a `Configuration` object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeleteTerminalConfiguration<'a> {
-    configuration: &'a stripe_terminal::TerminalConfigurationId,
+pub struct DeleteTerminalConfiguration {
+    configuration: stripe_terminal::TerminalConfigurationId,
 }
-impl<'a> DeleteTerminalConfiguration<'a> {
+impl DeleteTerminalConfiguration {
     /// Construct a new `DeleteTerminalConfiguration`.
-    pub fn new(configuration: &'a stripe_terminal::TerminalConfigurationId) -> Self {
-        Self { configuration }
+    pub fn new(configuration: impl Into<stripe_terminal::TerminalConfigurationId>) -> Self {
+        Self { configuration: configuration.into() }
     }
 }
-impl DeleteTerminalConfiguration<'_> {
+impl DeleteTerminalConfiguration {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -31,31 +31,31 @@ impl DeleteTerminalConfiguration<'_> {
     }
 }
 
-impl StripeRequest for DeleteTerminalConfiguration<'_> {
+impl StripeRequest for DeleteTerminalConfiguration {
     type Output = stripe_terminal::DeletedTerminalConfiguration;
 
     fn build(&self) -> RequestBuilder {
-        let configuration = self.configuration;
+        let configuration = &self.configuration;
         RequestBuilder::new(
             StripeMethod::Delete,
             format!("/terminal/configurations/{configuration}"),
         )
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListTerminalConfigurationBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     is_account_default: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListTerminalConfigurationBuilder<'a> {
+impl ListTerminalConfigurationBuilder {
     fn new() -> Self {
         Self {
             ending_before: None,
@@ -68,10 +68,10 @@ impl<'a> ListTerminalConfigurationBuilder<'a> {
 }
 /// Returns a list of `Configuration` objects.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListTerminalConfiguration<'a> {
-    inner: ListTerminalConfigurationBuilder<'a>,
+pub struct ListTerminalConfiguration {
+    inner: ListTerminalConfigurationBuilder,
 }
-impl<'a> ListTerminalConfiguration<'a> {
+impl ListTerminalConfiguration {
     /// Construct a new `ListTerminalConfiguration`.
     pub fn new() -> Self {
         Self { inner: ListTerminalConfigurationBuilder::new() }
@@ -79,40 +79,40 @@ impl<'a> ListTerminalConfiguration<'a> {
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// if present, only return the account default or non-default configurations.
-    pub fn is_account_default(mut self, is_account_default: bool) -> Self {
-        self.inner.is_account_default = Some(is_account_default);
+    pub fn is_account_default(mut self, is_account_default: impl Into<bool>) -> Self {
+        self.inner.is_account_default = Some(is_account_default.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl<'a> Default for ListTerminalConfiguration<'a> {
+impl Default for ListTerminalConfiguration {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListTerminalConfiguration<'_> {
+impl ListTerminalConfiguration {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -133,45 +133,48 @@ impl ListTerminalConfiguration<'_> {
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_terminal::TerminalConfiguration>>
     {
-        stripe_client_core::ListPaginator::new_list("/terminal/configurations", self.inner)
+        stripe_client_core::ListPaginator::new_list("/terminal/configurations", &self.inner)
     }
 }
 
-impl StripeRequest for ListTerminalConfiguration<'_> {
+impl StripeRequest for ListTerminalConfiguration {
     type Output = stripe_types::List<stripe_terminal::TerminalConfiguration>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/terminal/configurations").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveTerminalConfigurationBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveTerminalConfigurationBuilder<'a> {
+impl RetrieveTerminalConfigurationBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves a `Configuration` object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveTerminalConfiguration<'a> {
-    inner: RetrieveTerminalConfigurationBuilder<'a>,
-    configuration: &'a stripe_terminal::TerminalConfigurationId,
+pub struct RetrieveTerminalConfiguration {
+    inner: RetrieveTerminalConfigurationBuilder,
+    configuration: stripe_terminal::TerminalConfigurationId,
 }
-impl<'a> RetrieveTerminalConfiguration<'a> {
+impl RetrieveTerminalConfiguration {
     /// Construct a new `RetrieveTerminalConfiguration`.
-    pub fn new(configuration: &'a stripe_terminal::TerminalConfigurationId) -> Self {
-        Self { configuration, inner: RetrieveTerminalConfigurationBuilder::new() }
+    pub fn new(configuration: impl Into<stripe_terminal::TerminalConfigurationId>) -> Self {
+        Self {
+            configuration: configuration.into(),
+            inner: RetrieveTerminalConfigurationBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveTerminalConfiguration<'_> {
+impl RetrieveTerminalConfiguration {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -189,11 +192,11 @@ impl RetrieveTerminalConfiguration<'_> {
     }
 }
 
-impl StripeRequest for RetrieveTerminalConfiguration<'_> {
+impl StripeRequest for RetrieveTerminalConfiguration {
     type Output = RetrieveTerminalConfigurationReturned;
 
     fn build(&self) -> RequestBuilder {
-        let configuration = self.configuration;
+        let configuration = &self.configuration;
         RequestBuilder::new(StripeMethod::Get, format!("/terminal/configurations/{configuration}"))
             .query(&self.inner)
     }
@@ -280,22 +283,22 @@ const _: () = {
     }
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateTerminalConfigurationBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    bbpos_wisepos_e: Option<CreateTerminalConfigurationBbposWiseposE<'a>>,
+    bbpos_wisepos_e: Option<CreateTerminalConfigurationBbposWiseposE>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     offline: Option<Offline>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tipping: Option<Tipping<'a>>,
+    tipping: Option<Tipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    verifone_p400: Option<CreateTerminalConfigurationVerifoneP400<'a>>,
+    verifone_p400: Option<CreateTerminalConfigurationVerifoneP400>,
 }
-impl<'a> CreateTerminalConfigurationBuilder<'a> {
+impl CreateTerminalConfigurationBuilder {
     fn new() -> Self {
         Self {
             bbpos_wisepos_e: None,
@@ -308,45 +311,45 @@ impl<'a> CreateTerminalConfigurationBuilder<'a> {
     }
 }
 /// An object containing device type specific settings for BBPOS WisePOS E readers
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTerminalConfigurationBbposWiseposE<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTerminalConfigurationBbposWiseposE {
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub splashscreen: Option<&'a str>,
+    pub splashscreen: Option<String>,
 }
-impl<'a> CreateTerminalConfigurationBbposWiseposE<'a> {
+impl CreateTerminalConfigurationBbposWiseposE {
     pub fn new() -> Self {
         Self { splashscreen: None }
     }
 }
-impl<'a> Default for CreateTerminalConfigurationBbposWiseposE<'a> {
+impl Default for CreateTerminalConfigurationBbposWiseposE {
     fn default() -> Self {
         Self::new()
     }
 }
 /// An object containing device type specific settings for Verifone P400 readers
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTerminalConfigurationVerifoneP400<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTerminalConfigurationVerifoneP400 {
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub splashscreen: Option<&'a str>,
+    pub splashscreen: Option<String>,
 }
-impl<'a> CreateTerminalConfigurationVerifoneP400<'a> {
+impl CreateTerminalConfigurationVerifoneP400 {
     pub fn new() -> Self {
         Self { splashscreen: None }
     }
 }
-impl<'a> Default for CreateTerminalConfigurationVerifoneP400<'a> {
+impl Default for CreateTerminalConfigurationVerifoneP400 {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Creates a new `Configuration` object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateTerminalConfiguration<'a> {
-    inner: CreateTerminalConfigurationBuilder<'a>,
+pub struct CreateTerminalConfiguration {
+    inner: CreateTerminalConfigurationBuilder,
 }
-impl<'a> CreateTerminalConfiguration<'a> {
+impl CreateTerminalConfiguration {
     /// Construct a new `CreateTerminalConfiguration`.
     pub fn new() -> Self {
         Self { inner: CreateTerminalConfigurationBuilder::new() }
@@ -354,46 +357,46 @@ impl<'a> CreateTerminalConfiguration<'a> {
     /// An object containing device type specific settings for BBPOS WisePOS E readers
     pub fn bbpos_wisepos_e(
         mut self,
-        bbpos_wisepos_e: CreateTerminalConfigurationBbposWiseposE<'a>,
+        bbpos_wisepos_e: impl Into<CreateTerminalConfigurationBbposWiseposE>,
     ) -> Self {
-        self.inner.bbpos_wisepos_e = Some(bbpos_wisepos_e);
+        self.inner.bbpos_wisepos_e = Some(bbpos_wisepos_e.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Name of the configuration
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
     /// Configurations for collecting transactions offline.
-    pub fn offline(mut self, offline: Offline) -> Self {
-        self.inner.offline = Some(offline);
+    pub fn offline(mut self, offline: impl Into<Offline>) -> Self {
+        self.inner.offline = Some(offline.into());
         self
     }
     /// Tipping configurations for readers supporting on-reader tips
-    pub fn tipping(mut self, tipping: Tipping<'a>) -> Self {
-        self.inner.tipping = Some(tipping);
+    pub fn tipping(mut self, tipping: impl Into<Tipping>) -> Self {
+        self.inner.tipping = Some(tipping.into());
         self
     }
     /// An object containing device type specific settings for Verifone P400 readers
     pub fn verifone_p400(
         mut self,
-        verifone_p400: CreateTerminalConfigurationVerifoneP400<'a>,
+        verifone_p400: impl Into<CreateTerminalConfigurationVerifoneP400>,
     ) -> Self {
-        self.inner.verifone_p400 = Some(verifone_p400);
+        self.inner.verifone_p400 = Some(verifone_p400.into());
         self
     }
 }
-impl<'a> Default for CreateTerminalConfiguration<'a> {
+impl Default for CreateTerminalConfiguration {
     fn default() -> Self {
         Self::new()
     }
 }
-impl CreateTerminalConfiguration<'_> {
+impl CreateTerminalConfiguration {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -411,29 +414,29 @@ impl CreateTerminalConfiguration<'_> {
     }
 }
 
-impl StripeRequest for CreateTerminalConfiguration<'_> {
+impl StripeRequest for CreateTerminalConfiguration {
     type Output = stripe_terminal::TerminalConfiguration;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/terminal/configurations").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateTerminalConfigurationBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    bbpos_wisepos_e: Option<UpdateTerminalConfigurationBbposWiseposE<'a>>,
+    bbpos_wisepos_e: Option<UpdateTerminalConfigurationBbposWiseposE>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     offline: Option<Offline>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tipping: Option<Tipping<'a>>,
+    tipping: Option<Tipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    verifone_p400: Option<UpdateTerminalConfigurationVerifoneP400<'a>>,
+    verifone_p400: Option<UpdateTerminalConfigurationVerifoneP400>,
 }
-impl<'a> UpdateTerminalConfigurationBuilder<'a> {
+impl UpdateTerminalConfigurationBuilder {
     fn new() -> Self {
         Self {
             bbpos_wisepos_e: None,
@@ -446,88 +449,91 @@ impl<'a> UpdateTerminalConfigurationBuilder<'a> {
     }
 }
 /// An object containing device type specific settings for BBPOS WisePOS E readers
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateTerminalConfigurationBbposWiseposE<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTerminalConfigurationBbposWiseposE {
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub splashscreen: Option<&'a str>,
+    pub splashscreen: Option<String>,
 }
-impl<'a> UpdateTerminalConfigurationBbposWiseposE<'a> {
+impl UpdateTerminalConfigurationBbposWiseposE {
     pub fn new() -> Self {
         Self { splashscreen: None }
     }
 }
-impl<'a> Default for UpdateTerminalConfigurationBbposWiseposE<'a> {
+impl Default for UpdateTerminalConfigurationBbposWiseposE {
     fn default() -> Self {
         Self::new()
     }
 }
 /// An object containing device type specific settings for Verifone P400 readers
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateTerminalConfigurationVerifoneP400<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTerminalConfigurationVerifoneP400 {
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub splashscreen: Option<&'a str>,
+    pub splashscreen: Option<String>,
 }
-impl<'a> UpdateTerminalConfigurationVerifoneP400<'a> {
+impl UpdateTerminalConfigurationVerifoneP400 {
     pub fn new() -> Self {
         Self { splashscreen: None }
     }
 }
-impl<'a> Default for UpdateTerminalConfigurationVerifoneP400<'a> {
+impl Default for UpdateTerminalConfigurationVerifoneP400 {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Updates a new `Configuration` object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateTerminalConfiguration<'a> {
-    inner: UpdateTerminalConfigurationBuilder<'a>,
-    configuration: &'a stripe_terminal::TerminalConfigurationId,
+pub struct UpdateTerminalConfiguration {
+    inner: UpdateTerminalConfigurationBuilder,
+    configuration: stripe_terminal::TerminalConfigurationId,
 }
-impl<'a> UpdateTerminalConfiguration<'a> {
+impl UpdateTerminalConfiguration {
     /// Construct a new `UpdateTerminalConfiguration`.
-    pub fn new(configuration: &'a stripe_terminal::TerminalConfigurationId) -> Self {
-        Self { configuration, inner: UpdateTerminalConfigurationBuilder::new() }
+    pub fn new(configuration: impl Into<stripe_terminal::TerminalConfigurationId>) -> Self {
+        Self {
+            configuration: configuration.into(),
+            inner: UpdateTerminalConfigurationBuilder::new(),
+        }
     }
     /// An object containing device type specific settings for BBPOS WisePOS E readers
     pub fn bbpos_wisepos_e(
         mut self,
-        bbpos_wisepos_e: UpdateTerminalConfigurationBbposWiseposE<'a>,
+        bbpos_wisepos_e: impl Into<UpdateTerminalConfigurationBbposWiseposE>,
     ) -> Self {
-        self.inner.bbpos_wisepos_e = Some(bbpos_wisepos_e);
+        self.inner.bbpos_wisepos_e = Some(bbpos_wisepos_e.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Name of the configuration
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
     /// Configurations for collecting transactions offline.
-    pub fn offline(mut self, offline: Offline) -> Self {
-        self.inner.offline = Some(offline);
+    pub fn offline(mut self, offline: impl Into<Offline>) -> Self {
+        self.inner.offline = Some(offline.into());
         self
     }
     /// Tipping configurations for readers supporting on-reader tips
-    pub fn tipping(mut self, tipping: Tipping<'a>) -> Self {
-        self.inner.tipping = Some(tipping);
+    pub fn tipping(mut self, tipping: impl Into<Tipping>) -> Self {
+        self.inner.tipping = Some(tipping.into());
         self
     }
     /// An object containing device type specific settings for Verifone P400 readers
     pub fn verifone_p400(
         mut self,
-        verifone_p400: UpdateTerminalConfigurationVerifoneP400<'a>,
+        verifone_p400: impl Into<UpdateTerminalConfigurationVerifoneP400>,
     ) -> Self {
-        self.inner.verifone_p400 = Some(verifone_p400);
+        self.inner.verifone_p400 = Some(verifone_p400.into());
         self
     }
 }
-impl UpdateTerminalConfiguration<'_> {
+impl UpdateTerminalConfiguration {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -545,11 +551,11 @@ impl UpdateTerminalConfiguration<'_> {
     }
 }
 
-impl StripeRequest for UpdateTerminalConfiguration<'_> {
+impl StripeRequest for UpdateTerminalConfiguration {
     type Output = UpdateTerminalConfigurationReturned;
 
     fn build(&self) -> RequestBuilder {
-        let configuration = self.configuration;
+        let configuration = &self.configuration;
         RequestBuilder::new(StripeMethod::Post, format!("/terminal/configurations/{configuration}"))
             .form(&self.inner)
     }
@@ -643,78 +649,78 @@ pub struct Offline {
     pub enabled: bool,
 }
 impl Offline {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into() }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CurrencySpecificConfig<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CurrencySpecificConfig {
     /// Fixed amounts displayed when collecting a tip
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
+    pub fixed_amounts: Option<Vec<i64>>,
     /// Percentages displayed when collecting a tip
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
+    pub percentages: Option<Vec<i64>>,
     /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed
     #[serde(skip_serializing_if = "Option::is_none")]
     pub smart_tip_threshold: Option<i64>,
 }
-impl<'a> CurrencySpecificConfig<'a> {
+impl CurrencySpecificConfig {
     pub fn new() -> Self {
         Self { fixed_amounts: None, percentages: None, smart_tip_threshold: None }
     }
 }
-impl<'a> Default for CurrencySpecificConfig<'a> {
+impl Default for CurrencySpecificConfig {
     fn default() -> Self {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct Tipping<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct Tipping {
     /// Tipping configuration for AUD
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub aud: Option<CurrencySpecificConfig<'a>>,
+    pub aud: Option<CurrencySpecificConfig>,
     /// Tipping configuration for CAD
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cad: Option<CurrencySpecificConfig<'a>>,
+    pub cad: Option<CurrencySpecificConfig>,
     /// Tipping configuration for CHF
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub chf: Option<CurrencySpecificConfig<'a>>,
+    pub chf: Option<CurrencySpecificConfig>,
     /// Tipping configuration for CZK
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub czk: Option<CurrencySpecificConfig<'a>>,
+    pub czk: Option<CurrencySpecificConfig>,
     /// Tipping configuration for DKK
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dkk: Option<CurrencySpecificConfig<'a>>,
+    pub dkk: Option<CurrencySpecificConfig>,
     /// Tipping configuration for EUR
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub eur: Option<CurrencySpecificConfig<'a>>,
+    pub eur: Option<CurrencySpecificConfig>,
     /// Tipping configuration for GBP
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub gbp: Option<CurrencySpecificConfig<'a>>,
+    pub gbp: Option<CurrencySpecificConfig>,
     /// Tipping configuration for HKD
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hkd: Option<CurrencySpecificConfig<'a>>,
+    pub hkd: Option<CurrencySpecificConfig>,
     /// Tipping configuration for MYR
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub myr: Option<CurrencySpecificConfig<'a>>,
+    pub myr: Option<CurrencySpecificConfig>,
     /// Tipping configuration for NOK
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub nok: Option<CurrencySpecificConfig<'a>>,
+    pub nok: Option<CurrencySpecificConfig>,
     /// Tipping configuration for NZD
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub nzd: Option<CurrencySpecificConfig<'a>>,
+    pub nzd: Option<CurrencySpecificConfig>,
     /// Tipping configuration for SEK
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sek: Option<CurrencySpecificConfig<'a>>,
+    pub sek: Option<CurrencySpecificConfig>,
     /// Tipping configuration for SGD
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sgd: Option<CurrencySpecificConfig<'a>>,
+    pub sgd: Option<CurrencySpecificConfig>,
     /// Tipping configuration for USD
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub usd: Option<CurrencySpecificConfig<'a>>,
+    pub usd: Option<CurrencySpecificConfig>,
 }
-impl<'a> Tipping<'a> {
+impl Tipping {
     pub fn new() -> Self {
         Self {
             aud: None,
@@ -734,7 +740,7 @@ impl<'a> Tipping<'a> {
         }
     }
 }
-impl<'a> Default for Tipping<'a> {
+impl Default for Tipping {
     fn default() -> Self {
         Self::new()
     }

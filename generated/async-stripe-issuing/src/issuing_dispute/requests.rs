@@ -2,24 +2,24 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListIssuingDisputeBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_shared::IssuingDisputeStatus>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    transaction: Option<&'a str>,
+    transaction: Option<String>,
 }
-impl<'a> ListIssuingDisputeBuilder<'a> {
+impl ListIssuingDisputeBuilder {
     fn new() -> Self {
         Self {
             created: None,
@@ -35,61 +35,61 @@ impl<'a> ListIssuingDisputeBuilder<'a> {
 /// Returns a list of Issuing `Dispute` objects.
 /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListIssuingDispute<'a> {
-    inner: ListIssuingDisputeBuilder<'a>,
+pub struct ListIssuingDispute {
+    inner: ListIssuingDisputeBuilder,
 }
-impl<'a> ListIssuingDispute<'a> {
+impl ListIssuingDispute {
     /// Construct a new `ListIssuingDispute`.
     pub fn new() -> Self {
         Self { inner: ListIssuingDisputeBuilder::new() }
     }
     /// Only return Issuing disputes that were created during the given date interval.
-    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
-        self.inner.created = Some(created);
+    pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.created = Some(created.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// Select Issuing disputes with the given status.
-    pub fn status(mut self, status: stripe_shared::IssuingDisputeStatus) -> Self {
-        self.inner.status = Some(status);
+    pub fn status(mut self, status: impl Into<stripe_shared::IssuingDisputeStatus>) -> Self {
+        self.inner.status = Some(status.into());
         self
     }
     /// Select the Issuing dispute for the given transaction.
-    pub fn transaction(mut self, transaction: &'a str) -> Self {
-        self.inner.transaction = Some(transaction);
+    pub fn transaction(mut self, transaction: impl Into<String>) -> Self {
+        self.inner.transaction = Some(transaction.into());
         self
     }
 }
-impl<'a> Default for ListIssuingDispute<'a> {
+impl Default for ListIssuingDispute {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListIssuingDispute<'_> {
+impl ListIssuingDispute {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -109,45 +109,45 @@ impl ListIssuingDispute<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::IssuingDispute>> {
-        stripe_client_core::ListPaginator::new_list("/issuing/disputes", self.inner)
+        stripe_client_core::ListPaginator::new_list("/issuing/disputes", &self.inner)
     }
 }
 
-impl StripeRequest for ListIssuingDispute<'_> {
+impl StripeRequest for ListIssuingDispute {
     type Output = stripe_types::List<stripe_shared::IssuingDispute>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/issuing/disputes").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveIssuingDisputeBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveIssuingDisputeBuilder<'a> {
+impl RetrieveIssuingDisputeBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves an Issuing `Dispute` object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveIssuingDispute<'a> {
-    inner: RetrieveIssuingDisputeBuilder<'a>,
-    dispute: &'a stripe_shared::IssuingDisputeId,
+pub struct RetrieveIssuingDispute {
+    inner: RetrieveIssuingDisputeBuilder,
+    dispute: stripe_shared::IssuingDisputeId,
 }
-impl<'a> RetrieveIssuingDispute<'a> {
+impl RetrieveIssuingDispute {
     /// Construct a new `RetrieveIssuingDispute`.
-    pub fn new(dispute: &'a stripe_shared::IssuingDisputeId) -> Self {
-        Self { dispute, inner: RetrieveIssuingDisputeBuilder::new() }
+    pub fn new(dispute: impl Into<stripe_shared::IssuingDisputeId>) -> Self {
+        Self { dispute: dispute.into(), inner: RetrieveIssuingDisputeBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveIssuingDispute<'_> {
+impl RetrieveIssuingDispute {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -165,31 +165,31 @@ impl RetrieveIssuingDispute<'_> {
     }
 }
 
-impl StripeRequest for RetrieveIssuingDispute<'_> {
+impl StripeRequest for RetrieveIssuingDispute {
     type Output = stripe_shared::IssuingDispute;
 
     fn build(&self) -> RequestBuilder {
-        let dispute = self.dispute;
+        let dispute = &self.dispute;
         RequestBuilder::new(StripeMethod::Get, format!("/issuing/disputes/{dispute}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateIssuingDisputeBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    evidence: Option<CreateIssuingDisputeEvidence<'a>>,
+    evidence: Option<CreateIssuingDisputeEvidence>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    transaction: Option<&'a str>,
+    transaction: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    treasury: Option<CreateIssuingDisputeTreasury<'a>>,
+    treasury: Option<CreateIssuingDisputeTreasury>,
 }
-impl<'a> CreateIssuingDisputeBuilder<'a> {
+impl CreateIssuingDisputeBuilder {
     fn new() -> Self {
         Self {
             amount: None,
@@ -202,35 +202,34 @@ impl<'a> CreateIssuingDisputeBuilder<'a> {
     }
 }
 /// Evidence provided for the dispute.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateIssuingDisputeEvidence<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingDisputeEvidence {
     /// Evidence provided when `reason` is 'canceled'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub canceled: Option<CreateIssuingDisputeEvidenceCanceled<'a>>,
+    pub canceled: Option<CreateIssuingDisputeEvidenceCanceled>,
     /// Evidence provided when `reason` is 'duplicate'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub duplicate: Option<Duplicate<'a>>,
+    pub duplicate: Option<Duplicate>,
     /// Evidence provided when `reason` is 'fraudulent'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fraudulent: Option<Fraudulent<'a>>,
+    pub fraudulent: Option<Fraudulent>,
     /// Evidence provided when `reason` is 'merchandise_not_as_described'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub merchandise_not_as_described:
-        Option<CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a>>,
+    pub merchandise_not_as_described: Option<CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed>,
     /// Evidence provided when `reason` is 'not_received'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub not_received: Option<CreateIssuingDisputeEvidenceNotReceived<'a>>,
+    pub not_received: Option<CreateIssuingDisputeEvidenceNotReceived>,
     /// Evidence provided when `reason` is 'other'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub other: Option<CreateIssuingDisputeEvidenceOther<'a>>,
+    pub other: Option<CreateIssuingDisputeEvidenceOther>,
     /// The reason for filing the dispute. The evidence should be submitted in the field of the same name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reason: Option<CreateIssuingDisputeEvidenceReason>,
     /// Evidence provided when `reason` is 'service_not_as_described'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub service_not_as_described: Option<ServiceNotAsDescribed<'a>>,
+    pub service_not_as_described: Option<ServiceNotAsDescribed>,
 }
-impl<'a> CreateIssuingDisputeEvidence<'a> {
+impl CreateIssuingDisputeEvidence {
     pub fn new() -> Self {
         Self {
             canceled: None,
@@ -244,17 +243,17 @@ impl<'a> CreateIssuingDisputeEvidence<'a> {
         }
     }
 }
-impl<'a> Default for CreateIssuingDisputeEvidence<'a> {
+impl Default for CreateIssuingDisputeEvidence {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Evidence provided when `reason` is 'canceled'.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateIssuingDisputeEvidenceCanceled<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingDisputeEvidenceCanceled {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
+    pub additional_documentation: Option<String>,
     /// Date when order was canceled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<stripe_types::Timestamp>,
@@ -263,16 +262,16 @@ pub struct CreateIssuingDisputeEvidenceCanceled<'a> {
     pub cancellation_policy_provided: Option<bool>,
     /// Reason for canceling the order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason: Option<&'a str>,
+    pub cancellation_reason: Option<String>,
     /// Date when the cardholder expected to receive the product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expected_at: Option<stripe_types::Timestamp>,
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
+    pub explanation: Option<String>,
     /// Description of the merchandise or service that was purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_description: Option<&'a str>,
+    pub product_description: Option<String>,
     /// Whether the product was a merchandise or service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_type: Option<CreateIssuingDisputeEvidenceCanceledProductType>,
@@ -283,7 +282,7 @@ pub struct CreateIssuingDisputeEvidenceCanceled<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub returned_at: Option<stripe_types::Timestamp>,
 }
-impl<'a> CreateIssuingDisputeEvidenceCanceled<'a> {
+impl CreateIssuingDisputeEvidenceCanceled {
     pub fn new() -> Self {
         Self {
             additional_documentation: None,
@@ -299,7 +298,7 @@ impl<'a> CreateIssuingDisputeEvidenceCanceled<'a> {
         }
     }
 }
-impl<'a> Default for CreateIssuingDisputeEvidenceCanceled<'a> {
+impl Default for CreateIssuingDisputeEvidenceCanceled {
     fn default() -> Self {
         Self::new()
     }
@@ -421,20 +420,20 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceCanceledReturn
     }
 }
 /// Evidence provided when `reason` is 'merchandise_not_as_described'.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
+    pub additional_documentation: Option<String>,
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
+    pub explanation: Option<String>,
     /// Date when the product was received.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub received_at: Option<stripe_types::Timestamp>,
     /// Description of the cardholder's attempt to return the product.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub return_description: Option<&'a str>,
+    pub return_description: Option<String>,
     /// Result of cardholder's attempt to return the product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_status: Option<CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus>,
@@ -442,7 +441,7 @@ pub struct CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub returned_at: Option<stripe_types::Timestamp>,
 }
-impl<'a> CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a> {
+impl CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     pub fn new() -> Self {
         Self {
             additional_documentation: None,
@@ -454,7 +453,7 @@ impl<'a> CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a> {
         }
     }
 }
-impl<'a> Default for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a> {
+impl Default for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     fn default() -> Self {
         Self::new()
     }
@@ -516,25 +515,25 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Evidence provided when `reason` is 'not_received'.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateIssuingDisputeEvidenceNotReceived<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingDisputeEvidenceNotReceived {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
+    pub additional_documentation: Option<String>,
     /// Date when the cardholder expected to receive the product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expected_at: Option<stripe_types::Timestamp>,
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
+    pub explanation: Option<String>,
     /// Description of the merchandise or service that was purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_description: Option<&'a str>,
+    pub product_description: Option<String>,
     /// Whether the product was a merchandise or service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_type: Option<CreateIssuingDisputeEvidenceNotReceivedProductType>,
 }
-impl<'a> CreateIssuingDisputeEvidenceNotReceived<'a> {
+impl CreateIssuingDisputeEvidenceNotReceived {
     pub fn new() -> Self {
         Self {
             additional_documentation: None,
@@ -545,7 +544,7 @@ impl<'a> CreateIssuingDisputeEvidenceNotReceived<'a> {
         }
     }
 }
-impl<'a> Default for CreateIssuingDisputeEvidenceNotReceived<'a> {
+impl Default for CreateIssuingDisputeEvidenceNotReceived {
     fn default() -> Self {
         Self::new()
     }
@@ -609,22 +608,22 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceNotReceivedPro
     }
 }
 /// Evidence provided when `reason` is 'other'.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateIssuingDisputeEvidenceOther<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingDisputeEvidenceOther {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
+    pub additional_documentation: Option<String>,
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
+    pub explanation: Option<String>,
     /// Description of the merchandise or service that was purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_description: Option<&'a str>,
+    pub product_description: Option<String>,
     /// Whether the product was a merchandise or service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_type: Option<CreateIssuingDisputeEvidenceOtherProductType>,
 }
-impl<'a> CreateIssuingDisputeEvidenceOther<'a> {
+impl CreateIssuingDisputeEvidenceOther {
     pub fn new() -> Self {
         Self {
             additional_documentation: None,
@@ -634,7 +633,7 @@ impl<'a> CreateIssuingDisputeEvidenceOther<'a> {
         }
     }
 }
-impl<'a> Default for CreateIssuingDisputeEvidenceOther<'a> {
+impl Default for CreateIssuingDisputeEvidenceOther {
     fn default() -> Self {
         Self::new()
     }
@@ -769,14 +768,14 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceReason {
     }
 }
 /// Params for disputes related to Treasury FinancialAccounts
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateIssuingDisputeTreasury<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingDisputeTreasury {
     /// The ID of the ReceivedDebit to initiate an Issuings dispute for.
-    pub received_debit: &'a str,
+    pub received_debit: String,
 }
-impl<'a> CreateIssuingDisputeTreasury<'a> {
-    pub fn new(received_debit: &'a str) -> Self {
-        Self { received_debit }
+impl CreateIssuingDisputeTreasury {
+    pub fn new(received_debit: impl Into<String>) -> Self {
+        Self { received_debit: received_debit.into() }
     }
 }
 /// Creates an Issuing `Dispute` object.
@@ -784,56 +783,59 @@ impl<'a> CreateIssuingDisputeTreasury<'a> {
 /// Stripe only validates that required evidence is present during submission.
 /// Refer to [Dispute reasons and evidence](https://stripe.com/docs/issuing/purchases/disputes#dispute-reasons-and-evidence) for more details about evidence requirements.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateIssuingDispute<'a> {
-    inner: CreateIssuingDisputeBuilder<'a>,
+pub struct CreateIssuingDispute {
+    inner: CreateIssuingDisputeBuilder,
 }
-impl<'a> CreateIssuingDispute<'a> {
+impl CreateIssuingDispute {
     /// Construct a new `CreateIssuingDispute`.
     pub fn new() -> Self {
         Self { inner: CreateIssuingDisputeBuilder::new() }
     }
     /// The dispute amount in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     /// If not set, defaults to the full transaction amount.
-    pub fn amount(mut self, amount: i64) -> Self {
-        self.inner.amount = Some(amount);
+    pub fn amount(mut self, amount: impl Into<i64>) -> Self {
+        self.inner.amount = Some(amount.into());
         self
     }
     /// Evidence provided for the dispute.
-    pub fn evidence(mut self, evidence: CreateIssuingDisputeEvidence<'a>) -> Self {
-        self.inner.evidence = Some(evidence);
+    pub fn evidence(mut self, evidence: impl Into<CreateIssuingDisputeEvidence>) -> Self {
+        self.inner.evidence = Some(evidence.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// The ID of the issuing transaction to create a dispute for.
     /// For transaction on Treasury FinancialAccounts, use `treasury.received_debit`.
-    pub fn transaction(mut self, transaction: &'a str) -> Self {
-        self.inner.transaction = Some(transaction);
+    pub fn transaction(mut self, transaction: impl Into<String>) -> Self {
+        self.inner.transaction = Some(transaction.into());
         self
     }
     /// Params for disputes related to Treasury FinancialAccounts
-    pub fn treasury(mut self, treasury: CreateIssuingDisputeTreasury<'a>) -> Self {
-        self.inner.treasury = Some(treasury);
+    pub fn treasury(mut self, treasury: impl Into<CreateIssuingDisputeTreasury>) -> Self {
+        self.inner.treasury = Some(treasury.into());
         self
     }
 }
-impl<'a> Default for CreateIssuingDispute<'a> {
+impl Default for CreateIssuingDispute {
     fn default() -> Self {
         Self::new()
     }
 }
-impl CreateIssuingDispute<'_> {
+impl CreateIssuingDispute {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -851,59 +853,58 @@ impl CreateIssuingDispute<'_> {
     }
 }
 
-impl StripeRequest for CreateIssuingDispute<'_> {
+impl StripeRequest for CreateIssuingDispute {
     type Output = stripe_shared::IssuingDispute;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/issuing/disputes").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateIssuingDisputeBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    evidence: Option<UpdateIssuingDisputeEvidence<'a>>,
+    evidence: Option<UpdateIssuingDisputeEvidence>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
 }
-impl<'a> UpdateIssuingDisputeBuilder<'a> {
+impl UpdateIssuingDisputeBuilder {
     fn new() -> Self {
         Self { amount: None, evidence: None, expand: None, metadata: None }
     }
 }
 /// Evidence provided for the dispute.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateIssuingDisputeEvidence<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingDisputeEvidence {
     /// Evidence provided when `reason` is 'canceled'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub canceled: Option<UpdateIssuingDisputeEvidenceCanceled<'a>>,
+    pub canceled: Option<UpdateIssuingDisputeEvidenceCanceled>,
     /// Evidence provided when `reason` is 'duplicate'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub duplicate: Option<Duplicate<'a>>,
+    pub duplicate: Option<Duplicate>,
     /// Evidence provided when `reason` is 'fraudulent'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fraudulent: Option<Fraudulent<'a>>,
+    pub fraudulent: Option<Fraudulent>,
     /// Evidence provided when `reason` is 'merchandise_not_as_described'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub merchandise_not_as_described:
-        Option<UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a>>,
+    pub merchandise_not_as_described: Option<UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed>,
     /// Evidence provided when `reason` is 'not_received'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub not_received: Option<UpdateIssuingDisputeEvidenceNotReceived<'a>>,
+    pub not_received: Option<UpdateIssuingDisputeEvidenceNotReceived>,
     /// Evidence provided when `reason` is 'other'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub other: Option<UpdateIssuingDisputeEvidenceOther<'a>>,
+    pub other: Option<UpdateIssuingDisputeEvidenceOther>,
     /// The reason for filing the dispute. The evidence should be submitted in the field of the same name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reason: Option<UpdateIssuingDisputeEvidenceReason>,
     /// Evidence provided when `reason` is 'service_not_as_described'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub service_not_as_described: Option<ServiceNotAsDescribed<'a>>,
+    pub service_not_as_described: Option<ServiceNotAsDescribed>,
 }
-impl<'a> UpdateIssuingDisputeEvidence<'a> {
+impl UpdateIssuingDisputeEvidence {
     pub fn new() -> Self {
         Self {
             canceled: None,
@@ -917,17 +918,17 @@ impl<'a> UpdateIssuingDisputeEvidence<'a> {
         }
     }
 }
-impl<'a> Default for UpdateIssuingDisputeEvidence<'a> {
+impl Default for UpdateIssuingDisputeEvidence {
     fn default() -> Self {
         Self::new()
     }
 }
 /// Evidence provided when `reason` is 'canceled'.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateIssuingDisputeEvidenceCanceled<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingDisputeEvidenceCanceled {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
+    pub additional_documentation: Option<String>,
     /// Date when order was canceled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<stripe_types::Timestamp>,
@@ -936,16 +937,16 @@ pub struct UpdateIssuingDisputeEvidenceCanceled<'a> {
     pub cancellation_policy_provided: Option<bool>,
     /// Reason for canceling the order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason: Option<&'a str>,
+    pub cancellation_reason: Option<String>,
     /// Date when the cardholder expected to receive the product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expected_at: Option<stripe_types::Timestamp>,
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
+    pub explanation: Option<String>,
     /// Description of the merchandise or service that was purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_description: Option<&'a str>,
+    pub product_description: Option<String>,
     /// Whether the product was a merchandise or service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_type: Option<UpdateIssuingDisputeEvidenceCanceledProductType>,
@@ -956,7 +957,7 @@ pub struct UpdateIssuingDisputeEvidenceCanceled<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub returned_at: Option<stripe_types::Timestamp>,
 }
-impl<'a> UpdateIssuingDisputeEvidenceCanceled<'a> {
+impl UpdateIssuingDisputeEvidenceCanceled {
     pub fn new() -> Self {
         Self {
             additional_documentation: None,
@@ -972,7 +973,7 @@ impl<'a> UpdateIssuingDisputeEvidenceCanceled<'a> {
         }
     }
 }
-impl<'a> Default for UpdateIssuingDisputeEvidenceCanceled<'a> {
+impl Default for UpdateIssuingDisputeEvidenceCanceled {
     fn default() -> Self {
         Self::new()
     }
@@ -1094,20 +1095,20 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceCanceledReturn
     }
 }
 /// Evidence provided when `reason` is 'merchandise_not_as_described'.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
+    pub additional_documentation: Option<String>,
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
+    pub explanation: Option<String>,
     /// Date when the product was received.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub received_at: Option<stripe_types::Timestamp>,
     /// Description of the cardholder's attempt to return the product.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub return_description: Option<&'a str>,
+    pub return_description: Option<String>,
     /// Result of cardholder's attempt to return the product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_status: Option<UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus>,
@@ -1115,7 +1116,7 @@ pub struct UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub returned_at: Option<stripe_types::Timestamp>,
 }
-impl<'a> UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a> {
+impl UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     pub fn new() -> Self {
         Self {
             additional_documentation: None,
@@ -1127,7 +1128,7 @@ impl<'a> UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a> {
         }
     }
 }
-impl<'a> Default for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a> {
+impl Default for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     fn default() -> Self {
         Self::new()
     }
@@ -1189,25 +1190,25 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Evidence provided when `reason` is 'not_received'.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateIssuingDisputeEvidenceNotReceived<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingDisputeEvidenceNotReceived {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
+    pub additional_documentation: Option<String>,
     /// Date when the cardholder expected to receive the product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expected_at: Option<stripe_types::Timestamp>,
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
+    pub explanation: Option<String>,
     /// Description of the merchandise or service that was purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_description: Option<&'a str>,
+    pub product_description: Option<String>,
     /// Whether the product was a merchandise or service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_type: Option<UpdateIssuingDisputeEvidenceNotReceivedProductType>,
 }
-impl<'a> UpdateIssuingDisputeEvidenceNotReceived<'a> {
+impl UpdateIssuingDisputeEvidenceNotReceived {
     pub fn new() -> Self {
         Self {
             additional_documentation: None,
@@ -1218,7 +1219,7 @@ impl<'a> UpdateIssuingDisputeEvidenceNotReceived<'a> {
         }
     }
 }
-impl<'a> Default for UpdateIssuingDisputeEvidenceNotReceived<'a> {
+impl Default for UpdateIssuingDisputeEvidenceNotReceived {
     fn default() -> Self {
         Self::new()
     }
@@ -1282,22 +1283,22 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceNotReceivedPro
     }
 }
 /// Evidence provided when `reason` is 'other'.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateIssuingDisputeEvidenceOther<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingDisputeEvidenceOther {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
+    pub additional_documentation: Option<String>,
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
+    pub explanation: Option<String>,
     /// Description of the merchandise or service that was purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_description: Option<&'a str>,
+    pub product_description: Option<String>,
     /// Whether the product was a merchandise or service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_type: Option<UpdateIssuingDisputeEvidenceOtherProductType>,
 }
-impl<'a> UpdateIssuingDisputeEvidenceOther<'a> {
+impl UpdateIssuingDisputeEvidenceOther {
     pub fn new() -> Self {
         Self {
             additional_documentation: None,
@@ -1307,7 +1308,7 @@ impl<'a> UpdateIssuingDisputeEvidenceOther<'a> {
         }
     }
 }
-impl<'a> Default for UpdateIssuingDisputeEvidenceOther<'a> {
+impl Default for UpdateIssuingDisputeEvidenceOther {
     fn default() -> Self {
         Self::new()
     }
@@ -1445,40 +1446,43 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceReason {
 /// Any parameters not provided will be left unchanged.
 /// Properties on the `evidence` object can be unset by passing in an empty string.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateIssuingDispute<'a> {
-    inner: UpdateIssuingDisputeBuilder<'a>,
-    dispute: &'a stripe_shared::IssuingDisputeId,
+pub struct UpdateIssuingDispute {
+    inner: UpdateIssuingDisputeBuilder,
+    dispute: stripe_shared::IssuingDisputeId,
 }
-impl<'a> UpdateIssuingDispute<'a> {
+impl UpdateIssuingDispute {
     /// Construct a new `UpdateIssuingDispute`.
-    pub fn new(dispute: &'a stripe_shared::IssuingDisputeId) -> Self {
-        Self { dispute, inner: UpdateIssuingDisputeBuilder::new() }
+    pub fn new(dispute: impl Into<stripe_shared::IssuingDisputeId>) -> Self {
+        Self { dispute: dispute.into(), inner: UpdateIssuingDisputeBuilder::new() }
     }
     /// The dispute amount in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    pub fn amount(mut self, amount: i64) -> Self {
-        self.inner.amount = Some(amount);
+    pub fn amount(mut self, amount: impl Into<i64>) -> Self {
+        self.inner.amount = Some(amount.into());
         self
     }
     /// Evidence provided for the dispute.
-    pub fn evidence(mut self, evidence: UpdateIssuingDisputeEvidence<'a>) -> Self {
-        self.inner.evidence = Some(evidence);
+    pub fn evidence(mut self, evidence: impl Into<UpdateIssuingDisputeEvidence>) -> Self {
+        self.inner.evidence = Some(evidence.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
 }
-impl UpdateIssuingDispute<'_> {
+impl UpdateIssuingDispute {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -1496,23 +1500,23 @@ impl UpdateIssuingDispute<'_> {
     }
 }
 
-impl StripeRequest for UpdateIssuingDispute<'_> {
+impl StripeRequest for UpdateIssuingDispute {
     type Output = stripe_shared::IssuingDispute;
 
     fn build(&self) -> RequestBuilder {
-        let dispute = self.dispute;
+        let dispute = &self.dispute;
         RequestBuilder::new(StripeMethod::Post, format!("/issuing/disputes/{dispute}"))
             .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct SubmitIssuingDisputeBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct SubmitIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
 }
-impl<'a> SubmitIssuingDisputeBuilder<'a> {
+impl SubmitIssuingDisputeBuilder {
     fn new() -> Self {
         Self { expand: None, metadata: None }
     }
@@ -1521,30 +1525,33 @@ impl<'a> SubmitIssuingDisputeBuilder<'a> {
 /// Stripe validates that all evidence fields required for the dispute’s reason are present.
 /// For more details, see [Dispute reasons and evidence](https://stripe.com/docs/issuing/purchases/disputes#dispute-reasons-and-evidence).
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct SubmitIssuingDispute<'a> {
-    inner: SubmitIssuingDisputeBuilder<'a>,
-    dispute: &'a stripe_shared::IssuingDisputeId,
+pub struct SubmitIssuingDispute {
+    inner: SubmitIssuingDisputeBuilder,
+    dispute: stripe_shared::IssuingDisputeId,
 }
-impl<'a> SubmitIssuingDispute<'a> {
+impl SubmitIssuingDispute {
     /// Construct a new `SubmitIssuingDispute`.
-    pub fn new(dispute: &'a stripe_shared::IssuingDisputeId) -> Self {
-        Self { dispute, inner: SubmitIssuingDisputeBuilder::new() }
+    pub fn new(dispute: impl Into<stripe_shared::IssuingDisputeId>) -> Self {
+        Self { dispute: dispute.into(), inner: SubmitIssuingDisputeBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
 }
-impl SubmitIssuingDispute<'_> {
+impl SubmitIssuingDispute {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -1562,39 +1569,39 @@ impl SubmitIssuingDispute<'_> {
     }
 }
 
-impl StripeRequest for SubmitIssuingDispute<'_> {
+impl StripeRequest for SubmitIssuingDispute {
     type Output = stripe_shared::IssuingDispute;
 
     fn build(&self) -> RequestBuilder {
-        let dispute = self.dispute;
+        let dispute = &self.dispute;
         RequestBuilder::new(StripeMethod::Post, format!("/issuing/disputes/{dispute}/submit"))
             .form(&self.inner)
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct Duplicate<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct Duplicate {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
+    pub additional_documentation: Option<String>,
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Copy of the card statement showing that the product had already been paid for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_statement: Option<&'a str>,
+    pub card_statement: Option<String>,
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Copy of the receipt showing that the product had been paid for in cash.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cash_receipt: Option<&'a str>,
+    pub cash_receipt: Option<String>,
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Image of the front and back of the check that was used to pay for the product.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub check_image: Option<&'a str>,
+    pub check_image: Option<String>,
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
+    pub explanation: Option<String>,
     /// Transaction (e.g., ipi_...) that the disputed transaction is a duplicate of.
     /// Of the two or more transactions that are copies of each other, this is original undisputed one.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub original_transaction: Option<&'a str>,
+    pub original_transaction: Option<String>,
 }
-impl<'a> Duplicate<'a> {
+impl Duplicate {
     pub fn new() -> Self {
         Self {
             additional_documentation: None,
@@ -1606,49 +1613,49 @@ impl<'a> Duplicate<'a> {
         }
     }
 }
-impl<'a> Default for Duplicate<'a> {
+impl Default for Duplicate {
     fn default() -> Self {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct Fraudulent<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct Fraudulent {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
+    pub additional_documentation: Option<String>,
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
+    pub explanation: Option<String>,
 }
-impl<'a> Fraudulent<'a> {
+impl Fraudulent {
     pub fn new() -> Self {
         Self { additional_documentation: None, explanation: None }
     }
 }
-impl<'a> Default for Fraudulent<'a> {
+impl Default for Fraudulent {
     fn default() -> Self {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ServiceNotAsDescribed<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ServiceNotAsDescribed {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
+    pub additional_documentation: Option<String>,
     /// Date when order was canceled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<stripe_types::Timestamp>,
     /// Reason for canceling the order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason: Option<&'a str>,
+    pub cancellation_reason: Option<String>,
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
+    pub explanation: Option<String>,
     /// Date when the product was received.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub received_at: Option<stripe_types::Timestamp>,
 }
-impl<'a> ServiceNotAsDescribed<'a> {
+impl ServiceNotAsDescribed {
     pub fn new() -> Self {
         Self {
             additional_documentation: None,
@@ -1659,7 +1666,7 @@ impl<'a> ServiceNotAsDescribed<'a> {
         }
     }
 }
-impl<'a> Default for ServiceNotAsDescribed<'a> {
+impl Default for ServiceNotAsDescribed {
     fn default() -> Self {
         Self::new()
     }

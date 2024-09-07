@@ -2,60 +2,63 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListCustomerCustomerBalanceTransactionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListCustomerCustomerBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListCustomerCustomerBalanceTransactionBuilder<'a> {
+impl ListCustomerCustomerBalanceTransactionBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListCustomerCustomerBalanceTransaction<'a> {
-    inner: ListCustomerCustomerBalanceTransactionBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
+pub struct ListCustomerCustomerBalanceTransaction {
+    inner: ListCustomerCustomerBalanceTransactionBuilder,
+    customer: stripe_shared::CustomerId,
 }
-impl<'a> ListCustomerCustomerBalanceTransaction<'a> {
+impl ListCustomerCustomerBalanceTransaction {
     /// Construct a new `ListCustomerCustomerBalanceTransaction`.
-    pub fn new(customer: &'a stripe_shared::CustomerId) -> Self {
-        Self { customer, inner: ListCustomerCustomerBalanceTransactionBuilder::new() }
+    pub fn new(customer: impl Into<stripe_shared::CustomerId>) -> Self {
+        Self {
+            customer: customer.into(),
+            inner: ListCustomerCustomerBalanceTransactionBuilder::new(),
+        }
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl ListCustomerCustomerBalanceTransaction<'_> {
+impl ListCustomerCustomerBalanceTransaction {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -77,20 +80,20 @@ impl ListCustomerCustomerBalanceTransaction<'_> {
     ) -> stripe_client_core::ListPaginator<
         stripe_types::List<stripe_shared::CustomerBalanceTransaction>,
     > {
-        let customer = self.customer;
+        let customer = &self.customer;
 
         stripe_client_core::ListPaginator::new_list(
             format!("/customers/{customer}/balance_transactions"),
-            self.inner,
+            &self.inner,
         )
     }
 }
 
-impl StripeRequest for ListCustomerCustomerBalanceTransaction<'_> {
+impl StripeRequest for ListCustomerCustomerBalanceTransaction {
     type Output = stripe_types::List<stripe_shared::CustomerBalanceTransaction>;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
+        let customer = &self.customer;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/customers/{customer}/balance_transactions"),
@@ -98,35 +101,42 @@ impl StripeRequest for ListCustomerCustomerBalanceTransaction<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveCustomerBalanceTransactionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveCustomerBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveCustomerBalanceTransactionBuilder<'a> {
+impl RetrieveCustomerBalanceTransactionBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves a specific customer balance transaction that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveCustomerBalanceTransaction<'a> {
-    inner: RetrieveCustomerBalanceTransactionBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
-    transaction: &'a str,
+pub struct RetrieveCustomerBalanceTransaction {
+    inner: RetrieveCustomerBalanceTransactionBuilder,
+    customer: stripe_shared::CustomerId,
+    transaction: String,
 }
-impl<'a> RetrieveCustomerBalanceTransaction<'a> {
+impl RetrieveCustomerBalanceTransaction {
     /// Construct a new `RetrieveCustomerBalanceTransaction`.
-    pub fn new(customer: &'a stripe_shared::CustomerId, transaction: &'a str) -> Self {
-        Self { customer, transaction, inner: RetrieveCustomerBalanceTransactionBuilder::new() }
+    pub fn new(
+        customer: impl Into<stripe_shared::CustomerId>,
+        transaction: impl Into<String>,
+    ) -> Self {
+        Self {
+            customer: customer.into(),
+            transaction: transaction.into(),
+            inner: RetrieveCustomerBalanceTransactionBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveCustomerBalanceTransaction<'_> {
+impl RetrieveCustomerBalanceTransaction {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -144,12 +154,12 @@ impl RetrieveCustomerBalanceTransaction<'_> {
     }
 }
 
-impl StripeRequest for RetrieveCustomerBalanceTransaction<'_> {
+impl StripeRequest for RetrieveCustomerBalanceTransaction {
     type Output = stripe_shared::CustomerBalanceTransaction;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
-        let transaction = self.transaction;
+        let customer = &self.customer;
+        let transaction = &self.transaction;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/customers/{customer}/balance_transactions/{transaction}"),
@@ -157,60 +167,72 @@ impl StripeRequest for RetrieveCustomerBalanceTransaction<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateCustomerCustomerBalanceTransactionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateCustomerCustomerBalanceTransactionBuilder {
     amount: i64,
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
 }
-impl<'a> CreateCustomerCustomerBalanceTransactionBuilder<'a> {
-    fn new(amount: i64, currency: stripe_types::Currency) -> Self {
-        Self { amount, currency, description: None, expand: None, metadata: None }
+impl CreateCustomerCustomerBalanceTransactionBuilder {
+    fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
+        Self {
+            amount: amount.into(),
+            currency: currency.into(),
+            description: None,
+            expand: None,
+            metadata: None,
+        }
     }
 }
 /// Creates an immutable transaction that updates the customer’s credit [balance](https://stripe.com/docs/billing/customer/balance).
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateCustomerCustomerBalanceTransaction<'a> {
-    inner: CreateCustomerCustomerBalanceTransactionBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
+pub struct CreateCustomerCustomerBalanceTransaction {
+    inner: CreateCustomerCustomerBalanceTransactionBuilder,
+    customer: stripe_shared::CustomerId,
 }
-impl<'a> CreateCustomerCustomerBalanceTransaction<'a> {
+impl CreateCustomerCustomerBalanceTransaction {
     /// Construct a new `CreateCustomerCustomerBalanceTransaction`.
     pub fn new(
-        customer: &'a stripe_shared::CustomerId,
-        amount: i64,
-        currency: stripe_types::Currency,
+        customer: impl Into<stripe_shared::CustomerId>,
+        amount: impl Into<i64>,
+        currency: impl Into<stripe_types::Currency>,
     ) -> Self {
         Self {
-            customer,
-            inner: CreateCustomerCustomerBalanceTransactionBuilder::new(amount, currency),
+            customer: customer.into(),
+            inner: CreateCustomerCustomerBalanceTransactionBuilder::new(
+                amount.into(),
+                currency.into(),
+            ),
         }
     }
     /// An arbitrary string attached to the object. Often useful for displaying to users.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.inner.description = Some(description);
+    pub fn description(mut self, description: impl Into<String>) -> Self {
+        self.inner.description = Some(description.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
 }
-impl CreateCustomerCustomerBalanceTransaction<'_> {
+impl CreateCustomerCustomerBalanceTransaction {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -228,11 +250,11 @@ impl CreateCustomerCustomerBalanceTransaction<'_> {
     }
 }
 
-impl StripeRequest for CreateCustomerCustomerBalanceTransaction<'_> {
+impl StripeRequest for CreateCustomerCustomerBalanceTransaction {
     type Output = stripe_shared::CustomerBalanceTransaction;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
+        let customer = &self.customer;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/customers/{customer}/balance_transactions"),
@@ -240,52 +262,62 @@ impl StripeRequest for CreateCustomerCustomerBalanceTransaction<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateCustomerBalanceTransactionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateCustomerBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
 }
-impl<'a> UpdateCustomerBalanceTransactionBuilder<'a> {
+impl UpdateCustomerBalanceTransactionBuilder {
     fn new() -> Self {
         Self { description: None, expand: None, metadata: None }
     }
 }
 /// Most credit balance transaction fields are immutable, but you may update its `description` and `metadata`.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateCustomerBalanceTransaction<'a> {
-    inner: UpdateCustomerBalanceTransactionBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
-    transaction: &'a str,
+pub struct UpdateCustomerBalanceTransaction {
+    inner: UpdateCustomerBalanceTransactionBuilder,
+    customer: stripe_shared::CustomerId,
+    transaction: String,
 }
-impl<'a> UpdateCustomerBalanceTransaction<'a> {
+impl UpdateCustomerBalanceTransaction {
     /// Construct a new `UpdateCustomerBalanceTransaction`.
-    pub fn new(customer: &'a stripe_shared::CustomerId, transaction: &'a str) -> Self {
-        Self { customer, transaction, inner: UpdateCustomerBalanceTransactionBuilder::new() }
+    pub fn new(
+        customer: impl Into<stripe_shared::CustomerId>,
+        transaction: impl Into<String>,
+    ) -> Self {
+        Self {
+            customer: customer.into(),
+            transaction: transaction.into(),
+            inner: UpdateCustomerBalanceTransactionBuilder::new(),
+        }
     }
     /// An arbitrary string attached to the object. Often useful for displaying to users.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.inner.description = Some(description);
+    pub fn description(mut self, description: impl Into<String>) -> Self {
+        self.inner.description = Some(description.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
 }
-impl UpdateCustomerBalanceTransaction<'_> {
+impl UpdateCustomerBalanceTransaction {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -303,12 +335,12 @@ impl UpdateCustomerBalanceTransaction<'_> {
     }
 }
 
-impl StripeRequest for UpdateCustomerBalanceTransaction<'_> {
+impl StripeRequest for UpdateCustomerBalanceTransaction {
     type Output = stripe_shared::CustomerBalanceTransaction;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
-        let transaction = self.transaction;
+        let customer = &self.customer;
+        let transaction = &self.transaction;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/customers/{customer}/balance_transactions/{transaction}"),

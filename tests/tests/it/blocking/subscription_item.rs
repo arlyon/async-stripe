@@ -1,7 +1,10 @@
 use chrono::Utc;
-use stripe_billing::usage_record::{
-    CreateSubscriptionItemUsageRecord, CreateSubscriptionItemUsageRecordAction,
-    CreateSubscriptionItemUsageRecordTimestamp,
+use stripe_billing::{
+    usage_record::{
+        CreateSubscriptionItemUsageRecord, CreateSubscriptionItemUsageRecordAction,
+        CreateSubscriptionItemUsageRecordTimestamp,
+    },
+    SubscriptionItemId,
 };
 
 use super::get_client;
@@ -10,8 +13,8 @@ use super::get_client;
 fn can_create_usage_record() {
     let client = get_client();
 
-    let subscription_item_id = "si_JVbsG8wiy20ycs".parse().unwrap();
-    let usage_record = CreateSubscriptionItemUsageRecord::new(&subscription_item_id, 42)
+    let subscription_item_id = SubscriptionItemId::from("si_JVbsG8wiy20ycs");
+    let usage_record = CreateSubscriptionItemUsageRecord::new(&subscription_item_id, 42u64)
         .action(CreateSubscriptionItemUsageRecordAction::Increment)
         .timestamp(CreateSubscriptionItemUsageRecordTimestamp::Timestamp(Utc::now().timestamp()))
         .send_blocking(&client)

@@ -6,16 +6,16 @@ use stripe_client_core::{
 /// Deleting a product is only possible if it has no prices associated with it.
 /// Additionally, deleting a product with `type=good` is only possible if it has no SKUs associated with it.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeleteProduct<'a> {
-    id: &'a stripe_shared::ProductId,
+pub struct DeleteProduct {
+    id: stripe_shared::ProductId,
 }
-impl<'a> DeleteProduct<'a> {
+impl DeleteProduct {
     /// Construct a new `DeleteProduct`.
-    pub fn new(id: &'a stripe_shared::ProductId) -> Self {
-        Self { id }
+    pub fn new(id: impl Into<stripe_shared::ProductId>) -> Self {
+        Self { id: id.into() }
     }
 }
-impl DeleteProduct<'_> {
+impl DeleteProduct {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -33,39 +33,39 @@ impl DeleteProduct<'_> {
     }
 }
 
-impl StripeRequest for DeleteProduct<'_> {
+impl StripeRequest for DeleteProduct {
     type Output = stripe_shared::DeletedProduct;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Delete, format!("/products/{id}"))
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListProductBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ids: Option<&'a [&'a str]>,
+    ids: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shippable: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<stripe_shared::ProductType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    url: Option<&'a str>,
+    url: Option<String>,
 }
-impl<'a> ListProductBuilder<'a> {
+impl ListProductBuilder {
     fn new() -> Self {
         Self {
             active: None,
@@ -84,77 +84,77 @@ impl<'a> ListProductBuilder<'a> {
 /// Returns a list of your products.
 /// The products are returned sorted by creation date, with the most recently created products appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListProduct<'a> {
-    inner: ListProductBuilder<'a>,
+pub struct ListProduct {
+    inner: ListProductBuilder,
 }
-impl<'a> ListProduct<'a> {
+impl ListProduct {
     /// Construct a new `ListProduct`.
     pub fn new() -> Self {
         Self { inner: ListProductBuilder::new() }
     }
     /// Only return products that are active or inactive (e.g., pass `false` to list all inactive products).
-    pub fn active(mut self, active: bool) -> Self {
-        self.inner.active = Some(active);
+    pub fn active(mut self, active: impl Into<bool>) -> Self {
+        self.inner.active = Some(active.into());
         self
     }
     /// Only return products that were created during the given date interval.
-    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
-        self.inner.created = Some(created);
+    pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.created = Some(created.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Only return products with the given IDs.
     /// Cannot be used with [starting_after](https://stripe.com/docs/api#list_products-starting_after) or [ending_before](https://stripe.com/docs/api#list_products-ending_before).
-    pub fn ids(mut self, ids: &'a [&'a str]) -> Self {
-        self.inner.ids = Some(ids);
+    pub fn ids(mut self, ids: impl Into<Vec<String>>) -> Self {
+        self.inner.ids = Some(ids.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// Only return products that can be shipped (i.e., physical, not digital products).
-    pub fn shippable(mut self, shippable: bool) -> Self {
-        self.inner.shippable = Some(shippable);
+    pub fn shippable(mut self, shippable: impl Into<bool>) -> Self {
+        self.inner.shippable = Some(shippable.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// Only return products of this type.
-    pub fn type_(mut self, type_: stripe_shared::ProductType) -> Self {
-        self.inner.type_ = Some(type_);
+    pub fn type_(mut self, type_: impl Into<stripe_shared::ProductType>) -> Self {
+        self.inner.type_ = Some(type_.into());
         self
     }
     /// Only return products with the given url.
-    pub fn url(mut self, url: &'a str) -> Self {
-        self.inner.url = Some(url);
+    pub fn url(mut self, url: impl Into<String>) -> Self {
+        self.inner.url = Some(url.into());
         self
     }
 }
-impl<'a> Default for ListProduct<'a> {
+impl Default for ListProduct {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListProduct<'_> {
+impl ListProduct {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -174,23 +174,23 @@ impl ListProduct<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::Product>> {
-        stripe_client_core::ListPaginator::new_list("/products", self.inner)
+        stripe_client_core::ListPaginator::new_list("/products", &self.inner)
     }
 }
 
-impl StripeRequest for ListProduct<'_> {
+impl StripeRequest for ListProduct {
     type Output = stripe_types::List<stripe_shared::Product>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/products").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveProductBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveProductBuilder<'a> {
+impl RetrieveProductBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
@@ -198,22 +198,22 @@ impl<'a> RetrieveProductBuilder<'a> {
 /// Retrieves the details of an existing product.
 /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveProduct<'a> {
-    inner: RetrieveProductBuilder<'a>,
-    id: &'a stripe_shared::ProductId,
+pub struct RetrieveProduct {
+    inner: RetrieveProductBuilder,
+    id: stripe_shared::ProductId,
 }
-impl<'a> RetrieveProduct<'a> {
+impl RetrieveProduct {
     /// Construct a new `RetrieveProduct`.
-    pub fn new(id: &'a stripe_shared::ProductId) -> Self {
-        Self { id, inner: RetrieveProductBuilder::new() }
+    pub fn new(id: impl Into<stripe_shared::ProductId>) -> Self {
+        Self { id: id.into(), inner: RetrieveProductBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveProduct<'_> {
+impl RetrieveProduct {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -231,27 +231,27 @@ impl RetrieveProduct<'_> {
     }
 }
 
-impl StripeRequest for RetrieveProduct<'_> {
+impl StripeRequest for RetrieveProduct {
     type Output = stripe_shared::Product;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Get, format!("/products/{id}")).query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct SearchProductBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct SearchProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    page: Option<&'a str>,
-    query: &'a str,
+    page: Option<String>,
+    query: String,
 }
-impl<'a> SearchProductBuilder<'a> {
-    fn new(query: &'a str) -> Self {
-        Self { expand: None, limit: None, page: None, query }
+impl SearchProductBuilder {
+    fn new(query: impl Into<String>) -> Self {
+        Self { expand: None, limit: None, page: None, query: query.into() }
     }
 }
 /// Search for products you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
@@ -261,34 +261,34 @@ impl<'a> SearchProductBuilder<'a> {
 /// Occasionally, propagation of new or updated data can be up.
 /// to an hour behind during outages. Search functionality is not available to merchants in India.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct SearchProduct<'a> {
-    inner: SearchProductBuilder<'a>,
+pub struct SearchProduct {
+    inner: SearchProductBuilder,
 }
-impl<'a> SearchProduct<'a> {
+impl SearchProduct {
     /// Construct a new `SearchProduct`.
-    pub fn new(query: &'a str) -> Self {
-        Self { inner: SearchProductBuilder::new(query) }
+    pub fn new(query: impl Into<String>) -> Self {
+        Self { inner: SearchProductBuilder::new(query.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for pagination across multiple pages of results.
     /// Don't include this parameter on the first call.
     /// Use the next_page value returned in a previous response to request subsequent results.
-    pub fn page(mut self, page: &'a str) -> Self {
-        self.inner.page = Some(page);
+    pub fn page(mut self, page: impl Into<String>) -> Self {
+        self.inner.page = Some(page.into());
         self
     }
 }
-impl SearchProduct<'_> {
+impl SearchProduct {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -308,54 +308,54 @@ impl SearchProduct<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::SearchList<stripe_shared::Product>> {
-        stripe_client_core::ListPaginator::new_search_list("/products/search", self.inner)
+        stripe_client_core::ListPaginator::new_search_list("/products/search", &self.inner)
     }
 }
 
-impl StripeRequest for SearchProduct<'_> {
+impl StripeRequest for SearchProduct {
     type Output = stripe_types::SearchList<stripe_shared::Product>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/products/search").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateProductBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_price_data: Option<CreateProductDefaultPriceData<'a>>,
+    default_price_data: Option<CreateProductDefaultPriceData>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    id: Option<&'a str>,
+    id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    images: Option<&'a [&'a str]>,
+    images: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    marketing_features: Option<&'a [Features<'a>]>,
+    marketing_features: Option<Vec<Features>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
-    name: &'a str,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     package_dimensions: Option<PackageDimensionsSpecs>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shippable: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    statement_descriptor: Option<&'a str>,
+    statement_descriptor: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_code: Option<&'a str>,
+    tax_code: Option<String>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<stripe_shared::ProductType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    unit_label: Option<&'a str>,
+    unit_label: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    url: Option<&'a str>,
+    url: Option<String>,
 }
-impl<'a> CreateProductBuilder<'a> {
-    fn new(name: &'a str) -> Self {
+impl CreateProductBuilder {
+    fn new(name: impl Into<String>) -> Self {
         Self {
             active: None,
             default_price_data: None,
@@ -365,7 +365,7 @@ impl<'a> CreateProductBuilder<'a> {
             images: None,
             marketing_features: None,
             metadata: None,
-            name,
+            name: name.into(),
             package_dimensions: None,
             shippable: None,
             statement_descriptor: None,
@@ -378,8 +378,8 @@ impl<'a> CreateProductBuilder<'a> {
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object.
 /// This Price will be set as the default price for this product.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateProductDefaultPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateProductDefaultPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
@@ -387,7 +387,7 @@ pub struct CreateProductDefaultPriceData<'a> {
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<
-        &'a std::collections::HashMap<
+        std::collections::HashMap<
             stripe_types::Currency,
             CreateProductDefaultPriceDataCurrencyOptions,
         >,
@@ -408,12 +408,12 @@ pub struct CreateProductDefaultPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> CreateProductDefaultPriceData<'a> {
-    pub fn new(currency: stripe_types::Currency) -> Self {
+impl CreateProductDefaultPriceData {
+    pub fn new(currency: impl Into<stripe_types::Currency>) -> Self {
         Self {
-            currency,
+            currency: currency.into(),
             currency_options: None,
             recurring: None,
             tax_behavior: None,
@@ -481,8 +481,8 @@ pub struct CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
     pub preset: Option<i64>,
 }
 impl CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled, maximum: None, minimum: None, preset: None }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), maximum: None, minimum: None, preset: None }
     }
 }
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -574,13 +574,13 @@ pub struct CreateProductDefaultPriceDataCurrencyOptionsTiers {
     pub up_to: CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo,
 }
 impl CreateProductDefaultPriceDataCurrencyOptionsTiers {
-    pub fn new(up_to: CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo) -> Self {
+    pub fn new(up_to: impl Into<CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo>) -> Self {
         Self {
             flat_amount: None,
             flat_amount_decimal: None,
             unit_amount: None,
             unit_amount_decimal: None,
-            up_to,
+            up_to: up_to.into(),
         }
     }
 }
@@ -606,8 +606,8 @@ pub struct CreateProductDefaultPriceDataRecurring {
     pub interval_count: Option<u64>,
 }
 impl CreateProductDefaultPriceDataRecurring {
-    pub fn new(interval: CreateProductDefaultPriceDataRecurringInterval) -> Self {
-        Self { interval, interval_count: None }
+    pub fn new(interval: impl Into<CreateProductDefaultPriceDataRecurringInterval>) -> Self {
+        Self { interval: interval.into(), interval_count: None }
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
@@ -738,72 +738,78 @@ impl<'de> serde::Deserialize<'de> for CreateProductDefaultPriceDataTaxBehavior {
 }
 /// Creates a new product object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateProduct<'a> {
-    inner: CreateProductBuilder<'a>,
+pub struct CreateProduct {
+    inner: CreateProductBuilder,
 }
-impl<'a> CreateProduct<'a> {
+impl CreateProduct {
     /// Construct a new `CreateProduct`.
-    pub fn new(name: &'a str) -> Self {
-        Self { inner: CreateProductBuilder::new(name) }
+    pub fn new(name: impl Into<String>) -> Self {
+        Self { inner: CreateProductBuilder::new(name.into()) }
     }
     /// Whether the product is currently available for purchase. Defaults to `true`.
-    pub fn active(mut self, active: bool) -> Self {
-        self.inner.active = Some(active);
+    pub fn active(mut self, active: impl Into<bool>) -> Self {
+        self.inner.active = Some(active.into());
         self
     }
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object.
     /// This Price will be set as the default price for this product.
     pub fn default_price_data(
         mut self,
-        default_price_data: CreateProductDefaultPriceData<'a>,
+        default_price_data: impl Into<CreateProductDefaultPriceData>,
     ) -> Self {
-        self.inner.default_price_data = Some(default_price_data);
+        self.inner.default_price_data = Some(default_price_data.into());
         self
     }
     /// The product's description, meant to be displayable to the customer.
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.inner.description = Some(description);
+    pub fn description(mut self, description: impl Into<String>) -> Self {
+        self.inner.description = Some(description.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// An identifier will be randomly generated by Stripe.
     /// You can optionally override this ID, but the ID must be unique across all products in your Stripe account.
-    pub fn id(mut self, id: &'a str) -> Self {
-        self.inner.id = Some(id);
+    pub fn id(mut self, id: impl Into<String>) -> Self {
+        self.inner.id = Some(id.into());
         self
     }
     /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
-    pub fn images(mut self, images: &'a [&'a str]) -> Self {
-        self.inner.images = Some(images);
+    pub fn images(mut self, images: impl Into<Vec<String>>) -> Self {
+        self.inner.images = Some(images.into());
         self
     }
     /// A list of up to 15 marketing features for this product.
     /// These are displayed in [pricing tables](https://stripe.com/docs/payments/checkout/pricing-table).
-    pub fn marketing_features(mut self, marketing_features: &'a [Features<'a>]) -> Self {
-        self.inner.marketing_features = Some(marketing_features);
+    pub fn marketing_features(mut self, marketing_features: impl Into<Vec<Features>>) -> Self {
+        self.inner.marketing_features = Some(marketing_features.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// The dimensions of this product for shipping purposes.
-    pub fn package_dimensions(mut self, package_dimensions: PackageDimensionsSpecs) -> Self {
-        self.inner.package_dimensions = Some(package_dimensions);
+    pub fn package_dimensions(
+        mut self,
+        package_dimensions: impl Into<PackageDimensionsSpecs>,
+    ) -> Self {
+        self.inner.package_dimensions = Some(package_dimensions.into());
         self
     }
     /// Whether this product is shipped (i.e., physical goods).
-    pub fn shippable(mut self, shippable: bool) -> Self {
-        self.inner.shippable = Some(shippable);
+    pub fn shippable(mut self, shippable: impl Into<bool>) -> Self {
+        self.inner.shippable = Some(shippable.into());
         self
     }
     /// An arbitrary string to be displayed on your customer's credit card or bank statement.
@@ -813,36 +819,36 @@ impl<'a> CreateProduct<'a> {
     /// The statement description may not include `<`, `>`, `\`, `"`, `'` characters, and will appear on your customer's statement in capital letters.
     /// Non-ASCII characters are automatically stripped.
     ///  It must contain at least one letter.
-    pub fn statement_descriptor(mut self, statement_descriptor: &'a str) -> Self {
-        self.inner.statement_descriptor = Some(statement_descriptor);
+    pub fn statement_descriptor(mut self, statement_descriptor: impl Into<String>) -> Self {
+        self.inner.statement_descriptor = Some(statement_descriptor.into());
         self
     }
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
-    pub fn tax_code(mut self, tax_code: &'a str) -> Self {
-        self.inner.tax_code = Some(tax_code);
+    pub fn tax_code(mut self, tax_code: impl Into<String>) -> Self {
+        self.inner.tax_code = Some(tax_code.into());
         self
     }
     /// The type of the product.
     /// Defaults to `service` if not explicitly specified, enabling use of this product with Subscriptions and Plans.
     /// Set this parameter to `good` to use this product with Orders and SKUs.
     /// On API versions before `2018-02-05`, this field defaults to `good` for compatibility reasons.
-    pub fn type_(mut self, type_: stripe_shared::ProductType) -> Self {
-        self.inner.type_ = Some(type_);
+    pub fn type_(mut self, type_: impl Into<stripe_shared::ProductType>) -> Self {
+        self.inner.type_ = Some(type_.into());
         self
     }
     /// A label that represents units of this product.
     /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
-    pub fn unit_label(mut self, unit_label: &'a str) -> Self {
-        self.inner.unit_label = Some(unit_label);
+    pub fn unit_label(mut self, unit_label: impl Into<String>) -> Self {
+        self.inner.unit_label = Some(unit_label.into());
         self
     }
     /// A URL of a publicly-accessible webpage for this product.
-    pub fn url(mut self, url: &'a str) -> Self {
-        self.inner.url = Some(url);
+    pub fn url(mut self, url: impl Into<String>) -> Self {
+        self.inner.url = Some(url.into());
         self
     }
 }
-impl CreateProduct<'_> {
+impl CreateProduct {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -860,45 +866,45 @@ impl CreateProduct<'_> {
     }
 }
 
-impl StripeRequest for CreateProduct<'_> {
+impl StripeRequest for CreateProduct {
     type Output = stripe_shared::Product;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/products").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateProductBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_price: Option<&'a str>,
+    default_price: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    images: Option<&'a [&'a str]>,
+    images: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    marketing_features: Option<&'a [Features<'a>]>,
+    marketing_features: Option<Vec<Features>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     package_dimensions: Option<PackageDimensionsSpecs>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shippable: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    statement_descriptor: Option<&'a str>,
+    statement_descriptor: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_code: Option<&'a str>,
+    tax_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    unit_label: Option<&'a str>,
+    unit_label: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    url: Option<&'a str>,
+    url: Option<String>,
 }
-impl<'a> UpdateProductBuilder<'a> {
+impl UpdateProductBuilder {
     fn new() -> Self {
         Self {
             active: None,
@@ -921,68 +927,74 @@ impl<'a> UpdateProductBuilder<'a> {
 /// Updates the specific product by setting the values of the parameters passed.
 /// Any parameters not provided will be left unchanged.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateProduct<'a> {
-    inner: UpdateProductBuilder<'a>,
-    id: &'a stripe_shared::ProductId,
+pub struct UpdateProduct {
+    inner: UpdateProductBuilder,
+    id: stripe_shared::ProductId,
 }
-impl<'a> UpdateProduct<'a> {
+impl UpdateProduct {
     /// Construct a new `UpdateProduct`.
-    pub fn new(id: &'a stripe_shared::ProductId) -> Self {
-        Self { id, inner: UpdateProductBuilder::new() }
+    pub fn new(id: impl Into<stripe_shared::ProductId>) -> Self {
+        Self { id: id.into(), inner: UpdateProductBuilder::new() }
     }
     /// Whether the product is available for purchase.
-    pub fn active(mut self, active: bool) -> Self {
-        self.inner.active = Some(active);
+    pub fn active(mut self, active: impl Into<bool>) -> Self {
+        self.inner.active = Some(active.into());
         self
     }
     /// The ID of the [Price](https://stripe.com/docs/api/prices) object that is the default price for this product.
-    pub fn default_price(mut self, default_price: &'a str) -> Self {
-        self.inner.default_price = Some(default_price);
+    pub fn default_price(mut self, default_price: impl Into<String>) -> Self {
+        self.inner.default_price = Some(default_price.into());
         self
     }
     /// The product's description, meant to be displayable to the customer.
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.inner.description = Some(description);
+    pub fn description(mut self, description: impl Into<String>) -> Self {
+        self.inner.description = Some(description.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
-    pub fn images(mut self, images: &'a [&'a str]) -> Self {
-        self.inner.images = Some(images);
+    pub fn images(mut self, images: impl Into<Vec<String>>) -> Self {
+        self.inner.images = Some(images.into());
         self
     }
     /// A list of up to 15 marketing features for this product.
     /// These are displayed in [pricing tables](https://stripe.com/docs/payments/checkout/pricing-table).
-    pub fn marketing_features(mut self, marketing_features: &'a [Features<'a>]) -> Self {
-        self.inner.marketing_features = Some(marketing_features);
+    pub fn marketing_features(mut self, marketing_features: impl Into<Vec<Features>>) -> Self {
+        self.inner.marketing_features = Some(marketing_features.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// The product's name, meant to be displayable to the customer.
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
     /// The dimensions of this product for shipping purposes.
-    pub fn package_dimensions(mut self, package_dimensions: PackageDimensionsSpecs) -> Self {
-        self.inner.package_dimensions = Some(package_dimensions);
+    pub fn package_dimensions(
+        mut self,
+        package_dimensions: impl Into<PackageDimensionsSpecs>,
+    ) -> Self {
+        self.inner.package_dimensions = Some(package_dimensions.into());
         self
     }
     /// Whether this product is shipped (i.e., physical goods).
-    pub fn shippable(mut self, shippable: bool) -> Self {
-        self.inner.shippable = Some(shippable);
+    pub fn shippable(mut self, shippable: impl Into<bool>) -> Self {
+        self.inner.shippable = Some(shippable.into());
         self
     }
     /// An arbitrary string to be displayed on your customer's credit card or bank statement.
@@ -992,29 +1004,29 @@ impl<'a> UpdateProduct<'a> {
     /// The statement description may not include `<`, `>`, `\`, `"`, `'` characters, and will appear on your customer's statement in capital letters.
     /// Non-ASCII characters are automatically stripped.
     ///  It must contain at least one letter. May only be set if `type=service`.
-    pub fn statement_descriptor(mut self, statement_descriptor: &'a str) -> Self {
-        self.inner.statement_descriptor = Some(statement_descriptor);
+    pub fn statement_descriptor(mut self, statement_descriptor: impl Into<String>) -> Self {
+        self.inner.statement_descriptor = Some(statement_descriptor.into());
         self
     }
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
-    pub fn tax_code(mut self, tax_code: &'a str) -> Self {
-        self.inner.tax_code = Some(tax_code);
+    pub fn tax_code(mut self, tax_code: impl Into<String>) -> Self {
+        self.inner.tax_code = Some(tax_code.into());
         self
     }
     /// A label that represents units of this product.
     /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     /// May only be set if `type=service`.
-    pub fn unit_label(mut self, unit_label: &'a str) -> Self {
-        self.inner.unit_label = Some(unit_label);
+    pub fn unit_label(mut self, unit_label: impl Into<String>) -> Self {
+        self.inner.unit_label = Some(unit_label.into());
         self
     }
     /// A URL of a publicly-accessible webpage for this product.
-    pub fn url(mut self, url: &'a str) -> Self {
-        self.inner.url = Some(url);
+    pub fn url(mut self, url: impl Into<String>) -> Self {
+        self.inner.url = Some(url.into());
         self
     }
 }
-impl UpdateProduct<'_> {
+impl UpdateProduct {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -1032,23 +1044,23 @@ impl UpdateProduct<'_> {
     }
 }
 
-impl StripeRequest for UpdateProduct<'_> {
+impl StripeRequest for UpdateProduct {
     type Output = stripe_shared::Product;
 
     fn build(&self) -> RequestBuilder {
-        let id = self.id;
+        let id = &self.id;
         RequestBuilder::new(StripeMethod::Post, format!("/products/{id}")).form(&self.inner)
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct Features<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct Features {
     /// The marketing feature name. Up to 80 characters long.
-    pub name: &'a str,
+    pub name: String,
 }
-impl<'a> Features<'a> {
-    pub fn new(name: &'a str) -> Self {
-        Self { name }
+impl Features {
+    pub fn new(name: impl Into<String>) -> Self {
+        Self { name: name.into() }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -1063,7 +1075,17 @@ pub struct PackageDimensionsSpecs {
     pub width: f64,
 }
 impl PackageDimensionsSpecs {
-    pub fn new(height: f64, length: f64, weight: f64, width: f64) -> Self {
-        Self { height, length, weight, width }
+    pub fn new(
+        height: impl Into<f64>,
+        length: impl Into<f64>,
+        weight: impl Into<f64>,
+        width: impl Into<f64>,
+    ) -> Self {
+        Self {
+            height: height.into(),
+            length: length.into(),
+            weight: weight.into(),
+            width: width.into(),
+        }
     }
 }

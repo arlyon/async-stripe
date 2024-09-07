@@ -2,14 +2,14 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateTerminalConnectionTokenBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateTerminalConnectionTokenBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    location: Option<&'a str>,
+    location: Option<String>,
 }
-impl<'a> CreateTerminalConnectionTokenBuilder<'a> {
+impl CreateTerminalConnectionTokenBuilder {
     fn new() -> Self {
         Self { expand: None, location: None }
     }
@@ -17,34 +17,34 @@ impl<'a> CreateTerminalConnectionTokenBuilder<'a> {
 /// To connect to a reader the Stripe Terminal SDK needs to retrieve a short-lived connection token from Stripe, proxied through your server.
 /// On your backend, add an endpoint that creates and returns a connection token.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateTerminalConnectionToken<'a> {
-    inner: CreateTerminalConnectionTokenBuilder<'a>,
+pub struct CreateTerminalConnectionToken {
+    inner: CreateTerminalConnectionTokenBuilder,
 }
-impl<'a> CreateTerminalConnectionToken<'a> {
+impl CreateTerminalConnectionToken {
     /// Construct a new `CreateTerminalConnectionToken`.
     pub fn new() -> Self {
         Self { inner: CreateTerminalConnectionTokenBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// The id of the location that this connection token is scoped to.
     /// If specified the connection token will only be usable with readers assigned to that location, otherwise the connection token will be usable with all readers.
     /// Note that location scoping only applies to internet-connected readers.
     /// For more details, see [the docs on scoping connection tokens](https://stripe.com/docs/terminal/fleet/locations#connection-tokens).
-    pub fn location(mut self, location: &'a str) -> Self {
-        self.inner.location = Some(location);
+    pub fn location(mut self, location: impl Into<String>) -> Self {
+        self.inner.location = Some(location.into());
         self
     }
 }
-impl<'a> Default for CreateTerminalConnectionToken<'a> {
+impl Default for CreateTerminalConnectionToken {
     fn default() -> Self {
         Self::new()
     }
 }
-impl CreateTerminalConnectionToken<'_> {
+impl CreateTerminalConnectionToken {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -62,7 +62,7 @@ impl CreateTerminalConnectionToken<'_> {
     }
 }
 
-impl StripeRequest for CreateTerminalConnectionToken<'_> {
+impl StripeRequest for CreateTerminalConnectionToken {
     type Output = stripe_terminal::TerminalConnectionToken;
 
     fn build(&self) -> RequestBuilder {

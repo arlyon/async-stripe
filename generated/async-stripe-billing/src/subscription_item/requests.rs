@@ -79,38 +79,38 @@ impl<'de> serde::Deserialize<'de> for DeleteSubscriptionItemProrationBehavior {
 /// Deletes an item from the subscription.
 /// Removing a subscription item from a subscription will not cancel the subscription.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeleteSubscriptionItem<'a> {
+pub struct DeleteSubscriptionItem {
     inner: DeleteSubscriptionItemBuilder,
-    item: &'a stripe_shared::SubscriptionItemId,
+    item: stripe_shared::SubscriptionItemId,
 }
-impl<'a> DeleteSubscriptionItem<'a> {
+impl DeleteSubscriptionItem {
     /// Construct a new `DeleteSubscriptionItem`.
-    pub fn new(item: &'a stripe_shared::SubscriptionItemId) -> Self {
-        Self { item, inner: DeleteSubscriptionItemBuilder::new() }
+    pub fn new(item: impl Into<stripe_shared::SubscriptionItemId>) -> Self {
+        Self { item: item.into(), inner: DeleteSubscriptionItemBuilder::new() }
     }
     /// Delete all usage for the given subscription item.
     /// Allowed only when the current plan's `usage_type` is `metered`.
-    pub fn clear_usage(mut self, clear_usage: bool) -> Self {
-        self.inner.clear_usage = Some(clear_usage);
+    pub fn clear_usage(mut self, clear_usage: impl Into<bool>) -> Self {
+        self.inner.clear_usage = Some(clear_usage.into());
         self
     }
     /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     /// The default value is `create_prorations`.
     pub fn proration_behavior(
         mut self,
-        proration_behavior: DeleteSubscriptionItemProrationBehavior,
+        proration_behavior: impl Into<DeleteSubscriptionItemProrationBehavior>,
     ) -> Self {
-        self.inner.proration_behavior = Some(proration_behavior);
+        self.inner.proration_behavior = Some(proration_behavior.into());
         self
     }
     /// If set, the proration will be calculated as though the subscription was updated at the given time.
     /// This can be used to apply the same proration that was previewed with the [upcoming invoice](https://stripe.com/docs/api#retrieve_customer_invoice) endpoint.
-    pub fn proration_date(mut self, proration_date: stripe_types::Timestamp) -> Self {
-        self.inner.proration_date = Some(proration_date);
+    pub fn proration_date(mut self, proration_date: impl Into<stripe_types::Timestamp>) -> Self {
+        self.inner.proration_date = Some(proration_date.into());
         self
     }
 }
-impl DeleteSubscriptionItem<'_> {
+impl DeleteSubscriptionItem {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -128,69 +128,75 @@ impl DeleteSubscriptionItem<'_> {
     }
 }
 
-impl StripeRequest for DeleteSubscriptionItem<'_> {
+impl StripeRequest for DeleteSubscriptionItem {
     type Output = stripe_shared::DeletedSubscriptionItem;
 
     fn build(&self) -> RequestBuilder {
-        let item = self.item;
+        let item = &self.item;
         RequestBuilder::new(StripeMethod::Delete, format!("/subscription_items/{item}"))
             .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListSubscriptionItemBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
-    subscription: &'a str,
+    starting_after: Option<String>,
+    subscription: String,
 }
-impl<'a> ListSubscriptionItemBuilder<'a> {
-    fn new(subscription: &'a str) -> Self {
-        Self { ending_before: None, expand: None, limit: None, starting_after: None, subscription }
+impl ListSubscriptionItemBuilder {
+    fn new(subscription: impl Into<String>) -> Self {
+        Self {
+            ending_before: None,
+            expand: None,
+            limit: None,
+            starting_after: None,
+            subscription: subscription.into(),
+        }
     }
 }
 /// Returns a list of your subscription items for a given subscription.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListSubscriptionItem<'a> {
-    inner: ListSubscriptionItemBuilder<'a>,
+pub struct ListSubscriptionItem {
+    inner: ListSubscriptionItemBuilder,
 }
-impl<'a> ListSubscriptionItem<'a> {
+impl ListSubscriptionItem {
     /// Construct a new `ListSubscriptionItem`.
-    pub fn new(subscription: &'a str) -> Self {
-        Self { inner: ListSubscriptionItemBuilder::new(subscription) }
+    pub fn new(subscription: impl Into<String>) -> Self {
+        Self { inner: ListSubscriptionItemBuilder::new(subscription.into()) }
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl ListSubscriptionItem<'_> {
+impl ListSubscriptionItem {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -211,45 +217,45 @@ impl ListSubscriptionItem<'_> {
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::SubscriptionItem>>
     {
-        stripe_client_core::ListPaginator::new_list("/subscription_items", self.inner)
+        stripe_client_core::ListPaginator::new_list("/subscription_items", &self.inner)
     }
 }
 
-impl StripeRequest for ListSubscriptionItem<'_> {
+impl StripeRequest for ListSubscriptionItem {
     type Output = stripe_types::List<stripe_shared::SubscriptionItem>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/subscription_items").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveSubscriptionItemBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveSubscriptionItemBuilder<'a> {
+impl RetrieveSubscriptionItemBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves the subscription item with the given ID.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveSubscriptionItem<'a> {
-    inner: RetrieveSubscriptionItemBuilder<'a>,
-    item: &'a stripe_shared::SubscriptionItemId,
+pub struct RetrieveSubscriptionItem {
+    inner: RetrieveSubscriptionItemBuilder,
+    item: stripe_shared::SubscriptionItemId,
 }
-impl<'a> RetrieveSubscriptionItem<'a> {
+impl RetrieveSubscriptionItem {
     /// Construct a new `RetrieveSubscriptionItem`.
-    pub fn new(item: &'a stripe_shared::SubscriptionItemId) -> Self {
-        Self { item, inner: RetrieveSubscriptionItemBuilder::new() }
+    pub fn new(item: impl Into<stripe_shared::SubscriptionItemId>) -> Self {
+        Self { item: item.into(), inner: RetrieveSubscriptionItemBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveSubscriptionItem<'_> {
+impl RetrieveSubscriptionItem {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -267,27 +273,27 @@ impl RetrieveSubscriptionItem<'_> {
     }
 }
 
-impl StripeRequest for RetrieveSubscriptionItem<'_> {
+impl StripeRequest for RetrieveSubscriptionItem {
     type Output = stripe_shared::SubscriptionItem;
 
     fn build(&self) -> RequestBuilder {
-        let item = self.item;
+        let item = &self.item;
         RequestBuilder::new(StripeMethod::Get, format!("/subscription_items/{item}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UsageRecordSummariesSubscriptionItemBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UsageRecordSummariesSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> UsageRecordSummariesSubscriptionItemBuilder<'a> {
+impl UsageRecordSummariesSubscriptionItemBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
@@ -299,42 +305,45 @@ impl<'a> UsageRecordSummariesSubscriptionItemBuilder<'a> {
 /// The first list item represents the most current usage period that hasn’t ended yet.
 /// Since new usage records can still be added, the returned summary information for the subscription item’s ID should be seen as unstable until the subscription billing period ends.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UsageRecordSummariesSubscriptionItem<'a> {
-    inner: UsageRecordSummariesSubscriptionItemBuilder<'a>,
-    subscription_item: &'a stripe_shared::SubscriptionItemId,
+pub struct UsageRecordSummariesSubscriptionItem {
+    inner: UsageRecordSummariesSubscriptionItemBuilder,
+    subscription_item: stripe_shared::SubscriptionItemId,
 }
-impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
+impl UsageRecordSummariesSubscriptionItem {
     /// Construct a new `UsageRecordSummariesSubscriptionItem`.
-    pub fn new(subscription_item: &'a stripe_shared::SubscriptionItemId) -> Self {
-        Self { subscription_item, inner: UsageRecordSummariesSubscriptionItemBuilder::new() }
+    pub fn new(subscription_item: impl Into<stripe_shared::SubscriptionItemId>) -> Self {
+        Self {
+            subscription_item: subscription_item.into(),
+            inner: UsageRecordSummariesSubscriptionItemBuilder::new(),
+        }
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl UsageRecordSummariesSubscriptionItem<'_> {
+impl UsageRecordSummariesSubscriptionItem {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -355,20 +364,20 @@ impl UsageRecordSummariesSubscriptionItem<'_> {
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::UsageRecordSummary>>
     {
-        let subscription_item = self.subscription_item;
+        let subscription_item = &self.subscription_item;
 
         stripe_client_core::ListPaginator::new_list(
             format!("/subscription_items/{subscription_item}/usage_record_summaries"),
-            self.inner,
+            &self.inner,
         )
     }
 }
 
-impl StripeRequest for UsageRecordSummariesSubscriptionItem<'_> {
+impl StripeRequest for UsageRecordSummariesSubscriptionItem {
     type Output = stripe_types::List<stripe_shared::UsageRecordSummary>;
 
     fn build(&self) -> RequestBuilder {
-        let subscription_item = self.subscription_item;
+        let subscription_item = &self.subscription_item;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/subscription_items/{subscription_item}/usage_record_summaries"),
@@ -376,36 +385,36 @@ impl StripeRequest for UsageRecordSummariesSubscriptionItem<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateSubscriptionItemBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_thresholds: Option<ItemBillingThresholdsParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    discounts: Option<Vec<DiscountsDataParam>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_behavior: Option<CreateSubscriptionItemPaymentBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    plan: Option<&'a str>,
+    plan: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    price: Option<&'a str>,
+    price: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    price_data: Option<CreateSubscriptionItemPriceData<'a>>,
+    price_data: Option<CreateSubscriptionItemPriceData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proration_behavior: Option<CreateSubscriptionItemProrationBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proration_date: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
     quantity: Option<u64>,
-    subscription: &'a str,
+    subscription: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_rates: Option<&'a [&'a str]>,
+    tax_rates: Option<Vec<String>>,
 }
-impl<'a> CreateSubscriptionItemBuilder<'a> {
-    fn new(subscription: &'a str) -> Self {
+impl CreateSubscriptionItemBuilder {
+    fn new(subscription: impl Into<String>) -> Self {
         Self {
             billing_thresholds: None,
             discounts: None,
@@ -418,7 +427,7 @@ impl<'a> CreateSubscriptionItemBuilder<'a> {
             proration_behavior: None,
             proration_date: None,
             quantity: None,
-            subscription,
+            subscription: subscription.into(),
             tax_rates: None,
         }
     }
@@ -502,13 +511,13 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemPaymentBehavior {
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateSubscriptionItemPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: CreateSubscriptionItemPriceDataRecurring,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -523,18 +532,18 @@ pub struct CreateSubscriptionItemPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> CreateSubscriptionItemPriceData<'a> {
+impl CreateSubscriptionItemPriceData {
     pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: CreateSubscriptionItemPriceDataRecurring,
+        currency: impl Into<stripe_types::Currency>,
+        product: impl Into<String>,
+        recurring: impl Into<CreateSubscriptionItemPriceDataRecurring>,
     ) -> Self {
         Self {
-            currency,
-            product,
-            recurring,
+            currency: currency.into(),
+            product: product.into(),
+            recurring: recurring.into(),
             tax_behavior: None,
             unit_amount: None,
             unit_amount_decimal: None,
@@ -553,8 +562,8 @@ pub struct CreateSubscriptionItemPriceDataRecurring {
     pub interval_count: Option<u64>,
 }
 impl CreateSubscriptionItemPriceDataRecurring {
-    pub fn new(interval: CreateSubscriptionItemPriceDataRecurringInterval) -> Self {
-        Self { interval, interval_count: None }
+    pub fn new(interval: impl Into<CreateSubscriptionItemPriceDataRecurringInterval>) -> Self {
+        Self { interval: interval.into(), interval_count: None }
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
@@ -745,36 +754,42 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemProrationBehavior {
 }
 /// Adds a new item to an existing subscription. No existing items will be changed or replaced.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateSubscriptionItem<'a> {
-    inner: CreateSubscriptionItemBuilder<'a>,
+pub struct CreateSubscriptionItem {
+    inner: CreateSubscriptionItemBuilder,
 }
-impl<'a> CreateSubscriptionItem<'a> {
+impl CreateSubscriptionItem {
     /// Construct a new `CreateSubscriptionItem`.
-    pub fn new(subscription: &'a str) -> Self {
-        Self { inner: CreateSubscriptionItemBuilder::new(subscription) }
+    pub fn new(subscription: impl Into<String>) -> Self {
+        Self { inner: CreateSubscriptionItemBuilder::new(subscription.into()) }
     }
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// When updating, pass an empty string to remove previously-defined thresholds.
-    pub fn billing_thresholds(mut self, billing_thresholds: ItemBillingThresholdsParam) -> Self {
-        self.inner.billing_thresholds = Some(billing_thresholds);
+    pub fn billing_thresholds(
+        mut self,
+        billing_thresholds: impl Into<ItemBillingThresholdsParam>,
+    ) -> Self {
+        self.inner.billing_thresholds = Some(billing_thresholds.into());
         self
     }
     /// The coupons to redeem into discounts for the subscription item.
-    pub fn discounts(mut self, discounts: &'a [DiscountsDataParam<'a>]) -> Self {
-        self.inner.discounts = Some(discounts);
+    pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
+        self.inner.discounts = Some(discounts.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// Use `allow_incomplete` to transition the subscription to `status=past_due` if a payment is required but cannot be paid.
@@ -796,55 +811,55 @@ impl<'a> CreateSubscriptionItem<'a> {
     /// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
     pub fn payment_behavior(
         mut self,
-        payment_behavior: CreateSubscriptionItemPaymentBehavior,
+        payment_behavior: impl Into<CreateSubscriptionItemPaymentBehavior>,
     ) -> Self {
-        self.inner.payment_behavior = Some(payment_behavior);
+        self.inner.payment_behavior = Some(payment_behavior.into());
         self
     }
     /// The identifier of the plan to add to the subscription.
-    pub fn plan(mut self, plan: &'a str) -> Self {
-        self.inner.plan = Some(plan);
+    pub fn plan(mut self, plan: impl Into<String>) -> Self {
+        self.inner.plan = Some(plan.into());
         self
     }
     /// The ID of the price object.
-    pub fn price(mut self, price: &'a str) -> Self {
-        self.inner.price = Some(price);
+    pub fn price(mut self, price: impl Into<String>) -> Self {
+        self.inner.price = Some(price.into());
         self
     }
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-    pub fn price_data(mut self, price_data: CreateSubscriptionItemPriceData<'a>) -> Self {
-        self.inner.price_data = Some(price_data);
+    pub fn price_data(mut self, price_data: impl Into<CreateSubscriptionItemPriceData>) -> Self {
+        self.inner.price_data = Some(price_data.into());
         self
     }
     /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     /// The default value is `create_prorations`.
     pub fn proration_behavior(
         mut self,
-        proration_behavior: CreateSubscriptionItemProrationBehavior,
+        proration_behavior: impl Into<CreateSubscriptionItemProrationBehavior>,
     ) -> Self {
-        self.inner.proration_behavior = Some(proration_behavior);
+        self.inner.proration_behavior = Some(proration_behavior.into());
         self
     }
     /// If set, the proration will be calculated as though the subscription was updated at the given time.
     /// This can be used to apply the same proration that was previewed with the [upcoming invoice](https://stripe.com/docs/api#retrieve_customer_invoice) endpoint.
-    pub fn proration_date(mut self, proration_date: stripe_types::Timestamp) -> Self {
-        self.inner.proration_date = Some(proration_date);
+    pub fn proration_date(mut self, proration_date: impl Into<stripe_types::Timestamp>) -> Self {
+        self.inner.proration_date = Some(proration_date.into());
         self
     }
     /// The quantity you'd like to apply to the subscription item you're creating.
-    pub fn quantity(mut self, quantity: u64) -> Self {
-        self.inner.quantity = Some(quantity);
+    pub fn quantity(mut self, quantity: impl Into<u64>) -> Self {
+        self.inner.quantity = Some(quantity.into());
         self
     }
     /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
-    pub fn tax_rates(mut self, tax_rates: &'a [&'a str]) -> Self {
-        self.inner.tax_rates = Some(tax_rates);
+    pub fn tax_rates(mut self, tax_rates: impl Into<Vec<String>>) -> Self {
+        self.inner.tax_rates = Some(tax_rates.into());
         self
     }
 }
-impl CreateSubscriptionItem<'_> {
+impl CreateSubscriptionItem {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -862,33 +877,33 @@ impl CreateSubscriptionItem<'_> {
     }
 }
 
-impl StripeRequest for CreateSubscriptionItem<'_> {
+impl StripeRequest for CreateSubscriptionItem {
     type Output = stripe_shared::SubscriptionItem;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/subscription_items").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateSubscriptionItemBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_thresholds: Option<ItemBillingThresholdsParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    discounts: Option<&'a [DiscountsDataParam<'a>]>,
+    discounts: Option<Vec<DiscountsDataParam>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     off_session: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_behavior: Option<UpdateSubscriptionItemPaymentBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    plan: Option<&'a str>,
+    plan: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    price: Option<&'a str>,
+    price: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    price_data: Option<UpdateSubscriptionItemPriceData<'a>>,
+    price_data: Option<UpdateSubscriptionItemPriceData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proration_behavior: Option<UpdateSubscriptionItemProrationBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -896,9 +911,9 @@ struct UpdateSubscriptionItemBuilder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     quantity: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_rates: Option<&'a [&'a str]>,
+    tax_rates: Option<Vec<String>>,
 }
-impl<'a> UpdateSubscriptionItemBuilder<'a> {
+impl UpdateSubscriptionItemBuilder {
     fn new() -> Self {
         Self {
             billing_thresholds: None,
@@ -996,13 +1011,13 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemPaymentBehavior {
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateSubscriptionItemPriceData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the product that this price will belong to.
-    pub product: &'a str,
+    pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: UpdateSubscriptionItemPriceDataRecurring,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -1017,18 +1032,18 @@ pub struct UpdateSubscriptionItemPriceData<'a> {
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> UpdateSubscriptionItemPriceData<'a> {
+impl UpdateSubscriptionItemPriceData {
     pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: UpdateSubscriptionItemPriceDataRecurring,
+        currency: impl Into<stripe_types::Currency>,
+        product: impl Into<String>,
+        recurring: impl Into<UpdateSubscriptionItemPriceDataRecurring>,
     ) -> Self {
         Self {
-            currency,
-            product,
-            recurring,
+            currency: currency.into(),
+            product: product.into(),
+            recurring: recurring.into(),
             tax_behavior: None,
             unit_amount: None,
             unit_amount_decimal: None,
@@ -1047,8 +1062,8 @@ pub struct UpdateSubscriptionItemPriceDataRecurring {
     pub interval_count: Option<u64>,
 }
 impl UpdateSubscriptionItemPriceDataRecurring {
-    pub fn new(interval: UpdateSubscriptionItemPriceDataRecurringInterval) -> Self {
-        Self { interval, interval_count: None }
+    pub fn new(interval: impl Into<UpdateSubscriptionItemPriceDataRecurringInterval>) -> Self {
+        Self { interval: interval.into(), interval_count: None }
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
@@ -1239,42 +1254,48 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemProrationBehavior {
 }
 /// Updates the plan or quantity of an item on a current subscription.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateSubscriptionItem<'a> {
-    inner: UpdateSubscriptionItemBuilder<'a>,
-    item: &'a stripe_shared::SubscriptionItemId,
+pub struct UpdateSubscriptionItem {
+    inner: UpdateSubscriptionItemBuilder,
+    item: stripe_shared::SubscriptionItemId,
 }
-impl<'a> UpdateSubscriptionItem<'a> {
+impl UpdateSubscriptionItem {
     /// Construct a new `UpdateSubscriptionItem`.
-    pub fn new(item: &'a stripe_shared::SubscriptionItemId) -> Self {
-        Self { item, inner: UpdateSubscriptionItemBuilder::new() }
+    pub fn new(item: impl Into<stripe_shared::SubscriptionItemId>) -> Self {
+        Self { item: item.into(), inner: UpdateSubscriptionItemBuilder::new() }
     }
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// When updating, pass an empty string to remove previously-defined thresholds.
-    pub fn billing_thresholds(mut self, billing_thresholds: ItemBillingThresholdsParam) -> Self {
-        self.inner.billing_thresholds = Some(billing_thresholds);
+    pub fn billing_thresholds(
+        mut self,
+        billing_thresholds: impl Into<ItemBillingThresholdsParam>,
+    ) -> Self {
+        self.inner.billing_thresholds = Some(billing_thresholds.into());
         self
     }
     /// The coupons to redeem into discounts for the subscription item.
-    pub fn discounts(mut self, discounts: &'a [DiscountsDataParam<'a>]) -> Self {
-        self.inner.discounts = Some(discounts);
+    pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
+        self.inner.discounts = Some(discounts.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// Indicates if a customer is on or off-session while an invoice payment is attempted.
-    pub fn off_session(mut self, off_session: bool) -> Self {
-        self.inner.off_session = Some(off_session);
+    pub fn off_session(mut self, off_session: impl Into<bool>) -> Self {
+        self.inner.off_session = Some(off_session.into());
         self
     }
     /// Use `allow_incomplete` to transition the subscription to `status=past_due` if a payment is required but cannot be paid.
@@ -1296,56 +1317,56 @@ impl<'a> UpdateSubscriptionItem<'a> {
     /// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
     pub fn payment_behavior(
         mut self,
-        payment_behavior: UpdateSubscriptionItemPaymentBehavior,
+        payment_behavior: impl Into<UpdateSubscriptionItemPaymentBehavior>,
     ) -> Self {
-        self.inner.payment_behavior = Some(payment_behavior);
+        self.inner.payment_behavior = Some(payment_behavior.into());
         self
     }
     /// The identifier of the new plan for this subscription item.
-    pub fn plan(mut self, plan: &'a str) -> Self {
-        self.inner.plan = Some(plan);
+    pub fn plan(mut self, plan: impl Into<String>) -> Self {
+        self.inner.plan = Some(plan.into());
         self
     }
     /// The ID of the price object.
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
-    pub fn price(mut self, price: &'a str) -> Self {
-        self.inner.price = Some(price);
+    pub fn price(mut self, price: impl Into<String>) -> Self {
+        self.inner.price = Some(price.into());
         self
     }
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-    pub fn price_data(mut self, price_data: UpdateSubscriptionItemPriceData<'a>) -> Self {
-        self.inner.price_data = Some(price_data);
+    pub fn price_data(mut self, price_data: impl Into<UpdateSubscriptionItemPriceData>) -> Self {
+        self.inner.price_data = Some(price_data.into());
         self
     }
     /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     /// The default value is `create_prorations`.
     pub fn proration_behavior(
         mut self,
-        proration_behavior: UpdateSubscriptionItemProrationBehavior,
+        proration_behavior: impl Into<UpdateSubscriptionItemProrationBehavior>,
     ) -> Self {
-        self.inner.proration_behavior = Some(proration_behavior);
+        self.inner.proration_behavior = Some(proration_behavior.into());
         self
     }
     /// If set, the proration will be calculated as though the subscription was updated at the given time.
     /// This can be used to apply the same proration that was previewed with the [upcoming invoice](https://stripe.com/docs/api#retrieve_customer_invoice) endpoint.
-    pub fn proration_date(mut self, proration_date: stripe_types::Timestamp) -> Self {
-        self.inner.proration_date = Some(proration_date);
+    pub fn proration_date(mut self, proration_date: impl Into<stripe_types::Timestamp>) -> Self {
+        self.inner.proration_date = Some(proration_date.into());
         self
     }
     /// The quantity you'd like to apply to the subscription item you're creating.
-    pub fn quantity(mut self, quantity: u64) -> Self {
-        self.inner.quantity = Some(quantity);
+    pub fn quantity(mut self, quantity: impl Into<u64>) -> Self {
+        self.inner.quantity = Some(quantity.into());
         self
     }
     /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
-    pub fn tax_rates(mut self, tax_rates: &'a [&'a str]) -> Self {
-        self.inner.tax_rates = Some(tax_rates);
+    pub fn tax_rates(mut self, tax_rates: impl Into<Vec<String>>) -> Self {
+        self.inner.tax_rates = Some(tax_rates.into());
         self
     }
 }
-impl UpdateSubscriptionItem<'_> {
+impl UpdateSubscriptionItem {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -1363,11 +1384,11 @@ impl UpdateSubscriptionItem<'_> {
     }
 }
 
-impl StripeRequest for UpdateSubscriptionItem<'_> {
+impl StripeRequest for UpdateSubscriptionItem {
     type Output = stripe_shared::SubscriptionItem;
 
     fn build(&self) -> RequestBuilder {
-        let item = self.item;
+        let item = &self.item;
         RequestBuilder::new(StripeMethod::Post, format!("/subscription_items/{item}"))
             .form(&self.inner)
     }
@@ -1379,28 +1400,28 @@ pub struct ItemBillingThresholdsParam {
     pub usage_gte: i64,
 }
 impl ItemBillingThresholdsParam {
-    pub fn new(usage_gte: i64) -> Self {
-        Self { usage_gte }
+    pub fn new(usage_gte: impl Into<i64>) -> Self {
+        Self { usage_gte: usage_gte.into() }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct DiscountsDataParam<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DiscountsDataParam {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<&'a str>,
+    pub coupon: Option<String>,
     /// ID of an existing discount on the object (or one of its ancestors) to reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<&'a str>,
+    pub discount: Option<String>,
     /// ID of the promotion code to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub promotion_code: Option<&'a str>,
+    pub promotion_code: Option<String>,
 }
-impl<'a> DiscountsDataParam<'a> {
+impl DiscountsDataParam {
     pub fn new() -> Self {
         Self { coupon: None, discount: None, promotion_code: None }
     }
 }
-impl<'a> Default for DiscountsDataParam<'a> {
+impl Default for DiscountsDataParam {
     fn default() -> Self {
         Self::new()
     }

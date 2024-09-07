@@ -2,16 +2,19 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateCustomerSessionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateCustomerSessionBuilder {
     components: CreateCustomerSessionComponents,
-    customer: &'a str,
+    customer: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> CreateCustomerSessionBuilder<'a> {
-    fn new(components: CreateCustomerSessionComponents, customer: &'a str) -> Self {
-        Self { components, customer, expand: None }
+impl CreateCustomerSessionBuilder {
+    fn new(
+        components: impl Into<CreateCustomerSessionComponents>,
+        customer: impl Into<String>,
+    ) -> Self {
+        Self { components: components.into(), customer: customer.into(), expand: None }
     }
 }
 /// Configuration for each component. Exactly 1 component must be enabled.
@@ -41,8 +44,8 @@ pub struct CreateCustomerSessionComponentsBuyButton {
     pub enabled: bool,
 }
 impl CreateCustomerSessionComponentsBuyButton {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into() }
     }
 }
 /// Configuration for the pricing table.
@@ -52,27 +55,30 @@ pub struct CreateCustomerSessionComponentsPricingTable {
     pub enabled: bool,
 }
 impl CreateCustomerSessionComponentsPricingTable {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled }
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into() }
     }
 }
 /// Creates a customer session object that includes a single-use client secret that you can use on your front-end to grant client-side API access for certain customer resources.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateCustomerSession<'a> {
-    inner: CreateCustomerSessionBuilder<'a>,
+pub struct CreateCustomerSession {
+    inner: CreateCustomerSessionBuilder,
 }
-impl<'a> CreateCustomerSession<'a> {
+impl CreateCustomerSession {
     /// Construct a new `CreateCustomerSession`.
-    pub fn new(components: CreateCustomerSessionComponents, customer: &'a str) -> Self {
-        Self { inner: CreateCustomerSessionBuilder::new(components, customer) }
+    pub fn new(
+        components: impl Into<CreateCustomerSessionComponents>,
+        customer: impl Into<String>,
+    ) -> Self {
+        Self { inner: CreateCustomerSessionBuilder::new(components.into(), customer.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl CreateCustomerSession<'_> {
+impl CreateCustomerSession {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -90,7 +96,7 @@ impl CreateCustomerSession<'_> {
     }
 }
 
-impl StripeRequest for CreateCustomerSession<'_> {
+impl StripeRequest for CreateCustomerSession {
     type Output = stripe_core::CustomerSession;
 
     fn build(&self) -> RequestBuilder {

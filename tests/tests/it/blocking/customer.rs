@@ -1,5 +1,6 @@
-use stripe_core::customer::{
-    CreateCustomer, DeleteCustomer, RetrieveCustomer, RetrieveCustomerReturned,
+use stripe_core::{
+    customer::{CreateCustomer, DeleteCustomer, RetrieveCustomer, RetrieveCustomerReturned},
+    CustomerId,
 };
 
 use super::{get_base_test_config, get_client};
@@ -30,7 +31,7 @@ fn customer_create_and_delete_with_account() {
 #[test]
 fn retrieve_customer() {
     let client = get_client();
-    let id = "cus_123".parse().unwrap();
+    let id = CustomerId::from("cus_123");
     let ret = RetrieveCustomer::new(&id).send_blocking(&client).unwrap();
     match ret {
         RetrieveCustomerReturned::Customer(cust) => {

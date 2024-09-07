@@ -6,7 +6,7 @@ use stripe_billing::subscription_item::{
     CreateSubscriptionItem, CreateSubscriptionItemPriceData,
     CreateSubscriptionItemPriceDataRecurring, CreateSubscriptionItemPriceDataRecurringInterval,
 };
-use stripe_billing::PlanInterval;
+use stripe_billing::{PlanId, PlanInterval};
 use stripe_types::Currency;
 
 use super::get_client;
@@ -15,8 +15,8 @@ use super::get_client;
 fn can_create_plan() {
     let client = get_client();
 
-    let id = "price_123".parse().unwrap();
-    let plan = RetrievePlan::new(&id).send_blocking(&client).unwrap();
+    let id = PlanId::from("price_123");
+    let plan = RetrievePlan::new(id).send_blocking(&client).unwrap();
     assert_eq!(plan.interval, PlanInterval::Month);
     assert_eq!(plan.amount, Some(2000));
 }

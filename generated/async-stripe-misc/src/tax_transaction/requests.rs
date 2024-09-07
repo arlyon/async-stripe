@@ -2,34 +2,34 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveTaxTransactionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveTaxTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveTaxTransactionBuilder<'a> {
+impl RetrieveTaxTransactionBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves a Tax `Transaction` object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveTaxTransaction<'a> {
-    inner: RetrieveTaxTransactionBuilder<'a>,
-    transaction: &'a stripe_misc::TaxTransactionId,
+pub struct RetrieveTaxTransaction {
+    inner: RetrieveTaxTransactionBuilder,
+    transaction: stripe_misc::TaxTransactionId,
 }
-impl<'a> RetrieveTaxTransaction<'a> {
+impl RetrieveTaxTransaction {
     /// Construct a new `RetrieveTaxTransaction`.
-    pub fn new(transaction: &'a stripe_misc::TaxTransactionId) -> Self {
-        Self { transaction, inner: RetrieveTaxTransactionBuilder::new() }
+    pub fn new(transaction: impl Into<stripe_misc::TaxTransactionId>) -> Self {
+        Self { transaction: transaction.into(), inner: RetrieveTaxTransactionBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveTaxTransaction<'_> {
+impl RetrieveTaxTransaction {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -47,69 +47,69 @@ impl RetrieveTaxTransaction<'_> {
     }
 }
 
-impl StripeRequest for RetrieveTaxTransaction<'_> {
+impl StripeRequest for RetrieveTaxTransaction {
     type Output = stripe_misc::TaxTransaction;
 
     fn build(&self) -> RequestBuilder {
-        let transaction = self.transaction;
+        let transaction = &self.transaction;
         RequestBuilder::new(StripeMethod::Get, format!("/tax/transactions/{transaction}"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListLineItemsTaxTransactionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListLineItemsTaxTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> ListLineItemsTaxTransactionBuilder<'a> {
+impl ListLineItemsTaxTransactionBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Retrieves the line items of a committed standalone transaction as a collection.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListLineItemsTaxTransaction<'a> {
-    inner: ListLineItemsTaxTransactionBuilder<'a>,
-    transaction: &'a stripe_misc::TaxTransactionId,
+pub struct ListLineItemsTaxTransaction {
+    inner: ListLineItemsTaxTransactionBuilder,
+    transaction: stripe_misc::TaxTransactionId,
 }
-impl<'a> ListLineItemsTaxTransaction<'a> {
+impl ListLineItemsTaxTransaction {
     /// Construct a new `ListLineItemsTaxTransaction`.
-    pub fn new(transaction: &'a stripe_misc::TaxTransactionId) -> Self {
-        Self { transaction, inner: ListLineItemsTaxTransactionBuilder::new() }
+    pub fn new(transaction: impl Into<stripe_misc::TaxTransactionId>) -> Self {
+        Self { transaction: transaction.into(), inner: ListLineItemsTaxTransactionBuilder::new() }
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl ListLineItemsTaxTransaction<'_> {
+impl ListLineItemsTaxTransaction {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -130,20 +130,20 @@ impl ListLineItemsTaxTransaction<'_> {
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_misc::TaxTransactionLineItem>>
     {
-        let transaction = self.transaction;
+        let transaction = &self.transaction;
 
         stripe_client_core::ListPaginator::new_list(
             format!("/tax/transactions/{transaction}/line_items"),
-            self.inner,
+            &self.inner,
         )
     }
 }
 
-impl StripeRequest for ListLineItemsTaxTransaction<'_> {
+impl StripeRequest for ListLineItemsTaxTransaction {
     type Output = stripe_types::List<stripe_misc::TaxTransactionLineItem>;
 
     fn build(&self) -> RequestBuilder {
-        let transaction = self.transaction;
+        let transaction = &self.transaction;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/tax/transactions/{transaction}/line_items"),
@@ -151,45 +151,58 @@ impl StripeRequest for ListLineItemsTaxTransaction<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateFromCalculationTaxTransactionBuilder<'a> {
-    calculation: &'a str,
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateFromCalculationTaxTransactionBuilder {
+    calculation: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
-    reference: &'a str,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    reference: String,
 }
-impl<'a> CreateFromCalculationTaxTransactionBuilder<'a> {
-    fn new(calculation: &'a str, reference: &'a str) -> Self {
-        Self { calculation, expand: None, metadata: None, reference }
+impl CreateFromCalculationTaxTransactionBuilder {
+    fn new(calculation: impl Into<String>, reference: impl Into<String>) -> Self {
+        Self {
+            calculation: calculation.into(),
+            expand: None,
+            metadata: None,
+            reference: reference.into(),
+        }
     }
 }
 /// Creates a Tax `Transaction` from a calculation.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateFromCalculationTaxTransaction<'a> {
-    inner: CreateFromCalculationTaxTransactionBuilder<'a>,
+pub struct CreateFromCalculationTaxTransaction {
+    inner: CreateFromCalculationTaxTransactionBuilder,
 }
-impl<'a> CreateFromCalculationTaxTransaction<'a> {
+impl CreateFromCalculationTaxTransaction {
     /// Construct a new `CreateFromCalculationTaxTransaction`.
-    pub fn new(calculation: &'a str, reference: &'a str) -> Self {
-        Self { inner: CreateFromCalculationTaxTransactionBuilder::new(calculation, reference) }
+    pub fn new(calculation: impl Into<String>, reference: impl Into<String>) -> Self {
+        Self {
+            inner: CreateFromCalculationTaxTransactionBuilder::new(
+                calculation.into(),
+                reference.into(),
+            ),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
 }
-impl CreateFromCalculationTaxTransaction<'_> {
+impl CreateFromCalculationTaxTransaction {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -207,7 +220,7 @@ impl CreateFromCalculationTaxTransaction<'_> {
     }
 }
 
-impl StripeRequest for CreateFromCalculationTaxTransaction<'_> {
+impl StripeRequest for CreateFromCalculationTaxTransaction {
     type Output = stripe_misc::TaxTransaction;
 
     fn build(&self) -> RequestBuilder {
@@ -215,43 +228,43 @@ impl StripeRequest for CreateFromCalculationTaxTransaction<'_> {
             .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateReversalTaxTransactionBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateReversalTaxTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     flat_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    line_items: Option<&'a [CreateReversalTaxTransactionLineItems<'a>]>,
+    line_items: Option<Vec<CreateReversalTaxTransactionLineItems>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     mode: CreateReversalTaxTransactionMode,
-    original_transaction: &'a str,
-    reference: &'a str,
+    original_transaction: String,
+    reference: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_cost: Option<CreateReversalTaxTransactionShippingCost>,
 }
-impl<'a> CreateReversalTaxTransactionBuilder<'a> {
+impl CreateReversalTaxTransactionBuilder {
     fn new(
-        mode: CreateReversalTaxTransactionMode,
-        original_transaction: &'a str,
-        reference: &'a str,
+        mode: impl Into<CreateReversalTaxTransactionMode>,
+        original_transaction: impl Into<String>,
+        reference: impl Into<String>,
     ) -> Self {
         Self {
             expand: None,
             flat_amount: None,
             line_items: None,
             metadata: None,
-            mode,
-            original_transaction,
-            reference,
+            mode: mode.into(),
+            original_transaction: original_transaction.into(),
+            reference: reference.into(),
             shipping_cost: None,
         }
     }
 }
 /// The line item amounts to reverse.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateReversalTaxTransactionLineItems<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateReversalTaxTransactionLineItems {
     /// The amount to reverse, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) in negative.
     pub amount: i64,
     /// The amount of tax to reverse, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) in negative.
@@ -259,24 +272,31 @@ pub struct CreateReversalTaxTransactionLineItems<'a> {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The `id` of the line item to reverse in the original transaction.
-    pub original_line_item: &'a str,
+    pub original_line_item: String,
     /// The quantity reversed.
     /// Appears in [tax exports](https://stripe.com/docs/tax/reports), but does not affect the amount of tax reversed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
     /// A custom identifier for this line item in the reversal transaction, such as 'L1-refund'.
-    pub reference: &'a str,
+    pub reference: String,
 }
-impl<'a> CreateReversalTaxTransactionLineItems<'a> {
+impl CreateReversalTaxTransactionLineItems {
     pub fn new(
-        amount: i64,
-        amount_tax: i64,
-        original_line_item: &'a str,
-        reference: &'a str,
+        amount: impl Into<i64>,
+        amount_tax: impl Into<i64>,
+        original_line_item: impl Into<String>,
+        reference: impl Into<String>,
     ) -> Self {
-        Self { amount, amount_tax, metadata: None, original_line_item, quantity: None, reference }
+        Self {
+            amount: amount.into(),
+            amount_tax: amount_tax.into(),
+            metadata: None,
+            original_line_item: original_line_item.into(),
+            quantity: None,
+            reference: reference.into(),
+        }
     }
 }
 /// If `partial`, the provided line item or shipping cost amounts are reversed.
@@ -345,63 +365,70 @@ pub struct CreateReversalTaxTransactionShippingCost {
     pub amount_tax: i64,
 }
 impl CreateReversalTaxTransactionShippingCost {
-    pub fn new(amount: i64, amount_tax: i64) -> Self {
-        Self { amount, amount_tax }
+    pub fn new(amount: impl Into<i64>, amount_tax: impl Into<i64>) -> Self {
+        Self { amount: amount.into(), amount_tax: amount_tax.into() }
     }
 }
 /// Partially or fully reverses a previously created `Transaction`.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateReversalTaxTransaction<'a> {
-    inner: CreateReversalTaxTransactionBuilder<'a>,
+pub struct CreateReversalTaxTransaction {
+    inner: CreateReversalTaxTransactionBuilder,
 }
-impl<'a> CreateReversalTaxTransaction<'a> {
+impl CreateReversalTaxTransaction {
     /// Construct a new `CreateReversalTaxTransaction`.
     pub fn new(
-        mode: CreateReversalTaxTransactionMode,
-        original_transaction: &'a str,
-        reference: &'a str,
+        mode: impl Into<CreateReversalTaxTransactionMode>,
+        original_transaction: impl Into<String>,
+        reference: impl Into<String>,
     ) -> Self {
         Self {
-            inner: CreateReversalTaxTransactionBuilder::new(mode, original_transaction, reference),
+            inner: CreateReversalTaxTransactionBuilder::new(
+                mode.into(),
+                original_transaction.into(),
+                reference.into(),
+            ),
         }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A flat amount to reverse across the entire transaction, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) in negative.
     /// This value represents the total amount to refund from the transaction, including taxes.
-    pub fn flat_amount(mut self, flat_amount: i64) -> Self {
-        self.inner.flat_amount = Some(flat_amount);
+    pub fn flat_amount(mut self, flat_amount: impl Into<i64>) -> Self {
+        self.inner.flat_amount = Some(flat_amount.into());
         self
     }
     /// The line item amounts to reverse.
     pub fn line_items(
         mut self,
-        line_items: &'a [CreateReversalTaxTransactionLineItems<'a>],
+        line_items: impl Into<Vec<CreateReversalTaxTransactionLineItems>>,
     ) -> Self {
-        self.inner.line_items = Some(line_items);
+        self.inner.line_items = Some(line_items.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// The shipping cost to reverse.
     pub fn shipping_cost(
         mut self,
-        shipping_cost: CreateReversalTaxTransactionShippingCost,
+        shipping_cost: impl Into<CreateReversalTaxTransactionShippingCost>,
     ) -> Self {
-        self.inner.shipping_cost = Some(shipping_cost);
+        self.inner.shipping_cost = Some(shipping_cost.into());
         self
     }
 }
-impl CreateReversalTaxTransaction<'_> {
+impl CreateReversalTaxTransaction {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -419,7 +446,7 @@ impl CreateReversalTaxTransaction<'_> {
     }
 }
 
-impl StripeRequest for CreateReversalTaxTransaction<'_> {
+impl StripeRequest for CreateReversalTaxTransaction {
     type Output = stripe_misc::TaxTransaction;
 
     fn build(&self) -> RequestBuilder {

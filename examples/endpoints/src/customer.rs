@@ -11,13 +11,11 @@ use stripe::{Client, StripeError};
 use stripe_core::customer::{CreateCustomer, ListCustomer};
 
 pub async fn run_customer_example(client: &Client) -> Result<(), StripeError> {
-    let meta =
-        std::collections::HashMap::from([(String::from("async-stripe"), String::from("true"))]);
     let customer = CreateCustomer::new()
         .name("Alexander Lyon")
         .email("test@async-stripe.com")
         .description("A fake customer that is used to illustrate the examples in async-stripe.")
-        .metadata(&meta)
+        .metadata([(String::from("async-stripe"), String::from("true"))])
         .send(client)
         .await?;
 
@@ -27,7 +25,7 @@ pub async fn run_customer_example(client: &Client) -> Result<(), StripeError> {
         .name("Someone Else")
         .email("test@async-stripe.com")
         .description("A fake customer that is used to illustrate the examples in async-stripe.")
-        .metadata(&meta)
+        .metadata([(String::from("async-stripe"), String::from("true"))])
         .send(client)
         .await?;
 

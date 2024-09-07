@@ -18,27 +18,28 @@ use stripe_product::product::CreateProduct;
 use stripe_types::{Currency, Expandable};
 
 pub async fn run_checkout_session_example(client: &stripe::Client) -> Result<(), StripeError> {
-    let metadata =
-        std::collections::HashMap::from([(String::from("async-stripe"), String::from("true"))]);
     let customer = CreateCustomer::new()
         .name("Alexander Lyon")
         .email("test@async-stripe.com")
         .description("A fake customer that is used to illustrate the examples in async-stripe.")
-        .metadata(&metadata)
+        .metadata([(String::from("async-stripe"), String::from("true"))])
         .send(client)
         .await?;
 
     println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
 
     // create a new example product
-    let product = CreateProduct::new("T-Shirt").metadata(&metadata).send(client).await?;
+    let product = CreateProduct::new("T-Shirt")
+        .metadata([(String::from("async-stripe"), String::from("true"))])
+        .send(client)
+        .await?;
 
     // and add a price for it in USD
     let price = CreatePrice::new(Currency::USD)
         .product(product.id.as_str())
-        .metadata(&metadata)
+        .metadata([(String::from("async-stripe"), String::from("true"))])
         .unit_amount(1000)
-        .expand(&["product"])
+        .expand([String::from("product")])
         .send(client)
         .await?;
 
@@ -52,15 +53,15 @@ pub async fn run_checkout_session_example(client: &stripe::Client) -> Result<(),
     // finally, create a checkout session for this product / price
     let line_items = vec![CreateCheckoutSessionLineItems {
         quantity: Some(3),
-        price: Some(&price.id),
+        price: Some(price.id.to_string()),
         ..Default::default()
     }];
     let checkout_session = CreateCheckoutSession::new()
         .cancel_url("http://test.com/cancel")
         .customer(customer.id.as_str())
         .mode(CheckoutSessionMode::Payment)
-        .line_items(&line_items)
-        .expand(&["line_items", "line_items.data.price.product"])
+        .line_items(line_items)
+        .expand([String::from("line_items"), String::from("line_items.data.price.product")])
         .send(client)
         .await?;
 

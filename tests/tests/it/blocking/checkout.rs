@@ -1,4 +1,4 @@
-use stripe_checkout::checkout_session::RetrieveCheckoutSession;
+use stripe_checkout::{checkout_session::RetrieveCheckoutSession, CheckoutSessionId};
 
 use super::get_client;
 
@@ -6,7 +6,7 @@ use super::get_client;
 fn is_checkout_session_retrievable() {
     let client = get_client();
 
-    let id = "cs_test_123".parse().unwrap();
-    let session = RetrieveCheckoutSession::new(&id).send_blocking(&client).unwrap();
+    let id = CheckoutSessionId::from("cs_test_123");
+    let session = RetrieveCheckoutSession::new(id).send_blocking(&client).unwrap();
     assert_eq!(session.id, "cs_test_123");
 }

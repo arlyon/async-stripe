@@ -2,34 +2,34 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct DeleteEphemeralKeyBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct DeleteEphemeralKeyBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> DeleteEphemeralKeyBuilder<'a> {
+impl DeleteEphemeralKeyBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Invalidates a short-lived API key for a given resource.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeleteEphemeralKey<'a> {
-    inner: DeleteEphemeralKeyBuilder<'a>,
-    key: &'a stripe_misc::EphemeralKeyId,
+pub struct DeleteEphemeralKey {
+    inner: DeleteEphemeralKeyBuilder,
+    key: stripe_misc::EphemeralKeyId,
 }
-impl<'a> DeleteEphemeralKey<'a> {
+impl DeleteEphemeralKey {
     /// Construct a new `DeleteEphemeralKey`.
-    pub fn new(key: &'a stripe_misc::EphemeralKeyId) -> Self {
-        Self { key, inner: DeleteEphemeralKeyBuilder::new() }
+    pub fn new(key: impl Into<stripe_misc::EphemeralKeyId>) -> Self {
+        Self { key: key.into(), inner: DeleteEphemeralKeyBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl DeleteEphemeralKey<'_> {
+impl DeleteEphemeralKey {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -47,29 +47,29 @@ impl DeleteEphemeralKey<'_> {
     }
 }
 
-impl StripeRequest for DeleteEphemeralKey<'_> {
+impl StripeRequest for DeleteEphemeralKey {
     type Output = stripe_misc::EphemeralKey;
 
     fn build(&self) -> RequestBuilder {
-        let key = self.key;
+        let key = &self.key;
         RequestBuilder::new(StripeMethod::Delete, format!("/ephemeral_keys/{key}"))
             .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateEphemeralKeyBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateEphemeralKeyBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<&'a str>,
+    customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    issuing_card: Option<&'a str>,
+    issuing_card: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    nonce: Option<&'a str>,
+    nonce: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    verification_session: Option<&'a str>,
+    verification_session: Option<String>,
 }
-impl<'a> CreateEphemeralKeyBuilder<'a> {
+impl CreateEphemeralKeyBuilder {
     fn new() -> Self {
         Self {
             customer: None,
@@ -82,46 +82,46 @@ impl<'a> CreateEphemeralKeyBuilder<'a> {
 }
 /// Creates a short-lived API key for a given resource.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateEphemeralKey<'a> {
-    inner: CreateEphemeralKeyBuilder<'a>,
+pub struct CreateEphemeralKey {
+    inner: CreateEphemeralKeyBuilder,
 }
-impl<'a> CreateEphemeralKey<'a> {
+impl CreateEphemeralKey {
     /// Construct a new `CreateEphemeralKey`.
     pub fn new() -> Self {
         Self { inner: CreateEphemeralKeyBuilder::new() }
     }
     /// The ID of the Customer you'd like to modify using the resulting ephemeral key.
-    pub fn customer(mut self, customer: &'a str) -> Self {
-        self.inner.customer = Some(customer);
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// The ID of the Issuing Card you'd like to access using the resulting ephemeral key.
-    pub fn issuing_card(mut self, issuing_card: &'a str) -> Self {
-        self.inner.issuing_card = Some(issuing_card);
+    pub fn issuing_card(mut self, issuing_card: impl Into<String>) -> Self {
+        self.inner.issuing_card = Some(issuing_card.into());
         self
     }
     /// A single-use token, created by Stripe.js, used for creating ephemeral keys for Issuing Cards without exchanging sensitive information.
-    pub fn nonce(mut self, nonce: &'a str) -> Self {
-        self.inner.nonce = Some(nonce);
+    pub fn nonce(mut self, nonce: impl Into<String>) -> Self {
+        self.inner.nonce = Some(nonce.into());
         self
     }
     /// The ID of the Identity VerificationSession you'd like to access using the resulting ephemeral key
-    pub fn verification_session(mut self, verification_session: &'a str) -> Self {
-        self.inner.verification_session = Some(verification_session);
+    pub fn verification_session(mut self, verification_session: impl Into<String>) -> Self {
+        self.inner.verification_session = Some(verification_session.into());
         self
     }
 }
-impl<'a> Default for CreateEphemeralKey<'a> {
+impl Default for CreateEphemeralKey {
     fn default() -> Self {
         Self::new()
     }
 }
-impl CreateEphemeralKey<'_> {
+impl CreateEphemeralKey {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -139,7 +139,7 @@ impl CreateEphemeralKey<'_> {
     }
 }
 
-impl StripeRequest for CreateEphemeralKey<'_> {
+impl StripeRequest for CreateEphemeralKey {
     type Output = stripe_misc::EphemeralKey;
 
     fn build(&self) -> RequestBuilder {

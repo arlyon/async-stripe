@@ -2,34 +2,34 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveCashBalanceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveCashBalanceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveCashBalanceBuilder<'a> {
+impl RetrieveCashBalanceBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves a customer’s cash balance.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveCashBalance<'a> {
-    inner: RetrieveCashBalanceBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
+pub struct RetrieveCashBalance {
+    inner: RetrieveCashBalanceBuilder,
+    customer: stripe_shared::CustomerId,
 }
-impl<'a> RetrieveCashBalance<'a> {
+impl RetrieveCashBalance {
     /// Construct a new `RetrieveCashBalance`.
-    pub fn new(customer: &'a stripe_shared::CustomerId) -> Self {
-        Self { customer, inner: RetrieveCashBalanceBuilder::new() }
+    pub fn new(customer: impl Into<stripe_shared::CustomerId>) -> Self {
+        Self { customer: customer.into(), inner: RetrieveCashBalanceBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveCashBalance<'_> {
+impl RetrieveCashBalance {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -47,23 +47,23 @@ impl RetrieveCashBalance<'_> {
     }
 }
 
-impl StripeRequest for RetrieveCashBalance<'_> {
+impl StripeRequest for RetrieveCashBalance {
     type Output = stripe_shared::CashBalance;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
+        let customer = &self.customer;
         RequestBuilder::new(StripeMethod::Get, format!("/customers/{customer}/cash_balance"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateCashBalanceBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateCashBalanceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     settings: Option<UpdateCashBalanceSettings>,
 }
-impl<'a> UpdateCashBalanceBuilder<'a> {
+impl UpdateCashBalanceBuilder {
     fn new() -> Self {
         Self { expand: None, settings: None }
     }
@@ -152,27 +152,27 @@ impl<'de> serde::Deserialize<'de> for UpdateCashBalanceSettingsReconciliationMod
 }
 /// Changes the settings on a customer’s cash balance.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateCashBalance<'a> {
-    inner: UpdateCashBalanceBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
+pub struct UpdateCashBalance {
+    inner: UpdateCashBalanceBuilder,
+    customer: stripe_shared::CustomerId,
 }
-impl<'a> UpdateCashBalance<'a> {
+impl UpdateCashBalance {
     /// Construct a new `UpdateCashBalance`.
-    pub fn new(customer: &'a stripe_shared::CustomerId) -> Self {
-        Self { customer, inner: UpdateCashBalanceBuilder::new() }
+    pub fn new(customer: impl Into<stripe_shared::CustomerId>) -> Self {
+        Self { customer: customer.into(), inner: UpdateCashBalanceBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A hash of settings for this cash balance.
-    pub fn settings(mut self, settings: UpdateCashBalanceSettings) -> Self {
-        self.inner.settings = Some(settings);
+    pub fn settings(mut self, settings: impl Into<UpdateCashBalanceSettings>) -> Self {
+        self.inner.settings = Some(settings.into());
         self
     }
 }
-impl UpdateCashBalance<'_> {
+impl UpdateCashBalance {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -190,11 +190,11 @@ impl UpdateCashBalance<'_> {
     }
 }
 
-impl StripeRequest for UpdateCashBalance<'_> {
+impl StripeRequest for UpdateCashBalance {
     type Output = stripe_shared::CashBalance;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
+        let customer = &self.customer;
         RequestBuilder::new(StripeMethod::Post, format!("/customers/{customer}/cash_balance"))
             .form(&self.inner)
     }

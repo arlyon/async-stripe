@@ -2,12 +2,12 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListAccountCapabilityBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListAccountCapabilityBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> ListAccountCapabilityBuilder<'a> {
+impl ListAccountCapabilityBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
@@ -15,22 +15,22 @@ impl<'a> ListAccountCapabilityBuilder<'a> {
 /// Returns a list of capabilities associated with the account.
 /// The capabilities are returned sorted by creation date, with the most recent capability appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListAccountCapability<'a> {
-    inner: ListAccountCapabilityBuilder<'a>,
-    account: &'a stripe_shared::AccountId,
+pub struct ListAccountCapability {
+    inner: ListAccountCapabilityBuilder,
+    account: stripe_shared::AccountId,
 }
-impl<'a> ListAccountCapability<'a> {
+impl ListAccountCapability {
     /// Construct a new `ListAccountCapability`.
-    pub fn new(account: &'a stripe_shared::AccountId) -> Self {
-        Self { account, inner: ListAccountCapabilityBuilder::new() }
+    pub fn new(account: impl Into<stripe_shared::AccountId>) -> Self {
+        Self { account: account.into(), inner: ListAccountCapabilityBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl ListAccountCapability<'_> {
+impl ListAccountCapability {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -50,53 +50,60 @@ impl ListAccountCapability<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::Capability>> {
-        let account = self.account;
+        let account = &self.account;
 
         stripe_client_core::ListPaginator::new_list(
             format!("/accounts/{account}/capabilities"),
-            self.inner,
+            &self.inner,
         )
     }
 }
 
-impl StripeRequest for ListAccountCapability<'_> {
+impl StripeRequest for ListAccountCapability {
     type Output = stripe_types::List<stripe_shared::Capability>;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
+        let account = &self.account;
         RequestBuilder::new(StripeMethod::Get, format!("/accounts/{account}/capabilities"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveCapabilityBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveCapabilityBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveCapabilityBuilder<'a> {
+impl RetrieveCapabilityBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves information about the specified Account Capability.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveCapability<'a> {
-    inner: RetrieveCapabilityBuilder<'a>,
-    account: &'a stripe_shared::AccountId,
-    capability: &'a str,
+pub struct RetrieveCapability {
+    inner: RetrieveCapabilityBuilder,
+    account: stripe_shared::AccountId,
+    capability: String,
 }
-impl<'a> RetrieveCapability<'a> {
+impl RetrieveCapability {
     /// Construct a new `RetrieveCapability`.
-    pub fn new(account: &'a stripe_shared::AccountId, capability: &'a str) -> Self {
-        Self { account, capability, inner: RetrieveCapabilityBuilder::new() }
+    pub fn new(
+        account: impl Into<stripe_shared::AccountId>,
+        capability: impl Into<String>,
+    ) -> Self {
+        Self {
+            account: account.into(),
+            capability: capability.into(),
+            inner: RetrieveCapabilityBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveCapability<'_> {
+impl RetrieveCapability {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -114,12 +121,12 @@ impl RetrieveCapability<'_> {
     }
 }
 
-impl StripeRequest for RetrieveCapability<'_> {
+impl StripeRequest for RetrieveCapability {
     type Output = stripe_shared::Capability;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
-        let capability = self.capability;
+        let account = &self.account;
+        let capability = &self.capability;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/accounts/{account}/capabilities/{capability}"),
@@ -127,14 +134,14 @@ impl StripeRequest for RetrieveCapability<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateCapabilityBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateCapabilityBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     requested: Option<bool>,
 }
-impl<'a> UpdateCapabilityBuilder<'a> {
+impl UpdateCapabilityBuilder {
     fn new() -> Self {
         Self { expand: None, requested: None }
     }
@@ -142,19 +149,26 @@ impl<'a> UpdateCapabilityBuilder<'a> {
 /// Updates an existing Account Capability.
 /// Request or remove a capability by updating its `requested` parameter.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateCapability<'a> {
-    inner: UpdateCapabilityBuilder<'a>,
-    account: &'a stripe_shared::AccountId,
-    capability: &'a str,
+pub struct UpdateCapability {
+    inner: UpdateCapabilityBuilder,
+    account: stripe_shared::AccountId,
+    capability: String,
 }
-impl<'a> UpdateCapability<'a> {
+impl UpdateCapability {
     /// Construct a new `UpdateCapability`.
-    pub fn new(account: &'a stripe_shared::AccountId, capability: &'a str) -> Self {
-        Self { account, capability, inner: UpdateCapabilityBuilder::new() }
+    pub fn new(
+        account: impl Into<stripe_shared::AccountId>,
+        capability: impl Into<String>,
+    ) -> Self {
+        Self {
+            account: account.into(),
+            capability: capability.into(),
+            inner: UpdateCapabilityBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// To request a new capability for an account, pass true.
@@ -164,12 +178,12 @@ impl<'a> UpdateCapability<'a> {
     /// If a capability isn't permanent, you can remove it from the account by passing false.
     /// Most capabilities are permanent after they've been requested.
     /// Attempting to remove a permanent capability returns an error.
-    pub fn requested(mut self, requested: bool) -> Self {
-        self.inner.requested = Some(requested);
+    pub fn requested(mut self, requested: impl Into<bool>) -> Self {
+        self.inner.requested = Some(requested.into());
         self
     }
 }
-impl UpdateCapability<'_> {
+impl UpdateCapability {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -187,12 +201,12 @@ impl UpdateCapability<'_> {
     }
 }
 
-impl StripeRequest for UpdateCapability<'_> {
+impl StripeRequest for UpdateCapability {
     type Output = stripe_shared::Capability;
 
     fn build(&self) -> RequestBuilder {
-        let account = self.account;
-        let capability = self.capability;
+        let account = &self.account;
+        let capability = &self.capability;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/accounts/{account}/capabilities/{capability}"),

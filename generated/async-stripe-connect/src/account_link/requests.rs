@@ -2,32 +2,32 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateAccountLinkBuilder<'a> {
-    account: &'a str,
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateAccountLinkBuilder {
+    account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     collect: Option<CreateAccountLinkCollect>,
     #[serde(skip_serializing_if = "Option::is_none")]
     collection_options: Option<CreateAccountLinkCollectionOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    refresh_url: Option<&'a str>,
+    refresh_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    return_url: Option<&'a str>,
+    return_url: Option<String>,
     #[serde(rename = "type")]
     type_: CreateAccountLinkType,
 }
-impl<'a> CreateAccountLinkBuilder<'a> {
-    fn new(account: &'a str, type_: CreateAccountLinkType) -> Self {
+impl CreateAccountLinkBuilder {
+    fn new(account: impl Into<String>, type_: impl Into<CreateAccountLinkType>) -> Self {
         Self {
-            account,
+            account: account.into(),
             collect: None,
             collection_options: None,
             expand: None,
             refresh_url: None,
             return_url: None,
-            type_,
+            type_: type_.into(),
         }
     }
 }
@@ -98,8 +98,8 @@ pub struct CreateAccountLinkCollectionOptions {
     pub future_requirements: Option<CreateAccountLinkCollectionOptionsFutureRequirements>,
 }
 impl CreateAccountLinkCollectionOptions {
-    pub fn new(fields: CreateAccountLinkCollectionOptionsFields) -> Self {
-        Self { fields, future_requirements: None }
+    pub fn new(fields: impl Into<CreateAccountLinkCollectionOptionsFields>) -> Self {
+        Self { fields: fields.into(), future_requirements: None }
     }
 }
 /// Specifies whether the platform collects only currently_due requirements (`currently_due`) or both currently_due and eventually_due requirements (`eventually_due`).
@@ -276,46 +276,46 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkType {
 }
 /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountLink<'a> {
-    inner: CreateAccountLinkBuilder<'a>,
+pub struct CreateAccountLink {
+    inner: CreateAccountLinkBuilder,
 }
-impl<'a> CreateAccountLink<'a> {
+impl CreateAccountLink {
     /// Construct a new `CreateAccountLink`.
-    pub fn new(account: &'a str, type_: CreateAccountLinkType) -> Self {
-        Self { inner: CreateAccountLinkBuilder::new(account, type_) }
+    pub fn new(account: impl Into<String>, type_: impl Into<CreateAccountLinkType>) -> Self {
+        Self { inner: CreateAccountLinkBuilder::new(account.into(), type_.into()) }
     }
     /// The collect parameter is deprecated. Use `collection_options` instead.
-    pub fn collect(mut self, collect: CreateAccountLinkCollect) -> Self {
-        self.inner.collect = Some(collect);
+    pub fn collect(mut self, collect: impl Into<CreateAccountLinkCollect>) -> Self {
+        self.inner.collect = Some(collect.into());
         self
     }
     /// Specifies the requirements that Stripe collects from connected accounts in the Connect Onboarding flow.
     pub fn collection_options(
         mut self,
-        collection_options: CreateAccountLinkCollectionOptions,
+        collection_options: impl Into<CreateAccountLinkCollectionOptions>,
     ) -> Self {
-        self.inner.collection_options = Some(collection_options);
+        self.inner.collection_options = Some(collection_options.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// The URL the user will be redirected to if the account link is expired, has been previously-visited, or is otherwise invalid.
     /// The URL you specify should attempt to generate a new account link with the same parameters used to create the original account link, then redirect the user to the new account link's URL so they can continue with Connect Onboarding.
     /// If a new account link cannot be generated or the redirect fails you should display a useful error to the user.
-    pub fn refresh_url(mut self, refresh_url: &'a str) -> Self {
-        self.inner.refresh_url = Some(refresh_url);
+    pub fn refresh_url(mut self, refresh_url: impl Into<String>) -> Self {
+        self.inner.refresh_url = Some(refresh_url.into());
         self
     }
     /// The URL that the user will be redirected to upon leaving or completing the linked flow.
-    pub fn return_url(mut self, return_url: &'a str) -> Self {
-        self.inner.return_url = Some(return_url);
+    pub fn return_url(mut self, return_url: impl Into<String>) -> Self {
+        self.inner.return_url = Some(return_url.into());
         self
     }
 }
-impl CreateAccountLink<'_> {
+impl CreateAccountLink {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -333,7 +333,7 @@ impl CreateAccountLink<'_> {
     }
 }
 
-impl StripeRequest for CreateAccountLink<'_> {
+impl StripeRequest for CreateAccountLink {
     type Output = stripe_connect::AccountLink;
 
     fn build(&self) -> RequestBuilder {

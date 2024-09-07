@@ -6,16 +6,16 @@ use stripe_client_core::{
 /// It cannot be undone.
 /// Also immediately cancels any active subscriptions on the customer.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeleteCustomer<'a> {
-    customer: &'a stripe_shared::CustomerId,
+pub struct DeleteCustomer {
+    customer: stripe_shared::CustomerId,
 }
-impl<'a> DeleteCustomer<'a> {
+impl DeleteCustomer {
     /// Construct a new `DeleteCustomer`.
-    pub fn new(customer: &'a stripe_shared::CustomerId) -> Self {
-        Self { customer }
+    pub fn new(customer: impl Into<stripe_shared::CustomerId>) -> Self {
+        Self { customer: customer.into() }
     }
 }
-impl DeleteCustomer<'_> {
+impl DeleteCustomer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -33,26 +33,26 @@ impl DeleteCustomer<'_> {
     }
 }
 
-impl StripeRequest for DeleteCustomer<'_> {
+impl StripeRequest for DeleteCustomer {
     type Output = stripe_shared::DeletedCustomer;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
+        let customer = &self.customer;
         RequestBuilder::new(StripeMethod::Delete, format!("/customers/{customer}"))
     }
 }
 /// Removes the currently applied discount on a customer.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct DeleteDiscountCustomer<'a> {
-    customer: &'a stripe_shared::CustomerId,
+pub struct DeleteDiscountCustomer {
+    customer: stripe_shared::CustomerId,
 }
-impl<'a> DeleteDiscountCustomer<'a> {
+impl DeleteDiscountCustomer {
     /// Construct a new `DeleteDiscountCustomer`.
-    pub fn new(customer: &'a stripe_shared::CustomerId) -> Self {
-        Self { customer }
+    pub fn new(customer: impl Into<stripe_shared::CustomerId>) -> Self {
+        Self { customer: customer.into() }
     }
 }
-impl DeleteDiscountCustomer<'_> {
+impl DeleteDiscountCustomer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -70,32 +70,32 @@ impl DeleteDiscountCustomer<'_> {
     }
 }
 
-impl StripeRequest for DeleteDiscountCustomer<'_> {
+impl StripeRequest for DeleteDiscountCustomer {
     type Output = stripe_shared::DeletedDiscount;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
+        let customer = &self.customer;
         RequestBuilder::new(StripeMethod::Delete, format!("/customers/{customer}/discount"))
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListCustomerBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    email: Option<&'a str>,
+    email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    test_clock: Option<&'a str>,
+    test_clock: Option<String>,
 }
-impl<'a> ListCustomerBuilder<'a> {
+impl ListCustomerBuilder {
     fn new() -> Self {
         Self {
             created: None,
@@ -111,63 +111,63 @@ impl<'a> ListCustomerBuilder<'a> {
 /// Returns a list of your customers.
 /// The customers are returned sorted by creation date, with the most recent customers appearing first.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListCustomer<'a> {
-    inner: ListCustomerBuilder<'a>,
+pub struct ListCustomer {
+    inner: ListCustomerBuilder,
 }
-impl<'a> ListCustomer<'a> {
+impl ListCustomer {
     /// Construct a new `ListCustomer`.
     pub fn new() -> Self {
         Self { inner: ListCustomerBuilder::new() }
     }
     /// Only return customers that were created during the given date interval.
-    pub fn created(mut self, created: stripe_types::RangeQueryTs) -> Self {
-        self.inner.created = Some(created);
+    pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.created = Some(created.into());
         self
     }
     /// A case-sensitive filter on the list based on the customer's `email` field.
     /// The value must be a string.
-    pub fn email(mut self, email: &'a str) -> Self {
-        self.inner.email = Some(email);
+    pub fn email(mut self, email: impl Into<String>) -> Self {
+        self.inner.email = Some(email.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// Provides a list of customers that are associated with the specified test clock.
     /// The response will not include customers with test clocks if this parameter is not set.
-    pub fn test_clock(mut self, test_clock: &'a str) -> Self {
-        self.inner.test_clock = Some(test_clock);
+    pub fn test_clock(mut self, test_clock: impl Into<String>) -> Self {
+        self.inner.test_clock = Some(test_clock.into());
         self
     }
 }
-impl<'a> Default for ListCustomer<'a> {
+impl Default for ListCustomer {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ListCustomer<'_> {
+impl ListCustomer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -187,45 +187,45 @@ impl ListCustomer<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::Customer>> {
-        stripe_client_core::ListPaginator::new_list("/customers", self.inner)
+        stripe_client_core::ListPaginator::new_list("/customers", &self.inner)
     }
 }
 
-impl StripeRequest for ListCustomer<'_> {
+impl StripeRequest for ListCustomer {
     type Output = stripe_types::List<stripe_shared::Customer>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/customers").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrieveCustomerBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrieveCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrieveCustomerBuilder<'a> {
+impl RetrieveCustomerBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves a Customer object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrieveCustomer<'a> {
-    inner: RetrieveCustomerBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
+pub struct RetrieveCustomer {
+    inner: RetrieveCustomerBuilder,
+    customer: stripe_shared::CustomerId,
 }
-impl<'a> RetrieveCustomer<'a> {
+impl RetrieveCustomer {
     /// Construct a new `RetrieveCustomer`.
-    pub fn new(customer: &'a stripe_shared::CustomerId) -> Self {
-        Self { customer, inner: RetrieveCustomerBuilder::new() }
+    pub fn new(customer: impl Into<stripe_shared::CustomerId>) -> Self {
+        Self { customer: customer.into(), inner: RetrieveCustomerBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrieveCustomer<'_> {
+impl RetrieveCustomer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -243,11 +243,11 @@ impl RetrieveCustomer<'_> {
     }
 }
 
-impl StripeRequest for RetrieveCustomer<'_> {
+impl StripeRequest for RetrieveCustomer {
     type Output = RetrieveCustomerReturned;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
+        let customer = &self.customer;
         RequestBuilder::new(StripeMethod::Get, format!("/customers/{customer}")).query(&self.inner)
     }
 }
@@ -331,60 +331,60 @@ const _: () = {
     }
 };
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct BalanceTransactionsCustomerBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct BalanceTransactionsCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
 }
-impl<'a> BalanceTransactionsCustomerBuilder<'a> {
+impl BalanceTransactionsCustomerBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct BalanceTransactionsCustomer<'a> {
-    inner: BalanceTransactionsCustomerBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
+pub struct BalanceTransactionsCustomer {
+    inner: BalanceTransactionsCustomerBuilder,
+    customer: stripe_shared::CustomerId,
 }
-impl<'a> BalanceTransactionsCustomer<'a> {
+impl BalanceTransactionsCustomer {
     /// Construct a new `BalanceTransactionsCustomer`.
-    pub fn new(customer: &'a stripe_shared::CustomerId) -> Self {
-        Self { customer, inner: BalanceTransactionsCustomerBuilder::new() }
+    pub fn new(customer: impl Into<stripe_shared::CustomerId>) -> Self {
+        Self { customer: customer.into(), inner: BalanceTransactionsCustomerBuilder::new() }
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
 }
-impl BalanceTransactionsCustomer<'_> {
+impl BalanceTransactionsCustomer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -406,20 +406,20 @@ impl BalanceTransactionsCustomer<'_> {
     ) -> stripe_client_core::ListPaginator<
         stripe_types::List<stripe_shared::CustomerBalanceTransaction>,
     > {
-        let customer = self.customer;
+        let customer = &self.customer;
 
         stripe_client_core::ListPaginator::new_list(
             format!("/customers/{customer}/balance_transactions"),
-            self.inner,
+            &self.inner,
         )
     }
 }
 
-impl StripeRequest for BalanceTransactionsCustomer<'_> {
+impl StripeRequest for BalanceTransactionsCustomer {
     type Output = stripe_types::List<stripe_shared::CustomerBalanceTransaction>;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
+        let customer = &self.customer;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/customers/{customer}/balance_transactions"),
@@ -427,23 +427,23 @@ impl StripeRequest for BalanceTransactionsCustomer<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct ListPaymentMethodsCustomerBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct ListPaymentMethodsCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_redisplay: Option<ListPaymentMethodsCustomerAllowRedisplay>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a str>,
+    ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a str>,
+    starting_after: Option<String>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<ListPaymentMethodsCustomerType>,
 }
-impl<'a> ListPaymentMethodsCustomerBuilder<'a> {
+impl ListPaymentMethodsCustomerBuilder {
     fn new() -> Self {
         Self {
             allow_redisplay: None,
@@ -677,59 +677,59 @@ impl<'de> serde::Deserialize<'de> for ListPaymentMethodsCustomerType {
 }
 /// Returns a list of PaymentMethods for a given Customer
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct ListPaymentMethodsCustomer<'a> {
-    inner: ListPaymentMethodsCustomerBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
+pub struct ListPaymentMethodsCustomer {
+    inner: ListPaymentMethodsCustomerBuilder,
+    customer: stripe_shared::CustomerId,
 }
-impl<'a> ListPaymentMethodsCustomer<'a> {
+impl ListPaymentMethodsCustomer {
     /// Construct a new `ListPaymentMethodsCustomer`.
-    pub fn new(customer: &'a stripe_shared::CustomerId) -> Self {
-        Self { customer, inner: ListPaymentMethodsCustomerBuilder::new() }
+    pub fn new(customer: impl Into<stripe_shared::CustomerId>) -> Self {
+        Self { customer: customer.into(), inner: ListPaymentMethodsCustomerBuilder::new() }
     }
     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
     /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
     /// The field defaults to `unspecified`.
     pub fn allow_redisplay(
         mut self,
-        allow_redisplay: ListPaymentMethodsCustomerAllowRedisplay,
+        allow_redisplay: impl Into<ListPaymentMethodsCustomerAllowRedisplay>,
     ) -> Self {
-        self.inner.allow_redisplay = Some(allow_redisplay);
+        self.inner.allow_redisplay = Some(allow_redisplay.into());
         self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: &'a str) -> Self {
-        self.inner.ending_before = Some(ending_before);
+    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
+        self.inner.ending_before = Some(ending_before.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for use in pagination.
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: &'a str) -> Self {
-        self.inner.starting_after = Some(starting_after);
+    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
+        self.inner.starting_after = Some(starting_after.into());
         self
     }
     /// An optional filter on the list, based on the object `type` field.
     /// Without the filter, the list includes all current and future payment method types.
     /// If your integration expects only one type of payment method in the response, make sure to provide a type value in the request.
-    pub fn type_(mut self, type_: ListPaymentMethodsCustomerType) -> Self {
-        self.inner.type_ = Some(type_);
+    pub fn type_(mut self, type_: impl Into<ListPaymentMethodsCustomerType>) -> Self {
+        self.inner.type_ = Some(type_.into());
         self
     }
 }
-impl ListPaymentMethodsCustomer<'_> {
+impl ListPaymentMethodsCustomer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -749,53 +749,60 @@ impl ListPaymentMethodsCustomer<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::PaymentMethod>> {
-        let customer = self.customer;
+        let customer = &self.customer;
 
         stripe_client_core::ListPaginator::new_list(
             format!("/customers/{customer}/payment_methods"),
-            self.inner,
+            &self.inner,
         )
     }
 }
 
-impl StripeRequest for ListPaymentMethodsCustomer<'_> {
+impl StripeRequest for ListPaymentMethodsCustomer {
     type Output = stripe_types::List<stripe_shared::PaymentMethod>;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
+        let customer = &self.customer;
         RequestBuilder::new(StripeMethod::Get, format!("/customers/{customer}/payment_methods"))
             .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct RetrievePaymentMethodCustomerBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct RetrievePaymentMethodCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
 }
-impl<'a> RetrievePaymentMethodCustomerBuilder<'a> {
+impl RetrievePaymentMethodCustomerBuilder {
     fn new() -> Self {
         Self { expand: None }
     }
 }
 /// Retrieves a PaymentMethod object for a given Customer.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct RetrievePaymentMethodCustomer<'a> {
-    inner: RetrievePaymentMethodCustomerBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
-    payment_method: &'a str,
+pub struct RetrievePaymentMethodCustomer {
+    inner: RetrievePaymentMethodCustomerBuilder,
+    customer: stripe_shared::CustomerId,
+    payment_method: String,
 }
-impl<'a> RetrievePaymentMethodCustomer<'a> {
+impl RetrievePaymentMethodCustomer {
     /// Construct a new `RetrievePaymentMethodCustomer`.
-    pub fn new(customer: &'a stripe_shared::CustomerId, payment_method: &'a str) -> Self {
-        Self { customer, payment_method, inner: RetrievePaymentMethodCustomerBuilder::new() }
+    pub fn new(
+        customer: impl Into<stripe_shared::CustomerId>,
+        payment_method: impl Into<String>,
+    ) -> Self {
+        Self {
+            customer: customer.into(),
+            payment_method: payment_method.into(),
+            inner: RetrievePaymentMethodCustomerBuilder::new(),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl RetrievePaymentMethodCustomer<'_> {
+impl RetrievePaymentMethodCustomer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -813,12 +820,12 @@ impl RetrievePaymentMethodCustomer<'_> {
     }
 }
 
-impl StripeRequest for RetrievePaymentMethodCustomer<'_> {
+impl StripeRequest for RetrievePaymentMethodCustomer {
     type Output = stripe_shared::PaymentMethod;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
-        let payment_method = self.payment_method;
+        let customer = &self.customer;
+        let payment_method = &self.payment_method;
         RequestBuilder::new(
             StripeMethod::Get,
             format!("/customers/{customer}/payment_methods/{payment_method}"),
@@ -826,19 +833,19 @@ impl StripeRequest for RetrievePaymentMethodCustomer<'_> {
         .query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct SearchCustomerBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct SearchCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    page: Option<&'a str>,
-    query: &'a str,
+    page: Option<String>,
+    query: String,
 }
-impl<'a> SearchCustomerBuilder<'a> {
-    fn new(query: &'a str) -> Self {
-        Self { expand: None, limit: None, page: None, query }
+impl SearchCustomerBuilder {
+    fn new(query: impl Into<String>) -> Self {
+        Self { expand: None, limit: None, page: None, query: query.into() }
     }
 }
 /// Search for customers you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
@@ -848,34 +855,34 @@ impl<'a> SearchCustomerBuilder<'a> {
 /// Occasionally, propagation of new or updated data can be up.
 /// to an hour behind during outages. Search functionality is not available to merchants in India.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct SearchCustomer<'a> {
-    inner: SearchCustomerBuilder<'a>,
+pub struct SearchCustomer {
+    inner: SearchCustomerBuilder,
 }
-impl<'a> SearchCustomer<'a> {
+impl SearchCustomer {
     /// Construct a new `SearchCustomer`.
-    pub fn new(query: &'a str) -> Self {
-        Self { inner: SearchCustomerBuilder::new(query) }
+    pub fn new(query: impl Into<String>) -> Self {
+        Self { inner: SearchCustomerBuilder::new(query.into()) }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A limit on the number of objects to be returned.
     /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: i64) -> Self {
-        self.inner.limit = Some(limit);
+    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
+        self.inner.limit = Some(limit.into());
         self
     }
     /// A cursor for pagination across multiple pages of results.
     /// Don't include this parameter on the first call.
     /// Use the next_page value returned in a previous response to request subsequent results.
-    pub fn page(mut self, page: &'a str) -> Self {
-        self.inner.page = Some(page);
+    pub fn page(mut self, page: impl Into<String>) -> Self {
+        self.inner.page = Some(page.into());
         self
     }
 }
-impl SearchCustomer<'_> {
+impl SearchCustomer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -895,67 +902,67 @@ impl SearchCustomer<'_> {
     pub fn paginate(
         &self,
     ) -> stripe_client_core::ListPaginator<stripe_types::SearchList<stripe_shared::Customer>> {
-        stripe_client_core::ListPaginator::new_search_list("/customers/search", self.inner)
+        stripe_client_core::ListPaginator::new_search_list("/customers/search", &self.inner)
     }
 }
 
-impl StripeRequest for SearchCustomer<'_> {
+impl StripeRequest for SearchCustomer {
     type Output = stripe_types::SearchList<stripe_shared::Customer>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/customers/search").query(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateCustomerBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    address: Option<OptionalFieldsAddress<'a>>,
+    address: Option<OptionalFieldsAddress>,
     #[serde(skip_serializing_if = "Option::is_none")]
     balance: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cash_balance: Option<CreateCustomerCashBalance>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    coupon: Option<&'a str>,
+    coupon: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    email: Option<&'a str>,
+    email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    invoice_prefix: Option<&'a str>,
+    invoice_prefix: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    invoice_settings: Option<CreateCustomerInvoiceSettings<'a>>,
+    invoice_settings: Option<CreateCustomerInvoiceSettings>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     next_invoice_sequence: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    payment_method: Option<&'a str>,
+    payment_method: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    phone: Option<&'a str>,
+    phone: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    preferred_locales: Option<&'a [&'a str]>,
+    preferred_locales: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    promotion_code: Option<&'a str>,
+    promotion_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping: Option<CustomerShipping<'a>>,
+    shipping: Option<CustomerShipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    source: Option<&'a str>,
+    source: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax: Option<CreateCustomerTax<'a>>,
+    tax: Option<CreateCustomerTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_exempt: Option<stripe_shared::CustomerTaxExempt>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_id_data: Option<&'a [CreateCustomerTaxIdData<'a>]>,
+    tax_id_data: Option<Vec<CreateCustomerTaxIdData>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    test_clock: Option<&'a str>,
+    test_clock: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     validate: Option<bool>,
 }
-impl<'a> CreateCustomerBuilder<'a> {
+impl CreateCustomerBuilder {
     fn new() -> Self {
         Self {
             address: None,
@@ -1086,23 +1093,23 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerCashBalanceSettingsReconcili
     }
 }
 /// Default invoice settings for this customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateCustomerInvoiceSettings<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateCustomerInvoiceSettings {
     /// The list of up to 4 default custom fields to be displayed on invoices for this customer.
     /// When updating, pass an empty string to remove previously-defined fields.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_fields: Option<&'a [CustomFieldParams<'a>]>,
+    pub custom_fields: Option<Vec<CustomFieldParams>>,
     /// ID of a payment method that's attached to the customer, to be used as the customer's default payment method for subscriptions and invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_payment_method: Option<&'a str>,
+    pub default_payment_method: Option<String>,
     /// Default footer to be displayed on invoices for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub footer: Option<&'a str>,
+    pub footer: Option<String>,
     /// Default options for invoice PDF rendering for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<CreateCustomerInvoiceSettingsRenderingOptions>,
 }
-impl<'a> CreateCustomerInvoiceSettings<'a> {
+impl CreateCustomerInvoiceSettings {
     pub fn new() -> Self {
         Self {
             custom_fields: None,
@@ -1112,7 +1119,7 @@ impl<'a> CreateCustomerInvoiceSettings<'a> {
         }
     }
 }
-impl<'a> Default for CreateCustomerInvoiceSettings<'a> {
+impl Default for CreateCustomerInvoiceSettings {
     fn default() -> Self {
         Self::new()
     }
@@ -1201,24 +1208,24 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Tax details about the customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateCustomerTax<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateCustomerTax {
     /// A recent IP address of the customer used for tax reporting and tax location inference.
     /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
     /// We recommend against updating this field more frequently since it could result in unexpected tax location/reporting outcomes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<&'a str>,
+    pub ip_address: Option<String>,
     /// A flag that indicates when Stripe should validate the customer tax location.
     /// Defaults to `deferred`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub validate_location: Option<CreateCustomerTaxValidateLocation>,
 }
-impl<'a> CreateCustomerTax<'a> {
+impl CreateCustomerTax {
     pub fn new() -> Self {
         Self { ip_address: None, validate_location: None }
     }
 }
-impl<'a> Default for CreateCustomerTax<'a> {
+impl Default for CreateCustomerTax {
     fn default() -> Self {
         Self::new()
     }
@@ -1281,17 +1288,17 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxValidateLocation {
     }
 }
 /// The customer's tax IDs.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateCustomerTaxIdData<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateCustomerTaxIdData {
     /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
     #[serde(rename = "type")]
     pub type_: CreateCustomerTaxIdDataType,
     /// Value of the tax ID.
-    pub value: &'a str,
+    pub value: String,
 }
-impl<'a> CreateCustomerTaxIdData<'a> {
-    pub fn new(type_: CreateCustomerTaxIdDataType, value: &'a str) -> Self {
-        Self { type_, value }
+impl CreateCustomerTaxIdData {
+    pub fn new(type_: impl Into<CreateCustomerTaxIdDataType>, value: impl Into<String>) -> Self {
+        Self { type_: type_.into(), value: value.into() }
     }
 }
 /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
@@ -1561,142 +1568,148 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxIdDataType {
 }
 /// Creates a new customer object.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateCustomer<'a> {
-    inner: CreateCustomerBuilder<'a>,
+pub struct CreateCustomer {
+    inner: CreateCustomerBuilder,
 }
-impl<'a> CreateCustomer<'a> {
+impl CreateCustomer {
     /// Construct a new `CreateCustomer`.
     pub fn new() -> Self {
         Self { inner: CreateCustomerBuilder::new() }
     }
     /// The customer's address.
-    pub fn address(mut self, address: OptionalFieldsAddress<'a>) -> Self {
-        self.inner.address = Some(address);
+    pub fn address(mut self, address: impl Into<OptionalFieldsAddress>) -> Self {
+        self.inner.address = Some(address.into());
         self
     }
     /// An integer amount in cents (or local equivalent) that represents the customer's current balance, which affect the customer's future invoices.
     /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
-    pub fn balance(mut self, balance: i64) -> Self {
-        self.inner.balance = Some(balance);
+    pub fn balance(mut self, balance: impl Into<i64>) -> Self {
+        self.inner.balance = Some(balance.into());
         self
     }
     /// Balance information and default balance settings for this customer.
-    pub fn cash_balance(mut self, cash_balance: CreateCustomerCashBalance) -> Self {
-        self.inner.cash_balance = Some(cash_balance);
+    pub fn cash_balance(mut self, cash_balance: impl Into<CreateCustomerCashBalance>) -> Self {
+        self.inner.cash_balance = Some(cash_balance.into());
         self
     }
-    pub fn coupon(mut self, coupon: &'a str) -> Self {
-        self.inner.coupon = Some(coupon);
+    pub fn coupon(mut self, coupon: impl Into<String>) -> Self {
+        self.inner.coupon = Some(coupon.into());
         self
     }
     /// An arbitrary string that you can attach to a customer object.
     /// It is displayed alongside the customer in the dashboard.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.inner.description = Some(description);
+    pub fn description(mut self, description: impl Into<String>) -> Self {
+        self.inner.description = Some(description.into());
         self
     }
     /// Customer's email address.
     /// It's displayed alongside the customer in your dashboard and can be useful for searching and tracking.
     /// This may be up to *512 characters*.
-    pub fn email(mut self, email: &'a str) -> Self {
-        self.inner.email = Some(email);
+    pub fn email(mut self, email: impl Into<String>) -> Self {
+        self.inner.email = Some(email.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// The prefix for the customer used to generate unique invoice numbers.
     /// Must be 3–12 uppercase letters or numbers.
-    pub fn invoice_prefix(mut self, invoice_prefix: &'a str) -> Self {
-        self.inner.invoice_prefix = Some(invoice_prefix);
+    pub fn invoice_prefix(mut self, invoice_prefix: impl Into<String>) -> Self {
+        self.inner.invoice_prefix = Some(invoice_prefix.into());
         self
     }
     /// Default invoice settings for this customer.
-    pub fn invoice_settings(mut self, invoice_settings: CreateCustomerInvoiceSettings<'a>) -> Self {
-        self.inner.invoice_settings = Some(invoice_settings);
+    pub fn invoice_settings(
+        mut self,
+        invoice_settings: impl Into<CreateCustomerInvoiceSettings>,
+    ) -> Self {
+        self.inner.invoice_settings = Some(invoice_settings.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// The customer's full name or business name.
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
     /// The sequence to be used on the customer's next invoice. Defaults to 1.
-    pub fn next_invoice_sequence(mut self, next_invoice_sequence: i64) -> Self {
-        self.inner.next_invoice_sequence = Some(next_invoice_sequence);
+    pub fn next_invoice_sequence(mut self, next_invoice_sequence: impl Into<i64>) -> Self {
+        self.inner.next_invoice_sequence = Some(next_invoice_sequence.into());
         self
     }
-    pub fn payment_method(mut self, payment_method: &'a str) -> Self {
-        self.inner.payment_method = Some(payment_method);
+    pub fn payment_method(mut self, payment_method: impl Into<String>) -> Self {
+        self.inner.payment_method = Some(payment_method.into());
         self
     }
     /// The customer's phone number.
-    pub fn phone(mut self, phone: &'a str) -> Self {
-        self.inner.phone = Some(phone);
+    pub fn phone(mut self, phone: impl Into<String>) -> Self {
+        self.inner.phone = Some(phone.into());
         self
     }
     /// Customer's preferred languages, ordered by preference.
-    pub fn preferred_locales(mut self, preferred_locales: &'a [&'a str]) -> Self {
-        self.inner.preferred_locales = Some(preferred_locales);
+    pub fn preferred_locales(mut self, preferred_locales: impl Into<Vec<String>>) -> Self {
+        self.inner.preferred_locales = Some(preferred_locales.into());
         self
     }
     /// The ID of a promotion code to apply to the customer.
     /// The customer will have a discount applied on all recurring payments.
     /// Charges you create through the API will not have the discount.
-    pub fn promotion_code(mut self, promotion_code: &'a str) -> Self {
-        self.inner.promotion_code = Some(promotion_code);
+    pub fn promotion_code(mut self, promotion_code: impl Into<String>) -> Self {
+        self.inner.promotion_code = Some(promotion_code.into());
         self
     }
     /// The customer's shipping information. Appears on invoices emailed to this customer.
-    pub fn shipping(mut self, shipping: CustomerShipping<'a>) -> Self {
-        self.inner.shipping = Some(shipping);
+    pub fn shipping(mut self, shipping: impl Into<CustomerShipping>) -> Self {
+        self.inner.shipping = Some(shipping.into());
         self
     }
-    pub fn source(mut self, source: &'a str) -> Self {
-        self.inner.source = Some(source);
+    pub fn source(mut self, source: impl Into<String>) -> Self {
+        self.inner.source = Some(source.into());
         self
     }
     /// Tax details about the customer.
-    pub fn tax(mut self, tax: CreateCustomerTax<'a>) -> Self {
-        self.inner.tax = Some(tax);
+    pub fn tax(mut self, tax: impl Into<CreateCustomerTax>) -> Self {
+        self.inner.tax = Some(tax.into());
         self
     }
     /// The customer's tax exemption. One of `none`, `exempt`, or `reverse`.
-    pub fn tax_exempt(mut self, tax_exempt: stripe_shared::CustomerTaxExempt) -> Self {
-        self.inner.tax_exempt = Some(tax_exempt);
+    pub fn tax_exempt(mut self, tax_exempt: impl Into<stripe_shared::CustomerTaxExempt>) -> Self {
+        self.inner.tax_exempt = Some(tax_exempt.into());
         self
     }
     /// The customer's tax IDs.
-    pub fn tax_id_data(mut self, tax_id_data: &'a [CreateCustomerTaxIdData<'a>]) -> Self {
-        self.inner.tax_id_data = Some(tax_id_data);
+    pub fn tax_id_data(mut self, tax_id_data: impl Into<Vec<CreateCustomerTaxIdData>>) -> Self {
+        self.inner.tax_id_data = Some(tax_id_data.into());
         self
     }
     /// ID of the test clock to attach to the customer.
-    pub fn test_clock(mut self, test_clock: &'a str) -> Self {
-        self.inner.test_clock = Some(test_clock);
+    pub fn test_clock(mut self, test_clock: impl Into<String>) -> Self {
+        self.inner.test_clock = Some(test_clock.into());
         self
     }
-    pub fn validate(mut self, validate: bool) -> Self {
-        self.inner.validate = Some(validate);
+    pub fn validate(mut self, validate: impl Into<bool>) -> Self {
+        self.inner.validate = Some(validate.into());
         self
     }
 }
-impl<'a> Default for CreateCustomer<'a> {
+impl Default for CreateCustomer {
     fn default() -> Self {
         Self::new()
     }
 }
-impl CreateCustomer<'_> {
+impl CreateCustomer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -1714,59 +1727,59 @@ impl CreateCustomer<'_> {
     }
 }
 
-impl StripeRequest for CreateCustomer<'_> {
+impl StripeRequest for CreateCustomer {
     type Output = stripe_shared::Customer;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/customers").form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct UpdateCustomerBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct UpdateCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    address: Option<OptionalFieldsAddress<'a>>,
+    address: Option<OptionalFieldsAddress>,
     #[serde(skip_serializing_if = "Option::is_none")]
     balance: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cash_balance: Option<UpdateCustomerCashBalance>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    coupon: Option<&'a str>,
+    coupon: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_source: Option<&'a str>,
+    default_source: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    email: Option<&'a str>,
+    email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    invoice_prefix: Option<&'a str>,
+    invoice_prefix: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    invoice_settings: Option<UpdateCustomerInvoiceSettings<'a>>,
+    invoice_settings: Option<UpdateCustomerInvoiceSettings>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<&'a std::collections::HashMap<String, String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     next_invoice_sequence: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    phone: Option<&'a str>,
+    phone: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    preferred_locales: Option<&'a [&'a str]>,
+    preferred_locales: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    promotion_code: Option<&'a str>,
+    promotion_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping: Option<CustomerShipping<'a>>,
+    shipping: Option<CustomerShipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    source: Option<&'a str>,
+    source: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax: Option<UpdateCustomerTax<'a>>,
+    tax: Option<UpdateCustomerTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_exempt: Option<stripe_shared::CustomerTaxExempt>,
     #[serde(skip_serializing_if = "Option::is_none")]
     validate: Option<bool>,
 }
-impl<'a> UpdateCustomerBuilder<'a> {
+impl UpdateCustomerBuilder {
     fn new() -> Self {
         Self {
             address: None,
@@ -1895,23 +1908,23 @@ impl<'de> serde::Deserialize<'de> for UpdateCustomerCashBalanceSettingsReconcili
     }
 }
 /// Default invoice settings for this customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateCustomerInvoiceSettings<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateCustomerInvoiceSettings {
     /// The list of up to 4 default custom fields to be displayed on invoices for this customer.
     /// When updating, pass an empty string to remove previously-defined fields.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_fields: Option<&'a [CustomFieldParams<'a>]>,
+    pub custom_fields: Option<Vec<CustomFieldParams>>,
     /// ID of a payment method that's attached to the customer, to be used as the customer's default payment method for subscriptions and invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_payment_method: Option<&'a str>,
+    pub default_payment_method: Option<String>,
     /// Default footer to be displayed on invoices for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub footer: Option<&'a str>,
+    pub footer: Option<String>,
     /// Default options for invoice PDF rendering for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<UpdateCustomerInvoiceSettingsRenderingOptions>,
 }
-impl<'a> UpdateCustomerInvoiceSettings<'a> {
+impl UpdateCustomerInvoiceSettings {
     pub fn new() -> Self {
         Self {
             custom_fields: None,
@@ -1921,7 +1934,7 @@ impl<'a> UpdateCustomerInvoiceSettings<'a> {
         }
     }
 }
-impl<'a> Default for UpdateCustomerInvoiceSettings<'a> {
+impl Default for UpdateCustomerInvoiceSettings {
     fn default() -> Self {
         Self::new()
     }
@@ -2010,24 +2023,24 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Tax details about the customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateCustomerTax<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateCustomerTax {
     /// A recent IP address of the customer used for tax reporting and tax location inference.
     /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
     /// We recommend against updating this field more frequently since it could result in unexpected tax location/reporting outcomes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<&'a str>,
+    pub ip_address: Option<String>,
     /// A flag that indicates when Stripe should validate the customer tax location.
     /// Defaults to `deferred`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub validate_location: Option<UpdateCustomerTaxValidateLocation>,
 }
-impl<'a> UpdateCustomerTax<'a> {
+impl UpdateCustomerTax {
     pub fn new() -> Self {
         Self { ip_address: None, validate_location: None }
     }
 }
-impl<'a> Default for UpdateCustomerTax<'a> {
+impl Default for UpdateCustomerTax {
     fn default() -> Self {
         Self::new()
     }
@@ -2098,33 +2111,33 @@ impl<'de> serde::Deserialize<'de> for UpdateCustomerTaxValidateLocation {
 ///
 /// This request accepts mostly the same arguments as the customer creation call.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateCustomer<'a> {
-    inner: UpdateCustomerBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
+pub struct UpdateCustomer {
+    inner: UpdateCustomerBuilder,
+    customer: stripe_shared::CustomerId,
 }
-impl<'a> UpdateCustomer<'a> {
+impl UpdateCustomer {
     /// Construct a new `UpdateCustomer`.
-    pub fn new(customer: &'a stripe_shared::CustomerId) -> Self {
-        Self { customer, inner: UpdateCustomerBuilder::new() }
+    pub fn new(customer: impl Into<stripe_shared::CustomerId>) -> Self {
+        Self { customer: customer.into(), inner: UpdateCustomerBuilder::new() }
     }
     /// The customer's address.
-    pub fn address(mut self, address: OptionalFieldsAddress<'a>) -> Self {
-        self.inner.address = Some(address);
+    pub fn address(mut self, address: impl Into<OptionalFieldsAddress>) -> Self {
+        self.inner.address = Some(address.into());
         self
     }
     /// An integer amount in cents (or local equivalent) that represents the customer's current balance, which affect the customer's future invoices.
     /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
-    pub fn balance(mut self, balance: i64) -> Self {
-        self.inner.balance = Some(balance);
+    pub fn balance(mut self, balance: impl Into<i64>) -> Self {
+        self.inner.balance = Some(balance.into());
         self
     }
     /// Balance information and default balance settings for this customer.
-    pub fn cash_balance(mut self, cash_balance: UpdateCustomerCashBalance) -> Self {
-        self.inner.cash_balance = Some(cash_balance);
+    pub fn cash_balance(mut self, cash_balance: impl Into<UpdateCustomerCashBalance>) -> Self {
+        self.inner.cash_balance = Some(cash_balance.into());
         self
     }
-    pub fn coupon(mut self, coupon: &'a str) -> Self {
-        self.inner.coupon = Some(coupon);
+    pub fn coupon(mut self, coupon: impl Into<String>) -> Self {
+        self.inner.coupon = Some(coupon.into());
         self
     }
     /// If you are using payment methods created via the PaymentMethods API, see the [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/update#update_customer-invoice_settings-default_payment_method) parameter.
@@ -2132,99 +2145,105 @@ impl<'a> UpdateCustomer<'a> {
     /// Provide the ID of a payment source already attached to this customer to make it this customer's default payment source.
     ///
     /// If you want to add a new payment source and make it the default, see the [source](https://stripe.com/docs/api/customers/update#update_customer-source) property.
-    pub fn default_source(mut self, default_source: &'a str) -> Self {
-        self.inner.default_source = Some(default_source);
+    pub fn default_source(mut self, default_source: impl Into<String>) -> Self {
+        self.inner.default_source = Some(default_source.into());
         self
     }
     /// An arbitrary string that you can attach to a customer object.
     /// It is displayed alongside the customer in the dashboard.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.inner.description = Some(description);
+    pub fn description(mut self, description: impl Into<String>) -> Self {
+        self.inner.description = Some(description.into());
         self
     }
     /// Customer's email address.
     /// It's displayed alongside the customer in your dashboard and can be useful for searching and tracking.
     /// This may be up to *512 characters*.
-    pub fn email(mut self, email: &'a str) -> Self {
-        self.inner.email = Some(email);
+    pub fn email(mut self, email: impl Into<String>) -> Self {
+        self.inner.email = Some(email.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// The prefix for the customer used to generate unique invoice numbers.
     /// Must be 3–12 uppercase letters or numbers.
-    pub fn invoice_prefix(mut self, invoice_prefix: &'a str) -> Self {
-        self.inner.invoice_prefix = Some(invoice_prefix);
+    pub fn invoice_prefix(mut self, invoice_prefix: impl Into<String>) -> Self {
+        self.inner.invoice_prefix = Some(invoice_prefix.into());
         self
     }
     /// Default invoice settings for this customer.
-    pub fn invoice_settings(mut self, invoice_settings: UpdateCustomerInvoiceSettings<'a>) -> Self {
-        self.inner.invoice_settings = Some(invoice_settings);
+    pub fn invoice_settings(
+        mut self,
+        invoice_settings: impl Into<UpdateCustomerInvoiceSettings>,
+    ) -> Self {
+        self.inner.invoice_settings = Some(invoice_settings.into());
         self
     }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    pub fn metadata(mut self, metadata: &'a std::collections::HashMap<String, String>) -> Self {
-        self.inner.metadata = Some(metadata);
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// The customer's full name or business name.
-    pub fn name(mut self, name: &'a str) -> Self {
-        self.inner.name = Some(name);
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
         self
     }
     /// The sequence to be used on the customer's next invoice. Defaults to 1.
-    pub fn next_invoice_sequence(mut self, next_invoice_sequence: i64) -> Self {
-        self.inner.next_invoice_sequence = Some(next_invoice_sequence);
+    pub fn next_invoice_sequence(mut self, next_invoice_sequence: impl Into<i64>) -> Self {
+        self.inner.next_invoice_sequence = Some(next_invoice_sequence.into());
         self
     }
     /// The customer's phone number.
-    pub fn phone(mut self, phone: &'a str) -> Self {
-        self.inner.phone = Some(phone);
+    pub fn phone(mut self, phone: impl Into<String>) -> Self {
+        self.inner.phone = Some(phone.into());
         self
     }
     /// Customer's preferred languages, ordered by preference.
-    pub fn preferred_locales(mut self, preferred_locales: &'a [&'a str]) -> Self {
-        self.inner.preferred_locales = Some(preferred_locales);
+    pub fn preferred_locales(mut self, preferred_locales: impl Into<Vec<String>>) -> Self {
+        self.inner.preferred_locales = Some(preferred_locales.into());
         self
     }
     /// The ID of a promotion code to apply to the customer.
     /// The customer will have a discount applied on all recurring payments.
     /// Charges you create through the API will not have the discount.
-    pub fn promotion_code(mut self, promotion_code: &'a str) -> Self {
-        self.inner.promotion_code = Some(promotion_code);
+    pub fn promotion_code(mut self, promotion_code: impl Into<String>) -> Self {
+        self.inner.promotion_code = Some(promotion_code.into());
         self
     }
     /// The customer's shipping information. Appears on invoices emailed to this customer.
-    pub fn shipping(mut self, shipping: CustomerShipping<'a>) -> Self {
-        self.inner.shipping = Some(shipping);
+    pub fn shipping(mut self, shipping: impl Into<CustomerShipping>) -> Self {
+        self.inner.shipping = Some(shipping.into());
         self
     }
-    pub fn source(mut self, source: &'a str) -> Self {
-        self.inner.source = Some(source);
+    pub fn source(mut self, source: impl Into<String>) -> Self {
+        self.inner.source = Some(source.into());
         self
     }
     /// Tax details about the customer.
-    pub fn tax(mut self, tax: UpdateCustomerTax<'a>) -> Self {
-        self.inner.tax = Some(tax);
+    pub fn tax(mut self, tax: impl Into<UpdateCustomerTax>) -> Self {
+        self.inner.tax = Some(tax.into());
         self
     }
     /// The customer's tax exemption. One of `none`, `exempt`, or `reverse`.
-    pub fn tax_exempt(mut self, tax_exempt: stripe_shared::CustomerTaxExempt) -> Self {
-        self.inner.tax_exempt = Some(tax_exempt);
+    pub fn tax_exempt(mut self, tax_exempt: impl Into<stripe_shared::CustomerTaxExempt>) -> Self {
+        self.inner.tax_exempt = Some(tax_exempt.into());
         self
     }
-    pub fn validate(mut self, validate: bool) -> Self {
-        self.inner.validate = Some(validate);
+    pub fn validate(mut self, validate: impl Into<bool>) -> Self {
+        self.inner.validate = Some(validate.into());
         self
     }
 }
-impl UpdateCustomer<'_> {
+impl UpdateCustomer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -2242,63 +2261,68 @@ impl UpdateCustomer<'_> {
     }
 }
 
-impl StripeRequest for UpdateCustomer<'_> {
+impl StripeRequest for UpdateCustomer {
     type Output = stripe_shared::Customer;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
+        let customer = &self.customer;
         RequestBuilder::new(StripeMethod::Post, format!("/customers/{customer}")).form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct CreateFundingInstructionsCustomerBuilder<'a> {
-    bank_transfer: CreateFundingInstructionsCustomerBankTransfer<'a>,
+#[derive(Clone, Debug, serde::Serialize)]
+struct CreateFundingInstructionsCustomerBuilder {
+    bank_transfer: CreateFundingInstructionsCustomerBankTransfer,
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     funding_type: CreateFundingInstructionsCustomerFundingType,
 }
-impl<'a> CreateFundingInstructionsCustomerBuilder<'a> {
+impl CreateFundingInstructionsCustomerBuilder {
     fn new(
-        bank_transfer: CreateFundingInstructionsCustomerBankTransfer<'a>,
-        currency: stripe_types::Currency,
-        funding_type: CreateFundingInstructionsCustomerFundingType,
+        bank_transfer: impl Into<CreateFundingInstructionsCustomerBankTransfer>,
+        currency: impl Into<stripe_types::Currency>,
+        funding_type: impl Into<CreateFundingInstructionsCustomerFundingType>,
     ) -> Self {
-        Self { bank_transfer, currency, expand: None, funding_type }
+        Self {
+            bank_transfer: bank_transfer.into(),
+            currency: currency.into(),
+            expand: None,
+            funding_type: funding_type.into(),
+        }
     }
 }
 /// Additional parameters for `bank_transfer` funding types
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateFundingInstructionsCustomerBankTransfer<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateFundingInstructionsCustomerBankTransfer {
     /// Configuration for eu_bank_transfer funding type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub eu_bank_transfer: Option<CreateFundingInstructionsCustomerBankTransferEuBankTransfer<'a>>,
+    pub eu_bank_transfer: Option<CreateFundingInstructionsCustomerBankTransferEuBankTransfer>,
     /// List of address types that should be returned in the financial_addresses response.
     /// If not specified, all valid types will be returned.
     ///
     /// Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_address_types:
-        Option<&'a [CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes]>,
+        Option<Vec<CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes>>,
     /// The type of the `bank_transfer`
     #[serde(rename = "type")]
     pub type_: CreateFundingInstructionsCustomerBankTransferType,
 }
-impl<'a> CreateFundingInstructionsCustomerBankTransfer<'a> {
-    pub fn new(type_: CreateFundingInstructionsCustomerBankTransferType) -> Self {
-        Self { eu_bank_transfer: None, requested_address_types: None, type_ }
+impl CreateFundingInstructionsCustomerBankTransfer {
+    pub fn new(type_: impl Into<CreateFundingInstructionsCustomerBankTransferType>) -> Self {
+        Self { eu_bank_transfer: None, requested_address_types: None, type_: type_.into() }
     }
 }
 /// Configuration for eu_bank_transfer funding type.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateFundingInstructionsCustomerBankTransferEuBankTransfer<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateFundingInstructionsCustomerBankTransferEuBankTransfer {
     /// The desired country code of the bank account information.
     /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
-    pub country: &'a str,
+    pub country: String,
 }
-impl<'a> CreateFundingInstructionsCustomerBankTransferEuBankTransfer<'a> {
-    pub fn new(country: &'a str) -> Self {
-        Self { country }
+impl CreateFundingInstructionsCustomerBankTransferEuBankTransfer {
+    pub fn new(country: impl Into<String>) -> Self {
+        Self { country: country.into() }
     }
 }
 /// List of address types that should be returned in the financial_addresses response.
@@ -2495,34 +2519,34 @@ impl<'de> serde::Deserialize<'de> for CreateFundingInstructionsCustomerFundingTy
 /// funding instructions will be retrieved.
 /// In other words, we will return the same funding instructions each time.
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateFundingInstructionsCustomer<'a> {
-    inner: CreateFundingInstructionsCustomerBuilder<'a>,
-    customer: &'a stripe_shared::CustomerId,
+pub struct CreateFundingInstructionsCustomer {
+    inner: CreateFundingInstructionsCustomerBuilder,
+    customer: stripe_shared::CustomerId,
 }
-impl<'a> CreateFundingInstructionsCustomer<'a> {
+impl CreateFundingInstructionsCustomer {
     /// Construct a new `CreateFundingInstructionsCustomer`.
     pub fn new(
-        customer: &'a stripe_shared::CustomerId,
-        bank_transfer: CreateFundingInstructionsCustomerBankTransfer<'a>,
-        currency: stripe_types::Currency,
-        funding_type: CreateFundingInstructionsCustomerFundingType,
+        customer: impl Into<stripe_shared::CustomerId>,
+        bank_transfer: impl Into<CreateFundingInstructionsCustomerBankTransfer>,
+        currency: impl Into<stripe_types::Currency>,
+        funding_type: impl Into<CreateFundingInstructionsCustomerFundingType>,
     ) -> Self {
         Self {
-            customer,
+            customer: customer.into(),
             inner: CreateFundingInstructionsCustomerBuilder::new(
-                bank_transfer,
-                currency,
-                funding_type,
+                bank_transfer.into(),
+                currency.into(),
+                funding_type.into(),
             ),
         }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
 }
-impl CreateFundingInstructionsCustomer<'_> {
+impl CreateFundingInstructionsCustomer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -2540,11 +2564,11 @@ impl CreateFundingInstructionsCustomer<'_> {
     }
 }
 
-impl StripeRequest for CreateFundingInstructionsCustomer<'_> {
+impl StripeRequest for CreateFundingInstructionsCustomer {
     type Output = stripe_shared::FundingInstructions;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
+        let customer = &self.customer;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/customers/{customer}/funding_instructions"),
@@ -2552,45 +2576,52 @@ impl StripeRequest for CreateFundingInstructionsCustomer<'_> {
         .form(&self.inner)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-struct FundCashBalanceCustomerBuilder<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+struct FundCashBalanceCustomerBuilder {
     amount: i64,
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<&'a [&'a str]>,
+    expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reference: Option<&'a str>,
+    reference: Option<String>,
 }
-impl<'a> FundCashBalanceCustomerBuilder<'a> {
-    fn new(amount: i64, currency: stripe_types::Currency) -> Self {
-        Self { amount, currency, expand: None, reference: None }
+impl FundCashBalanceCustomerBuilder {
+    fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
+        Self { amount: amount.into(), currency: currency.into(), expand: None, reference: None }
     }
 }
 /// Create an incoming testmode bank transfer
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct FundCashBalanceCustomer<'a> {
-    inner: FundCashBalanceCustomerBuilder<'a>,
-    customer: &'a str,
+pub struct FundCashBalanceCustomer {
+    inner: FundCashBalanceCustomerBuilder,
+    customer: String,
 }
-impl<'a> FundCashBalanceCustomer<'a> {
+impl FundCashBalanceCustomer {
     /// Construct a new `FundCashBalanceCustomer`.
-    pub fn new(customer: &'a str, amount: i64, currency: stripe_types::Currency) -> Self {
-        Self { customer, inner: FundCashBalanceCustomerBuilder::new(amount, currency) }
+    pub fn new(
+        customer: impl Into<String>,
+        amount: impl Into<i64>,
+        currency: impl Into<stripe_types::Currency>,
+    ) -> Self {
+        Self {
+            customer: customer.into(),
+            inner: FundCashBalanceCustomerBuilder::new(amount.into(), currency.into()),
+        }
     }
     /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: &'a [&'a str]) -> Self {
-        self.inner.expand = Some(expand);
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
         self
     }
     /// A description of the test funding.
     /// This simulates free-text references supplied by customers when making bank transfers to their cash balance.
     /// You can use this to test how Stripe's [reconciliation algorithm](https://stripe.com/docs/payments/customer-balance/reconciliation) applies to different user inputs.
-    pub fn reference(mut self, reference: &'a str) -> Self {
-        self.inner.reference = Some(reference);
+    pub fn reference(mut self, reference: impl Into<String>) -> Self {
+        self.inner.reference = Some(reference.into());
         self
     }
 }
-impl FundCashBalanceCustomer<'_> {
+impl FundCashBalanceCustomer {
     /// Send the request and return the deserialized response.
     pub async fn send<C: StripeClient>(
         &self,
@@ -2608,11 +2639,11 @@ impl FundCashBalanceCustomer<'_> {
     }
 }
 
-impl StripeRequest for FundCashBalanceCustomer<'_> {
+impl StripeRequest for FundCashBalanceCustomer {
     type Output = stripe_shared::CustomerCashBalanceTransaction;
 
     fn build(&self) -> RequestBuilder {
-        let customer = self.customer;
+        let customer = &self.customer;
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/test_helpers/customers/{customer}/fund_cash_balance"),
@@ -2621,61 +2652,61 @@ impl StripeRequest for FundCashBalanceCustomer<'_> {
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct OptionalFieldsAddress<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct OptionalFieldsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
+    pub city: Option<String>,
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
+    pub country: Option<String>,
     /// Address line 1 (e.g., street, PO Box, or company name).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
+    pub line1: Option<String>,
     /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
+    pub line2: Option<String>,
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
+    pub postal_code: Option<String>,
     /// State, county, province, or region.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
+    pub state: Option<String>,
 }
-impl<'a> OptionalFieldsAddress<'a> {
+impl OptionalFieldsAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
     }
 }
-impl<'a> Default for OptionalFieldsAddress<'a> {
+impl Default for OptionalFieldsAddress {
     fn default() -> Self {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CustomFieldParams<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CustomFieldParams {
     /// The name of the custom field. This may be up to 40 characters.
-    pub name: &'a str,
+    pub name: String,
     /// The value of the custom field. This may be up to 140 characters.
-    pub value: &'a str,
+    pub value: String,
 }
-impl<'a> CustomFieldParams<'a> {
-    pub fn new(name: &'a str, value: &'a str) -> Self {
-        Self { name, value }
+impl CustomFieldParams {
+    pub fn new(name: impl Into<String>, value: impl Into<String>) -> Self {
+        Self { name: name.into(), value: value.into() }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CustomerShipping<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CustomerShipping {
     /// Customer shipping address.
-    pub address: OptionalFieldsAddress<'a>,
+    pub address: OptionalFieldsAddress,
     /// Customer name.
-    pub name: &'a str,
+    pub name: String,
     /// Customer phone (including extension).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
+    pub phone: Option<String>,
 }
-impl<'a> CustomerShipping<'a> {
-    pub fn new(address: OptionalFieldsAddress<'a>, name: &'a str) -> Self {
-        Self { address, name, phone: None }
+impl CustomerShipping {
+    pub fn new(address: impl Into<OptionalFieldsAddress>, name: impl Into<String>) -> Self {
+        Self { address: address.into(), name: name.into(), phone: None }
     }
 }
