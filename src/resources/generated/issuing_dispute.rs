@@ -2,13 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::IssuingDisputeId;
+use crate::ids::{IssuingDisputeId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{
-    BalanceTransaction, Currency, File, IssuingDisputeStatus, IssuingTransaction,
-};
+use crate::resources::{BalanceTransaction, Currency, File, IssuingDisputeStatus, IssuingTransaction};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingDispute".
 ///
@@ -24,6 +21,7 @@ pub struct IssuingDispute {
     pub amount: i64,
 
     /// List of balance transactions associated with the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub balance_transactions: Option<Vec<BalanceTransaction>>,
 
     /// Time at which the object was created.
@@ -38,6 +36,13 @@ pub struct IssuingDispute {
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+
+    /// The enum that describes the dispute loss outcome.
+    ///
+    /// If the dispute is not lost, this field will be absent.
+    /// New enum values may be added in the future, so be sure to handle unknown values.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub loss_reason: Option<IssuingDisputeLossReason>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -67,6 +72,7 @@ impl Object for IssuingDispute {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeEvidence {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled: Option<IssuingDisputeCanceledEvidence>,
 
@@ -78,6 +84,9 @@ pub struct IssuingDisputeEvidence {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub merchandise_not_as_described: Option<IssuingDisputeMerchandiseNotAsDescribedEvidence>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub no_valid_authorization: Option<IssuingDisputeNoValidAuthorizationEvidence>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub not_received: Option<IssuingDisputeNotReceivedEvidence>,
@@ -96,6 +105,7 @@ pub struct IssuingDisputeEvidence {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeCanceledEvidence {
+
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     pub additional_documentation: Option<Expandable<File>>,
 
@@ -129,6 +139,7 @@ pub struct IssuingDisputeCanceledEvidence {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeDuplicateEvidence {
+
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     pub additional_documentation: Option<Expandable<File>>,
 
@@ -152,6 +163,7 @@ pub struct IssuingDisputeDuplicateEvidence {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeFraudulentEvidence {
+
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     pub additional_documentation: Option<Expandable<File>>,
 
@@ -161,6 +173,7 @@ pub struct IssuingDisputeFraudulentEvidence {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeMerchandiseNotAsDescribedEvidence {
+
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     pub additional_documentation: Option<Expandable<File>>,
 
@@ -181,7 +194,18 @@ pub struct IssuingDisputeMerchandiseNotAsDescribedEvidence {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingDisputeNoValidAuthorizationEvidence {
+
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
+    pub additional_documentation: Option<Expandable<File>>,
+
+    /// Explanation of why the cardholder is disputing this transaction.
+    pub explanation: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeNotReceivedEvidence {
+
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     pub additional_documentation: Option<Expandable<File>>,
 
@@ -200,6 +224,7 @@ pub struct IssuingDisputeNotReceivedEvidence {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeOtherEvidence {
+
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     pub additional_documentation: Option<Expandable<File>>,
 
@@ -215,6 +240,7 @@ pub struct IssuingDisputeOtherEvidence {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeServiceNotAsDescribedEvidence {
+
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     pub additional_documentation: Option<Expandable<File>>,
 
@@ -233,6 +259,7 @@ pub struct IssuingDisputeServiceNotAsDescribedEvidence {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeTreasury {
+
     /// The Treasury [DebitReversal](https://stripe.com/docs/api/treasury/debit_reversals) representing this Issuing dispute.
     pub debit_reversal: Option<String>,
 
@@ -316,6 +343,7 @@ pub enum IssuingDisputeEvidenceReason {
     Duplicate,
     Fraudulent,
     MerchandiseNotAsDescribed,
+    NoValidAuthorization,
     NotReceived,
     Other,
     ServiceNotAsDescribed,
@@ -327,9 +355,8 @@ impl IssuingDisputeEvidenceReason {
             IssuingDisputeEvidenceReason::Canceled => "canceled",
             IssuingDisputeEvidenceReason::Duplicate => "duplicate",
             IssuingDisputeEvidenceReason::Fraudulent => "fraudulent",
-            IssuingDisputeEvidenceReason::MerchandiseNotAsDescribed => {
-                "merchandise_not_as_described"
-            }
+            IssuingDisputeEvidenceReason::MerchandiseNotAsDescribed => "merchandise_not_as_described",
+            IssuingDisputeEvidenceReason::NoValidAuthorization => "no_valid_authorization",
             IssuingDisputeEvidenceReason::NotReceived => "not_received",
             IssuingDisputeEvidenceReason::Other => "other",
             IssuingDisputeEvidenceReason::ServiceNotAsDescribed => "service_not_as_described",
@@ -354,6 +381,77 @@ impl std::default::Default for IssuingDisputeEvidenceReason {
     }
 }
 
+/// An enum representing the possible values of an `IssuingDispute`'s `loss_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingDisputeLossReason {
+    CardholderAuthenticationIssuerLiability,
+    Eci5TokenTransactionWithTavv,
+    ExcessDisputesInTimeframe,
+    HasNotMetTheMinimumDisputeAmountRequirements,
+    InvalidDuplicateDispute,
+    InvalidIncorrectAmountDispute,
+    InvalidNoAuthorization,
+    InvalidUseOfDisputes,
+    MerchandiseDeliveredOrShipped,
+    MerchandiseOrServiceAsDescribed,
+    NotCancelled,
+    Other,
+    RefundIssued,
+    SubmittedBeyondAllowableTimeLimit,
+    #[serde(rename = "transaction_3ds_required")]
+    Transaction3dsRequired,
+    TransactionApprovedAfterPriorFraudDispute,
+    TransactionAuthorized,
+    TransactionElectronicallyRead,
+    TransactionQualifiesForVisaEasyPaymentService,
+    TransactionUnattended,
+}
+
+impl IssuingDisputeLossReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingDisputeLossReason::CardholderAuthenticationIssuerLiability => "cardholder_authentication_issuer_liability",
+            IssuingDisputeLossReason::Eci5TokenTransactionWithTavv => "eci5_token_transaction_with_tavv",
+            IssuingDisputeLossReason::ExcessDisputesInTimeframe => "excess_disputes_in_timeframe",
+            IssuingDisputeLossReason::HasNotMetTheMinimumDisputeAmountRequirements => "has_not_met_the_minimum_dispute_amount_requirements",
+            IssuingDisputeLossReason::InvalidDuplicateDispute => "invalid_duplicate_dispute",
+            IssuingDisputeLossReason::InvalidIncorrectAmountDispute => "invalid_incorrect_amount_dispute",
+            IssuingDisputeLossReason::InvalidNoAuthorization => "invalid_no_authorization",
+            IssuingDisputeLossReason::InvalidUseOfDisputes => "invalid_use_of_disputes",
+            IssuingDisputeLossReason::MerchandiseDeliveredOrShipped => "merchandise_delivered_or_shipped",
+            IssuingDisputeLossReason::MerchandiseOrServiceAsDescribed => "merchandise_or_service_as_described",
+            IssuingDisputeLossReason::NotCancelled => "not_cancelled",
+            IssuingDisputeLossReason::Other => "other",
+            IssuingDisputeLossReason::RefundIssued => "refund_issued",
+            IssuingDisputeLossReason::SubmittedBeyondAllowableTimeLimit => "submitted_beyond_allowable_time_limit",
+            IssuingDisputeLossReason::Transaction3dsRequired => "transaction_3ds_required",
+            IssuingDisputeLossReason::TransactionApprovedAfterPriorFraudDispute => "transaction_approved_after_prior_fraud_dispute",
+            IssuingDisputeLossReason::TransactionAuthorized => "transaction_authorized",
+            IssuingDisputeLossReason::TransactionElectronicallyRead => "transaction_electronically_read",
+            IssuingDisputeLossReason::TransactionQualifiesForVisaEasyPaymentService => "transaction_qualifies_for_visa_easy_payment_service",
+            IssuingDisputeLossReason::TransactionUnattended => "transaction_unattended",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingDisputeLossReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingDisputeLossReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingDisputeLossReason {
+    fn default() -> Self {
+        Self::CardholderAuthenticationIssuerLiability
+    }
+}
+
 /// An enum representing the possible values of an `IssuingDisputeMerchandiseNotAsDescribedEvidence`'s `return_status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -365,9 +463,7 @@ pub enum IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
 impl IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
     pub fn as_str(self) -> &'static str {
         match self {
-            IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus::MerchantRejected => {
-                "merchant_rejected"
-            }
+            IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus::MerchantRejected => "merchant_rejected",
             IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus::Successful => "successful",
         }
     }
