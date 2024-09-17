@@ -708,7 +708,7 @@ impl Default for CreateAccountCompanyAddressKanji {
 /// The category identifying the legal structure of the company or legal entity.
 /// See [Business structure](https://docs.stripe.com/connect/identity-verification#business-structure) for more details.
 /// Pass an empty string to unset this value.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateAccountCompanyStructure {
     FreeZoneEstablishment,
@@ -735,10 +735,10 @@ pub enum CreateAccountCompanyStructure {
     UnincorporatedNonProfit,
     UnincorporatedPartnership,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateAccountCompanyStructure {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateAccountCompanyStructure::*;
         match self {
             FreeZoneEstablishment => "free_zone_establishment",
@@ -764,7 +764,7 @@ impl CreateAccountCompanyStructure {
             UnincorporatedAssociation => "unincorporated_association",
             UnincorporatedNonProfit => "unincorporated_non_profit",
             UnincorporatedPartnership => "unincorporated_partnership",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -797,7 +797,7 @@ impl std::str::FromStr for CreateAccountCompanyStructure {
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
             "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2125,7 +2125,7 @@ impl Default for UpdateAccountCompanyAddressKanji {
 /// The category identifying the legal structure of the company or legal entity.
 /// See [Business structure](https://docs.stripe.com/connect/identity-verification#business-structure) for more details.
 /// Pass an empty string to unset this value.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateAccountCompanyStructure {
     FreeZoneEstablishment,
@@ -2152,10 +2152,10 @@ pub enum UpdateAccountCompanyStructure {
     UnincorporatedNonProfit,
     UnincorporatedPartnership,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl UpdateAccountCompanyStructure {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateAccountCompanyStructure::*;
         match self {
             FreeZoneEstablishment => "free_zone_establishment",
@@ -2181,7 +2181,7 @@ impl UpdateAccountCompanyStructure {
             UnincorporatedAssociation => "unincorporated_association",
             UnincorporatedNonProfit => "unincorporated_non_profit",
             UnincorporatedPartnership => "unincorporated_partnership",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -2214,7 +2214,7 @@ impl std::str::FromStr for UpdateAccountCompanyStructure {
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
             "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

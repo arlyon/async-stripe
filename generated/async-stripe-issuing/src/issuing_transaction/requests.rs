@@ -397,7 +397,7 @@ impl Default for CreateForceCaptureIssuingTransactionMerchantData {
 }
 /// A categorization of the seller's type of business.
 /// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateForceCaptureIssuingTransactionMerchantDataCategory {
     AcRefrigerationRepair,
@@ -695,10 +695,10 @@ pub enum CreateForceCaptureIssuingTransactionMerchantDataCategory {
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateForceCaptureIssuingTransactionMerchantDataCategory {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateForceCaptureIssuingTransactionMerchantDataCategory::*;
         match self {
             AcRefrigerationRepair => "ac_refrigeration_repair",
@@ -1039,7 +1039,7 @@ impl CreateForceCaptureIssuingTransactionMerchantDataCategory {
             WomensAccessoryAndSpecialtyShops => "womens_accessory_and_specialty_shops",
             WomensReadyToWearStores => "womens_ready_to_wear_stores",
             WreckingAndSalvageYards => "wrecking_and_salvage_yards",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -1391,7 +1391,7 @@ impl std::str::FromStr for CreateForceCaptureIssuingTransactionMerchantDataCateg
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1757,7 +1757,7 @@ impl Default for CreateUnlinkedRefundIssuingTransactionMerchantData {
 }
 /// A categorization of the seller's type of business.
 /// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateUnlinkedRefundIssuingTransactionMerchantDataCategory {
     AcRefrigerationRepair,
@@ -2055,10 +2055,10 @@ pub enum CreateUnlinkedRefundIssuingTransactionMerchantDataCategory {
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateUnlinkedRefundIssuingTransactionMerchantDataCategory {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateUnlinkedRefundIssuingTransactionMerchantDataCategory::*;
         match self {
             AcRefrigerationRepair => "ac_refrigeration_repair",
@@ -2399,7 +2399,7 @@ impl CreateUnlinkedRefundIssuingTransactionMerchantDataCategory {
             WomensAccessoryAndSpecialtyShops => "womens_accessory_and_specialty_shops",
             WomensReadyToWearStores => "womens_ready_to_wear_stores",
             WreckingAndSalvageYards => "wrecking_and_salvage_yards",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -2751,7 +2751,7 @@ impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionMerchantDataCat
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

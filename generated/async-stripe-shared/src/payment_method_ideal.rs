@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodIdeal {
@@ -66,7 +66,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank), Some(bic)) = (self.bank, self.bic) else {
+            let (Some(bank), Some(bic)) = (self.bank.take(), self.bic.take()) else {
                 return None;
             };
             Some(Self::Out { bank, bic })
@@ -108,7 +108,7 @@ const _: () = {
 };
 /// The customer's bank, if provided.
 /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentMethodIdealBank {
     AbnAmro,
@@ -128,10 +128,10 @@ pub enum PaymentMethodIdealBank {
     VanLanschot,
     Yoursafe,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl PaymentMethodIdealBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
@@ -150,7 +150,7 @@ impl PaymentMethodIdealBank {
             TriodosBank => "triodos_bank",
             VanLanschot => "van_lanschot",
             Yoursafe => "yoursafe",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -176,7 +176,7 @@ impl std::str::FromStr for PaymentMethodIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -224,7 +224,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodIdealBank {
     }
 }
 /// The Bank Identifier Code of the customer's bank, if the bank was provided.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentMethodIdealBic {
     Abnanl2a,
@@ -245,10 +245,10 @@ pub enum PaymentMethodIdealBic {
     Snsbnl2a,
     Trionl2u,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl PaymentMethodIdealBic {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodIdealBic::*;
         match self {
             Abnanl2a => "ABNANL2A",
@@ -268,7 +268,7 @@ impl PaymentMethodIdealBic {
             Revolt21 => "REVOLT21",
             Snsbnl2a => "SNSBNL2A",
             Trionl2u => "TRIONL2U",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -295,7 +295,7 @@ impl std::str::FromStr for PaymentMethodIdealBic {
             "REVOLT21" => Ok(Revolt21),
             "SNSBNL2A" => Ok(Snsbnl2a),
             "TRIONL2U" => Ok(Trionl2u),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

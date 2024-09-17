@@ -194,7 +194,7 @@ const _: () = {
                 self.created,
                 self.currency,
                 self.description.take(),
-                self.failure_details,
+                self.failure_details.take(),
                 self.financial_account.take(),
                 self.hosted_regulatory_receipt_url.take(),
                 self.id.take(),

@@ -75,7 +75,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(account_holder_type), Some(bank), Some(transaction_id)) =
-                (self.account_holder_type, self.bank, self.transaction_id.take())
+                (self.account_holder_type, self.bank.take(), self.transaction_id.take())
             else {
                 return None;
             };
@@ -193,7 +193,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsFpxAccountHolderType {
 }
 /// The customer's bank.
 /// Can be one of `affin_bank`, `agrobank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`, `deutsche_bank`, `maybank2e`, `pb_enterprise`, or `bank_of_china`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentMethodDetailsFpxBank {
     AffinBank,
@@ -219,10 +219,10 @@ pub enum PaymentMethodDetailsFpxBank {
     StandardChartered,
     Uob,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl PaymentMethodDetailsFpxBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodDetailsFpxBank::*;
         match self {
             AffinBank => "affin_bank",
@@ -247,7 +247,7 @@ impl PaymentMethodDetailsFpxBank {
             Rhb => "rhb",
             StandardChartered => "standard_chartered",
             Uob => "uob",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -279,7 +279,7 @@ impl std::str::FromStr for PaymentMethodDetailsFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

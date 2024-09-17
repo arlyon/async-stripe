@@ -227,7 +227,12 @@ async fn user_error_transfers() {
             // NB: `Unknown` here because the error code reported in the issue is not
             // present in the OpenAPI spec. Reporting unknown instead of an error seems
             // better regardless so that stripe adding new variants is not a breaking change
-            assert_eq!(err.code, Some(ApiErrorsCode::Unknown));
+            assert_eq!(
+                err.code,
+                Some(ApiErrorsCode::Unknown(String::from(
+                    "insufficient_capabilities_for_transfer"
+                )))
+            );
         }
         _ => panic!("Expected stripe error, got {:?}", res),
     }

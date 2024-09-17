@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodP24 {
@@ -61,7 +61,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank),) = (self.bank,) else {
+            let (Some(bank),) = (self.bank.take(),) else {
                 return None;
             };
             Some(Self::Out { bank })
@@ -101,7 +101,7 @@ const _: () = {
     }
 };
 /// The customer's bank, if provided.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentMethodP24Bank {
     AliorBank,
@@ -131,10 +131,10 @@ pub enum PaymentMethodP24Bank {
     Velobank,
     VolkswagenBank,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl PaymentMethodP24Bank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodP24Bank::*;
         match self {
             AliorBank => "alior_bank",
@@ -163,7 +163,7 @@ impl PaymentMethodP24Bank {
             ToyotaBank => "toyota_bank",
             Velobank => "velobank",
             VolkswagenBank => "volkswagen_bank",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -199,7 +199,7 @@ impl std::str::FromStr for PaymentMethodP24Bank {
             "toyota_bank" => Ok(ToyotaBank),
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

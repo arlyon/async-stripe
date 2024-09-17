@@ -752,7 +752,7 @@ impl CreateSetupIntentPaymentMethodDataBoleto {
     }
 }
 /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataEps {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -769,7 +769,7 @@ impl Default for CreateSetupIntentPaymentMethodDataEps {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateSetupIntentPaymentMethodDataEpsBank {
     ArzteUndApothekerBank,
@@ -801,10 +801,10 @@ pub enum CreateSetupIntentPaymentMethodDataEpsBank {
     VolkskreditbankAg,
     VrBankBraunau,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateSetupIntentPaymentMethodDataEpsBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSetupIntentPaymentMethodDataEpsBank::*;
         match self {
             ArzteUndApothekerBank => "arzte_und_apotheker_bank",
@@ -835,7 +835,7 @@ impl CreateSetupIntentPaymentMethodDataEpsBank {
             VolksbankGruppe => "volksbank_gruppe",
             VolkskreditbankAg => "volkskreditbank_ag",
             VrBankBraunau => "vr_bank_braunau",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -873,7 +873,7 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataEpsBank {
             "volksbank_gruppe" => Ok(VolksbankGruppe),
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -905,7 +905,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodDataEpsBank 
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataFpx {
     /// Account holder type for FPX transaction
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -977,7 +977,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodDataFpxAccou
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateSetupIntentPaymentMethodDataFpxBank {
     AffinBank,
@@ -1003,10 +1003,10 @@ pub enum CreateSetupIntentPaymentMethodDataFpxBank {
     StandardChartered,
     Uob,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateSetupIntentPaymentMethodDataFpxBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSetupIntentPaymentMethodDataFpxBank::*;
         match self {
             AffinBank => "affin_bank",
@@ -1031,7 +1031,7 @@ impl CreateSetupIntentPaymentMethodDataFpxBank {
             Rhb => "rhb",
             StandardChartered => "standard_chartered",
             Uob => "uob",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -1063,7 +1063,7 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1095,7 +1095,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodDataFpxBank 
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataIdeal {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1112,7 +1112,7 @@ impl Default for CreateSetupIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateSetupIntentPaymentMethodDataIdealBank {
     AbnAmro,
@@ -1132,10 +1132,10 @@ pub enum CreateSetupIntentPaymentMethodDataIdealBank {
     VanLanschot,
     Yoursafe,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateSetupIntentPaymentMethodDataIdealBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSetupIntentPaymentMethodDataIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
@@ -1154,7 +1154,7 @@ impl CreateSetupIntentPaymentMethodDataIdealBank {
             TriodosBank => "triodos_bank",
             VanLanschot => "van_lanschot",
             Yoursafe => "yoursafe",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -1180,7 +1180,7 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1229,7 +1229,7 @@ impl Default for CreateSetupIntentPaymentMethodDataKlarna {
     }
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataP24 {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1246,7 +1246,7 @@ impl Default for CreateSetupIntentPaymentMethodDataP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateSetupIntentPaymentMethodDataP24Bank {
     AliorBank,
@@ -1276,10 +1276,10 @@ pub enum CreateSetupIntentPaymentMethodDataP24Bank {
     Velobank,
     VolkswagenBank,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateSetupIntentPaymentMethodDataP24Bank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSetupIntentPaymentMethodDataP24Bank::*;
         match self {
             AliorBank => "alior_bank",
@@ -1308,7 +1308,7 @@ impl CreateSetupIntentPaymentMethodDataP24Bank {
             ToyotaBank => "toyota_bank",
             Velobank => "velobank",
             VolkswagenBank => "volkswagen_bank",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -1344,7 +1344,7 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataP24Bank {
             "toyota_bank" => Ok(ToyotaBank),
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1470,7 +1470,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodDataSofortCo
 /// The type of the PaymentMethod.
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateSetupIntentPaymentMethodDataType {
     AcssDebit,
@@ -1508,10 +1508,10 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     WechatPay,
     Zip,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateSetupIntentPaymentMethodDataType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSetupIntentPaymentMethodDataType::*;
         match self {
             AcssDebit => "acss_debit",
@@ -1548,7 +1548,7 @@ impl CreateSetupIntentPaymentMethodDataType {
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -1592,7 +1592,7 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4055,7 +4055,7 @@ impl UpdateSetupIntentPaymentMethodDataBoleto {
     }
 }
 /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataEps {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4072,7 +4072,7 @@ impl Default for UpdateSetupIntentPaymentMethodDataEps {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateSetupIntentPaymentMethodDataEpsBank {
     ArzteUndApothekerBank,
@@ -4104,10 +4104,10 @@ pub enum UpdateSetupIntentPaymentMethodDataEpsBank {
     VolkskreditbankAg,
     VrBankBraunau,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl UpdateSetupIntentPaymentMethodDataEpsBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSetupIntentPaymentMethodDataEpsBank::*;
         match self {
             ArzteUndApothekerBank => "arzte_und_apotheker_bank",
@@ -4138,7 +4138,7 @@ impl UpdateSetupIntentPaymentMethodDataEpsBank {
             VolksbankGruppe => "volksbank_gruppe",
             VolkskreditbankAg => "volkskreditbank_ag",
             VrBankBraunau => "vr_bank_braunau",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -4176,7 +4176,7 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataEpsBank {
             "volksbank_gruppe" => Ok(VolksbankGruppe),
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4208,7 +4208,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodDataEpsBank 
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataFpx {
     /// Account holder type for FPX transaction
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4280,7 +4280,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodDataFpxAccou
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateSetupIntentPaymentMethodDataFpxBank {
     AffinBank,
@@ -4306,10 +4306,10 @@ pub enum UpdateSetupIntentPaymentMethodDataFpxBank {
     StandardChartered,
     Uob,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl UpdateSetupIntentPaymentMethodDataFpxBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSetupIntentPaymentMethodDataFpxBank::*;
         match self {
             AffinBank => "affin_bank",
@@ -4334,7 +4334,7 @@ impl UpdateSetupIntentPaymentMethodDataFpxBank {
             Rhb => "rhb",
             StandardChartered => "standard_chartered",
             Uob => "uob",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -4366,7 +4366,7 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4398,7 +4398,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodDataFpxBank 
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataIdeal {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4415,7 +4415,7 @@ impl Default for UpdateSetupIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateSetupIntentPaymentMethodDataIdealBank {
     AbnAmro,
@@ -4435,10 +4435,10 @@ pub enum UpdateSetupIntentPaymentMethodDataIdealBank {
     VanLanschot,
     Yoursafe,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl UpdateSetupIntentPaymentMethodDataIdealBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSetupIntentPaymentMethodDataIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
@@ -4457,7 +4457,7 @@ impl UpdateSetupIntentPaymentMethodDataIdealBank {
             TriodosBank => "triodos_bank",
             VanLanschot => "van_lanschot",
             Yoursafe => "yoursafe",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -4483,7 +4483,7 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4532,7 +4532,7 @@ impl Default for UpdateSetupIntentPaymentMethodDataKlarna {
     }
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataP24 {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4549,7 +4549,7 @@ impl Default for UpdateSetupIntentPaymentMethodDataP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateSetupIntentPaymentMethodDataP24Bank {
     AliorBank,
@@ -4579,10 +4579,10 @@ pub enum UpdateSetupIntentPaymentMethodDataP24Bank {
     Velobank,
     VolkswagenBank,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl UpdateSetupIntentPaymentMethodDataP24Bank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSetupIntentPaymentMethodDataP24Bank::*;
         match self {
             AliorBank => "alior_bank",
@@ -4611,7 +4611,7 @@ impl UpdateSetupIntentPaymentMethodDataP24Bank {
             ToyotaBank => "toyota_bank",
             Velobank => "velobank",
             VolkswagenBank => "volkswagen_bank",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -4647,7 +4647,7 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataP24Bank {
             "toyota_bank" => Ok(ToyotaBank),
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4773,7 +4773,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodDataSofortCo
 /// The type of the PaymentMethod.
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateSetupIntentPaymentMethodDataType {
     AcssDebit,
@@ -4811,10 +4811,10 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     WechatPay,
     Zip,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl UpdateSetupIntentPaymentMethodDataType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSetupIntentPaymentMethodDataType::*;
         match self {
             AcssDebit => "acss_debit",
@@ -4851,7 +4851,7 @@ impl UpdateSetupIntentPaymentMethodDataType {
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -4895,7 +4895,7 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7489,7 +7489,7 @@ impl ConfirmSetupIntentPaymentMethodDataBoleto {
     }
 }
 /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmSetupIntentPaymentMethodDataEps {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7506,7 +7506,7 @@ impl Default for ConfirmSetupIntentPaymentMethodDataEps {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ConfirmSetupIntentPaymentMethodDataEpsBank {
     ArzteUndApothekerBank,
@@ -7538,10 +7538,10 @@ pub enum ConfirmSetupIntentPaymentMethodDataEpsBank {
     VolkskreditbankAg,
     VrBankBraunau,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl ConfirmSetupIntentPaymentMethodDataEpsBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ConfirmSetupIntentPaymentMethodDataEpsBank::*;
         match self {
             ArzteUndApothekerBank => "arzte_und_apotheker_bank",
@@ -7572,7 +7572,7 @@ impl ConfirmSetupIntentPaymentMethodDataEpsBank {
             VolksbankGruppe => "volksbank_gruppe",
             VolkskreditbankAg => "volkskreditbank_ag",
             VrBankBraunau => "vr_bank_braunau",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -7610,7 +7610,7 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataEpsBank {
             "volksbank_gruppe" => Ok(VolksbankGruppe),
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7642,7 +7642,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodDataEpsBank
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmSetupIntentPaymentMethodDataFpx {
     /// Account holder type for FPX transaction
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7714,7 +7714,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodDataFpxAcco
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ConfirmSetupIntentPaymentMethodDataFpxBank {
     AffinBank,
@@ -7740,10 +7740,10 @@ pub enum ConfirmSetupIntentPaymentMethodDataFpxBank {
     StandardChartered,
     Uob,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl ConfirmSetupIntentPaymentMethodDataFpxBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ConfirmSetupIntentPaymentMethodDataFpxBank::*;
         match self {
             AffinBank => "affin_bank",
@@ -7768,7 +7768,7 @@ impl ConfirmSetupIntentPaymentMethodDataFpxBank {
             Rhb => "rhb",
             StandardChartered => "standard_chartered",
             Uob => "uob",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -7800,7 +7800,7 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7832,7 +7832,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodDataFpxBank
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmSetupIntentPaymentMethodDataIdeal {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7849,7 +7849,7 @@ impl Default for ConfirmSetupIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ConfirmSetupIntentPaymentMethodDataIdealBank {
     AbnAmro,
@@ -7869,10 +7869,10 @@ pub enum ConfirmSetupIntentPaymentMethodDataIdealBank {
     VanLanschot,
     Yoursafe,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl ConfirmSetupIntentPaymentMethodDataIdealBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ConfirmSetupIntentPaymentMethodDataIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
@@ -7891,7 +7891,7 @@ impl ConfirmSetupIntentPaymentMethodDataIdealBank {
             TriodosBank => "triodos_bank",
             VanLanschot => "van_lanschot",
             Yoursafe => "yoursafe",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -7917,7 +7917,7 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7966,7 +7966,7 @@ impl Default for ConfirmSetupIntentPaymentMethodDataKlarna {
     }
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmSetupIntentPaymentMethodDataP24 {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7983,7 +7983,7 @@ impl Default for ConfirmSetupIntentPaymentMethodDataP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ConfirmSetupIntentPaymentMethodDataP24Bank {
     AliorBank,
@@ -8013,10 +8013,10 @@ pub enum ConfirmSetupIntentPaymentMethodDataP24Bank {
     Velobank,
     VolkswagenBank,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl ConfirmSetupIntentPaymentMethodDataP24Bank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ConfirmSetupIntentPaymentMethodDataP24Bank::*;
         match self {
             AliorBank => "alior_bank",
@@ -8045,7 +8045,7 @@ impl ConfirmSetupIntentPaymentMethodDataP24Bank {
             ToyotaBank => "toyota_bank",
             Velobank => "velobank",
             VolkswagenBank => "volkswagen_bank",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -8081,7 +8081,7 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataP24Bank {
             "toyota_bank" => Ok(ToyotaBank),
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8207,7 +8207,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodDataSofortC
 /// The type of the PaymentMethod.
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ConfirmSetupIntentPaymentMethodDataType {
     AcssDebit,
@@ -8245,10 +8245,10 @@ pub enum ConfirmSetupIntentPaymentMethodDataType {
     WechatPay,
     Zip,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl ConfirmSetupIntentPaymentMethodDataType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ConfirmSetupIntentPaymentMethodDataType::*;
         match self {
             AcssDebit => "acss_debit",
@@ -8285,7 +8285,7 @@ impl ConfirmSetupIntentPaymentMethodDataType {
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -8329,7 +8329,7 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
