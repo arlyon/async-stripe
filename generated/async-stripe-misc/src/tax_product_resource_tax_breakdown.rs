@@ -93,7 +93,7 @@ const _: () = {
                 self.amount,
                 self.inclusive,
                 self.tax_rate_details.take(),
-                self.taxability_reason,
+                self.taxability_reason.take(),
                 self.taxable_amount,
             )
             else {
@@ -147,7 +147,7 @@ const _: () = {
 };
 /// The reasoning behind this tax, for example, if the product is tax exempt.
 /// We might extend the possible values for this field to support new tax rules.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum TaxProductResourceTaxBreakdownTaxabilityReason {
     CustomerExempt,
@@ -166,10 +166,10 @@ pub enum TaxProductResourceTaxBreakdownTaxabilityReason {
     TaxableBasisReduced,
     ZeroRated,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl TaxProductResourceTaxBreakdownTaxabilityReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductResourceTaxBreakdownTaxabilityReason::*;
         match self {
             CustomerExempt => "customer_exempt",
@@ -187,7 +187,7 @@ impl TaxProductResourceTaxBreakdownTaxabilityReason {
             StandardRated => "standard_rated",
             TaxableBasisReduced => "taxable_basis_reduced",
             ZeroRated => "zero_rated",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -212,7 +212,7 @@ impl std::str::FromStr for TaxProductResourceTaxBreakdownTaxabilityReason {
             "standard_rated" => Ok(StandardRated),
             "taxable_basis_reduced" => Ok(TaxableBasisReduced),
             "zero_rated" => Ok(ZeroRated),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -151,7 +151,7 @@ const _: () = {
                 self.livemode,
                 self.pending_webhooks,
                 self.request.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -230,7 +230,7 @@ impl serde::Serialize for Event {
     }
 }
 /// Description of the event (for example, `invoice.created` or `charge.refunded`).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum EventType {
     AccountApplicationAuthorized,
@@ -461,10 +461,10 @@ pub enum EventType {
     TreasuryReceivedCreditSucceeded,
     TreasuryReceivedDebitCreated,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl EventType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use EventType::*;
         match self {
             AccountApplicationAuthorized => "account.application.authorized",
@@ -716,7 +716,7 @@ impl EventType {
             TreasuryReceivedCreditFailed => "treasury.received_credit.failed",
             TreasuryReceivedCreditSucceeded => "treasury.received_credit.succeeded",
             TreasuryReceivedDebitCreated => "treasury.received_debit.created",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -983,7 +983,7 @@ impl std::str::FromStr for EventType {
             "treasury.received_credit.failed" => Ok(TreasuryReceivedCreditFailed),
             "treasury.received_credit.succeeded" => Ok(TreasuryReceivedCreditSucceeded),
             "treasury.received_debit.created" => Ok(TreasuryReceivedDebitCreated),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

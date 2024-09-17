@@ -185,7 +185,7 @@ const _: () = {
                 self.owners_provided,
                 self.ownership_declaration.take(),
                 self.phone.take(),
-                self.structure,
+                self.structure.take(),
                 self.tax_id_provided,
                 self.tax_id_registrar.take(),
                 self.vat_id_provided,
@@ -270,7 +270,7 @@ const _: () = {
 };
 /// The category identifying the legal structure of the company or legal entity.
 /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum LegalEntityCompanyStructure {
     FreeZoneEstablishment,
@@ -297,10 +297,10 @@ pub enum LegalEntityCompanyStructure {
     UnincorporatedNonProfit,
     UnincorporatedPartnership,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl LegalEntityCompanyStructure {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use LegalEntityCompanyStructure::*;
         match self {
             FreeZoneEstablishment => "free_zone_establishment",
@@ -326,7 +326,7 @@ impl LegalEntityCompanyStructure {
             UnincorporatedAssociation => "unincorporated_association",
             UnincorporatedNonProfit => "unincorporated_non_profit",
             UnincorporatedPartnership => "unincorporated_partnership",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -359,7 +359,7 @@ impl std::str::FromStr for LegalEntityCompanyStructure {
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
             "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

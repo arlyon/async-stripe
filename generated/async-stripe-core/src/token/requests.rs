@@ -392,7 +392,7 @@ impl Default for CreateTokenAccountCompanyOwnershipDeclaration {
 /// The category identifying the legal structure of the company or legal entity.
 /// See [Business structure](https://docs.stripe.com/connect/identity-verification#business-structure) for more details.
 /// Pass an empty string to unset this value.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateTokenAccountCompanyStructure {
     FreeZoneEstablishment,
@@ -419,10 +419,10 @@ pub enum CreateTokenAccountCompanyStructure {
     UnincorporatedNonProfit,
     UnincorporatedPartnership,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateTokenAccountCompanyStructure {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTokenAccountCompanyStructure::*;
         match self {
             FreeZoneEstablishment => "free_zone_establishment",
@@ -448,7 +448,7 @@ impl CreateTokenAccountCompanyStructure {
             UnincorporatedAssociation => "unincorporated_association",
             UnincorporatedNonProfit => "unincorporated_non_profit",
             UnincorporatedPartnership => "unincorporated_partnership",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -481,7 +481,7 @@ impl std::str::FromStr for CreateTokenAccountCompanyStructure {
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
             "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -534,7 +534,7 @@ impl Default for CreateIssuingAuthorizationMerchantData {
 }
 /// A categorization of the seller's type of business.
 /// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateIssuingAuthorizationMerchantDataCategory {
     AcRefrigerationRepair,
@@ -832,10 +832,10 @@ pub enum CreateIssuingAuthorizationMerchantDataCategory {
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateIssuingAuthorizationMerchantDataCategory {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIssuingAuthorizationMerchantDataCategory::*;
         match self {
             AcRefrigerationRepair => "ac_refrigeration_repair",
@@ -1176,7 +1176,7 @@ impl CreateIssuingAuthorizationMerchantDataCategory {
             WomensAccessoryAndSpecialtyShops => "womens_accessory_and_specialty_shops",
             WomensReadyToWearStores => "womens_ready_to_wear_stores",
             WreckingAndSalvageYards => "wrecking_and_salvage_yards",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -1528,7 +1528,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationMerchantDataCategory {
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

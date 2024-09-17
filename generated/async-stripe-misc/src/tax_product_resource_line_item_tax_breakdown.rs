@@ -101,7 +101,7 @@ const _: () = {
                 self.jurisdiction.take(),
                 self.sourcing,
                 self.tax_rate_details.take(),
-                self.taxability_reason,
+                self.taxability_reason.take(),
                 self.taxable_amount,
             )
             else {
@@ -234,7 +234,7 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceLineItemTaxBreakdownSour
 }
 /// The reasoning behind this tax, for example, if the product is tax exempt.
 /// The possible values for this field may be extended as new tax rules are supported.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum TaxProductResourceLineItemTaxBreakdownTaxabilityReason {
     CustomerExempt,
@@ -253,10 +253,10 @@ pub enum TaxProductResourceLineItemTaxBreakdownTaxabilityReason {
     TaxableBasisReduced,
     ZeroRated,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl TaxProductResourceLineItemTaxBreakdownTaxabilityReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductResourceLineItemTaxBreakdownTaxabilityReason::*;
         match self {
             CustomerExempt => "customer_exempt",
@@ -274,7 +274,7 @@ impl TaxProductResourceLineItemTaxBreakdownTaxabilityReason {
             StandardRated => "standard_rated",
             TaxableBasisReduced => "taxable_basis_reduced",
             ZeroRated => "zero_rated",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -299,7 +299,7 @@ impl std::str::FromStr for TaxProductResourceLineItemTaxBreakdownTaxabilityReaso
             "standard_rated" => Ok(StandardRated),
             "taxable_basis_reduced" => Ok(TaxableBasisReduced),
             "zero_rated" => Ok(ZeroRated),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

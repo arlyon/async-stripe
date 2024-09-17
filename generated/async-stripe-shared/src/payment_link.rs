@@ -688,7 +688,7 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkBillingAddressCollection {
         })
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentLinkPaymentMethodTypes {
     Affirm,
@@ -721,10 +721,10 @@ pub enum PaymentLinkPaymentMethodTypes {
     UsBankAccount,
     WechatPay,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl PaymentLinkPaymentMethodTypes {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentLinkPaymentMethodTypes::*;
         match self {
             Affirm => "affirm",
@@ -756,7 +756,7 @@ impl PaymentLinkPaymentMethodTypes {
             Swish => "swish",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -795,7 +795,7 @@ impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
             "swish" => Ok(Swish),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

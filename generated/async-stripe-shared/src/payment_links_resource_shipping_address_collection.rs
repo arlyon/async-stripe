@@ -103,7 +103,7 @@ const _: () = {
 };
 /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for shipping locations.
 /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentLinksResourceShippingAddressCollectionAllowedCountries {
     Ac,
@@ -344,10 +344,10 @@ pub enum PaymentLinksResourceShippingAddressCollectionAllowedCountries {
     Zw,
     Zz,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl PaymentLinksResourceShippingAddressCollectionAllowedCountries {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentLinksResourceShippingAddressCollectionAllowedCountries::*;
         match self {
             Ac => "AC",
@@ -587,7 +587,7 @@ impl PaymentLinksResourceShippingAddressCollectionAllowedCountries {
             Zm => "ZM",
             Zw => "ZW",
             Zz => "ZZ",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -834,7 +834,7 @@ impl std::str::FromStr for PaymentLinksResourceShippingAddressCollectionAllowedC
             "ZM" => Ok(Zm),
             "ZW" => Ok(Zw),
             "ZZ" => Ok(Zz),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -116,7 +116,7 @@ impl<'a> ObjectWriter<'a> {
                 enum_def_body,
                 r"
             /// An unrecognized value from Stripe. Should not be used as a request parameter.
-            Unknown,
+            Unknown(String),
         "
             );
         }
@@ -127,8 +127,13 @@ impl<'a> ObjectWriter<'a> {
             let _ = writeln!(as_str_body, r#"{variant_name} => "{wire_name}","#);
         }
         if self.provide_unknown_variant {
-            let _ = writeln!(as_str_body, r#"Unknown => "unknown","#);
+            let _ = writeln!(as_str_body, r"Unknown(v) => v,");
         }
+        let as_str_fn = if self.provide_unknown_variant {
+            "pub fn as_str(&self) -> &str"
+        } else {
+            "pub fn as_str(self) -> &'static str"
+        };
 
         // Build the body of the `from_str` implementation
         let mut from_str_body = String::with_capacity(32);
@@ -137,7 +142,7 @@ impl<'a> ObjectWriter<'a> {
         }
 
         let from_str_err = if self.provide_unknown_variant {
-            let _ = writeln!(from_str_body, "_ => Ok(Self::Unknown)");
+            let _ = writeln!(from_str_body, "v => Ok(Unknown(v.to_owned()))");
             "std::convert::Infallible"
         } else {
             let _ = writeln!(from_str_body, "_ => Err(stripe_types::StripeParseError)");
@@ -157,7 +162,7 @@ impl<'a> ObjectWriter<'a> {
             {enum_def_body}
             }}
             impl {enum_name} {{
-                pub fn as_str(self) -> &'static str {{
+                {as_str_fn} {{
                     use {enum_name}::*;
                     match self {{
             {as_str_body}
