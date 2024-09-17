@@ -52,6 +52,18 @@ pub struct Webhook {
 }
 
 impl Webhook {
+    /// Construct an event from a webhook payload, **ignoring the secret**.
+    ///
+    /// This method is considered insecure and intended for early-stage local testing only.
+    /// Use [construct_event](Self::construct_event) for production instead.
+    ///
+    /// # Errors
+    ///
+    /// This function will return a WebhookError if the payload could not be parsed
+    pub fn insecure(payload: &str) -> Result<Event, WebhookError> {
+        Self { current_timestamp: 0 }.parse_payload(payload)
+    }
+
     /// Construct an event from a webhook payload and signature.
     ///
     /// # Errors
@@ -60,6 +72,7 @@ impl Webhook {
     ///  - the provided signature is invalid
     ///  - the provided secret is invalid
     ///  - the signature timestamp is older than 5 minutes
+    ///  - the payload could not be parsed
     pub fn construct_event(payload: &str, sig: &str, secret: &str) -> Result<Event, WebhookError> {
         Self { current_timestamp: Utc::now().timestamp() }.do_construct_event(payload, sig, secret)
     }
@@ -76,6 +89,7 @@ impl Webhook {
     /// - the provided signature is invalid
     /// - the provided secret is invalid
     /// - the signature timestamp is older than 5 minutes from the provided timestamp
+    /// - the payload could not be parsed
     pub fn construct_event_with_timestamp(
         payload: &str,
         sig: &str,
@@ -109,6 +123,10 @@ impl Webhook {
             return Err(WebhookError::BadTimestamp(signature.t));
         }
 
+        self.parse_payload(payload)
+    }
+
+    fn parse_payload(self, payload: &str) -> Result<Event, WebhookError> {
         let base_evt: stripe_shared::Event = miniserde::json::from_str(payload)
             .map_err(|_| WebhookError::BadParse("could not deserialize webhook event".into()))?;
 
