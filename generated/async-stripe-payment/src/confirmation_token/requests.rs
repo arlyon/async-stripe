@@ -476,7 +476,7 @@ impl CreateConfirmationTokenPaymentMethodDataBoleto {
     }
 }
 /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateConfirmationTokenPaymentMethodDataEps {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -493,7 +493,7 @@ impl Default for CreateConfirmationTokenPaymentMethodDataEps {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodDataEpsBank {
     ArzteUndApothekerBank,
@@ -525,10 +525,10 @@ pub enum CreateConfirmationTokenPaymentMethodDataEpsBank {
     VolkskreditbankAg,
     VrBankBraunau,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateConfirmationTokenPaymentMethodDataEpsBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateConfirmationTokenPaymentMethodDataEpsBank::*;
         match self {
             ArzteUndApothekerBank => "arzte_und_apotheker_bank",
@@ -559,7 +559,7 @@ impl CreateConfirmationTokenPaymentMethodDataEpsBank {
             VolksbankGruppe => "volksbank_gruppe",
             VolkskreditbankAg => "volkskreditbank_ag",
             VrBankBraunau => "vr_bank_braunau",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -597,7 +597,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataEpsBank {
             "volksbank_gruppe" => Ok(VolksbankGruppe),
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -629,7 +629,7 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataEp
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateConfirmationTokenPaymentMethodDataFpx {
     /// Account holder type for FPX transaction
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -701,7 +701,7 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataFp
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodDataFpxBank {
     AffinBank,
@@ -727,10 +727,10 @@ pub enum CreateConfirmationTokenPaymentMethodDataFpxBank {
     StandardChartered,
     Uob,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateConfirmationTokenPaymentMethodDataFpxBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateConfirmationTokenPaymentMethodDataFpxBank::*;
         match self {
             AffinBank => "affin_bank",
@@ -755,7 +755,7 @@ impl CreateConfirmationTokenPaymentMethodDataFpxBank {
             Rhb => "rhb",
             StandardChartered => "standard_chartered",
             Uob => "uob",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -787,7 +787,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -819,7 +819,7 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataFp
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateConfirmationTokenPaymentMethodDataIdeal {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -836,7 +836,7 @@ impl Default for CreateConfirmationTokenPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodDataIdealBank {
     AbnAmro,
@@ -856,10 +856,10 @@ pub enum CreateConfirmationTokenPaymentMethodDataIdealBank {
     VanLanschot,
     Yoursafe,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateConfirmationTokenPaymentMethodDataIdealBank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateConfirmationTokenPaymentMethodDataIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
@@ -878,7 +878,7 @@ impl CreateConfirmationTokenPaymentMethodDataIdealBank {
             TriodosBank => "triodos_bank",
             VanLanschot => "van_lanschot",
             Yoursafe => "yoursafe",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -904,7 +904,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -968,7 +968,7 @@ impl CreateConfirmationTokenPaymentMethodDataKlarnaDob {
     }
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateConfirmationTokenPaymentMethodDataP24 {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -985,7 +985,7 @@ impl Default for CreateConfirmationTokenPaymentMethodDataP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodDataP24Bank {
     AliorBank,
@@ -1015,10 +1015,10 @@ pub enum CreateConfirmationTokenPaymentMethodDataP24Bank {
     Velobank,
     VolkswagenBank,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateConfirmationTokenPaymentMethodDataP24Bank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateConfirmationTokenPaymentMethodDataP24Bank::*;
         match self {
             AliorBank => "alior_bank",
@@ -1047,7 +1047,7 @@ impl CreateConfirmationTokenPaymentMethodDataP24Bank {
             ToyotaBank => "toyota_bank",
             Velobank => "velobank",
             VolkswagenBank => "volkswagen_bank",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -1083,7 +1083,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataP24Bank {
             "toyota_bank" => Ok(ToyotaBank),
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1227,7 +1227,7 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataSo
 /// The type of the PaymentMethod.
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodDataType {
     AcssDebit,
@@ -1265,10 +1265,10 @@ pub enum CreateConfirmationTokenPaymentMethodDataType {
     WechatPay,
     Zip,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateConfirmationTokenPaymentMethodDataType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateConfirmationTokenPaymentMethodDataType::*;
         match self {
             AcssDebit => "acss_debit",
@@ -1305,7 +1305,7 @@ impl CreateConfirmationTokenPaymentMethodDataType {
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -1349,7 +1349,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

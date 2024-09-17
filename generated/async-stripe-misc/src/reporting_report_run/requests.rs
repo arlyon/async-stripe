@@ -218,7 +218,7 @@ impl Default for CreateReportingReportRunParameters {
     }
 }
 /// Category of balance transactions to be included in the report run.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateReportingReportRunParametersReportingCategory {
     Advance,
@@ -259,10 +259,10 @@ pub enum CreateReportingReportRunParametersReportingCategory {
     TransferReversal,
     UnreconciledCustomerFunds,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateReportingReportRunParametersReportingCategory {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateReportingReportRunParametersReportingCategory::*;
         match self {
             Advance => "advance",
@@ -302,7 +302,7 @@ impl CreateReportingReportRunParametersReportingCategory {
             Transfer => "transfer",
             TransferReversal => "transfer_reversal",
             UnreconciledCustomerFunds => "unreconciled_customer_funds",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -349,7 +349,7 @@ impl std::str::FromStr for CreateReportingReportRunParametersReportingCategory {
             "transfer" => Ok(Transfer),
             "transfer_reversal" => Ok(TransferReversal),
             "unreconciled_customer_funds" => Ok(UnreconciledCustomerFunds),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -384,7 +384,7 @@ impl<'de> serde::Deserialize<'de> for CreateReportingReportRunParametersReportin
 /// The output timezone for all timestamps in the report.
 /// A list of possible time zone values is maintained at the [IANA Time Zone Database](http://www.iana.org/time-zones).
 /// Has no effect on `interval_start` or `interval_end`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateReportingReportRunParametersTimezone {
     AfricaAbidjan,
@@ -986,10 +986,10 @@ pub enum CreateReportingReportRunParametersTimezone {
     Wet,
     Zulu,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateReportingReportRunParametersTimezone {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateReportingReportRunParametersTimezone::*;
         match self {
             AfricaAbidjan => "Africa/Abidjan",
@@ -1590,7 +1590,7 @@ impl CreateReportingReportRunParametersTimezone {
             WMinusSu => "W-SU",
             Wet => "WET",
             Zulu => "Zulu",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -2198,7 +2198,7 @@ impl std::str::FromStr for CreateReportingReportRunParametersTimezone {
             "W-SU" => Ok(WMinusSu),
             "WET" => Ok(Wet),
             "Zulu" => Ok(Zulu),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

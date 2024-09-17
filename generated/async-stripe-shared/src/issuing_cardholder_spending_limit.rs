@@ -120,7 +120,7 @@ const _: () = {
 };
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
 /// Omitting this field will apply the limit to all categories.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum IssuingCardholderSpendingLimitCategories {
     AcRefrigerationRepair,
@@ -419,10 +419,10 @@ pub enum IssuingCardholderSpendingLimitCategories {
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl IssuingCardholderSpendingLimitCategories {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingCardholderSpendingLimitCategories::*;
         match self {
             AcRefrigerationRepair => "ac_refrigeration_repair",
@@ -764,7 +764,7 @@ impl IssuingCardholderSpendingLimitCategories {
             WomensAccessoryAndSpecialtyShops => "womens_accessory_and_specialty_shops",
             WomensReadyToWearStores => "womens_ready_to_wear_stores",
             WreckingAndSalvageYards => "wrecking_and_salvage_yards",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -1117,7 +1117,7 @@ impl std::str::FromStr for IssuingCardholderSpendingLimitCategories {
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

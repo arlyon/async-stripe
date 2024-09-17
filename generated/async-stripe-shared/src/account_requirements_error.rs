@@ -74,7 +74,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(code), Some(reason), Some(requirement)) =
-                (self.code, self.reason.take(), self.requirement.take())
+                (self.code.take(), self.reason.take(), self.requirement.take())
             else {
                 return None;
             };
@@ -117,7 +117,7 @@ const _: () = {
     }
 };
 /// The code for the type of error.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum AccountRequirementsErrorCode {
     InvalidAddressCityStatePostalCode,
@@ -209,10 +209,10 @@ pub enum AccountRequirementsErrorCode {
     VerificationMissingOwners,
     VerificationRequiresAdditionalMemorandumOfAssociations,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl AccountRequirementsErrorCode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use AccountRequirementsErrorCode::*;
         match self {
             InvalidAddressCityStatePostalCode => "invalid_address_city_state_postal_code",
@@ -337,7 +337,7 @@ impl AccountRequirementsErrorCode {
             VerificationRequiresAdditionalMemorandumOfAssociations => {
                 "verification_requires_additional_memorandum_of_associations"
             }
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -471,7 +471,7 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
             "verification_requires_additional_memorandum_of_associations" => {
                 Ok(VerificationRequiresAdditionalMemorandumOfAssociations)
             }
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

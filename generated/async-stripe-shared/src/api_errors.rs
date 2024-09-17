@@ -137,7 +137,7 @@ const _: () = {
                 Some(type_),
             ) = (
                 self.charge.take(),
-                self.code,
+                self.code.take(),
                 self.decline_code.take(),
                 self.doc_url.take(),
                 self.message.take(),
@@ -216,7 +216,7 @@ const _: () = {
     }
 };
 /// For some errors that could be handled programmatically, a short string indicating the [error code](https://stripe.com/docs/error-codes) reported.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ApiErrorsCode {
     AccountClosed,
@@ -392,10 +392,10 @@ pub enum ApiErrorsCode {
     TransfersNotAllowed,
     UrlInvalid,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl ApiErrorsCode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ApiErrorsCode::*;
         match self {
             AccountClosed => "account_closed",
@@ -596,7 +596,7 @@ impl ApiErrorsCode {
             }
             TransfersNotAllowed => "transfers_not_allowed",
             UrlInvalid => "url_invalid",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -812,7 +812,7 @@ impl std::str::FromStr for ApiErrorsCode {
             }
             "transfers_not_allowed" => Ok(TransfersNotAllowed),
             "url_invalid" => Ok(UrlInvalid),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
