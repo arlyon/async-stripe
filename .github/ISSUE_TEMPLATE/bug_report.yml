@@ -51,7 +51,7 @@ body:
     id: language-version
     attributes:
       label: Rust version
-      placeholder: Our MSRV is 1.74.0
+      placeholder: Our MSRV is 1.78.0
     validations:
       required: true
   - type: input
