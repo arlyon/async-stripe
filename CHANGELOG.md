@@ -1,3 +1,10 @@
+## [0.39.2](https://github.com/arlyon/async-stripe/compare/v0.39.1...v0.39.2) (2024-09-24)
+
+
+### Bug Fixes
+
+* erroneous deref clippy lint ([1fcbb29](https://github.com/arlyon/async-stripe/commit/1fcbb2958b4b7900f2463cedf2375179411a2333))
+
 ## [0.39.1](https://github.com/arlyon/async-stripe/compare/v0.39.0...v0.39.1) (2024-09-03)
 
 
