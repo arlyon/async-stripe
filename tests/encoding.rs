@@ -261,7 +261,7 @@ fn deserialize_customer_with_source() {
 }
 
 #[test]
-#[cfg(feature = "event")]
+#[cfg(feature = "events")]
 fn deserialize_checkout_event() {
     use stripe::Event;
 
@@ -277,6 +277,15 @@ fn deserialize_checkout_event() {
       "data": {
         "object": {
           "id": "cs_00000000000000",
+          "created": 1649316731,
+          "expires_at": 1649316731,
+          "shipping_options": [],
+          "custom_fields": [],
+          "custom_text": {},
+          "automatic_tax": {
+              "enabled": false,
+              "created": 1649316731,
+          },
           "object": "checkout.session",
           "billing_address_collection": null,
           "cancel_url": "https://example.com/cancel",
