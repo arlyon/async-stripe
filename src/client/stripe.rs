@@ -179,7 +179,7 @@ impl Client {
 
     fn create_request(&self, method: Method, url: Url) -> Request {
         let mut req = Request::new(method, url);
-        req.insert_header("authorization", &format!("Bearer {}", self.secret_key));
+        req.insert_header("authorization", format!("Bearer {}", self.secret_key));
 
         for (key, value) in self.headers.to_array().iter().filter_map(|(k, v)| v.map(|v| (*k, v))) {
             req.insert_header(key, value);

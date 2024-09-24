@@ -6,9 +6,10 @@ use crate::params::Object;
 use crate::resources::{Account, BankAccount, Card, Currency, Source};
 
 /// A PaymentSourceParams represents all of the supported ways that can
-/// be used to creating a new customer with a payment method or creating
-/// a payment method directly for a customer via `Customer::attach_source`.
+/// be used.
 ///
+/// This includes creating a new customer with a payment method or creating
+/// a payment method directly for a customer via `Customer::attach_source`.
 /// Not to be confused with `SourceParams` which is used by `Source::create`
 /// to create a source that is not necessarily attached to a customer.
 #[derive(Clone, Debug, Serialize, Deserialize)]
