@@ -208,7 +208,7 @@ macro_rules! def_id {
                     && !s.starts_with($alt_prefix)
                 )* {
                     // N.B. For debugging
-                    eprintln!("bad id is: {} (expected: {:?}) for {}", s, $prefix, stringify!($struct_name));
+                    // eprintln!("bad id is: {} (expected: {:?}) for {}", s, $prefix, stringify!($struct_name));
 
                     Err(ParseIdError {
                         typename: stringify!($struct_name),
@@ -544,7 +544,8 @@ def_id!(
         Source(SourceId),
     }
 );
-def_id!(PayoutId, "po_");
+// n.b. tr_ is the same as TransferId
+def_id!(PayoutId, "po_" | "tr_");
 def_id!(
     enum PayoutDestinationId {
         #[default]
