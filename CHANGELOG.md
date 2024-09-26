@@ -1,3 +1,10 @@
+# [0.40.0](https://github.com/arlyon/async-stripe/compare/v0.39.2...v0.40.0) (2024-09-26)
+
+
+### Features
+
+* export checkout_session_ext ([e4e7220](https://github.com/arlyon/async-stripe/commit/e4e722007a5164413054a958ea13858afbccaafd)), closes [#614](https://github.com/arlyon/async-stripe/issues/614)
+
 ## [0.39.2](https://github.com/arlyon/async-stripe/compare/v0.39.1...v0.39.2) (2024-09-24)
 
 
