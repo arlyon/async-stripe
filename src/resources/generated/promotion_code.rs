@@ -2,14 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PromotionCodeId};
-use crate::params::{
-    CurrencyMap, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
-};
+use crate::params::{CurrencyMap, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{Coupon, Currency, Customer};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PromotionCode".
 ///
@@ -27,6 +24,7 @@ pub struct PromotionCode {
     /// The customer-facing code.
     ///
     /// Regardless of case, this code must be unique across all active promotion codes for each customer.
+    /// Valid characters are lower case letters (a-z), upper case letters (A-Z), and digits (0-9).
     pub code: String,
 
     pub coupon: Coupon,
@@ -60,30 +58,24 @@ pub struct PromotionCode {
 }
 
 impl PromotionCode {
+
     /// Returns a list of your promotion codes.
-    pub fn list(client: &Client, params: &ListPromotionCodes<'_>) -> Response<List<PromotionCode>> {
-        client.get_query("/promotion_codes", params)
-    }
+pub fn list(client: &Client, params: &ListPromotionCodes<'_>) -> Response<List<PromotionCode>> {
+   client.get_query("/promotion_codes", params)
+}
+
 
     /// Retrieves the promotion code with the given ID.
     ///
     /// In order to retrieve a promotion code by the customer-facing `code` use [list](https://stripe.com/docs/api/promotion_codes/list) with the desired `code`.
-    pub fn retrieve(
-        client: &Client,
-        id: &PromotionCodeId,
-        expand: &[&str],
-    ) -> Response<PromotionCode> {
+    pub fn retrieve(client: &Client, id: &PromotionCodeId, expand: &[&str]) -> Response<PromotionCode> {
         client.get_query(&format!("/promotion_codes/{}", id), Expand { expand })
     }
 
     /// Updates the specified promotion code by setting the values of the parameters passed.
     ///
     /// Most fields are, by design, not editable.
-    pub fn update(
-        client: &Client,
-        id: &PromotionCodeId,
-        params: UpdatePromotionCode<'_>,
-    ) -> Response<PromotionCode> {
+    pub fn update(client: &Client, id: &PromotionCodeId, params: UpdatePromotionCode<'_>) -> Response<PromotionCode> {
         #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/promotion_codes/{}", id), &params)
     }
@@ -101,6 +93,7 @@ impl Object for PromotionCode {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PromotionCodesResourceRestrictions {
+
     /// Promotion code restrictions defined in each available currency option.
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
@@ -119,6 +112,7 @@ pub struct PromotionCodesResourceRestrictions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PromotionCodeCurrencyOption {
+
     /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
     pub minimum_amount: i64,
 }
@@ -126,6 +120,7 @@ pub struct PromotionCodeCurrencyOption {
 /// The parameters for `PromotionCode::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPromotionCodes<'a> {
+
     /// Filter promotion codes by whether they are active.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -191,12 +186,12 @@ impl<'a> ListPromotionCodes<'a> {
 impl Paginable for ListPromotionCodes<'_> {
     type O = PromotionCode;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `PromotionCode::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePromotionCode<'a> {
+
     /// Whether the promotion code is currently active.
     ///
     /// A promotion code can only be reactivated when the coupon is still valid and the promotion code is otherwise redeemable.
@@ -233,6 +228,7 @@ impl<'a> UpdatePromotionCode<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePromotionCodeRestrictions {
+
     /// Promotion codes defined in each available currency option.
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
@@ -242,6 +238,7 @@ pub struct UpdatePromotionCodeRestrictions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePromotionCodeRestrictionsCurrencyOptions {
+
     /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_amount: Option<i64>,

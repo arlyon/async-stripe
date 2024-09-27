@@ -73,6 +73,9 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
     pub bg: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub bh: Option<TaxProductRegistrationsResourceCountryOptionsDefault>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ca: Option<TaxProductRegistrationsResourceCountryOptionsCanada>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -100,6 +103,9 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
     pub ee: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub eg: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub es: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -110,6 +116,9 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gb: Option<TaxProductRegistrationsResourceCountryOptionsDefault>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ge: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gr: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
@@ -136,7 +145,13 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
     pub jp: Option<TaxProductRegistrationsResourceCountryOptionsDefault>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub ke: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub kr: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kz: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lt: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
@@ -157,6 +172,9 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
     pub my: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub ng: Option<TaxProductRegistrationsResourceCountryOptionsSimplified>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub nl: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -164,6 +182,9 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nz: Option<TaxProductRegistrationsResourceCountryOptionsDefault>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub om: Option<TaxProductRegistrationsResourceCountryOptionsDefault>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pl: Option<TaxProductRegistrationsResourceCountryOptionsEurope>,
@@ -269,6 +290,9 @@ pub struct TaxProductRegistrationsResourceCountryOptionsUnitedStates {
     /// Two-letter US state code ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     pub state: String,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state_sales_tax: Option<TaxProductRegistrationsResourceCountryOptionsUsStateSalesTax>,
+
     /// Type of registration in the US.
     #[serde(rename = "type")]
     pub type_: TaxProductRegistrationsResourceCountryOptionsUnitedStatesType,
@@ -286,6 +310,26 @@ pub struct TaxProductRegistrationsResourceCountryOptionsUsLocalLeaseTax {
 
     /// A [FIPS code](https://www.census.gov/library/reference/code-lists/ansi.html) representing the local jurisdiction.
     pub jurisdiction: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TaxProductRegistrationsResourceCountryOptionsUsStateSalesTax {
+
+    /// Elections for the state sales tax registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub elections: Option<Vec<TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElection>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElection {
+
+    /// A [FIPS code](https://www.census.gov/library/reference/code-lists/ansi.html) representing the local jurisdiction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jurisdiction: Option<String>,
+
+    /// The type of the election for the state sales tax registration.
+    #[serde(rename = "type")]
+    pub type_: TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType,
 }
 
 /// An enum representing the possible values of an `TaxProductRegistrationsResourceCountryOptionsCanada`'s `type` field.
@@ -495,6 +539,42 @@ impl std::fmt::Display for TaxProductRegistrationsResourceCountryOptionsUnitedSt
 impl std::default::Default for TaxProductRegistrationsResourceCountryOptionsUnitedStatesType {
     fn default() -> Self {
         Self::LocalAmusementTax
+    }
+}
+
+/// An enum representing the possible values of an `TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElection`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType {
+    LocalUseTax,
+    SimplifiedSellersUseTax,
+    SingleLocalUseTax,
+}
+
+impl TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType::LocalUseTax => "local_use_tax",
+            TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType::SimplifiedSellersUseTax => "simplified_sellers_use_tax",
+            TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType::SingleLocalUseTax => "single_local_use_tax",
+        }
+    }
+}
+
+impl AsRef<str> for TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType {
+    fn default() -> Self {
+        Self::LocalUseTax
     }
 }
 
