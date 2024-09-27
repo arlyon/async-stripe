@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::DiscountId;
+use crate::ids::{DiscountId};
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{Coupon, Customer, PromotionCode};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Discount".
 ///
@@ -53,6 +52,9 @@ pub struct Discount {
 
     /// The subscription that this coupon is applied to, if it is applied to a particular subscription.
     pub subscription: Option<String>,
+
+    /// The subscription item that this coupon is applied to, if it is applied to a particular subscription item.
+    pub subscription_item: Option<String>,
 }
 
 impl Object for Discount {

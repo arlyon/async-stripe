@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
-use crate::ids::TopupId;
+use crate::ids::{TopupId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, Currency, Source};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Topup".
 ///
@@ -79,10 +78,12 @@ pub struct Topup {
 }
 
 impl Topup {
+
     /// Returns a list of top-ups.
-    pub fn list(client: &Client, params: &ListTopups<'_>) -> Response<List<Topup>> {
-        client.get_query("/topups", params)
-    }
+pub fn list(client: &Client, params: &ListTopups<'_>) -> Response<List<Topup>> {
+   client.get_query("/topups", params)
+}
+
 
     /// Retrieves the details of a top-up that has previously been created.
     ///
@@ -113,6 +114,7 @@ impl Object for Topup {
 /// The parameters for `Topup::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTopups<'a> {
+
     /// A positive integer representing how much to transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<RangeQuery<Timestamp>>,
@@ -170,12 +172,12 @@ impl<'a> ListTopups<'a> {
 impl Paginable for ListTopups<'_> {
     type O = Topup;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `Topup::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTopup<'a> {
+
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.

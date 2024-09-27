@@ -2,14 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{ShippingRateId, TaxCodeId};
-use crate::params::{
-    CurrencyMap, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
-};
+use crate::params::{CurrencyMap, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{Currency, TaxCode};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "ShippingRate".
 ///
@@ -61,17 +58,17 @@ pub struct ShippingRate {
     pub tax_code: Option<Expandable<TaxCode>>,
 
     /// The type of calculation to use on the shipping rate.
-    ///
-    /// Can only be `fixed_amount` for now.
     #[serde(rename = "type")]
     pub type_: ShippingRateType,
 }
 
 impl ShippingRate {
+
     /// Returns a list of your shipping rates.
-    pub fn list(client: &Client, params: &ListShippingRates<'_>) -> Response<List<ShippingRate>> {
-        client.get_query("/shipping_rates", params)
-    }
+pub fn list(client: &Client, params: &ListShippingRates<'_>) -> Response<List<ShippingRate>> {
+   client.get_query("/shipping_rates", params)
+}
+
 
     /// Creates a new shipping rate object.
     pub fn create(client: &Client, params: CreateShippingRate<'_>) -> Response<ShippingRate> {
@@ -80,20 +77,12 @@ impl ShippingRate {
     }
 
     /// Returns the shipping rate object with the given ID.
-    pub fn retrieve(
-        client: &Client,
-        id: &ShippingRateId,
-        expand: &[&str],
-    ) -> Response<ShippingRate> {
+    pub fn retrieve(client: &Client, id: &ShippingRateId, expand: &[&str]) -> Response<ShippingRate> {
         client.get_query(&format!("/shipping_rates/{}", id), Expand { expand })
     }
 
     /// Updates an existing shipping rate object.
-    pub fn update(
-        client: &Client,
-        id: &ShippingRateId,
-        params: UpdateShippingRate<'_>,
-    ) -> Response<ShippingRate> {
+    pub fn update(client: &Client, id: &ShippingRateId, params: UpdateShippingRate<'_>) -> Response<ShippingRate> {
         #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/shipping_rates/{}", id), &params)
     }
@@ -111,6 +100,7 @@ impl Object for ShippingRate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ShippingRateDeliveryEstimate {
+
     /// The upper bound of the estimated range.
     ///
     /// If empty, represents no upper bound i.e., infinite.
@@ -124,6 +114,7 @@ pub struct ShippingRateDeliveryEstimate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ShippingRateDeliveryEstimateBound {
+
     /// A unit of time.
     pub unit: ShippingRateDeliveryEstimateBoundUnit,
 
@@ -133,6 +124,7 @@ pub struct ShippingRateDeliveryEstimateBound {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ShippingRateFixedAmount {
+
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
 
@@ -150,6 +142,7 @@ pub struct ShippingRateFixedAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ShippingRateCurrencyOption {
+
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
 
@@ -162,6 +155,7 @@ pub struct ShippingRateCurrencyOption {
 /// The parameters for `ShippingRate::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateShippingRate<'a> {
+
     /// The estimated range for how long shipping will take, meant to be displayable to the customer.
     ///
     /// This will appear on CheckoutSessions.
@@ -204,8 +198,6 @@ pub struct CreateShippingRate<'a> {
     pub tax_code: Option<TaxCodeId>,
 
     /// The type of calculation to use on the shipping rate.
-    ///
-    /// Can only be `fixed_amount` for now.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<ShippingRateType>,
@@ -229,6 +221,7 @@ impl<'a> CreateShippingRate<'a> {
 /// The parameters for `ShippingRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListShippingRates<'a> {
+
     /// Only return shipping rates that are active or inactive.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -284,12 +277,12 @@ impl<'a> ListShippingRates<'a> {
 impl Paginable for ListShippingRates<'_> {
     type O = ShippingRate;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `ShippingRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateShippingRate<'a> {
+
     /// Whether the shipping rate can be used for new purchases.
     ///
     /// Defaults to `true`.
@@ -335,6 +328,7 @@ impl<'a> UpdateShippingRate<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimate {
+
     /// The upper bound of the estimated range.
     ///
     /// If empty, represents no upper bound i.e., infinite.
@@ -350,6 +344,7 @@ pub struct CreateShippingRateDeliveryEstimate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateFixedAmount {
+
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
 
@@ -367,6 +362,7 @@ pub struct CreateShippingRateFixedAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateShippingRateFixedAmount {
+
     /// Shipping rates defined in each available currency option.
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
@@ -376,6 +372,7 @@ pub struct UpdateShippingRateFixedAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMaximum {
+
     /// A unit of time.
     pub unit: CreateShippingRateDeliveryEstimateMaximumUnit,
 
@@ -385,6 +382,7 @@ pub struct CreateShippingRateDeliveryEstimateMaximum {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMinimum {
+
     /// A unit of time.
     pub unit: CreateShippingRateDeliveryEstimateMinimumUnit,
 
@@ -394,6 +392,7 @@ pub struct CreateShippingRateDeliveryEstimateMinimum {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateFixedAmountCurrencyOptions {
+
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
 
@@ -406,6 +405,7 @@ pub struct CreateShippingRateFixedAmountCurrencyOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateShippingRateFixedAmountCurrencyOptions {
+
     /// A non-negative integer in cents representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
