@@ -23,6 +23,7 @@ mod core {
     pub mod payment_source;
     pub mod payout_ext;
     pub mod placeholders;
+    pub mod refund_ext;
     pub mod setup_intent_ext;
     pub mod test_clock_ext;
     pub mod token_ext;
