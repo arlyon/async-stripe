@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ApiVersion {
     V2011_01_01,
@@ -103,10 +103,10 @@ pub enum ApiVersion {
     V2023_10_16,
     V2024_04_10,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl ApiVersion {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ApiVersion::*;
         match self {
             V2011_01_01 => "2011-01-01",
@@ -210,7 +210,7 @@ impl ApiVersion {
             V2023_08_16 => "2023-08-16",
             V2023_10_16 => "2023-10-16",
             V2024_04_10 => "2024-04-10",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -321,7 +321,7 @@ impl std::str::FromStr for ApiVersion {
             "2023-08-16" => Ok(V2023_08_16),
             "2023-10-16" => Ok(V2023_10_16),
             "2024-04-10" => Ok(V2024_04_10),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

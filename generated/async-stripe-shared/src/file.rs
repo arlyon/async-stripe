@@ -131,7 +131,7 @@ const _: () = {
                 self.filename.take(),
                 self.id.take(),
                 self.links.take(),
-                self.purpose,
+                self.purpose.take(),
                 self.size,
                 self.title.take(),
                 self.type_.take(),
@@ -227,7 +227,7 @@ impl stripe_types::Object for File {
     }
 }
 stripe_types::def_id!(FileId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum FilePurpose {
     AccountRequirement,
@@ -246,10 +246,10 @@ pub enum FilePurpose {
     TaxDocumentUserUpload,
     TerminalReaderSplashscreen,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl FilePurpose {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use FilePurpose::*;
         match self {
             AccountRequirement => "account_requirement",
@@ -267,7 +267,7 @@ impl FilePurpose {
             SigmaScheduledQuery => "sigma_scheduled_query",
             TaxDocumentUserUpload => "tax_document_user_upload",
             TerminalReaderSplashscreen => "terminal_reader_splashscreen",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -292,7 +292,7 @@ impl std::str::FromStr for FilePurpose {
             "sigma_scheduled_query" => Ok(SigmaScheduledQuery),
             "tax_document_user_upload" => Ok(TaxDocumentUserUpload),
             "terminal_reader_splashscreen" => Ok(TerminalReaderSplashscreen),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

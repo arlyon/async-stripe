@@ -79,7 +79,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(amount), Some(rate), Some(taxability_reason), Some(taxable_amount)) =
-                (self.amount, self.rate.take(), self.taxability_reason, self.taxable_amount)
+                (self.amount, self.rate.take(), self.taxability_reason.take(), self.taxable_amount)
             else {
                 return None;
             };
@@ -124,7 +124,7 @@ const _: () = {
 };
 /// The reasoning behind this tax, for example, if the product is tax exempt.
 /// The possible values for this field may be extended as new tax rules are supported.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum LineItemsTaxAmountTaxabilityReason {
     CustomerExempt,
@@ -143,10 +143,10 @@ pub enum LineItemsTaxAmountTaxabilityReason {
     TaxableBasisReduced,
     ZeroRated,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl LineItemsTaxAmountTaxabilityReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use LineItemsTaxAmountTaxabilityReason::*;
         match self {
             CustomerExempt => "customer_exempt",
@@ -164,7 +164,7 @@ impl LineItemsTaxAmountTaxabilityReason {
             StandardRated => "standard_rated",
             TaxableBasisReduced => "taxable_basis_reduced",
             ZeroRated => "zero_rated",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -189,7 +189,7 @@ impl std::str::FromStr for LineItemsTaxAmountTaxabilityReason {
             "standard_rated" => Ok(StandardRated),
             "taxable_basis_reduced" => Ok(TaxableBasisReduced),
             "zero_rated" => Ok(ZeroRated),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

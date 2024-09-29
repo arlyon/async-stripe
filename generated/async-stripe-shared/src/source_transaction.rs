@@ -150,7 +150,7 @@ const _: () = {
                 self.sepa_credit_transfer.take(),
                 self.source.take(),
                 self.status.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -241,7 +241,7 @@ impl serde::Serialize for SourceTransaction {
     }
 }
 /// The type of source this transaction is attached to.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum SourceTransactionType {
     AchCreditTransfer,
@@ -261,10 +261,10 @@ pub enum SourceTransactionType {
     ThreeDSecure,
     Wechat,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl SourceTransactionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SourceTransactionType::*;
         match self {
             AchCreditTransfer => "ach_credit_transfer",
@@ -283,7 +283,7 @@ impl SourceTransactionType {
             Sofort => "sofort",
             ThreeDSecure => "three_d_secure",
             Wechat => "wechat",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -309,7 +309,7 @@ impl std::str::FromStr for SourceTransactionType {
             "sofort" => Ok(Sofort),
             "three_d_secure" => Ok(ThreeDSecure),
             "wechat" => Ok(Wechat),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

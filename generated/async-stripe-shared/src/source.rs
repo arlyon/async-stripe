@@ -317,7 +317,7 @@ const _: () = {
                 self.statement_descriptor.take(),
                 self.status.take(),
                 self.three_d_secure.take(),
-                self.type_,
+                self.type_.take(),
                 self.usage.take(),
                 self.wechat.take(),
             )
@@ -485,7 +485,7 @@ impl serde::Serialize for Source {
 /// The `type` is a payment method, one of `ach_credit_transfer`, `ach_debit`, `alipay`, `bancontact`, `card`, `card_present`, `eps`, `giropay`, `ideal`, `multibanco`, `klarna`, `p24`, `sepa_debit`, `sofort`, `three_d_secure`, or `wechat`.
 /// An additional hash is included on the source with a name matching this value.
 /// It contains additional information specific to the [payment method](https://stripe.com/docs/sources) used.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum SourceType {
     AchCreditTransfer,
@@ -508,10 +508,10 @@ pub enum SourceType {
     ThreeDSecure,
     Wechat,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl SourceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SourceType::*;
         match self {
             AchCreditTransfer => "ach_credit_transfer",
@@ -533,7 +533,7 @@ impl SourceType {
             Sofort => "sofort",
             ThreeDSecure => "three_d_secure",
             Wechat => "wechat",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -562,7 +562,7 @@ impl std::str::FromStr for SourceType {
             "sofort" => Ok(Sofort),
             "three_d_secure" => Ok(ThreeDSecure),
             "wechat" => Ok(Wechat),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

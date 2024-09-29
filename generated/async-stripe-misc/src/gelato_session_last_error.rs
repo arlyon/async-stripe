@@ -66,7 +66,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(code), Some(reason)) = (self.code, self.reason.take()) else {
+            let (Some(code), Some(reason)) = (self.code.take(), self.reason.take()) else {
                 return None;
             };
             Some(Self::Out { code, reason })
@@ -107,7 +107,7 @@ const _: () = {
     }
 };
 /// A short machine-readable string giving the reason for the verification or user-session failure.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum GelatoSessionLastErrorCode {
     Abandoned,
@@ -130,10 +130,10 @@ pub enum GelatoSessionLastErrorCode {
     SelfieUnverifiedOther,
     UnderSupportedAge,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl GelatoSessionLastErrorCode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use GelatoSessionLastErrorCode::*;
         match self {
             Abandoned => "abandoned",
@@ -155,7 +155,7 @@ impl GelatoSessionLastErrorCode {
             SelfieManipulated => "selfie_manipulated",
             SelfieUnverifiedOther => "selfie_unverified_other",
             UnderSupportedAge => "under_supported_age",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -184,7 +184,7 @@ impl std::str::FromStr for GelatoSessionLastErrorCode {
             "selfie_manipulated" => Ok(SelfieManipulated),
             "selfie_unverified_other" => Ok(SelfieUnverifiedOther),
             "under_supported_age" => Ok(UnderSupportedAge),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -217,7 +217,7 @@ impl CreateWebhookEndpointBuilder {
 }
 /// The list of events to enable for this endpoint.
 /// You may specify `['*']` to enable all events, except those that require explicit selection.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateWebhookEndpointEnabledEvents {
     All,
@@ -449,10 +449,10 @@ pub enum CreateWebhookEndpointEnabledEvents {
     TreasuryReceivedCreditSucceeded,
     TreasuryReceivedDebitCreated,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateWebhookEndpointEnabledEvents {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateWebhookEndpointEnabledEvents::*;
         match self {
             All => "*",
@@ -705,7 +705,7 @@ impl CreateWebhookEndpointEnabledEvents {
             TreasuryReceivedCreditFailed => "treasury.received_credit.failed",
             TreasuryReceivedCreditSucceeded => "treasury.received_credit.succeeded",
             TreasuryReceivedDebitCreated => "treasury.received_debit.created",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -973,7 +973,7 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "treasury.received_credit.failed" => Ok(TreasuryReceivedCreditFailed),
             "treasury.received_credit.succeeded" => Ok(TreasuryReceivedCreditSucceeded),
             "treasury.received_debit.created" => Ok(TreasuryReceivedDebitCreated),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1107,7 +1107,7 @@ impl UpdateWebhookEndpointBuilder {
 }
 /// The list of events to enable for this endpoint.
 /// You may specify `['*']` to enable all events, except those that require explicit selection.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateWebhookEndpointEnabledEvents {
     All,
@@ -1339,10 +1339,10 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     TreasuryReceivedCreditSucceeded,
     TreasuryReceivedDebitCreated,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl UpdateWebhookEndpointEnabledEvents {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateWebhookEndpointEnabledEvents::*;
         match self {
             All => "*",
@@ -1595,7 +1595,7 @@ impl UpdateWebhookEndpointEnabledEvents {
             TreasuryReceivedCreditFailed => "treasury.received_credit.failed",
             TreasuryReceivedCreditSucceeded => "treasury.received_credit.succeeded",
             TreasuryReceivedDebitCreated => "treasury.received_debit.created",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -1863,7 +1863,7 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "treasury.received_credit.failed" => Ok(TreasuryReceivedCreditFailed),
             "treasury.received_credit.succeeded" => Ok(TreasuryReceivedCreditSucceeded),
             "treasury.received_debit.created" => Ok(TreasuryReceivedDebitCreated),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

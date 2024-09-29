@@ -471,7 +471,7 @@ const _: () = {
                 self.invoice_creation.take(),
                 self.line_items.take(),
                 self.livemode,
-                self.locale,
+                self.locale.take(),
                 self.metadata.take(),
                 self.mode,
                 self.payment_intent.take(),
@@ -1037,7 +1037,7 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionBillingAddressCollection {
         })
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CheckoutSessionLocale {
     Auto,
@@ -1082,10 +1082,10 @@ pub enum CheckoutSessionLocale {
     ZhMinusHk,
     ZhMinusTw,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CheckoutSessionLocale {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutSessionLocale::*;
         match self {
             Auto => "auto",
@@ -1129,7 +1129,7 @@ impl CheckoutSessionLocale {
             Zh => "zh",
             ZhMinusHk => "zh-HK",
             ZhMinusTw => "zh-TW",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -1180,7 +1180,7 @@ impl std::str::FromStr for CheckoutSessionLocale {
             "zh" => Ok(Zh),
             "zh-HK" => Ok(ZhMinusHk),
             "zh-TW" => Ok(ZhMinusTw),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
