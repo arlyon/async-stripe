@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
-use crate::ids::TerminalConfigurationId;
+use crate::ids::{TerminalConfigurationId};
 use crate::params::{Expand, Expandable, List, Object, Paginable};
-use crate::resources::File;
+use crate::resources::{File};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TerminalConfigurationConfiguration".
 ///
@@ -32,8 +31,18 @@ pub struct TerminalConfiguration {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub livemode: Option<bool>,
 
+    /// String indicating the name of the Configuration object, set by the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offline: Option<TerminalConfigurationConfigurationResourceOfflineConfig>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reboot_window: Option<TerminalConfigurationConfigurationResourceRebootWindow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stripe_s700: Option<TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tipping: Option<TerminalConfigurationConfigurationResourceTipping>,
@@ -43,19 +52,15 @@ pub struct TerminalConfiguration {
 }
 
 impl TerminalConfiguration {
+
     /// Returns a list of `Configuration` objects.
-    pub fn list(
-        client: &Client,
-        params: &ListTerminalConfigurations<'_>,
-    ) -> Response<List<TerminalConfiguration>> {
-        client.get_query("/terminal/configurations", params)
-    }
+pub fn list(client: &Client, params: &ListTerminalConfigurations<'_>) -> Response<List<TerminalConfiguration>> {
+   client.get_query("/terminal/configurations", params)
+}
+
 
     /// Creates a new `Configuration` object.
-    pub fn create(
-        client: &Client,
-        params: CreateTerminalConfiguration<'_>,
-    ) -> Response<TerminalConfiguration> {
+    pub fn create(client: &Client, params: CreateTerminalConfiguration<'_>) -> Response<TerminalConfiguration> {
         #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/terminal/configurations", &params)
     }
@@ -73,6 +78,7 @@ impl Object for TerminalConfiguration {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig {
+
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<Expandable<File>>,
@@ -80,6 +86,7 @@ pub struct TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalConfigurationConfigurationResourceOfflineConfig {
+
     /// Determines whether to allow transactions to be collected while reader is offline.
     ///
     /// Defaults to false.
@@ -87,7 +94,20 @@ pub struct TerminalConfigurationConfigurationResourceOfflineConfig {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalConfigurationConfigurationResourceRebootWindow {
+
+    /// Integer between 0 to 23 that represents the end hour of the reboot time window.
+    ///
+    /// The value must be different than the start_hour.
+    pub end_hour: i64,
+
+    /// Integer between 0 to 23 that represents the start hour of the reboot time window.
+    pub start_hour: i64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalConfigurationConfigurationResourceTipping {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aud: Option<TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
 
@@ -133,6 +153,7 @@ pub struct TerminalConfigurationConfigurationResourceTipping {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalConfigurationConfigurationResourceCurrencySpecificConfig {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -149,6 +170,7 @@ pub struct TerminalConfigurationConfigurationResourceCurrencySpecificConfig {
 /// The parameters for `TerminalConfiguration::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateTerminalConfiguration<'a> {
+
     /// An object containing device type specific settings for BBPOS WisePOS E readers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bbpos_wisepos_e: Option<CreateTerminalConfigurationBbposWiseposE>,
@@ -157,9 +179,21 @@ pub struct CreateTerminalConfiguration<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
+    /// Name of the configuration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<&'a str>,
+
     /// Configurations for collecting transactions offline.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offline: Option<CreateTerminalConfigurationOffline>,
+
+    /// Reboot time settings for readers that support customized reboot time configuration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reboot_window: Option<CreateTerminalConfigurationRebootWindow>,
+
+    /// An object containing device type specific settings for Stripe S700 readers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stripe_s700: Option<CreateTerminalConfigurationStripeS700>,
 
     /// Tipping configurations for readers supporting on-reader tips.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -175,7 +209,10 @@ impl<'a> CreateTerminalConfiguration<'a> {
         CreateTerminalConfiguration {
             bbpos_wisepos_e: Default::default(),
             expand: Default::default(),
+            name: Default::default(),
             offline: Default::default(),
+            reboot_window: Default::default(),
+            stripe_s700: Default::default(),
             tipping: Default::default(),
             verifone_p400: Default::default(),
         }
@@ -185,6 +222,7 @@ impl<'a> CreateTerminalConfiguration<'a> {
 /// The parameters for `TerminalConfiguration::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTerminalConfigurations<'a> {
+
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
@@ -228,11 +266,11 @@ impl<'a> ListTerminalConfigurations<'a> {
 impl Paginable for ListTerminalConfigurations<'_> {
     type O = TerminalConfiguration;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationBbposWiseposE {
+
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
@@ -240,6 +278,7 @@ pub struct CreateTerminalConfigurationBbposWiseposE {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationOffline {
+
     /// Determines whether to allow transactions to be collected while reader is offline.
     ///
     /// Defaults to false.
@@ -247,7 +286,28 @@ pub struct CreateTerminalConfigurationOffline {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateTerminalConfigurationRebootWindow {
+
+    /// Integer between 0 to 23 that represents the end hour of the reboot time window.
+    ///
+    /// The value must be different than the start_hour.
+    pub end_hour: i64,
+
+    /// Integer between 0 to 23 that represents the start hour of the reboot time window.
+    pub start_hour: i64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateTerminalConfigurationStripeS700 {
+
+    /// A File ID representing an image you would like displayed on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTipping {
+
     /// Tipping configuration for AUD.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aud: Option<CreateTerminalConfigurationTippingAud>,
@@ -307,6 +367,7 @@ pub struct CreateTerminalConfigurationTipping {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationVerifoneP400 {
+
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
@@ -314,6 +375,7 @@ pub struct CreateTerminalConfigurationVerifoneP400 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingAud {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -329,6 +391,7 @@ pub struct CreateTerminalConfigurationTippingAud {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingCad {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -344,6 +407,7 @@ pub struct CreateTerminalConfigurationTippingCad {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingChf {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -359,6 +423,7 @@ pub struct CreateTerminalConfigurationTippingChf {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingCzk {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -374,6 +439,7 @@ pub struct CreateTerminalConfigurationTippingCzk {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingDkk {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -389,6 +455,7 @@ pub struct CreateTerminalConfigurationTippingDkk {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingEur {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -404,6 +471,7 @@ pub struct CreateTerminalConfigurationTippingEur {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingGbp {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -419,6 +487,7 @@ pub struct CreateTerminalConfigurationTippingGbp {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingHkd {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -434,6 +503,7 @@ pub struct CreateTerminalConfigurationTippingHkd {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingMyr {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -449,6 +519,7 @@ pub struct CreateTerminalConfigurationTippingMyr {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingNok {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -464,6 +535,7 @@ pub struct CreateTerminalConfigurationTippingNok {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingNzd {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -479,6 +551,7 @@ pub struct CreateTerminalConfigurationTippingNzd {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingSek {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -494,6 +567,7 @@ pub struct CreateTerminalConfigurationTippingSek {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingSgd {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,
@@ -509,6 +583,7 @@ pub struct CreateTerminalConfigurationTippingSgd {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTerminalConfigurationTippingUsd {
+
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,

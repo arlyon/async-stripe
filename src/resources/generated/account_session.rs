@@ -52,13 +52,46 @@ impl Object for AccountSession {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ConnectEmbeddedAccountSessionCreateComponents {
 
-    pub account_onboarding: ConnectEmbeddedBaseConfigClaim,
+    pub account_management: ConnectEmbeddedAccountConfigClaim,
 
-    pub payment_details: ConnectEmbeddedPaymentsConfig,
+    pub account_onboarding: ConnectEmbeddedAccountConfigClaim,
 
-    pub payments: ConnectEmbeddedPaymentsConfig,
+    pub balances: ConnectEmbeddedPayoutsConfigClaim,
 
-    pub payouts: ConnectEmbeddedPayoutsConfig,
+    pub documents: ConnectEmbeddedBaseConfigClaim,
+
+    pub notification_banner: ConnectEmbeddedAccountConfigClaim,
+
+    pub payment_details: ConnectEmbeddedPaymentsConfigClaim,
+
+    pub payments: ConnectEmbeddedPaymentsConfigClaim,
+
+    pub payouts: ConnectEmbeddedPayoutsConfigClaim,
+
+    pub payouts_list: ConnectEmbeddedBaseConfigClaim,
+
+    pub tax_registrations: ConnectEmbeddedBaseConfigClaim,
+
+    pub tax_settings: ConnectEmbeddedBaseConfigClaim,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct ConnectEmbeddedAccountConfigClaim {
+
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+
+    pub features: ConnectEmbeddedAccountFeaturesClaim,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct ConnectEmbeddedAccountFeaturesClaim {
+
+    /// Whether to allow platforms to control bank account collection for their connected accounts.
+    ///
+    /// This feature can only be false for custom accounts (or accounts where the platform is compliance owner).
+    /// Otherwise, bank account collection is determined by compliance requirements.
+    pub external_account_collection: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -75,7 +108,7 @@ pub struct ConnectEmbeddedBaseFeatures {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct ConnectEmbeddedPaymentsConfig {
+pub struct ConnectEmbeddedPaymentsConfigClaim {
 
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -91,6 +124,11 @@ pub struct ConnectEmbeddedPaymentsFeatures {
     /// This is `true` by default.
     pub capture_payments: bool,
 
+    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    ///
+    /// This is `false` by default.
+    pub destination_on_behalf_of_charge_management: bool,
+
     /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
     ///
     /// This is `true` by default.
@@ -103,7 +141,7 @@ pub struct ConnectEmbeddedPaymentsFeatures {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct ConnectEmbeddedPayoutsConfig {
+pub struct ConnectEmbeddedPayoutsConfigClaim {
 
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -118,6 +156,12 @@ pub struct ConnectEmbeddedPayoutsFeatures {
     ///
     /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
     pub edit_payout_schedule: bool,
+
+    /// Whether to allow platforms to control bank account collection for their connected accounts.
+    ///
+    /// This feature can only be false for custom accounts (or accounts where the platform is compliance owner).
+    /// Otherwise, bank account collection is determined by compliance requirements.
+    pub external_account_collection: bool,
 
     /// Whether to allow creation of instant payouts.
     ///
@@ -160,9 +204,25 @@ impl<'a> CreateAccountSession<'a> {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountSessionComponents {
 
+    /// Configuration for the account management embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_management: Option<CreateAccountSessionComponentsAccountManagement>,
+
     /// Configuration for the account onboarding embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_onboarding: Option<CreateAccountSessionComponentsAccountOnboarding>,
+
+    /// Configuration for the balances embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balances: Option<CreateAccountSessionComponentsBalances>,
+
+    /// Configuration for the documents embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub documents: Option<CreateAccountSessionComponentsDocuments>,
+
+    /// Configuration for the notification banner embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub notification_banner: Option<CreateAccountSessionComponentsNotificationBanner>,
 
     /// Configuration for the payment details embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -175,6 +235,29 @@ pub struct CreateAccountSessionComponents {
     /// Configuration for the payouts embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts: Option<CreateAccountSessionComponentsPayouts>,
+
+    /// Configuration for the payouts list embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payouts_list: Option<CreateAccountSessionComponentsPayoutsList>,
+
+    /// Configuration for the tax registrations embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_registrations: Option<CreateAccountSessionComponentsTaxRegistrations>,
+
+    /// Configuration for the tax settings embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_settings: Option<CreateAccountSessionComponentsTaxSettings>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsAccountManagement {
+
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsAccountManagementFeatures>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -186,6 +269,39 @@ pub struct CreateAccountSessionComponentsAccountOnboarding {
     /// The list of features enabled in the embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateAccountSessionComponentsAccountOnboardingFeatures>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsBalances {
+
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsBalancesFeatures>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsDocuments {
+
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsDocumentsFeatures>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsNotificationBanner {
+
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsNotificationBannerFeatures>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -222,7 +338,102 @@ pub struct CreateAccountSessionComponentsPayouts {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsPayoutsList {
+
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsPayoutsListFeatures>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsTaxRegistrations {
+
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsTaxRegistrationsFeatures>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsTaxSettings {
+
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsTaxSettingsFeatures>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsAccountManagementFeatures {
+
+    /// Whether to allow platforms to control bank account collection for their connected accounts.
+    ///
+    /// This feature can only be false for custom accounts (or accounts where the platform is compliance owner).
+    /// Otherwise, bank account collection is determined by compliance requirements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_account_collection: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountSessionComponentsAccountOnboardingFeatures {
+
+    /// Whether to allow platforms to control bank account collection for their connected accounts.
+    ///
+    /// This feature can only be false for custom accounts (or accounts where the platform is compliance owner).
+    /// Otherwise, bank account collection is determined by compliance requirements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_account_collection: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsBalancesFeatures {
+
+    /// Whether to allow payout schedule to be changed.
+    ///
+    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub edit_payout_schedule: Option<bool>,
+
+    /// Whether to allow platforms to control bank account collection for their connected accounts.
+    ///
+    /// This feature can only be false for custom accounts (or accounts where the platform is compliance owner).
+    /// Otherwise, bank account collection is determined by compliance requirements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_account_collection: Option<bool>,
+
+    /// Whether to allow creation of instant payouts.
+    ///
+    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instant_payouts: Option<bool>,
+
+    /// Whether to allow creation of standard payouts.
+    ///
+    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard_payouts: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsDocumentsFeatures {
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsNotificationBannerFeatures {
+
+    /// Whether to allow platforms to control bank account collection for their connected accounts.
+    ///
+    /// This feature can only be false for custom accounts (or accounts where the platform is compliance owner).
+    /// Otherwise, bank account collection is determined by compliance requirements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_account_collection: Option<bool>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -233,6 +444,12 @@ pub struct CreateAccountSessionComponentsPaymentDetailsFeatures {
     /// This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_payments: Option<bool>,
+
+    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    ///
+    /// This is `false` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination_on_behalf_of_charge_management: Option<bool>,
 
     /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
     ///
@@ -256,6 +473,12 @@ pub struct CreateAccountSessionComponentsPaymentsFeatures {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_payments: Option<bool>,
 
+    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    ///
+    /// This is `false` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination_on_behalf_of_charge_management: Option<bool>,
+
     /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
     ///
     /// This is `true` by default.
@@ -278,6 +501,13 @@ pub struct CreateAccountSessionComponentsPayoutsFeatures {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub edit_payout_schedule: Option<bool>,
 
+    /// Whether to allow platforms to control bank account collection for their connected accounts.
+    ///
+    /// This feature can only be false for custom accounts (or accounts where the platform is compliance owner).
+    /// Otherwise, bank account collection is determined by compliance requirements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_account_collection: Option<bool>,
+
     /// Whether to allow creation of instant payouts.
     ///
     /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
@@ -289,4 +519,16 @@ pub struct CreateAccountSessionComponentsPayoutsFeatures {
     /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard_payouts: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsPayoutsListFeatures {
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsTaxRegistrationsFeatures {
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsTaxSettingsFeatures {
 }

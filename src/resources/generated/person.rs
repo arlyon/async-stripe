@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::PersonId;
+use crate::ids::{PersonId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Address, File};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Person".
 ///
@@ -152,6 +151,7 @@ impl Object for Person {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LegalEntityDob {
+
     /// The day of birth, between 1 and 31.
     pub day: Option<i64>,
 
@@ -164,6 +164,7 @@ pub struct LegalEntityDob {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonVerification {
+
     /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_document: Option<PersonVerificationDocument>,
@@ -191,6 +192,7 @@ pub struct PersonVerification {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonVerificationDocument {
+
     /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
     pub back: Option<Expandable<File>>,
 
@@ -210,11 +212,14 @@ pub struct PersonVerificationDocument {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonAdditionalTosAcceptances {
-    pub account: PersonAdditionalTosAcceptance,
+
+    /// Details on the legal guardian's acceptance of the main Stripe service agreement.
+    pub account: Option<PersonAdditionalTosAcceptance>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonAdditionalTosAcceptance {
+
     /// The Unix timestamp marking when the legal guardian accepted the service agreement.
     pub date: Option<Timestamp>,
 
@@ -227,6 +232,7 @@ pub struct PersonAdditionalTosAcceptance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonFutureRequirements {
+
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
 
@@ -249,15 +255,17 @@ pub struct PersonFutureRequirements {
     /// New fields will never appear here; `future_requirements.past_due` will always be a subset of `requirements.past_due`.
     pub past_due: Vec<String>,
 
-    /// Fields that may become required depending on the results of verification or review.
+    /// Fields that might become required depending on the results of verification or review.
     ///
-    /// Will be an empty array unless an asynchronous verification is pending.
+    /// It's an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due` or `currently_due`.
+    /// Fields might appear in `eventually_due` or `currently_due` and in `pending_verification` if verification fails but another verification is still pending.
     pub pending_verification: Vec<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountRequirementsAlternative {
+
     /// Fields that can be provided to satisfy all fields in `original_fields_due`.
     pub alternative_fields_due: Vec<String>,
 
@@ -267,6 +275,7 @@ pub struct AccountRequirementsAlternative {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountRequirementsError {
+
     /// The code for the type of error.
     pub code: AccountRequirementsErrorCode,
 
@@ -279,6 +288,7 @@ pub struct AccountRequirementsError {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonRelationship {
+
     /// Whether the person is a director of the account's legal entity.
     ///
     /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
@@ -309,6 +319,7 @@ pub struct PersonRelationship {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonRequirements {
+
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
 
@@ -330,10 +341,11 @@ pub struct PersonRequirements {
     /// These fields need to be collected to enable the person's account.
     pub past_due: Vec<String>,
 
-    /// Fields that may become required depending on the results of verification or review.
+    /// Fields that might become required depending on the results of verification or review.
     ///
-    /// Will be an empty array unless an asynchronous verification is pending.
+    /// It's an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
+    /// Fields might appear in `eventually_due`, `currently_due`, or `past_due` and in `pending_verification` if verification fails but another verification is still pending.
     pub pending_verification: Vec<String>,
 }
 
@@ -422,6 +434,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedKeyedMatch,
     VerificationFailedNameMatch,
     VerificationFailedOther,
+    VerificationFailedRepresentativeAuthority,
     VerificationFailedResidentialAddress,
     VerificationFailedTaxIdMatch,
     VerificationFailedTaxIdNotIssued,
@@ -429,6 +442,8 @@ pub enum AccountRequirementsErrorCode {
     VerificationMissingExecutives,
     VerificationMissingOwners,
     VerificationRequiresAdditionalMemorandumOfAssociations,
+    VerificationRequiresAdditionalProofOfRegistration,
+    VerificationSupportability,
 }
 
 impl AccountRequirementsErrorCode {
@@ -514,6 +529,7 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationFailedKeyedMatch => "verification_failed_keyed_match",
             AccountRequirementsErrorCode::VerificationFailedNameMatch => "verification_failed_name_match",
             AccountRequirementsErrorCode::VerificationFailedOther => "verification_failed_other",
+            AccountRequirementsErrorCode::VerificationFailedRepresentativeAuthority => "verification_failed_representative_authority",
             AccountRequirementsErrorCode::VerificationFailedResidentialAddress => "verification_failed_residential_address",
             AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => "verification_failed_tax_id_match",
             AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",
@@ -521,6 +537,8 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationMissingExecutives => "verification_missing_executives",
             AccountRequirementsErrorCode::VerificationMissingOwners => "verification_missing_owners",
             AccountRequirementsErrorCode::VerificationRequiresAdditionalMemorandumOfAssociations => "verification_requires_additional_memorandum_of_associations",
+            AccountRequirementsErrorCode::VerificationRequiresAdditionalProofOfRegistration => "verification_requires_additional_proof_of_registration",
+            AccountRequirementsErrorCode::VerificationSupportability => "verification_supportability",
         }
     }
 }

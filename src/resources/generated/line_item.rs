@@ -2,13 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::InvoiceLineItemId;
+use crate::ids::{InvoiceLineItemId};
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{
-    Currency, Discount, InvoiceItem, Period, Plan, Price, Subscription, SubscriptionItem, TaxRate,
-};
+use crate::resources::{BillingCreditBalanceTransaction, Currency, Discount, InvoiceItem, Margin, Period, Plan, Price, Subscription, SubscriptionItem, TaxRate};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "InvoiceLineItem".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -44,7 +41,10 @@ pub struct InvoiceLineItem {
     ///
     /// Line item discounts are applied before invoice discounts.
     /// Use `expand[]=discounts` to expand each discount.
-    pub discounts: Option<Vec<Expandable<Discount>>>,
+    pub discounts: Vec<Expandable<Discount>>,
+
+    /// The ID of the invoice that contains this line item.
+    pub invoice: Option<String>,
 
     /// The ID of the [invoice item](https://stripe.com/docs/api/invoiceitems) associated with this line item if any.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -56,13 +56,16 @@ pub struct InvoiceLineItem {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    /// Note that for line items with `type=subscription` this will reflect the metadata of the subscription that caused the line item to be created.
+    /// Note that for line items with `type=subscription`, `metadata` reflects the current metadata from the subscription associated with the line item, unless the invoice line was directly updated with different metadata after creation.
     pub metadata: Metadata,
 
     pub period: Option<Period>,
 
     /// The plan of the subscription, if the line item is a subscription or a proration.
     pub plan: Option<Plan>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pretax_credit_amounts: Option<Vec<InvoicesResourcePretaxCreditAmount>>,
 
     /// The price of the line item.
     pub price: Option<Price>,
@@ -86,12 +89,10 @@ pub struct InvoiceLineItem {
     pub subscription_item: Option<Expandable<SubscriptionItem>>,
 
     /// The amount of tax calculated per tax rate for this line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_amounts: Option<Vec<TaxAmount>>,
+    pub tax_amounts: Vec<TaxAmount>,
 
     /// The tax rates which apply to the line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Vec<TaxRate>>,
+    pub tax_rates: Vec<TaxRate>,
 
     /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
     #[serde(rename = "type")]
@@ -113,6 +114,7 @@ impl Object for InvoiceLineItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
+
     /// The amount, in cents (or local equivalent), of the discount.
     pub amount: i64,
 
@@ -122,6 +124,7 @@ pub struct DiscountsResourceDiscountAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxAmount {
+
     /// The amount, in cents (or local equivalent), of the tax.
     pub amount: i64,
 
@@ -142,17 +145,42 @@ pub struct TaxAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesResourceLineItemsProrationDetails {
+
     /// For a credit proration `line_item`, the original debit line_items to which the credit proration applies.
     pub credited_items: Option<InvoicesResourceLineItemsCreditedItems>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesResourceLineItemsCreditedItems {
+
     /// Invoice containing the credited invoice line items.
     pub invoice: String,
 
     /// Credited invoice line items.
     pub invoice_line_items: Vec<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct InvoicesResourcePretaxCreditAmount {
+
+    /// The amount, in cents (or local equivalent), of the pretax credit amount.
+    pub amount: i64,
+
+    /// The credit balance transaction that was applied to get this pretax credit amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub credit_balance_transaction: Option<Expandable<BillingCreditBalanceTransaction>>,
+
+    /// The discount that was applied to get this pretax credit amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<Expandable<Discount>>,
+
+    /// The margin that was applied to get this pretax credit amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub margin: Option<Expandable<Margin>>,
+
+    /// Type of the pretax credit amount referenced.
+    #[serde(rename = "type")]
+    pub type_: InvoicesResourcePretaxCreditAmountType,
 }
 
 /// An enum representing the possible values of an `InvoiceLineItem`'s `type` field.
@@ -187,6 +215,40 @@ impl std::fmt::Display for InvoiceLineItemType {
 impl std::default::Default for InvoiceLineItemType {
     fn default() -> Self {
         Self::InvoiceItem
+    }
+}
+
+/// An enum representing the possible values of an `InvoicesResourcePretaxCreditAmount`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum InvoicesResourcePretaxCreditAmountType {
+    CreditBalanceTransaction,
+    Discount,
+}
+
+impl InvoicesResourcePretaxCreditAmountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            InvoicesResourcePretaxCreditAmountType::CreditBalanceTransaction => "credit_balance_transaction",
+            InvoicesResourcePretaxCreditAmountType::Discount => "discount",
+        }
+    }
+}
+
+impl AsRef<str> for InvoicesResourcePretaxCreditAmountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoicesResourcePretaxCreditAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for InvoicesResourcePretaxCreditAmountType {
+    fn default() -> Self {
+        Self::CreditBalanceTransaction
     }
 }
 
