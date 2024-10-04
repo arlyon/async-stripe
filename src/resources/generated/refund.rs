@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{ChargeId, CustomerId, PaymentIntentId, RefundId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, Charge, Currency, PaymentIntent, TransferReversal};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Refund".
 ///
@@ -94,12 +93,15 @@ pub struct Refund {
 }
 
 impl Refund {
+
     /// Returns a list of all refunds you created.
     ///
-    /// We return the refunds in sorted order, with the most recent refunds appearing first The 10 most recent refunds are always available by default on the Charge object.
-    pub fn list(client: &Client, params: &ListRefunds<'_>) -> Response<List<Refund>> {
-        client.get_query("/refunds", params)
-    }
+    /// We return the refunds in sorted order, with the most recent refunds appearing first.
+    /// The 10 most recent refunds are always available by default on the Charge object.
+pub fn list(client: &Client, params: &ListRefunds<'_>) -> Response<List<Refund>> {
+   client.get_query("/refunds", params)
+}
+
 
     /// When you create a new refund, you must specify a Charge or a PaymentIntent object on which to create it.
     ///
@@ -143,6 +145,7 @@ impl Object for Refund {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RefundDestinationDetails {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub affirm: Option<DestinationDetailsUnimplemented>,
 
@@ -151,6 +154,9 @@ pub struct RefundDestinationDetails {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amazon_pay: Option<DestinationDetailsUnimplemented>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub au_bank_transfer: Option<DestinationDetailsUnimplemented>,
@@ -190,6 +196,9 @@ pub struct RefundDestinationDetails {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub multibanco: Option<RefundDestinationDetailsGeneric>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mx_bank_transfer: Option<RefundDestinationDetailsGeneric>,
@@ -236,10 +245,12 @@ pub struct RefundDestinationDetails {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct DestinationDetailsUnimplemented {}
+pub struct DestinationDetailsUnimplemented {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RefundDestinationDetailsCard {
+
     /// Value of the reference number assigned to the refund.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
@@ -263,6 +274,7 @@ pub struct RefundDestinationDetailsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RefundDestinationDetailsGeneric {
+
     /// The reference assigned to the refund.
     pub reference: Option<String>,
 
@@ -274,6 +286,7 @@ pub struct RefundDestinationDetailsGeneric {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RefundNextAction {
+
     /// Contains the refund details.
     pub display_details: Option<RefundNextActionDisplayDetails>,
 
@@ -284,6 +297,7 @@ pub struct RefundNextAction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RefundNextActionDisplayDetails {
+
     pub email_sent: EmailSent,
 
     /// The expiry timestamp.
@@ -292,6 +306,7 @@ pub struct RefundNextActionDisplayDetails {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct EmailSent {
+
     /// The timestamp when the email was sent.
     pub email_sent_at: Timestamp,
 
@@ -302,6 +317,7 @@ pub struct EmailSent {
 /// The parameters for `Refund::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateRefund<'a> {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
@@ -387,10 +403,12 @@ impl<'a> CreateRefund<'a> {
 /// The parameters for `Refund::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListRefunds<'a> {
+
     /// Only return refunds for the charge specified by this charge ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<ChargeId>,
 
+    /// Only return refunds that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -439,12 +457,12 @@ impl<'a> ListRefunds<'a> {
 impl Paginable for ListRefunds<'_> {
     type O = Refund;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `Refund::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateRefund<'a> {
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -460,7 +478,10 @@ pub struct UpdateRefund<'a> {
 
 impl<'a> UpdateRefund<'a> {
     pub fn new() -> Self {
-        UpdateRefund { expand: Default::default(), metadata: Default::default() }
+        UpdateRefund {
+            expand: Default::default(),
+            metadata: Default::default(),
+        }
     }
 }
 

@@ -94,6 +94,7 @@ pub struct TreasuryReceivedCreditsResourceLinkedFlows {
     pub source_flow: Option<String>,
 
     /// The expandable object of the source flow.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub source_flow_details: Option<TreasuryReceivedCreditsResourceSourceFlowsDetails>,
 
     /// The type of flow that originated the ReceivedCredit (for example, `outbound_payment`).
@@ -133,6 +134,7 @@ pub struct TreasuryReceivedCreditsResourceSourceFlowsDetails {
 pub enum TreasuryReceivedCreditFailureCode {
     AccountClosed,
     AccountFrozen,
+    InternationalTransaction,
     Other,
 }
 
@@ -141,6 +143,7 @@ impl TreasuryReceivedCreditFailureCode {
         match self {
             TreasuryReceivedCreditFailureCode::AccountClosed => "account_closed",
             TreasuryReceivedCreditFailureCode::AccountFrozen => "account_frozen",
+            TreasuryReceivedCreditFailureCode::InternationalTransaction => "international_transaction",
             TreasuryReceivedCreditFailureCode::Other => "other",
         }
     }
