@@ -686,6 +686,8 @@ const _: () = {
 };
 
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[non_exhaustive]
 /// The event data for a webhook event.
 pub enum EventObject {
@@ -1227,6 +1229,10 @@ pub enum EventObject {
     /// Occurs whenever a received_debit is created as a result of funds being pulled by another account.
     #[cfg(feature = "async-stripe-treasury")]
     TreasuryReceivedDebitCreated(stripe_treasury::TreasuryReceivedDebit),
+    #[cfg_attr(
+        any(feature = "deserialize", feature = "serialize"),
+        serde(with = "stripe_types::with_serde_json")
+    )]
     Unknown(miniserde::json::Value),
 }
 impl EventObject {
