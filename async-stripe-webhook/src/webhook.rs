@@ -9,6 +9,8 @@ use stripe_shared::ApiVersion;
 use crate::{EventObject, WebhookError};
 
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Event {
     /// The connected account that originated the event.
     pub account: Option<String>,
@@ -34,6 +36,8 @@ pub struct Event {
 }
 
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct EventData {
     /// Object containing the API resource relevant to the event.
     ///
@@ -43,6 +47,10 @@ pub struct EventData {
     ///
     /// If an array attribute has any updated elements, this object contains the entire array.
     /// In Stripe API versions 2017-04-06 or earlier, an updated array attribute in this object includes only the updated array elements.
+    #[cfg_attr(
+        any(feature = "deserialize", feature = "serialize"),
+        serde(with = "stripe_types::with_serde_json_opt")
+    )]
     pub previous_attributes: Option<miniserde::json::Value>,
 }
 

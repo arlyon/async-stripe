@@ -77,10 +77,18 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
             r#""{evt_type}" => Self::{ident}(FromValueOpt::from_value(data)?),"#
         );
     }
-    let _ = writeln!(enum_body, "Unknown(miniserde::json::Value),");
+    let _ = writedoc! {enum_body, r#"
+    #[cfg_attr(
+        any(feature = "deserialize", feature = "serialize"),
+        serde(with = "stripe_types::with_serde_json")
+    )]
+    Unknown(miniserde::json::Value),
+    "#};
 
     write_derives_line(&mut out, Default::default());
     let _ = writedoc! {out, r#"
+    #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+    #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
     #[non_exhaustive]
     /// The event data for a webhook event.
     pub enum EventObject {{
