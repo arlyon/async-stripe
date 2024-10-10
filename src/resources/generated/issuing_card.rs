@@ -149,9 +149,10 @@ pub struct IssuingCardShipping {
     /// Recipient name.
     pub name: String,
 
-    /// The phone number of the receiver of the bulk shipment.
+    /// The phone number of the receiver of the shipment.
     ///
-    /// This phone number will be provided to the shipping company, who might use it to contact the receiver in case of delivery issues.
+    /// Our courier partners will use this number to contact you in the event of card delivery issues.
+    /// For individual shipments to the EU/UK, if this field is empty, we will provide them with the phone number provided when the cardholder was initially created.
     pub phone_number: Option<String>,
 
     /// Whether a signature is required for card delivery.
@@ -182,7 +183,7 @@ pub struct IssuingCardShipping {
 pub struct IssuingCardShippingCustoms {
     /// A registration number used for customs in Europe.
     ///
-    /// See <https://www.gov.uk/eori> and <https://ec.europa.eu/taxation_customs/business/customs-procedures-import-and-export/customs-procedures/economic-operators-registration-and-identification-number-eori_en>.
+    /// See [<https://www.gov.uk/eori>](https://www.gov.uk/eori) for the UK and [<https://ec.europa.eu/taxation_customs/business/customs-procedures-import-and-export/customs-procedures/economic-operators-registration-and-identification-number-eori_en>](https://ec.europa.eu/taxation_customs/business/customs-procedures-import-and-export/customs-procedures/economic-operators-registration-and-identification-number-eori_en) for the EU.
     pub eori_number: Option<String>,
 }
 
@@ -607,7 +608,6 @@ pub enum IssuingCardSpendingLimitCategories {
     HardwareStores,
     HealthAndBeautySpas,
     HearingAidsSalesAndSupplies,
-    #[serde(rename = "heating_plumbing_a_c")]
     HeatingPlumbingAC,
     HobbyToyAndGameShops,
     HomeSupplyWarehouseStores,
@@ -736,7 +736,6 @@ pub enum IssuingCardSpendingLimitCategories {
     TruckUtilityTrailerRentals,
     TypesettingPlateMakingAndRelatedServices,
     TypewriterStores,
-    #[serde(rename = "u_s_federal_government_agencies_or_departments")]
     USFederalGovernmentAgenciesOrDepartments,
     UniformsCommercialClothing,
     UsedMerchandiseAndSecondhandStores,

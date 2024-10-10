@@ -29,14 +29,16 @@ pub struct IdentityVerificationReport {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    pub options: GelatoVerificationReportOptions,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub options: Option<GelatoVerificationReportOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub selfie: Option<GelatoSelfieReport>,
 
     /// Type of report.
     #[serde(rename = "type")]
-    pub type_: IdentityVerificationReportType,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<IdentityVerificationReportType>,
 
     /// ID of the VerificationSession that created this report.
     pub verification_session: Option<String>,
@@ -161,6 +163,8 @@ pub struct GelatoIdNumberReport {
     pub first_name: Option<String>,
 
     /// ID number.
+    ///
+    /// When `id_number_type` is `us_ssn`, only the last 4 digits are present.
     pub id_number: Option<String>,
 
     /// Type of ID number.

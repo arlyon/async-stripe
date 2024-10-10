@@ -52,8 +52,8 @@ pub struct WebhookEndpoint {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The endpoint's secret, used to generate [webhook signatures](https://stripe.com/docs/webhooks/signatures).
     ///
@@ -78,7 +78,7 @@ impl WebhookEndpoint {
         client: &Client,
         params: &ListWebhookEndpoints<'_>,
     ) -> Response<List<WebhookEndpoint>> {
-        client.get_query("/webhook_endpoints", &params)
+        client.get_query("/webhook_endpoints", params)
     }
 
     /// A webhook endpoint must have a `url` and a list of `enabled_events`.
@@ -87,6 +87,7 @@ impl WebhookEndpoint {
     /// If set to true, then a Connect webhook endpoint that notifies the specified `url` about events from all connected accounts is created; otherwise an account webhook endpoint that notifies the specified `url` only about events from your account is created.
     /// You can also create webhook endpoints in the [webhooks settings](https://dashboard.stripe.com/account/webhooks) section of the Dashboard.
     pub fn create(client: &Client, params: CreateWebhookEndpoint<'_>) -> Response<WebhookEndpoint> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/webhook_endpoints", &params)
     }
 
@@ -96,7 +97,7 @@ impl WebhookEndpoint {
         id: &WebhookEndpointId,
         expand: &[&str],
     ) -> Response<WebhookEndpoint> {
-        client.get_query(&format!("/webhook_endpoints/{}", id), &Expand { expand })
+        client.get_query(&format!("/webhook_endpoints/{}", id), Expand { expand })
     }
 
     /// Updates the webhook endpoint.
@@ -107,6 +108,7 @@ impl WebhookEndpoint {
         id: &WebhookEndpointId,
         params: UpdateWebhookEndpoint<'_>,
     ) -> Response<WebhookEndpoint> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/webhook_endpoints/{}", id), &params)
     }
 
@@ -141,7 +143,7 @@ pub struct CreateWebhookEndpoint<'a> {
 
     /// An optional description of what the webhook is used for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
 
     /// The list of events to enable for this endpoint.
     ///
@@ -227,7 +229,7 @@ impl Paginable for ListWebhookEndpoints<'_> {
 pub struct UpdateWebhookEndpoint<'a> {
     /// An optional description of what the webhook is used for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
 
     /// Disable the webhook endpoint if set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -339,6 +341,20 @@ pub enum EventFilter {
     CheckoutSessionCompleted,
     #[serde(rename = "checkout.session.expired")]
     CheckoutSessionExpired,
+    #[serde(rename = "climate.order.canceled")]
+    ClimateOrderCanceled,
+    #[serde(rename = "climate.order.created")]
+    ClimateOrderCreated,
+    #[serde(rename = "climate.order.delayed")]
+    ClimateOrderDelayed,
+    #[serde(rename = "climate.order.delivered")]
+    ClimateOrderDelivered,
+    #[serde(rename = "climate.order.product_substituted")]
+    ClimateOrderProductSubstituted,
+    #[serde(rename = "climate.product.created")]
+    ClimateProductCreated,
+    #[serde(rename = "climate.product.pricing_updated")]
+    ClimateProductPricingUpdated,
     #[serde(rename = "coupon.created")]
     CouponCreated,
     #[serde(rename = "coupon.deleted")]
@@ -407,6 +423,8 @@ pub enum EventFilter {
     FinancialConnectionsAccountReactivated,
     #[serde(rename = "financial_connections.account.refreshed_balance")]
     FinancialConnectionsAccountRefreshedBalance,
+    #[serde(rename = "financial_connections.account.refreshed_transactions")]
+    FinancialConnectionsAccountRefreshedTransactions,
     #[serde(rename = "identity.verification_session.canceled")]
     IdentityVerificationSessionCanceled,
     #[serde(rename = "identity.verification_session.created")]
@@ -449,8 +467,6 @@ pub enum EventFilter {
     InvoiceitemCreated,
     #[serde(rename = "invoiceitem.deleted")]
     InvoiceitemDeleted,
-    #[serde(rename = "invoiceitem.updated")]
-    InvoiceitemUpdated,
     #[serde(rename = "issuing_authorization.created")]
     IssuingAuthorizationCreated,
     #[serde(rename = "issuing_authorization.request")]
@@ -475,14 +491,16 @@ pub enum EventFilter {
     IssuingDisputeSubmitted,
     #[serde(rename = "issuing_dispute.updated")]
     IssuingDisputeUpdated,
+    #[serde(rename = "issuing_token.created")]
+    IssuingTokenCreated,
+    #[serde(rename = "issuing_token.updated")]
+    IssuingTokenUpdated,
     #[serde(rename = "issuing_transaction.created")]
     IssuingTransactionCreated,
     #[serde(rename = "issuing_transaction.updated")]
     IssuingTransactionUpdated,
     #[serde(rename = "mandate.updated")]
     MandateUpdated,
-    #[serde(rename = "order.created")]
-    OrderCreated,
     #[serde(rename = "payment_intent.amount_capturable_updated")]
     PaymentIntentAmountCapturableUpdated,
     #[serde(rename = "payment_intent.canceled")]
@@ -563,12 +581,6 @@ pub enum EventFilter {
     RadarEarlyFraudWarningCreated,
     #[serde(rename = "radar.early_fraud_warning.updated")]
     RadarEarlyFraudWarningUpdated,
-    #[serde(rename = "recipient.created")]
-    RecipientCreated,
-    #[serde(rename = "recipient.deleted")]
-    RecipientDeleted,
-    #[serde(rename = "recipient.updated")]
-    RecipientUpdated,
     #[serde(rename = "refund.created")]
     RefundCreated,
     #[serde(rename = "refund.updated")]
@@ -595,12 +607,6 @@ pub enum EventFilter {
     SetupIntentSucceeded,
     #[serde(rename = "sigma.scheduled_query_run.created")]
     SigmaScheduledQueryRunCreated,
-    #[serde(rename = "sku.created")]
-    SkuCreated,
-    #[serde(rename = "sku.deleted")]
-    SkuDeleted,
-    #[serde(rename = "sku.updated")]
-    SkuUpdated,
     #[serde(rename = "source.canceled")]
     SourceCanceled,
     #[serde(rename = "source.chargeable")]
@@ -629,6 +635,8 @@ pub enum EventFilter {
     SubscriptionScheduleReleased,
     #[serde(rename = "subscription_schedule.updated")]
     SubscriptionScheduleUpdated,
+    #[serde(rename = "tax.settings.updated")]
+    TaxSettingsUpdated,
     #[serde(rename = "tax_rate.created")]
     TaxRateCreated,
     #[serde(rename = "tax_rate.updated")]
@@ -765,6 +773,13 @@ impl EventFilter {
             }
             EventFilter::CheckoutSessionCompleted => "checkout.session.completed",
             EventFilter::CheckoutSessionExpired => "checkout.session.expired",
+            EventFilter::ClimateOrderCanceled => "climate.order.canceled",
+            EventFilter::ClimateOrderCreated => "climate.order.created",
+            EventFilter::ClimateOrderDelayed => "climate.order.delayed",
+            EventFilter::ClimateOrderDelivered => "climate.order.delivered",
+            EventFilter::ClimateOrderProductSubstituted => "climate.order.product_substituted",
+            EventFilter::ClimateProductCreated => "climate.product.created",
+            EventFilter::ClimateProductPricingUpdated => "climate.product.pricing_updated",
             EventFilter::CouponCreated => "coupon.created",
             EventFilter::CouponDeleted => "coupon.deleted",
             EventFilter::CouponUpdated => "coupon.updated",
@@ -815,6 +830,9 @@ impl EventFilter {
             EventFilter::FinancialConnectionsAccountRefreshedBalance => {
                 "financial_connections.account.refreshed_balance"
             }
+            EventFilter::FinancialConnectionsAccountRefreshedTransactions => {
+                "financial_connections.account.refreshed_transactions"
+            }
             EventFilter::IdentityVerificationSessionCanceled => {
                 "identity.verification_session.canceled"
             }
@@ -848,7 +866,6 @@ impl EventFilter {
             EventFilter::InvoiceVoided => "invoice.voided",
             EventFilter::InvoiceitemCreated => "invoiceitem.created",
             EventFilter::InvoiceitemDeleted => "invoiceitem.deleted",
-            EventFilter::InvoiceitemUpdated => "invoiceitem.updated",
             EventFilter::IssuingAuthorizationCreated => "issuing_authorization.created",
             EventFilter::IssuingAuthorizationRequest => "issuing_authorization.request",
             EventFilter::IssuingAuthorizationUpdated => "issuing_authorization.updated",
@@ -861,10 +878,11 @@ impl EventFilter {
             EventFilter::IssuingDisputeFundsReinstated => "issuing_dispute.funds_reinstated",
             EventFilter::IssuingDisputeSubmitted => "issuing_dispute.submitted",
             EventFilter::IssuingDisputeUpdated => "issuing_dispute.updated",
+            EventFilter::IssuingTokenCreated => "issuing_token.created",
+            EventFilter::IssuingTokenUpdated => "issuing_token.updated",
             EventFilter::IssuingTransactionCreated => "issuing_transaction.created",
             EventFilter::IssuingTransactionUpdated => "issuing_transaction.updated",
             EventFilter::MandateUpdated => "mandate.updated",
-            EventFilter::OrderCreated => "order.created",
             EventFilter::PaymentIntentAmountCapturableUpdated => {
                 "payment_intent.amount_capturable_updated"
             }
@@ -909,9 +927,6 @@ impl EventFilter {
             EventFilter::QuoteFinalized => "quote.finalized",
             EventFilter::RadarEarlyFraudWarningCreated => "radar.early_fraud_warning.created",
             EventFilter::RadarEarlyFraudWarningUpdated => "radar.early_fraud_warning.updated",
-            EventFilter::RecipientCreated => "recipient.created",
-            EventFilter::RecipientDeleted => "recipient.deleted",
-            EventFilter::RecipientUpdated => "recipient.updated",
             EventFilter::RefundCreated => "refund.created",
             EventFilter::RefundUpdated => "refund.updated",
             EventFilter::ReportingReportRunFailed => "reporting.report_run.failed",
@@ -925,9 +940,6 @@ impl EventFilter {
             EventFilter::SetupIntentSetupFailed => "setup_intent.setup_failed",
             EventFilter::SetupIntentSucceeded => "setup_intent.succeeded",
             EventFilter::SigmaScheduledQueryRunCreated => "sigma.scheduled_query_run.created",
-            EventFilter::SkuCreated => "sku.created",
-            EventFilter::SkuDeleted => "sku.deleted",
-            EventFilter::SkuUpdated => "sku.updated",
             EventFilter::SourceCanceled => "source.canceled",
             EventFilter::SourceChargeable => "source.chargeable",
             EventFilter::SourceFailed => "source.failed",
@@ -942,6 +954,7 @@ impl EventFilter {
             EventFilter::SubscriptionScheduleExpiring => "subscription_schedule.expiring",
             EventFilter::SubscriptionScheduleReleased => "subscription_schedule.released",
             EventFilter::SubscriptionScheduleUpdated => "subscription_schedule.updated",
+            EventFilter::TaxSettingsUpdated => "tax.settings.updated",
             EventFilter::TaxRateCreated => "tax_rate.created",
             EventFilter::TaxRateUpdated => "tax_rate.updated",
             EventFilter::TerminalReaderActionFailed => "terminal.reader.action_failed",

@@ -7,8 +7,9 @@
 //! some are generated.
 
 mod currency;
+#[allow(clippy::module_inception)]
+#[allow(clippy::new_without_default)]
 pub mod generated;
-mod placeholders;
 mod types;
 
 #[path = "resources"]
@@ -23,7 +24,9 @@ mod core {
     pub mod payout_ext;
     pub mod placeholders;
     pub mod setup_intent_ext;
+    pub mod test_clock_ext;
     pub mod token_ext;
+    pub mod transfer_reversal_ext;
 }
 
 #[path = "resources"]
@@ -46,6 +49,14 @@ mod billing {
     pub mod line_item_ext;
     pub mod subscription_ext;
     pub mod usage_record_ext;
+}
+
+#[path = "resources"]
+#[cfg(feature = "products")]
+mod products {
+    pub mod price_ext;
+    pub mod product_ext;
+    pub mod promotion_code_ext;
 }
 
 #[path = "resources"]
@@ -97,20 +108,24 @@ pub use {
         account_ext::*,
         balance_transaction_ext::*,
         charge_ext::*,
+        transfer_reversal_ext::*,
         customer_ext::*,
         payment_intent_ext::*,
         payment_source::*,
         placeholders::*,
         payout_ext::*,
+        test_clock_ext::*,
         token_ext::*,
         setup_intent_ext::*,
     },
     generated::core::{
         address::*,
         balance::*,
+        balance_amount_by_source_type::*,
         balance_transaction::*,
         billing_details::*,
         charge::*,
+        connect_account_reference::*,
         customer::*,
         custom_unit_amount::*,
         cash_balance::*,
@@ -120,11 +135,14 @@ pub use {
         file_link::*,
         invoice_setting_rendering_options::*,
         mandate::*,
-        mandate_options_off_session_details_blik::*,
         payment_intent::*,
-        linked_account_options_us_bank_account::*,
-        payment_method_options_customer_balance_eu_bank_account::*,
         payment_intent_next_action_cashapp_handle_redirect_or_display_qr_code::*,
+        linked_account_options_us_bank_account::*,
+        payment_method_details_card_wallet_apple_pay::*,
+        payment_method_details_card_wallet_google_pay::*,
+        payment_method_options_customer_balance_eu_bank_account::*,
+        payment_method_options_us_bank_account_mandate_options::*,
+        payment_method_config_biz_payment_method_configuration_details::*,
         payout::*,
         platform_tax_fee::*,
         price::*,
@@ -159,6 +177,7 @@ pub use {
         card::*,
         bank_account::*,
         payment_method::*,
+        payment_method_card_present_networks::*,
         source::*,
     },
 };
@@ -180,6 +199,16 @@ pub use {
         payment_link::*,
         item::*
     },
+};
+
+#[rustfmt::skip]
+#[cfg(feature = "products")]
+pub use {
+    products::{
+        product_ext::*,
+        price_ext::*,
+        promotion_code_ext::*,
+    }
 };
 
 #[rustfmt::skip]
@@ -222,6 +251,7 @@ pub use {
         // need to import this afterwards so that the SubscriptionItemPriceDataRecurring
         // isn't silently ignored
         subscription::*,
+        subscriptions_trials_resource_trial_settings::*,
         subscription::PlanInterval as SubscriptionInterval,
         subscription::SubscriptionItemPriceDataRecurring as SubscriptionPriceDataRecurring,
         subscription::SubscriptionItemPriceData as SubscriptionPriceData,
@@ -234,6 +264,16 @@ pub use {
         usage_record::*,
         usage_record_summary::*,
     },
+};
+
+#[rustfmt::skip]
+#[cfg(feature = "tax-calculation")]
+pub use {
+    generated::tax_calculation::{
+        tax_calculation::*,
+        tax_calculation_line_item::*,
+        tax_product_resource_customer_details::*,
+    }
 };
 
 #[rustfmt::skip]
@@ -277,6 +317,7 @@ pub use {
     generated::issuing::{
         issuing_authorization::*,
         issuing_card::*,
+        issuing_token::*,
         issuing_cardholder::*,
         issuing_dispute::*,
         issuing_transaction::*,

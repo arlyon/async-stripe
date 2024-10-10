@@ -14,10 +14,12 @@ pub mod core {
     pub mod address;
     pub mod api_errors;
     pub mod balance;
+    pub mod balance_amount_by_source_type;
     pub mod balance_transaction;
     pub mod billing_details;
     pub mod cash_balance;
     pub mod charge;
+    pub mod connect_account_reference;
     pub mod custom_unit_amount;
     pub mod customer;
     pub mod dispute;
@@ -27,10 +29,13 @@ pub mod core {
     pub mod invoice_setting_rendering_options;
     pub mod linked_account_options_us_bank_account;
     pub mod mandate;
-    pub mod mandate_options_off_session_details_blik;
     pub mod payment_intent;
-    pub mod payment_method_options_customer_balance_eu_bank_account;
     pub mod payment_intent_next_action_cashapp_handle_redirect_or_display_qr_code;
+    pub mod payment_method_config_biz_payment_method_configuration_details;
+    pub mod payment_method_details_card_wallet_apple_pay;
+    pub mod payment_method_details_card_wallet_google_pay;
+    pub mod payment_method_options_customer_balance_eu_bank_account;
+    pub mod payment_method_options_us_bank_account_mandate_options;
     pub mod payout;
     pub mod platform_tax_fee;
     pub mod price;
@@ -60,6 +65,7 @@ pub mod payment {
     pub mod bank_account;
     pub mod card;
     pub mod payment_method;
+    pub mod payment_method_card_present_networks;
     pub mod source;
 }
 
@@ -69,6 +75,14 @@ pub mod checkout {
     pub mod checkout_session;
     pub mod item;
     pub mod payment_link;
+}
+
+#[path = "generated"]
+#[cfg(feature = "tax-calculation")]
+pub mod tax_calculation {
+    pub mod tax_calculation;
+    pub mod tax_calculation_line_item;
+    pub mod tax_product_resource_customer_details;
 }
 
 #[path = "generated"]
@@ -99,6 +113,7 @@ pub mod billing {
     pub mod subscription_item;
     pub mod subscription_item_billing_thresholds;
     pub mod subscription_schedule;
+    pub mod subscriptions_trials_resource_trial_settings;
     pub mod tax_id;
     pub mod tax_rate;
     pub mod usage_record;
@@ -134,6 +149,7 @@ pub mod issuing {
     pub mod issuing_card;
     pub mod issuing_cardholder;
     pub mod issuing_dispute;
+    pub mod issuing_token;
     pub mod issuing_transaction;
 }
 

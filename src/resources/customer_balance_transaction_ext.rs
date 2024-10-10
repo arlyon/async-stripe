@@ -97,6 +97,7 @@ impl Customer {
         customer_id: &CustomerId,
         params: ListCustomerBalanceTransactions<'_>,
     ) -> Response<List<CustomerBalanceTransaction>> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.get_query(&format!("/customers/{}/balance_transactions", customer_id), &params)
     }
 
@@ -106,6 +107,7 @@ impl Customer {
         customer_id: &CustomerId,
         params: CreateCustomerBalanceTransaction<'_>,
     ) -> Response<CustomerBalanceTransaction> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/customers/{}/balance_transactions", customer_id), &params)
     }
 
@@ -118,7 +120,7 @@ impl Customer {
     ) -> Response<CustomerBalanceTransaction> {
         client.get_query(
             &format!("/customers/{}/balance_transactions/{}", customer_id, id),
-            &Expand { expand },
+            Expand { expand },
         )
     }
 
@@ -131,6 +133,7 @@ impl Customer {
         id: &CustomerBalanceTransactionId,
         params: UpdateCustomerBalanceTransaction<'_>,
     ) -> Response<CustomerBalanceTransaction> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client
             .post_form(&format!("/customers/{}/balance_transactions/{}", customer_id, id), &params)
     }

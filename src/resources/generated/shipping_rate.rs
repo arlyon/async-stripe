@@ -6,7 +6,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{ShippingRateId, TaxCodeId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
+use crate::params::{
+    CurrencyMap, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+};
 use crate::resources::{Currency, TaxCode};
 
 /// The resource representing a Stripe "ShippingRate".
@@ -68,11 +70,12 @@ pub struct ShippingRate {
 impl ShippingRate {
     /// Returns a list of your shipping rates.
     pub fn list(client: &Client, params: &ListShippingRates<'_>) -> Response<List<ShippingRate>> {
-        client.get_query("/shipping_rates", &params)
+        client.get_query("/shipping_rates", params)
     }
 
     /// Creates a new shipping rate object.
     pub fn create(client: &Client, params: CreateShippingRate<'_>) -> Response<ShippingRate> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/shipping_rates", &params)
     }
 
@@ -82,7 +85,7 @@ impl ShippingRate {
         id: &ShippingRateId,
         expand: &[&str],
     ) -> Response<ShippingRate> {
-        client.get_query(&format!("/shipping_rates/{}", id), &Expand { expand })
+        client.get_query(&format!("/shipping_rates/{}", id), Expand { expand })
     }
 
     /// Updates an existing shipping rate object.
@@ -91,6 +94,7 @@ impl ShippingRate {
         id: &ShippingRateId,
         params: UpdateShippingRate<'_>,
     ) -> Response<ShippingRate> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/shipping_rates/{}", id), &params)
     }
 }
@@ -141,7 +145,7 @@ pub struct ShippingRateFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<ShippingRateCurrencyOption>,
+    pub currency_options: Option<CurrencyMap<ShippingRateCurrencyOption>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -358,7 +362,7 @@ pub struct CreateShippingRateFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<CreateShippingRateFixedAmountCurrencyOptions>,
+    pub currency_options: Option<CurrencyMap<CreateShippingRateFixedAmountCurrencyOptions>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -367,7 +371,7 @@ pub struct UpdateShippingRateFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<UpdateShippingRateFixedAmountCurrencyOptions>,
+    pub currency_options: Option<CurrencyMap<UpdateShippingRateFixedAmountCurrencyOptions>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

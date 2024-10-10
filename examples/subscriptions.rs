@@ -74,7 +74,7 @@ async fn main() {
         customer.name.unwrap()
     );
 
-    // create a new exmaple project
+    // create a new example product
     let product = {
         let mut create_product = CreateProduct::new("Monthly T-Shirt Subscription");
         create_product.metadata = Some(std::collections::HashMap::from([(

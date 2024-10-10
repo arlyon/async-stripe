@@ -27,6 +27,12 @@ pub struct AsyncStdClient {
     client: surf::Client,
 }
 
+impl Default for AsyncStdClient {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AsyncStdClient {
     /// Creates a new client pointed to `https://api.stripe.com/`
     pub fn new() -> Self {

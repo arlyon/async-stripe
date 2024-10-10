@@ -34,8 +34,8 @@ pub struct SubscriptionItem {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<Plan>,
@@ -64,7 +64,7 @@ impl SubscriptionItem {
         client: &Client,
         params: &ListSubscriptionItems<'_>,
     ) -> Response<List<SubscriptionItem>> {
-        client.get_query("/subscription_items", &params)
+        client.get_query("/subscription_items", params)
     }
 
     /// Adds a new item to an existing subscription.
@@ -74,6 +74,7 @@ impl SubscriptionItem {
         client: &Client,
         params: CreateSubscriptionItem<'_>,
     ) -> Response<SubscriptionItem> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/subscription_items", &params)
     }
 
@@ -83,7 +84,7 @@ impl SubscriptionItem {
         id: &SubscriptionItemId,
         expand: &[&str],
     ) -> Response<SubscriptionItem> {
-        client.get_query(&format!("/subscription_items/{}", id), &Expand { expand })
+        client.get_query(&format!("/subscription_items/{}", id), Expand { expand })
     }
 
     /// Updates the plan or quantity of an item on a current subscription.
@@ -92,6 +93,7 @@ impl SubscriptionItem {
         id: &SubscriptionItemId,
         params: UpdateSubscriptionItem<'_>,
     ) -> Response<SubscriptionItem> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/subscription_items/{}", id), &params)
     }
 
@@ -397,7 +399,7 @@ pub struct SubscriptionItemPriceDataRecurring {
     /// The number of intervals between subscription billings.
     ///
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
+    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 }

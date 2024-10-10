@@ -5,27 +5,27 @@
 use serde::{Deserialize, Serialize};
 
 use crate::params::Object;
-use crate::resources::Currency;
+use crate::resources::{BalanceAmountBySourceType, Currency};
 
 /// The resource representing a Stripe "Balance".
 ///
 /// For more details see <https://stripe.com/docs/api/balance/balance_object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Balance {
-    /// Funds that are available to be transferred or paid out, whether automatically by Stripe or explicitly via the [Transfers API](https://stripe.com/docs/api#transfers) or [Payouts API](https://stripe.com/docs/api#payouts).
+    /// Available funds that you can transfer or pay out automatically by Stripe or explicitly through the [Transfers API](https://stripe.com/docs/api#transfers) or [Payouts API](https://stripe.com/docs/api#payouts).
     ///
-    /// The available balance for each currency and payment type can be found in the `source_types` property.
+    /// You can find the available balance for each currency and payment type in the `source_types` property.
     pub available: Vec<BalanceAmount>,
 
     /// Funds held due to negative balances on connected Custom accounts.
     ///
-    /// The connect reserve balance for each currency and payment type can be found in the `source_types` property.
+    /// You can find the connect reserve balance for each currency and payment type in the `source_types` property.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connect_reserved: Option<Vec<BalanceAmount>>,
 
-    /// Funds that can be paid out using Instant Payouts.
+    /// Funds that you can pay out using Instant Payouts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub instant_available: Option<Vec<BalanceAmount>>,
+    pub instant_available: Option<Vec<BalanceAmountNet>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing: Option<BalanceDetail>,
@@ -33,9 +33,9 @@ pub struct Balance {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    /// Funds that are not yet available in the balance, due to the 7-day rolling pay cycle.
+    /// Funds that aren't available in the balance yet.
     ///
-    /// The pending balance for each currency, and for each payment type, can be found in the `source_types` property.
+    /// You can find the pending balance for each currency and each payment type in the `source_types` property.
     pub pending: Vec<BalanceAmount>,
 }
 
@@ -62,18 +62,17 @@ pub struct BalanceAmount {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct BalanceAmountBySourceType {
-    /// Amount for bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account: Option<i64>,
+pub struct BalanceAmountNet {
+    /// Balance amount.
+    pub amount: i64,
 
-    /// Amount for card.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<i64>,
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: Currency,
 
-    /// Amount for FPX.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fpx: Option<i64>,
+    pub source_types: Option<BalanceAmountBySourceType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

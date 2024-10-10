@@ -19,10 +19,12 @@ pub struct BalanceTransaction {
     /// Unique identifier for the object.
     pub id: BalanceTransactionId,
 
-    /// Gross amount of the transaction, in %s.
+    /// Gross amount of this transaction (in cents (or local equivalent)).
+    ///
+    /// A positive value represents funds charged to another party, and a negative value represents funds sent to another party.
     pub amount: i64,
 
-    /// The date the transaction's net funds will become available in the Stripe balance.
+    /// The date that the transaction's net funds become available in the Stripe balance.
     pub available_on: Timestamp,
 
     /// Time at which the object was created.
@@ -40,39 +42,40 @@ pub struct BalanceTransaction {
     /// Often useful for displaying to users.
     pub description: Option<String>,
 
-    /// The exchange rate used, if applicable, for this transaction.
+    /// If applicable, this transaction uses an exchange rate.
     ///
-    /// Specifically, if money was converted from currency A to currency B, then the `amount` in currency A, times `exchange_rate`, would be the `amount` in currency B.
-    /// For example, suppose you charged a customer 10.00 EUR.
-    /// Then the PaymentIntent's `amount` would be `1000` and `currency` would be `eur`.
-    /// Suppose this was converted into 12.34 USD in your Stripe account.
-    /// Then the BalanceTransaction's `amount` would be `1234`, `currency` would be `usd`, and `exchange_rate` would be `1.234`.
+    /// If money converts from currency A to currency B, then the `amount` in currency A, multipled by the `exchange_rate`, equals the `amount` in currency B.
+    /// For example, if you charge a customer 10.00 EUR, the PaymentIntent's `amount` is `1000` and `currency` is `eur`.
+    /// If this converts to 12.34 USD in your Stripe account, the BalanceTransaction's `amount` is `1234`, its `currency` is `usd`, and the `exchange_rate` is `1.234`.
     pub exchange_rate: Option<f64>,
 
-    /// Fees (in %s) paid for this transaction.
+    /// Fees (in cents (or local equivalent)) paid for this transaction.
+    ///
+    /// Represented as a positive integer when assessed.
     pub fee: i64,
 
-    /// Detailed breakdown of fees (in %s) paid for this transaction.
+    /// Detailed breakdown of fees (in cents (or local equivalent)) paid for this transaction.
     pub fee_details: Vec<Fee>,
 
-    /// Net amount of the transaction, in %s.
+    /// Net impact to a Stripe balance (in cents (or local equivalent)).
+    ///
+    /// A positive value represents incrementing a Stripe balance, and a negative value decrementing a Stripe balance.
+    /// You can calculate the net impact of a transaction on a balance by `amount` - `fee`.
     pub net: i64,
 
-    /// [Learn more](https://stripe.com/docs/reports/reporting-categories) about how reporting categories can help you understand balance transactions from an accounting perspective.
+    /// Learn more about how [reporting categories](https://stripe.com/docs/reports/reporting-categories) can help you understand balance transactions from an accounting perspective.
     pub reporting_category: String,
 
-    /// The Stripe object to which this transaction is related.
+    /// This transaction relates to the Stripe object.
     pub source: Option<Expandable<BalanceTransactionSourceUnion>>,
 
-    /// If the transaction's net funds are available in the Stripe balance yet.
-    ///
-    /// Either `available` or `pending`.
+    /// The transaction's net funds status in the Stripe balance, which are either `available` or `pending`.
     pub status: BalanceTransactionStatus,
 
-    /// Transaction type: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `payment`, `payment_failure_refund`, `payment_refund`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
+    /// Transaction type: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `climate_order_purchase`, `climate_order_refund`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `obligation_outbound`, `obligation_reversal_inbound`, `payment`, `payment_failure_refund`, `payment_network_reserve_hold`, `payment_network_reserve_release`, `payment_refund`, `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
     ///
-    /// [Learn more](https://stripe.com/docs/reports/balance-transaction-types) about balance transaction types and what they represent.
-    /// If you are looking to classify transactions for accounting purposes, you might want to consider `reporting_category` instead.
+    /// Learn more about [balance transaction types and what they represent](https://stripe.com/docs/reports/balance-transaction-types).
+    /// To classify transactions for accounting purposes, consider `reporting_category` instead.
     #[serde(rename = "type")]
     pub type_: BalanceTransactionType,
 }
@@ -85,7 +88,7 @@ impl BalanceTransaction {
         client: &Client,
         params: &ListBalanceTransactions<'_>,
     ) -> Response<List<BalanceTransaction>> {
-        client.get_query("/balance_transactions", &params)
+        client.get_query("/balance_transactions", params)
     }
 
     /// Retrieves the balance transaction with the given ID.
@@ -96,7 +99,7 @@ impl BalanceTransaction {
         id: &BalanceTransactionId,
         expand: &[&str],
     ) -> Response<BalanceTransaction> {
-        client.get_query(&format!("/balance_transactions/{}", id), &Expand { expand })
+        client.get_query(&format!("/balance_transactions/{}", id), Expand { expand })
     }
 }
 
@@ -136,10 +139,6 @@ pub struct Fee {
 /// The parameters for `BalanceTransaction::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListBalanceTransactions<'a> {
-    /// This parameter is deprecated and we recommend listing by created and filtering in memory instead.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub available_on: Option<RangeQuery<Timestamp>>,
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -184,7 +183,7 @@ pub struct ListBalanceTransactions<'a> {
 
     /// Only returns transactions of the given type.
     ///
-    /// One of: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `payment`, `payment_failure_refund`, `payment_refund`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
+    /// One of: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `climate_order_purchase`, `climate_order_refund`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `obligation_outbound`, `obligation_reversal_inbound`, `payment`, `payment_failure_refund`, `payment_network_reserve_hold`, `payment_network_reserve_release`, `payment_refund`, `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<&'a str>,
@@ -193,7 +192,6 @@ pub struct ListBalanceTransactions<'a> {
 impl<'a> ListBalanceTransactions<'a> {
     pub fn new() -> Self {
         ListBalanceTransactions {
-            available_on: Default::default(),
             created: Default::default(),
             currency: Default::default(),
             ending_before: Default::default(),
@@ -223,15 +221,23 @@ pub enum BalanceTransactionType {
     ApplicationFee,
     ApplicationFeeRefund,
     Charge,
+    ClimateOrderPurchase,
+    ClimateOrderRefund,
     ConnectCollectionTransfer,
     Contribution,
     IssuingAuthorizationHold,
     IssuingAuthorizationRelease,
     IssuingDispute,
     IssuingTransaction,
+    ObligationOutbound,
+    ObligationReversalInbound,
     Payment,
     PaymentFailureRefund,
+    PaymentNetworkReserveHold,
+    PaymentNetworkReserveRelease,
     PaymentRefund,
+    PaymentReversal,
+    PaymentUnreconciled,
     Payout,
     PayoutCancel,
     PayoutFailure,
@@ -260,15 +266,25 @@ impl BalanceTransactionType {
             BalanceTransactionType::ApplicationFee => "application_fee",
             BalanceTransactionType::ApplicationFeeRefund => "application_fee_refund",
             BalanceTransactionType::Charge => "charge",
+            BalanceTransactionType::ClimateOrderPurchase => "climate_order_purchase",
+            BalanceTransactionType::ClimateOrderRefund => "climate_order_refund",
             BalanceTransactionType::ConnectCollectionTransfer => "connect_collection_transfer",
             BalanceTransactionType::Contribution => "contribution",
             BalanceTransactionType::IssuingAuthorizationHold => "issuing_authorization_hold",
             BalanceTransactionType::IssuingAuthorizationRelease => "issuing_authorization_release",
             BalanceTransactionType::IssuingDispute => "issuing_dispute",
             BalanceTransactionType::IssuingTransaction => "issuing_transaction",
+            BalanceTransactionType::ObligationOutbound => "obligation_outbound",
+            BalanceTransactionType::ObligationReversalInbound => "obligation_reversal_inbound",
             BalanceTransactionType::Payment => "payment",
             BalanceTransactionType::PaymentFailureRefund => "payment_failure_refund",
+            BalanceTransactionType::PaymentNetworkReserveHold => "payment_network_reserve_hold",
+            BalanceTransactionType::PaymentNetworkReserveRelease => {
+                "payment_network_reserve_release"
+            }
             BalanceTransactionType::PaymentRefund => "payment_refund",
+            BalanceTransactionType::PaymentReversal => "payment_reversal",
+            BalanceTransactionType::PaymentUnreconciled => "payment_unreconciled",
             BalanceTransactionType::Payout => "payout",
             BalanceTransactionType::PayoutCancel => "payout_cancel",
             BalanceTransactionType::PayoutFailure => "payout_failure",

@@ -19,13 +19,13 @@ pub struct Dispute {
 
     /// Disputed amount.
     ///
-    /// Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+    /// Usually the amount of the charge, but it can differ (usually because of currency fluctuation or because only part of the order is disputed).
     pub amount: i64,
 
     /// List of zero, one, or two balance transactions that show funds withdrawn and reinstated to your Stripe account as a result of this dispute.
     pub balance_transactions: Vec<BalanceTransaction>,
 
-    /// ID of the charge that was disputed.
+    /// ID of the charge that's disputed.
     pub charge: Expandable<Charge>,
 
     /// Time at which the object was created.
@@ -42,9 +42,9 @@ pub struct Dispute {
 
     pub evidence_details: DisputeEvidenceDetails,
 
-    /// If true, it is still possible to refund the disputed payment.
+    /// If true, it's still possible to refund the disputed payment.
     ///
-    /// Once the payment has been fully refunded, no further funds will be withdrawn from your Stripe account as a result of this dispute.
+    /// After the payment has been fully refunded, no further funds are withdrawn from your Stripe account as a result of this dispute.
     pub is_charge_refundable: bool,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -59,30 +59,33 @@ pub struct Dispute {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network_reason_code: Option<String>,
 
-    /// ID of the PaymentIntent that was disputed.
+    /// ID of the PaymentIntent that's disputed.
     pub payment_intent: Option<Expandable<PaymentIntent>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_details: Option<DisputePaymentMethodDetails>,
 
     /// Reason given by cardholder for dispute.
     ///
     /// Possible values are `bank_cannot_process`, `check_returned`, `credit_not_processed`, `customer_initiated`, `debit_not_authorized`, `duplicate`, `fraudulent`, `general`, `incorrect_account_details`, `insufficient_funds`, `product_not_received`, `product_unacceptable`, `subscription_canceled`, or `unrecognized`.
-    /// Read more about [dispute reasons](https://stripe.com/docs/disputes/categories).
+    /// Learn more about [dispute reasons](https://stripe.com/docs/disputes/categories).
     pub reason: String,
 
     /// Current status of dispute.
     ///
-    /// Possible values are `warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `charge_refunded`, `won`, or `lost`.
+    /// Possible values are `warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `won`, or `lost`.
     pub status: DisputeStatus,
 }
 
 impl Dispute {
     /// Returns a list of your disputes.
     pub fn list(client: &Client, params: &ListDisputes<'_>) -> Response<List<Dispute>> {
-        client.get_query("/disputes", &params)
+        client.get_query("/disputes", params)
     }
 
     /// Retrieves the dispute with the given ID.
     pub fn retrieve(client: &Client, id: &DisputeId, expand: &[&str]) -> Response<Dispute> {
-        client.get_query(&format!("/disputes/{}", id), &Expand { expand })
+        client.get_query(&format!("/disputes/{}", id), Expand { expand })
     }
 }
 
@@ -219,6 +222,29 @@ pub struct DisputeEvidenceDetails {
     pub submission_count: u64,
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputePaymentMethodDetails {
+    /// Card specific dispute details.
+    pub card: Option<DisputePaymentMethodDetailsCard>,
+
+    /// Payment method type.
+    #[serde(rename = "type")]
+    pub type_: DisputePaymentMethodDetailsType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputePaymentMethodDetailsCard {
+    /// Card brand.
+    ///
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    pub brand: String,
+
+    /// The card network's specific dispute reason code, which maps to one of Stripe's primary dispute categories to simplify response guidance.
+    ///
+    /// The [Network code map](https://stripe.com/docs/disputes/categories#network-code-map) lists all available dispute reason codes by network.
+    pub network_reason_code: Option<String>,
+}
+
 /// The parameters for `Dispute::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListDisputes<'a> {
@@ -277,11 +303,42 @@ impl Paginable for ListDisputes<'_> {
         self.starting_after = Some(item.id());
     }
 }
+/// An enum representing the possible values of an `DisputePaymentMethodDetails`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum DisputePaymentMethodDetailsType {
+    Card,
+}
+
+impl DisputePaymentMethodDetailsType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            DisputePaymentMethodDetailsType::Card => "card",
+        }
+    }
+}
+
+impl AsRef<str> for DisputePaymentMethodDetailsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for DisputePaymentMethodDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for DisputePaymentMethodDetailsType {
+    fn default() -> Self {
+        Self::Card
+    }
+}
+
 /// An enum representing the possible values of an `Dispute`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum DisputeStatus {
-    ChargeRefunded,
     Lost,
     NeedsResponse,
     UnderReview,
@@ -294,7 +351,6 @@ pub enum DisputeStatus {
 impl DisputeStatus {
     pub fn as_str(self) -> &'static str {
         match self {
-            DisputeStatus::ChargeRefunded => "charge_refunded",
             DisputeStatus::Lost => "lost",
             DisputeStatus::NeedsResponse => "needs_response",
             DisputeStatus::UnderReview => "under_review",
@@ -319,6 +375,6 @@ impl std::fmt::Display for DisputeStatus {
 }
 impl std::default::Default for DisputeStatus {
     fn default() -> Self {
-        Self::ChargeRefunded
+        Self::Lost
     }
 }

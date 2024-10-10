@@ -7,7 +7,8 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::{ProductId, TaxCodeId};
 use crate::params::{
-    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+    CurrencyMap, Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery,
+    Timestamp,
 };
 use crate::resources::{Currency, Price, TaxCode, UpTo};
 
@@ -23,27 +24,11 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
-    /// A list of up to 5 attributes that each SKU can provide values for (e.g., `["color", "size"]`).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-
-    /// A short one-line description of the product, meant to be displayable to the customer.
-    ///
-    /// Only applicable to products of `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub caption: Option<String>,
-
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<Timestamp>,
-
-    /// An array of connect application identifiers that cannot purchase this product.
-    ///
-    /// Only applicable to products of `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deactivate_on: Option<Vec<String>>,
 
     /// The ID of the [Price](https://stripe.com/docs/api/prices) object that is the default price for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -59,6 +44,12 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// A list of up to 15 features for this product.
+    ///
+    /// These are displayed in [pricing tables](https://stripe.com/docs/payments/checkout/pricing-table).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<Vec<ProductFeature>>,
+
     /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
@@ -70,8 +61,8 @@ pub struct Product {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The product's name, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -124,11 +115,12 @@ impl Product {
     ///
     /// The products are returned sorted by creation date, with the most recently created products appearing first.
     pub fn list(client: &Client, params: &ListProducts<'_>) -> Response<List<Product>> {
-        client.get_query("/products", &params)
+        client.get_query("/products", params)
     }
 
     /// Creates a new product object.
     pub fn create(client: &Client, params: CreateProduct<'_>) -> Response<Product> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/products", &params)
     }
 
@@ -136,13 +128,14 @@ impl Product {
     ///
     /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
     pub fn retrieve(client: &Client, id: &ProductId, expand: &[&str]) -> Response<Product> {
-        client.get_query(&format!("/products/{}", id), &Expand { expand })
+        client.get_query(&format!("/products/{}", id), Expand { expand })
     }
 
     /// Updates the specific product by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.
     pub fn update(client: &Client, id: &ProductId, params: UpdateProduct<'_>) -> Response<Product> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/products/{}", id), &params)
     }
 
@@ -180,6 +173,15 @@ pub struct PackageDimensions {
     pub width: f64,
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct ProductFeature {
+    /// The feature's name.
+    ///
+    /// Up to 80 characters long.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
 /// The parameters for `Product::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateProduct<'a> {
@@ -188,24 +190,6 @@ pub struct CreateProduct<'a> {
     /// Defaults to `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
-
-    /// A list of up to 5 alphanumeric attributes.
-    ///
-    /// Should only be set if type=`good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-
-    /// A short one-line description of the product, meant to be displayable to the customer.
-    ///
-    /// May only be set if type=`good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub caption: Option<&'a str>,
-
-    /// An array of Connect application names or identifiers that should not be able to order the SKUs for this product.
-    ///
-    /// May only be set if type=`good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deactivate_on: Option<Vec<String>>,
 
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object.
     ///
@@ -222,6 +206,12 @@ pub struct CreateProduct<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// A list of up to 15 features for this product.
+    ///
+    /// These are displayed in [pricing tables](https://stripe.com/docs/payments/checkout/pricing-table).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<Vec<CreateProductFeatures>>,
 
     /// An identifier will be randomly generated by Stripe.
     ///
@@ -288,12 +278,10 @@ impl<'a> CreateProduct<'a> {
     pub fn new(name: &'a str) -> Self {
         CreateProduct {
             active: Default::default(),
-            attributes: Default::default(),
-            caption: Default::default(),
-            deactivate_on: Default::default(),
             default_price_data: Default::default(),
             description: Default::default(),
             expand: Default::default(),
+            features: Default::default(),
             id: Default::default(),
             images: Default::default(),
             metadata: Default::default(),
@@ -393,25 +381,6 @@ pub struct UpdateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
-    /// A list of up to 5 alphanumeric attributes that each SKU can provide values for (e.g., `["color", "size"]`).
-    ///
-    /// If a value for `attributes` is specified, the list specified will replace the existing attributes list on this product.
-    /// Any attributes not present after the update will be deleted from the SKUs for this product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-
-    /// A short one-line description of the product, meant to be displayable to the customer.
-    ///
-    /// May only be set if `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub caption: Option<&'a str>,
-
-    /// An array of Connect application names or identifiers that should not be able to order the SKUs for this product.
-    ///
-    /// May only be set if `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deactivate_on: Option<Vec<String>>,
-
     /// The ID of the [Price](https://stripe.com/docs/api/prices) object that is the default price for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_price: Option<&'a str>,
@@ -420,11 +389,17 @@ pub struct UpdateProduct<'a> {
     ///
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// A list of up to 15 features for this product.
+    ///
+    /// These are displayed in [pricing tables](https://stripe.com/docs/payments/checkout/pricing-table).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<Vec<UpdateProductFeatures>>,
 
     /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -468,7 +443,7 @@ pub struct UpdateProduct<'a> {
     /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     /// May only be set if `type=service`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_label: Option<&'a str>,
+    pub unit_label: Option<String>,
 
     /// A URL of a publicly-accessible webpage for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -479,12 +454,10 @@ impl<'a> UpdateProduct<'a> {
     pub fn new() -> Self {
         UpdateProduct {
             active: Default::default(),
-            attributes: Default::default(),
-            caption: Default::default(),
-            deactivate_on: Default::default(),
             default_price: Default::default(),
             description: Default::default(),
             expand: Default::default(),
+            features: Default::default(),
             images: Default::default(),
             metadata: Default::default(),
             name: Default::default(),
@@ -509,7 +482,7 @@ pub struct CreateProductDefaultPriceData {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<CreateProductDefaultPriceDataCurrencyOptions>,
+    pub currency_options: Option<CurrencyMap<CreateProductDefaultPriceDataCurrencyOptions>>,
 
     /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -534,6 +507,22 @@ pub struct CreateProductDefaultPriceData {
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateProductFeatures {
+    /// The feature's name.
+    ///
+    /// Up to 80 characters long.
+    pub name: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateProductFeatures {
+    /// The feature's name.
+    ///
+    /// Up to 80 characters long.
+    pub name: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -578,7 +567,7 @@ pub struct CreateProductDefaultPriceDataRecurring {
     /// The number of intervals between subscription billings.
     ///
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
+    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 }

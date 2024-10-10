@@ -7,7 +7,8 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::PriceId;
 use crate::params::{
-    Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+    CurrencyMap, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery,
+    Timestamp,
 };
 use crate::resources::{CreateProduct, Currency, CustomUnitAmount, Product, UpTo};
 
@@ -47,7 +48,7 @@ pub struct Price {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<CurrencyOption>,
+    pub currency_options: Option<CurrencyMap<CurrencyOption>>,
 
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -70,8 +71,8 @@ pub struct Price {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// A brief description of the price, hidden from customers.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -118,13 +119,13 @@ pub struct Price {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<PriceType>,
 
-    /// The unit amount in %s to be charged, represented as a whole integer if possible.
+    /// The unit amount in cents (or local equivalent) to be charged, represented as a whole integer if possible.
     ///
     /// Only set if `billing_scheme=per_unit`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
-    /// The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places.
+    /// The unit amount in cents (or local equivalent) to be charged, represented as a decimal string with at most 12 decimal places.
     ///
     /// Only set if `billing_scheme=per_unit`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -132,27 +133,31 @@ pub struct Price {
 }
 
 impl Price {
-    /// Returns a list of your prices.
+    /// Returns a list of your active prices, excluding [inline prices](https://stripe.com/docs/products-prices/pricing-models#inline-pricing).
+    ///
+    /// For the list of inactive prices, set `active` to false.
     pub fn list(client: &Client, params: &ListPrices<'_>) -> Response<List<Price>> {
-        client.get_query("/prices", &params)
+        client.get_query("/prices", params)
     }
 
     /// Creates a new price for an existing product.
     ///
     /// The price can be recurring or one-time.
     pub fn create(client: &Client, params: CreatePrice<'_>) -> Response<Price> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/prices", &params)
     }
 
     /// Retrieves the price with the given ID.
     pub fn retrieve(client: &Client, id: &PriceId, expand: &[&str]) -> Response<Price> {
-        client.get_query(&format!("/prices/{}", id), &Expand { expand })
+        client.get_query(&format!("/prices/{}", id), Expand { expand })
     }
 
     /// Updates the specified price by setting the values of the parameters passed.
     ///
     /// Any parameters not provided are left unchanged.
     pub fn update(client: &Client, id: &PriceId, params: UpdatePrice<'_>) -> Response<Price> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/prices/{}", id), &params)
     }
 }
@@ -186,12 +191,12 @@ pub struct CurrencyOption {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tiers: Option<Vec<PriceTier>>,
 
-    /// The unit amount in %s to be charged, represented as a whole integer if possible.
+    /// The unit amount in cents (or local equivalent) to be charged, represented as a whole integer if possible.
     ///
     /// Only set if `billing_scheme=per_unit`.
     pub unit_amount: Option<i64>,
 
-    /// The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places.
+    /// The unit amount in cents (or local equivalent) to be charged, represented as a decimal string with at most 12 decimal places.
     ///
     /// Only set if `billing_scheme=per_unit`.
     pub unit_amount_decimal: Option<String>,
@@ -219,7 +224,6 @@ pub struct PriceTier {
 pub struct Recurring {
     /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
     ///
-    /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
     /// Defaults to `sum`.
     pub aggregate_usage: Option<RecurringAggregateUsage>,
 
@@ -280,7 +284,7 @@ pub struct CreatePrice<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<CreatePriceCurrencyOptions>,
+    pub currency_options: Option<CurrencyMap<CreatePriceCurrencyOptions>>,
 
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -485,7 +489,7 @@ pub struct UpdatePrice<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<UpdatePriceCurrencyOptions>,
+    pub currency_options: Option<CurrencyMap<UpdatePriceCurrencyOptions>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -509,10 +513,6 @@ pub struct UpdatePrice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<&'a str>,
 
-    /// The recurring components of a price such as `interval` and `usage_type`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub recurring: Option<UpdatePriceRecurring>,
-
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     ///
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
@@ -535,7 +535,6 @@ impl<'a> UpdatePrice<'a> {
             lookup_key: Default::default(),
             metadata: Default::default(),
             nickname: Default::default(),
-            recurring: Default::default(),
             tax_behavior: Default::default(),
             transfer_lookup_key: Default::default(),
         }
@@ -614,8 +613,8 @@ pub struct CreatePriceProductData {
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The product's name, meant to be displayable to the customer.
     pub name: String,
@@ -643,7 +642,6 @@ pub struct CreatePriceProductData {
 pub struct CreatePriceRecurring {
     /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
     ///
-    /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
     /// Defaults to `sum`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aggregate_usage: Option<CreatePriceRecurringAggregateUsage>,
@@ -656,7 +654,7 @@ pub struct CreatePriceRecurring {
     /// The number of intervals between subscription billings.
     ///
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
+    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 
@@ -757,13 +755,6 @@ pub struct UpdatePriceCurrencyOptions {
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct UpdatePriceRecurring {
-    /// Default number of trial days when subscribing a customer to this plan using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_period_days: Option<u32>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

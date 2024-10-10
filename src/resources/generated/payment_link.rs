@@ -8,12 +8,13 @@ use crate::client::{Client, Response};
 use crate::ids::PaymentLinkId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable};
 use crate::resources::{
-    Account, CheckoutSessionItem, Currency, InvoiceSettingRenderingOptions, ShippingRate, TaxId,
+    Account, Application, CheckoutSessionItem, ConnectAccountReference, Currency,
+    InvoiceSettingRenderingOptions, ShippingRate, SubscriptionsTrialsResourceTrialSettings, TaxId,
 };
 
 /// The resource representing a Stripe "PaymentLink".
 ///
-/// For more details see <https://stripe.com/docs/api/payment_links/payment_links/object>
+/// For more details see <https://stripe.com/docs/api/payment-link/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLink {
     /// Unique identifier for the object.
@@ -29,10 +30,13 @@ pub struct PaymentLink {
     /// Whether user redeemable promotion codes are enabled.
     pub allow_promotion_codes: bool,
 
+    /// The ID of the Connect application that created the Payment Link.
+    pub application: Option<Expandable<Application>>,
+
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     pub application_fee_amount: Option<i64>,
 
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     pub application_fee_percent: Option<f64>,
 
     pub automatic_tax: PaymentLinksResourceAutomaticTax,
@@ -50,7 +54,7 @@ pub struct PaymentLink {
 
     /// Collect additional information from your customer using custom fields.
     ///
-    /// Up to 2 fields are supported.
+    /// Up to 3 fields are supported.
     pub custom_fields: Vec<PaymentLinksResourceCustomFields>,
 
     pub custom_text: PaymentLinksResourceCustomText,
@@ -58,12 +62,15 @@ pub struct PaymentLink {
     /// Configuration for Customer creation during checkout.
     pub customer_creation: PaymentLinkCustomerCreation,
 
+    /// The custom message to be displayed to a customer when a payment link is no longer active.
+    pub inactive_message: Option<String>,
+
     /// Configuration for creating invoice for payment mode payment links.
     pub invoice_creation: Option<PaymentLinksResourceInvoiceCreation>,
 
     /// The line items representing what is being sold.
-    #[serde(default)]
-    pub line_items: List<CheckoutSessionItem>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line_items: Option<List<CheckoutSessionItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -91,6 +98,9 @@ pub struct PaymentLink {
 
     pub phone_number_collection: PaymentLinksResourcePhoneNumberCollection,
 
+    /// Settings that restrict the usage of a payment link.
+    pub restrictions: Option<PaymentLinksResourceRestrictions>,
+
     /// Configuration for collecting the customer's shipping address.
     pub shipping_address_collection: Option<PaymentLinksResourceShippingAddressCollection>,
 
@@ -117,17 +127,18 @@ pub struct PaymentLink {
 impl PaymentLink {
     /// Returns a list of your payment links.
     pub fn list(client: &Client, params: &ListPaymentLinks<'_>) -> Response<List<PaymentLink>> {
-        client.get_query("/payment_links", &params)
+        client.get_query("/payment_links", params)
     }
 
     /// Creates a payment link.
     pub fn create(client: &Client, params: CreatePaymentLink<'_>) -> Response<PaymentLink> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/payment_links", &params)
     }
 
     /// Retrieve a payment link.
     pub fn retrieve(client: &Client, id: &PaymentLinkId, expand: &[&str]) -> Response<PaymentLink> {
-        client.get_query(&format!("/payment_links/{}", id), &Expand { expand })
+        client.get_query(&format!("/payment_links/{}", id), Expand { expand })
     }
 
     /// Updates a payment link.
@@ -136,6 +147,7 @@ impl PaymentLink {
         id: &PaymentLinkId,
         params: UpdatePaymentLink<'_>,
     ) -> Response<PaymentLink> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/payment_links/{}", id), &params)
     }
 }
@@ -167,6 +179,12 @@ pub struct PaymentLinksResourceAfterCompletion {
 pub struct PaymentLinksResourceAutomaticTax {
     /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    pub liability: Option<ConnectAccountReference>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -183,6 +201,9 @@ pub struct PaymentLinksResourceCompletionBehaviorRedirect {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceConsentCollection {
+    /// Settings related to the payment method reuse text shown in the Checkout UI.
+    pub payment_method_reuse_agreement: Option<PaymentLinksResourcePaymentMethodReuseAgreement>,
+
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
     pub promotions: Option<PaymentLinksResourceConsentCollectionPromotions>,
 
@@ -194,7 +215,7 @@ pub struct PaymentLinksResourceConsentCollection {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCustomFields {
-    /// Configuration for `type=dropdown` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dropdown: Option<PaymentLinksResourceCustomFieldsDropdown>,
 
     /// String of your choice that your integration can use to reconcile this field.
@@ -204,10 +225,16 @@ pub struct PaymentLinksResourceCustomFields {
 
     pub label: PaymentLinksResourceCustomFieldsLabel,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub numeric: Option<PaymentLinksResourceCustomFieldsNumeric>,
+
     /// Whether the customer is required to complete the field before completing the Checkout Session.
     ///
     /// Defaults to `false`.
     pub optional: bool,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<PaymentLinksResourceCustomFieldsText>,
 
     /// The type of the field.
     #[serde(rename = "type")]
@@ -248,17 +275,41 @@ pub struct PaymentLinksResourceCustomFieldsLabel {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceCustomFieldsNumeric {
+    /// The maximum character length constraint for the customer's input.
+    pub maximum_length: Option<i64>,
+
+    /// The minimum character length requirement for the customer's input.
+    pub minimum_length: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceCustomFieldsText {
+    /// The maximum character length constraint for the customer's input.
+    pub maximum_length: Option<i64>,
+
+    /// The minimum character length requirement for the customer's input.
+    pub minimum_length: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCustomText {
+    /// Custom text that should be displayed after the payment confirmation button.
+    pub after_submit: Option<PaymentLinksResourceCustomTextPosition>,
+
     /// Custom text that should be displayed alongside shipping address collection.
     pub shipping_address: Option<PaymentLinksResourceCustomTextPosition>,
 
     /// Custom text that should be displayed alongside the payment confirmation button.
     pub submit: Option<PaymentLinksResourceCustomTextPosition>,
+
+    /// Custom text that should be displayed in place of the default terms of service agreement text.
+    pub terms_of_service_acceptance: Option<PaymentLinksResourceCustomTextPosition>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCustomTextPosition {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
     pub message: String,
 }
 
@@ -289,10 +340,15 @@ pub struct PaymentLinksResourceInvoiceSettings {
     /// Footer to be displayed on the invoice.
     pub footer: Option<String>,
 
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    pub issuer: Option<ConnectAccountReference>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
 
     /// Options for invoice PDF rendering.
     pub rendering_options: Option<InvoiceSettingRenderingOptions>,
@@ -312,14 +368,60 @@ pub struct PaymentLinksResourcePaymentIntentData {
     /// Indicates when the funds will be captured from the customer's account.
     pub capture_method: Option<PaymentLinksResourcePaymentIntentDataCaptureMethod>,
 
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    pub description: Option<String>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will set metadata on [Payment Intents](https://stripe.com/docs/api/payment_intents) generated from this payment link.
+    pub metadata: Metadata,
+
     /// Indicates that you intend to make future payments with the payment method collected during checkout.
     pub setup_future_usage: Option<PaymentLinksResourcePaymentIntentDataSetupFutureUsage>,
+
+    /// Extra information about the payment.
+    ///
+    /// This will appear on your customer's statement when this payment succeeds in creating a charge.
+    pub statement_descriptor: Option<String>,
+
+    /// Provides information about the charge that customers see on their statements.
+    ///
+    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor.
+    /// Maximum 22 characters for the concatenated descriptor.
+    pub statement_descriptor_suffix: Option<String>,
+
+    /// A string that identifies the resulting payment as part of a group.
+    ///
+    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
+    pub transfer_group: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourcePaymentMethodReuseAgreement {
+    /// Determines the position and visibility of the payment method reuse agreement in the UI.
+    ///
+    /// When set to `auto`, Stripe's defaults will be used.  When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
+    pub position: PaymentLinksResourcePaymentMethodReuseAgreementPosition,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourcePhoneNumberCollection {
     /// If `true`, a phone number will be collected during checkout.
     pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceRestrictions {
+    pub completed_sessions: PaymentLinksResourceCompletedSessions,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceCompletedSessions {
+    /// The current number of checkout sessions that have been completed on the payment link which count towards the `completed_sessions` restriction to be met.
+    pub count: u64,
+
+    /// The maximum number of checkout sessions that can be completed for the `completed_sessions` restriction to be met.
+    pub limit: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -343,11 +445,24 @@ pub struct PaymentLinksResourceShippingOption {
 pub struct PaymentLinksResourceSubscriptionData {
     /// The subscription's description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
+
+    pub invoice_settings: PaymentLinksResourceSubscriptionDataInvoiceSettings,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will set metadata on [Subscriptions](https://stripe.com/docs/api/subscriptions) generated from this payment link.
+    pub metadata: Metadata,
 
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     pub trial_period_days: Option<u32>,
+
+    /// Settings related to subscription trials.
+    pub trial_settings: Option<SubscriptionsTrialsResourceTrialSettings>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceSubscriptionDataInvoiceSettings {
+    pub issuer: ConnectAccountReference,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -358,7 +473,7 @@ pub struct PaymentLinksResourceTaxIdCollection {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceTransferData {
-    /// The amount in %s that will be transferred to the destination account.
+    /// The amount in cents (or local equivalent) that will be transferred to the destination account.
     ///
     /// By default, the entire amount is transferred to the destination.
     pub amount: Option<i64>,
@@ -386,7 +501,7 @@ pub struct CreatePaymentLink<'a> {
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// There must be at least 1 line item with a recurring price to use this field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_percent: Option<f64>,
@@ -411,7 +526,7 @@ pub struct CreatePaymentLink<'a> {
 
     /// Collect additional information from your customer using custom fields.
     ///
-    /// Up to 2 fields are supported.
+    /// Up to 3 fields are supported.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_fields: Option<Vec<CreatePaymentLinkCustomFields>>,
 
@@ -426,6 +541,10 @@ pub struct CreatePaymentLink<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// The custom message to be displayed to a customer when a payment link is no longer active.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inactive_message: Option<&'a str>,
 
     /// Generate a post-purchase Invoice for one-time payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -472,6 +591,10 @@ pub struct CreatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone_number_collection: Option<CreatePaymentLinkPhoneNumberCollection>,
 
+    /// Settings that restrict the usage of a payment link.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub restrictions: Option<CreatePaymentLinkRestrictions>,
+
     /// Configuration for collecting the customer's shipping address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address_collection: Option<CreatePaymentLinkShippingAddressCollection>,
@@ -516,6 +639,7 @@ impl<'a> CreatePaymentLink<'a> {
             custom_text: Default::default(),
             customer_creation: Default::default(),
             expand: Default::default(),
+            inactive_message: Default::default(),
             invoice_creation: Default::default(),
             line_items,
             metadata: Default::default(),
@@ -524,6 +648,7 @@ impl<'a> CreatePaymentLink<'a> {
             payment_method_collection: Default::default(),
             payment_method_types: Default::default(),
             phone_number_collection: Default::default(),
+            restrictions: Default::default(),
             shipping_address_collection: Default::default(),
             shipping_options: Default::default(),
             submit_type: Default::default(),
@@ -610,7 +735,7 @@ pub struct UpdatePaymentLink<'a> {
 
     /// Collect additional information from your customer using custom fields.
     ///
-    /// Up to 2 fields are supported.
+    /// Up to 3 fields are supported.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_fields: Option<Vec<UpdatePaymentLinkCustomFields>>,
 
@@ -625,6 +750,10 @@ pub struct UpdatePaymentLink<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// The custom message to be displayed to a customer when a payment link is no longer active.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inactive_message: Option<String>,
 
     /// Generate a post-purchase Invoice for one-time payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -646,6 +775,10 @@ pub struct UpdatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
+    /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_intent_data: Option<UpdatePaymentLinkPaymentIntentData>,
+
     /// Specify whether Checkout should collect a payment method.
     ///
     /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.  Can only be set in `subscription` mode.  If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
@@ -654,13 +787,23 @@ pub struct UpdatePaymentLink<'a> {
 
     /// The list of payment method types that customers can use.
     ///
-    /// Pass an empty string to enable automatic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
+    /// Pass an empty string to enable dynamic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<UpdatePaymentLinkPaymentMethodTypes>>,
+
+    /// Settings that restrict the usage of a payment link.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub restrictions: Option<UpdatePaymentLinkRestrictions>,
 
     /// Configuration for collecting the customer's shipping address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address_collection: Option<UpdatePaymentLinkShippingAddressCollection>,
+
+    /// When creating a subscription, the specified configuration data will be used.
+    ///
+    /// There must be at least one line item with a recurring price to use `subscription_data`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_data: Option<UpdatePaymentLinkSubscriptionData>,
 }
 
 impl<'a> UpdatePaymentLink<'a> {
@@ -675,12 +818,16 @@ impl<'a> UpdatePaymentLink<'a> {
             custom_text: Default::default(),
             customer_creation: Default::default(),
             expand: Default::default(),
+            inactive_message: Default::default(),
             invoice_creation: Default::default(),
             line_items: Default::default(),
             metadata: Default::default(),
+            payment_intent_data: Default::default(),
             payment_method_collection: Default::default(),
             payment_method_types: Default::default(),
+            restrictions: Default::default(),
             shipping_address_collection: Default::default(),
+            subscription_data: Default::default(),
         }
     }
 }
@@ -706,10 +853,24 @@ pub struct CreatePaymentLinkAfterCompletion {
 pub struct CreatePaymentLinkAutomaticTax {
     /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub liability: Option<CreatePaymentLinkAutomaticTaxLiability>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkConsentCollection {
+    /// Determines the display of payment method reuse agreement text in the UI.
+    ///
+    /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_reuse_agreement:
+        Option<CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement>,
+
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
     ///
     /// The Checkout Session will determine whether to display an option to opt into promotional communication from the merchant depending on the customer's locale.
@@ -737,11 +898,19 @@ pub struct CreatePaymentLinkCustomFields {
     /// The label for the field, displayed to the customer.
     pub label: CreatePaymentLinkCustomFieldsLabel,
 
+    /// Configuration for `type=numeric` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub numeric: Option<CreatePaymentLinkCustomFieldsNumeric>,
+
     /// Whether the customer is required to complete the field before completing the Checkout Session.
     ///
     /// Defaults to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+
+    /// Configuration for `type=text` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<CreatePaymentLinkCustomFieldsText>,
 
     /// The type of the field.
     #[serde(rename = "type")]
@@ -750,6 +919,10 @@ pub struct CreatePaymentLinkCustomFields {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomText {
+    /// Custom text that should be displayed after the payment confirmation button.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub after_submit: Option<CreatePaymentLinkCustomTextAfterSubmit>,
+
     /// Custom text that should be displayed alongside shipping address collection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address: Option<CreatePaymentLinkCustomTextShippingAddress>,
@@ -757,6 +930,10 @@ pub struct CreatePaymentLinkCustomText {
     /// Custom text that should be displayed alongside the payment confirmation button.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submit: Option<CreatePaymentLinkCustomTextSubmit>,
+
+    /// Custom text that should be displayed in place of the default terms of service agreement text.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terms_of_service_acceptance: Option<CreatePaymentLinkCustomTextTermsOfServiceAcceptance>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -788,6 +965,19 @@ pub struct CreatePaymentLinkPaymentIntentData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentLinkPaymentIntentDataCaptureMethod>,
 
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Payment Intents](https://stripe.com/docs/api/payment_intents) generated from this payment link.
+    ///
+    /// Unlike object-level metadata, this field is declarative.
+    /// Updates will clear prior values.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
+
     /// Indicates that you intend to [make future payments](https://stripe.com/docs/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
     ///
     /// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
@@ -801,12 +991,37 @@ pub struct CreatePaymentLinkPaymentIntentData {
     /// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.  When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentLinkPaymentIntentDataSetupFutureUsage>,
+
+    /// Extra information about the payment.
+    ///
+    /// This will appear on your customer's statement when this payment succeeds in creating a charge.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor: Option<String>,
+
+    /// Provides information about the charge that customers see on their statements.
+    ///
+    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor.
+    /// Maximum 22 characters for the concatenated descriptor.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_suffix: Option<String>,
+
+    /// A string that identifies the resulting payment as part of a group.
+    ///
+    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_group: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkPhoneNumberCollection {
     /// Set to `true` to enable phone number collection.
     pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkRestrictions {
+    /// Configuration for the `completed_sessions` restriction type.
+    pub completed_sessions: CreatePaymentLinkRestrictionsCompletedSessions,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -829,15 +1044,30 @@ pub struct CreatePaymentLinkShippingOptions {
 pub struct CreatePaymentLinkSubscriptionData {
     /// The subscription's description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+
+    /// All invoices will be billed using the specified settings.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_settings: Option<CreatePaymentLinkSubscriptionDataInvoiceSettings>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Subscriptions](https://stripe.com/docs/api/subscriptions) generated from this payment link.
+    ///
+    /// Unlike object-level metadata, this field is declarative.
+    /// Updates will clear prior values.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     ///
     /// Has to be at least 1.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
+
+    /// Settings related to subscription trials.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_settings: Option<CreatePaymentLinkSubscriptionDataTrialSettings>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -881,6 +1111,13 @@ pub struct UpdatePaymentLinkAfterCompletion {
 pub struct UpdatePaymentLinkAutomaticTax {
     /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub liability: Option<UpdatePaymentLinkAutomaticTaxLiability>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -897,11 +1134,19 @@ pub struct UpdatePaymentLinkCustomFields {
     /// The label for the field, displayed to the customer.
     pub label: UpdatePaymentLinkCustomFieldsLabel,
 
+    /// Configuration for `type=numeric` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub numeric: Option<UpdatePaymentLinkCustomFieldsNumeric>,
+
     /// Whether the customer is required to complete the field before completing the Checkout Session.
     ///
     /// Defaults to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+
+    /// Configuration for `type=text` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<UpdatePaymentLinkCustomFieldsText>,
 
     /// The type of the field.
     #[serde(rename = "type")]
@@ -910,6 +1155,10 @@ pub struct UpdatePaymentLinkCustomFields {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomText {
+    /// Custom text that should be displayed after the payment confirmation button.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub after_submit: Option<UpdatePaymentLinkCustomTextAfterSubmit>,
+
     /// Custom text that should be displayed alongside shipping address collection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address: Option<UpdatePaymentLinkCustomTextShippingAddress>,
@@ -917,6 +1166,10 @@ pub struct UpdatePaymentLinkCustomText {
     /// Custom text that should be displayed alongside the payment confirmation button.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submit: Option<UpdatePaymentLinkCustomTextSubmit>,
+
+    /// Custom text that should be displayed in place of the default terms of service agreement text.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terms_of_service_acceptance: Option<UpdatePaymentLinkCustomTextTermsOfServiceAcceptance>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -944,12 +1197,71 @@ pub struct UpdatePaymentLinkLineItems {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkPaymentIntentData {
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Payment Intents](https://stripe.com/docs/api/payment_intents) generated from this payment link.
+    ///
+    /// Unlike object-level metadata, this field is declarative.
+    /// Updates will clear prior values.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
+
+    /// Extra information about the payment.
+    ///
+    /// This will appear on your customer's statement when this payment succeeds in creating a charge.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor: Option<String>,
+
+    /// Provides information about the charge that customers see on their statements.
+    ///
+    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor.
+    /// Maximum 22 characters for the concatenated descriptor.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_suffix: Option<String>,
+
+    /// A string that identifies the resulting payment as part of a group.
+    ///
+    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_group: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkRestrictions {
+    /// Configuration for the `completed_sessions` restriction type.
+    pub completed_sessions: UpdatePaymentLinkRestrictionsCompletedSessions,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkShippingAddressCollection {
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
     /// shipping locations.
     ///
     /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
     pub allowed_countries: Vec<UpdatePaymentLinkShippingAddressCollectionAllowedCountries>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkSubscriptionData {
+    /// All invoices will be billed using the specified settings.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_settings: Option<UpdatePaymentLinkSubscriptionDataInvoiceSettings>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Subscriptions](https://stripe.com/docs/api/subscriptions) generated from this payment link.
+    ///
+    /// Unlike object-level metadata, this field is declarative.
+    /// Updates will clear prior values.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
+
+    /// Settings related to subscription trials.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_settings: Option<UpdatePaymentLinkSubscriptionDataTrialSettings>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -965,6 +1277,26 @@ pub struct CreatePaymentLinkAfterCompletionRedirect {
     ///
     /// You can embed `{CHECKOUT_SESSION_ID}` into the URL to have the `id` of the completed [checkout session](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-id) included.
     pub url: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkAutomaticTaxLiability {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: CreatePaymentLinkAutomaticTaxLiabilityType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
+    /// Determines the position and visibility of the payment method reuse agreement in the UI.
+    ///
+    /// When set to `auto`, Stripe's defaults will be used.
+    /// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
+    pub position: CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -988,14 +1320,48 @@ pub struct CreatePaymentLinkCustomFieldsLabel {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkCustomFieldsNumeric {
+    /// The maximum character length constraint for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum_length: Option<i64>,
+
+    /// The minimum character length requirement for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_length: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkCustomFieldsText {
+    /// The maximum character length constraint for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum_length: Option<i64>,
+
+    /// The minimum character length requirement for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_length: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkCustomTextAfterSubmit {
+    /// Text may be up to 1200 characters in length.
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomTextShippingAddress {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
     pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomTextSubmit {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkCustomTextTermsOfServiceAcceptance {
+    /// Text may be up to 1200 characters in length.
     pub message: String,
 }
 
@@ -1019,13 +1385,19 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
 
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<CreatePaymentLinkInvoiceCreationInvoiceDataIssuer>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// Default options for invoice PDF rendering for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1053,6 +1425,27 @@ pub struct CreatePaymentLinkLineItemsAdjustableQuantity {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkRestrictionsCompletedSessions {
+    /// The maximum number of checkout sessions that can be completed for the `completed_sessions` restriction to be met.
+    pub limit: i64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkSubscriptionDataInvoiceSettings {
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkSubscriptionDataTrialSettings {
+    /// Defines how the subscription should behave when the user's free trial ends.
+    pub end_behavior: CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAfterCompletionHostedConfirmation {
     /// A custom message to display to the customer after the purchase is complete.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1065,6 +1458,17 @@ pub struct UpdatePaymentLinkAfterCompletionRedirect {
     ///
     /// You can embed `{CHECKOUT_SESSION_ID}` into the URL to have the `id` of the completed [checkout session](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-id) included.
     pub url: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkAutomaticTaxLiability {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: UpdatePaymentLinkAutomaticTaxLiabilityType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1088,14 +1492,48 @@ pub struct UpdatePaymentLinkCustomFieldsLabel {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkCustomFieldsNumeric {
+    /// The maximum character length constraint for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum_length: Option<i64>,
+
+    /// The minimum character length requirement for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_length: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkCustomFieldsText {
+    /// The maximum character length constraint for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum_length: Option<i64>,
+
+    /// The minimum character length requirement for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_length: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkCustomTextAfterSubmit {
+    /// Text may be up to 1200 characters in length.
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomTextShippingAddress {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
     pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomTextSubmit {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkCustomTextTermsOfServiceAcceptance {
+    /// Text may be up to 1200 characters in length.
     pub message: String,
 }
 
@@ -1119,13 +1557,19 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
 
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// Default options for invoice PDF rendering for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1150,6 +1594,27 @@ pub struct UpdatePaymentLinkLineItemsAdjustableQuantity {
     /// If there is only one item in the cart then that item's quantity cannot go down to 0.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkRestrictionsCompletedSessions {
+    /// The maximum number of checkout sessions that can be completed for the `completed_sessions` restriction to be met.
+    pub limit: i64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkSubscriptionDataInvoiceSettings {
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkSubscriptionDataTrialSettings {
+    /// Defines how the subscription should behave when the user's free trial ends.
+    pub end_behavior: UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1179,6 +1644,17 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceDataCustomFields {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkInvoiceCreationInvoiceDataIssuer {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     ///
@@ -1188,6 +1664,24 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_tax_display:
         Option<CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
+    /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
+    pub missing_payment_method:
+        CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1217,6 +1711,17 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataCustomFields {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     ///
@@ -1226,6 +1731,24 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_tax_display:
         Option<UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
+    /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
+    pub missing_payment_method:
+        UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
 }
 
 /// An enum representing the possible values of an `CreatePaymentLinkAfterCompletion`'s `type` field.
@@ -1259,6 +1782,79 @@ impl std::fmt::Display for CreatePaymentLinkAfterCompletionType {
 impl std::default::Default for CreatePaymentLinkAfterCompletionType {
     fn default() -> Self {
         Self::HostedConfirmation
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentLinkAutomaticTaxLiability`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkAutomaticTaxLiabilityType {
+    Account,
+    #[serde(rename = "self")]
+    Self_,
+}
+
+impl CreatePaymentLinkAutomaticTaxLiabilityType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkAutomaticTaxLiabilityType::Account => "account",
+            CreatePaymentLinkAutomaticTaxLiabilityType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkAutomaticTaxLiabilityType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkAutomaticTaxLiabilityType {
+    fn default() -> Self {
+        Self::Account
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement`'s `position` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    Auto,
+    Hidden,
+}
+
+impl CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition::Auto => "auto",
+            CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition::Hidden => {
+                "hidden"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition
+{
+    fn default() -> Self {
+        Self::Auto
     }
 }
 
@@ -1398,6 +1994,41 @@ impl std::default::Default for CreatePaymentLinkCustomFieldsType {
     }
 }
 
+/// An enum representing the possible values of an `CreatePaymentLinkInvoiceCreationInvoiceDataIssuer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    Account,
+    #[serde(rename = "self")]
+    Self_,
+}
+
+impl CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType::Account => "account",
+            CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn default() -> Self {
+        Self::Account
+    }
+}
+
 /// An enum representing the possible values of an `CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions`'s `amount_tax_display` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1531,10 +2162,12 @@ pub enum CreatePaymentLinkPaymentMethodTypes {
     Oxxo,
     P24,
     Paynow,
+    Paypal,
     Pix,
     Promptpay,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
 }
@@ -1563,10 +2196,12 @@ impl CreatePaymentLinkPaymentMethodTypes {
             CreatePaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
             CreatePaymentLinkPaymentMethodTypes::P24 => "p24",
             CreatePaymentLinkPaymentMethodTypes::Paynow => "paynow",
+            CreatePaymentLinkPaymentMethodTypes::Paypal => "paypal",
             CreatePaymentLinkPaymentMethodTypes::Pix => "pix",
             CreatePaymentLinkPaymentMethodTypes::Promptpay => "promptpay",
             CreatePaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
             CreatePaymentLinkPaymentMethodTypes::Sofort => "sofort",
+            CreatePaymentLinkPaymentMethodTypes::Swish => "swish",
             CreatePaymentLinkPaymentMethodTypes::UsBankAccount => "us_bank_account",
             CreatePaymentLinkPaymentMethodTypes::WechatPay => "wechat_pay",
         }
@@ -2331,6 +2966,81 @@ impl std::default::Default for CreatePaymentLinkShippingAddressCollectionAllowed
     }
 }
 
+/// An enum representing the possible values of an `CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    Account,
+    #[serde(rename = "self")]
+    Self_,
+}
+
+impl CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::Account => "account",
+            CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn default() -> Self {
+        Self::Account
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior`'s `missing_payment_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
+    Cancel,
+    CreateInvoice,
+    Pause,
+}
+
+impl CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::Cancel => "cancel",
+            CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::CreateInvoice => "create_invoice",
+            CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::Pause => "pause",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn default() -> Self {
+        Self::Cancel
+    }
+}
+
 /// An enum representing the possible values of an `PaymentLink`'s `billing_address_collection` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2458,10 +3168,12 @@ pub enum PaymentLinkPaymentMethodTypes {
     Oxxo,
     P24,
     Paynow,
+    Paypal,
     Pix,
     Promptpay,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
 }
@@ -2490,10 +3202,12 @@ impl PaymentLinkPaymentMethodTypes {
             PaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
             PaymentLinkPaymentMethodTypes::P24 => "p24",
             PaymentLinkPaymentMethodTypes::Paynow => "paynow",
+            PaymentLinkPaymentMethodTypes::Paypal => "paypal",
             PaymentLinkPaymentMethodTypes::Pix => "pix",
             PaymentLinkPaymentMethodTypes::Promptpay => "promptpay",
             PaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
             PaymentLinkPaymentMethodTypes::Sofort => "sofort",
+            PaymentLinkPaymentMethodTypes::Swish => "swish",
             PaymentLinkPaymentMethodTypes::UsBankAccount => "us_bank_account",
             PaymentLinkPaymentMethodTypes::WechatPay => "wechat_pay",
         }
@@ -2792,6 +3506,40 @@ impl std::fmt::Display for PaymentLinksResourcePaymentIntentDataSetupFutureUsage
 impl std::default::Default for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
     fn default() -> Self {
         Self::OffSession
+    }
+}
+
+/// An enum representing the possible values of an `PaymentLinksResourcePaymentMethodReuseAgreement`'s `position` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentLinksResourcePaymentMethodReuseAgreementPosition {
+    Auto,
+    Hidden,
+}
+
+impl PaymentLinksResourcePaymentMethodReuseAgreementPosition {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentLinksResourcePaymentMethodReuseAgreementPosition::Auto => "auto",
+            PaymentLinksResourcePaymentMethodReuseAgreementPosition::Hidden => "hidden",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentLinksResourcePaymentMethodReuseAgreementPosition {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentLinksResourcePaymentMethodReuseAgreementPosition {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinksResourcePaymentMethodReuseAgreementPosition {
+    fn default() -> Self {
+        Self::Auto
     }
 }
 
@@ -3570,6 +4318,41 @@ impl std::default::Default for UpdatePaymentLinkAfterCompletionType {
     }
 }
 
+/// An enum representing the possible values of an `UpdatePaymentLinkAutomaticTaxLiability`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentLinkAutomaticTaxLiabilityType {
+    Account,
+    #[serde(rename = "self")]
+    Self_,
+}
+
+impl UpdatePaymentLinkAutomaticTaxLiabilityType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentLinkAutomaticTaxLiabilityType::Account => "account",
+            UpdatePaymentLinkAutomaticTaxLiabilityType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentLinkAutomaticTaxLiabilityType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentLinkAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentLinkAutomaticTaxLiabilityType {
+    fn default() -> Self {
+        Self::Account
+    }
+}
+
 /// An enum representing the possible values of an `UpdatePaymentLinkCustomFieldsLabel`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3638,6 +4421,41 @@ impl std::default::Default for UpdatePaymentLinkCustomFieldsType {
     }
 }
 
+/// An enum representing the possible values of an `UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    Account,
+    #[serde(rename = "self")]
+    Self_,
+}
+
+impl UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType::Account => "account",
+            UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn default() -> Self {
+        Self::Account
+    }
+}
+
 /// An enum representing the possible values of an `UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions`'s `amount_tax_display` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3701,10 +4519,12 @@ pub enum UpdatePaymentLinkPaymentMethodTypes {
     Oxxo,
     P24,
     Paynow,
+    Paypal,
     Pix,
     Promptpay,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
 }
@@ -3733,10 +4553,12 @@ impl UpdatePaymentLinkPaymentMethodTypes {
             UpdatePaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
             UpdatePaymentLinkPaymentMethodTypes::P24 => "p24",
             UpdatePaymentLinkPaymentMethodTypes::Paynow => "paynow",
+            UpdatePaymentLinkPaymentMethodTypes::Paypal => "paypal",
             UpdatePaymentLinkPaymentMethodTypes::Pix => "pix",
             UpdatePaymentLinkPaymentMethodTypes::Promptpay => "promptpay",
             UpdatePaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
             UpdatePaymentLinkPaymentMethodTypes::Sofort => "sofort",
+            UpdatePaymentLinkPaymentMethodTypes::Swish => "swish",
             UpdatePaymentLinkPaymentMethodTypes::UsBankAccount => "us_bank_account",
             UpdatePaymentLinkPaymentMethodTypes::WechatPay => "wechat_pay",
         }
@@ -4498,5 +5320,80 @@ impl std::fmt::Display for UpdatePaymentLinkShippingAddressCollectionAllowedCoun
 impl std::default::Default for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
     fn default() -> Self {
         Self::Ac
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    Account,
+    #[serde(rename = "self")]
+    Self_,
+}
+
+impl UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::Account => "account",
+            UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn default() -> Self {
+        Self::Account
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior`'s `missing_payment_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
+    Cancel,
+    CreateInvoice,
+    Pause,
+}
+
+impl UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::Cancel => "cancel",
+            UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::CreateInvoice => "create_invoice",
+            UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::Pause => "pause",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn default() -> Self {
+        Self::Cancel
     }
 }

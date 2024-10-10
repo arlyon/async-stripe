@@ -6,7 +6,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PromotionCodeId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
+use crate::params::{
+    CurrencyMap, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+};
 use crate::resources::{Coupon, Currency, Customer};
 
 /// The resource representing a Stripe "PromotionCode".
@@ -49,7 +51,7 @@ pub struct PromotionCode {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
 
     pub restrictions: PromotionCodesResourceRestrictions,
 
@@ -60,7 +62,7 @@ pub struct PromotionCode {
 impl PromotionCode {
     /// Returns a list of your promotion codes.
     pub fn list(client: &Client, params: &ListPromotionCodes<'_>) -> Response<List<PromotionCode>> {
-        client.get_query("/promotion_codes", &params)
+        client.get_query("/promotion_codes", params)
     }
 
     /// Retrieves the promotion code with the given ID.
@@ -71,7 +73,7 @@ impl PromotionCode {
         id: &PromotionCodeId,
         expand: &[&str],
     ) -> Response<PromotionCode> {
-        client.get_query(&format!("/promotion_codes/{}", id), &Expand { expand })
+        client.get_query(&format!("/promotion_codes/{}", id), Expand { expand })
     }
 
     /// Updates the specified promotion code by setting the values of the parameters passed.
@@ -82,6 +84,7 @@ impl PromotionCode {
         id: &PromotionCodeId,
         params: UpdatePromotionCode<'_>,
     ) -> Response<PromotionCode> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/promotion_codes/{}", id), &params)
     }
 }
@@ -102,7 +105,7 @@ pub struct PromotionCodesResourceRestrictions {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<PromotionCodeCurrencyOption>,
+    pub currency_options: Option<CurrencyMap<PromotionCodeCurrencyOption>>,
 
     /// A Boolean indicating if the Promotion Code should only be redeemed for Customers without any successful payments or invoices.
     pub first_time_transaction: bool,
@@ -234,7 +237,7 @@ pub struct UpdatePromotionCodeRestrictions {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<UpdatePromotionCodeRestrictionsCurrencyOptions>,
+    pub currency_options: Option<CurrencyMap<UpdatePromotionCodeRestrictionsCurrencyOptions>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

@@ -29,6 +29,9 @@ impl Client {
     }
 
     /// Create a new account pointed at a specific URL. This is useful for testing.
+    ///
+    /// # Panics
+    /// If the url can't be parsed
     pub fn from_url<'a>(url: impl Into<&'a str>, secret_key: impl Into<String>) -> Self {
         Client {
             client: BaseClient::new(),
@@ -59,6 +62,18 @@ impl Client {
     }
 
     /// Set the request strategy for the client.
+    ///
+    /// Note: the client is cheap to clone so if you require a new client
+    ///       temporarily with a new strategy you can simply clone it
+    ///       and keep going.
+    ///
+    /// ```no_run
+    /// use stripe::RequestStrategy;
+    /// let client = stripe::Client::new("sk_test_123");
+    /// let idempotent_client = client
+    ///     .clone()
+    ///     .with_strategy(RequestStrategy::Idempotent("my-key".to_string()));
+    /// ```
     pub fn with_strategy(mut self, strategy: RequestStrategy) -> Self {
         self.strategy = strategy;
         self
@@ -76,7 +91,7 @@ impl Client {
         url: Option<String>,
     ) -> Self {
         let app_info = AppInfo { name, version, url };
-        self.headers.user_agent = format!("{} {}", USER_AGENT, app_info.to_string());
+        self.headers.user_agent = format!("{} {}", USER_AGENT, app_info);
         self.app_info = Some(app_info);
         self
     }
@@ -126,6 +141,9 @@ impl Client {
     }
 
     /// Make a `POST` http request with urlencoded body
+    ///
+    /// # Panics
+    /// If the form is not serialized to an utf8 string.
     pub fn post_form<T: DeserializeOwned + Send + 'static, F: Serialize>(
         &self,
         path: &str,
@@ -173,7 +191,7 @@ impl Client {
 
     fn create_request(&self, method: Method, url: Url) -> Request {
         let mut req = Request::new(method, url);
-        req.insert_header("authorization", &format!("Bearer {}", self.secret_key));
+        req.insert_header("authorization", format!("Bearer {}", self.secret_key));
 
         for (key, value) in self.headers.to_array().iter().filter_map(|(k, v)| v.map(|v| (*k, v))) {
             req.insert_header(key, value);

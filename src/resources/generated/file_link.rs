@@ -22,10 +22,10 @@ pub struct FileLink {
     /// Measured in seconds since the Unix epoch.
     pub created: Timestamp,
 
-    /// Whether this link is already expired.
+    /// Returns if the link is already expired.
     pub expired: bool,
 
-    /// Time at which the link expires.
+    /// Time that the link expires.
     pub expires_at: Option<Timestamp>,
 
     /// The file object this link points to.
@@ -46,17 +46,18 @@ pub struct FileLink {
 impl FileLink {
     /// Returns a list of file links.
     pub fn list(client: &Client, params: &ListFileLinks<'_>) -> Response<List<FileLink>> {
-        client.get_query("/file_links", &params)
+        client.get_query("/file_links", params)
     }
 
     /// Creates a new file link object.
     pub fn create(client: &Client, params: CreateFileLink<'_>) -> Response<FileLink> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/file_links", &params)
     }
 
     /// Retrieves the file link with the given ID.
     pub fn retrieve(client: &Client, id: &FileLinkId, expand: &[&str]) -> Response<FileLink> {
-        client.get_query(&format!("/file_links/{}", id), &Expand { expand })
+        client.get_query(&format!("/file_links/{}", id), Expand { expand })
     }
 
     /// Updates an existing file link object.
@@ -67,6 +68,7 @@ impl FileLink {
         id: &FileLinkId,
         params: UpdateFileLink<'_>,
     ) -> Response<FileLink> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/file_links/{}", id), &params)
     }
 }
@@ -88,7 +90,7 @@ pub struct CreateFileLink<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// A future timestamp after which the link will no longer be usable.
+    /// The link isn't usable after this future timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<Timestamp>,
 
@@ -136,7 +138,7 @@ pub struct ListFileLinks<'a> {
 
     /// Filter links by their expiration status.
     ///
-    /// By default, all links are returned.
+    /// By default, Stripe returns all links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expired: Option<bool>,
 

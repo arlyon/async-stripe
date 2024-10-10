@@ -31,13 +31,13 @@ pub struct Plan {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aggregate_usage: Option<PlanAggregateUsage>,
 
-    /// The unit amount in %s to be charged, represented as a whole integer if possible.
+    /// The unit amount in cents (or local equivalent) to be charged, represented as a whole integer if possible.
     ///
     /// Only set if `billing_scheme=per_unit`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
-    /// The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places.
+    /// The unit amount in cents (or local equivalent) to be charged, represented as a decimal string with at most 12 decimal places.
     ///
     /// Only set if `billing_scheme=per_unit`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -86,8 +86,8 @@ pub struct Plan {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// A brief description of the plan, hidden from customers.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -134,12 +134,12 @@ pub struct Plan {
 impl Plan {
     /// Returns a list of your plans.
     pub fn list(client: &Client, params: &ListPlans<'_>) -> Response<List<Plan>> {
-        client.get_query("/plans", &params)
+        client.get_query("/plans", params)
     }
 
     /// Retrieves the plan with the given ID.
     pub fn retrieve(client: &Client, id: &PlanId, expand: &[&str]) -> Response<Plan> {
-        client.get_query(&format!("/plans/{}", id), &Expand { expand })
+        client.get_query(&format!("/plans/{}", id), Expand { expand })
     }
 
     /// Updates the specified plan by setting the values of the parameters passed.
@@ -147,6 +147,7 @@ impl Plan {
     /// Any parameters not provided are left unchanged.
     /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
     pub fn update(client: &Client, id: &PlanId, params: UpdatePlan<'_>) -> Response<Plan> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/plans/{}", id), &params)
     }
 

@@ -8,8 +8,9 @@ use crate::client::{Client, Response};
 use crate::ids::{CustomerId, QuoteId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{
-    Account, Application, CheckoutSessionItem, Currency, Customer, Discount, Invoice,
-    QuotesResourceTotalDetails, Subscription, SubscriptionSchedule, TaxRate, TestHelpersTestClock,
+    Account, Application, CheckoutSessionItem, ConnectAccountReference, Currency, Customer,
+    Discount, Invoice, QuotesResourceTotalDetails, Subscription, SubscriptionSchedule, TaxRate,
+    TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Quote".
@@ -36,7 +37,7 @@ pub struct Quote {
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// Only applicable if there are line items with recurring prices on the quote.
     pub application_fee_percent: Option<f64>,
 
@@ -96,12 +97,11 @@ pub struct Quote {
     /// The invoice that was created from this quote.
     pub invoice: Option<Expandable<Invoice>>,
 
-    /// All invoices will be billed using the specified settings.
-    pub invoice_settings: Option<InvoiceSettingQuoteSetting>,
+    pub invoice_settings: InvoiceSettingQuoteSetting,
 
     /// A list of items the customer is being quoted for.
-    #[serde(default)]
-    pub line_items: List<CheckoutSessionItem>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line_items: Option<List<CheckoutSessionItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -146,12 +146,12 @@ pub struct Quote {
 impl Quote {
     /// Returns a list of your quotes.
     pub fn list(client: &Client, params: &ListQuotes<'_>) -> Response<List<Quote>> {
-        client.get_query("/quotes", &params)
+        client.get_query("/quotes", params)
     }
 
     /// Retrieves the quote with the given ID.
     pub fn retrieve(client: &Client, id: &QuoteId, expand: &[&str]) -> Response<Quote> {
-        client.get_query(&format!("/quotes/{}", id), &Expand { expand })
+        client.get_query(&format!("/quotes/{}", id), Expand { expand })
     }
 }
 
@@ -171,12 +171,20 @@ pub struct InvoiceSettingQuoteSetting {
     ///
     /// This value will be `null` for quotes where `collection_method=charge_automatically`.
     pub days_until_due: Option<u32>,
+
+    pub issuer: ConnectAccountReference,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct QuotesResourceAutomaticTax {
     /// Automatically calculate taxes.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    pub liability: Option<ConnectAccountReference>,
 
     /// The status of the most recent automated tax calculation for this quote.
     pub status: Option<QuotesResourceAutomaticTaxStatus>,
@@ -245,7 +253,7 @@ pub struct QuotesResourceStatusTransitions {
 pub struct QuotesResourceSubscriptionDataSubscriptionData {
     /// The subscription's description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
 
     /// When creating a new subscription, the date of which the subscription schedule will start after the quote is accepted.
@@ -254,20 +262,28 @@ pub struct QuotesResourceSubscriptionDataSubscriptionData {
     /// Measured in seconds since the Unix epoch.
     pub effective_date: Option<Timestamp>,
 
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will set metadata on the subscription or subscription schedule when the quote is accepted.
+    ///
+    /// If a recurring price is included in `line_items`, this field will be passed to the resulting subscription's `metadata` field.
+    /// If `subscription_data.effective_date` is used, this field will be passed to the resulting subscription schedule's `phases.metadata` field.
+    /// Unlike object-level metadata, this field is declarative.
+    /// Updates will clear prior values.
+    pub metadata: Option<Metadata>,
+
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     pub trial_period_days: Option<u32>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct QuotesResourceTransferData {
-    /// The amount in %s that will be transferred to the destination account when the invoice is paid.
+    /// The amount in cents (or local equivalent) that will be transferred to the destination account when the invoice is paid.
     ///
     /// By default, the entire amount is transferred to the destination.
     pub amount: Option<i64>,
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
     /// By default, the entire amount will be transferred to the destination.
     pub amount_percent: Option<f64>,
 
@@ -286,8 +302,8 @@ pub struct QuotesResourceUpfront {
     /// The line items that will appear on the next invoice after this quote is accepted.
     ///
     /// This does not include pending invoice items that exist on the customer but may still be included in the next invoice.
-    #[serde(default)]
-    pub line_items: List<CheckoutSessionItem>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line_items: Option<List<CheckoutSessionItem>>,
 
     pub total_details: QuotesResourceTotalDetails,
 }

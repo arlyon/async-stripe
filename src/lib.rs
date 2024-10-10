@@ -28,9 +28,9 @@
 //! to determine which fields are required for either request.
 //!
 //! > **Note:** We have an extensive collection of examples which are interspersed in
-//!   the documentation. Any time an API is used in an example it is highlighted in the
-//!   docs for that item. You can also find all the raw examples in the `examples` directory.
-//!   Please have a look at those for inspiration or ideas on how to get started.
+//! > the documentation. Any time an API is used in an example it is highlighted in the
+//! > docs for that item. You can also find all the raw examples in the `examples` directory.
+//! > Please have a look at those for inspiration or ideas on how to get started.
 //!
 //! ## Idempotency / Request Strategies
 //!
@@ -50,38 +50,19 @@
 //!                                            generated automatically and is stable across retries.
 //!
 //! > Want to implement your own? If it is a common strategy, please consider opening a PR to add it to the library.
-//!   Otherwise, we are open to turning this into an open trait so that you can implement your own strategy.
+//! > Otherwise, we are open to turning this into an open trait so that you can implement your own strategy.
 
-#![allow(clippy::map_clone, clippy::large_enum_variant)]
-#![warn(clippy::unwrap_used, clippy::missing_errors_doc, clippy::missing_panics_doc)]
+#![allow(clippy::large_enum_variant)]
+#![warn(clippy::missing_panics_doc)]
 #![forbid(unsafe_code)]
+// Workaround
+#![allow(ambiguous_glob_reexports)]
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 
 // Give a clear error when a required runtime error is not present. Would be better for this
 // to be a fatal error preventing emission of further compile errors relating to lack of
 // a runtime feature, but that does not seem currently possible:
 // https://github.com/rust-lang/rust/issues/68838
-
-#[cfg(not(any(
-    feature = "runtime-tokio-hyper",
-    feature = "runtime-tokio-hyper-rustls",
-    feature = "runtime-tokio-hyper-rustls-webpki",
-    feature = "runtime-blocking",
-    feature = "runtime-blocking-rustls",
-    feature = "runtime-blocking-rustls-webpki",
-    feature = "runtime-async-std-surf",
-)))]
-compile_error!(
-    r"one of the following runtime features must be enabled:
-    [
-        'runtime-tokio-hyper',
-        'runtime-tokio-hyper-rustls',
-        'runtime-tokio-hyper-rustls-webpki',
-        'runtime-blocking',
-        'runtime-blocking-rustls',
-        'runtime-blocking-rustls-webpki',
-        'runtime-async-std-surf'
-    ]"
-);
 
 mod client;
 mod error;
@@ -100,6 +81,7 @@ pub use crate::client::*;
 pub use crate::error::{ErrorCode, ErrorType, RequestError, StripeError, WebhookError};
 pub use crate::ids::*;
 pub use crate::params::{
-    Expandable, Headers, IdOrCreate, List, Metadata, Object, RangeBounds, RangeQuery, Timestamp,
+    Expandable, Headers, IdOrCreate, List, Metadata, Object, RangeBounds, RangeQuery, SearchList,
+    Timestamp,
 };
 pub use crate::resources::*;

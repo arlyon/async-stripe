@@ -23,7 +23,7 @@ pub struct Token {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<Card>,
 
-    /// IP address of the client that generated the token.
+    /// IP address of the client that generates the token.
     pub client_ip: Option<String>,
 
     /// Time at which the object was created.
@@ -38,22 +38,24 @@ pub struct Token {
     #[serde(rename = "type")]
     pub type_: TokenType,
 
-    /// Whether this token has already been used (tokens can be used only once).
+    /// Determines if you have already used this token (you can only use tokens once).
     pub used: bool,
 }
 
 impl Token {
     /// Creates a single-use token that represents a bank account’s details.
-    /// This token can be used with any API method in place of a bank account dictionary.
+    /// You can use this token with any API method in place of a bank account dictionary.
     ///
-    /// This token can be used only once, by attaching it to a [Custom account](https://stripe.com/docs/api#accounts).
+    /// You can only use this token once.
+    /// To do so, attach it to a [Custom account](https://stripe.com/docs/api#accounts).
     pub fn create(client: &Client, params: CreateToken<'_>) -> Response<Token> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/tokens", &params)
     }
 
     /// Retrieves the token with the given ID.
     pub fn retrieve(client: &Client, id: &TokenId, expand: &[&str]) -> Response<Token> {
-        client.get_query(&format!("/tokens/{}", id), &Expand { expand })
+        client.get_query(&format!("/tokens/{}", id), Expand { expand })
     }
 }
 
@@ -70,21 +72,25 @@ impl Object for Token {
 /// The parameters for `Token::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateToken<'a> {
-    /// Information for the account this token will represent.
+    /// Information for the account this token represents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<CreateTokenAccount>,
 
+    /// The card this token will represent.
+    ///
+    /// If you also pass in a customer, the card must be the ID of a card belonging to the customer.
+    /// Otherwise, if you do not pass in a customer, this is a dictionary containing a user's credit card details, with the options described below.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateTokenCardUnion>,
 
-    /// The customer (owned by the application's account) for which to create a token.
+    /// Create a token for the customer, which is owned by the application's account.
     ///
-    /// This can be used only with an [OAuth access token](https://stripe.com/docs/connect/standard-accounts) or [Stripe-Account header](https://stripe.com/docs/connect/authentication).
-    /// For more details, see [Cloning Saved Payment Methods](https://stripe.com/docs/connect/cloning-saved-payment-methods).
+    /// You can only use this with an [OAuth access token](https://stripe.com/docs/connect/standard-accounts) or [Stripe-Account header](https://stripe.com/docs/connect/authentication).
+    /// Learn more about [cloning saved payment methods](https://stripe.com/docs/connect/cloning-saved-payment-methods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
 
-    /// The updated CVC value this token will represent.
+    /// The updated CVC value this token represents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc_update: Option<CreateTokenCvcUpdate>,
 
@@ -92,11 +98,11 @@ pub struct CreateToken<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// Information for the person this token will represent.
+    /// Information for the person this token represents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub person: Option<CreateTokenPerson>,
 
-    /// The PII this token will represent.
+    /// The PII this token represents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pii: Option<CreateTokenPii>,
 }
@@ -144,6 +150,10 @@ pub struct CreateTokenCvcUpdate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPerson {
+    /// Details on the legal guardian's acceptance of the required Stripe agreements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_tos_acceptances: Option<CreateTokenPersonAdditionalTosAcceptances>,
+
     /// The person's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -191,14 +201,14 @@ pub struct CreateTokenPerson {
     /// The person's ID number, as appropriate for their country.
     ///
     /// For example, a social security number in the U.S., social insurance number in Canada, etc.
-    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<String>,
 
     /// The person's secondary ID number, as appropriate for their country, will be used for enhanced verification checks.
     ///
     /// In Thailand, this would be the laser code found on the back of an ID card.
-    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_secondary: Option<String>,
 
@@ -223,8 +233,8 @@ pub struct CreateTokenPerson {
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The country where the person is a national.
     ///
@@ -264,6 +274,13 @@ pub struct CreateTokenPii {
     /// The `id_number` for the PII, in string form.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateTokenPersonAdditionalTosAcceptances {
+    /// Details on the legal guardian's acceptance of the main Stripe service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<CreateTokenPersonAdditionalTosAcceptancesAccount>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -332,6 +349,10 @@ pub struct CreateTokenPersonRelationship {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub executive: Option<bool>,
 
+    /// Whether the person is the legal guardian of the account's representative.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub legal_guardian: Option<bool>,
+
     /// Whether the person is an owner of the account’s legal entity.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<bool>,
@@ -362,6 +383,21 @@ pub struct PersonVerificationParams {
     /// An identifying document, either a passport or local ID card.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<VerificationDocumentParams>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateTokenPersonAdditionalTosAcceptancesAccount {
+    /// The Unix timestamp marking when the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<Timestamp>,
+
+    /// The IP address from which the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
+
+    /// The user agent of the browser from which the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -438,6 +474,10 @@ impl std::default::Default for CreateTokenAccountBusinessType {
     }
 }
 
+/// The card this token will represent.
+///
+/// If you also pass in a customer, the card must be the ID of a card belonging to the customer.
+/// Otherwise, if you do not pass in a customer, this is a dictionary containing a user's credit card details, with the options described below.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, rename_all = "snake_case")]
 pub enum CreateTokenCardUnion {
@@ -447,25 +487,41 @@ pub enum CreateTokenCardUnion {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreditCardSpecs {
+    /// City / District / Suburb / Town / Village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_city: Option<String>,
+    /// Billing address country, if provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_country: Option<String>,
+    /// Address line 1 (Street address / PO Box / Company name).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_line1: Option<String>,
+    /// Address line 2 (Apartment / Suite / Unit / Building).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_line2: Option<String>,
+    /// State / County / Province / Region.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_state: Option<String>,
+    /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_zip: Option<String>,
+    /// Required in order to add the card to an account; in all other cases, this parameter is not used.
+    ///
+    /// When added to an account, the card (which must be a debit card) can be used as a transfer destination for funds in this currency.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<String>,
+    /// Card security code.
+    ///
+    /// Highly recommended to always include this value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc: Option<String>,
+    /// Two-digit number representing the card's expiration month.
     pub exp_month: String,
+    /// Two- or four-digit number representing the card's expiration year.
     pub exp_year: String,
+    /// Cardholder's full name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// The card number, as a string without any separators.
     pub number: String,
 }

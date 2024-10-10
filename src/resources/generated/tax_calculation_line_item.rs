@@ -2,9 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{TaxCalculationLineItemId};
-use crate::params::{Object};
 use serde::{Deserialize, Serialize};
+
+use crate::ids::TaxCalculationLineItemId;
+use crate::params::Object;
 
 /// The resource representing a Stripe "TaxProductResourceTaxCalculationLineItem".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -12,19 +13,19 @@ pub struct TaxCalculationLineItem {
     /// Unique identifier for the object.
     pub id: TaxCalculationLineItemId,
 
-    /// The line item amount in integer cents.
+    /// The line item amount in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     ///
     /// If `tax_behavior=inclusive`, then this amount includes taxes.
     /// Otherwise, taxes were calculated on top of this amount.
     pub amount: i64,
 
-    /// The amount of tax calculated for this line item, in integer cents.
+    /// The amount of tax calculated for this line item, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount_tax: i64,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    /// A Product ID.
+    /// The ID of an existing [Product](https://stripe.com/docs/api/products/object).
     pub product: Option<String>,
 
     /// The number of units of the item being purchased.
@@ -57,21 +58,9 @@ impl Object for TaxCalculationLineItem {
     }
 }
 
-/// The parameters for `TaxCalculationLineItem::create`
-///
-/// For more details see <https://stripe.com/docs/api/tax/calculations/object>
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CreateTaxCalculationLineItem {
-    pub amount: i64,
-    pub reference: String,
-    pub quantity: Option<u64>,
-    pub tax_behavior: Option<TaxCalculationLineItemTaxBehavior>,
-}
-
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceLineItemTaxBreakdown {
-
-    /// The amount of tax, in integer cents.
+    /// The amount of tax, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
 
     pub jurisdiction: TaxProductResourceJurisdiction,
@@ -89,13 +78,12 @@ pub struct TaxProductResourceLineItemTaxBreakdown {
     /// The possible values for this field may be extended as new tax rules are supported.
     pub taxability_reason: TaxProductResourceLineItemTaxBreakdownTaxabilityReason,
 
-    /// The amount on which tax is calculated, in integer cents.
+    /// The amount on which tax is calculated, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub taxable_amount: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceJurisdiction {
-
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     pub country: String,
 
@@ -113,7 +101,6 @@ pub struct TaxProductResourceJurisdiction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceLineItemTaxRateDetails {
-
     /// A localized display name for tax type, intended to be human-readable.
     ///
     /// For example, "Local Sales and Use Tax", "Value-added tax (VAT)", or "Umsatzsteuer (USt.)".
@@ -260,20 +247,44 @@ pub enum TaxProductResourceLineItemTaxBreakdownTaxabilityReason {
 impl TaxProductResourceLineItemTaxBreakdownTaxabilityReason {
     pub fn as_str(self) -> &'static str {
         match self {
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::CustomerExempt => "customer_exempt",
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::NotCollecting => "not_collecting",
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::NotSubjectToTax => "not_subject_to_tax",
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::CustomerExempt => {
+                "customer_exempt"
+            }
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::NotCollecting => {
+                "not_collecting"
+            }
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::NotSubjectToTax => {
+                "not_subject_to_tax"
+            }
             TaxProductResourceLineItemTaxBreakdownTaxabilityReason::NotSupported => "not_supported",
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::PortionProductExempt => "portion_product_exempt",
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::PortionReducedRated => "portion_reduced_rated",
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::PortionStandardRated => "portion_standard_rated",
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ProductExempt => "product_exempt",
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ProductExemptHoliday => "product_exempt_holiday",
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ProportionallyRated => "proportionally_rated",
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::PortionProductExempt => {
+                "portion_product_exempt"
+            }
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::PortionReducedRated => {
+                "portion_reduced_rated"
+            }
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::PortionStandardRated => {
+                "portion_standard_rated"
+            }
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ProductExempt => {
+                "product_exempt"
+            }
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ProductExemptHoliday => {
+                "product_exempt_holiday"
+            }
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ProportionallyRated => {
+                "proportionally_rated"
+            }
             TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ReducedRated => "reduced_rated",
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ReverseCharge => "reverse_charge",
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::StandardRated => "standard_rated",
-            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::TaxableBasisReduced => "taxable_basis_reduced",
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ReverseCharge => {
+                "reverse_charge"
+            }
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::StandardRated => {
+                "standard_rated"
+            }
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::TaxableBasisReduced => {
+                "taxable_basis_reduced"
+            }
             TaxProductResourceLineItemTaxBreakdownTaxabilityReason::ZeroRated => "zero_rated",
         }
     }
@@ -300,6 +311,8 @@ impl std::default::Default for TaxProductResourceLineItemTaxBreakdownTaxabilityR
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TaxProductResourceLineItemTaxRateDetailsTaxType {
+    AmusementTax,
+    CommunicationsTax,
     Gst,
     Hst,
     Igst,
@@ -315,6 +328,10 @@ pub enum TaxProductResourceLineItemTaxRateDetailsTaxType {
 impl TaxProductResourceLineItemTaxRateDetailsTaxType {
     pub fn as_str(self) -> &'static str {
         match self {
+            TaxProductResourceLineItemTaxRateDetailsTaxType::AmusementTax => "amusement_tax",
+            TaxProductResourceLineItemTaxRateDetailsTaxType::CommunicationsTax => {
+                "communications_tax"
+            }
             TaxProductResourceLineItemTaxRateDetailsTaxType::Gst => "gst",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Hst => "hst",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Igst => "igst",
@@ -342,6 +359,6 @@ impl std::fmt::Display for TaxProductResourceLineItemTaxRateDetailsTaxType {
 }
 impl std::default::Default for TaxProductResourceLineItemTaxRateDetailsTaxType {
     fn default() -> Self {
-        Self::Gst
+        Self::AmusementTax
     }
 }

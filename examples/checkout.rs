@@ -41,7 +41,7 @@ async fn main() {
 
     println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
 
-    // create a new exmaple project
+    // create a new example project
     let product = {
         let mut create_product = CreateProduct::new("T-Shirt");
         create_product.metadata = Some(std::collections::HashMap::from([(
@@ -73,7 +73,7 @@ async fn main() {
 
     // finally, create a checkout session for this product / price
     let checkout_session = {
-        let mut params = CreateCheckoutSession::new("http://test.com/success");
+        let mut params = CreateCheckoutSession::new();
         params.cancel_url = Some("http://test.com/cancel");
         params.customer = Some(customer.id);
         params.mode = Some(CheckoutSessionMode::Payment);
@@ -87,17 +87,18 @@ async fn main() {
         CheckoutSession::create(&client, params).await.unwrap()
     };
 
+    let line_items = checkout_session.line_items.unwrap();
+
     println!(
         "created a {} checkout session for {} {:?} for {} {} at {}",
         checkout_session.payment_status,
-        checkout_session.line_items.data[0].quantity.unwrap(),
-        match checkout_session.line_items.data[0].price.as_ref().unwrap().product.as_ref().unwrap()
-        {
+        line_items.data[0].quantity.unwrap(),
+        match line_items.data[0].price.as_ref().unwrap().product.as_ref().unwrap() {
             Expandable::Object(p) => p.name.as_ref().unwrap(),
             _ => panic!("product not found"),
         },
         checkout_session.amount_subtotal.unwrap() / 100,
-        checkout_session.line_items.data[0].price.as_ref().unwrap().currency.unwrap(),
+        line_items.data[0].price.as_ref().unwrap().currency.unwrap(),
         checkout_session.url.unwrap()
     );
 }

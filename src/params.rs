@@ -1,10 +1,11 @@
 use std::collections::HashMap;
+use std::fmt::Display;
 
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
 use crate::error::StripeError;
-use crate::resources::ApiVersion;
+use crate::resources::{ApiVersion, Currency};
 use crate::{
     client::{
         config::{err, ok},
@@ -20,16 +21,16 @@ pub struct AppInfo {
     pub version: Option<String>,
 }
 
-impl ToString for AppInfo {
-    /// Formats a plugin's 'App Info' into a string that can be added to the end of an User-Agent string.
+impl Display for AppInfo {
+    /// Formats a plugin's 'App Info' that can be added to the end of a User-Agent string.
     ///
     /// This formatting matches that of other libraries, and if changed then it should be changed everywhere.
-    fn to_string(&self) -> String {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match (&self.version, &self.url) {
-            (Some(a), Some(b)) => format!("{}/{} ({})", &self.name, a, b),
-            (Some(a), None) => format!("{}/{}", &self.name, a),
-            (None, Some(b)) => format!("{} ({})", &self.name, b),
-            _ => self.name.to_string(),
+            (Some(a), Some(b)) => write!(f, "{}/{} ({})", &self.name, a, b),
+            (Some(a), None) => write!(f, "{}/{}", &self.name, a),
+            (None, Some(b)) => write!(f, "{} ({})", &self.name, b),
+            _ => write!(f, "{}", self.name),
         }
     }
 }
@@ -179,16 +180,112 @@ pub trait Paginable {
     fn set_last(&mut self, item: Self::O);
 }
 
-#[derive(Debug)]
-pub struct ListPaginator<T, P> {
-    pub page: List<T>,
-    pub params: P,
+pub trait PaginableList {
+    type O: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::Debug;
+    fn new(data: Vec<Self::O>, url: String, has_more: bool, total_count: Option<u64>) -> Self;
+    fn get_data_mut(&mut self) -> &mut Vec<Self::O>;
+    fn get_data(&self) -> &Vec<Self::O>;
+    fn get_url(&self) -> String;
+    fn get_total_count(&self) -> Option<u64>;
+    fn has_more(&self) -> bool;
+}
+
+/// A single page of a cursor-paginated list of a search object.
+///
+/// For more details, see <https://stripe.com/docs/api/pagination/search>
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct SearchList<T> {
+    pub object: String,
+    pub url: String,
+    pub has_more: bool,
+    pub data: Vec<T>,
+    pub next_page: Option<String>,
+    pub total_count: Option<u64>,
+}
+
+impl<T> Default for SearchList<T> {
+    fn default() -> Self {
+        SearchList {
+            object: String::new(),
+            data: Vec::new(),
+            has_more: false,
+            total_count: None,
+            url: String::new(),
+            next_page: None,
+        }
+    }
+}
+
+impl<T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::Debug> PaginableList
+    for SearchList<T>
+{
+    type O = T;
+
+    fn new(
+        data: Vec<Self::O>,
+        url: String,
+        has_more: bool,
+        total_count: Option<u64>,
+    ) -> SearchList<T> {
+        Self { object: "".to_string(), url, has_more, data, next_page: None, total_count }
+    }
+
+    fn get_data_mut(&mut self) -> &mut Vec<Self::O> {
+        &mut self.data
+    }
+
+    fn get_data(&self) -> &Vec<Self::O> {
+        &self.data
+    }
+    fn get_url(&self) -> String {
+        self.url.clone()
+    }
+    fn get_total_count(&self) -> Option<u64> {
+        self.total_count
+    }
+    fn has_more(&self) -> bool {
+        self.has_more
+    }
+}
+
+impl<T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::Debug> PaginableList
+    for List<T>
+{
+    type O = T;
+
+    fn new(data: Vec<Self::O>, url: String, has_more: bool, total_count: Option<u64>) -> List<T> {
+        Self { url, has_more, data, total_count }
+    }
+
+    fn get_data_mut(&mut self) -> &mut Vec<Self::O> {
+        &mut self.data
+    }
+
+    fn get_data(&self) -> &Vec<Self::O> {
+        &self.data
+    }
+
+    fn get_url(&self) -> String {
+        self.url.clone()
+    }
+    fn get_total_count(&self) -> Option<u64> {
+        self.total_count
+    }
+    fn has_more(&self) -> bool {
+        self.has_more
+    }
+}
+
+impl<T> SearchList<T> {
+    pub fn paginate<P>(self, params: P) -> ListPaginator<SearchList<T>, P> {
+        ListPaginator { page: self, params }
+    }
 }
 
 /// A single page of a cursor-paginated list of an object.
 ///
 /// For more details, see <https://stripe.com/docs/api/pagination>
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct List<T> {
     pub data: Vec<T>,
     pub has_more: bool,
@@ -202,45 +299,40 @@ impl<T> Default for List<T> {
     }
 }
 
-impl<T: Clone> Clone for List<T> {
-    fn clone(&self) -> Self {
-        List {
-            data: self.data.clone(),
-            has_more: self.has_more,
-            total_count: self.total_count,
-            url: self.url.clone(),
-        }
-    }
-}
-
 impl<T> List<T> {
-    pub fn paginate<P>(self, params: P) -> ListPaginator<T, P> {
+    pub fn paginate<P>(self, params: P) -> ListPaginator<List<T>, P> {
         ListPaginator { page: self, params }
     }
 }
 
+#[derive(Debug)]
+pub struct ListPaginator<T, P> {
+    pub page: T,
+    pub params: P,
+}
+
 impl<
-        T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::Debug,
+        T: PaginableList + Send + DeserializeOwned + 'static,
         P: Clone + Serialize + Send + 'static + std::fmt::Debug,
     > ListPaginator<T, P>
 where
-    P: Paginable<O = T>,
+    P: Paginable<O = T::O>,
 {
     /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
     /// Stripe's default page size.
     ///
     /// Requires `feature = "blocking"`.
     #[cfg(feature = "blocking")]
-    pub fn get_all(self, client: &Client) -> Response<Vec<T>> {
-        let mut data = Vec::with_capacity(self.page.total_count.unwrap_or(0) as usize);
+    pub fn get_all(self, client: &Client) -> Response<Vec<T::O>> {
+        let mut data = Vec::with_capacity(self.page.get_total_count().unwrap_or(0) as usize);
         let mut paginator = self;
         loop {
-            if !paginator.page.has_more {
-                data.extend(paginator.page.data.into_iter());
+            if !paginator.page.has_more() {
+                data.append(paginator.page.get_data_mut());
                 break;
             }
             let next_paginator = paginator.next(client)?;
-            data.extend(paginator.page.data.into_iter());
+            data.append(paginator.page.get_data_mut());
             paginator = next_paginator
         }
         Ok(data)
@@ -278,9 +370,9 @@ where
     pub fn stream(
         mut self,
         client: &Client,
-    ) -> impl futures_util::Stream<Item = Result<T, StripeError>> + Unpin {
+    ) -> impl futures_util::Stream<Item = Result<T::O, StripeError>> + Unpin {
         // We are going to be popping items off the end of the list, so we need to reverse it.
-        self.page.data.reverse();
+        self.page.get_data_mut().reverse();
 
         Box::pin(futures_util::stream::unfold(Some((self, client.clone())), Self::unfold_stream))
     }
@@ -289,22 +381,22 @@ where
     #[cfg(all(feature = "async", feature = "stream"))]
     async fn unfold_stream(
         state: Option<(Self, Client)>,
-    ) -> Option<(Result<T, StripeError>, Option<(Self, Client)>)> {
+    ) -> Option<(Result<T::O, StripeError>, Option<(Self, Client)>)> {
         let (mut paginator, client) = state?; // If none, we sent the last item in the last iteration
 
-        if paginator.page.data.len() > 1 {
-            return Some((Ok(paginator.page.data.pop()?), Some((paginator, client))));
+        if paginator.page.get_data().len() > 1 {
+            return Some((Ok(paginator.page.get_data_mut().pop()?), Some((paginator, client))));
             // We have more data on this page
         }
 
-        if !paginator.page.has_more {
-            return Some((Ok(paginator.page.data.pop()?), None)); // Final value of the stream, no errors
+        if !paginator.page.has_more() {
+            return Some((Ok(paginator.page.get_data_mut().pop()?), None)); // Final value of the stream, no errors
         }
 
         match paginator.next(&client).await {
             Ok(mut next_paginator) => {
-                let data = paginator.page.data.pop()?;
-                next_paginator.page.data.reverse();
+                let data = paginator.page.get_data_mut().pop()?;
+                next_paginator.page.get_data_mut().reverse();
 
                 // Yield last value of thimuts page, the next page (and client) becomes the state
                 Some((Ok(data), Some((next_paginator, client))))
@@ -315,9 +407,9 @@ where
 
     /// Fetch an additional page of data from stripe.
     pub fn next(&self, client: &Client) -> Response<Self> {
-        if let Some(last) = self.page.data.last() {
-            if self.page.url.starts_with("/v1/") {
-                let path = self.page.url.trim_start_matches("/v1/").to_string(); // the url we get back is prefixed
+        if let Some(last) = self.page.get_data().last() {
+            if self.page.get_url().starts_with("/v1/") {
+                let path = self.page.get_url().trim_start_matches("/v1/").to_string(); // the url we get back is prefixed
 
                 // clone the params and set the cursor
                 let params_next = {
@@ -334,12 +426,7 @@ where
             }
         } else {
             ok(ListPaginator {
-                page: List {
-                    data: Vec::new(),
-                    has_more: false,
-                    total_count: self.page.total_count,
-                    url: self.page.url.clone(),
-                },
+                page: T::new(Vec::new(), self.page.get_url(), false, self.page.get_total_count()),
                 params: self.params.clone(),
             })
         }
@@ -348,17 +435,18 @@ where
     /// Pin a new future which maps the result inside the page future into
     /// a ListPaginator
     #[cfg(feature = "async")]
-    fn create_paginator(page: Response<List<T>>, params: P) -> Response<Self> {
+    fn create_paginator(page: Response<T>, params: P) -> Response<Self> {
         use futures_util::FutureExt;
         Box::pin(page.map(|page| page.map(|page| ListPaginator { page, params })))
     }
 
     #[cfg(feature = "blocking")]
-    fn create_paginator(page: Response<List<T>>, params: P) -> Response<Self> {
+    fn create_paginator(page: Response<T>, params: P) -> Response<Self> {
         page.map(|page| ListPaginator { page, params })
     }
 }
 
+pub type CurrencyMap<V> = HashMap<Currency, V>;
 pub type Metadata = HashMap<String, String>;
 pub type Timestamp = i64;
 
@@ -523,6 +611,165 @@ mod tests {
         next_item.assert_hits_async(1).await;
     }
 
+    #[cfg(feature = "blocking")]
+    #[test]
+    fn get_all() {
+        use httpmock::Method::GET;
+        use httpmock::MockServer;
+
+        use crate::Client;
+        use crate::{Customer, ListCustomers};
+
+        // Start a lightweight mock server.
+        let server = MockServer::start();
+
+        let client = Client::from_url(&*server.url("/"), "fake_key");
+
+        let next_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers").query_param("starting_after", "cus_2");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "email": null,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": false, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let first_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_1",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316732,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }, {
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": true, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let params = ListCustomers::new();
+        let res = Customer::list(&client, &params).unwrap().paginate(params);
+
+        let customers = res.get_all(&client).unwrap();
+
+        println!("{:?}", customers);
+
+        assert_eq!(customers.len(), 3);
+        first_item.assert_hits(1);
+        next_item.assert_hits(1);
+    }
+
+    #[cfg(feature = "async")]
+    #[tokio::test]
+    async fn list_multiple() {
+        use httpmock::Method::GET;
+        use httpmock::MockServer;
+
+        use crate::Client;
+        use crate::{Customer, ListCustomers};
+
+        // Start a lightweight mock server.
+        let server = MockServer::start_async().await;
+
+        let client = Client::from_url(&*server.url("/"), "fake_key");
+
+        let next_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers").query_param("starting_after", "cus_2");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "email": null,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": false, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let first_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_1",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316732,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }, {
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": true, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let params = ListCustomers::new();
+        let res = Customer::list(&client, &params).await.unwrap().paginate(params);
+
+        let res2 = res.next(&client).await.unwrap();
+
+        println!("{:?}", res2);
+
+        first_item.assert_hits_async(1).await;
+        next_item.assert_hits_async(1).await;
+    }
+
     #[cfg(all(feature = "async", feature = "stream"))]
     #[tokio::test]
     async fn stream() {
@@ -588,6 +835,87 @@ mod tests {
         assert_eq!(stream.len(), 2);
 
         first_item.assert_hits_async(1).await;
+        next_item.assert_hits_async(1).await;
+    }
+
+    #[cfg(all(feature = "async", feature = "stream"))]
+    #[tokio::test]
+    async fn stream_multiple() {
+        use futures_util::StreamExt;
+        use httpmock::Method::GET;
+        use httpmock::MockServer;
+
+        use crate::Client;
+        use crate::{Customer, ListCustomers};
+
+        // Start a lightweight mock server.
+        let server = MockServer::start_async().await;
+
+        let client = Client::from_url(&*server.url("/"), "fake_key");
+
+        let next_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers").query_param("starting_after", "cus_2");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_3",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316734,
+                "currency": "gbp",
+                "delinquent": false,
+                "email": null,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": false, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let items = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_1",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316732,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }, {
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": true, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let params = ListCustomers::default();
+        let res = Customer::list(&client, &params).await.unwrap().paginate(params);
+
+        let stream = res.stream(&client).collect::<Vec<_>>().await;
+
+        println!("{:#?}", stream.len());
+        assert_eq!(stream.len(), 3);
+
+        items.assert_hits_async(1).await;
         next_item.assert_hits_async(1).await;
     }
 }

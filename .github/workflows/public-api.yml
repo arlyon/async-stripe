@@ -1,0 +1,84 @@
+name: Cargo-public-api comment
+
+on:
+  workflow_run:
+    workflows: [Tests]
+    types:
+      - completed
+
+# taken from https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#using-data-from-the-triggering-workflow
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Download artifact'
+        id: da
+        uses: actions/github-script@v6
+        with:
+          script: |
+            if (context.payload.workflow_run === undefined) {
+                core.setFailed("No workflow run found");
+            }
+            const allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: context.payload.workflow_run.id,
+            });
+            
+            const theArtifact = allArtifacts.data.artifacts.find((artifact) => {
+               return artifact.name == "public-api"
+            });
+            if (theArtifact !== undefined) {
+               core.info("Found pr-number artifact id: " + theArtifact.id); 
+               let download = await github.rest.actions.downloadArtifact({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  artifact_id: theArtifact.id,
+                  archive_format: 'zip',
+               });
+               let fs = require('fs');
+               fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/public_api.zip`, Buffer.from(download.data));
+            } else {
+               core.setFailed("Artifact public-api was not found");
+            }
+
+      - name: 'Unzip artifact'
+        run: unzip public_api.zip
+
+      - name: 'Read artifact'
+        id: ra
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            let fs = require('fs');
+            let issue_number_text = fs.readFileSync('./pr_number', 'uft8');
+            core.info("Found pr number \"" + issue_number_text + "\"");
+            core.setOutput("pr-number", issue_number_text === "" ? "" : Number(issue_number_text));
+            
+            let diff = fs.readFileSync('./diff', 'uft8');
+            core.setOutput("diff", diff);
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v1
+        id: fc
+        with:
+          issue-number: ${{ steps.ra.outputs.pr-number  }}
+          comment-author: "github-actions[bot]"
+          body-includes: Removed items from the public API
+
+      - name: Create comment
+        if: steps.fc.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ steps.ra.outputs.pr-number  }}
+          body: |
+            ${{ steps.ra.outputs.diff }}
+
+      - name: Update comment
+        if: steps.fc.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          body: |
+            ${{ steps.ra.outputs.diff }}

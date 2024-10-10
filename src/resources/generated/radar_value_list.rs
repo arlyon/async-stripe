@@ -35,13 +35,13 @@ pub struct RadarValueList {
 
     /// The type of items in the value list.
     ///
-    /// One of `card_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
+    /// One of `card_fingerprint`, `us_bank_account_fingerprint`, `sepa_debit_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub item_type: Option<RadarValueListItemType>,
 
     /// List of items contained within this value list.
-    #[serde(default)]
-    pub list_items: List<RadarValueListItem>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub list_items: Option<List<RadarValueListItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -50,8 +50,8 @@ pub struct RadarValueList {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The name of the value list.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -79,7 +79,9 @@ pub enum RadarValueListItemType {
     CustomerId,
     Email,
     IpAddress,
+    SepaDebitFingerprint,
     String,
+    UsBankAccountFingerprint,
 }
 
 impl RadarValueListItemType {
@@ -92,7 +94,9 @@ impl RadarValueListItemType {
             RadarValueListItemType::CustomerId => "customer_id",
             RadarValueListItemType::Email => "email",
             RadarValueListItemType::IpAddress => "ip_address",
+            RadarValueListItemType::SepaDebitFingerprint => "sepa_debit_fingerprint",
             RadarValueListItemType::String => "string",
+            RadarValueListItemType::UsBankAccountFingerprint => "us_bank_account_fingerprint",
         }
     }
 }

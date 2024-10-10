@@ -8,9 +8,10 @@ use crate::client::{Client, Response};
 use crate::ids::{CustomerId, SubscriptionScheduleId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
-    Account, Application, CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Plan, Price,
-    Scheduled, Subscription, SubscriptionBillingThresholds, SubscriptionItemBillingThresholds,
-    SubscriptionTransferData, TaxRate, TestHelpersTestClock,
+    Account, Application, CollectionMethod, ConnectAccountReference, Coupon, Currency, Customer,
+    PaymentMethod, Plan, Price, Scheduled, Subscription, SubscriptionBillingThresholds,
+    SubscriptionItemBillingThresholds, SubscriptionTransferData, TaxId, TaxRate,
+    TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "SubscriptionSchedule".
@@ -50,7 +51,8 @@ pub struct SubscriptionSchedule {
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
     /// Possible values are `release` or `cancel` with the default being `release`.
-    /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
+    /// `release` will end the subscription schedule and keep the underlying subscription running.
+    /// `cancel` will end the subscription schedule and cancel the underlying subscription.
     pub end_behavior: SubscriptionScheduleEndBehavior,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -59,7 +61,7 @@ pub struct SubscriptionSchedule {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
 
     /// Configuration for the subscription schedule's phases.
     pub phases: Vec<SubscriptionSchedulePhaseConfiguration>,
@@ -91,7 +93,7 @@ impl SubscriptionSchedule {
         client: &Client,
         params: &ListSubscriptionSchedules<'_>,
     ) -> Response<List<SubscriptionSchedule>> {
-        client.get_query("/subscription_schedules", &params)
+        client.get_query("/subscription_schedules", params)
     }
 
     /// Creates a new subscription schedule object.
@@ -101,6 +103,7 @@ impl SubscriptionSchedule {
         client: &Client,
         params: CreateSubscriptionSchedule<'_>,
     ) -> Response<SubscriptionSchedule> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/subscription_schedules", &params)
     }
 
@@ -112,7 +115,7 @@ impl SubscriptionSchedule {
         id: &SubscriptionScheduleId,
         expand: &[&str],
     ) -> Response<SubscriptionSchedule> {
-        client.get_query(&format!("/subscription_schedules/{}", id), &Expand { expand })
+        client.get_query(&format!("/subscription_schedules/{}", id), Expand { expand })
     }
 
     /// Updates an existing subscription schedule.
@@ -121,6 +124,7 @@ impl SubscriptionSchedule {
         id: &SubscriptionScheduleId,
         params: UpdateSubscriptionSchedule<'_>,
     ) -> Response<SubscriptionSchedule> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/subscription_schedules/{}", id), &params)
     }
 }
@@ -151,7 +155,7 @@ pub struct SubscriptionSchedulePhaseConfiguration {
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account during this phase of the schedule.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account during this phase of the schedule.
     pub application_fee_percent: Option<f64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -193,14 +197,14 @@ pub struct SubscriptionSchedulePhaseConfiguration {
 
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
 
     /// The end of this phase of the subscription schedule.
     pub end_date: Timestamp,
 
     /// The invoice settings applicable during this phase.
-    pub invoice_settings: Option<InvoiceSettingPhaseSetting>,
+    pub invoice_settings: Option<InvoiceSettingSubscriptionSchedulePhaseSetting>,
 
     /// Subscription items to configure the subscription to during this phase of the subscription schedule.
     pub items: Vec<SubscriptionScheduleConfigurationItem>,
@@ -209,7 +213,7 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     ///
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered.
     /// Updating the underlying subscription's `metadata` directly will not affect the current phase's `metadata`.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
 
     /// The account (if any) the charge was made on behalf of for charges associated with the schedule's subscription.
     ///
@@ -232,17 +236,34 @@ pub struct SubscriptionSchedulePhaseConfiguration {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InvoiceSettingPhaseSetting {
+pub struct InvoiceSettingSubscriptionSchedulePhaseSetting {
+    /// The account tax IDs associated with this phase of the subscription schedule.
+    ///
+    /// Will be set on invoices generated by this phase of the subscription schedule.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_tax_ids: Option<Vec<Expandable<TaxId>>>,
+
     /// Number of days within which a customer must pay invoices generated by this subscription schedule.
     ///
     /// This value will be `null` for subscription schedules where `billing=charge_automatically`.
     pub days_until_due: Option<u32>,
+
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    pub issuer: Option<ConnectAccountReference>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SchedulesPhaseAutomaticTax {
     /// Whether Stripe automatically computes tax on invoices created during this phase.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    pub liability: Option<ConnectAccountReference>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -268,7 +289,7 @@ pub struct SubscriptionScheduleConfigurationItem {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an item.
     ///
     /// Metadata on this item will update the underlying subscription item's `metadata` when the phase is entered.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
 
     /// ID of the plan to which the customer should be subscribed.
     pub plan: Expandable<Plan>,
@@ -291,7 +312,7 @@ pub struct SubscriptionScheduleConfigurationItem {
 pub struct SubscriptionScheduleDefaultSettings {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account during this phase of the schedule.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account during this phase of the schedule.
     pub application_fee_percent: Option<f64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -320,11 +341,10 @@ pub struct SubscriptionScheduleDefaultSettings {
 
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
 
-    /// The subscription schedule's default invoice settings.
-    pub invoice_settings: Option<SubscriptionScheduleInvoiceSettings>,
+    pub invoice_settings: SubscriptionScheduleInvoiceSettings,
 
     /// The account (if any) the charge was made on behalf of for charges associated with the schedule's subscription.
     ///
@@ -339,6 +359,12 @@ pub struct SubscriptionScheduleDefaultSettings {
 pub struct SubscriptionSchedulesResourceDefaultSettingsAutomaticTax {
     /// Whether Stripe automatically computes tax on invoices created during this phase.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    pub liability: Option<ConnectAccountReference>,
 }
 
 /// The parameters for `SubscriptionSchedule::create`.
@@ -355,7 +381,8 @@ pub struct CreateSubscriptionSchedule<'a> {
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
     /// Possible values are `release` or `cancel` with the default being `release`.
-    /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
+    /// `release` will end the subscription schedule and keep the underlying subscription running.
+    /// `cancel` will end the subscription schedule and cancel the underlying subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_behavior: Option<SubscriptionScheduleEndBehavior>,
 
@@ -493,7 +520,8 @@ pub struct UpdateSubscriptionSchedule<'a> {
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
     /// Possible values are `release` or `cancel` with the default being `release`.
-    /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
+    /// `release` will end the subscription schedule and keep the underlying subscription running.
+    /// `cancel` will end the subscription schedule and cancel the underlying subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_behavior: Option<SubscriptionScheduleEndBehavior>,
 
@@ -547,7 +575,7 @@ pub struct CreateSubscriptionSchedulePhases {
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// The request must be made by a platform account on a connected account in order to set an application fee percentage.
     /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#collecting-fees-on-subscriptions).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -603,7 +631,7 @@ pub struct CreateSubscriptionSchedulePhases {
 
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
@@ -632,8 +660,8 @@ pub struct CreateSubscriptionSchedulePhases {
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered, adding new keys and replacing existing keys in the subscription's `metadata`.
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
     /// To unset all keys in the subscription's `metadata`, update the subscription directly or unset every key individually from the phase's `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -666,7 +694,7 @@ pub struct CreateSubscriptionSchedulePhases {
 pub struct SubscriptionScheduleDefaultSettingsParams {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// The request must be made by a platform account on a connected account in order to set an application fee percentage.
     /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#collecting-fees-on-subscriptions).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -706,7 +734,7 @@ pub struct SubscriptionScheduleDefaultSettingsParams {
 
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
@@ -733,7 +761,7 @@ pub struct UpdateSubscriptionSchedulePhases {
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// The request must be made by a platform account on a connected account in order to set an application fee percentage.
     /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#collecting-fees-on-subscriptions).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -789,7 +817,7 @@ pub struct UpdateSubscriptionSchedulePhases {
 
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
@@ -818,8 +846,8 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered, adding new keys and replacing existing keys in the subscription's `metadata`.
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
     /// To unset all keys in the subscription's `metadata`, update the subscription directly or unset every key individually from the phase's `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -881,6 +909,13 @@ pub struct AddInvoiceItems {
 pub struct CreateSubscriptionSchedulePhasesAutomaticTax {
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub liability: Option<CreateSubscriptionSchedulePhasesAutomaticTaxLiability>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -896,8 +931,8 @@ pub struct CreateSubscriptionSchedulePhasesItems {
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
     /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The plan ID to subscribe to.
     ///
@@ -931,7 +966,7 @@ pub struct CreateSubscriptionSchedulePhasesItems {
 pub struct CreateSubscriptionSchedulePhasesTransferData {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
     /// By default, the entire amount is transferred to the destination.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,
@@ -957,13 +992,20 @@ pub struct SubscriptionScheduleBillingThresholds {
 pub struct SubscriptionScheduleDefaultSettingsParamsAutomaticTax {
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub liability: Option<SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiability>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
     /// By default, the entire amount is transferred to the destination.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,
@@ -974,17 +1016,36 @@ pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleInvoiceSettings {
+    /// The account tax IDs associated with this phase of the subscription schedule.
+    ///
+    /// Will be set on invoices generated by this phase of the subscription schedule.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_tax_ids: Option<Vec<String>>,
+
     /// Number of days within which a customer must pay invoices generated by this subscription schedule.
     ///
     /// This value will be `null` for subscription schedules where `billing=charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub days_until_due: Option<u32>,
+
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<SubscriptionScheduleInvoiceSettingsIssuer>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAutomaticTax {
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub liability: Option<UpdateSubscriptionSchedulePhasesAutomaticTaxLiability>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1000,8 +1061,8 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
     /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The plan ID to subscribe to.
     ///
@@ -1035,13 +1096,24 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
 pub struct UpdateSubscriptionSchedulePhasesTransferData {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
     /// By default, the entire amount is transferred to the destination.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,
 
     /// ID of an existing, connected Stripe account.
     pub destination: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSubscriptionSchedulePhasesAutomaticTaxLiability {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1112,6 +1184,39 @@ pub struct InvoiceItemPriceData {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiability {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SubscriptionScheduleInvoiceSettingsIssuer {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: SubscriptionScheduleInvoiceSettingsIssuerType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSubscriptionSchedulePhasesAutomaticTaxLiability {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsBillingThresholds {
     /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
     pub usage_gte: i64,
@@ -1159,7 +1264,7 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     /// The number of intervals between subscription billings.
     ///
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
+    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 }
@@ -1174,9 +1279,44 @@ pub struct UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     /// The number of intervals between subscription billings.
     ///
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
+    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+
+/// An enum representing the possible values of an `CreateSubscriptionSchedulePhasesAutomaticTaxLiability`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    Account,
+    #[serde(rename = "self")]
+    Self_,
+}
+
+impl CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType::Account => "account",
+            CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    fn default() -> Self {
+        Self::Account
+    }
 }
 
 /// An enum representing the possible values of an `CreateSubscriptionSchedulePhases`'s `billing_cycle_anchor` field.
@@ -1429,6 +1569,43 @@ impl std::default::Default for SubscriptionScheduleDefaultSettingsCollectionMeth
     }
 }
 
+/// An enum representing the possible values of an `SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiability`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType {
+    Account,
+    #[serde(rename = "self")]
+    Self_,
+}
+
+impl SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType::Account => {
+                "account"
+            }
+            SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType {
+    fn default() -> Self {
+        Self::Account
+    }
+}
+
 /// An enum representing the possible values of an `SubscriptionScheduleDefaultSettingsParams`'s `billing_cycle_anchor` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1503,6 +1680,41 @@ impl std::default::Default for SubscriptionScheduleEndBehavior {
     }
 }
 
+/// An enum representing the possible values of an `SubscriptionScheduleInvoiceSettingsIssuer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SubscriptionScheduleInvoiceSettingsIssuerType {
+    Account,
+    #[serde(rename = "self")]
+    Self_,
+}
+
+impl SubscriptionScheduleInvoiceSettingsIssuerType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SubscriptionScheduleInvoiceSettingsIssuerType::Account => "account",
+            SubscriptionScheduleInvoiceSettingsIssuerType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionScheduleInvoiceSettingsIssuerType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionScheduleInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SubscriptionScheduleInvoiceSettingsIssuerType {
+    fn default() -> Self {
+        Self::Account
+    }
+}
+
 /// An enum representing the possible values of an `SubscriptionSchedulePhaseConfiguration`'s `billing_cycle_anchor` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1574,6 +1786,41 @@ impl std::fmt::Display for SubscriptionScheduleStatus {
 impl std::default::Default for SubscriptionScheduleStatus {
     fn default() -> Self {
         Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSubscriptionSchedulePhasesAutomaticTaxLiability`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    Account,
+    #[serde(rename = "self")]
+    Self_,
+}
+
+impl UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType::Account => "account",
+            UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    fn default() -> Self {
+        Self::Account
     }
 }
 

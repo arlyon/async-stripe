@@ -22,10 +22,10 @@ pub struct ApplicationFee {
     /// ID of the Stripe account this fee was taken from.
     pub account: Expandable<Account>,
 
-    /// Amount earned, in %s.
+    /// Amount earned, in cents (or local equivalent).
     pub amount: i64,
 
-    /// Amount in %s refunded (can be less than the amount attribute on the fee if a partial refund was issued).
+    /// Amount in cents (or local equivalent) refunded (can be less than the amount attribute on the fee if a partial refund was issued).
     pub amount_refunded: i64,
 
     /// ID of the Connect application that earned the fee.
@@ -70,7 +70,7 @@ impl ApplicationFee {
         client: &Client,
         params: &ListApplicationFees<'_>,
     ) -> Response<List<ApplicationFee>> {
-        client.get_query("/application_fees", &params)
+        client.get_query("/application_fees", params)
     }
 
     /// Retrieves the details of an application fee that your account has collected.
@@ -81,7 +81,7 @@ impl ApplicationFee {
         id: &ApplicationFeeId,
         expand: &[&str],
     ) -> Response<ApplicationFee> {
-        client.get_query(&format!("/application_fees/{}", id), &Expand { expand })
+        client.get_query(&format!("/application_fees/{}", id), Expand { expand })
     }
 }
 

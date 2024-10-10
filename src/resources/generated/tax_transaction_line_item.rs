@@ -12,13 +12,13 @@ pub struct TaxTransactionLineItem {
     /// Unique identifier for the object.
     pub id: TaxTransactionLineItemId,
 
-    /// The line item amount in integer cents.
+    /// The line item amount in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     ///
     /// If `tax_behavior=inclusive`, then this amount includes taxes.
     /// Otherwise, taxes were calculated on top of this amount.
     pub amount: i64,
 
-    /// The amount of tax calculated for this line item, in integer cents.
+    /// The amount of tax calculated for this line item, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount_tax: i64,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -27,7 +27,10 @@ pub struct TaxTransactionLineItem {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
+
+    /// The ID of an existing [Product](https://stripe.com/docs/api/products/object).
+    pub product: Option<String>,
 
     /// The number of units of the item being purchased.
     ///

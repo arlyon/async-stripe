@@ -47,7 +47,7 @@ pub struct BillingPortalConfiguration {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
 
     /// Time at which the object was last updated.
     ///
@@ -169,7 +169,7 @@ pub struct PortalSubscriptionUpdate {
     /// Whether the feature is enabled.
     pub enabled: bool,
 
-    /// The list of products that support subscription updates.
+    /// The list of up to 10 products that support subscription updates.
     pub products: Option<Vec<PortalSubscriptionUpdateProduct>>,
 
     /// Determines how to handle prorations resulting from subscription updates.

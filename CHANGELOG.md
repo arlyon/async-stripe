@@ -1,3 +1,339 @@
+# [0.40.0](https://github.com/arlyon/async-stripe/compare/v0.39.2...v0.40.0) (2024-09-26)
+
+
+### Features
+
+* export checkout_session_ext ([e4e7220](https://github.com/arlyon/async-stripe/commit/e4e722007a5164413054a958ea13858afbccaafd)), closes [#614](https://github.com/arlyon/async-stripe/issues/614)
+
+## [0.39.2](https://github.com/arlyon/async-stripe/compare/v0.39.1...v0.39.2) (2024-09-24)
+
+
+### Bug Fixes
+
+* erroneous deref clippy lint ([1fcbb29](https://github.com/arlyon/async-stripe/commit/1fcbb2958b4b7900f2463cedf2375179411a2333))
+
+## [0.39.1](https://github.com/arlyon/async-stripe/compare/v0.39.0...v0.39.1) (2024-09-03)
+
+
+### Bug Fixes
+
+* correct docs host and path for API references ([539836d](https://github.com/arlyon/async-stripe/commit/539836d01904742110171a9d6ef877b4cc3f87a3))
+
+# [0.39.0](https://github.com/arlyon/async-stripe/compare/v0.38.1...v0.39.0) (2024-08-31)
+
+
+### Bug Fixes
+
+* `post` -> `post_form` ([bc39260](https://github.com/arlyon/async-stripe/commit/bc3926039eb50d48cf8f20ddb8110c847e7f7f00))
+* Move `promotion_code_ext` to `products` feature ([32435f3](https://github.com/arlyon/async-stripe/commit/32435f38c242ad47d8c992d1178736c460f107f2))
+* Re-export ([24f1782](https://github.com/arlyon/async-stripe/commit/24f17823b1812886bda32762f9de66dceb83559b))
+
+
+### Features
+
+* Create promotion code ([0fde9eb](https://github.com/arlyon/async-stripe/commit/0fde9eb6bc3333bab3bb135709697d114017be4a))
+
+## [0.38.1](https://github.com/arlyon/async-stripe/compare/v0.38.0...v0.38.1) (2024-08-06)
+
+
+### Bug Fixes
+
+* [#578](https://github.com/arlyon/async-stripe/issues/578) allow arbitrary strings for priceId ([a16bc6e](https://github.com/arlyon/async-stripe/commit/a16bc6e80c1a5e87bf376cbfd6b1f2a8caef992e))
+
+# [0.38.0](https://github.com/arlyon/async-stripe/compare/v0.37.3...v0.38.0) (2024-07-31)
+
+
+### Features
+
+* add support for TestClock operations ([d792798](https://github.com/arlyon/async-stripe/commit/d792798c3f027e0c57b132ddf168dbd03fcdd926)), closes [#574](https://github.com/arlyon/async-stripe/issues/574)
+
+## [0.37.3](https://github.com/arlyon/async-stripe/compare/v0.37.2...v0.37.3) (2024-07-29)
+
+
+### Bug Fixes
+
+* linting issue for Rust 1.80 ([9232213](https://github.com/arlyon/async-stripe/commit/9232213c0665622c91b328d1b2ff20e7f9ff7357))
+
+## [0.37.2](https://github.com/arlyon/async-stripe/compare/v0.37.1...v0.37.2) (2024-07-23)
+
+
+### Bug Fixes
+
+* rtx id prefix ([67ea232](https://github.com/arlyon/async-stripe/commit/67ea2325ba10fd0bc1b5c9e3a3436738caf4a98c))
+
+## [0.37.1](https://github.com/arlyon/async-stripe/compare/v0.37.0...v0.37.1) (2024-05-24)
+
+
+### Bug Fixes
+
+* Leftover clippy warnings ([888307d](https://github.com/arlyon/async-stripe/commit/888307d23d852ebc2f453e788e7fd682efb9dd6f))
+* Run clippy on openapi generator ([c63c197](https://github.com/arlyon/async-stripe/commit/c63c197e7cd6f73c0183345c82be77ef2a4c06f5))
+
+# [0.37.0](https://github.com/arlyon/async-stripe/compare/v0.36.0...v0.37.0) (2024-04-30)
+
+
+### Bug Fixes
+
+* **customer-ext,PM query:** type field is optional ([362659e](https://github.com/arlyon/async-stripe/commit/362659e3e7ace2706fae172e7936efdc5c17929d))
+
+
+### Features
+
+* **setup_intent:** add mandate_data for confirm ([51e34d6](https://github.com/arlyon/async-stripe/commit/51e34d6fec2238d27e937f361d9e0b60f1bc564c))
+* **setup_intent:** verify microdeposits flow ([15b3663](https://github.com/arlyon/async-stripe/commit/15b3663336561ccf55d78dc66668d28627b4d59b))
+
+# [0.36.0](https://github.com/arlyon/async-stripe/compare/v0.35.3...v0.36.0) (2024-04-30)
+
+
+### Features
+
+* Add `retrieve_line_items` function for `CheckoutSession` ([5c74b3b](https://github.com/arlyon/async-stripe/commit/5c74b3b13fc30e7f81191c43016ab46c3d8ef9d6))
+
+## [0.35.3](https://github.com/arlyon/async-stripe/compare/v0.35.2...v0.35.3) (2024-04-26)
+
+
+### Bug Fixes
+
+* Clippy append instead of extend ([1a85b9b](https://github.com/arlyon/async-stripe/commit/1a85b9b9ea3dc940ea86434d3ef9a2a6755b6160))
+* Clippy explicit ToString implementation ([15250a9](https://github.com/arlyon/async-stripe/commit/15250a96d19ec142693761c3d4a455a35b1ae780))
+* Clippy panic warnings ([552aff2](https://github.com/arlyon/async-stripe/commit/552aff238dd16135d7645f1692b891c75cb0459b))
+* Clippys from generated code ([89cce5b](https://github.com/arlyon/async-stripe/commit/89cce5ba442a528939aa54c455eefd9ad27f8b58))
+* More clippy warnings ([6de23bb](https://github.com/arlyon/async-stripe/commit/6de23bbee3713cc54bc148513a6c1331f0fb5998))
+* Remove useless reference that causes clippy warnings ([2fca98b](https://github.com/arlyon/async-stripe/commit/2fca98be10ba9f5a746d04a46aa7ef1532c00056))
+
+## [0.35.2](https://github.com/arlyon/async-stripe/compare/v0.35.1...v0.35.2) (2024-04-26)
+
+
+### Bug Fixes
+
+* Clippy warnings ([842bce6](https://github.com/arlyon/async-stripe/commit/842bce6d94654ca0a9ea0a52c899f98055ab531b))
+* Implement workaround for ace in the verify-codegen action ([79c1f6f](https://github.com/arlyon/async-stripe/commit/79c1f6f6da182ab80fd02b9e1662aeec5915ec12))
+* Semantic release needs minimal rust version ([642ea31](https://github.com/arlyon/async-stripe/commit/642ea3193944048670619fb60ca3d4a973c439e7))
+
+## [0.35.1](https://github.com/arlyon/async-stripe/compare/v0.35.0...v0.35.1) (2024-04-26)
+
+
+### Bug Fixes
+
+* bump MSRV (closes [#532](https://github.com/arlyon/async-stripe/issues/532)) ([1379a90](https://github.com/arlyon/async-stripe/commit/1379a900090e59ee05611ddfb3b8842261a761e2))
+* Unused import ([baf0b98](https://github.com/arlyon/async-stripe/commit/baf0b98a60ff335a0760f3d8e785715d36d044f7))
+
+# [0.35.0](https://github.com/arlyon/async-stripe/compare/v0.34.2...v0.35.0) (2024-04-04)
+
+
+### Bug Fixes
+
+* add products to features list in cargo.toml and export from resourses ([d26860f](https://github.com/arlyon/async-stripe/commit/d26860f9049dd3a9ef934ad1a5f5ed3e6b365e70))
+* export SearchList ([a427943](https://github.com/arlyon/async-stripe/commit/a42794314a5c41b34c349835e705d890cbc62d3e))
+* Remove "Some()" from RequestError's display ([e609cad](https://github.com/arlyon/async-stripe/commit/e609cadb1321cd097d9a2fb9fc23d87a13eff1f5))
+* rename redirect_url to return_url on ConfirmSetupIntent ([9da5a28](https://github.com/arlyon/async-stripe/commit/9da5a28864215967d39ddb432cc593820a797a9e)), closes [#504](https://github.com/arlyon/async-stripe/issues/504)
+
+
+### Features
+
+* **webhook_events:** support construct_event with timestamp ([88fe501](https://github.com/arlyon/async-stripe/commit/88fe501f3b735b87b10f80acb227bd05765355b8))
+
+## [0.34.2](https://github.com/arlyon/async-stripe/compare/v0.34.1...v0.34.2) (2024-02-21)
+
+
+### Bug Fixes
+
+* correctly generate types for optional lists ([63732cc](https://github.com/arlyon/async-stripe/commit/63732cc37f4bc20b4e81a671c11c904a1a600c60))
+
+## [0.34.1](https://github.com/arlyon/async-stripe/compare/v0.34.0...v0.34.1) (2024-02-15)
+
+
+### Bug Fixes
+
+* fixes an issue with missing renames of Self_ ([9c58038](https://github.com/arlyon/async-stripe/commit/9c5803812af379a5265946afe4c177d3fcd0370e))
+
+# [0.34.0](https://github.com/arlyon/async-stripe/compare/v0.33.1...v0.34.0) (2024-02-15)
+
+
+### Features
+
+* generate latest changes from OpenApi spec ([a3b0e4d](https://github.com/arlyon/async-stripe/commit/a3b0e4d84c99068e274d8ed7f319d4cc1d3db0cd))
+
+## [0.33.1](https://github.com/arlyon/async-stripe/compare/v0.33.0...v0.33.1) (2024-02-08)
+
+
+### Bug Fixes
+
+* expose the `auto_advance` field from the `FinalizeInvoiceParams` struct ([ae1a807](https://github.com/arlyon/async-stripe/commit/ae1a807e202f32f3ff8405fdbc1d14aca44c41e8))
+
+# [0.33.0](https://github.com/arlyon/async-stripe/compare/v0.32.0...v0.33.0) (2024-02-02)
+
+
+### Bug Fixes
+
+* support pdp_ as an id prefix for dispute objects ([be506d6](https://github.com/arlyon/async-stripe/commit/be506d6fc6fa41dd6085d3887abbadbef069432c))
+
+
+### Features
+
+* generate latest changes from OpenApi spec ([29a457d](https://github.com/arlyon/async-stripe/commit/29a457d280f25ebd7d95e80ad5a4af4172e05682))
+
+# [0.32.0](https://github.com/arlyon/async-stripe/compare/v0.31.2...v0.32.0) (2024-01-27)
+
+
+### Features
+
+* generate latest changes from OpenApi spec ([19ac377](https://github.com/arlyon/async-stripe/commit/19ac377c82c8b52a44092a3f93174917983d166f))
+
+## [0.31.2](https://github.com/arlyon/async-stripe/compare/v0.31.1...v0.31.2) (2024-01-24)
+
+
+### Bug Fixes
+
+* **currency:** add BYN and MMK to currency list ([03cddce](https://github.com/arlyon/async-stripe/commit/03cddce1a9c20c25b531aab47e6e47254b6bef60))
+
+## [0.31.1](https://github.com/arlyon/async-stripe/compare/v0.31.0...v0.31.1) (2024-01-24)
+
+
+### Bug Fixes
+
+* **pagination:** prevent infinite loop caused by clone ([bc20bd4](https://github.com/arlyon/async-stripe/commit/bc20bd46f67ffb384d67d0605cb5126e1f3d6333))
+
+# [0.31.0](https://github.com/arlyon/async-stripe/compare/v0.30.1...v0.31.0) (2024-01-24)
+
+
+### Features
+
+* generate latest changes from OpenApi spec ([9b3a844](https://github.com/arlyon/async-stripe/commit/9b3a844a94c090fd66ce7d223ccd8ddcd93a5c45))
+
+## [0.30.1](https://github.com/arlyon/async-stripe/compare/v0.30.0...v0.30.1) (2024-01-24)
+
+
+### Bug Fixes
+
+* **codegen:** generate terminal resource objects ([bf7e117](https://github.com/arlyon/async-stripe/commit/bf7e1178d61d50a83e21199d0c67bc99b5d04f60))
+
+# [0.30.0](https://github.com/arlyon/async-stripe/compare/v0.29.0...v0.30.0) (2024-01-24)
+
+
+### Bug Fixes
+
+* avoid generating nested currency options ([f020df4](https://github.com/arlyon/async-stripe/commit/f020df4feb4fee89366b5bc15cc596caec697f78))
+* typo in checkout.rs ([c55541b](https://github.com/arlyon/async-stripe/commit/c55541b1ee96d91eb29ef900f7292f1337a7c3c3))
+
+
+### Features
+
+* generate latest changes from OpenApi spec ([d0cbc71](https://github.com/arlyon/async-stripe/commit/d0cbc718a980aedee4b191a401e76a958c3e4bb5))
+
+# [0.29.0](https://github.com/arlyon/async-stripe/compare/v0.28.1...v0.29.0) (2024-01-10)
+
+
+### Features
+
+* generate latest changes from OpenApi spec ([32e802e](https://github.com/arlyon/async-stripe/commit/32e802ef4d36f8ab495e7c2b6abba29450eb999f))
+
+## [0.28.1](https://github.com/arlyon/async-stripe/compare/v0.28.0...v0.28.1) (2024-01-10)
+
+
+### Bug Fixes
+
+* add plan prefix to PriceId ([6655058](https://github.com/arlyon/async-stripe/commit/6655058a476adc6551643a947308f13e8ba320d3))
+
+# [0.28.0](https://github.com/arlyon/async-stripe/compare/v0.27.0...v0.28.0) (2023-12-08)
+
+
+### Features
+
+* generate latest changes from OpenApi spec ([4c25649](https://github.com/arlyon/async-stripe/commit/4c256490d60e8d1e158f8f6ed7300a766c1f449d))
+
+# [0.27.0](https://github.com/arlyon/async-stripe/compare/v0.26.0...v0.27.0) (2023-12-01)
+
+
+### Bug Fixes
+
+* add support for atxi id prefix ([414d534](https://github.com/arlyon/async-stripe/commit/414d53400eeb35b0b0c483c766375c3d2c15c7c4))
+
+
+### Features
+
+* added finalize invoice ([c6333bc](https://github.com/arlyon/async-stripe/commit/c6333bce94ae52454bcc90b79987baf96576da83))
+* update stripe api ([2cba3fe](https://github.com/arlyon/async-stripe/commit/2cba3fe0083c7e865e27c2795a2dfe712b421466))
+
+# [0.26.0](https://github.com/arlyon/async-stripe/compare/v0.25.2...v0.26.0) (2023-10-31)
+
+
+### Features
+
+* fixed bool value ([c752f52](https://github.com/arlyon/async-stripe/commit/c752f52c623a6af86b6253b27b03c3da83e46d6e))
+* fixed bool value ([153d63d](https://github.com/arlyon/async-stripe/commit/153d63d984482dd67a42c6b16a3ee68106517727))
+* fixed mutability ([86aabdd](https://github.com/arlyon/async-stripe/commit/86aabddd70432c13cb3d14eca29dc01b9bbe5155))
+* fixed mutability ([5ad76c5](https://github.com/arlyon/async-stripe/commit/5ad76c5971d925aa719445a3ba1774b0a0cb1ab9))
+* fixed warnings ([30f0a1e](https://github.com/arlyon/async-stripe/commit/30f0a1e9d6c8c6c1426b0f505d6bdd4b6ed6c349))
+* fixed warnings ([e0d0bd8](https://github.com/arlyon/async-stripe/commit/e0d0bd8157257f8c40394de554f3be3c8482720a))
+* updated ListPaginator to be generic over type T where T impl PaginableList instead of having separate SearchListPaginator and ListPaginator implementations for types SearchList and List. ([9d49602](https://github.com/arlyon/async-stripe/commit/9d496023128ff5b3b5b16065241afc83fc1ba3cd))
+* updated ListPaginator to be generic over type T where T impl PaginableList instead of having separate SearchListPaginator and ListPaginator implementations for types SearchList and List. ([411f82c](https://github.com/arlyon/async-stripe/commit/411f82ce849357587712043e03b2aff7e0a55e3b))
+
+## [0.25.2](https://github.com/arlyon/async-stripe/compare/v0.25.1...v0.25.2) (2023-10-05)
+
+
+### Bug Fixes
+
+* prevent panic on StatusCode conversion ([9b94228](https://github.com/arlyon/async-stripe/commit/9b942282e556b269c806caba56c8c7026badc33c))
+
+## [0.25.1](https://github.com/arlyon/async-stripe/compare/v0.25.0...v0.25.1) (2023-09-27)
+
+
+### Bug Fixes
+
+* respect the required and optional fields for EventType and Metadata ([cdabd2e](https://github.com/arlyon/async-stripe/commit/cdabd2eac56cf3b9613f3b4617492684e27446a6))
+
+# [0.25.0](https://github.com/arlyon/async-stripe/compare/v0.24.0...v0.25.0) (2023-09-25)
+
+
+### Features
+
+* generate latest changes from OpenApi spec ([652a360](https://github.com/arlyon/async-stripe/commit/652a3606f69e84734be7a4f83b1c7826af824437))
+
+# [0.24.0](https://github.com/arlyon/async-stripe/compare/v0.23.0...v0.24.0) (2023-09-21)
+
+
+### Features
+
+* Generate latest changes from OpenApi spec ([7421960](https://github.com/arlyon/async-stripe/commit/742196050dda3593d272321ad7565451b0012031))
+* Generate latest changes from OpenApi spec ([2fedb71](https://github.com/arlyon/async-stripe/commit/2fedb717db50b9438d026d2b4116c3fcdbd5bdc1))
+
+# [0.23.0](https://github.com/arlyon/async-stripe/compare/v0.22.2...v0.23.0) (2023-09-06)
+
+
+### Bug Fixes
+
+* don't pin time-core for msrv ([00a9a1d](https://github.com/arlyon/async-stripe/commit/00a9a1d0067461f94ce978fd3b1885b3d2b8b6b6))
+* Update hyper-rustls to fix RUSTSEC-2023-0052 ([7c31f76](https://github.com/arlyon/async-stripe/commit/7c31f76b0272031efabc7bda29ee12967d67ed10))
+
+
+### Features
+
+* add support for connect tokens ([b7c5489](https://github.com/arlyon/async-stripe/commit/b7c5489240eed0bd28e720eeda08afaf71bfa0eb))
+* add tax calculation api behind a feature ([2266ed1](https://github.com/arlyon/async-stripe/commit/2266ed1196f6c9662d38815583ea266d170ff67f))
+* handle currency_options ([1bb8165](https://github.com/arlyon/async-stripe/commit/1bb8165673eabdf157856de170ad47a1066ae362))
+
+## [0.22.2](https://github.com/arlyon/async-stripe/compare/v0.22.1...v0.22.2) (2023-05-11)
+
+
+### Bug Fixes
+
+* Add sis_ id prefix for usage record summaries ([1042493](https://github.com/arlyon/async-stripe/commit/10424938736b0ce87d3be99fccb053855f3ddd3c))
+
+## [0.22.1](https://github.com/arlyon/async-stripe/compare/v0.22.0...v0.22.1) (2023-05-09)
+
+
+### Bug Fixes
+
+* Move feature check to `build.rs` ([8d06be0](https://github.com/arlyon/async-stripe/commit/8d06be0f45aa645ce0e491a21cae33d4acc08b43))
+
+# [0.22.0](https://github.com/arlyon/async-stripe/compare/v0.21.0...v0.22.0) (2023-04-18)
+
+
+### Features
+
+* generate latest changes from OpenApi spec ([a76703c](https://github.com/arlyon/async-stripe/commit/a76703cbb0a81ccba0a419c16518eff7216d1e26))
+
 # [0.21.0](https://github.com/arlyon/async-stripe/compare/v0.20.2...v0.21.0) (2023-04-06)
 
 

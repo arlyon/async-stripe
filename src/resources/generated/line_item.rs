@@ -6,7 +6,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::ids::InvoiceLineItemId;
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Currency, Discount, Period, Plan, Price, TaxRate};
+use crate::resources::{
+    Currency, Discount, InvoiceItem, Period, Plan, Price, Subscription, SubscriptionItem, TaxRate,
+};
 
 /// The resource representing a Stripe "InvoiceLineItem".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -14,10 +16,10 @@ pub struct InvoiceLineItem {
     /// Unique identifier for the object.
     pub id: InvoiceLineItemId,
 
-    /// The amount, in %s.
+    /// The amount, in cents (or local equivalent).
     pub amount: i64,
 
-    /// The integer amount in %s representing the amount for this line item, excluding all tax and discounts.
+    /// The integer amount in cents (or local equivalent) representing the amount for this line item, excluding all tax and discounts.
     pub amount_excluding_tax: Option<i64>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -46,7 +48,7 @@ pub struct InvoiceLineItem {
 
     /// The ID of the [invoice item](https://stripe.com/docs/api/invoiceitems) associated with this line item if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_item: Option<String>,
+    pub invoice_item: Option<Expandable<InvoiceItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -69,19 +71,19 @@ pub struct InvoiceLineItem {
     pub proration: bool,
 
     /// Additional details for proration line items.
-    pub proration_details: Option<InvoicesLineItemsProrationDetails>,
+    pub proration_details: Option<InvoicesResourceLineItemsProrationDetails>,
 
     /// The quantity of the subscription, if the line item is a subscription or a proration.
     pub quantity: Option<u64>,
 
     /// The subscription that the invoice item pertains to, if any.
-    pub subscription: Option<String>,
+    pub subscription: Option<Expandable<Subscription>>,
 
     /// The subscription item that generated this line item.
     ///
     /// Left empty if the line item is not an explicit result of a subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_item: Option<String>,
+    pub subscription_item: Option<Expandable<SubscriptionItem>>,
 
     /// The amount of tax calculated per tax rate for this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -95,7 +97,7 @@ pub struct InvoiceLineItem {
     #[serde(rename = "type")]
     pub type_: InvoiceLineItemType,
 
-    /// The amount in %s representing the unit amount for this line item, excluding all tax and discounts.
+    /// The amount in cents (or local equivalent) representing the unit amount for this line item, excluding all tax and discounts.
     pub unit_amount_excluding_tax: Option<String>,
 }
 
@@ -111,7 +113,7 @@ impl Object for InvoiceLineItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
-    /// The amount, in %s, of the discount.
+    /// The amount, in cents (or local equivalent), of the discount.
     pub amount: i64,
 
     /// The discount that was applied to get this discount amount.
@@ -120,7 +122,7 @@ pub struct DiscountsResourceDiscountAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxAmount {
-    /// The amount, in %s, of the tax.
+    /// The amount, in cents (or local equivalent), of the tax.
     pub amount: i64,
 
     /// Whether this tax amount is inclusive or exclusive.
@@ -128,16 +130,24 @@ pub struct TaxAmount {
 
     /// The tax rate that was applied to get this tax amount.
     pub tax_rate: Expandable<TaxRate>,
+
+    /// The reasoning behind this tax, for example, if the product is tax exempt.
+    ///
+    /// The possible values for this field may be extended as new tax rules are supported.
+    pub taxability_reason: Option<TaxAmountTaxabilityReason>,
+
+    /// The amount on which tax is calculated, in cents (or local equivalent).
+    pub taxable_amount: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InvoicesLineItemsProrationDetails {
+pub struct InvoicesResourceLineItemsProrationDetails {
     /// For a credit proration `line_item`, the original debit line_items to which the credit proration applies.
-    pub credited_items: Option<InvoicesLineItemsCreditedItems>,
+    pub credited_items: Option<InvoicesResourceLineItemsCreditedItems>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InvoicesLineItemsCreditedItems {
+pub struct InvoicesResourceLineItemsCreditedItems {
     /// Invoice containing the credited invoice line items.
     pub invoice: String,
 
@@ -177,5 +187,65 @@ impl std::fmt::Display for InvoiceLineItemType {
 impl std::default::Default for InvoiceLineItemType {
     fn default() -> Self {
         Self::InvoiceItem
+    }
+}
+
+/// An enum representing the possible values of an `TaxAmount`'s `taxability_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TaxAmountTaxabilityReason {
+    CustomerExempt,
+    NotCollecting,
+    NotSubjectToTax,
+    NotSupported,
+    PortionProductExempt,
+    PortionReducedRated,
+    PortionStandardRated,
+    ProductExempt,
+    ProductExemptHoliday,
+    ProportionallyRated,
+    ReducedRated,
+    ReverseCharge,
+    StandardRated,
+    TaxableBasisReduced,
+    ZeroRated,
+}
+
+impl TaxAmountTaxabilityReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TaxAmountTaxabilityReason::CustomerExempt => "customer_exempt",
+            TaxAmountTaxabilityReason::NotCollecting => "not_collecting",
+            TaxAmountTaxabilityReason::NotSubjectToTax => "not_subject_to_tax",
+            TaxAmountTaxabilityReason::NotSupported => "not_supported",
+            TaxAmountTaxabilityReason::PortionProductExempt => "portion_product_exempt",
+            TaxAmountTaxabilityReason::PortionReducedRated => "portion_reduced_rated",
+            TaxAmountTaxabilityReason::PortionStandardRated => "portion_standard_rated",
+            TaxAmountTaxabilityReason::ProductExempt => "product_exempt",
+            TaxAmountTaxabilityReason::ProductExemptHoliday => "product_exempt_holiday",
+            TaxAmountTaxabilityReason::ProportionallyRated => "proportionally_rated",
+            TaxAmountTaxabilityReason::ReducedRated => "reduced_rated",
+            TaxAmountTaxabilityReason::ReverseCharge => "reverse_charge",
+            TaxAmountTaxabilityReason::StandardRated => "standard_rated",
+            TaxAmountTaxabilityReason::TaxableBasisReduced => "taxable_basis_reduced",
+            TaxAmountTaxabilityReason::ZeroRated => "zero_rated",
+        }
+    }
+}
+
+impl AsRef<str> for TaxAmountTaxabilityReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxAmountTaxabilityReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TaxAmountTaxabilityReason {
+    fn default() -> Self {
+        Self::CustomerExempt
     }
 }

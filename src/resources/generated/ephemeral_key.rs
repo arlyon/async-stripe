@@ -37,6 +37,7 @@ pub struct EphemeralKey {
 impl EphemeralKey {
     /// Creates a short-lived API key for a given resource.
     pub fn create(client: &Client, params: CreateEphemeralKey<'_>) -> Response<EphemeralKey> {
+        #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/ephemeral_keys", &params)
     }
 
@@ -71,6 +72,10 @@ pub struct CreateEphemeralKey<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_card: Option<IssuingCardId>,
 
+    /// A single-use token, created by Stripe.js, used for creating ephemeral keys for Issuing Cards without exchanging sensitive information.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nonce: Option<&'a str>,
+
     /// The ID of the Identity VerificationSession you'd like to access using the resulting ephemeral key.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_session: Option<&'a str>,
@@ -82,6 +87,7 @@ impl<'a> CreateEphemeralKey<'a> {
             customer: Default::default(),
             expand: Default::default(),
             issuing_card: Default::default(),
+            nonce: Default::default(),
             verification_session: Default::default(),
         }
     }

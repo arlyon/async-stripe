@@ -36,7 +36,7 @@ pub struct TreasuryTransaction {
     /// A list of TransactionEntries that are part of this Transaction.
     ///
     /// This cannot be expanded in any list endpoints.
-    pub entries: List<TreasuryTransactionEntry>,
+    pub entries: Option<List<TreasuryTransactionEntry>>,
 
     /// The FinancialAccount associated with this object.
     pub financial_account: String,

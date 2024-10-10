@@ -76,8 +76,14 @@ pub struct FinancialConnectionsAccount {
     /// If `category` is `investment` or `other`, this will be `other`.
     pub subcategory: FinancialConnectionsAccountSubcategory,
 
+    /// The list of data refresh subscriptions requested on this account.
+    pub subscriptions: Option<Vec<FinancialConnectionsAccountSubscriptions>>,
+
     /// The [PaymentMethod type](https://stripe.com/docs/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.
     pub supported_payment_method_types: Vec<FinancialConnectionsAccountSupportedPaymentMethodTypes>,
+
+    /// The state of the most recent attempt to refresh the account transactions.
+    pub transaction_refresh: Option<BankConnectionsResourceTransactionRefresh>,
 }
 
 impl Object for FinancialConnectionsAccount {
@@ -154,6 +160,12 @@ pub struct BankConnectionsResourceBalanceRefresh {
     /// Measured in seconds since the Unix epoch.
     pub last_attempted_at: Timestamp,
 
+    /// Time at which the next balance refresh can be initiated.
+    ///
+    /// This value will be `null` when `status` is `pending`.
+    /// Measured in seconds since the Unix epoch.
+    pub next_refresh_available_at: Option<Timestamp>,
+
     /// The status of the last refresh attempt.
     pub status: BankConnectionsResourceBalanceRefreshStatus,
 }
@@ -168,6 +180,27 @@ pub struct BankConnectionsResourceOwnershipRefresh {
 
     /// The status of the last refresh attempt.
     pub status: BankConnectionsResourceOwnershipRefreshStatus,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct BankConnectionsResourceTransactionRefresh {
+
+    /// Unique identifier for the object.
+    pub id: String,
+
+    /// The time at which the last refresh attempt was initiated.
+    ///
+    /// Measured in seconds since the Unix epoch.
+    pub last_attempted_at: Timestamp,
+
+    /// Time at which the next transaction refresh can be initiated.
+    ///
+    /// This value will be `null` when `status` is `pending`.
+    /// Measured in seconds since the Unix epoch.
+    pub next_refresh_available_at: Option<Timestamp>,
+
+    /// The status of the last refresh attempt.
+    pub status: BankConnectionsResourceTransactionRefreshStatus,
 }
 
 /// An enum representing the possible values of an `BankConnectionsResourceBalanceRefresh`'s `status` field.
@@ -271,6 +304,42 @@ impl std::fmt::Display for BankConnectionsResourceOwnershipRefreshStatus {
     }
 }
 impl std::default::Default for BankConnectionsResourceOwnershipRefreshStatus {
+    fn default() -> Self {
+        Self::Failed
+    }
+}
+
+/// An enum representing the possible values of an `BankConnectionsResourceTransactionRefresh`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum BankConnectionsResourceTransactionRefreshStatus {
+    Failed,
+    Pending,
+    Succeeded,
+}
+
+impl BankConnectionsResourceTransactionRefreshStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            BankConnectionsResourceTransactionRefreshStatus::Failed => "failed",
+            BankConnectionsResourceTransactionRefreshStatus::Pending => "pending",
+            BankConnectionsResourceTransactionRefreshStatus::Succeeded => "succeeded",
+        }
+    }
+}
+
+impl AsRef<str> for BankConnectionsResourceTransactionRefreshStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for BankConnectionsResourceTransactionRefreshStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for BankConnectionsResourceTransactionRefreshStatus {
     fn default() -> Self {
         Self::Failed
     }
@@ -427,6 +496,38 @@ impl std::fmt::Display for FinancialConnectionsAccountSubcategory {
 impl std::default::Default for FinancialConnectionsAccountSubcategory {
     fn default() -> Self {
         Self::Checking
+    }
+}
+
+/// An enum representing the possible values of an `FinancialConnectionsAccount`'s `subscriptions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum FinancialConnectionsAccountSubscriptions {
+    Transactions,
+}
+
+impl FinancialConnectionsAccountSubscriptions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            FinancialConnectionsAccountSubscriptions::Transactions => "transactions",
+        }
+    }
+}
+
+impl AsRef<str> for FinancialConnectionsAccountSubscriptions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for FinancialConnectionsAccountSubscriptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for FinancialConnectionsAccountSubscriptions {
+    fn default() -> Self {
+        Self::Transactions
     }
 }
 

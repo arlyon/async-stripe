@@ -7,9 +7,9 @@ members = [
 
 [package]
 name = "async-stripe"
-version = "0.21.0"
+version = "0.40.0"
 description = "API bindings for the Stripe HTTP API"
-rust-version = "1.63.0"
+rust-version = "1.78.0"
 authors = [
   "Anna Baldwin <abaldwin@developers.wyyerd.com>",
   "Kevin Stenerson <kestred@users.noreply.github.com>",
@@ -42,6 +42,8 @@ full = [
   "sigma",
   "terminal",
   "webhook-endpoints",
+  "tax-calculation",
+  "products",
 ]
 
 stream = []
@@ -56,6 +58,8 @@ orders = []
 sigma = []
 terminal = []
 webhook-endpoints = []
+tax-calculation = []
+products = []
 
 # deserialize events from webhooks
 webhook-events = ["events", "hmac", "sha2", "chrono", "hex"]
@@ -125,14 +129,14 @@ thiserror = "1.0.24"
 http-types = { version = "2.12.0", default-features = false }
 hyper = { version = "0.14", default-features = false, features = ["http1", "http2", "client", "tcp"], optional = true }
 hyper-tls = { version = "0.5", optional = true }
-hyper-rustls = { version = "0.23", default-features = false, features = ["http1", "http2", "tls12", "logging"], optional = true }
+hyper-rustls = { version = "0.24", default-features = false, features = ["http1", "http2", "tls12", "logging"], optional = true }
 serde = {version = ">=1.0.79", features = ["derive"] } # we use `serde(other)` which was introduced in 1.0.79
 serde_json = "1.0"
 serde_qs = "0.10.1"
 serde_path_to_error = "0.1.8"
 smol_str = "0.1"
 surf = { version = "2.1", optional = true }
-tokio = { version = "1.2", optional = true }
+tokio = { version = "1", optional = true }
 smart-default = "0.6.0"
 uuid = { version = "0.8", optional=true, features=["v4"] }
 
@@ -150,8 +154,15 @@ rocket = { version = "0.4", optional = true }
 async-std = { version = "1.10.0", features = ["attributes"] }
 httpmock = "0.6.6"
 tokio = { version = "1.24.1", features = ["rt", "macros"] }
-axum = "0.4.8"
+axum = { version = "0.7.4", features = ["macros"] }
+async-trait = "0.1"
 actix-web = "4.2.1"
+
+# MSRV PINS
+#
+# We have a few deps that have MSRVs that are higher than our own. 
+# We pin them here to ensure that we can run tests on the MSRV
+bumpalo = ">=3.0.0, <= 3.15.0"
 
 [[example]]
 name = "checkout"
@@ -179,6 +190,10 @@ required-features = ["async"]
 
 [[example]]
 name = "subscriptions"
+required-features = ["async"]
+
+[[example]]
+name = "test-clocks"
 required-features = ["async"]
 
 [[example]]

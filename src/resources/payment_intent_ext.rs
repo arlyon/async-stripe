@@ -1,9 +1,9 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
-use crate::params::{Expandable, Metadata};
-use crate::resources::{Currency, PaymentIntent, PaymentSource, Shipping};
-use crate::PaymentIntentCancellationReason;
+use crate::params::{Expandable, Metadata, SearchList};
+use crate::resources::{Currency, PaymentSource, Shipping};
+use crate::{PaymentIntent, PaymentIntentCancellationReason};
 
 impl PaymentIntent {
     /// Confirm that customer intends to pay with current or provided source. Upon confirmation, the PaymentIntent will attempt to initiate a payment.
@@ -37,6 +37,16 @@ impl PaymentIntent {
         params: CancelPaymentIntent,
     ) -> Response<PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}/cancel", payment_intent_id), params)
+    }
+
+    /// Searches for a payment intent.
+    ///
+    /// For more details see <https://stripe.com/docs/api/payment_intents/search>.
+    pub fn search(
+        client: &Client,
+        params: PaymentIntentSearchParams,
+    ) -> Response<SearchList<PaymentIntent>> {
+        client.get_query("/payment_intents/search", params)
     }
 }
 /// The resource representing a Stripe PaymentError object.
@@ -204,4 +214,20 @@ pub struct CapturePaymentIntent {
 pub struct CancelPaymentIntent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cancellation_reason: Option<PaymentIntentCancellationReason>,
+}
+
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct PaymentIntentSearchParams<'a> {
+    pub query: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<u64>,
+    pub expand: &'a [&'a str],
+}
+
+impl<'a> PaymentIntentSearchParams<'a> {
+    pub fn new() -> PaymentIntentSearchParams<'a> {
+        PaymentIntentSearchParams { query: String::new(), limit: None, page: None, expand: &[] }
+    }
 }

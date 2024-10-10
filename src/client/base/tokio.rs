@@ -76,6 +76,12 @@ pub struct TokioClient {
     client: HttpClient,
 }
 
+impl Default for TokioClient {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TokioClient {
     pub fn new() -> Self {
         Self {
@@ -160,7 +166,12 @@ async fn send_inner(
                             StripeError::from(e.error)
                         })
                         .unwrap_or_else(StripeError::from);
-                    last_status = Some(status.into());
+                    last_status = Some(
+                        // NOTE: StatusCode::from can panic here, so fall back to InternalServerError
+                        //       see https://github.com/http-rs/http-types/blob/ac5d645ce5294554b86ebd49233d3ec01665d1d7/src/hyperium_http.rs#L20-L24
+                        StatusCode::try_from(u16::from(status))
+                            .unwrap_or(StatusCode::InternalServerError),
+                    );
                     last_retry_header = retry;
                     continue;
                 }

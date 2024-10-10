@@ -7,6 +7,7 @@ use crate::spec::Spec;
 use crate::spec_fetch::fetch_spec;
 use crate::{metadata::Metadata, url_finder::UrlFinder};
 
+#[allow(clippy::too_many_arguments)]
 mod codegen;
 mod file_generator;
 mod mappings;
@@ -40,7 +41,7 @@ fn main() -> Result<()> {
     let out_path = args.out;
     fs::create_dir_all(&out_path).context("could not create out folder")?;
 
-    log::info!("generating code for {} to {}", in_path, out_path);
+    tracing::info!("generating code for {} to {}", in_path, out_path);
 
     let spec = if let Some(version) = args.fetch {
         let raw = fetch_spec(version, &in_path)?;
@@ -49,7 +50,7 @@ fn main() -> Result<()> {
         let raw = fs::File::open(in_path).context("failed to load the specfile. does it exist?")?;
         Spec::new(serde_json::from_reader(&raw).context("failed to read json from specfile")?)
     };
-    log::info!("Finished parsing spec");
+    tracing::info!("Finished parsing spec");
 
     let meta = Metadata::from_spec(&spec);
     let url_finder = UrlFinder::new().context("couldn't initialize url finder")?;
@@ -71,7 +72,7 @@ fn main() -> Result<()> {
         .collect::<BTreeSet<_>>();
 
     // todo(arlyon): understand the implications of this
-    log::warn!("leftover objects: {:#?}", extra_objects);
+    tracing::warn!("leftover objects: {:#?}", extra_objects);
 
     Ok(())
 }
