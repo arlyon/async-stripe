@@ -156,8 +156,6 @@ pub use {
         shipping_rate::*,
         tax_code::*,
         tax_deducted_at_source::*,
-        tax_calculation::*,
-        tax_calculation_line_item::*,
         tax_transaction::*,
         tax_transaction_line_item::*,
         tax_product_resource_customer_details::*,
@@ -272,7 +270,6 @@ pub use {
     generated::tax_calculation::{
         tax_calculation::*,
         tax_calculation_line_item::*,
-        tax_product_resource_customer_details::*,
     }
 };
 

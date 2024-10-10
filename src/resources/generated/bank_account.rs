@@ -88,10 +88,6 @@ pub struct BankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requirements: Option<ExternalAccountRequirements>,
 
-    /// Information about the requirements for the bank account, including what information needs to be collected.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub requirements: Option<ExternalAccountRequirements>,
-
     /// The routing transit number for the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,

@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{TaxTransactionId};
+use crate::ids::{TaxCalculationId, TaxTransactionId};
 use crate::params::{List, Metadata, Object, Timestamp};
 use crate::resources::{Currency, TaxProductResourceCustomerDetails, TaxTransactionLineItem};
 use serde::{Deserialize, Serialize};

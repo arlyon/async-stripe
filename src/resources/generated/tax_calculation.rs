@@ -5,7 +5,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::ids::{CustomerId, TaxCalculationId};
-use crate::params::{List, Object, Timestamp};
+use crate::params::{List, Object, Expand, Timestamp};
+use crate::{TaxProductResourceShippingCost, CreateTaxCalculationLineItem};
 use crate::resources::{Currency, TaxCalculationLineItem, TaxProductResourceCustomerDetails};
 
 /// The resource representing a Stripe "TaxProductResourceTaxCalculation".

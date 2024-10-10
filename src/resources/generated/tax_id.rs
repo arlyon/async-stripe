@@ -5,7 +5,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
-use crate::ids::TaxIdId;
+use crate::ids::{CustomerId, TaxIdId};
 use crate::params::{Deleted, Expand, Expandable, List, Object, Paginable, Timestamp};
 use crate::resources::{Account, Application, Customer};
 
@@ -83,20 +83,9 @@ impl TaxId {
         client.get_query("/tax_ids", params)
     }
 
-    /// Creates a new account or customer `tax_id` object.
-    pub fn create(client: &Client, params: CreateTaxId<'_>) -> Response<TaxId> {
-        #[allow(clippy::needless_borrows_for_generic_args)]
-        client.post_form("/tax_ids", &params)
-    }
-
     /// Retrieves an account or customer `tax_id` object.
     pub fn retrieve(client: &Client, id: &TaxIdId, expand: &[&str]) -> Response<TaxId> {
         client.get_query(&format!("/tax_ids/{}", id), Expand { expand })
-    }
-
-    /// Deletes an existing account or customer `tax_id` object.
-    pub fn delete(client: &Client, id: &TaxIdId) -> Response<Deleted<TaxIdId>> {
-        client.delete(&format!("/tax_ids/{}", id))
     }
 }
 

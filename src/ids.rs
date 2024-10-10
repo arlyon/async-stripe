@@ -579,6 +579,8 @@ def_id!(TaxCalculationLineItemId: String);
 def_id!(TaxCodeId, "txcd_");
 def_id!(TaxDeductedAtSourceId, "itds");
 def_id!(TaxRateId, "txr_");
+def_id!(TaxTransactionId, "tax_");
+def_id!(TaxTransactionLineItemId, "tax_li_");
 def_id!(TerminalConfigurationId, "tmc_");
 def_id!(TerminalLocationId, "tml_");
 def_id!(TerminalReaderId, "tmr_");
