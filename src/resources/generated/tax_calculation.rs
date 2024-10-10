@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::ids::{CustomerId, TaxCalculationId};
 use crate::params::{Expand, List, Object, Timestamp};
 use crate::resources::{Currency, TaxCalculationLineItem, TaxProductResourceCustomerDetails};
-use crate::{CreateTaxCalculationLineItem, TaxProductResourceShippingCost};
+use crate::{Client, CreateTaxCalculationLineItem, Response, TaxProductResourceShippingCost};
 
 /// The resource representing a Stripe "TaxProductResourceTaxCalculation".
 ///
@@ -53,6 +53,14 @@ pub struct TaxCalculation {
 
     /// Timestamp of date at which the tax rules and rates in effect applies for the calculation.
     pub tax_date: Timestamp,
+}
+impl TaxCalculation {
+    /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
+    ///
+    /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
+    pub fn create(client: &Client, params: CreateTaxCalculation<'_>) -> Response<TaxCalculation> {
+        client.post_form("/tax/calculations", &params)
+    }
 }
 
 impl Object for TaxCalculation {
