@@ -58,6 +58,18 @@ impl Object for TaxCalculationLineItem {
     }
 }
 
+/// The parameters for `TaxCalculationLineItem::create`
+///
+/// For more details see <https://stripe.com/docs/api/tax/calculations/object>
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateTaxCalculationLineItem {
+    pub amount: i64,
+    pub reference: String,
+    pub quantity: Option<u64>,
+    pub tax_behavior: Option<TaxCalculationLineItemTaxBehavior>,
+}
+
+
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceLineItemTaxBreakdown {
     /// The amount of tax, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
