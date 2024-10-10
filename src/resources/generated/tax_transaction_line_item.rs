@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{TaxTransactionLineItemId};
+use crate::ids::TaxTransactionLineItemId;
 use crate::params::{Metadata, Object};
 use serde::{Deserialize, Serialize};
 
@@ -68,7 +68,6 @@ impl Object for TaxTransactionLineItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceTaxTransactionLineItemResourceReversal {
-
     /// The `id` of the line item to reverse in the original transaction.
     pub original_line_item: String,
 }

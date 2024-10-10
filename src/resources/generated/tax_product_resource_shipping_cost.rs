@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "TaxProductResourceShippingCost".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceShippingCost {
-
     /// The shipping amount in integer cents.
     ///
     /// If `tax_behavior=inclusive`, then this amount includes taxes.
