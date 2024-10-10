@@ -58,6 +58,7 @@ pub struct TaxId {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification: Option<TaxIdVerification>,
 }
+
 impl TaxId {
     /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
     ///
@@ -77,9 +78,6 @@ impl TaxId {
     ) -> Response<Deleted<TaxIdId>> {
         client.delete(&format!("/customers/{}/tax_ids/{}", customer_id, tax_id_id))
     }
-}
-
-impl TaxId {
     /// Returns a list of tax IDs.
     pub fn list(client: &Client, params: &ListTaxIds<'_>) -> Response<List<TaxId>> {
         client.get_query("/tax_ids", params)
@@ -110,13 +108,6 @@ impl Object for TaxId {
     fn object(&self) -> &'static str {
         "tax_id"
     }
-}
-
-#[derive(Clone, Debug, Default, Serialize)]
-pub struct CreateTaxId<'a> {
-    #[serde(rename = "type")]
-    pub type_: TaxIdType,
-    pub value: &'a str,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

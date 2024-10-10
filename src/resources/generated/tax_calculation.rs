@@ -4,7 +4,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::TaxCalculationId;
+use crate::ids::{CustomerId, TaxCalculationId};
 use crate::params::{List, Object, Timestamp};
 use crate::resources::{Currency, TaxCalculationLineItem, TaxProductResourceCustomerDetails};
 

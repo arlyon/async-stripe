@@ -99,9 +99,6 @@ pub struct MandatePaymentMethodDetails {
     pub cashapp: Option<MandateCashapp>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp: Option<MandateCashapp>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<MandateLink>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -165,9 +162,6 @@ pub struct MandateBacsDebit {
     /// The URL that will contain the mandate that the customer has signed.
     pub url: String,
 }
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct MandateCashapp {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateCashapp {}
