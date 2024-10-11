@@ -210,7 +210,7 @@ pub struct CreateInvoiceItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discountable: Option<bool>,
 
-    /// The coupons to redeem into discounts for the invoice item or invoice line item.
+    /// The coupons and promotion codes to redeem into discounts for the invoice item or invoice line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<CreateInvoiceItemDiscounts>>,
 
@@ -243,10 +243,14 @@ pub struct CreateInvoiceItem<'a> {
     pub period: Option<Period>,
 
     /// The ID of the price object.
+    ///
+    /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<PriceId>,
 
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    ///
+    /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<InvoiceItemPriceData>,
 
@@ -258,7 +262,7 @@ pub struct CreateInvoiceItem<'a> {
 
     /// The ID of a subscription to add this invoice item to.
     ///
-    /// When left blank, the invoice item will be be added to the next upcoming scheduled invoice.
+    /// When left blank, the invoice item is added to the next upcoming scheduled invoice.
     /// When set, scheduled invoices for subscriptions other than the specified subscription will ignore the invoice item.
     /// Use this when you want to express that an invoice item has been accrued within the context of a particular subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -325,6 +329,7 @@ impl<'a> CreateInvoiceItem<'a> {
 /// The parameters for `InvoiceItem::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListInvoiceItems<'a> {
+    /// Only return invoice items that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -415,7 +420,7 @@ pub struct UpdateInvoiceItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discountable: Option<bool>,
 
-    /// The coupons & existing discounts which apply to the invoice item or invoice line item.
+    /// The coupons, promotion codes & existing discounts which apply to the invoice item or invoice line item.
     ///
     /// Item discounts are applied before invoice discounts.
     /// Pass an empty string to remove previously-defined discounts.
@@ -443,10 +448,14 @@ pub struct UpdateInvoiceItem<'a> {
     pub period: Option<Period>,
 
     /// The ID of the price object.
+    ///
+    /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<PriceId>,
 
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    ///
+    /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<InvoiceItemPriceData>,
 
@@ -520,6 +529,10 @@ pub struct CreateInvoiceItemDiscounts {
     /// ID of an existing discount on the object (or one of its ancestors) to reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<String>,
+
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -560,6 +573,10 @@ pub struct UpdateInvoiceItemDiscounts {
     /// ID of an existing discount on the object (or one of its ancestors) to reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<String>,
+
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
 }
 
 /// An enum representing the possible values of an `InvoiceItemPriceData`'s `tax_behavior` field.

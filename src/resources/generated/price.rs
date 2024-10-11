@@ -237,6 +237,9 @@ pub struct Recurring {
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
     pub interval_count: u64,
 
+    /// The meter tracking the usage of a metered price.
+    pub meter: Option<String>,
+
     /// Default number of trial days when subscribing a customer to this price using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
     pub trial_period_days: Option<u32>,
 
@@ -357,7 +360,7 @@ pub struct CreatePrice<'a> {
 
     /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     ///
-    /// One of `unit_amount` or `custom_unit_amount` is required, unless `billing_scheme=tiered`.
+    /// One of `unit_amount`, `unit_amount_decimal`, or `custom_unit_amount` is required, unless `billing_scheme=tiered`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
@@ -429,6 +432,8 @@ pub struct ListPrices<'a> {
     pub limit: Option<u64>,
 
     /// Only return the price with these lookup_keys, if any exist.
+    ///
+    /// You can specify up to 10 lookup_keys.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lookup_keys: Option<Vec<String>>,
 
@@ -658,6 +663,10 @@ pub struct CreatePriceRecurring {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 
+    /// The meter tracking the usage of a metered price.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub meter: Option<String>,
+
     /// Default number of trial days when subscribing a customer to this price using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
@@ -717,6 +726,10 @@ pub struct ListPricesRecurring {
     /// Either `day`, `week`, `month` or `year`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval: Option<ListPricesRecurringInterval>,
+
+    /// Filter by the price's meter.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub meter: Option<String>,
 
     /// Filter by the usage type for this price.
     ///

@@ -42,6 +42,7 @@ pub struct TaxCalculationLineItem {
     pub tax_behavior: TaxCalculationLineItemTaxBehavior,
 
     /// Detailed account of taxes relevant to this line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_breakdown: Option<Vec<TaxProductResourceLineItemTaxBreakdown>>,
 
     /// The [tax code](https://stripe.com/docs/tax/tax-categories) ID used for this resource.

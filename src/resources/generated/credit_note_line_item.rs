@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::ids::CreditNoteLineItemId;
 use crate::params::{Expandable, Object};
-use crate::resources::{Discount, TaxRate};
+use crate::resources::{BillingCreditBalanceTransaction, Discount, TaxRate};
 
 /// The resource representing a Stripe "CreditNoteLineItem".
 ///
@@ -37,6 +37,9 @@ pub struct CreditNoteLineItem {
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pretax_credit_amounts: Option<Vec<CreditNotesPretaxCreditAmount>>,
 
     /// The number of units of product being credited.
     pub quantity: Option<u64>,
@@ -91,6 +94,24 @@ pub struct CreditNoteTaxAmount {
 
     /// The amount on which tax is calculated, in cents (or local equivalent).
     pub taxable_amount: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreditNotesPretaxCreditAmount {
+    /// The amount, in cents (or local equivalent), of the pretax credit amount.
+    pub amount: i64,
+
+    /// The credit balance transaction that was applied to get this pretax credit amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub credit_balance_transaction: Option<Expandable<BillingCreditBalanceTransaction>>,
+
+    /// The discount that was applied to get this pretax credit amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<Expandable<Discount>>,
+
+    /// Type of the pretax credit amount referenced.
+    #[serde(rename = "type")]
+    pub type_: CreditNotesPretaxCreditAmountType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -193,5 +214,41 @@ impl std::fmt::Display for CreditNoteTaxAmountTaxabilityReason {
 impl std::default::Default for CreditNoteTaxAmountTaxabilityReason {
     fn default() -> Self {
         Self::CustomerExempt
+    }
+}
+
+/// An enum representing the possible values of an `CreditNotesPretaxCreditAmount`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreditNotesPretaxCreditAmountType {
+    CreditBalanceTransaction,
+    Discount,
+}
+
+impl CreditNotesPretaxCreditAmountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreditNotesPretaxCreditAmountType::CreditBalanceTransaction => {
+                "credit_balance_transaction"
+            }
+            CreditNotesPretaxCreditAmountType::Discount => "discount",
+        }
+    }
+}
+
+impl AsRef<str> for CreditNotesPretaxCreditAmountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreditNotesPretaxCreditAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreditNotesPretaxCreditAmountType {
+    fn default() -> Self {
+        Self::CreditBalanceTransaction
     }
 }

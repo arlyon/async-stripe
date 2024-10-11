@@ -42,6 +42,8 @@ pub struct PaymentLink {
     pub automatic_tax: PaymentLinksResourceAutomaticTax,
 
     /// Configuration for collecting the customer's billing address.
+    ///
+    /// Defaults to `auto`.
     pub billing_address_collection: PaymentLinkBillingAddressCollection,
 
     /// When set, provides configuration to gather active consent from customers.
@@ -89,6 +91,8 @@ pub struct PaymentLink {
     pub payment_intent_data: Option<PaymentLinksResourcePaymentIntentData>,
 
     /// Configuration for collecting a payment method during checkout.
+    ///
+    /// Defaults to `always`.
     pub payment_method_collection: PaymentLinkPaymentMethodCollection,
 
     /// The list of payment method types that customers can use.
@@ -379,15 +383,12 @@ pub struct PaymentLinksResourcePaymentIntentData {
     /// Indicates that you intend to make future payments with the payment method collected during checkout.
     pub setup_future_usage: Option<PaymentLinksResourcePaymentIntentDataSetupFutureUsage>,
 
-    /// Extra information about the payment.
-    ///
-    /// This will appear on your customer's statement when this payment succeeds in creating a charge.
+    /// For a non-card payment, information about the charge that appears on the customer's statement when this payment succeeds in creating a charge.
     pub statement_descriptor: Option<String>,
 
-    /// Provides information about the charge that customers see on their statements.
+    /// For a card payment, information about the charge that appears on the customer's statement when this payment succeeds in creating a charge.
     ///
-    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor.
-    /// Maximum 22 characters for the concatenated descriptor.
+    /// Concatenated with the account's statement descriptor prefix to form the complete statement descriptor.
     pub statement_descriptor_suffix: Option<String>,
 
     /// A string that identifies the resulting payment as part of a group.
@@ -469,6 +470,8 @@ pub struct PaymentLinksResourceSubscriptionDataInvoiceSettings {
 pub struct PaymentLinksResourceTaxIdCollection {
     /// Indicates whether tax ID collection is enabled for the session.
     pub enabled: bool,
+
+    pub required: PaymentLinksResourceTaxIdCollectionRequired,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -511,6 +514,8 @@ pub struct CreatePaymentLink<'a> {
     pub automatic_tax: Option<CreatePaymentLinkAutomaticTax>,
 
     /// Configuration for collecting the customer's billing address.
+    ///
+    /// Defaults to `auto`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_address_collection: Option<PaymentLinkBillingAddressCollection>,
 
@@ -575,7 +580,8 @@ pub struct CreatePaymentLink<'a> {
 
     /// Specify whether Checkout should collect a payment method.
     ///
-    /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.  Can only be set in `subscription` mode.  If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
+    /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.  Can only be set in `subscription` mode.
+    /// Defaults to `always`.  If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_collection: Option<PaymentLinkPaymentMethodCollection>,
 
@@ -730,6 +736,8 @@ pub struct UpdatePaymentLink<'a> {
     pub automatic_tax: Option<UpdatePaymentLinkAutomaticTax>,
 
     /// Configuration for collecting the customer's billing address.
+    ///
+    /// Defaults to `auto`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_address_collection: Option<PaymentLinkBillingAddressCollection>,
 
@@ -781,7 +789,8 @@ pub struct UpdatePaymentLink<'a> {
 
     /// Specify whether Checkout should collect a payment method.
     ///
-    /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.  Can only be set in `subscription` mode.  If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
+    /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.  Can only be set in `subscription` mode.
+    /// Defaults to `always`.  If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_collection: Option<PaymentLinkPaymentMethodCollection>,
 
@@ -804,6 +813,10 @@ pub struct UpdatePaymentLink<'a> {
     /// There must be at least one line item with a recurring price to use `subscription_data`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_data: Option<UpdatePaymentLinkSubscriptionData>,
+
+    /// Controls tax ID collection during checkout.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id_collection: Option<UpdatePaymentLinkTaxIdCollection>,
 }
 
 impl<'a> UpdatePaymentLink<'a> {
@@ -828,6 +841,7 @@ impl<'a> UpdatePaymentLink<'a> {
             restrictions: Default::default(),
             shipping_address_collection: Default::default(),
             subscription_data: Default::default(),
+            tax_id_collection: Default::default(),
         }
     }
 }
@@ -992,16 +1006,17 @@ pub struct CreatePaymentLinkPaymentIntentData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentLinkPaymentIntentDataSetupFutureUsage>,
 
-    /// Extra information about the payment.
+    /// Text that appears on the customer's statement as the statement descriptor for a non-card charge.
     ///
-    /// This will appear on your customer's statement when this payment succeeds in creating a charge.
+    /// This value overrides the account's default statement descriptor.
+    /// For information about requirements, including the 22-character limit, see [the Statement Descriptor docs](https://docs.stripe.com/get-started/account/statement-descriptors).  Setting this value for a card charge returns an error.
+    /// For card charges, set the [statement_descriptor_suffix](https://docs.stripe.com/get-started/account/statement-descriptors#dynamic) instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 
-    /// Provides information about the charge that customers see on their statements.
+    /// Provides information about a card charge.
     ///
-    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor.
-    /// Maximum 22 characters for the concatenated descriptor.
+    /// Concatenated to the account's [statement descriptor prefix](https://docs.stripe.com/get-started/account/statement-descriptors#static) to form the complete statement descriptor that appears on the customer's statement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix: Option<String>,
 
@@ -1072,8 +1087,16 @@ pub struct CreatePaymentLinkSubscriptionData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkTaxIdCollection {
-    /// Set to `true` to enable tax ID collection.
+    /// Enable tax ID collection during checkout.
+    ///
+    /// Defaults to `false`.
     pub enabled: bool,
+
+    /// Describes whether a tax ID is required during checkout.
+    ///
+    /// Defaults to `never`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub required: Option<CreatePaymentLinkTaxIdCollectionRequired>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1211,16 +1234,17 @@ pub struct UpdatePaymentLinkPaymentIntentData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
-    /// Extra information about the payment.
+    /// Text that appears on the customer's statement as the statement descriptor for a non-card charge.
     ///
-    /// This will appear on your customer's statement when this payment succeeds in creating a charge.
+    /// This value overrides the account's default statement descriptor.
+    /// For information about requirements, including the 22-character limit, see [the Statement Descriptor docs](https://docs.stripe.com/get-started/account/statement-descriptors).  Setting this value for a card charge returns an error.
+    /// For card charges, set the [statement_descriptor_suffix](https://docs.stripe.com/get-started/account/statement-descriptors#dynamic) instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 
-    /// Provides information about the charge that customers see on their statements.
+    /// Provides information about a card charge.
     ///
-    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor.
-    /// Maximum 22 characters for the concatenated descriptor.
+    /// Concatenated to the account's [statement descriptor prefix](https://docs.stripe.com/get-started/account/statement-descriptors#static) to form the complete statement descriptor that appears on the customer's statement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix: Option<String>,
 
@@ -1262,6 +1286,20 @@ pub struct UpdatePaymentLinkSubscriptionData {
     /// Settings related to subscription trials.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_settings: Option<UpdatePaymentLinkSubscriptionDataTrialSettings>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkTaxIdCollection {
+    /// Enable tax ID collection during checkout.
+    ///
+    /// Defaults to `false`.
+    pub enabled: bool,
+
+    /// Describes whether a tax ID is required during checkout.
+    ///
+    /// Defaults to `never`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub required: Option<UpdatePaymentLinkTaxIdCollectionRequired>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1634,12 +1672,12 @@ pub struct CreatePaymentLinkCustomFieldsDropdownOptions {
 pub struct CreatePaymentLinkInvoiceCreationInvoiceDataCustomFields {
     /// The name of the custom field.
     ///
-    /// This may be up to 30 characters.
+    /// This may be up to 40 characters.
     pub name: String,
 
     /// The value of the custom field.
     ///
-    /// This may be up to 30 characters.
+    /// This may be up to 140 characters.
     pub value: String,
 }
 
@@ -1701,12 +1739,12 @@ pub struct UpdatePaymentLinkCustomFieldsDropdownOptions {
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataCustomFields {
     /// The name of the custom field.
     ///
-    /// This may be up to 30 characters.
+    /// This may be up to 40 characters.
     pub name: String,
 
     /// The value of the custom field.
     ///
-    /// This may be up to 30 characters.
+    /// This may be up to 140 characters.
     pub value: String,
 }
 
@@ -2159,6 +2197,8 @@ pub enum CreatePaymentLinkPaymentMethodTypes {
     Klarna,
     Konbini,
     Link,
+    Mobilepay,
+    Multibanco,
     Oxxo,
     P24,
     Paynow,
@@ -2168,8 +2208,10 @@ pub enum CreatePaymentLinkPaymentMethodTypes {
     SepaDebit,
     Sofort,
     Swish,
+    Twint,
     UsBankAccount,
     WechatPay,
+    Zip,
 }
 
 impl CreatePaymentLinkPaymentMethodTypes {
@@ -2193,6 +2235,8 @@ impl CreatePaymentLinkPaymentMethodTypes {
             CreatePaymentLinkPaymentMethodTypes::Klarna => "klarna",
             CreatePaymentLinkPaymentMethodTypes::Konbini => "konbini",
             CreatePaymentLinkPaymentMethodTypes::Link => "link",
+            CreatePaymentLinkPaymentMethodTypes::Mobilepay => "mobilepay",
+            CreatePaymentLinkPaymentMethodTypes::Multibanco => "multibanco",
             CreatePaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
             CreatePaymentLinkPaymentMethodTypes::P24 => "p24",
             CreatePaymentLinkPaymentMethodTypes::Paynow => "paynow",
@@ -2202,8 +2246,10 @@ impl CreatePaymentLinkPaymentMethodTypes {
             CreatePaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
             CreatePaymentLinkPaymentMethodTypes::Sofort => "sofort",
             CreatePaymentLinkPaymentMethodTypes::Swish => "swish",
+            CreatePaymentLinkPaymentMethodTypes::Twint => "twint",
             CreatePaymentLinkPaymentMethodTypes::UsBankAccount => "us_bank_account",
             CreatePaymentLinkPaymentMethodTypes::WechatPay => "wechat_pay",
+            CreatePaymentLinkPaymentMethodTypes::Zip => "zip",
         }
     }
 }
@@ -3041,6 +3087,40 @@ impl std::default::Default
     }
 }
 
+/// An enum representing the possible values of an `CreatePaymentLinkTaxIdCollection`'s `required` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkTaxIdCollectionRequired {
+    IfSupported,
+    Never,
+}
+
+impl CreatePaymentLinkTaxIdCollectionRequired {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkTaxIdCollectionRequired::IfSupported => "if_supported",
+            CreatePaymentLinkTaxIdCollectionRequired::Never => "never",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkTaxIdCollectionRequired {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkTaxIdCollectionRequired {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkTaxIdCollectionRequired {
+    fn default() -> Self {
+        Self::IfSupported
+    }
+}
+
 /// An enum representing the possible values of an `PaymentLink`'s `billing_address_collection` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3165,6 +3245,8 @@ pub enum PaymentLinkPaymentMethodTypes {
     Klarna,
     Konbini,
     Link,
+    Mobilepay,
+    Multibanco,
     Oxxo,
     P24,
     Paynow,
@@ -3174,8 +3256,10 @@ pub enum PaymentLinkPaymentMethodTypes {
     SepaDebit,
     Sofort,
     Swish,
+    Twint,
     UsBankAccount,
     WechatPay,
+    Zip,
 }
 
 impl PaymentLinkPaymentMethodTypes {
@@ -3199,6 +3283,8 @@ impl PaymentLinkPaymentMethodTypes {
             PaymentLinkPaymentMethodTypes::Klarna => "klarna",
             PaymentLinkPaymentMethodTypes::Konbini => "konbini",
             PaymentLinkPaymentMethodTypes::Link => "link",
+            PaymentLinkPaymentMethodTypes::Mobilepay => "mobilepay",
+            PaymentLinkPaymentMethodTypes::Multibanco => "multibanco",
             PaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
             PaymentLinkPaymentMethodTypes::P24 => "p24",
             PaymentLinkPaymentMethodTypes::Paynow => "paynow",
@@ -3208,8 +3294,10 @@ impl PaymentLinkPaymentMethodTypes {
             PaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
             PaymentLinkPaymentMethodTypes::Sofort => "sofort",
             PaymentLinkPaymentMethodTypes::Swish => "swish",
+            PaymentLinkPaymentMethodTypes::Twint => "twint",
             PaymentLinkPaymentMethodTypes::UsBankAccount => "us_bank_account",
             PaymentLinkPaymentMethodTypes::WechatPay => "wechat_pay",
+            PaymentLinkPaymentMethodTypes::Zip => "zip",
         }
     }
 }
@@ -4284,6 +4372,40 @@ impl std::default::Default for PaymentLinksResourceShippingAddressCollectionAllo
     }
 }
 
+/// An enum representing the possible values of an `PaymentLinksResourceTaxIdCollection`'s `required` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentLinksResourceTaxIdCollectionRequired {
+    IfSupported,
+    Never,
+}
+
+impl PaymentLinksResourceTaxIdCollectionRequired {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentLinksResourceTaxIdCollectionRequired::IfSupported => "if_supported",
+            PaymentLinksResourceTaxIdCollectionRequired::Never => "never",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentLinksResourceTaxIdCollectionRequired {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentLinksResourceTaxIdCollectionRequired {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinksResourceTaxIdCollectionRequired {
+    fn default() -> Self {
+        Self::IfSupported
+    }
+}
+
 /// An enum representing the possible values of an `UpdatePaymentLinkAfterCompletion`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -4516,6 +4638,8 @@ pub enum UpdatePaymentLinkPaymentMethodTypes {
     Klarna,
     Konbini,
     Link,
+    Mobilepay,
+    Multibanco,
     Oxxo,
     P24,
     Paynow,
@@ -4525,8 +4649,10 @@ pub enum UpdatePaymentLinkPaymentMethodTypes {
     SepaDebit,
     Sofort,
     Swish,
+    Twint,
     UsBankAccount,
     WechatPay,
+    Zip,
 }
 
 impl UpdatePaymentLinkPaymentMethodTypes {
@@ -4550,6 +4676,8 @@ impl UpdatePaymentLinkPaymentMethodTypes {
             UpdatePaymentLinkPaymentMethodTypes::Klarna => "klarna",
             UpdatePaymentLinkPaymentMethodTypes::Konbini => "konbini",
             UpdatePaymentLinkPaymentMethodTypes::Link => "link",
+            UpdatePaymentLinkPaymentMethodTypes::Mobilepay => "mobilepay",
+            UpdatePaymentLinkPaymentMethodTypes::Multibanco => "multibanco",
             UpdatePaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
             UpdatePaymentLinkPaymentMethodTypes::P24 => "p24",
             UpdatePaymentLinkPaymentMethodTypes::Paynow => "paynow",
@@ -4559,8 +4687,10 @@ impl UpdatePaymentLinkPaymentMethodTypes {
             UpdatePaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
             UpdatePaymentLinkPaymentMethodTypes::Sofort => "sofort",
             UpdatePaymentLinkPaymentMethodTypes::Swish => "swish",
+            UpdatePaymentLinkPaymentMethodTypes::Twint => "twint",
             UpdatePaymentLinkPaymentMethodTypes::UsBankAccount => "us_bank_account",
             UpdatePaymentLinkPaymentMethodTypes::WechatPay => "wechat_pay",
+            UpdatePaymentLinkPaymentMethodTypes::Zip => "zip",
         }
     }
 }
@@ -5395,5 +5525,39 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::Cancel
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentLinkTaxIdCollection`'s `required` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentLinkTaxIdCollectionRequired {
+    IfSupported,
+    Never,
+}
+
+impl UpdatePaymentLinkTaxIdCollectionRequired {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentLinkTaxIdCollectionRequired::IfSupported => "if_supported",
+            UpdatePaymentLinkTaxIdCollectionRequired::Never => "never",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentLinkTaxIdCollectionRequired {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentLinkTaxIdCollectionRequired {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentLinkTaxIdCollectionRequired {
+    fn default() -> Self {
+        Self::IfSupported
     }
 }

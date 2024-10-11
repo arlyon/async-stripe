@@ -87,6 +87,9 @@ pub struct MandatePaymentMethodDetails {
     pub acss_debit: Option<MandateAcssDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub amazon_pay: Option<MandateAmazonPay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit: Option<MandateAuBecsDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -103,6 +106,9 @@ pub struct MandatePaymentMethodDetails {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paypal: Option<MandatePaypal>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay: Option<MandateRevolutPay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<MandateSepaDebit>,
@@ -137,6 +143,9 @@ pub struct MandateAcssDebit {
     /// Transaction type of the mandate.
     pub transaction_type: MandateAcssDebitTransactionType,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct MandateAmazonPay {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateAuBecsDebit {
@@ -181,6 +190,9 @@ pub struct MandatePaypal {
     /// This identifier uniquely identifies the PayPal customer.
     pub payer_id: Option<String>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct MandateRevolutPay {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateSepaDebit {

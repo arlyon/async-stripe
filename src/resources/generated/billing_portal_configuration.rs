@@ -87,8 +87,6 @@ pub struct PortalFeatures {
 
     pub subscription_cancel: PortalSubscriptionCancel,
 
-    pub subscription_pause: PortalSubscriptionPause,
-
     pub subscription_update: PortalSubscriptionUpdate,
 }
 
@@ -154,12 +152,6 @@ pub struct PortalSubscriptionCancellationReason {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PortalSubscriptionPause {
-    /// Whether the feature is enabled.
-    pub enabled: bool,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalSubscriptionUpdate {
     /// The types of subscription updates that are supported for items listed in the `products` attribute.
     ///
@@ -170,11 +162,13 @@ pub struct PortalSubscriptionUpdate {
     pub enabled: bool,
 
     /// The list of up to 10 products that support subscription updates.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub products: Option<Vec<PortalSubscriptionUpdateProduct>>,
 
     /// Determines how to handle prorations resulting from subscription updates.
     ///
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
+    /// Defaults to a value of `none` if you don't set it during creation.
     pub proration_behavior: PortalSubscriptionUpdateProrationBehavior,
 }
 

@@ -29,7 +29,7 @@ pub struct TerminalReader {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_sw_version: Option<String>,
 
-    /// Type of reader, one of `bbpos_wisepad3`, `stripe_m2`, `bbpos_chipper2x`, `bbpos_wisepos_e`, `verifone_P400`, or `simulated_wisepos_e`.
+    /// Type of reader, one of `bbpos_wisepad3`, `stripe_m2`, `stripe_s700`, `bbpos_chipper2x`, `bbpos_wisepos_e`, `verifone_P400`, `simulated_wisepos_e`, or `mobile_phone_reader`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_type: Option<TerminalReaderDeviceType>,
 
@@ -60,6 +60,8 @@ pub struct TerminalReader {
     pub serial_number: Option<String>,
 
     /// The networking status of the reader.
+    ///
+    /// We do not recommend using this field in flows that may block taking payments.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<TerminalReaderStatus>,
 }
@@ -129,6 +131,10 @@ pub struct TerminalReaderReaderResourceProcessPaymentIntentAction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceProcessConfig {
+    /// Enable customer initiated cancellation when processing this payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_customer_cancellation: Option<bool>,
+
     /// Override showing a tipping selection screen on this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub skip_tipping: Option<bool>,
@@ -153,7 +159,11 @@ pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct TerminalReaderReaderResourceProcessSetupConfig {}
+pub struct TerminalReaderReaderResourceProcessSetupConfig {
+    /// Enable customer initiated cancellation when processing this SetupIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_customer_cancellation: Option<bool>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceRefundPaymentAction {
@@ -191,12 +201,22 @@ pub struct TerminalReaderReaderResourceRefundPaymentAction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_application_fee: Option<bool>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_payment_config: Option<TerminalReaderReaderResourceRefundPaymentConfig>,
+
     /// Boolean indicating whether the transfer should be reversed when refunding this charge.
     ///
     /// The transfer will be reversed proportionally to the amount being refunded (either the entire or partial amount).
     /// A transfer can be reversed only by the application that created the charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reverse_transfer: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceRefundPaymentConfig {
+    /// Enable customer initiated cancellation when refunding this payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_customer_cancellation: Option<bool>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -365,8 +385,10 @@ pub enum TerminalReaderDeviceType {
     BbposChipper2x,
     BbposWisepad3,
     BbposWiseposE,
+    MobilePhoneReader,
     SimulatedWiseposE,
     StripeM2,
+    StripeS700,
     #[serde(rename = "verifone_P400")]
     VerifoneP400,
 }
@@ -377,8 +399,10 @@ impl TerminalReaderDeviceType {
             TerminalReaderDeviceType::BbposChipper2x => "bbpos_chipper2x",
             TerminalReaderDeviceType::BbposWisepad3 => "bbpos_wisepad3",
             TerminalReaderDeviceType::BbposWiseposE => "bbpos_wisepos_e",
+            TerminalReaderDeviceType::MobilePhoneReader => "mobile_phone_reader",
             TerminalReaderDeviceType::SimulatedWiseposE => "simulated_wisepos_e",
             TerminalReaderDeviceType::StripeM2 => "stripe_m2",
+            TerminalReaderDeviceType::StripeS700 => "stripe_s700",
             TerminalReaderDeviceType::VerifoneP400 => "verifone_P400",
         }
     }

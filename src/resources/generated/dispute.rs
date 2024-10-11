@@ -224,12 +224,27 @@ pub struct DisputeEvidenceDetails {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DisputePaymentMethodDetails {
-    /// Card specific dispute details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amazon_pay: Option<DisputePaymentMethodDetailsAmazonPay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<DisputePaymentMethodDetailsCard>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<DisputePaymentMethodDetailsKlarna>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<DisputePaymentMethodDetailsPaypal>,
 
     /// Payment method type.
     #[serde(rename = "type")]
     pub type_: DisputePaymentMethodDetailsType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputePaymentMethodDetailsAmazonPay {
+    /// The AmazonPay dispute type, chargeback or claim.
+    pub dispute_type: Option<DisputePaymentMethodDetailsAmazonPayDisputeType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -239,10 +254,30 @@ pub struct DisputePaymentMethodDetailsCard {
     /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: String,
 
+    /// The type of dispute opened.
+    ///
+    /// Different case types may have varying fees and financial impact.
+    pub case_type: DisputePaymentMethodDetailsCardCaseType,
+
     /// The card network's specific dispute reason code, which maps to one of Stripe's primary dispute categories to simplify response guidance.
     ///
     /// The [Network code map](https://stripe.com/docs/disputes/categories#network-code-map) lists all available dispute reason codes by network.
     pub network_reason_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputePaymentMethodDetailsKlarna {
+    /// The reason for the dispute as defined by Klarna.
+    pub reason_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputePaymentMethodDetailsPaypal {
+    /// The ID of the dispute in PayPal.
+    pub case_id: Option<String>,
+
+    /// The reason for the dispute as defined by PayPal.
+    pub reason_code: Option<String>,
 }
 
 /// The parameters for `Dispute::list`.
@@ -252,6 +287,7 @@ pub struct ListDisputes<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<ChargeId>,
 
+    /// Only return disputes that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -303,17 +339,91 @@ impl Paginable for ListDisputes<'_> {
         self.starting_after = Some(item.id());
     }
 }
+/// An enum representing the possible values of an `DisputePaymentMethodDetailsAmazonPay`'s `dispute_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum DisputePaymentMethodDetailsAmazonPayDisputeType {
+    Chargeback,
+    Claim,
+}
+
+impl DisputePaymentMethodDetailsAmazonPayDisputeType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            DisputePaymentMethodDetailsAmazonPayDisputeType::Chargeback => "chargeback",
+            DisputePaymentMethodDetailsAmazonPayDisputeType::Claim => "claim",
+        }
+    }
+}
+
+impl AsRef<str> for DisputePaymentMethodDetailsAmazonPayDisputeType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for DisputePaymentMethodDetailsAmazonPayDisputeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for DisputePaymentMethodDetailsAmazonPayDisputeType {
+    fn default() -> Self {
+        Self::Chargeback
+    }
+}
+
+/// An enum representing the possible values of an `DisputePaymentMethodDetailsCard`'s `case_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum DisputePaymentMethodDetailsCardCaseType {
+    Chargeback,
+    Inquiry,
+}
+
+impl DisputePaymentMethodDetailsCardCaseType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            DisputePaymentMethodDetailsCardCaseType::Chargeback => "chargeback",
+            DisputePaymentMethodDetailsCardCaseType::Inquiry => "inquiry",
+        }
+    }
+}
+
+impl AsRef<str> for DisputePaymentMethodDetailsCardCaseType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for DisputePaymentMethodDetailsCardCaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for DisputePaymentMethodDetailsCardCaseType {
+    fn default() -> Self {
+        Self::Chargeback
+    }
+}
+
 /// An enum representing the possible values of an `DisputePaymentMethodDetails`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum DisputePaymentMethodDetailsType {
+    AmazonPay,
     Card,
+    Klarna,
+    Paypal,
 }
 
 impl DisputePaymentMethodDetailsType {
     pub fn as_str(self) -> &'static str {
         match self {
+            DisputePaymentMethodDetailsType::AmazonPay => "amazon_pay",
             DisputePaymentMethodDetailsType::Card => "card",
+            DisputePaymentMethodDetailsType::Klarna => "klarna",
+            DisputePaymentMethodDetailsType::Paypal => "paypal",
         }
     }
 }
@@ -331,7 +441,7 @@ impl std::fmt::Display for DisputePaymentMethodDetailsType {
 }
 impl std::default::Default for DisputePaymentMethodDetailsType {
     fn default() -> Self {
-        Self::Card
+        Self::AmazonPay
     }
 }
 

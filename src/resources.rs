@@ -144,7 +144,6 @@ pub use {
         payment_method_options_us_bank_account_mandate_options::*,
         payment_method_config_biz_payment_method_configuration_details::*,
         payout::*,
-        platform_tax_fee::*,
         price::*,
         product::*,
         radar_radar_options::*,
@@ -171,7 +170,6 @@ pub use {
         card::*,
         bank_account::*,
         payment_method::*,
-        payment_method_card_present_networks::*,
         source::*,
     },
 };
@@ -230,7 +228,6 @@ pub use {
         invoice_payment_method_options_customer_balance::*,
         invoice_payment_method_options_us_bank_account::*,
         invoiceitem::*,
-        invoices_shipping_cost::*,
         line_item::*,
         plan::*,
         plan::PlanInterval,

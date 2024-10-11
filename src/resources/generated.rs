@@ -37,7 +37,6 @@ pub mod core {
     pub mod payment_method_options_customer_balance_eu_bank_account;
     pub mod payment_method_options_us_bank_account_mandate_options;
     pub mod payout;
-    pub mod platform_tax_fee;
     pub mod price;
     pub mod product;
     pub mod radar_radar_options;
@@ -59,7 +58,6 @@ pub mod payment {
     pub mod bank_account;
     pub mod card;
     pub mod payment_method;
-    pub mod payment_method_card_present_networks;
     pub mod source;
 }
 
@@ -96,7 +94,6 @@ pub mod billing {
     pub mod invoice_payment_method_options_konbini;
     pub mod invoice_payment_method_options_us_bank_account;
     pub mod invoiceitem;
-    pub mod invoices_shipping_cost;
     pub mod line_item;
     pub mod plan;
     pub mod promotion_code;

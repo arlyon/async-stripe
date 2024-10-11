@@ -32,8 +32,18 @@ pub struct TerminalConfiguration {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub livemode: Option<bool>,
 
+    /// String indicating the name of the Configuration object, set by the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offline: Option<TerminalConfigurationConfigurationResourceOfflineConfig>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reboot_window: Option<TerminalConfigurationConfigurationResourceRebootWindow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stripe_s700: Option<TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tipping: Option<TerminalConfigurationConfigurationResourceTipping>,
@@ -84,6 +94,17 @@ pub struct TerminalConfigurationConfigurationResourceOfflineConfig {
     ///
     /// Defaults to false.
     pub enabled: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalConfigurationConfigurationResourceRebootWindow {
+    /// Integer between 0 to 23 that represents the end hour of the reboot time window.
+    ///
+    /// The value must be different than the start_hour.
+    pub end_hour: i64,
+
+    /// Integer between 0 to 23 that represents the start hour of the reboot time window.
+    pub start_hour: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -157,9 +178,21 @@ pub struct CreateTerminalConfiguration<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
+    /// Name of the configuration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<&'a str>,
+
     /// Configurations for collecting transactions offline.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offline: Option<CreateTerminalConfigurationOffline>,
+
+    /// Reboot time settings for readers that support customized reboot time configuration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reboot_window: Option<CreateTerminalConfigurationRebootWindow>,
+
+    /// An object containing device type specific settings for Stripe S700 readers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stripe_s700: Option<CreateTerminalConfigurationStripeS700>,
 
     /// Tipping configurations for readers supporting on-reader tips.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -175,7 +208,10 @@ impl<'a> CreateTerminalConfiguration<'a> {
         CreateTerminalConfiguration {
             bbpos_wisepos_e: Default::default(),
             expand: Default::default(),
+            name: Default::default(),
             offline: Default::default(),
+            reboot_window: Default::default(),
+            stripe_s700: Default::default(),
             tipping: Default::default(),
             verifone_p400: Default::default(),
         }
@@ -244,6 +280,24 @@ pub struct CreateTerminalConfigurationOffline {
     ///
     /// Defaults to false.
     pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateTerminalConfigurationRebootWindow {
+    /// Integer between 0 to 23 that represents the end hour of the reboot time window.
+    ///
+    /// The value must be different than the start_hour.
+    pub end_hour: i64,
+
+    /// Integer between 0 to 23 that represents the start hour of the reboot time window.
+    pub start_hour: i64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateTerminalConfigurationStripeS700 {
+    /// A File ID representing an image you would like displayed on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

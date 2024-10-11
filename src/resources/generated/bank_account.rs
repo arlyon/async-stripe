@@ -100,8 +100,8 @@ pub struct BankAccount {
     /// If customer bank account verification has succeeded, the bank account status will be `verified`.
     /// If the verification failed for any reason, such as microdeposit failure, the status will be `verification_failed`.
     /// If a payout sent to this bank account fails, we'll set the status to `errored` and will not continue to send [scheduled payouts](https://stripe.com/docs/payouts#payout-schedule) until the bank details are updated.  For external accounts, possible values are `new`, `errored` and `verification_failed`.
-    /// If a payouts fails, the status is set to `errored` and scheduled payouts are stopped until account details are updated.
-    /// In India, if we can't [verify the owner of the bank account](https://support.stripe.com/questions/bank-account-ownership-verification), we'll set the status to `verification_failed`.
+    /// If a payout fails, the status is set to `errored` and scheduled payouts are stopped until account details are updated.
+    /// In the US and India, if we can't [verify the owner of the bank account](https://support.stripe.com/questions/bank-account-ownership-verification), we'll set the status to `verification_failed`.
     /// Other validations aren't run against external accounts because they're only used for payouts.
     /// This means the other statuses don't apply.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -133,10 +133,11 @@ pub struct ExternalAccountRequirements {
     /// These fields need to be collected to enable the external account.
     pub past_due: Option<Vec<String>>,
 
-    /// Fields that may become required depending on the results of verification or review.
+    /// Fields that might become required depending on the results of verification or review.
     ///
-    /// Will be an empty array unless an asynchronous verification is pending.
+    /// It's an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
+    /// Fields might appear in `eventually_due`, `currently_due`, or `past_due` and in `pending_verification` if verification fails but another verification is still pending.
     pub pending_verification: Option<Vec<String>>,
 }
 
@@ -237,6 +238,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedKeyedMatch,
     VerificationFailedNameMatch,
     VerificationFailedOther,
+    VerificationFailedRepresentativeAuthority,
     VerificationFailedResidentialAddress,
     VerificationFailedTaxIdMatch,
     VerificationFailedTaxIdNotIssued,
@@ -244,6 +246,8 @@ pub enum AccountRequirementsErrorCode {
     VerificationMissingExecutives,
     VerificationMissingOwners,
     VerificationRequiresAdditionalMemorandumOfAssociations,
+    VerificationRequiresAdditionalProofOfRegistration,
+    VerificationSupportability,
 }
 
 impl AccountRequirementsErrorCode {
@@ -329,6 +333,7 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationFailedKeyedMatch => "verification_failed_keyed_match",
             AccountRequirementsErrorCode::VerificationFailedNameMatch => "verification_failed_name_match",
             AccountRequirementsErrorCode::VerificationFailedOther => "verification_failed_other",
+            AccountRequirementsErrorCode::VerificationFailedRepresentativeAuthority => "verification_failed_representative_authority",
             AccountRequirementsErrorCode::VerificationFailedResidentialAddress => "verification_failed_residential_address",
             AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => "verification_failed_tax_id_match",
             AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",
@@ -336,6 +341,8 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationMissingExecutives => "verification_missing_executives",
             AccountRequirementsErrorCode::VerificationMissingOwners => "verification_missing_owners",
             AccountRequirementsErrorCode::VerificationRequiresAdditionalMemorandumOfAssociations => "verification_requires_additional_memorandum_of_associations",
+            AccountRequirementsErrorCode::VerificationRequiresAdditionalProofOfRegistration => "verification_requires_additional_proof_of_registration",
+            AccountRequirementsErrorCode::VerificationSupportability => "verification_supportability",
         }
     }
 }

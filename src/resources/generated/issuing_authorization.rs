@@ -57,6 +57,14 @@ pub struct IssuingAuthorization {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// Fleet-specific information for authorizations using Fleet cards.
+    pub fleet: Option<IssuingAuthorizationFleetData>,
+
+    /// Information about fuel that was purchased with this transaction.
+    ///
+    /// Typically this information is received from the merchant after the authorization has been approved and the fuel dispensed.
+    pub fuel: Option<IssuingAuthorizationFuelData>,
+
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
@@ -128,6 +136,108 @@ impl Object for IssuingAuthorization {
     fn object(&self) -> &'static str {
         "issuing.authorization"
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFleetData {
+    /// Answers to prompts presented to the cardholder at the point of sale.
+    ///
+    /// Prompted fields vary depending on the configuration of your physical fleet cards.
+    /// Typical points of sale support only numeric entry.
+    pub cardholder_prompt_data: Option<IssuingAuthorizationFleetCardholderPromptData>,
+
+    /// The type of purchase.
+    pub purchase_type: Option<IssuingAuthorizationFleetDataPurchaseType>,
+
+    /// More information about the total amount.
+    ///
+    /// Typically this information is received from the merchant after the authorization has been approved and the fuel dispensed.
+    /// This information is not guaranteed to be accurate as some merchants may provide unreliable data.
+    pub reported_breakdown: Option<IssuingAuthorizationFleetReportedBreakdown>,
+
+    /// The type of fuel service.
+    pub service_type: Option<IssuingAuthorizationFleetDataServiceType>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFleetCardholderPromptData {
+    /// [Deprecated] An alphanumeric ID, though typical point of sales only support numeric entry.
+    ///
+    /// The card program can be configured to prompt for a vehicle ID, driver ID, or generic ID.
+    pub alphanumeric_id: Option<String>,
+
+    /// Driver ID.
+    pub driver_id: Option<String>,
+
+    /// Odometer reading.
+    pub odometer: Option<i64>,
+
+    /// An alphanumeric ID.
+    ///
+    /// This field is used when a vehicle ID, driver ID, or generic ID is entered by the cardholder, but the merchant or card network did not specify the prompt type.
+    pub unspecified_id: Option<String>,
+
+    /// User ID.
+    pub user_id: Option<String>,
+
+    /// Vehicle number.
+    pub vehicle_number: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFleetReportedBreakdown {
+    /// Breakdown of fuel portion of the purchase.
+    pub fuel: Option<IssuingAuthorizationFleetFuelPriceData>,
+
+    /// Breakdown of non-fuel portion of the purchase.
+    pub non_fuel: Option<IssuingAuthorizationFleetNonFuelPriceData>,
+
+    /// Information about tax included in this transaction.
+    pub tax: Option<IssuingAuthorizationFleetTaxData>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFleetFuelPriceData {
+    /// Gross fuel amount that should equal Fuel Quantity multiplied by Fuel Unit Cost, inclusive of taxes.
+    pub gross_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFleetNonFuelPriceData {
+    /// Gross non-fuel amount that should equal the sum of the line items, inclusive of taxes.
+    pub gross_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFleetTaxData {
+    /// Amount of state or provincial Sales Tax included in the transaction amount.
+    ///
+    /// `null` if not reported by merchant or not subject to tax.
+    pub local_amount_decimal: Option<String>,
+
+    /// Amount of national Sales Tax or VAT included in the transaction amount.
+    ///
+    /// `null` if not reported by merchant or not subject to tax.
+    pub national_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFuelData {
+    /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
+    pub industry_product_code: Option<String>,
+
+    /// The quantity of `unit`s of fuel that was dispensed, represented as a decimal string with at most 12 decimal places.
+    pub quantity_decimal: Option<String>,
+
+    /// The type of fuel that was purchased.
+    #[serde(rename = "type")]
+    pub type_: Option<IssuingAuthorizationFuelDataType>,
+
+    /// The units for `quantity_decimal`.
+    pub unit: Option<IssuingAuthorizationFuelDataUnit>,
+
+    /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
+    pub unit_cost_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -360,6 +470,166 @@ impl std::fmt::Display for IssuingAuthorizationAuthenticationExemptionType {
 impl std::default::Default for IssuingAuthorizationAuthenticationExemptionType {
     fn default() -> Self {
         Self::LowValueTransaction
+    }
+}
+
+/// An enum representing the possible values of an `IssuingAuthorizationFleetData`'s `purchase_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingAuthorizationFleetDataPurchaseType {
+    FuelAndNonFuelPurchase,
+    FuelPurchase,
+    NonFuelPurchase,
+}
+
+impl IssuingAuthorizationFleetDataPurchaseType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingAuthorizationFleetDataPurchaseType::FuelAndNonFuelPurchase => {
+                "fuel_and_non_fuel_purchase"
+            }
+            IssuingAuthorizationFleetDataPurchaseType::FuelPurchase => "fuel_purchase",
+            IssuingAuthorizationFleetDataPurchaseType::NonFuelPurchase => "non_fuel_purchase",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingAuthorizationFleetDataPurchaseType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingAuthorizationFleetDataPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingAuthorizationFleetDataPurchaseType {
+    fn default() -> Self {
+        Self::FuelAndNonFuelPurchase
+    }
+}
+
+/// An enum representing the possible values of an `IssuingAuthorizationFleetData`'s `service_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingAuthorizationFleetDataServiceType {
+    FullService,
+    NonFuelTransaction,
+    SelfService,
+}
+
+impl IssuingAuthorizationFleetDataServiceType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingAuthorizationFleetDataServiceType::FullService => "full_service",
+            IssuingAuthorizationFleetDataServiceType::NonFuelTransaction => "non_fuel_transaction",
+            IssuingAuthorizationFleetDataServiceType::SelfService => "self_service",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingAuthorizationFleetDataServiceType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingAuthorizationFleetDataServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingAuthorizationFleetDataServiceType {
+    fn default() -> Self {
+        Self::FullService
+    }
+}
+
+/// An enum representing the possible values of an `IssuingAuthorizationFuelData`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingAuthorizationFuelDataType {
+    Diesel,
+    Other,
+    UnleadedPlus,
+    UnleadedRegular,
+    UnleadedSuper,
+}
+
+impl IssuingAuthorizationFuelDataType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingAuthorizationFuelDataType::Diesel => "diesel",
+            IssuingAuthorizationFuelDataType::Other => "other",
+            IssuingAuthorizationFuelDataType::UnleadedPlus => "unleaded_plus",
+            IssuingAuthorizationFuelDataType::UnleadedRegular => "unleaded_regular",
+            IssuingAuthorizationFuelDataType::UnleadedSuper => "unleaded_super",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingAuthorizationFuelDataType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingAuthorizationFuelDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingAuthorizationFuelDataType {
+    fn default() -> Self {
+        Self::Diesel
+    }
+}
+
+/// An enum representing the possible values of an `IssuingAuthorizationFuelData`'s `unit` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingAuthorizationFuelDataUnit {
+    ChargingMinute,
+    ImperialGallon,
+    Kilogram,
+    KilowattHour,
+    Liter,
+    Other,
+    Pound,
+    UsGallon,
+}
+
+impl IssuingAuthorizationFuelDataUnit {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingAuthorizationFuelDataUnit::ChargingMinute => "charging_minute",
+            IssuingAuthorizationFuelDataUnit::ImperialGallon => "imperial_gallon",
+            IssuingAuthorizationFuelDataUnit::Kilogram => "kilogram",
+            IssuingAuthorizationFuelDataUnit::KilowattHour => "kilowatt_hour",
+            IssuingAuthorizationFuelDataUnit::Liter => "liter",
+            IssuingAuthorizationFuelDataUnit::Other => "other",
+            IssuingAuthorizationFuelDataUnit::Pound => "pound",
+            IssuingAuthorizationFuelDataUnit::UsGallon => "us_gallon",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingAuthorizationFuelDataUnit {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingAuthorizationFuelDataUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingAuthorizationFuelDataUnit {
+    fn default() -> Self {
+        Self::ChargingMinute
     }
 }
 

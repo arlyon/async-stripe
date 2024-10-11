@@ -89,6 +89,10 @@ pub struct Plan {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
+    /// The meter tracking the usage of a metered price.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub meter: Option<String>,
+
     /// A brief description of the plan, hidden from customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<String>,

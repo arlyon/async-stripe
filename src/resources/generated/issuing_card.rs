@@ -8,7 +8,7 @@ use crate::ids::IssuingCardId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
     Address, CardBrand, Currency, IssuingCardShippingStatus, IssuingCardShippingType,
-    IssuingCardType, IssuingCardholder, MerchantCategory,
+    IssuingCardType, IssuingCardholder, IssuingPersonalizationDesign, MerchantCategory,
 };
 
 /// The resource representing a Stripe "IssuingCard".
@@ -72,6 +72,9 @@ pub struct IssuingCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub number: Option<String>,
 
+    /// The personalization design object belonging to this card.
+    pub personalization_design: Option<Expandable<IssuingPersonalizationDesign>>,
+
     /// The latest card that replaces this card, if any.
     pub replaced_by: Option<Expandable<IssuingCard>>,
 
@@ -118,11 +121,28 @@ pub struct IssuingCardAuthorizationControls {
     /// Cannot be set with `blocked_categories`.
     pub allowed_categories: Option<Vec<MerchantCategory>>,
 
+    /// Array of strings containing representing countries from which authorizations will be allowed.
+    ///
+    /// Authorizations from merchants in all other countries will be declined.
+    /// Country codes should be ISO 3166 alpha-2 country codes (e.g.
+    /// `US`).
+    /// Cannot be set with `blocked_merchant_countries`.
+    /// Provide an empty value to unset this control.
+    pub allowed_merchant_countries: Option<Vec<String>>,
+
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
     ///
     /// All other categories will be allowed.
     /// Cannot be set with `allowed_categories`.
     pub blocked_categories: Option<Vec<MerchantCategory>>,
+
+    /// Array of strings containing representing countries from which authorizations will be declined.
+    ///
+    /// Country codes should be ISO 3166 alpha-2 country codes (e.g.
+    /// `US`).
+    /// Cannot be set with `allowed_merchant_countries`.
+    /// Provide an empty value to unset this control.
+    pub blocked_merchant_countries: Option<Vec<String>>,
 
     /// Limit spending with amount-based rules that apply across any cards this card replaced (i.e., its `replacement_for` card and _that_ card's `replacement_for` card, up the chain).
     pub spending_limits: Option<Vec<IssuingCardSpendingLimit>>,
@@ -136,6 +156,9 @@ pub struct IssuingCardAuthorizationControls {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardShipping {
     pub address: Address,
+
+    /// Address validation details for the shipment.
+    pub address_validation: Option<IssuingCardShippingAddressValidation>,
 
     /// The delivery company that shipped a card.
     pub carrier: Option<IssuingCardShippingCarrier>,
@@ -177,6 +200,18 @@ pub struct IssuingCardShipping {
     /// Packaging options.
     #[serde(rename = "type")]
     pub type_: IssuingCardShippingType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingCardShippingAddressValidation {
+    /// The address validation capabilities to use.
+    pub mode: IssuingCardShippingAddressValidationMode,
+
+    /// The normalized shipping address.
+    pub normalized_address: Option<Address>,
+
+    /// The validation result for the shipping address.
+    pub result: Option<IssuingCardShippingAddressValidationResult>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -378,6 +413,82 @@ impl std::fmt::Display for IssuingCardReplacementReason {
 impl std::default::Default for IssuingCardReplacementReason {
     fn default() -> Self {
         Self::Damaged
+    }
+}
+
+/// An enum representing the possible values of an `IssuingCardShippingAddressValidation`'s `mode` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingCardShippingAddressValidationMode {
+    Disabled,
+    NormalizationOnly,
+    ValidationAndNormalization,
+}
+
+impl IssuingCardShippingAddressValidationMode {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingCardShippingAddressValidationMode::Disabled => "disabled",
+            IssuingCardShippingAddressValidationMode::NormalizationOnly => "normalization_only",
+            IssuingCardShippingAddressValidationMode::ValidationAndNormalization => {
+                "validation_and_normalization"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardShippingAddressValidationMode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardShippingAddressValidationMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingCardShippingAddressValidationMode {
+    fn default() -> Self {
+        Self::Disabled
+    }
+}
+
+/// An enum representing the possible values of an `IssuingCardShippingAddressValidation`'s `result` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingCardShippingAddressValidationResult {
+    Indeterminate,
+    LikelyDeliverable,
+    LikelyUndeliverable,
+}
+
+impl IssuingCardShippingAddressValidationResult {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingCardShippingAddressValidationResult::Indeterminate => "indeterminate",
+            IssuingCardShippingAddressValidationResult::LikelyDeliverable => "likely_deliverable",
+            IssuingCardShippingAddressValidationResult::LikelyUndeliverable => {
+                "likely_undeliverable"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardShippingAddressValidationResult {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardShippingAddressValidationResult {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingCardShippingAddressValidationResult {
+    fn default() -> Self {
+        Self::Indeterminate
     }
 }
 

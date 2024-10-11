@@ -39,7 +39,8 @@ pub struct CheckoutSessionItem {
     ///
     /// Often useful for displaying to users.
     /// Defaults to product name.
-    pub description: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
 
     /// The discounts applied to the line item.
     #[serde(skip_serializing_if = "Option::is_none")]

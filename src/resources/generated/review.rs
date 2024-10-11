@@ -125,6 +125,7 @@ pub struct RadarReviewResourceSession {
 /// The parameters for `Review::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListReviews<'a> {
+    /// Only return reviews that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 

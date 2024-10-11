@@ -131,7 +131,7 @@ pub struct Fee {
     /// Often useful for displaying to users.
     pub description: Option<String>,
 
-    /// Type of the fee, one of: `application_fee`, `stripe_fee` or `tax`.
+    /// Type of the fee, one of: `application_fee`, `payment_method_passthrough_fee`, `stripe_fee` or `tax`.
     #[serde(rename = "type")]
     pub type_: FeeType,
 }
@@ -139,6 +139,7 @@ pub struct Fee {
 /// The parameters for `BalanceTransaction::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListBalanceTransactions<'a> {
+    /// Only return transactions that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 

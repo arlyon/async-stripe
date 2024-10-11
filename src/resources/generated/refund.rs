@@ -96,7 +96,8 @@ pub struct Refund {
 impl Refund {
     /// Returns a list of all refunds you created.
     ///
-    /// We return the refunds in sorted order, with the most recent refunds appearing first The 10 most recent refunds are always available by default on the Charge object.
+    /// We return the refunds in sorted order, with the most recent refunds appearing first.
+    /// The 10 most recent refunds are always available by default on the Charge object.
     pub fn list(client: &Client, params: &ListRefunds<'_>) -> Response<List<Refund>> {
         client.get_query("/refunds", params)
     }
@@ -153,6 +154,9 @@ pub struct RefundDestinationDetails {
     pub alipay: Option<DestinationDetailsUnimplemented>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub amazon_pay: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub au_bank_transfer: Option<DestinationDetailsUnimplemented>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -190,6 +194,9 @@ pub struct RefundDestinationDetails {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub multibanco: Option<RefundDestinationDetailsGeneric>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mx_bank_transfer: Option<RefundDestinationDetailsGeneric>,
@@ -391,6 +398,7 @@ pub struct ListRefunds<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<ChargeId>,
 
+    /// Only return refunds that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 

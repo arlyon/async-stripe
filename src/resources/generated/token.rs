@@ -47,7 +47,7 @@ impl Token {
     /// You can use this token with any API method in place of a bank account dictionary.
     ///
     /// You can only use this token once.
-    /// To do so, attach it to a [Custom account](https://stripe.com/docs/api#accounts).
+    /// To do so, attach it to a [connected account](https://stripe.com/docs/api#accounts) where <a href="/api/accounts/object#account_object-controller-requirement_collection">controller.requirement_collection</a> is `application`, which includes Custom accounts.
     pub fn create(client: &Client, params: CreateToken<'_>) -> Response<Token> {
         #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/tokens", &params)
@@ -135,7 +135,7 @@ pub struct CreateTokenAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<PersonParams>,
 
-    /// Whether the user described by the data in the token has been shown [the Stripe Connected Account Agreement](https://stripe.com/docs/connect/account-tokens#stripe-connected-account-agreement).
+    /// Whether the user described by the data in the token has been shown [the Stripe Connected Account Agreement](/connect/account-tokens#stripe-connected-account-agreement).
     ///
     /// When creating an account token to create a new Connect account, this value must be `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -150,7 +150,7 @@ pub struct CreateTokenCvcUpdate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPerson {
-    /// Details on the legal guardian's acceptance of the required Stripe agreements.
+    /// Details on the legal guardian's or authorizer's acceptance of the required Stripe agreements.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_tos_acceptances: Option<CreateTokenPersonAdditionalTosAcceptances>,
 
@@ -201,14 +201,14 @@ pub struct CreateTokenPerson {
     /// The person's ID number, as appropriate for their country.
     ///
     /// For example, a social security number in the U.S., social insurance number in Canada, etc.
-    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://docs.stripe.com/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<String>,
 
     /// The person's secondary ID number, as appropriate for their country, will be used for enhanced verification checks.
     ///
     /// In Thailand, this would be the laser code found on the back of an ID card.
-    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://docs.stripe.com/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_secondary: Option<String>,
 
@@ -522,6 +522,20 @@ pub struct CreditCardSpecs {
     /// Cardholder's full name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Contains information about card networks used to process the payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub networks: Option<Networks>,
     /// The card number, as a string without any separators.
     pub number: String,
+}
+
+/// Contains information about card networks used to process the payment.
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct Networks {
+    /// The customer's preferred card network for co-branded cards.
+    ///
+    /// Supports `cartes_bancaires`, `mastercard`, or `visa`.
+    /// Selection of a network that does not apply to the card will be stored as `invalid_preference` on the card.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred: Option<String>,
 }

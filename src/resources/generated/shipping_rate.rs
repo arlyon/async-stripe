@@ -61,8 +61,6 @@ pub struct ShippingRate {
     pub tax_code: Option<Expandable<TaxCode>>,
 
     /// The type of calculation to use on the shipping rate.
-    ///
-    /// Can only be `fixed_amount` for now.
     #[serde(rename = "type")]
     pub type_: ShippingRateType,
 }
@@ -204,8 +202,6 @@ pub struct CreateShippingRate<'a> {
     pub tax_code: Option<TaxCodeId>,
 
     /// The type of calculation to use on the shipping rate.
-    ///
-    /// Can only be `fixed_amount` for now.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<ShippingRateType>,

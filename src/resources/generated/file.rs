@@ -79,6 +79,7 @@ impl Object for File {
 /// The parameters for `File::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListFiles<'a> {
+    /// Only return files that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -145,6 +146,7 @@ pub enum FilePurpose {
     FinanceReportRun,
     IdentityDocument,
     IdentityDocumentDownloadable,
+    IssuingRegulatoryReporting,
     PciDocument,
     Selfie,
     SigmaScheduledQuery,
@@ -165,6 +167,7 @@ impl FilePurpose {
             FilePurpose::FinanceReportRun => "finance_report_run",
             FilePurpose::IdentityDocument => "identity_document",
             FilePurpose::IdentityDocumentDownloadable => "identity_document_downloadable",
+            FilePurpose::IssuingRegulatoryReporting => "issuing_regulatory_reporting",
             FilePurpose::PciDocument => "pci_document",
             FilePurpose::Selfie => "selfie",
             FilePurpose::SigmaScheduledQuery => "sigma_scheduled_query",
