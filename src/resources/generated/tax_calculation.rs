@@ -6,7 +6,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::ids::TaxCalculationId;
 use crate::params::{List, Object, Timestamp};
-use crate::resources::{Currency, TaxCalculationLineItem, TaxProductResourceCustomerDetails};
+use crate::resources::{
+    Currency, TaxCalculationLineItem, TaxProductResourceCustomerDetails,
+    TaxProductResourceShipFromDetails,
+};
 
 /// The resource representing a Stripe "TaxProductResourceTaxCalculation".
 ///
@@ -16,7 +19,7 @@ pub struct TaxCalculation {
     /// Unique identifier for the calculation.
     pub id: TaxCalculationId,
 
-    /// Total after taxes.
+    /// Total amount after taxes in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount_total: i64,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -33,10 +36,14 @@ pub struct TaxCalculation {
     pub expires_at: Option<Timestamp>,
 
     /// The list of items the customer is purchasing.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub line_items: Option<List<TaxCalculationLineItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+
+    /// The details of the ship from location, such as the address.
+    pub ship_from_details: Option<TaxProductResourceShipFromDetails>,
 
     /// The shipping cost details for the calculation.
     pub shipping_cost: Option<TaxProductResourceTaxCalculationShippingCost>,

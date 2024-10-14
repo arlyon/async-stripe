@@ -84,6 +84,8 @@ pub struct CreateTerminalLocation<'a> {
     pub configuration_overrides: Option<&'a str>,
 
     /// A name for the location.
+    ///
+    /// Maximum length is 1000 characters.
     pub display_name: &'a str,
 
     /// Specifies which fields in the response should be expanded.

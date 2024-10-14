@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::PayoutId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{BalanceTransaction, Currency, PayoutDestinationUnion};
+use crate::resources::{ApplicationFee, BalanceTransaction, Currency, PayoutDestinationUnion};
 
 /// The resource representing a Stripe "Payout".
 ///
@@ -19,6 +19,16 @@ pub struct Payout {
 
     /// The amount (in cents (or local equivalent)) that transfers to your bank account or debit card.
     pub amount: i64,
+
+    /// The application fee (if any) for the payout.
+    ///
+    /// [See the Connect documentation](https://stripe.com/docs/connect/instant-payouts#monetization-and-fees) for details.
+    pub application_fee: Option<Expandable<ApplicationFee>>,
+
+    /// The amount of the application fee (if any) requested for the payout.
+    ///
+    /// [See the Connect documentation](https://stripe.com/docs/connect/instant-payouts#monetization-and-fees) for details.
+    pub application_fee_amount: Option<i64>,
 
     /// Date that you can expect the payout to arrive in the bank.
     ///
@@ -225,9 +235,11 @@ impl<'a> CreatePayout<'a> {
 /// The parameters for `Payout::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPayouts<'a> {
+    /// Only return payouts that are expected to arrive during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub arrival_date: Option<RangeQuery<Timestamp>>,
 
+    /// Only return payouts that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 

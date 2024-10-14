@@ -90,6 +90,9 @@ pub struct TreasuryReceivedDebitsResourceLinkedFlows {
 
     /// Set if the ReceivedDebit is also viewable as an [Issuing Dispute](https://stripe.com/docs/api#issuing_disputes) object.
     pub issuing_transaction: Option<String>,
+
+    /// Set if the ReceivedDebit was created due to a [Payout](https://stripe.com/docs/api#payouts) object.
+    pub payout: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -109,6 +112,7 @@ pub enum TreasuryReceivedDebitFailureCode {
     AccountClosed,
     AccountFrozen,
     InsufficientFunds,
+    InternationalTransaction,
     Other,
 }
 
@@ -118,6 +122,7 @@ impl TreasuryReceivedDebitFailureCode {
             TreasuryReceivedDebitFailureCode::AccountClosed => "account_closed",
             TreasuryReceivedDebitFailureCode::AccountFrozen => "account_frozen",
             TreasuryReceivedDebitFailureCode::InsufficientFunds => "insufficient_funds",
+            TreasuryReceivedDebitFailureCode::InternationalTransaction => "international_transaction",
             TreasuryReceivedDebitFailureCode::Other => "other",
         }
     }

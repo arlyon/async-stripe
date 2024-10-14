@@ -55,7 +55,7 @@ pub struct WebhookEndpoint {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
-    /// The endpoint's secret, used to generate [webhook signatures](https://stripe.com/docs/webhooks/signatures).
+    /// The endpoint's secret, used to generate [webhook signatures](https://docs.stripe.com/webhooks/signatures).
     ///
     /// Only returned at creation.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -297,6 +297,8 @@ pub enum EventFilter {
     ApplicationFeeRefunded,
     #[serde(rename = "balance.available")]
     BalanceAvailable,
+    #[serde(rename = "billing.alert.triggered")]
+    BillingAlertTriggered,
     #[serde(rename = "billing_portal.configuration.created")]
     BillingPortalConfigurationCreated,
     #[serde(rename = "billing_portal.configuration.updated")]
@@ -411,6 +413,8 @@ pub enum EventFilter {
     CustomerUpdated,
     #[serde(rename = "customer_cash_balance_transaction.created")]
     CustomerCashBalanceTransactionCreated,
+    #[serde(rename = "entitlements.active_entitlement_summary.updated")]
+    EntitlementsActiveEntitlementSummaryUpdated,
     #[serde(rename = "file.created")]
     FileCreated,
     #[serde(rename = "financial_connections.account.created")]
@@ -423,6 +427,8 @@ pub enum EventFilter {
     FinancialConnectionsAccountReactivated,
     #[serde(rename = "financial_connections.account.refreshed_balance")]
     FinancialConnectionsAccountRefreshedBalance,
+    #[serde(rename = "financial_connections.account.refreshed_ownership")]
+    FinancialConnectionsAccountRefreshedOwnership,
     #[serde(rename = "financial_connections.account.refreshed_transactions")]
     FinancialConnectionsAccountRefreshedTransactions,
     #[serde(rename = "identity.verification_session.canceled")]
@@ -447,6 +453,8 @@ pub enum EventFilter {
     InvoiceFinalized,
     #[serde(rename = "invoice.marked_uncollectible")]
     InvoiceMarkedUncollectible,
+    #[serde(rename = "invoice.overdue")]
+    InvoiceOverdue,
     #[serde(rename = "invoice.paid")]
     InvoicePaid,
     #[serde(rename = "invoice.payment_action_required")]
@@ -463,6 +471,8 @@ pub enum EventFilter {
     InvoiceUpdated,
     #[serde(rename = "invoice.voided")]
     InvoiceVoided,
+    #[serde(rename = "invoice.will_be_due")]
+    InvoiceWillBeDue,
     #[serde(rename = "invoiceitem.created")]
     InvoiceitemCreated,
     #[serde(rename = "invoiceitem.deleted")]
@@ -487,10 +497,20 @@ pub enum EventFilter {
     IssuingDisputeCreated,
     #[serde(rename = "issuing_dispute.funds_reinstated")]
     IssuingDisputeFundsReinstated,
+    #[serde(rename = "issuing_dispute.funds_rescinded")]
+    IssuingDisputeFundsRescinded,
     #[serde(rename = "issuing_dispute.submitted")]
     IssuingDisputeSubmitted,
     #[serde(rename = "issuing_dispute.updated")]
     IssuingDisputeUpdated,
+    #[serde(rename = "issuing_personalization_design.activated")]
+    IssuingPersonalizationDesignActivated,
+    #[serde(rename = "issuing_personalization_design.deactivated")]
+    IssuingPersonalizationDesignDeactivated,
+    #[serde(rename = "issuing_personalization_design.rejected")]
+    IssuingPersonalizationDesignRejected,
+    #[serde(rename = "issuing_personalization_design.updated")]
+    IssuingPersonalizationDesignUpdated,
     #[serde(rename = "issuing_token.created")]
     IssuingTokenCreated,
     #[serde(rename = "issuing_token.updated")]
@@ -707,6 +727,8 @@ pub enum EventFilter {
     TreasuryOutboundPaymentPosted,
     #[serde(rename = "treasury.outbound_payment.returned")]
     TreasuryOutboundPaymentReturned,
+    #[serde(rename = "treasury.outbound_payment.tracking_details_updated")]
+    TreasuryOutboundPaymentTrackingDetailsUpdated,
     #[serde(rename = "treasury.outbound_transfer.canceled")]
     TreasuryOutboundTransferCanceled,
     #[serde(rename = "treasury.outbound_transfer.created")]
@@ -719,6 +741,8 @@ pub enum EventFilter {
     TreasuryOutboundTransferPosted,
     #[serde(rename = "treasury.outbound_transfer.returned")]
     TreasuryOutboundTransferReturned,
+    #[serde(rename = "treasury.outbound_transfer.tracking_details_updated")]
+    TreasuryOutboundTransferTrackingDetailsUpdated,
     #[serde(rename = "treasury.received_credit.created")]
     TreasuryReceivedCreditCreated,
     #[serde(rename = "treasury.received_credit.failed")]
@@ -743,6 +767,7 @@ impl EventFilter {
             EventFilter::ApplicationFeeRefundUpdated => "application_fee.refund.updated",
             EventFilter::ApplicationFeeRefunded => "application_fee.refunded",
             EventFilter::BalanceAvailable => "balance.available",
+            EventFilter::BillingAlertTriggered => "billing.alert.triggered",
             EventFilter::BillingPortalConfigurationCreated => {
                 "billing_portal.configuration.created"
             }
@@ -814,6 +839,9 @@ impl EventFilter {
             EventFilter::CustomerCashBalanceTransactionCreated => {
                 "customer_cash_balance_transaction.created"
             }
+            EventFilter::EntitlementsActiveEntitlementSummaryUpdated => {
+                "entitlements.active_entitlement_summary.updated"
+            }
             EventFilter::FileCreated => "file.created",
             EventFilter::FinancialConnectionsAccountCreated => {
                 "financial_connections.account.created"
@@ -829,6 +857,9 @@ impl EventFilter {
             }
             EventFilter::FinancialConnectionsAccountRefreshedBalance => {
                 "financial_connections.account.refreshed_balance"
+            }
+            EventFilter::FinancialConnectionsAccountRefreshedOwnership => {
+                "financial_connections.account.refreshed_ownership"
             }
             EventFilter::FinancialConnectionsAccountRefreshedTransactions => {
                 "financial_connections.account.refreshed_transactions"
@@ -856,6 +887,7 @@ impl EventFilter {
             EventFilter::InvoiceFinalizationFailed => "invoice.finalization_failed",
             EventFilter::InvoiceFinalized => "invoice.finalized",
             EventFilter::InvoiceMarkedUncollectible => "invoice.marked_uncollectible",
+            EventFilter::InvoiceOverdue => "invoice.overdue",
             EventFilter::InvoicePaid => "invoice.paid",
             EventFilter::InvoicePaymentActionRequired => "invoice.payment_action_required",
             EventFilter::InvoicePaymentFailed => "invoice.payment_failed",
@@ -864,6 +896,7 @@ impl EventFilter {
             EventFilter::InvoiceUpcoming => "invoice.upcoming",
             EventFilter::InvoiceUpdated => "invoice.updated",
             EventFilter::InvoiceVoided => "invoice.voided",
+            EventFilter::InvoiceWillBeDue => "invoice.will_be_due",
             EventFilter::InvoiceitemCreated => "invoiceitem.created",
             EventFilter::InvoiceitemDeleted => "invoiceitem.deleted",
             EventFilter::IssuingAuthorizationCreated => "issuing_authorization.created",
@@ -876,8 +909,21 @@ impl EventFilter {
             EventFilter::IssuingDisputeClosed => "issuing_dispute.closed",
             EventFilter::IssuingDisputeCreated => "issuing_dispute.created",
             EventFilter::IssuingDisputeFundsReinstated => "issuing_dispute.funds_reinstated",
+            EventFilter::IssuingDisputeFundsRescinded => "issuing_dispute.funds_rescinded",
             EventFilter::IssuingDisputeSubmitted => "issuing_dispute.submitted",
             EventFilter::IssuingDisputeUpdated => "issuing_dispute.updated",
+            EventFilter::IssuingPersonalizationDesignActivated => {
+                "issuing_personalization_design.activated"
+            }
+            EventFilter::IssuingPersonalizationDesignDeactivated => {
+                "issuing_personalization_design.deactivated"
+            }
+            EventFilter::IssuingPersonalizationDesignRejected => {
+                "issuing_personalization_design.rejected"
+            }
+            EventFilter::IssuingPersonalizationDesignUpdated => {
+                "issuing_personalization_design.updated"
+            }
             EventFilter::IssuingTokenCreated => "issuing_token.created",
             EventFilter::IssuingTokenUpdated => "issuing_token.updated",
             EventFilter::IssuingTransactionCreated => "issuing_transaction.created",
@@ -998,6 +1044,9 @@ impl EventFilter {
             EventFilter::TreasuryOutboundPaymentFailed => "treasury.outbound_payment.failed",
             EventFilter::TreasuryOutboundPaymentPosted => "treasury.outbound_payment.posted",
             EventFilter::TreasuryOutboundPaymentReturned => "treasury.outbound_payment.returned",
+            EventFilter::TreasuryOutboundPaymentTrackingDetailsUpdated => {
+                "treasury.outbound_payment.tracking_details_updated"
+            }
             EventFilter::TreasuryOutboundTransferCanceled => "treasury.outbound_transfer.canceled",
             EventFilter::TreasuryOutboundTransferCreated => "treasury.outbound_transfer.created",
             EventFilter::TreasuryOutboundTransferExpectedArrivalDateUpdated => {
@@ -1006,6 +1055,9 @@ impl EventFilter {
             EventFilter::TreasuryOutboundTransferFailed => "treasury.outbound_transfer.failed",
             EventFilter::TreasuryOutboundTransferPosted => "treasury.outbound_transfer.posted",
             EventFilter::TreasuryOutboundTransferReturned => "treasury.outbound_transfer.returned",
+            EventFilter::TreasuryOutboundTransferTrackingDetailsUpdated => {
+                "treasury.outbound_transfer.tracking_details_updated"
+            }
             EventFilter::TreasuryReceivedCreditCreated => "treasury.received_credit.created",
             EventFilter::TreasuryReceivedCreditFailed => "treasury.received_credit.failed",
             EventFilter::TreasuryReceivedCreditSucceeded => "treasury.received_credit.succeeded",

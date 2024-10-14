@@ -6,10 +6,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CreditNoteId, CustomerId, InvoiceId, RefundId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
-    CreditNoteLineItem, Currency, Customer, CustomerBalanceTransaction, Discount, Invoice,
-    InvoicesShippingCost, Refund, TaxRate,
+    BillingCreditBalanceTransaction, CreditNoteLineItem, Currency, Customer,
+    CustomerBalanceTransaction, Discount, Invoice, InvoicesResourceShippingCost, Refund, TaxRate,
 };
 
 /// The resource representing a Stripe "CreditNote".
@@ -80,6 +80,9 @@ pub struct CreditNote {
     /// The link to download the PDF of the credit note.
     pub pdf: String,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pretax_credit_amounts: Option<Vec<CreditNotesPretaxCreditAmount>>,
+
     /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
     pub reason: Option<CreditNoteReason>,
 
@@ -87,7 +90,7 @@ pub struct CreditNote {
     pub refund: Option<Expandable<Refund>>,
 
     /// The details of the cost of shipping, including the ShippingRate applied to the invoice.
-    pub shipping_cost: Option<InvoicesShippingCost>,
+    pub shipping_cost: Option<InvoicesResourceShippingCost>,
 
     /// Status of this credit note, one of `issued` or `void`.
     ///
@@ -184,6 +187,24 @@ pub struct CreditNoteTaxAmount {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreditNotesPretaxCreditAmount {
+    /// The amount, in cents (or local equivalent), of the pretax credit amount.
+    pub amount: i64,
+
+    /// The credit balance transaction that was applied to get this pretax credit amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub credit_balance_transaction: Option<Expandable<BillingCreditBalanceTransaction>>,
+
+    /// The discount that was applied to get this pretax credit amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<Expandable<Discount>>,
+
+    /// Type of the pretax credit amount referenced.
+    #[serde(rename = "type")]
+    pub type_: CreditNotesPretaxCreditAmountType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
     /// The amount, in cents (or local equivalent), of the discount.
     pub amount: i64,
@@ -209,6 +230,10 @@ pub struct CreateCreditNote<'a> {
     /// When defined, this value replaces the system-generated 'Date of issue' printed on the credit note PDF.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub effective_at: Option<Timestamp>,
+
+    /// Type of email to send to the customer, one of `credit_note` or `none` and the default is `credit_note`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email_type: Option<CreditNoteEmailType>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -262,6 +287,7 @@ impl<'a> CreateCreditNote<'a> {
             amount: Default::default(),
             credit_amount: Default::default(),
             effective_at: Default::default(),
+            email_type: Default::default(),
             expand: Default::default(),
             invoice,
             lines: Default::default(),
@@ -279,6 +305,10 @@ impl<'a> CreateCreditNote<'a> {
 /// The parameters for `CreditNote::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCreditNotes<'a> {
+    /// Only return credit notes that were created during the given date interval.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<RangeQuery<Timestamp>>,
+
     /// Only return credit notes for the customer specified by this customer ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
@@ -315,6 +345,7 @@ pub struct ListCreditNotes<'a> {
 impl<'a> ListCreditNotes<'a> {
     pub fn new() -> Self {
         ListCreditNotes {
+            created: Default::default(),
             customer: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
@@ -466,6 +497,40 @@ impl std::fmt::Display for CreateCreditNoteLinesType {
 impl std::default::Default for CreateCreditNoteLinesType {
     fn default() -> Self {
         Self::CustomLineItem
+    }
+}
+
+/// An enum representing the possible values of an `CreateCreditNote`'s `email_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreditNoteEmailType {
+    CreditNote,
+    None,
+}
+
+impl CreditNoteEmailType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreditNoteEmailType::CreditNote => "credit_note",
+            CreditNoteEmailType::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for CreditNoteEmailType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreditNoteEmailType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreditNoteEmailType {
+    fn default() -> Self {
+        Self::CreditNote
     }
 }
 
@@ -632,5 +697,41 @@ impl std::fmt::Display for CreditNoteType {
 impl std::default::Default for CreditNoteType {
     fn default() -> Self {
         Self::PostPayment
+    }
+}
+
+/// An enum representing the possible values of an `CreditNotesPretaxCreditAmount`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreditNotesPretaxCreditAmountType {
+    CreditBalanceTransaction,
+    Discount,
+}
+
+impl CreditNotesPretaxCreditAmountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreditNotesPretaxCreditAmountType::CreditBalanceTransaction => {
+                "credit_balance_transaction"
+            }
+            CreditNotesPretaxCreditAmountType::Discount => "discount",
+        }
+    }
+}
+
+impl AsRef<str> for CreditNotesPretaxCreditAmountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreditNotesPretaxCreditAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreditNotesPretaxCreditAmountType {
+    fn default() -> Self {
+        Self::CreditBalanceTransaction
     }
 }

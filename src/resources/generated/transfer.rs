@@ -62,7 +62,7 @@ pub struct Transfer {
     /// If the transfer is only partially reversed, this attribute will still be false.
     pub reversed: bool,
 
-    /// ID of the charge or payment that was used to fund the transfer.
+    /// ID of the charge that was used to fund the transfer.
     ///
     /// If null, the transfer was funded from the available balance.
     pub source_transaction: Option<Expandable<Charge>>,
@@ -132,7 +132,9 @@ pub struct CreateTransfer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
-    /// 3-letter [ISO code for currency](https://stripe.com/docs/payouts).
+    /// Three-letter [ISO code for currency](https://www.iso.org/iso-4217-currency-codes.html) in lowercase.
+    ///
+    /// Must be a [supported currency](https://docs.stripe.com/currencies).
     pub currency: Currency,
 
     /// An arbitrary string attached to the object.
@@ -198,6 +200,7 @@ impl<'a> CreateTransfer<'a> {
 /// The parameters for `Transfer::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTransfers<'a> {
+    /// Only return transfers that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 

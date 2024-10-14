@@ -47,6 +47,11 @@ pub struct ApplicationFee {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// Polymorphic source of the application fee.
+    ///
+    /// Includes the ID of the object the application fee was created from.
+    pub fee_source: Option<PlatformEarningFeeSource>,
+
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
@@ -95,6 +100,21 @@ impl Object for ApplicationFee {
     }
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PlatformEarningFeeSource {
+    /// Charge ID that created this application fee.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub charge: Option<String>,
+
+    /// Payout ID that created this application fee.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payout: Option<String>,
+
+    /// Type of object that created the application fee, either `charge` or `payout`.
+    #[serde(rename = "type")]
+    pub type_: PlatformEarningFeeSourceType,
+}
+
 /// The parameters for `ApplicationFee::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListApplicationFees<'a> {
@@ -102,6 +122,7 @@ pub struct ListApplicationFees<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<ChargeId>,
 
+    /// Only return applications fees that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -146,5 +167,38 @@ impl Paginable for ListApplicationFees<'_> {
     type O = ApplicationFee;
     fn set_last(&mut self, item: Self::O) {
         self.starting_after = Some(item.id());
+    }
+}
+/// An enum representing the possible values of an `PlatformEarningFeeSource`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PlatformEarningFeeSourceType {
+    Charge,
+    Payout,
+}
+
+impl PlatformEarningFeeSourceType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PlatformEarningFeeSourceType::Charge => "charge",
+            PlatformEarningFeeSourceType::Payout => "payout",
+        }
+    }
+}
+
+impl AsRef<str> for PlatformEarningFeeSourceType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PlatformEarningFeeSourceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PlatformEarningFeeSourceType {
+    fn default() -> Self {
+        Self::Charge
     }
 }

@@ -250,7 +250,6 @@ pub fn feature_groups() -> BTreeMap<&'static str, &'static str> {
 		("file_link", "core"),
 		("setup_intent", "core"),
 		("payout", "core"),
-		("platform_tax_fee", "core"),
 		("product", "core"),
 		("refund", "core"),
 		("reserve_transaction", "core"),

@@ -103,6 +103,7 @@ pub enum ApiErrorsCode {
     ChargeAlreadyRefunded,
     ChargeDisputed,
     ChargeExceedsSourceLimit,
+    ChargeExceedsTransactionLimit,
     ChargeExpiredForCapture,
     ChargeInvalidParameter,
     ChargeNotRefundable,
@@ -118,6 +119,10 @@ pub enum ApiErrorsCode {
     ExpiredCard,
     FinancialConnectionsAccountInactive,
     FinancialConnectionsNoSuccessfulTransactionRefresh,
+    ForwardingApiInactive,
+    ForwardingApiInvalidParameter,
+    ForwardingApiUpstreamConnectionError,
+    ForwardingApiUpstreamConnectionTimeout,
     IdempotencyKeyInUse,
     IncorrectAddress,
     IncorrectCvc,
@@ -136,6 +141,7 @@ pub enum ApiErrorsCode {
     InvalidCvc,
     InvalidExpiryMonth,
     InvalidExpiryYear,
+    InvalidMandateReferencePrefixFormat,
     InvalidNumber,
     InvalidSourceUsage,
     InvalidTaxLocation,
@@ -213,6 +219,7 @@ pub enum ApiErrorsCode {
     SetupIntentMandateInvalid,
     SetupIntentSetupAttemptExpired,
     SetupIntentUnexpectedState,
+    ShippingAddressInvalid,
     ShippingCalculationFailed,
     SkuInactive,
     StateUnsupported,
@@ -223,6 +230,8 @@ pub enum ApiErrorsCode {
     TerminalLocationCountryUnsupported,
     TerminalReaderBusy,
     TerminalReaderHardwareFault,
+    TerminalReaderInvalidLocationForActivation,
+    TerminalReaderInvalidLocationForPayment,
     TerminalReaderOffline,
     TerminalReaderTimeout,
     TestmodeChargesOnly,
@@ -275,6 +284,7 @@ impl ApiErrorsCode {
             ApiErrorsCode::ChargeAlreadyRefunded => "charge_already_refunded",
             ApiErrorsCode::ChargeDisputed => "charge_disputed",
             ApiErrorsCode::ChargeExceedsSourceLimit => "charge_exceeds_source_limit",
+            ApiErrorsCode::ChargeExceedsTransactionLimit => "charge_exceeds_transaction_limit",
             ApiErrorsCode::ChargeExpiredForCapture => "charge_expired_for_capture",
             ApiErrorsCode::ChargeInvalidParameter => "charge_invalid_parameter",
             ApiErrorsCode::ChargeNotRefundable => "charge_not_refundable",
@@ -294,6 +304,14 @@ impl ApiErrorsCode {
             ApiErrorsCode::FinancialConnectionsNoSuccessfulTransactionRefresh => {
                 "financial_connections_no_successful_transaction_refresh"
             }
+            ApiErrorsCode::ForwardingApiInactive => "forwarding_api_inactive",
+            ApiErrorsCode::ForwardingApiInvalidParameter => "forwarding_api_invalid_parameter",
+            ApiErrorsCode::ForwardingApiUpstreamConnectionError => {
+                "forwarding_api_upstream_connection_error"
+            }
+            ApiErrorsCode::ForwardingApiUpstreamConnectionTimeout => {
+                "forwarding_api_upstream_connection_timeout"
+            }
             ApiErrorsCode::IdempotencyKeyInUse => "idempotency_key_in_use",
             ApiErrorsCode::IncorrectAddress => "incorrect_address",
             ApiErrorsCode::IncorrectCvc => "incorrect_cvc",
@@ -312,6 +330,9 @@ impl ApiErrorsCode {
             ApiErrorsCode::InvalidCvc => "invalid_cvc",
             ApiErrorsCode::InvalidExpiryMonth => "invalid_expiry_month",
             ApiErrorsCode::InvalidExpiryYear => "invalid_expiry_year",
+            ApiErrorsCode::InvalidMandateReferencePrefixFormat => {
+                "invalid_mandate_reference_prefix_format"
+            }
             ApiErrorsCode::InvalidNumber => "invalid_number",
             ApiErrorsCode::InvalidSourceUsage => "invalid_source_usage",
             ApiErrorsCode::InvalidTaxLocation => "invalid_tax_location",
@@ -423,6 +444,7 @@ impl ApiErrorsCode {
             ApiErrorsCode::SetupIntentMandateInvalid => "setup_intent_mandate_invalid",
             ApiErrorsCode::SetupIntentSetupAttemptExpired => "setup_intent_setup_attempt_expired",
             ApiErrorsCode::SetupIntentUnexpectedState => "setup_intent_unexpected_state",
+            ApiErrorsCode::ShippingAddressInvalid => "shipping_address_invalid",
             ApiErrorsCode::ShippingCalculationFailed => "shipping_calculation_failed",
             ApiErrorsCode::SkuInactive => "sku_inactive",
             ApiErrorsCode::StateUnsupported => "state_unsupported",
@@ -435,6 +457,12 @@ impl ApiErrorsCode {
             }
             ApiErrorsCode::TerminalReaderBusy => "terminal_reader_busy",
             ApiErrorsCode::TerminalReaderHardwareFault => "terminal_reader_hardware_fault",
+            ApiErrorsCode::TerminalReaderInvalidLocationForActivation => {
+                "terminal_reader_invalid_location_for_activation"
+            }
+            ApiErrorsCode::TerminalReaderInvalidLocationForPayment => {
+                "terminal_reader_invalid_location_for_payment"
+            }
             ApiErrorsCode::TerminalReaderOffline => "terminal_reader_offline",
             ApiErrorsCode::TerminalReaderTimeout => "terminal_reader_timeout",
             ApiErrorsCode::TestmodeChargesOnly => "testmode_charges_only",

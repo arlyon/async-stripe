@@ -8,6 +8,8 @@ use crate::ids::UsageRecordSummaryId;
 use crate::params::{Object, Timestamp};
 
 /// The resource representing a Stripe "UsageRecordSummary".
+///
+/// For more details see <https://stripe.com/docs/api/usage-record-summary/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UsageRecordSummary {
     /// Unique identifier for the object.

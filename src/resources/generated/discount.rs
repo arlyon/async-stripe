@@ -53,6 +53,9 @@ pub struct Discount {
 
     /// The subscription that this coupon is applied to, if it is applied to a particular subscription.
     pub subscription: Option<String>,
+
+    /// The subscription item that this coupon is applied to, if it is applied to a particular subscription item.
+    pub subscription_item: Option<String>,
 }
 
 impl Object for Discount {

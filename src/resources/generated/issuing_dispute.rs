@@ -24,6 +24,7 @@ pub struct IssuingDispute {
     pub amount: i64,
 
     /// List of balance transactions associated with the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub balance_transactions: Option<Vec<BalanceTransaction>>,
 
     /// Time at which the object was created.
@@ -38,6 +39,13 @@ pub struct IssuingDispute {
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+
+    /// The enum that describes the dispute loss outcome.
+    ///
+    /// If the dispute is not lost, this field will be absent.
+    /// New enum values may be added in the future, so be sure to handle unknown values.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub loss_reason: Option<IssuingDisputeLossReason>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -78,6 +86,9 @@ pub struct IssuingDisputeEvidence {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub merchandise_not_as_described: Option<IssuingDisputeMerchandiseNotAsDescribedEvidence>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub no_valid_authorization: Option<IssuingDisputeNoValidAuthorizationEvidence>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub not_received: Option<IssuingDisputeNotReceivedEvidence>,
@@ -178,6 +189,15 @@ pub struct IssuingDisputeMerchandiseNotAsDescribedEvidence {
 
     /// Date when the product was returned or attempted to be returned.
     pub returned_at: Option<Timestamp>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingDisputeNoValidAuthorizationEvidence {
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
+    pub additional_documentation: Option<Expandable<File>>,
+
+    /// Explanation of why the cardholder is disputing this transaction.
+    pub explanation: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -316,6 +336,7 @@ pub enum IssuingDisputeEvidenceReason {
     Duplicate,
     Fraudulent,
     MerchandiseNotAsDescribed,
+    NoValidAuthorization,
     NotReceived,
     Other,
     ServiceNotAsDescribed,
@@ -330,6 +351,7 @@ impl IssuingDisputeEvidenceReason {
             IssuingDisputeEvidenceReason::MerchandiseNotAsDescribed => {
                 "merchandise_not_as_described"
             }
+            IssuingDisputeEvidenceReason::NoValidAuthorization => "no_valid_authorization",
             IssuingDisputeEvidenceReason::NotReceived => "not_received",
             IssuingDisputeEvidenceReason::Other => "other",
             IssuingDisputeEvidenceReason::ServiceNotAsDescribed => "service_not_as_described",
@@ -351,6 +373,97 @@ impl std::fmt::Display for IssuingDisputeEvidenceReason {
 impl std::default::Default for IssuingDisputeEvidenceReason {
     fn default() -> Self {
         Self::Canceled
+    }
+}
+
+/// An enum representing the possible values of an `IssuingDispute`'s `loss_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingDisputeLossReason {
+    CardholderAuthenticationIssuerLiability,
+    Eci5TokenTransactionWithTavv,
+    ExcessDisputesInTimeframe,
+    HasNotMetTheMinimumDisputeAmountRequirements,
+    InvalidDuplicateDispute,
+    InvalidIncorrectAmountDispute,
+    InvalidNoAuthorization,
+    InvalidUseOfDisputes,
+    MerchandiseDeliveredOrShipped,
+    MerchandiseOrServiceAsDescribed,
+    NotCancelled,
+    Other,
+    RefundIssued,
+    SubmittedBeyondAllowableTimeLimit,
+    #[serde(rename = "transaction_3ds_required")]
+    Transaction3dsRequired,
+    TransactionApprovedAfterPriorFraudDispute,
+    TransactionAuthorized,
+    TransactionElectronicallyRead,
+    TransactionQualifiesForVisaEasyPaymentService,
+    TransactionUnattended,
+}
+
+impl IssuingDisputeLossReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingDisputeLossReason::CardholderAuthenticationIssuerLiability => {
+                "cardholder_authentication_issuer_liability"
+            }
+            IssuingDisputeLossReason::Eci5TokenTransactionWithTavv => {
+                "eci5_token_transaction_with_tavv"
+            }
+            IssuingDisputeLossReason::ExcessDisputesInTimeframe => "excess_disputes_in_timeframe",
+            IssuingDisputeLossReason::HasNotMetTheMinimumDisputeAmountRequirements => {
+                "has_not_met_the_minimum_dispute_amount_requirements"
+            }
+            IssuingDisputeLossReason::InvalidDuplicateDispute => "invalid_duplicate_dispute",
+            IssuingDisputeLossReason::InvalidIncorrectAmountDispute => {
+                "invalid_incorrect_amount_dispute"
+            }
+            IssuingDisputeLossReason::InvalidNoAuthorization => "invalid_no_authorization",
+            IssuingDisputeLossReason::InvalidUseOfDisputes => "invalid_use_of_disputes",
+            IssuingDisputeLossReason::MerchandiseDeliveredOrShipped => {
+                "merchandise_delivered_or_shipped"
+            }
+            IssuingDisputeLossReason::MerchandiseOrServiceAsDescribed => {
+                "merchandise_or_service_as_described"
+            }
+            IssuingDisputeLossReason::NotCancelled => "not_cancelled",
+            IssuingDisputeLossReason::Other => "other",
+            IssuingDisputeLossReason::RefundIssued => "refund_issued",
+            IssuingDisputeLossReason::SubmittedBeyondAllowableTimeLimit => {
+                "submitted_beyond_allowable_time_limit"
+            }
+            IssuingDisputeLossReason::Transaction3dsRequired => "transaction_3ds_required",
+            IssuingDisputeLossReason::TransactionApprovedAfterPriorFraudDispute => {
+                "transaction_approved_after_prior_fraud_dispute"
+            }
+            IssuingDisputeLossReason::TransactionAuthorized => "transaction_authorized",
+            IssuingDisputeLossReason::TransactionElectronicallyRead => {
+                "transaction_electronically_read"
+            }
+            IssuingDisputeLossReason::TransactionQualifiesForVisaEasyPaymentService => {
+                "transaction_qualifies_for_visa_easy_payment_service"
+            }
+            IssuingDisputeLossReason::TransactionUnattended => "transaction_unattended",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingDisputeLossReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingDisputeLossReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingDisputeLossReason {
+    fn default() -> Self {
+        Self::CardholderAuthenticationIssuerLiability
     }
 }
 

@@ -17,7 +17,7 @@ pub struct Balance {
     /// You can find the available balance for each currency and payment type in the `source_types` property.
     pub available: Vec<BalanceAmount>,
 
-    /// Funds held due to negative balances on connected Custom accounts.
+    /// Funds held due to negative balances on connected accounts where [account.controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
     ///
     /// You can find the connect reserve balance for each currency and payment type in the `source_types` property.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -71,6 +71,10 @@ pub struct BalanceAmountNet {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// Breakdown of balance by destination.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub net_available: Option<Vec<BalanceNetAvailable>>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_types: Option<BalanceAmountBySourceType>,
 }
@@ -79,4 +83,16 @@ pub struct BalanceAmountNet {
 pub struct BalanceDetail {
     /// Funds that are available for use.
     pub available: Vec<BalanceAmount>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct BalanceNetAvailable {
+    /// Net balance amount, subtracting fees from platform-set pricing.
+    pub amount: i64,
+
+    /// ID of the external account for this net balance (not expandable).
+    pub destination: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_types: Option<BalanceAmountBySourceType>,
 }

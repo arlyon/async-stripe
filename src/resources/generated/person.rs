@@ -210,7 +210,8 @@ pub struct PersonVerificationDocument {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonAdditionalTosAcceptances {
-    pub account: PersonAdditionalTosAcceptance,
+    /// Details on the legal guardian's acceptance of the main Stripe service agreement.
+    pub account: Option<PersonAdditionalTosAcceptance>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -249,10 +250,11 @@ pub struct PersonFutureRequirements {
     /// New fields will never appear here; `future_requirements.past_due` will always be a subset of `requirements.past_due`.
     pub past_due: Vec<String>,
 
-    /// Fields that may become required depending on the results of verification or review.
+    /// Fields that might become required depending on the results of verification or review.
     ///
-    /// Will be an empty array unless an asynchronous verification is pending.
+    /// It's an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due` or `currently_due`.
+    /// Fields might appear in `eventually_due` or `currently_due` and in `pending_verification` if verification fails but another verification is still pending.
     pub pending_verification: Vec<String>,
 }
 
@@ -330,10 +332,11 @@ pub struct PersonRequirements {
     /// These fields need to be collected to enable the person's account.
     pub past_due: Vec<String>,
 
-    /// Fields that may become required depending on the results of verification or review.
+    /// Fields that might become required depending on the results of verification or review.
     ///
-    /// Will be an empty array unless an asynchronous verification is pending.
+    /// It's an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
+    /// Fields might appear in `eventually_due`, `currently_due`, or `past_due` and in `pending_verification` if verification fails but another verification is still pending.
     pub pending_verification: Vec<String>,
 }
 
@@ -422,6 +425,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedKeyedMatch,
     VerificationFailedNameMatch,
     VerificationFailedOther,
+    VerificationFailedRepresentativeAuthority,
     VerificationFailedResidentialAddress,
     VerificationFailedTaxIdMatch,
     VerificationFailedTaxIdNotIssued,
@@ -429,6 +433,8 @@ pub enum AccountRequirementsErrorCode {
     VerificationMissingExecutives,
     VerificationMissingOwners,
     VerificationRequiresAdditionalMemorandumOfAssociations,
+    VerificationRequiresAdditionalProofOfRegistration,
+    VerificationSupportability,
 }
 
 impl AccountRequirementsErrorCode {
@@ -514,6 +520,7 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationFailedKeyedMatch => "verification_failed_keyed_match",
             AccountRequirementsErrorCode::VerificationFailedNameMatch => "verification_failed_name_match",
             AccountRequirementsErrorCode::VerificationFailedOther => "verification_failed_other",
+            AccountRequirementsErrorCode::VerificationFailedRepresentativeAuthority => "verification_failed_representative_authority",
             AccountRequirementsErrorCode::VerificationFailedResidentialAddress => "verification_failed_residential_address",
             AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => "verification_failed_tax_id_match",
             AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",
@@ -521,6 +528,8 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationMissingExecutives => "verification_missing_executives",
             AccountRequirementsErrorCode::VerificationMissingOwners => "verification_missing_owners",
             AccountRequirementsErrorCode::VerificationRequiresAdditionalMemorandumOfAssociations => "verification_requires_additional_memorandum_of_associations",
+            AccountRequirementsErrorCode::VerificationRequiresAdditionalProofOfRegistration => "verification_requires_additional_proof_of_registration",
+            AccountRequirementsErrorCode::VerificationSupportability => "verification_supportability",
         }
     }
 }

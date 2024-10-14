@@ -6,8 +6,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{PlanId, PriceId, SubscriptionId, SubscriptionItemId};
-use crate::params::{Deleted, Expand, List, Metadata, Object, Paginable, Timestamp};
-use crate::resources::{Currency, Plan, Price, SubscriptionItemBillingThresholds, TaxRate};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
+use crate::resources::{
+    Currency, Discount, Plan, Price, SubscriptionItemBillingThresholds, TaxRate,
+};
 
 /// The resource representing a Stripe "SubscriptionItem".
 ///
@@ -30,6 +32,13 @@ pub struct SubscriptionItem {
     // Always true for a deleted object
     #[serde(default)]
     pub deleted: bool,
+
+    /// The discounts applied to the subscription item.
+    ///
+    /// Subscription item discounts are applied before subscription discounts.
+    /// Use `expand[]=discounts` to expand each discount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Vec<Expandable<Discount>>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -127,6 +136,10 @@ pub struct CreateSubscriptionItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
 
+    /// The coupons to redeem into discounts for the subscription item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Vec<CreateSubscriptionItemDiscounts>>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -166,7 +179,7 @@ pub struct CreateSubscriptionItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<SubscriptionItemPriceData>,
 
-    /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
+    /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     ///
     /// The default value is `create_prorations`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -197,6 +210,7 @@ impl<'a> CreateSubscriptionItem<'a> {
     pub fn new(subscription: SubscriptionId) -> Self {
         CreateSubscriptionItem {
             billing_thresholds: Default::default(),
+            discounts: Default::default(),
             expand: Default::default(),
             metadata: Default::default(),
             payment_behavior: Default::default(),
@@ -269,6 +283,10 @@ pub struct UpdateSubscriptionItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
 
+    /// The coupons to redeem into discounts for the subscription item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Vec<UpdateSubscriptionItemDiscounts>>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -282,6 +300,8 @@ pub struct UpdateSubscriptionItem<'a> {
     pub metadata: Option<Metadata>,
 
     /// Indicates if a customer is on or off-session while an invoice payment is attempted.
+    ///
+    /// Defaults to `false` (on-session).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub off_session: Option<bool>,
 
@@ -306,15 +326,18 @@ pub struct UpdateSubscriptionItem<'a> {
 
     /// The ID of the price object.
     ///
+    /// One of `price` or `price_data` is required.
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<PriceId>,
 
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    ///
+    /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<SubscriptionItemPriceData>,
 
-    /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
+    /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     ///
     /// The default value is `create_prorations`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -342,6 +365,7 @@ impl<'a> UpdateSubscriptionItem<'a> {
     pub fn new() -> Self {
         UpdateSubscriptionItem {
             billing_thresholds: Default::default(),
+            discounts: Default::default(),
             expand: Default::default(),
             metadata: Default::default(),
             off_session: Default::default(),
@@ -355,6 +379,21 @@ impl<'a> UpdateSubscriptionItem<'a> {
             tax_rates: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSubscriptionItemDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -387,6 +426,21 @@ pub struct SubscriptionItemPriceData {
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSubscriptionItemDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
