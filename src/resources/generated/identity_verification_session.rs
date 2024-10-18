@@ -15,6 +15,11 @@ pub struct IdentityVerificationSession {
     /// Unique identifier for the object.
     pub id: IdentityVerificationSessionId,
 
+    /// A string to reference this user.
+    ///
+    /// This can be a customer ID, a session ID, or similar, and can be used to reconcile this verification with your internal systems.
+    pub client_reference_id: Option<String>,
+
     /// The short-lived client secret used by Stripe.js to [show a verification modal](https://stripe.com/docs/js/identity/modal) inside your app.
     ///
     /// This client secret expires after 24 hours and can only be used once.
@@ -47,10 +52,19 @@ pub struct IdentityVerificationSession {
     /// A set of options for the session’s verification checks.
     pub options: Option<GelatoVerificationSessionOptions>,
 
+    /// Details provided about the user being verified.
+    ///
+    /// These details may be shown to the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub provided_details: Option<GelatoProvidedDetails>,
+
     /// Redaction status of this VerificationSession.
     ///
     /// If the VerificationSession is not redacted, this field will be null.
     pub redaction: Option<VerificationSessionRedaction>,
+
+    /// Token referencing a Customer resource.
+    pub related_customer: Option<String>,
 
     /// Status of this VerificationSession.
     ///
@@ -59,7 +73,7 @@ pub struct IdentityVerificationSession {
 
     /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
     #[serde(rename = "type")]
-    pub type_: Option<IdentityVerificationSessionType>,
+    pub type_: IdentityVerificationSessionType,
 
     /// The short-lived URL that you use to redirect a user to Stripe to submit their identity information.
     ///
@@ -68,7 +82,12 @@ pub struct IdentityVerificationSession {
     /// Refer to our docs on [verifying identity documents](https://stripe.com/docs/identity/verify-identity-documents?platform=web&type=redirect) to learn how to redirect users to Stripe.
     pub url: Option<String>,
 
+    /// The configuration token of a Verification Flow from the dashboard.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_flow: Option<String>,
+
     /// The user’s verified data.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_outputs: Option<GelatoVerifiedOutputs>,
 }
 
@@ -80,6 +99,18 @@ impl Object for IdentityVerificationSession {
     fn object(&self) -> &'static str {
         "identity.verification_session"
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct GelatoProvidedDetails {
+
+    /// Email of user being verified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    /// Phone number of user being verified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -99,7 +130,13 @@ pub struct GelatoVerificationSessionOptions {
     pub document: Option<GelatoSessionDocumentOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<GelatoSessionEmailOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<GelatoSessionIdNumberOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<GelatoSessionPhoneOptions>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -127,7 +164,23 @@ pub struct GelatoSessionDocumentOptions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct GelatoSessionEmailOptions {
+
+    /// Request one time password verification of `provided_details.email`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_verification: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoSessionIdNumberOptions {
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct GelatoSessionPhoneOptions {
+
+    /// Request one time password verification of `provided_details.phone`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_verification: Option<bool>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -137,12 +190,17 @@ pub struct GelatoVerifiedOutputs {
     pub address: Option<Address>,
 
     /// The user’s verified date of birth.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<GelatoDataVerifiedOutputsDate>,
+
+    /// The user's verified email address.
+    pub email: Option<String>,
 
     /// The user's verified first name.
     pub first_name: Option<String>,
 
     /// The user's verified id number.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<String>,
 
     /// The user's verified id number type.
@@ -150,6 +208,9 @@ pub struct GelatoVerifiedOutputs {
 
     /// The user's verified last name.
     pub last_name: Option<String>,
+
+    /// The user's verified phone number.
+    pub phone: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -219,9 +280,13 @@ pub enum GelatoSessionLastErrorCode {
     DocumentExpired,
     DocumentTypeNotSupported,
     DocumentUnverifiedOther,
+    EmailUnverifiedOther,
+    EmailVerificationDeclined,
     IdNumberInsufficientDocumentData,
     IdNumberMismatch,
     IdNumberUnverifiedOther,
+    PhoneUnverifiedOther,
+    PhoneVerificationDeclined,
     SelfieDocumentMissingPhoto,
     SelfieFaceMismatch,
     SelfieManipulated,
@@ -239,9 +304,13 @@ impl GelatoSessionLastErrorCode {
             GelatoSessionLastErrorCode::DocumentExpired => "document_expired",
             GelatoSessionLastErrorCode::DocumentTypeNotSupported => "document_type_not_supported",
             GelatoSessionLastErrorCode::DocumentUnverifiedOther => "document_unverified_other",
+            GelatoSessionLastErrorCode::EmailUnverifiedOther => "email_unverified_other",
+            GelatoSessionLastErrorCode::EmailVerificationDeclined => "email_verification_declined",
             GelatoSessionLastErrorCode::IdNumberInsufficientDocumentData => "id_number_insufficient_document_data",
             GelatoSessionLastErrorCode::IdNumberMismatch => "id_number_mismatch",
             GelatoSessionLastErrorCode::IdNumberUnverifiedOther => "id_number_unverified_other",
+            GelatoSessionLastErrorCode::PhoneUnverifiedOther => "phone_unverified_other",
+            GelatoSessionLastErrorCode::PhoneVerificationDeclined => "phone_verification_declined",
             GelatoSessionLastErrorCode::SelfieDocumentMissingPhoto => "selfie_document_missing_photo",
             GelatoSessionLastErrorCode::SelfieFaceMismatch => "selfie_face_mismatch",
             GelatoSessionLastErrorCode::SelfieManipulated => "selfie_manipulated",
@@ -348,6 +417,7 @@ impl std::default::Default for IdentityVerificationSessionStatus {
 pub enum IdentityVerificationSessionType {
     Document,
     IdNumber,
+    VerificationFlow,
 }
 
 impl IdentityVerificationSessionType {
@@ -355,6 +425,7 @@ impl IdentityVerificationSessionType {
         match self {
             IdentityVerificationSessionType::Document => "document",
             IdentityVerificationSessionType::IdNumber => "id_number",
+            IdentityVerificationSessionType::VerificationFlow => "verification_flow",
         }
     }
 }

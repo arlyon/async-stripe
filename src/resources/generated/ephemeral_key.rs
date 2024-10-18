@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, EphemeralKeyId, IssuingCardId};
 use crate::params::{Deleted, Expand, Object, Timestamp};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "EphemeralKey".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -35,6 +34,7 @@ pub struct EphemeralKey {
 }
 
 impl EphemeralKey {
+
     /// Creates a short-lived API key for a given resource.
     pub fn create(client: &Client, params: CreateEphemeralKey<'_>) -> Response<EphemeralKey> {
         #[allow(clippy::needless_borrows_for_generic_args)]
@@ -60,6 +60,7 @@ impl Object for EphemeralKey {
 /// The parameters for `EphemeralKey::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateEphemeralKey<'a> {
+
     /// The ID of the Customer you'd like to modify using the resulting ephemeral key.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,

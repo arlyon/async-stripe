@@ -2,12 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use crate::ids::{UsageRecordSummaryId};
+use crate::params::{Object, Timestamp};
 use serde::{Deserialize, Serialize};
 
-use crate::ids::UsageRecordSummaryId;
-use crate::params::{Object, Timestamp};
-
 /// The resource representing a Stripe "UsageRecordSummary".
+///
+/// For more details see <https://stripe.com/docs/api/usage-record-summary/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UsageRecordSummary {
     /// Unique identifier for the object.
@@ -40,6 +41,7 @@ impl Object for UsageRecordSummary {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Period {
+
     /// The end date of this usage period.
     ///
     /// All usage up to and including this point in time is included.

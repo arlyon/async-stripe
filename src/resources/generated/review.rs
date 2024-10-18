@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
-use crate::ids::ReviewId;
+use crate::ids::{ReviewId};
 use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{Charge, PaymentIntent, ReviewReason};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "RadarReview".
 ///
@@ -66,12 +65,14 @@ pub struct Review {
 }
 
 impl Review {
+
     /// Returns a list of `Review` objects that have `open` set to `true`.
     ///
     /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-    pub fn list(client: &Client, params: &ListReviews<'_>) -> Response<List<Review>> {
-        client.get_query("/reviews", params)
-    }
+pub fn list(client: &Client, params: &ListReviews<'_>) -> Response<List<Review>> {
+   client.get_query("/reviews", params)
+}
+
 
     /// Retrieves a `Review` object.
     pub fn retrieve(client: &Client, id: &ReviewId, expand: &[&str]) -> Response<Review> {
@@ -91,6 +92,7 @@ impl Object for Review {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RadarReviewResourceLocation {
+
     /// The city where the payment originated.
     pub city: Option<String>,
 
@@ -109,6 +111,7 @@ pub struct RadarReviewResourceLocation {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RadarReviewResourceSession {
+
     /// The browser used in this browser session (e.g., `Chrome`).
     pub browser: Option<String>,
 
@@ -125,6 +128,8 @@ pub struct RadarReviewResourceSession {
 /// The parameters for `Review::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListReviews<'a> {
+
+    /// Only return reviews that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -167,9 +172,8 @@ impl<'a> ListReviews<'a> {
 impl Paginable for ListReviews<'_> {
     type O = Review;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// An enum representing the possible values of an `Review`'s `closed_reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]

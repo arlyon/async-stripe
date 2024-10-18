@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{ChargeId, TransferId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{Account, BalanceTransaction, Charge, Currency, TransferReversal};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Transfer".
 ///
@@ -62,7 +61,7 @@ pub struct Transfer {
     /// If the transfer is only partially reversed, this attribute will still be false.
     pub reversed: bool,
 
-    /// ID of the charge or payment that was used to fund the transfer.
+    /// ID of the charge that was used to fund the transfer.
     ///
     /// If null, the transfer was funded from the available balance.
     pub source_transaction: Option<Expandable<Charge>>,
@@ -80,12 +79,14 @@ pub struct Transfer {
 }
 
 impl Transfer {
+
     /// Returns a list of existing transfers sent to connected accounts.
     ///
     /// The transfers are returned in sorted order, with the most recently created transfers appearing first.
-    pub fn list(client: &Client, params: &ListTransfers<'_>) -> Response<List<Transfer>> {
-        client.get_query("/transfers", params)
-    }
+pub fn list(client: &Client, params: &ListTransfers<'_>) -> Response<List<Transfer>> {
+   client.get_query("/transfers", params)
+}
+
 
     /// To send funds from your Stripe account to a connected account, you create a new transfer object.
     ///
@@ -105,11 +106,7 @@ impl Transfer {
     /// Updates the specified transfer by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.  This request accepts only metadata as an argument.
-    pub fn update(
-        client: &Client,
-        id: &TransferId,
-        params: UpdateTransfer<'_>,
-    ) -> Response<Transfer> {
+    pub fn update(client: &Client, id: &TransferId, params: UpdateTransfer<'_>) -> Response<Transfer> {
         #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/transfers/{}", id), &params)
     }
@@ -128,11 +125,14 @@ impl Object for Transfer {
 /// The parameters for `Transfer::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTransfer<'a> {
+
     /// A positive integer in cents (or local equivalent) representing how much to transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
-    /// 3-letter [ISO code for currency](https://stripe.com/docs/payouts).
+    /// Three-letter [ISO code for currency](https://www.iso.org/iso-4217-currency-codes.html) in lowercase.
+    ///
+    /// Must be a [supported currency](https://docs.stripe.com/currencies).
     pub currency: Currency,
 
     /// An arbitrary string attached to the object.
@@ -198,6 +198,8 @@ impl<'a> CreateTransfer<'a> {
 /// The parameters for `Transfer::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTransfers<'a> {
+
+    /// Only return transfers that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -250,12 +252,12 @@ impl<'a> ListTransfers<'a> {
 impl Paginable for ListTransfers<'_> {
     type O = Transfer;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `Transfer::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTransfer<'a> {
+
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.

@@ -15,6 +15,11 @@ pub struct IdentityVerificationReport {
     /// Unique identifier for the object.
     pub id: IdentityVerificationReportId,
 
+    /// A string to reference this user.
+    ///
+    /// This can be a customer ID, a session ID, or similar, and can be used to reconcile this verification with your internal systems.
+    pub client_reference_id: Option<String>,
+
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -22,6 +27,9 @@ pub struct IdentityVerificationReport {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<GelatoDocumentReport>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<GelatoEmailReport>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<GelatoIdNumberReport>,
@@ -33,12 +41,18 @@ pub struct IdentityVerificationReport {
     pub options: Option<GelatoVerificationReportOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<GelatoPhoneReport>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub selfie: Option<GelatoSelfieReport>,
 
     /// Type of report.
     #[serde(rename = "type")]
+    pub type_: IdentityVerificationReportType,
+
+    /// The configuration token of a Verification Flow from the dashboard.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<IdentityVerificationReportType>,
+    pub verification_flow: Option<String>,
 
     /// ID of the VerificationSession that created this report.
     pub verification_session: Option<String>,
@@ -61,6 +75,7 @@ pub struct GelatoDocumentReport {
     pub address: Option<Address>,
 
     /// Date of birth as it appears in the document.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<GelatoDataDocumentReportDateOfBirth>,
 
     /// Details on the verification error.
@@ -69,6 +84,7 @@ pub struct GelatoDocumentReport {
     pub error: Option<GelatoDocumentReportError>,
 
     /// Expiration date of the document.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub expiration_date: Option<GelatoDataDocumentReportExpirationDate>,
 
     /// Array of [File](https://stripe.com/docs/api/files) ids containing images for this document.
@@ -87,6 +103,7 @@ pub struct GelatoDocumentReport {
     pub last_name: Option<String>,
 
     /// Document ID number.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub number: Option<String>,
 
     /// Status of this `document` check.
@@ -149,9 +166,37 @@ pub struct GelatoDocumentReportError {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct GelatoEmailReport {
+
+    /// Email to be verified.
+    pub email: Option<String>,
+
+    /// Details on the verification error.
+    ///
+    /// Present when status is `unverified`.
+    pub error: Option<GelatoEmailReportError>,
+
+    /// Status of this `email` check.
+    pub status: GelatoEmailReportStatus,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct GelatoEmailReportError {
+
+    /// A short machine-readable string giving the reason for the verification failure.
+    pub code: Option<GelatoEmailReportErrorCode>,
+
+    /// A human-readable message giving the reason for the failure.
+    ///
+    /// These messages can be shown to your users.
+    pub reason: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoIdNumberReport {
 
     /// Date of birth.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<GelatoDataIdNumberReportDate>,
 
     /// Details on the verification error.
@@ -165,6 +210,7 @@ pub struct GelatoIdNumberReport {
     /// ID number.
     ///
     /// When `id_number_type` is `us_ssn`, only the last 4 digits are present.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<String>,
 
     /// Type of ID number.
@@ -195,6 +241,33 @@ pub struct GelatoIdNumberReportError {
 
     /// A short machine-readable string giving the reason for the verification failure.
     pub code: Option<GelatoIdNumberReportErrorCode>,
+
+    /// A human-readable message giving the reason for the failure.
+    ///
+    /// These messages can be shown to your users.
+    pub reason: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct GelatoPhoneReport {
+
+    /// Details on the verification error.
+    ///
+    /// Present when status is `unverified`.
+    pub error: Option<GelatoPhoneReportError>,
+
+    /// Phone to be verified.
+    pub phone: Option<String>,
+
+    /// Status of this `phone` check.
+    pub status: GelatoPhoneReportStatus,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct GelatoPhoneReportError {
+
+    /// A short machine-readable string giving the reason for the verification failure.
+    pub code: Option<GelatoPhoneReportErrorCode>,
 
     /// A human-readable message giving the reason for the failure.
     ///
@@ -376,6 +449,74 @@ impl std::default::Default for GelatoDocumentReportType {
     }
 }
 
+/// An enum representing the possible values of an `GelatoEmailReportError`'s `code` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum GelatoEmailReportErrorCode {
+    EmailUnverifiedOther,
+    EmailVerificationDeclined,
+}
+
+impl GelatoEmailReportErrorCode {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            GelatoEmailReportErrorCode::EmailUnverifiedOther => "email_unverified_other",
+            GelatoEmailReportErrorCode::EmailVerificationDeclined => "email_verification_declined",
+        }
+    }
+}
+
+impl AsRef<str> for GelatoEmailReportErrorCode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for GelatoEmailReportErrorCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for GelatoEmailReportErrorCode {
+    fn default() -> Self {
+        Self::EmailUnverifiedOther
+    }
+}
+
+/// An enum representing the possible values of an `GelatoEmailReport`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum GelatoEmailReportStatus {
+    Unverified,
+    Verified,
+}
+
+impl GelatoEmailReportStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            GelatoEmailReportStatus::Unverified => "unverified",
+            GelatoEmailReportStatus::Verified => "verified",
+        }
+    }
+}
+
+impl AsRef<str> for GelatoEmailReportStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for GelatoEmailReportStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for GelatoEmailReportStatus {
+    fn default() -> Self {
+        Self::Unverified
+    }
+}
+
 /// An enum representing the possible values of an `GelatoIdNumberReportError`'s `code` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -477,6 +618,74 @@ impl std::fmt::Display for GelatoIdNumberReportStatus {
     }
 }
 impl std::default::Default for GelatoIdNumberReportStatus {
+    fn default() -> Self {
+        Self::Unverified
+    }
+}
+
+/// An enum representing the possible values of an `GelatoPhoneReportError`'s `code` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum GelatoPhoneReportErrorCode {
+    PhoneUnverifiedOther,
+    PhoneVerificationDeclined,
+}
+
+impl GelatoPhoneReportErrorCode {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            GelatoPhoneReportErrorCode::PhoneUnverifiedOther => "phone_unverified_other",
+            GelatoPhoneReportErrorCode::PhoneVerificationDeclined => "phone_verification_declined",
+        }
+    }
+}
+
+impl AsRef<str> for GelatoPhoneReportErrorCode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for GelatoPhoneReportErrorCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for GelatoPhoneReportErrorCode {
+    fn default() -> Self {
+        Self::PhoneUnverifiedOther
+    }
+}
+
+/// An enum representing the possible values of an `GelatoPhoneReport`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum GelatoPhoneReportStatus {
+    Unverified,
+    Verified,
+}
+
+impl GelatoPhoneReportStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            GelatoPhoneReportStatus::Unverified => "unverified",
+            GelatoPhoneReportStatus::Verified => "verified",
+        }
+    }
+}
+
+impl AsRef<str> for GelatoPhoneReportStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for GelatoPhoneReportStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for GelatoPhoneReportStatus {
     fn default() -> Self {
         Self::Unverified
     }
@@ -596,6 +805,7 @@ impl std::default::Default for GelatoSelfieReportStatus {
 pub enum IdentityVerificationReportType {
     Document,
     IdNumber,
+    VerificationFlow,
 }
 
 impl IdentityVerificationReportType {
@@ -603,6 +813,7 @@ impl IdentityVerificationReportType {
         match self {
             IdentityVerificationReportType::Document => "document",
             IdentityVerificationReportType::IdNumber => "id_number",
+            IdentityVerificationReportType::VerificationFlow => "verification_flow",
         }
     }
 }
