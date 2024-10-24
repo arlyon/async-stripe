@@ -12,4 +12,4 @@ mod webhook;
 pub use error::WebhookError;
 pub use generated::*;
 pub use stripe_shared::event::EventType;
-pub use webhook::{Event, Webhook};
+pub use webhook::{Event, EventData, Webhook};
