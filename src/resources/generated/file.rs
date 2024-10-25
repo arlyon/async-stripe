@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
-use crate::ids::FileId;
+use crate::ids::{FileId};
 use crate::params::{Expand, List, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::FileLink;
+use crate::resources::{FileLink};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "File".
 ///
@@ -50,12 +49,14 @@ pub struct File {
 }
 
 impl File {
+
     /// Returns a list of the files that your account has access to.
     ///
     /// Stripe sorts and returns the files by their creation dates, placing the most recently created files at the top.
-    pub fn list(client: &Client, params: &ListFiles<'_>) -> Response<List<File>> {
-        client.get_query("/files", params)
-    }
+pub fn list(client: &Client, params: &ListFiles<'_>) -> Response<List<File>> {
+   client.get_query("/files", params)
+}
+
 
     /// Retrieves the details of an existing file object.
     ///
@@ -79,6 +80,8 @@ impl Object for File {
 /// The parameters for `File::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListFiles<'a> {
+
+    /// Only return files that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -128,9 +131,8 @@ impl<'a> ListFiles<'a> {
 impl Paginable for ListFiles<'_> {
     type O = File;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// An enum representing the possible values of an `ListFiles`'s `purpose` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -145,6 +147,7 @@ pub enum FilePurpose {
     FinanceReportRun,
     IdentityDocument,
     IdentityDocumentDownloadable,
+    IssuingRegulatoryReporting,
     PciDocument,
     Selfie,
     SigmaScheduledQuery,
@@ -165,6 +168,7 @@ impl FilePurpose {
             FilePurpose::FinanceReportRun => "finance_report_run",
             FilePurpose::IdentityDocument => "identity_document",
             FilePurpose::IdentityDocumentDownloadable => "identity_document_downloadable",
+            FilePurpose::IssuingRegulatoryReporting => "issuing_regulatory_reporting",
             FilePurpose::PciDocument => "pci_document",
             FilePurpose::Selfie => "selfie",
             FilePurpose::SigmaScheduledQuery => "sigma_scheduled_query",
