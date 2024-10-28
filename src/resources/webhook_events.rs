@@ -38,6 +38,8 @@ pub enum EventType {
     BillingPortalConfigurationCreated,
     #[serde(rename = "billing_portal.configuration.updated")]
     BillingPortalConfigurationUpdated,
+    #[serde(rename = "billing_portal.session.created")]
+    BillingPortalSessionCreated,
     #[serde(rename = "capability.updated")]
     CapabilityUpdated,
     #[serde(rename = "cash_balance.funds_available")]
@@ -434,6 +436,8 @@ pub enum EventObject {
     BankAccount(BankAccount),
     #[serde(rename = "billing_portal.configuration")]
     BillingPortalConfiguration(BillingPortalConfiguration),
+    #[serde(rename = "billing_portal.session")]
+    BillingPortalSession(BillingPortalSession),
     Card(Card),
     Charge(Charge),
     #[serde(rename = "checkout.session")]
