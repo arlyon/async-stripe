@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{BillingPortalSessionId, CustomerId};
 use crate::params::{Expand, Expandable, Object, Timestamp};
-use crate::resources::BillingPortalConfiguration;
+use crate::resources::{BillingPortalConfiguration};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PortalSession".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -42,7 +41,7 @@ pub struct BillingPortalSession {
     /// The account for which the session was created on behalf of.
     ///
     /// When specified, only subscriptions and invoices with this `on_behalf_of` account appear in the portal.
-    /// For more information, see the [docs](https://stripe.com/docs/connect/separate-charges-and-transfers#on-behalf-of).
+    /// For more information, see the [docs](https://stripe.com/docs/connect/separate-charges-and-transfers#settlement-merchant).
     /// Use the [Accounts API](https://stripe.com/docs/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
     pub on_behalf_of: Option<String>,
 
@@ -54,11 +53,9 @@ pub struct BillingPortalSession {
 }
 
 impl BillingPortalSession {
+
     /// Creates a session of the customer portal.
-    pub fn create(
-        client: &Client,
-        params: CreateBillingPortalSession<'_>,
-    ) -> Response<BillingPortalSession> {
+    pub fn create(client: &Client, params: CreateBillingPortalSession<'_>) -> Response<BillingPortalSession> {
         #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/billing_portal/sessions", &params)
     }
@@ -76,6 +73,7 @@ impl Object for BillingPortalSession {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalFlowsFlow {
+
     pub after_completion: PortalFlowsFlowAfterCompletion,
 
     /// Configuration when `flow.type=subscription_cancel`.
@@ -94,6 +92,7 @@ pub struct PortalFlowsFlow {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalFlowsFlowAfterCompletion {
+
     /// Configuration when `after_completion.type=hosted_confirmation`.
     pub hosted_confirmation: Option<PortalFlowsAfterCompletionHostedConfirmation>,
 
@@ -107,18 +106,21 @@ pub struct PortalFlowsFlowAfterCompletion {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalFlowsAfterCompletionHostedConfirmation {
+
     /// A custom message to display to the customer after the flow is completed.
     pub custom_message: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalFlowsAfterCompletionRedirect {
+
     /// The URL the customer will be redirected to after the flow is completed.
     pub return_url: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalFlowsFlowSubscriptionCancel {
+
     /// Specify a retention strategy to be used in the cancellation flow.
     pub retention: Option<PortalFlowsRetention>,
 
@@ -128,12 +130,14 @@ pub struct PortalFlowsFlowSubscriptionCancel {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalFlowsFlowSubscriptionUpdate {
+
     /// The ID of the subscription to be updated.
     pub subscription: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalFlowsFlowSubscriptionUpdateConfirm {
+
     /// The coupon or promotion code to apply to this subscription update.
     ///
     /// Currently, only up to one may be specified.
@@ -150,6 +154,7 @@ pub struct PortalFlowsFlowSubscriptionUpdateConfirm {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalFlowsRetention {
+
     /// Configuration when `retention.type=coupon_offer`.
     pub coupon_offer: Option<PortalFlowsCouponOffer>,
 
@@ -160,12 +165,14 @@ pub struct PortalFlowsRetention {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalFlowsCouponOffer {
+
     /// The ID of the coupon to be offered.
     pub coupon: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalFlowsSubscriptionUpdateConfirmDiscount {
+
     /// The ID of the coupon to apply to this subscription update.
     pub coupon: Option<String>,
 
@@ -175,6 +182,7 @@ pub struct PortalFlowsSubscriptionUpdateConfirmDiscount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalFlowsSubscriptionUpdateConfirmItem {
+
     /// The ID of the [subscription item](https://stripe.com/docs/api/subscriptions/object#subscription_object-items-data-id) to be updated.
     pub id: Option<String>,
 
@@ -191,6 +199,7 @@ pub struct PortalFlowsSubscriptionUpdateConfirmItem {
 /// The parameters for `BillingPortalSession::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateBillingPortalSession<'a> {
+
     /// The ID of an existing [configuration](https://stripe.com/docs/api/customer_portal/configuration) to use for this session, describing its functionality and features.
     ///
     /// If not specified, the session uses the default configuration.
@@ -219,7 +228,7 @@ pub struct CreateBillingPortalSession<'a> {
     /// The `on_behalf_of` account to use for this session.
     ///
     /// When specified, only subscriptions and invoices with this `on_behalf_of` account appear in the portal.
-    /// For more information, see the [docs](https://stripe.com/docs/connect/separate-charges-and-transfers#on-behalf-of).
+    /// For more information, see the [docs](https://stripe.com/docs/connect/separate-charges-and-transfers#settlement-merchant).
     /// Use the [Accounts API](https://stripe.com/docs/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<&'a str>,
@@ -245,6 +254,7 @@ impl<'a> CreateBillingPortalSession<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowData {
+
     /// Behavior after the flow is completed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub after_completion: Option<CreateBillingPortalSessionFlowDataAfterCompletion>,
@@ -259,8 +269,7 @@ pub struct CreateBillingPortalSessionFlowData {
 
     /// Configuration when `flow_data.type=subscription_update_confirm`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_update_confirm:
-        Option<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm>,
+    pub subscription_update_confirm: Option<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm>,
 
     /// Type of flow that the customer will go through.
     #[serde(rename = "type")]
@@ -269,10 +278,10 @@ pub struct CreateBillingPortalSessionFlowData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowDataAfterCompletion {
+
     /// Configuration when `after_completion.type=hosted_confirmation`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hosted_confirmation:
-        Option<CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation>,
+    pub hosted_confirmation: Option<CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation>,
 
     /// Configuration when `after_completion.type=redirect`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -285,6 +294,7 @@ pub struct CreateBillingPortalSessionFlowDataAfterCompletion {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionCancel {
+
     /// Specify a retention strategy to be used in the cancellation flow.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub retention: Option<CreateBillingPortalSessionFlowDataSubscriptionCancelRetention>,
@@ -295,18 +305,19 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionCancel {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdate {
+
     /// The ID of the subscription to be updated.
     pub subscription: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm {
+
     /// The coupon or promotion code to apply to this subscription update.
     ///
     /// Currently, only up to one may be specified.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts:
-        Option<Vec<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts>>,
+    pub discounts: Option<Vec<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts>>,
 
     /// The [subscription item](https://stripe.com/docs/api/subscription_items) to be updated through this flow.
     ///
@@ -319,6 +330,7 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation {
+
     /// A custom message to display to the customer after the flow is completed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_message: Option<String>,
@@ -326,12 +338,14 @@ pub struct CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowDataAfterCompletionRedirect {
+
     /// The URL the customer will be redirected to after the flow is completed.
     pub return_url: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionCancelRetention {
+
     /// Configuration when `retention.type=coupon_offer`.
     pub coupon_offer: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer,
 
@@ -342,6 +356,7 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionCancelRetention {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts {
+
     /// The ID of the coupon to apply to this subscription update.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
@@ -353,6 +368,7 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts 
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems {
+
     /// The ID of the [subscription item](https://stripe.com/docs/api/subscriptions/object#subscription_object-items-data-id) to be updated.
     pub id: String,
 
@@ -369,6 +385,7 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer {
+
     /// The ID of the coupon to be offered.
     pub coupon: String,
 }
@@ -521,12 +538,8 @@ pub enum CreateBillingPortalSessionFlowDataAfterCompletionType {
 impl CreateBillingPortalSessionFlowDataAfterCompletionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateBillingPortalSessionFlowDataAfterCompletionType::HostedConfirmation => {
-                "hosted_confirmation"
-            }
-            CreateBillingPortalSessionFlowDataAfterCompletionType::PortalHomepage => {
-                "portal_homepage"
-            }
+            CreateBillingPortalSessionFlowDataAfterCompletionType::HostedConfirmation => "hosted_confirmation",
+            CreateBillingPortalSessionFlowDataAfterCompletionType::PortalHomepage => "portal_homepage",
             CreateBillingPortalSessionFlowDataAfterCompletionType::Redirect => "redirect",
         }
     }
@@ -559,9 +572,7 @@ pub enum CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
 impl CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType::CouponOffer => {
-                "coupon_offer"
-            }
+            CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType::CouponOffer => "coupon_offer",
         }
     }
 }
@@ -599,9 +610,7 @@ impl CreateBillingPortalSessionFlowDataType {
             CreateBillingPortalSessionFlowDataType::PaymentMethodUpdate => "payment_method_update",
             CreateBillingPortalSessionFlowDataType::SubscriptionCancel => "subscription_cancel",
             CreateBillingPortalSessionFlowDataType::SubscriptionUpdate => "subscription_update",
-            CreateBillingPortalSessionFlowDataType::SubscriptionUpdateConfirm => {
-                "subscription_update_confirm"
-            }
+            CreateBillingPortalSessionFlowDataType::SubscriptionUpdateConfirm => "subscription_update_confirm",
         }
     }
 }
