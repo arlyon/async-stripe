@@ -126,7 +126,7 @@ const _: () = {
 /// The list of payment method types (e.g.
 /// card) to provide to the invoice’s PaymentIntent.
 /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum InvoicesPaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
@@ -158,10 +158,10 @@ pub enum InvoicesPaymentSettingsPaymentMethodTypes {
     UsBankAccount,
     WechatPay,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl InvoicesPaymentSettingsPaymentMethodTypes {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InvoicesPaymentSettingsPaymentMethodTypes::*;
         match self {
             AchCreditTransfer => "ach_credit_transfer",
@@ -192,7 +192,7 @@ impl InvoicesPaymentSettingsPaymentMethodTypes {
             Sofort => "sofort",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -230,7 +230,7 @@ impl std::str::FromStr for InvoicesPaymentSettingsPaymentMethodTypes {
             "sofort" => Ok(Sofort),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

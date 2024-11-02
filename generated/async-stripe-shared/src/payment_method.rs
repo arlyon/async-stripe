@@ -319,12 +319,12 @@ const _: () = {
                 self.created,
                 self.customer.take(),
                 self.customer_balance,
-                self.eps,
-                self.fpx,
+                self.eps.take(),
+                self.fpx.take(),
                 self.giropay,
                 self.grabpay,
                 self.id.take(),
-                self.ideal,
+                self.ideal.take(),
                 self.interac_present.take(),
                 self.klarna,
                 self.konbini,
@@ -333,7 +333,7 @@ const _: () = {
                 self.metadata.take(),
                 self.mobilepay,
                 self.oxxo,
-                self.p24,
+                self.p24.take(),
                 self.paynow,
                 self.paypal.take(),
                 self.pix,
@@ -343,7 +343,7 @@ const _: () = {
                 self.sepa_debit.take(),
                 self.sofort.take(),
                 self.swish,
-                self.type_,
+                self.type_.take(),
                 self.us_bank_account.take(),
                 self.wechat_pay,
                 self.zip,
@@ -535,7 +535,7 @@ impl serde::Serialize for PaymentMethod {
 /// The type of the PaymentMethod.
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentMethodType {
     AcssDebit,
@@ -576,10 +576,10 @@ pub enum PaymentMethodType {
     WechatPay,
     Zip,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl PaymentMethodType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodType::*;
         match self {
             AcssDebit => "acss_debit",
@@ -619,7 +619,7 @@ impl PaymentMethodType {
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -666,7 +666,7 @@ impl std::str::FromStr for PaymentMethodType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

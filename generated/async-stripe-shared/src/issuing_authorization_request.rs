@@ -152,7 +152,7 @@ const _: () = {
                 self.merchant_amount,
                 self.merchant_currency,
                 self.network_risk_score,
-                self.reason,
+                self.reason.take(),
                 self.reason_message.take(),
                 self.requested_at,
             )
@@ -220,7 +220,7 @@ const _: () = {
     }
 };
 /// When an authorization is approved or declined by you or by Stripe, this field provides additional detail on the reason for the outcome.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum IssuingAuthorizationRequestReason {
     AccountDisabled,
@@ -238,10 +238,10 @@ pub enum IssuingAuthorizationRequestReason {
     WebhookError,
     WebhookTimeout,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl IssuingAuthorizationRequestReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationRequestReason::*;
         match self {
             AccountDisabled => "account_disabled",
@@ -258,7 +258,7 @@ impl IssuingAuthorizationRequestReason {
             WebhookDeclined => "webhook_declined",
             WebhookError => "webhook_error",
             WebhookTimeout => "webhook_timeout",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -282,7 +282,7 @@ impl std::str::FromStr for IssuingAuthorizationRequestReason {
             "webhook_declined" => Ok(WebhookDeclined),
             "webhook_error" => Ok(WebhookError),
             "webhook_timeout" => Ok(WebhookTimeout),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

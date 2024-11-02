@@ -282,7 +282,7 @@ impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderCardNumbe
     }
 }
 /// The reasons for suggested tokenization given by the card network.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum IssuingNetworkTokenWalletProviderReasonCodes {
     AccountCardTooNew,
@@ -314,10 +314,10 @@ pub enum IssuingNetworkTokenWalletProviderReasonCodes {
     TooManyRecentAttempts,
     TooManyRecentTokens,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl IssuingNetworkTokenWalletProviderReasonCodes {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingNetworkTokenWalletProviderReasonCodes::*;
         match self {
             AccountCardTooNew => "account_card_too_new",
@@ -352,7 +352,7 @@ impl IssuingNetworkTokenWalletProviderReasonCodes {
             TooManyDifferentCardholders => "too_many_different_cardholders",
             TooManyRecentAttempts => "too_many_recent_attempts",
             TooManyRecentTokens => "too_many_recent_tokens",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -394,7 +394,7 @@ impl std::str::FromStr for IssuingNetworkTokenWalletProviderReasonCodes {
             "too_many_different_cardholders" => Ok(TooManyDifferentCardholders),
             "too_many_recent_attempts" => Ok(TooManyRecentAttempts),
             "too_many_recent_tokens" => Ok(TooManyRecentTokens),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

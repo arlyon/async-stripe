@@ -77,7 +77,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(bank), Some(reference), Some(verified_name)) =
-                (self.bank, self.reference.take(), self.verified_name.take())
+                (self.bank.take(), self.reference.take(), self.verified_name.take())
             else {
                 return None;
             };
@@ -121,7 +121,7 @@ const _: () = {
 };
 /// The customer's bank.
 /// Can be one of `ing`, `citi_handlowy`, `tmobile_usbugi_bankowe`, `plus_bank`, `etransfer_pocztowy24`, `banki_spbdzielcze`, `bank_nowy_bfg_sa`, `getin_bank`, `velobank`, `blik`, `noble_pay`, `ideabank`, `envelobank`, `santander_przelew24`, `nest_przelew`, `mbank_mtransfer`, `inteligo`, `pbac_z_ipko`, `bnp_paribas`, `credit_agricole`, `toyota_bank`, `bank_pekao_sa`, `volkswagen_bank`, `bank_millennium`, `alior_bank`, or `boz`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentMethodDetailsP24Bank {
     AliorBank,
@@ -151,10 +151,10 @@ pub enum PaymentMethodDetailsP24Bank {
     Velobank,
     VolkswagenBank,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl PaymentMethodDetailsP24Bank {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodDetailsP24Bank::*;
         match self {
             AliorBank => "alior_bank",
@@ -183,7 +183,7 @@ impl PaymentMethodDetailsP24Bank {
             ToyotaBank => "toyota_bank",
             Velobank => "velobank",
             VolkswagenBank => "volkswagen_bank",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -219,7 +219,7 @@ impl std::str::FromStr for PaymentMethodDetailsP24Bank {
             "toyota_bank" => Ok(ToyotaBank),
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

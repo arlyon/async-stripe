@@ -275,18 +275,18 @@ const _: () = {
                 self.card_present.take(),
                 self.cashapp.take(),
                 self.customer_balance,
-                self.eps,
-                self.fpx,
+                self.eps.take(),
+                self.fpx.take(),
                 self.giropay,
                 self.grabpay,
-                self.ideal,
+                self.ideal.take(),
                 self.interac_present.take(),
                 self.klarna,
                 self.konbini,
                 self.link.take(),
                 self.mobilepay,
                 self.oxxo,
-                self.p24,
+                self.p24.take(),
                 self.paynow,
                 self.paypal.take(),
                 self.pix,
@@ -295,7 +295,7 @@ const _: () = {
                 self.sepa_debit.take(),
                 self.sofort.take(),
                 self.swish,
-                self.type_,
+                self.type_.take(),
                 self.us_bank_account.take(),
                 self.wechat_pay,
                 self.zip,
@@ -420,7 +420,7 @@ const _: () = {
 /// The type of the PaymentMethod.
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ConfirmationTokensResourcePaymentMethodPreviewType {
     AcssDebit,
@@ -461,10 +461,10 @@ pub enum ConfirmationTokensResourcePaymentMethodPreviewType {
     WechatPay,
     Zip,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl ConfirmationTokensResourcePaymentMethodPreviewType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ConfirmationTokensResourcePaymentMethodPreviewType::*;
         match self {
             AcssDebit => "acss_debit",
@@ -504,7 +504,7 @@ impl ConfirmationTokensResourcePaymentMethodPreviewType {
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -551,7 +551,7 @@ impl std::str::FromStr for ConfirmationTokensResourcePaymentMethodPreviewType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

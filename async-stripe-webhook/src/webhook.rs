@@ -146,7 +146,7 @@ impl Webhook {
             account: base_evt.account,
             api_version: base_evt
                 .api_version
-                .map(|s| ApiVersion::from_str(&s).unwrap_or(ApiVersion::Unknown)),
+                .map(|s| ApiVersion::from_str(&s).unwrap_or(ApiVersion::Unknown(s))),
             created: base_evt.created,
             data: EventData {
                 object: event_obj,
@@ -230,7 +230,7 @@ mod tests {
         format!("t={timestamp},v1={v1}")
     }
 
-    fn mock_webhook_event(event_type: EventType, data: Value) -> Value {
+    fn mock_webhook_event(event_type: &EventType, data: Value) -> Value {
         json!({
             "id": "evt_123",
             "object": "event",
@@ -253,7 +253,7 @@ mod tests {
     #[track_caller]
     fn parse_mock_webhook_event(event_type: EventType, data: Value) -> EventObject {
         let now = Utc::now().timestamp();
-        let payload = mock_webhook_event(event_type, data).to_string();
+        let payload = mock_webhook_event(&event_type, data).to_string();
         let sig = get_mock_stripe_sig(&payload, now);
 
         let webhook = Webhook { current_timestamp: now };
@@ -283,7 +283,7 @@ mod tests {
             "proration": false,
             "quantity": 3
         });
-        let payload = mock_webhook_event(EventType::InvoiceitemCreated, object);
+        let payload = mock_webhook_event(&EventType::InvoiceitemCreated, object);
         let event_timestamp = 1533204620;
         let signature = format!("t={event_timestamp},v1=5a81ebe328da1df19581cbc6c7377920947ffd30b56eebcc7ba9a6938a090965,v0=63f3a72374a733066c4be69ed7f8e5ac85c22c9f0a6a612ab9a025a9e4ee7eef");
 

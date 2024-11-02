@@ -1515,7 +1515,7 @@ impl CreatePaymentLinkShippingAddressCollection {
 /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
 /// shipping locations.
 /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePaymentLinkShippingAddressCollectionAllowedCountries {
     Ac,
@@ -1756,10 +1756,10 @@ pub enum CreatePaymentLinkShippingAddressCollectionAllowedCountries {
     Zw,
     Zz,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreatePaymentLinkShippingAddressCollectionAllowedCountries {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentLinkShippingAddressCollectionAllowedCountries::*;
         match self {
             Ac => "AC",
@@ -1999,7 +1999,7 @@ impl CreatePaymentLinkShippingAddressCollectionAllowedCountries {
             Zm => "ZM",
             Zw => "ZW",
             Zz => "ZZ",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -2246,7 +2246,7 @@ impl std::str::FromStr for CreatePaymentLinkShippingAddressCollectionAllowedCoun
             "ZM" => Ok(Zm),
             "ZW" => Ok(Zw),
             "ZZ" => Ok(Zz),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3655,7 +3655,7 @@ impl UpdatePaymentLinkShippingAddressCollection {
 /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
 /// shipping locations.
 /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
     Ac,
@@ -3896,10 +3896,10 @@ pub enum UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
     Zw,
     Zz,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentLinkShippingAddressCollectionAllowedCountries::*;
         match self {
             Ac => "AC",
@@ -4139,7 +4139,7 @@ impl UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
             Zm => "ZM",
             Zw => "ZW",
             Zz => "ZZ",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -4386,7 +4386,7 @@ impl std::str::FromStr for UpdatePaymentLinkShippingAddressCollectionAllowedCoun
             "ZM" => Ok(Zm),
             "ZW" => Ok(Zw),
             "ZZ" => Ok(Zz),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

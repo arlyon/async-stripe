@@ -11,8 +11,6 @@ use crate::templates::utils::write_doc_comment;
 use crate::templates::ObjectWriter;
 use crate::STRIPE_TYPES;
 
-const ADD_UNKNOWN_VARIANT_THRESHOLD: usize = 12;
-
 impl Components {
     fn write_rust_type_objs(&self, typ: &RustType, out: &mut String, usage: ObjectUsage) {
         let Some((obj, meta)) = typ.extract_object() else {
@@ -55,9 +53,7 @@ impl Components {
                 }
             }
             RustObject::FieldlessEnum(variants) => {
-                let provide_unknown_variant = variants.len() > ADD_UNKNOWN_VARIANT_THRESHOLD
-                    && !variants.iter().any(|v| v.variant_name.as_ref() == "Unknown");
-                writer.provide_unknown_variant(provide_unknown_variant);
+                writer.provide_unknown_variant(obj.provide_unknown_variant());
                 writer.write_fieldless_enum_variants(out, variants);
             }
             RustObject::Enum(variants) => {

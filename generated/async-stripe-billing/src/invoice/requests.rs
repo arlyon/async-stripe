@@ -603,7 +603,7 @@ impl UpcomingInvoiceCustomerDetailsTaxIds {
     }
 }
 /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpcomingInvoiceCustomerDetailsTaxIdsType {
     AdNrt,
@@ -678,10 +678,10 @@ pub enum UpcomingInvoiceCustomerDetailsTaxIdsType {
     VnTin,
     ZaVat,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl UpcomingInvoiceCustomerDetailsTaxIdsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpcomingInvoiceCustomerDetailsTaxIdsType::*;
         match self {
             AdNrt => "ad_nrt",
@@ -755,7 +755,7 @@ impl UpcomingInvoiceCustomerDetailsTaxIdsType {
             VeRif => "ve_rif",
             VnTin => "vn_tin",
             ZaVat => "za_vat",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -836,7 +836,7 @@ impl std::str::FromStr for UpcomingInvoiceCustomerDetailsTaxIdsType {
             "ve_rif" => Ok(VeRif),
             "vn_tin" => Ok(VnTin),
             "za_vat" => Ok(ZaVat),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3620,7 +3620,7 @@ impl UpcomingLinesInvoiceCustomerDetailsTaxIds {
     }
 }
 /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpcomingLinesInvoiceCustomerDetailsTaxIdsType {
     AdNrt,
@@ -3695,10 +3695,10 @@ pub enum UpcomingLinesInvoiceCustomerDetailsTaxIdsType {
     VnTin,
     ZaVat,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl UpcomingLinesInvoiceCustomerDetailsTaxIdsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpcomingLinesInvoiceCustomerDetailsTaxIdsType::*;
         match self {
             AdNrt => "ad_nrt",
@@ -3772,7 +3772,7 @@ impl UpcomingLinesInvoiceCustomerDetailsTaxIdsType {
             VeRif => "ve_rif",
             VnTin => "vn_tin",
             ZaVat => "za_vat",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -3853,7 +3853,7 @@ impl std::str::FromStr for UpcomingLinesInvoiceCustomerDetailsTaxIdsType {
             "ve_rif" => Ok(VeRif),
             "vn_tin" => Ok(VnTin),
             "za_vat" => Ok(ZaVat),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7540,7 +7540,7 @@ impl<'de> serde::Deserialize<'de>
 /// The list of payment method types (e.g.
 /// card) to provide to the invoice’s PaymentIntent.
 /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
@@ -7572,10 +7572,10 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     UsBankAccount,
     WechatPay,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateInvoicePaymentSettingsPaymentMethodTypes {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateInvoicePaymentSettingsPaymentMethodTypes::*;
         match self {
             AchCreditTransfer => "ach_credit_transfer",
@@ -7606,7 +7606,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             Sofort => "sofort",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -7644,7 +7644,7 @@ impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodTypes {
             "sofort" => Ok(Sofort),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9715,7 +9715,7 @@ impl<'de> serde::Deserialize<'de>
 /// The list of payment method types (e.g.
 /// card) to provide to the invoice’s PaymentIntent.
 /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateInvoicePaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
@@ -9747,10 +9747,10 @@ pub enum UpdateInvoicePaymentSettingsPaymentMethodTypes {
     UsBankAccount,
     WechatPay,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl UpdateInvoicePaymentSettingsPaymentMethodTypes {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateInvoicePaymentSettingsPaymentMethodTypes::*;
         match self {
             AchCreditTransfer => "ach_credit_transfer",
@@ -9781,7 +9781,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodTypes {
             Sofort => "sofort",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -9819,7 +9819,7 @@ impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodTypes {
             "sofort" => Ok(Sofort),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11324,7 +11324,7 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIds {
     }
 }
 /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bh_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `kz_bin`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     AdNrt,
@@ -11399,10 +11399,10 @@ pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     VnTin,
     ZaVat,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePreviewInvoiceCustomerDetailsTaxIdsType::*;
         match self {
             AdNrt => "ad_nrt",
@@ -11476,7 +11476,7 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             VeRif => "ve_rif",
             VnTin => "vn_tin",
             ZaVat => "za_vat",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -11557,7 +11557,7 @@ impl std::str::FromStr for CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             "ve_rif" => Ok(VeRif),
             "vn_tin" => Ok(VnTin),
             "za_vat" => Ok(ZaVat),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

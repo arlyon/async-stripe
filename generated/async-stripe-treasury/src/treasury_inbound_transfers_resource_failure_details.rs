@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryInboundTransfersResourceFailureDetails {
@@ -61,7 +61,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(code),) = (self.code,) else {
+            let (Some(code),) = (self.code.take(),) else {
                 return None;
             };
             Some(Self::Out { code })
@@ -101,7 +101,7 @@ const _: () = {
     }
 };
 /// Reason for the failure.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum TreasuryInboundTransfersResourceFailureDetailsCode {
     AccountClosed,
@@ -118,10 +118,10 @@ pub enum TreasuryInboundTransfersResourceFailureDetailsCode {
     NoAccount,
     Other,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl TreasuryInboundTransfersResourceFailureDetailsCode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryInboundTransfersResourceFailureDetailsCode::*;
         match self {
             AccountClosed => "account_closed",
@@ -137,7 +137,7 @@ impl TreasuryInboundTransfersResourceFailureDetailsCode {
             InvalidCurrency => "invalid_currency",
             NoAccount => "no_account",
             Other => "other",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -160,7 +160,7 @@ impl std::str::FromStr for TreasuryInboundTransfersResourceFailureDetailsCode {
             "invalid_currency" => Ok(InvalidCurrency),
             "no_account" => Ok(NoAccount),
             "other" => Ok(Other),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

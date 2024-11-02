@@ -5339,7 +5339,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsP
     }
 }
 /// [Preferred locale](https://stripe.com/docs/payments/paypal/supported-locales) of the PayPal checkout page that the customer is redirected to.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale {
     CsMinusCz,
@@ -5364,10 +5364,10 @@ pub enum CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale {
     SkMinusSk,
     SvMinusSe,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::*;
         match self {
             CsMinusCz => "cs-CZ",
@@ -5391,7 +5391,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale {
             PtMinusPt => "pt-PT",
             SkMinusSk => "sk-SK",
             SvMinusSe => "sv-SE",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -5422,7 +5422,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPaypalPrefer
             "pt-PT" => Ok(PtMinusPt),
             "sk-SK" => Ok(SkMinusSk),
             "sv-SE" => Ok(SvMinusSe),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6288,7 +6288,7 @@ impl<'de> serde::Deserialize<'de>
 /// If multiple payment methods are passed, Checkout will dynamically reorder them to
 /// prioritize the most relevant payment methods based on the customer's location and
 /// other characteristics.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateCheckoutSessionPaymentMethodTypes {
     AcssDebit,
@@ -6327,10 +6327,10 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     WechatPay,
     Zip,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateCheckoutSessionPaymentMethodTypes {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateCheckoutSessionPaymentMethodTypes::*;
         match self {
             AcssDebit => "acss_debit",
@@ -6368,7 +6368,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -6413,7 +6413,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodTypes {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6649,7 +6649,7 @@ impl CreateCheckoutSessionShippingAddressCollection {
 /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
 /// shipping locations.
 /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateCheckoutSessionShippingAddressCollectionAllowedCountries {
     Ac,
@@ -6890,10 +6890,10 @@ pub enum CreateCheckoutSessionShippingAddressCollectionAllowedCountries {
     Zw,
     Zz,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl CreateCheckoutSessionShippingAddressCollectionAllowedCountries {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateCheckoutSessionShippingAddressCollectionAllowedCountries::*;
         match self {
             Ac => "AC",
@@ -7133,7 +7133,7 @@ impl CreateCheckoutSessionShippingAddressCollectionAllowedCountries {
             Zm => "ZM",
             Zw => "ZW",
             Zz => "ZZ",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -7380,7 +7380,7 @@ impl std::str::FromStr for CreateCheckoutSessionShippingAddressCollectionAllowed
             "ZM" => Ok(Zm),
             "ZW" => Ok(Zw),
             "ZZ" => Ok(Zz),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

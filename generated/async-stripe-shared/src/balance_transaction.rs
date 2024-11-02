@@ -173,7 +173,7 @@ const _: () = {
                 self.reporting_category.take(),
                 self.source.take(),
                 self.status.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -269,7 +269,7 @@ impl serde::Serialize for BalanceTransaction {
 /// Transaction type: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `climate_order_purchase`, `climate_order_refund`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `obligation_outbound`, `obligation_reversal_inbound`, `payment`, `payment_failure_refund`, `payment_network_reserve_hold`, `payment_network_reserve_release`, `payment_refund`, `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
 /// Learn more about [balance transaction types and what they represent](https://stripe.com/docs/reports/balance-transaction-types).
 /// To classify transactions for accounting purposes, consider `reporting_category` instead.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum BalanceTransactionType {
     Adjustment,
@@ -313,10 +313,10 @@ pub enum BalanceTransactionType {
     TransferFailure,
     TransferRefund,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl BalanceTransactionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BalanceTransactionType::*;
         match self {
             Adjustment => "adjustment",
@@ -359,7 +359,7 @@ impl BalanceTransactionType {
             TransferCancel => "transfer_cancel",
             TransferFailure => "transfer_failure",
             TransferRefund => "transfer_refund",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -409,7 +409,7 @@ impl std::str::FromStr for BalanceTransactionType {
             "transfer_cancel" => Ok(TransferCancel),
             "transfer_failure" => Ok(TransferFailure),
             "transfer_refund" => Ok(TransferRefund),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

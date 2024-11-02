@@ -144,7 +144,7 @@ const _: () = {
                 self.id.take(),
                 self.livemode,
                 self.transaction.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -326,7 +326,7 @@ impl<'de> serde::Deserialize<'de> for TreasuryTransactionEntryFlowType {
     }
 }
 /// The specific money movement that generated the TransactionEntry.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum TreasuryTransactionEntryType {
     CreditReversal,
@@ -350,10 +350,10 @@ pub enum TreasuryTransactionEntryType {
     ReceivedCredit,
     ReceivedDebit,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl TreasuryTransactionEntryType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryTransactionEntryType::*;
         match self {
             CreditReversal => "credit_reversal",
@@ -376,7 +376,7 @@ impl TreasuryTransactionEntryType {
             OutboundTransferReturn => "outbound_transfer_return",
             ReceivedCredit => "received_credit",
             ReceivedDebit => "received_debit",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -406,7 +406,7 @@ impl std::str::FromStr for TreasuryTransactionEntryType {
             "outbound_transfer_return" => Ok(OutboundTransferReturn),
             "received_credit" => Ok(ReceivedCredit),
             "received_debit" => Ok(ReceivedDebit),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

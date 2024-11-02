@@ -144,7 +144,7 @@ const _: () = {
                 self.flow.take(),
                 self.id.take(),
                 self.livemode,
-                self.locale,
+                self.locale.take(),
                 self.on_behalf_of.take(),
                 self.return_url.take(),
                 self.url.take(),
@@ -239,7 +239,7 @@ impl stripe_types::Object for BillingPortalSession {
     }
 }
 stripe_types::def_id!(BillingPortalSessionId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum BillingPortalSessionLocale {
     Auto,
@@ -290,10 +290,10 @@ pub enum BillingPortalSessionLocale {
     ZhMinusHk,
     ZhMinusTw,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl BillingPortalSessionLocale {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingPortalSessionLocale::*;
         match self {
             Auto => "auto",
@@ -343,7 +343,7 @@ impl BillingPortalSessionLocale {
             Zh => "zh",
             ZhMinusHk => "zh-HK",
             ZhMinusTw => "zh-TW",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -400,7 +400,7 @@ impl std::str::FromStr for BillingPortalSessionLocale {
             "zh" => Ok(Zh),
             "zh-HK" => Ok(ZhMinusHk),
             "zh-TW" => Ok(ZhMinusTw),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

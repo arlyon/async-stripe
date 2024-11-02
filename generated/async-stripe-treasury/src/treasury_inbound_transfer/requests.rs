@@ -172,7 +172,7 @@ impl FailTreasuryInboundTransferBuilder {
     }
 }
 /// Details about a failed InboundTransfer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct FailTreasuryInboundTransferFailureDetails {
     /// Reason for the failure.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -189,7 +189,7 @@ impl Default for FailTreasuryInboundTransferFailureDetails {
     }
 }
 /// Reason for the failure.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum FailTreasuryInboundTransferFailureDetailsCode {
     AccountClosed,
@@ -206,10 +206,10 @@ pub enum FailTreasuryInboundTransferFailureDetailsCode {
     NoAccount,
     Other,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
+    Unknown(String),
 }
 impl FailTreasuryInboundTransferFailureDetailsCode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use FailTreasuryInboundTransferFailureDetailsCode::*;
         match self {
             AccountClosed => "account_closed",
@@ -225,7 +225,7 @@ impl FailTreasuryInboundTransferFailureDetailsCode {
             InvalidCurrency => "invalid_currency",
             NoAccount => "no_account",
             Other => "other",
-            Unknown => "unknown",
+            Unknown(v) => v,
         }
     }
 }
@@ -248,7 +248,7 @@ impl std::str::FromStr for FailTreasuryInboundTransferFailureDetailsCode {
             "invalid_currency" => Ok(InvalidCurrency),
             "no_account" => Ok(NoAccount),
             "other" => Ok(Other),
-            _ => Ok(Self::Unknown),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
