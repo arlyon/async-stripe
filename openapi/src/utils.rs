@@ -3,6 +3,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 use anyhow::Context;
+use crate::Command;
 
 /// Write to a file, starting paths from the `out` directory and ensuring existence
 /// of directories along the way.
@@ -30,7 +31,8 @@ fn write_or_append_to_outfile<C: AsRef<[u8]>, P: AsRef<Path>>(
     out_path: P,
     mut opts: OpenOptions,
 ) -> anyhow::Result<()> {
-    let mut base = PathBuf::from("out");
+    let args = Command::parse();
+    let mut base = PathBuf::from(&args.out);
     base.push(out_path);
     create_dir_all(base.parent().unwrap())
         .with_context(|| format!("Could not create directories along path {}", base.display()))?;

@@ -7,6 +7,7 @@ use reqwest::blocking::Client;
 use tracing::{info, warn};
 
 use crate::components::Components;
+use crate::Command;
 
 // we use a common user agent, otherwise stripe rejects the connection
 const APP_USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
@@ -24,8 +25,9 @@ impl UrlFinder {
     }
 
     pub fn url_for_object(&self, object: &str) -> Option<String> {
+        let args = Command::parse();
         let unprefixed_link = self.doc_links.get(object)?;
-        Some(format!("https://stripe.com/docs/api{}", unprefixed_link))
+        Some(format!("{}{}", args.api_docs_url, unprefixed_link))
     }
 }
 
