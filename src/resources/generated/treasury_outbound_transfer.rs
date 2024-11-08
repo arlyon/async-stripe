@@ -4,7 +4,7 @@
 
 use crate::ids::{TreasuryOutboundTransferId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Currency, TreasurySharedResourceBillingDetails, TreasuryTransaction};
+use crate::resources::{Currency, Mandate, TreasurySharedResourceBillingDetails, TreasuryTransaction};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TreasuryOutboundTransfersResourceOutboundTransfer".
@@ -73,6 +73,9 @@ pub struct TreasuryOutboundTransfer {
 
     pub status_transitions: TreasuryOutboundTransfersResourceStatusTransitions,
 
+    /// Details about network-specific tracking information if available.
+    pub tracking_details: Option<TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetails>,
+
     /// The Transaction associated with this object.
     pub transaction: Expandable<TreasuryTransaction>,
 }
@@ -122,11 +125,38 @@ pub struct OutboundTransfersPaymentMethodDetailsUsBankAccount {
     /// Last four digits of the bank account number.
     pub last4: Option<String>,
 
-    /// The US bank account network used to send funds.
+    /// ID of the mandate used to make this payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate: Option<Expandable<Mandate>>,
+
+    /// The network rails used.
+    ///
+    /// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
     pub network: OutboundTransfersPaymentMethodDetailsUsBankAccountNetwork,
 
     /// Routing number of the bank account.
     pub routing_number: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetails {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ach: Option<TreasuryOutboundTransfersResourceAchTrackingDetails>,
+
+    /// The US bank account network used to send funds.
+    #[serde(rename = "type")]
+    pub type_: TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetailsType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_domestic_wire: Option<TreasuryOutboundTransfersResourceUsDomesticWireTrackingDetails>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TreasuryOutboundTransfersResourceAchTrackingDetails {
+
+    /// ACH trace ID of the OutboundTransfer for transfers sent over the `ach` network.
+    pub trace_id: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -153,6 +183,19 @@ pub struct TreasuryOutboundTransfersResourceStatusTransitions {
 
     /// Timestamp describing when an OutboundTransfer changed status to `returned`.
     pub returned_at: Option<Timestamp>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TreasuryOutboundTransfersResourceUsDomesticWireTrackingDetails {
+
+    /// CHIPS System Sequence Number (SSN) of the OutboundTransfer for transfers sent over the `us_domestic_wire` network.
+    pub chips: Option<String>,
+
+    /// IMAD of the OutboundTransfer for transfers sent over the `us_domestic_wire` network.
+    pub imad: Option<String>,
+
+    /// OMAD of the OutboundTransfer for transfers sent over the `us_domestic_wire` network.
+    pub omad: Option<String>,
 }
 
 /// An enum representing the possible values of an `OutboundTransfersPaymentMethodDetails`'s `type` field.
@@ -326,6 +369,40 @@ impl std::fmt::Display for TreasuryOutboundTransferStatus {
 impl std::default::Default for TreasuryOutboundTransferStatus {
     fn default() -> Self {
         Self::Canceled
+    }
+}
+
+/// An enum representing the possible values of an `TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetails`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetailsType {
+    Ach,
+    UsDomesticWire,
+}
+
+impl TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetailsType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetailsType::Ach => "ach",
+            TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetailsType::UsDomesticWire => "us_domestic_wire",
+        }
+    }
+}
+
+impl AsRef<str> for TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetailsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetailsType {
+    fn default() -> Self {
+        Self::Ach
     }
 }
 
