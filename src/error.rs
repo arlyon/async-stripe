@@ -100,6 +100,7 @@ pub enum ErrorCode {
     IncorrectNumber,
     IncorrectZip,
     InstantPayoutsUnsupported,
+    InsufficientCapabilitiesForTransfer,
     InvalidCardType,
     InvalidChargeAmount,
     InvalidCvc,
