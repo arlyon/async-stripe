@@ -2,15 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::IssuingAuthorizationId;
+use crate::ids::{IssuingAuthorizationId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{
-    BalanceTransaction, Currency, IssuingAuthorizationAmountDetails, IssuingAuthorizationCheck,
-    IssuingAuthorizationMethod, IssuingAuthorizationReason, IssuingCard, IssuingCardholder,
-    IssuingToken, IssuingTransaction, MerchantData,
-};
+use crate::resources::{BalanceTransaction, Currency, IssuingAuthorizationAmountDetails, IssuingAuthorizationCheck, IssuingAuthorizationMethod, IssuingAuthorizationReason, IssuingCard, IssuingCardholder, IssuingToken, IssuingTransaction, MerchantData};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingAuthorization".
 ///
@@ -56,6 +51,18 @@ pub struct IssuingAuthorization {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
+
+    /// Fleet-specific information for authorizations using Fleet cards.
+    pub fleet: Option<IssuingAuthorizationFleetData>,
+
+    /// Fraud challenges sent to the cardholder, if this authorization was declined for fraud risk reasons.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fraud_challenges: Option<Vec<IssuingAuthorizationFraudChallenge>>,
+
+    /// Information about fuel that was purchased with this transaction.
+    ///
+    /// Typically this information is received from the merchant after the authorization has been approved and the fuel dispensed.
+    pub fuel: Option<IssuingAuthorizationFuelData>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -113,6 +120,10 @@ pub struct IssuingAuthorization {
 
     pub verification_data: IssuingAuthorizationVerificationData,
 
+    /// Whether the authorization bypassed fraud risk checks because the cardholder has previously completed a fraud challenge on a similar high-risk authorization from the same merchant.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verified_by_fraud_challenge: Option<bool>,
+
     /// The digital wallet used for this transaction.
     ///
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
@@ -131,7 +142,130 @@ impl Object for IssuingAuthorization {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFleetData {
+
+    /// Answers to prompts presented to the cardholder at the point of sale.
+    ///
+    /// Prompted fields vary depending on the configuration of your physical fleet cards.
+    /// Typical points of sale support only numeric entry.
+    pub cardholder_prompt_data: Option<IssuingAuthorizationFleetCardholderPromptData>,
+
+    /// The type of purchase.
+    pub purchase_type: Option<IssuingAuthorizationFleetDataPurchaseType>,
+
+    /// More information about the total amount.
+    ///
+    /// Typically this information is received from the merchant after the authorization has been approved and the fuel dispensed.
+    /// This information is not guaranteed to be accurate as some merchants may provide unreliable data.
+    pub reported_breakdown: Option<IssuingAuthorizationFleetReportedBreakdown>,
+
+    /// The type of fuel service.
+    pub service_type: Option<IssuingAuthorizationFleetDataServiceType>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFleetCardholderPromptData {
+
+    /// [Deprecated] An alphanumeric ID, though typical point of sales only support numeric entry.
+    ///
+    /// The card program can be configured to prompt for a vehicle ID, driver ID, or generic ID.
+    pub alphanumeric_id: Option<String>,
+
+    /// Driver ID.
+    pub driver_id: Option<String>,
+
+    /// Odometer reading.
+    pub odometer: Option<i64>,
+
+    /// An alphanumeric ID.
+    ///
+    /// This field is used when a vehicle ID, driver ID, or generic ID is entered by the cardholder, but the merchant or card network did not specify the prompt type.
+    pub unspecified_id: Option<String>,
+
+    /// User ID.
+    pub user_id: Option<String>,
+
+    /// Vehicle number.
+    pub vehicle_number: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFleetReportedBreakdown {
+
+    /// Breakdown of fuel portion of the purchase.
+    pub fuel: Option<IssuingAuthorizationFleetFuelPriceData>,
+
+    /// Breakdown of non-fuel portion of the purchase.
+    pub non_fuel: Option<IssuingAuthorizationFleetNonFuelPriceData>,
+
+    /// Information about tax included in this transaction.
+    pub tax: Option<IssuingAuthorizationFleetTaxData>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFleetFuelPriceData {
+
+    /// Gross fuel amount that should equal Fuel Quantity multiplied by Fuel Unit Cost, inclusive of taxes.
+    pub gross_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFleetNonFuelPriceData {
+
+    /// Gross non-fuel amount that should equal the sum of the line items, inclusive of taxes.
+    pub gross_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFleetTaxData {
+
+    /// Amount of state or provincial Sales Tax included in the transaction amount.
+    ///
+    /// `null` if not reported by merchant or not subject to tax.
+    pub local_amount_decimal: Option<String>,
+
+    /// Amount of national Sales Tax or VAT included in the transaction amount.
+    ///
+    /// `null` if not reported by merchant or not subject to tax.
+    pub national_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFraudChallenge {
+
+    /// The method by which the fraud challenge was delivered to the cardholder.
+    pub channel: IssuingAuthorizationFraudChallengeChannel,
+
+    /// The status of the fraud challenge.
+    pub status: IssuingAuthorizationFraudChallengeStatus,
+
+    /// If the challenge is not deliverable, the reason why.
+    pub undeliverable_reason: Option<IssuingAuthorizationFraudChallengeUndeliverableReason>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationFuelData {
+
+    /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
+    pub industry_product_code: Option<String>,
+
+    /// The quantity of `unit`s of fuel that was dispensed, represented as a decimal string with at most 12 decimal places.
+    pub quantity_decimal: Option<String>,
+
+    /// The type of fuel that was purchased.
+    #[serde(rename = "type")]
+    pub type_: Option<IssuingAuthorizationFuelDataType>,
+
+    /// The units for `quantity_decimal`.
+    pub unit: Option<IssuingAuthorizationFuelDataUnit>,
+
+    /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
+    pub unit_cost_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationNetworkData {
+
     /// Identifier assigned to the acquirer by the card network.
     ///
     /// Sometimes this value is not provided by the network; in this case, the value will be `null`.
@@ -148,6 +282,7 @@ pub struct IssuingAuthorizationNetworkData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationPendingRequest {
+
     /// The additional amount Stripe will hold if the authorization is approved, in the card's [currency](https://stripe.com/docs/api#issuing_authorization_object-pending-request-currency) and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
 
@@ -180,6 +315,7 @@ pub struct IssuingAuthorizationPendingRequest {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationRequest {
+
     /// The `pending_request.amount` at the time of the request, presented in your card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     ///
     /// Stripe held this amount from your account to fund the authorization if the request was approved.
@@ -239,6 +375,7 @@ pub struct IssuingAuthorizationRequest {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationTreasury {
+
     /// The array of [ReceivedCredits](https://stripe.com/docs/api/treasury/received_credits) associated with this authorization.
     pub received_credits: Vec<String>,
 
@@ -251,6 +388,7 @@ pub struct IssuingAuthorizationTreasury {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationVerificationData {
+
     /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
     pub address_line1_check: IssuingAuthorizationCheck,
 
@@ -275,6 +413,7 @@ pub struct IssuingAuthorizationVerificationData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationAuthenticationExemption {
+
     /// The entity that requested the exemption, either the acquiring merchant or the Issuing user.
     pub claimed_by: IssuingAuthorizationAuthenticationExemptionClaimedBy,
 
@@ -285,6 +424,7 @@ pub struct IssuingAuthorizationAuthenticationExemption {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationThreeDSecure {
+
     /// The outcome of the 3D Secure authentication request.
     pub result: IssuingAuthorizationThreeDSecureResult,
 }
@@ -335,12 +475,8 @@ pub enum IssuingAuthorizationAuthenticationExemptionType {
 impl IssuingAuthorizationAuthenticationExemptionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            IssuingAuthorizationAuthenticationExemptionType::LowValueTransaction => {
-                "low_value_transaction"
-            }
-            IssuingAuthorizationAuthenticationExemptionType::TransactionRiskAnalysis => {
-                "transaction_risk_analysis"
-            }
+            IssuingAuthorizationAuthenticationExemptionType::LowValueTransaction => "low_value_transaction",
+            IssuingAuthorizationAuthenticationExemptionType::TransactionRiskAnalysis => "transaction_risk_analysis",
             IssuingAuthorizationAuthenticationExemptionType::Unknown => "unknown",
         }
     }
@@ -360,6 +496,270 @@ impl std::fmt::Display for IssuingAuthorizationAuthenticationExemptionType {
 impl std::default::Default for IssuingAuthorizationAuthenticationExemptionType {
     fn default() -> Self {
         Self::LowValueTransaction
+    }
+}
+
+/// An enum representing the possible values of an `IssuingAuthorizationFleetData`'s `purchase_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingAuthorizationFleetDataPurchaseType {
+    FuelAndNonFuelPurchase,
+    FuelPurchase,
+    NonFuelPurchase,
+}
+
+impl IssuingAuthorizationFleetDataPurchaseType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingAuthorizationFleetDataPurchaseType::FuelAndNonFuelPurchase => "fuel_and_non_fuel_purchase",
+            IssuingAuthorizationFleetDataPurchaseType::FuelPurchase => "fuel_purchase",
+            IssuingAuthorizationFleetDataPurchaseType::NonFuelPurchase => "non_fuel_purchase",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingAuthorizationFleetDataPurchaseType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingAuthorizationFleetDataPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingAuthorizationFleetDataPurchaseType {
+    fn default() -> Self {
+        Self::FuelAndNonFuelPurchase
+    }
+}
+
+/// An enum representing the possible values of an `IssuingAuthorizationFleetData`'s `service_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingAuthorizationFleetDataServiceType {
+    FullService,
+    NonFuelTransaction,
+    SelfService,
+}
+
+impl IssuingAuthorizationFleetDataServiceType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingAuthorizationFleetDataServiceType::FullService => "full_service",
+            IssuingAuthorizationFleetDataServiceType::NonFuelTransaction => "non_fuel_transaction",
+            IssuingAuthorizationFleetDataServiceType::SelfService => "self_service",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingAuthorizationFleetDataServiceType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingAuthorizationFleetDataServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingAuthorizationFleetDataServiceType {
+    fn default() -> Self {
+        Self::FullService
+    }
+}
+
+/// An enum representing the possible values of an `IssuingAuthorizationFraudChallenge`'s `channel` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingAuthorizationFraudChallengeChannel {
+    Sms,
+}
+
+impl IssuingAuthorizationFraudChallengeChannel {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingAuthorizationFraudChallengeChannel::Sms => "sms",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingAuthorizationFraudChallengeChannel {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingAuthorizationFraudChallengeChannel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingAuthorizationFraudChallengeChannel {
+    fn default() -> Self {
+        Self::Sms
+    }
+}
+
+/// An enum representing the possible values of an `IssuingAuthorizationFraudChallenge`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingAuthorizationFraudChallengeStatus {
+    Expired,
+    Pending,
+    Rejected,
+    Undeliverable,
+    Verified,
+}
+
+impl IssuingAuthorizationFraudChallengeStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingAuthorizationFraudChallengeStatus::Expired => "expired",
+            IssuingAuthorizationFraudChallengeStatus::Pending => "pending",
+            IssuingAuthorizationFraudChallengeStatus::Rejected => "rejected",
+            IssuingAuthorizationFraudChallengeStatus::Undeliverable => "undeliverable",
+            IssuingAuthorizationFraudChallengeStatus::Verified => "verified",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingAuthorizationFraudChallengeStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingAuthorizationFraudChallengeStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingAuthorizationFraudChallengeStatus {
+    fn default() -> Self {
+        Self::Expired
+    }
+}
+
+/// An enum representing the possible values of an `IssuingAuthorizationFraudChallenge`'s `undeliverable_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingAuthorizationFraudChallengeUndeliverableReason {
+    NoPhoneNumber,
+    UnsupportedPhoneNumber,
+}
+
+impl IssuingAuthorizationFraudChallengeUndeliverableReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingAuthorizationFraudChallengeUndeliverableReason::NoPhoneNumber => "no_phone_number",
+            IssuingAuthorizationFraudChallengeUndeliverableReason::UnsupportedPhoneNumber => "unsupported_phone_number",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingAuthorizationFraudChallengeUndeliverableReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingAuthorizationFraudChallengeUndeliverableReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingAuthorizationFraudChallengeUndeliverableReason {
+    fn default() -> Self {
+        Self::NoPhoneNumber
+    }
+}
+
+/// An enum representing the possible values of an `IssuingAuthorizationFuelData`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingAuthorizationFuelDataType {
+    Diesel,
+    Other,
+    UnleadedPlus,
+    UnleadedRegular,
+    UnleadedSuper,
+}
+
+impl IssuingAuthorizationFuelDataType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingAuthorizationFuelDataType::Diesel => "diesel",
+            IssuingAuthorizationFuelDataType::Other => "other",
+            IssuingAuthorizationFuelDataType::UnleadedPlus => "unleaded_plus",
+            IssuingAuthorizationFuelDataType::UnleadedRegular => "unleaded_regular",
+            IssuingAuthorizationFuelDataType::UnleadedSuper => "unleaded_super",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingAuthorizationFuelDataType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingAuthorizationFuelDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingAuthorizationFuelDataType {
+    fn default() -> Self {
+        Self::Diesel
+    }
+}
+
+/// An enum representing the possible values of an `IssuingAuthorizationFuelData`'s `unit` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingAuthorizationFuelDataUnit {
+    ChargingMinute,
+    ImperialGallon,
+    Kilogram,
+    KilowattHour,
+    Liter,
+    Other,
+    Pound,
+    UsGallon,
+}
+
+impl IssuingAuthorizationFuelDataUnit {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingAuthorizationFuelDataUnit::ChargingMinute => "charging_minute",
+            IssuingAuthorizationFuelDataUnit::ImperialGallon => "imperial_gallon",
+            IssuingAuthorizationFuelDataUnit::Kilogram => "kilogram",
+            IssuingAuthorizationFuelDataUnit::KilowattHour => "kilowatt_hour",
+            IssuingAuthorizationFuelDataUnit::Liter => "liter",
+            IssuingAuthorizationFuelDataUnit::Other => "other",
+            IssuingAuthorizationFuelDataUnit::Pound => "pound",
+            IssuingAuthorizationFuelDataUnit::UsGallon => "us_gallon",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingAuthorizationFuelDataUnit {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingAuthorizationFuelDataUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingAuthorizationFuelDataUnit {
+    fn default() -> Self {
+        Self::ChargingMinute
     }
 }
 
