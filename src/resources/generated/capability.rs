@@ -33,8 +33,6 @@ pub struct Capability {
     pub requirements: Option<AccountCapabilityRequirements>,
 
     /// The status of the capability.
-    ///
-    /// Can be `active`, `inactive`, `pending`, or `unrequested`.
     pub status: CapabilityStatus,
 }
 
@@ -64,8 +62,8 @@ pub struct AccountCapabilityFutureRequirements {
     /// If not collected by `future_requirements[current_deadline]`, these fields will transition to the main `requirements` hash.
     pub currently_due: Vec<String>,
 
-    /// This is typed as a string for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is empty because fields in `future_requirements` will never disable the account.
-    pub disabled_reason: Option<String>,
+    /// This is typed as an enum for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is null because fields in `future_requirements` will never disable the account.
+    pub disabled_reason: Option<AccountCapabilityFutureRequirementsDisabledReason>,
 
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<AccountRequirementsError>,
@@ -81,10 +79,11 @@ pub struct AccountCapabilityFutureRequirements {
     /// New fields will never appear here; `future_requirements.past_due` will always be a subset of `requirements.past_due`.
     pub past_due: Vec<String>,
 
-    /// Fields that may become required depending on the results of verification or review.
+    /// Fields that might become required depending on the results of verification or review.
     ///
-    /// Will be an empty array unless an asynchronous verification is pending.
+    /// It's an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due` or `currently_due`.
+    /// Fields might appear in `eventually_due` or `currently_due` and in `pending_verification` if verification fails but another verification is still pending.
     pub pending_verification: Vec<String>,
 }
 
@@ -104,11 +103,10 @@ pub struct AccountCapabilityRequirements {
     /// If not collected by `current_deadline`, these fields appear in `past_due` as well, and the capability is disabled.
     pub currently_due: Vec<String>,
 
-    /// If the capability is disabled, this string describes why.
+    /// Description of why the capability is disabled.
     ///
-    /// Can be `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.fraud`, `rejected.listed`, `rejected.terms_of_service`, `rejected.other`, `under_review`, or `other`.  `rejected.unsupported_business` means that the account's business is not supported by the capability.
-    /// For example, payment methods may restrict the businesses they support in their terms of service:  - [Afterpay Clearpay's terms of service](/afterpay-clearpay/legal#restricted-businesses)  If you believe that the rejection is in error, please contact support at <https://support.stripe.com/contact/> for assistance.
-    pub disabled_reason: Option<String>,
+    /// [Learn more about handling verification issues](https://stripe.com/docs/connect/handling-api-verification).
+    pub disabled_reason: Option<AccountCapabilityRequirementsDisabledReason>,
 
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<AccountRequirementsError>,
@@ -123,10 +121,11 @@ pub struct AccountCapabilityRequirements {
     /// These fields need to be collected to enable the capability on the account.
     pub past_due: Vec<String>,
 
-    /// Fields that may become required depending on the results of verification or review.
+    /// Fields that might become required depending on the results of verification or review.
     ///
-    /// Will be an empty array unless an asynchronous verification is pending.
+    /// It's an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
+    /// Fields might appear in `eventually_due`, `currently_due`, or `past_due` and in `pending_verification` if verification fails but another verification is still pending.
     pub pending_verification: Vec<String>,
 }
 
@@ -151,6 +150,120 @@ pub struct AccountRequirementsError {
 
     /// The specific user onboarding requirement field (in the requirements hash) that needs to be resolved.
     pub requirement: String,
+}
+
+/// An enum representing the possible values of an `AccountCapabilityFutureRequirements`'s `disabled_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilityFutureRequirementsDisabledReason {
+    Other,
+    #[serde(rename = "paused.inactivity")]
+    PausedInactivity,
+    #[serde(rename = "pending.onboarding")]
+    PendingOnboarding,
+    #[serde(rename = "pending.review")]
+    PendingReview,
+    PlatformDisabled,
+    PlatformPaused,
+    #[serde(rename = "rejected.inactivity")]
+    RejectedInactivity,
+    #[serde(rename = "rejected.other")]
+    RejectedOther,
+    #[serde(rename = "rejected.unsupported_business")]
+    RejectedUnsupportedBusiness,
+    #[serde(rename = "requirements.fields_needed")]
+    RequirementsFieldsNeeded,
+}
+
+impl AccountCapabilityFutureRequirementsDisabledReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilityFutureRequirementsDisabledReason::Other => "other",
+            AccountCapabilityFutureRequirementsDisabledReason::PausedInactivity => "paused.inactivity",
+            AccountCapabilityFutureRequirementsDisabledReason::PendingOnboarding => "pending.onboarding",
+            AccountCapabilityFutureRequirementsDisabledReason::PendingReview => "pending.review",
+            AccountCapabilityFutureRequirementsDisabledReason::PlatformDisabled => "platform_disabled",
+            AccountCapabilityFutureRequirementsDisabledReason::PlatformPaused => "platform_paused",
+            AccountCapabilityFutureRequirementsDisabledReason::RejectedInactivity => "rejected.inactivity",
+            AccountCapabilityFutureRequirementsDisabledReason::RejectedOther => "rejected.other",
+            AccountCapabilityFutureRequirementsDisabledReason::RejectedUnsupportedBusiness => "rejected.unsupported_business",
+            AccountCapabilityFutureRequirementsDisabledReason::RequirementsFieldsNeeded => "requirements.fields_needed",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilityFutureRequirementsDisabledReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilityFutureRequirementsDisabledReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilityFutureRequirementsDisabledReason {
+    fn default() -> Self {
+        Self::Other
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilityRequirements`'s `disabled_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilityRequirementsDisabledReason {
+    Other,
+    #[serde(rename = "paused.inactivity")]
+    PausedInactivity,
+    #[serde(rename = "pending.onboarding")]
+    PendingOnboarding,
+    #[serde(rename = "pending.review")]
+    PendingReview,
+    PlatformDisabled,
+    PlatformPaused,
+    #[serde(rename = "rejected.inactivity")]
+    RejectedInactivity,
+    #[serde(rename = "rejected.other")]
+    RejectedOther,
+    #[serde(rename = "rejected.unsupported_business")]
+    RejectedUnsupportedBusiness,
+    #[serde(rename = "requirements.fields_needed")]
+    RequirementsFieldsNeeded,
+}
+
+impl AccountCapabilityRequirementsDisabledReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilityRequirementsDisabledReason::Other => "other",
+            AccountCapabilityRequirementsDisabledReason::PausedInactivity => "paused.inactivity",
+            AccountCapabilityRequirementsDisabledReason::PendingOnboarding => "pending.onboarding",
+            AccountCapabilityRequirementsDisabledReason::PendingReview => "pending.review",
+            AccountCapabilityRequirementsDisabledReason::PlatformDisabled => "platform_disabled",
+            AccountCapabilityRequirementsDisabledReason::PlatformPaused => "platform_paused",
+            AccountCapabilityRequirementsDisabledReason::RejectedInactivity => "rejected.inactivity",
+            AccountCapabilityRequirementsDisabledReason::RejectedOther => "rejected.other",
+            AccountCapabilityRequirementsDisabledReason::RejectedUnsupportedBusiness => "rejected.unsupported_business",
+            AccountCapabilityRequirementsDisabledReason::RequirementsFieldsNeeded => "requirements.fields_needed",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilityRequirementsDisabledReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilityRequirementsDisabledReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilityRequirementsDisabledReason {
+    fn default() -> Self {
+        Self::Other
+    }
 }
 
 /// An enum representing the possible values of an `AccountRequirementsError`'s `code` field.
@@ -238,6 +351,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedKeyedMatch,
     VerificationFailedNameMatch,
     VerificationFailedOther,
+    VerificationFailedRepresentativeAuthority,
     VerificationFailedResidentialAddress,
     VerificationFailedTaxIdMatch,
     VerificationFailedTaxIdNotIssued,
@@ -245,6 +359,8 @@ pub enum AccountRequirementsErrorCode {
     VerificationMissingExecutives,
     VerificationMissingOwners,
     VerificationRequiresAdditionalMemorandumOfAssociations,
+    VerificationRequiresAdditionalProofOfRegistration,
+    VerificationSupportability,
 }
 
 impl AccountRequirementsErrorCode {
@@ -330,6 +446,7 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationFailedKeyedMatch => "verification_failed_keyed_match",
             AccountRequirementsErrorCode::VerificationFailedNameMatch => "verification_failed_name_match",
             AccountRequirementsErrorCode::VerificationFailedOther => "verification_failed_other",
+            AccountRequirementsErrorCode::VerificationFailedRepresentativeAuthority => "verification_failed_representative_authority",
             AccountRequirementsErrorCode::VerificationFailedResidentialAddress => "verification_failed_residential_address",
             AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => "verification_failed_tax_id_match",
             AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",
@@ -337,6 +454,8 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationMissingExecutives => "verification_missing_executives",
             AccountRequirementsErrorCode::VerificationMissingOwners => "verification_missing_owners",
             AccountRequirementsErrorCode::VerificationRequiresAdditionalMemorandumOfAssociations => "verification_requires_additional_memorandum_of_associations",
+            AccountRequirementsErrorCode::VerificationRequiresAdditionalProofOfRegistration => "verification_requires_additional_proof_of_registration",
+            AccountRequirementsErrorCode::VerificationSupportability => "verification_supportability",
         }
     }
 }
