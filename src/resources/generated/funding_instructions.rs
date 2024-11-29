@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::params::{Object};
-use crate::resources::{Currency};
+use crate::resources::{Address, Currency};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CustomerBalanceFundingInstructionsCustomerBalanceFundingInstructions".
@@ -79,8 +79,18 @@ pub struct FundingInstructionsBankTransferFinancialAddress {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferAbaRecord {
 
+    pub account_holder_address: Address,
+
+    /// The account holder name.
+    pub account_holder_name: String,
+
     /// The ABA account number.
     pub account_number: String,
+
+    /// The account type.
+    pub account_type: String,
+
+    pub bank_address: Address,
 
     /// The bank name.
     pub bank_name: String,
@@ -134,8 +144,18 @@ pub struct FundingInstructionsBankTransferSpeiRecord {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferSwiftRecord {
 
+    pub account_holder_address: Address,
+
+    /// The account holder name.
+    pub account_holder_name: String,
+
     /// The account number.
     pub account_number: String,
+
+    /// The account type.
+    pub account_type: String,
+
+    pub bank_address: Address,
 
     /// The bank name.
     pub bank_name: String,
