@@ -2,14 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::IssuingTransactionId;
+use crate::ids::{IssuingTransactionId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{
-    BalanceTransaction, Currency, IssuingAuthorization, IssuingCard, IssuingCardholder,
-    IssuingDispute, IssuingToken, IssuingTransactionType, MerchantData,
-};
+use crate::resources::{BalanceTransaction, Currency, IssuingAuthorization, IssuingCard, IssuingCardholder, IssuingDispute, IssuingToken, IssuingTransactionType, MerchantData};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingTransaction".
 ///
@@ -76,6 +72,7 @@ pub struct IssuingTransaction {
     pub network_data: Option<IssuingTransactionNetworkData>,
 
     /// Additional purchase information that is optionally provided by the merchant.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub purchase_details: Option<IssuingTransactionPurchaseDetails>,
 
     /// [Token](https://stripe.com/docs/api/issuing/tokens/object) object used for this transaction.
@@ -110,6 +107,7 @@ impl Object for IssuingTransaction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionAmountDetails {
+
     /// The fee charged by the ATM for the cash withdrawal.
     pub atm_fee: Option<i64>,
 
@@ -119,6 +117,7 @@ pub struct IssuingTransactionAmountDetails {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionNetworkData {
+
     /// A code created by Stripe which is shared with the merchant to validate the authorization.
     ///
     /// This field will be populated if the authorization message was approved.
@@ -138,6 +137,10 @@ pub struct IssuingTransactionNetworkData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionPurchaseDetails {
+
+    /// Fleet-specific information for transactions using Fleet cards.
+    pub fleet: Option<IssuingTransactionFleetData>,
+
     /// Information about the flight that was purchased with this transaction.
     pub flight: Option<IssuingTransactionFlightData>,
 
@@ -155,7 +158,92 @@ pub struct IssuingTransactionPurchaseDetails {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingTransactionFleetData {
+
+    /// Answers to prompts presented to cardholder at point of sale.
+    pub cardholder_prompt_data: Option<IssuingTransactionFleetCardholderPromptData>,
+
+    /// The type of purchase.
+    ///
+    /// One of `fuel_purchase`, `non_fuel_purchase`, or `fuel_and_non_fuel_purchase`.
+    pub purchase_type: Option<String>,
+
+    /// More information about the total amount.
+    ///
+    /// This information is not guaranteed to be accurate as some merchants may provide unreliable data.
+    pub reported_breakdown: Option<IssuingTransactionFleetReportedBreakdown>,
+
+    /// The type of fuel service.
+    ///
+    /// One of `non_fuel_transaction`, `full_service`, or `self_service`.
+    pub service_type: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingTransactionFleetCardholderPromptData {
+
+    /// Driver ID.
+    pub driver_id: Option<String>,
+
+    /// Odometer reading.
+    pub odometer: Option<i64>,
+
+    /// An alphanumeric ID.
+    ///
+    /// This field is used when a vehicle ID, driver ID, or generic ID is entered by the cardholder, but the merchant or card network did not specify the prompt type.
+    pub unspecified_id: Option<String>,
+
+    /// User ID.
+    pub user_id: Option<String>,
+
+    /// Vehicle number.
+    pub vehicle_number: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingTransactionFleetReportedBreakdown {
+
+    /// Breakdown of fuel portion of the purchase.
+    pub fuel: Option<IssuingTransactionFleetFuelPriceData>,
+
+    /// Breakdown of non-fuel portion of the purchase.
+    pub non_fuel: Option<IssuingTransactionFleetNonFuelPriceData>,
+
+    /// Information about tax included in this transaction.
+    pub tax: Option<IssuingTransactionFleetTaxData>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingTransactionFleetFuelPriceData {
+
+    /// Gross fuel amount that should equal Fuel Volume multipled by Fuel Unit Cost, inclusive of taxes.
+    pub gross_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingTransactionFleetNonFuelPriceData {
+
+    /// Gross non-fuel amount that should equal the sum of the line items, inclusive of taxes.
+    pub gross_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingTransactionFleetTaxData {
+
+    /// Amount of state or provincial Sales Tax included in the transaction amount.
+    ///
+    /// Null if not reported by merchant or not subject to tax.
+    pub local_amount_decimal: Option<String>,
+
+    /// Amount of national Sales Tax or VAT included in the transaction amount.
+    ///
+    /// Null if not reported by merchant or not subject to tax.
+    pub national_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionFlightData {
+
     /// The time that the flight departed.
     pub departure_at: Option<i64>,
 
@@ -174,6 +262,7 @@ pub struct IssuingTransactionFlightData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionFlightDataLeg {
+
     /// The three-letter IATA airport code of the flight's destination.
     pub arrival_airport_code: Option<String>,
 
@@ -195,26 +284,31 @@ pub struct IssuingTransactionFlightDataLeg {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionFuelData {
+
+    /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
+    pub industry_product_code: Option<String>,
+
+    /// The quantity of `unit`s of fuel that was dispensed, represented as a decimal string with at most 12 decimal places.
+    pub quantity_decimal: Option<String>,
+
     /// The type of fuel that was purchased.
     ///
     /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
     #[serde(rename = "type")]
     pub type_: String,
 
-    /// The units for `volume_decimal`.
+    /// The units for `quantity_decimal`.
     ///
-    /// One of `us_gallon` or `liter`.
+    /// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
     pub unit: String,
 
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
     pub unit_cost_decimal: String,
-
-    /// The volume of the fuel that was pumped, represented as a decimal string with at most 12 decimal places.
-    pub volume_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionLodgingData {
+
     /// The time of checking into the lodging.
     pub check_in_at: Option<i64>,
 
@@ -224,6 +318,7 @@ pub struct IssuingTransactionLodgingData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionReceiptData {
+
     /// The description of the item.
     ///
     /// The maximum length of this field is 26 characters.
@@ -241,6 +336,7 @@ pub struct IssuingTransactionReceiptData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionTreasury {
+
     /// The Treasury [ReceivedCredit](https://stripe.com/docs/api/treasury/received_credits) representing this Issuing transaction if it is a refund.
     pub received_credit: Option<String>,
 
