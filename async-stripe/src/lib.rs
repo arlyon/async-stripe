@@ -55,7 +55,6 @@
 
 #![warn(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 #![deny(missing_docs, missing_debug_implementations)]
-#![forbid(unsafe_code)]
 
 mod error;
 
@@ -68,7 +67,7 @@ pub use error::StripeError;
 #[cfg(feature = "__hyper")]
 pub use hyper::*;
 pub use stripe_client_core::{
-    CustomizedStripeRequest, ListPaginator, PaginationExt, RequestStrategy,
+    CustomizedStripeRequest, ListPaginator, PaginationExt, RequestStrategy, Outcome, RequestBuilder, StripeMethod, StripeClient, SharedConfigBuilder, ApiVersion
 };
 pub use stripe_shared::api_errors::*;
 pub use stripe_shared::{AccountId, ApplicationId};
