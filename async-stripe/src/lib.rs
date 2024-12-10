@@ -55,6 +55,7 @@
 
 #![warn(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 #![deny(missing_docs, missing_debug_implementations)]
+#![forbid(unsafe_code)]
 
 mod error;
 
