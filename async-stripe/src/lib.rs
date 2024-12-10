@@ -67,7 +67,8 @@ pub use error::StripeError;
 #[cfg(feature = "__hyper")]
 pub use hyper::*;
 pub use stripe_client_core::{
-    CustomizedStripeRequest, ListPaginator, PaginationExt, RequestStrategy, Outcome, RequestBuilder, StripeMethod, StripeClient, SharedConfigBuilder, ApiVersion
+    ApiVersion, CustomizedStripeRequest, ListPaginator, Outcome, PaginationExt, RequestBuilder,
+    RequestStrategy, SharedConfigBuilder, StripeClient, StripeMethod,
 };
 pub use stripe_shared::api_errors::*;
 pub use stripe_shared::{AccountId, ApplicationId};
