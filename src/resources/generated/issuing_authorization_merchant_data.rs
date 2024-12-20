@@ -36,6 +36,12 @@ pub struct MerchantData {
     /// State where the seller is located.
     pub state: Option<String>,
 
+    /// The seller's tax identification number.
+    ///
+    /// Currently populated for French merchants only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id: Option<String>,
+
     /// An ID assigned by the seller to the location of the sale.
     pub terminal_id: Option<String>,
 
