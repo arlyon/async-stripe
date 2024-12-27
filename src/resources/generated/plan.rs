@@ -2,15 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
-use crate::ids::PlanId;
-use crate::params::{
-    Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery,
-    Timestamp,
-};
+use crate::ids::{PlanId};
+use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{CreateProduct, Currency, Product};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Plan".
 ///
@@ -89,6 +85,10 @@ pub struct Plan {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
+    /// The meter tracking the usage of a metered price.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub meter: Option<String>,
+
     /// A brief description of the plan, hidden from customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<String>,
@@ -132,10 +132,12 @@ pub struct Plan {
 }
 
 impl Plan {
+
     /// Returns a list of your plans.
-    pub fn list(client: &Client, params: &ListPlans<'_>) -> Response<List<Plan>> {
-        client.get_query("/plans", params)
-    }
+pub fn list(client: &Client, params: &ListPlans<'_>) -> Response<List<Plan>> {
+   client.get_query("/plans", params)
+}
+
 
     /// Retrieves the plan with the given ID.
     pub fn retrieve(client: &Client, id: &PlanId, expand: &[&str]) -> Response<Plan> {
@@ -171,6 +173,7 @@ impl Object for Plan {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PlanTier {
+
     /// Price for the entire tier.
     pub flat_amount: Option<i64>,
 
@@ -189,6 +192,7 @@ pub struct PlanTier {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TransformUsage {
+
     /// Divide usage by this number.
     pub divide_by: i64,
 
@@ -199,6 +203,7 @@ pub struct TransformUsage {
 /// The parameters for `Plan::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPlans<'a> {
+
     /// Only return plans that are active or inactive (e.g., pass `false` to list all inactive plans).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -254,12 +259,12 @@ impl<'a> ListPlans<'a> {
 impl Paginable for ListPlans<'_> {
     type O = Plan;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `Plan::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePlan<'a> {
+
     /// Whether the plan is currently available for new subscriptions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
