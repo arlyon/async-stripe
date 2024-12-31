@@ -22,6 +22,7 @@ pub mod core {
     pub mod connect_account_reference;
     pub mod custom_unit_amount;
     pub mod customer;
+    pub mod customer_session;
     pub mod dispute;
     pub mod ephemeral_key;
     pub mod file;
