@@ -31,6 +31,7 @@ pub struct AppsSecret {
     pub name: String,
 
     /// The plaintext secret value to be stored.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub payload: Option<String>,
 
     pub scope: SecretServiceResourceScope,
