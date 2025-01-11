@@ -321,7 +321,14 @@ where
     /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
     /// Stripe's default page size.
     ///
-    /// Requires `feature = "blocking"`.
+    /// Requires `feature = "blocking"`. There is also an async version of this function available with the same name.
+    ///
+    /// ```no_run
+    /// use stripe::{Customer, ListCustomers, StripeError, Client};
+    /// let client = Client::new("sk_test_123");
+    /// let params = ListCustomers { ..Default::default() };
+    /// let all_customers = Customer::list(&client, &params).unwrap().paginate(params).get_all(&client).unwrap()
+    /// ```
     #[cfg(feature = "blocking")]
     pub fn get_all(self, client: &Client) -> Response<Vec<T::O>> {
         let mut data = Vec::with_capacity(self.page.get_total_count().unwrap_or(0) as usize);
@@ -336,6 +343,27 @@ where
             paginator = next_paginator
         }
         Ok(data)
+    }
+
+    /// Get all values in this list, consuming self and paginating until all values are fetched.
+    ///
+    /// This function repeatedly queries Stripe for more data until all elements in list are fetched, using
+    /// the page size specified in params, or Stripe's default page size if none is specified.
+    ///
+    /// Requires `feature = "stream"`. There is also a blocking version of this function available with the same name.
+    ///
+    /// ```no_run
+    /// use stripe::{Customer, ListCustomers, StripeError, Client};
+    /// let client = Client::new("sk_test_123");
+    /// let params = ListCustomers { ..Default::default() };
+    /// let all_customers = Customer::list(&client, &params).await.unwrap().paginate(params).get_all(&client).await.unwrap()
+    /// ```
+    #[cfg(all(feature = "async", feature = "stream", not(feature = "blocking")))]
+    pub async fn get_all(self, client: &Client) -> Result<Vec<T::O>, StripeError> {
+        use futures_util::TryStreamExt;
+
+        let stream = self.stream(&client);
+        stream.try_collect::<Vec<_>>().await
     }
 
     /// Get all values in this List, consuming self and lazily paginating until all values are fetched.
