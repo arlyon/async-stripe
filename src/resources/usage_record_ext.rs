@@ -68,7 +68,7 @@ impl UsageRecordSummary {
 ///
 /// The list is sorted in reverse-chronological order (newest first). The first list item represents the most current usage period that hasn’t ended yet. Since new usage records can still be added, the returned summary information for the subscription item’s ID should be seen as unstable until the subscription billing period ends.
 /// For more details see [https://stripe.com/docs/api/usage_records/subscription_item_summary_list](https://stripe.com/docs/api/usage_records/subscription_item_summary_list).
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListUsageRecordSummaries {
     /// A cursor for use in pagination.
     ///
@@ -89,6 +89,12 @@ pub struct ListUsageRecordSummaries {
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u64>,
+}
+
+impl ListUsageRecordSummaries {
+    pub fn new() -> Self {
+        ListUsageRecordSummaries::default()
+    }
 }
 
 impl Paginable for ListUsageRecordSummaries {
