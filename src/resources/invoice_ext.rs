@@ -10,8 +10,8 @@ use crate::params::{Metadata, SearchList, Timestamp};
 use crate::resources::{CollectionMethod, Invoice};
 use crate::AutomaticTax;
 use crate::CreateInvoiceShippingDetails;
+use crate::CreateInvoiceTransferData;
 use crate::InvoiceSettingRenderingOptions;
-use crate::InvoiceTransferData;
 use crate::InvoicesPaymentSettings;
 use crate::InvoicesShippingCost;
 use crate::UpdateInvoiceItemDiscounts;
@@ -244,7 +244,7 @@ pub struct UpdateInvoice {
 
     /// The data with which to automatically create a Transfer for each of the invoices’s charges.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<InvoiceTransferData>,
+    pub transfer_data: Option<CreateInvoiceTransferData>,
 }
 
 impl UpdateInvoice {
