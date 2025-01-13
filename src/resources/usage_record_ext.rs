@@ -55,7 +55,7 @@ impl UsageRecordSummary {
     pub fn list(
         client: &Client,
         subscription_item_id: &SubscriptionItemId,
-        params: ListUsageRecordSummaries,
+        params: &ListUsageRecordSummaries,
     ) -> Response<List<UsageRecordSummary>> {
         client.get_query(
             &format!("/subscription_items/{}/usage_record_summaries", subscription_item_id),
