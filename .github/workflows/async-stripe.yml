@@ -11,9 +11,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@v1
+      - uses: dtolnay/rust-toolchain@1.82.0
         with:
-          toolchain: nightly
           components: rustfmt
       - uses: davidB/rust-cargo-make@v1
       - name: regenerate openapi
@@ -26,9 +25,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@v1
+      - uses: dtolnay/rust-toolchain@1.82.0
         with:
-          toolchain: nightly
           components: rustfmt
       - uses: davidB/rust-cargo-make@v1
       - name: regenerate openapi
@@ -56,9 +54,8 @@ jobs:
       RUSTFLAGS: -D warnings
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@v1
+      - uses: dtolnay/rust-toolchain@1.82.0
         with:
-          toolchain: stable
           components: clippy
       - run: cargo clippy -p stripe-openapi-codegen --tests
 
@@ -80,9 +77,8 @@ jobs:
           ]
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@v1
+      - uses: dtolnay/rust-toolchain@1.82.0
         with:
-          toolchain: stable
           components: clippy
       - uses: actions/cache@v4
         with:
@@ -121,9 +117,7 @@ jobs:
           - 12112:12112
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@v1
-        with:
-          toolchain: "1.78.0"
+      - uses: dtolnay/rust-toolchain@1.78.0
       - uses: actions/cache@v4
         with:
           path: |
@@ -152,12 +146,9 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@v1
+      - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: nightly
-      - uses: dtolnay/rust-toolchain@v1
-        with:
-          toolchain: stable
+          toolchain: "nightly-2024-10-18"
       - name: Install cargo-public-api
         uses: baptiste0928/cargo-install@v3
         with:
