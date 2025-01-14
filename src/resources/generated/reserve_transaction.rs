@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::ids::ReserveTransactionId;
 use crate::params::Object;
 use crate::resources::Currency;
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "ReserveTransaction".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

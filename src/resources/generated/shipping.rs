@@ -2,9 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::resources::Address;
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Shipping".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::TerminalConfigurationId;
 use crate::params::{Expand, Expandable, List, Object, Paginable};
 use crate::resources::File;
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TerminalConfigurationConfiguration".
 ///

@@ -2,8 +2,6 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{CreditNoteId, CustomerId, InvoiceId, RefundId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
@@ -11,6 +9,7 @@ use crate::resources::{
     CreditNoteLineItem, Currency, Customer, CustomerBalanceTransaction, Discount, Invoice,
     InvoicesShippingCost, Refund, TaxRate,
 };
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CreditNote".
 ///
