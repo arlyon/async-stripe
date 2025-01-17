@@ -110,7 +110,7 @@ pub struct BankConnectionsResourceBalance {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credit: Option<BankConnectionsResourceBalanceApiResourceCreditBalance>,
 
-    /// The balances owed to (or by) the account holder.
+    /// The balances owed to (or by) the account holder, before subtracting any outbound pending transactions or adding any inbound pending transactions.
     ///
     /// Each key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -132,7 +132,7 @@ pub struct BankConnectionsResourceBalanceApiResourceCashBalance {
 
     /// The funds available to the account holder.
     ///
-    /// Typically this is the current balance less any holds.  Each key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.  Each value is a integer amount.
+    /// Typically this is the current balance after subtracting any outbound pending transactions and adding any inbound pending transactions.  Each key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.  Each value is a integer amount.
     /// A positive amount indicates money owed to the account holder.
     /// A negative amount indicates money owed by the account holder.
     pub available: Option<i64>,
@@ -177,6 +177,12 @@ pub struct BankConnectionsResourceOwnershipRefresh {
     ///
     /// Measured in seconds since the Unix epoch.
     pub last_attempted_at: Timestamp,
+
+    /// Time at which the next ownership refresh can be initiated.
+    ///
+    /// This value will be `null` when `status` is `pending`.
+    /// Measured in seconds since the Unix epoch.
+    pub next_refresh_available_at: Option<Timestamp>,
 
     /// The status of the last refresh attempt.
     pub status: BankConnectionsResourceOwnershipRefreshStatus,
