@@ -38,6 +38,13 @@ impl From<hyper::Error> for StripeError {
 }
 
 #[cfg(feature = "__hyper")]
+impl From<hyper_util::client::legacy::Error> for StripeError {
+    fn from(err: hyper_util::client::legacy::Error) -> StripeError {
+        StripeError::ClientError(err.to_string())
+    }
+}
+
+#[cfg(feature = "__hyper")]
 impl From<hyper::http::Error> for StripeError {
     fn from(err: hyper::http::Error) -> StripeError {
         StripeError::ClientError(err.to_string())

@@ -1,10 +1,13 @@
 use std::fmt::Write as _;
 
+use http_body_util::{BodyExt, Full};
 use hyper::body::Bytes;
 use hyper::header::{AUTHORIZATION, CONTENT_TYPE, USER_AGENT};
 use hyper::http::request::Builder;
 use hyper::http::{HeaderName, HeaderValue};
-use hyper::{Body, Request, StatusCode};
+use hyper::{Request, StatusCode};
+use hyper_util::client::legacy::Client as HyperClient;
+use hyper_util::rt::TokioExecutor;
 use miniserde::json::from_str;
 use stripe_client_core::{CustomizedStripeRequest, RequestBuilder, StripeMethod};
 use stripe_client_core::{Outcome, RequestStrategy};
@@ -16,25 +19,14 @@ use crate::StripeError;
 /// A client for making Stripe API requests.
 #[derive(Clone, Debug)]
 pub struct Client {
-    client: hyper::Client<crate::hyper::connector::Connector, Body>,
+    client: HyperClient<crate::hyper::connector::Connector, Full<Bytes>>,
     config: ClientConfig,
-}
-
-// TODO: this looks to be much simpler in hyper 1.x
-// There's probably also a better way to do this now...
-fn clone_builder(builder: &Builder) -> Builder {
-    let mut req_builder =
-        Request::builder().uri(builder.uri_ref().unwrap()).method(builder.method_ref().unwrap());
-    for (k, v) in builder.headers_ref().unwrap() {
-        req_builder = req_builder.header(k, v);
-    }
-    req_builder
 }
 
 impl Client {
     pub(crate) fn from_config(config: ClientConfig) -> Self {
         Self {
-            client: hyper::Client::builder()
+            client: HyperClient::builder(TokioExecutor::new())
                 .pool_max_idle_per_host(0)
                 .build(crate::hyper::connector::create()),
             config,
@@ -112,6 +104,12 @@ impl Client {
             req_builder = req_builder.header(HeaderName::from_static("Idempotency-Key"), key);
         }
 
+        let body = match body {
+            None => Full::new(Bytes::new()),
+            Some(bytes) => Full::new(bytes),
+        };
+        let req = req_builder.body(body)?;
+
         loop {
             return match strategy.test(last_status.map(|s| s.as_u16()), last_retry_header, tries) {
                 Outcome::Stop => Err(last_error),
@@ -120,13 +118,7 @@ impl Client {
                         tokio::time::sleep(duration).await;
                     }
 
-                    let req_body = if let Some(body) = body.clone() {
-                        Body::from(body)
-                    } else {
-                        Body::empty()
-                    };
-                    let req = clone_builder(&req_builder).body(req_body)?;
-                    let response = match self.client.request(req).await {
+                    let response = match self.client.request(req.clone()).await {
                         Ok(resp) => resp,
                         Err(err) => {
                             last_error = StripeError::from(err);
@@ -141,7 +133,7 @@ impl Client {
                         .and_then(|s| s.to_str().ok())
                         .and_then(|s| s.parse().ok());
 
-                    let bytes = hyper::body::to_bytes(response.into_body()).await?;
+                    let bytes = response.into_body().collect().await?.to_bytes();
                     if !status.is_success() {
                         tries += 1;
 
