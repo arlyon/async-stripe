@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "invoice_payment_method_options_customer_balance".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsCustomerBalance {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_transfer: Option<InvoicePaymentMethodOptionsCustomerBalanceBankTransfer>,
 
@@ -18,9 +19,9 @@ pub struct InvoicePaymentMethodOptionsCustomerBalance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsCustomerBalanceBankTransfer {
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub eu_bank_transfer:
-        Option<InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+    pub eu_bank_transfer: Option<InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
 
     /// The bank transfer type that can be used for funding.
     ///
@@ -31,6 +32,7 @@ pub struct InvoicePaymentMethodOptionsCustomerBalanceBankTransfer {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
+
     /// The desired country code of the bank account information.
     ///
     /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
@@ -74,16 +76,12 @@ impl AsRef<str> for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBank
     }
 }
 
-impl std::fmt::Display
-    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
-{
+impl std::fmt::Display for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default
-    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
-{
+impl std::default::Default for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
     fn default() -> Self {
         Self::Be
     }
