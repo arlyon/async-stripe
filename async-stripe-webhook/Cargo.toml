@@ -39,8 +39,31 @@ async-stripe-treasury = { path = "../generated/async-stripe-treasury", optional 
 serde_json.workspace = true
 
 [features]
-serialize = ["async-stripe-types/serialize", "async-stripe-shared/serialize"]
-deserialize = ["async-stripe-types/deserialize", "async-stripe-shared/deserialize", "dep:serde_json"]
+serialize = [
+       "async-stripe-types/serialize",
+       "async-stripe-shared/serialize",
+       "async-stripe-billing?/serialize",
+       "async-stripe-checkout?/serialize",
+       "async-stripe-core?/serialize",
+       "async-stripe-fraud?/serialize",
+       "async-stripe-misc?/serialize",
+       "async-stripe-payment?/serialize",
+       "async-stripe-terminal?/serialize",
+       "async-stripe-treasury?/serialize",
+]
+deserialize = [
+       "async-stripe-types/deserialize",
+       "async-stripe-shared/deserialize",
+       "dep:serde_json",
+       "async-stripe-billing?/deserialize",
+       "async-stripe-checkout?/deserialize",
+       "async-stripe-core?/deserialize",
+       "async-stripe-fraud?/deserialize",
+       "async-stripe-misc?/deserialize",
+       "async-stripe-payment?/deserialize",
+       "async-stripe-terminal?/deserialize",
+       "async-stripe-treasury?/deserialize",
+]
 
 full = [
     "async-stripe-billing",
