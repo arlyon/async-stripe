@@ -36,6 +36,7 @@ pub struct TreasuryTransaction {
     /// A list of TransactionEntries that are part of this Transaction.
     ///
     /// This cannot be expanded in any list endpoints.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub entries: Option<List<TreasuryTransactionEntry>>,
 
     /// The FinancialAccount associated with this object.
@@ -45,6 +46,7 @@ pub struct TreasuryTransaction {
     pub flow: Option<String>,
 
     /// Details of the flow that created the Transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub flow_details: Option<TreasuryTransactionsResourceFlowDetails>,
 
     /// Type of the flow that created the Transaction.

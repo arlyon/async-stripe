@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::params::{Object};
-use crate::resources::{TreasuryFinancialAccountsResourceAchToggleSettings, TreasuryFinancialAccountsResourceToggleSettings};
+use crate::resources::{TreasuryFinancialAccountsResourceOutboundAchToggleSettings, TreasuryFinancialAccountsResourceToggleSettings};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TreasuryFinancialAccountsResourceFinancialAccountFeatures".
@@ -64,14 +64,27 @@ pub struct TreasuryFinancialAccountsResourceAbaToggleSettings {
 pub struct TreasuryFinancialAccountsResourceInboundTransfers {
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ach: Option<TreasuryFinancialAccountsResourceAchToggleSettings>,
+    pub ach: Option<TreasuryFinancialAccountsResourceInboundAchToggleSettings>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TreasuryFinancialAccountsResourceInboundAchToggleSettings {
+
+    /// Whether the FinancialAccount should have the Feature.
+    pub requested: bool,
+
+    /// Whether the Feature is operational.
+    pub status: TreasuryFinancialAccountsResourceInboundAchToggleSettingsStatus,
+
+    /// Additional details; includes at least one entry when the status is not `active`.
+    pub status_details: Vec<TreasuryFinancialAccountsResourceTogglesSettingStatusDetails>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountsResourceOutboundPayments {
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ach: Option<TreasuryFinancialAccountsResourceAchToggleSettings>,
+    pub ach: Option<TreasuryFinancialAccountsResourceOutboundAchToggleSettings>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire: Option<TreasuryFinancialAccountsResourceToggleSettings>,
@@ -81,7 +94,7 @@ pub struct TreasuryFinancialAccountsResourceOutboundPayments {
 pub struct TreasuryFinancialAccountsResourceOutboundTransfers {
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ach: Option<TreasuryFinancialAccountsResourceAchToggleSettings>,
+    pub ach: Option<TreasuryFinancialAccountsResourceOutboundAchToggleSettings>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire: Option<TreasuryFinancialAccountsResourceToggleSettings>,
@@ -132,6 +145,42 @@ impl std::fmt::Display for TreasuryFinancialAccountsResourceAbaToggleSettingsSta
     }
 }
 impl std::default::Default for TreasuryFinancialAccountsResourceAbaToggleSettingsStatus {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `TreasuryFinancialAccountsResourceInboundAchToggleSettings`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TreasuryFinancialAccountsResourceInboundAchToggleSettingsStatus {
+    Active,
+    Pending,
+    Restricted,
+}
+
+impl TreasuryFinancialAccountsResourceInboundAchToggleSettingsStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TreasuryFinancialAccountsResourceInboundAchToggleSettingsStatus::Active => "active",
+            TreasuryFinancialAccountsResourceInboundAchToggleSettingsStatus::Pending => "pending",
+            TreasuryFinancialAccountsResourceInboundAchToggleSettingsStatus::Restricted => "restricted",
+        }
+    }
+}
+
+impl AsRef<str> for TreasuryFinancialAccountsResourceInboundAchToggleSettingsStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TreasuryFinancialAccountsResourceInboundAchToggleSettingsStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TreasuryFinancialAccountsResourceInboundAchToggleSettingsStatus {
     fn default() -> Self {
         Self::Active
     }
