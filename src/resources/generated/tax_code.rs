@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::TaxCodeId;
 use crate::params::{Expand, List, Object, Paginable};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TaxProductResourceTaxCode".
 ///

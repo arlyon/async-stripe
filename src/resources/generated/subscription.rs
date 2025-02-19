@@ -2,8 +2,6 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PlanId, PriceId, PromotionCodeId, SubscriptionId};
 use crate::params::{
@@ -18,6 +16,7 @@ use crate::resources::{
     SubscriptionSchedule, SubscriptionTransferData, SubscriptionsTrialsResourceTrialSettings,
     TaxRate, TestHelpersTestClock,
 };
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Subscription".
 ///

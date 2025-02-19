@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::ids::TaxCalculationId;
 use crate::params::{List, Object, Timestamp};
 use crate::resources::{Currency, TaxCalculationLineItem, TaxProductResourceCustomerDetails};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TaxProductResourceTaxCalculation".
 ///

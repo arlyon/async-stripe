@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::ids::ApplicationFeeRefundId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{ApplicationFee, BalanceTransaction, Currency};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "FeeRefund".
 ///

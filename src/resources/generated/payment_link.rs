@@ -2,8 +2,6 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::PaymentLinkId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable};
@@ -11,6 +9,7 @@ use crate::resources::{
     Account, Application, CheckoutSessionItem, ConnectAccountReference, Currency,
     InvoiceSettingRenderingOptions, ShippingRate, SubscriptionsTrialsResourceTrialSettings, TaxId,
 };
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentLink".
 ///

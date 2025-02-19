@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::ids::CreditNoteLineItemId;
 use crate::params::{Expandable, Object};
 use crate::resources::{Discount, TaxRate};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CreditNoteLineItem".
 ///

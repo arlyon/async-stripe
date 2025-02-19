@@ -2,14 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{ApplicationFeeId, ChargeId};
 use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Application, ApplicationFeeRefund, BalanceTransaction, Charge, Currency,
 };
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PlatformFee".
 ///

@@ -2,14 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{ShippingRateId, TaxCodeId};
 use crate::params::{
     CurrencyMap, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
 use crate::resources::{Currency, TaxCode};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "ShippingRate".
 ///

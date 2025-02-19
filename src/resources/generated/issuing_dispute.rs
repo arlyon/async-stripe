@@ -2,13 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::ids::IssuingDisputeId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
     BalanceTransaction, Currency, File, IssuingDisputeStatus, IssuingTransaction,
 };
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingDispute".
 ///

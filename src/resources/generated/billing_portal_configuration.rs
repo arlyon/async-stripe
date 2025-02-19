@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::ids::BillingPortalConfigurationId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::Application;
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PortalConfiguration".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
