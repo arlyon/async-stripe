@@ -2,9 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::resources::{Discount, TaxRate};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "QuotesResourceTotalDetails".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

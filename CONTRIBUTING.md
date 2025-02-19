@@ -3,7 +3,7 @@
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
 3. Test it: `cargo test --features runtime-blocking`
-4. Lint it: `cargo +nightly clippy --all --all-targets -- -D warnings`
+4. Lint it: `cargo +1.82.0 clippy --all --all-targets -- -D warnings`
 5. Commit your changes: `git commit -am 'Add some feature'`
 6. Push to the branch: `git push origin my-new-feature`
 7. Submit a pull request :D
@@ -89,4 +89,3 @@ In some cases, it is helpful to have additional logic associated with a datatype
 capture a create `Charge` object. This additional impl goes in the `charge_ext.rs` file in the
 `resources` folder, to provide a clean seperation between generated and hand maintained files.
 If you notice that logic is missing, please add it to (or create) the appropriate `ext` file.
- 

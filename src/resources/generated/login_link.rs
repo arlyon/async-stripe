@@ -2,9 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::params::{Object, Timestamp};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "LoginLink".
 ///

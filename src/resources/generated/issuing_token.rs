@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::ids::IssuingTokenId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::IssuingCard;
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingNetworkToken".
 ///

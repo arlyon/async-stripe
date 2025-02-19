@@ -2,8 +2,6 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{
     CheckoutSessionId, CustomerId, PaymentIntentId, PaymentLinkId, PaymentMethodConfigurationId,
@@ -19,6 +17,7 @@ use crate::resources::{
     PaymentMethodOptionsCustomerBalanceEuBankAccount, SetupIntent, Shipping, ShippingRate,
     Subscription, TaxId, TaxRate,
 };
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Session".
 ///
