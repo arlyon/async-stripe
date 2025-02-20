@@ -163,6 +163,7 @@ actix-web = "4.2.1"
 # We have a few deps that have MSRVs that are higher than our own. 
 # We pin them here to ensure that we can run tests on the MSRV
 bumpalo = ">=3.0.0, <= 3.15.0"
+native-tls = ">= 0.2.0, <= 0.2.13"
 
 [[example]]
 name = "checkout"
