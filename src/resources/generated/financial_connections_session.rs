@@ -68,6 +68,11 @@ impl Object for FinancialConnectionsSession {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BankConnectionsResourceLinkAccountSessionFilters {
 
+    /// Restricts the Session to subcategories of accounts that can be linked.
+    ///
+    /// Valid subcategories are: `checking`, `savings`, `mortgage`, `line_of_credit`, `credit_card`.
+    pub account_subcategories: Option<Vec<BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories>>,
+
     /// List of countries from which to filter accounts.
     pub countries: Option<Vec<String>>,
 }
@@ -139,8 +144,55 @@ pub struct CreateFinancialConnectionsSessionAccountHolder {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateFinancialConnectionsSessionFilters {
 
+    /// Restricts the Session to subcategories of accounts that can be linked.
+    ///
+    /// Valid subcategories are: `checking`, `savings`, `mortgage`, `line_of_credit`, `credit_card`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_subcategories: Option<Vec<CreateFinancialConnectionsSessionFiltersAccountSubcategories>>,
+
     /// List of countries from which to collect accounts.
-    pub countries: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub countries: Option<Vec<String>>,
+}
+
+/// An enum representing the possible values of an `BankConnectionsResourceLinkAccountSessionFilters`'s `account_subcategories` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
+    Checking,
+    CreditCard,
+    LineOfCredit,
+    Mortgage,
+    Savings,
+}
+
+impl BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories::Checking => "checking",
+            BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories::CreditCard => "credit_card",
+            BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories::LineOfCredit => "line_of_credit",
+            BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories::Mortgage => "mortgage",
+            BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories::Savings => "savings",
+        }
+    }
+}
+
+impl AsRef<str> for BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
+    fn default() -> Self {
+        Self::Checking
+    }
 }
 
 /// An enum representing the possible values of an `CreateFinancialConnectionsSessionAccountHolder`'s `type` field.
@@ -174,6 +226,46 @@ impl std::fmt::Display for CreateFinancialConnectionsSessionAccountHolderType {
 impl std::default::Default for CreateFinancialConnectionsSessionAccountHolderType {
     fn default() -> Self {
         Self::Account
+    }
+}
+
+/// An enum representing the possible values of an `CreateFinancialConnectionsSessionFilters`'s `account_subcategories` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateFinancialConnectionsSessionFiltersAccountSubcategories {
+    Checking,
+    CreditCard,
+    LineOfCredit,
+    Mortgage,
+    Savings,
+}
+
+impl CreateFinancialConnectionsSessionFiltersAccountSubcategories {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateFinancialConnectionsSessionFiltersAccountSubcategories::Checking => "checking",
+            CreateFinancialConnectionsSessionFiltersAccountSubcategories::CreditCard => "credit_card",
+            CreateFinancialConnectionsSessionFiltersAccountSubcategories::LineOfCredit => "line_of_credit",
+            CreateFinancialConnectionsSessionFiltersAccountSubcategories::Mortgage => "mortgage",
+            CreateFinancialConnectionsSessionFiltersAccountSubcategories::Savings => "savings",
+        }
+    }
+}
+
+impl AsRef<str> for CreateFinancialConnectionsSessionFiltersAccountSubcategories {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateFinancialConnectionsSessionFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateFinancialConnectionsSessionFiltersAccountSubcategories {
+    fn default() -> Self {
+        Self::Checking
     }
 }
 

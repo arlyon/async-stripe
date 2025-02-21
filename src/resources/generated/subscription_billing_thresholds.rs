@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "SubscriptionBillingThresholds".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionBillingThresholds {
+
     /// Monetary threshold that triggers the subscription to create an invoice.
     pub amount_gte: Option<i64>,
 
