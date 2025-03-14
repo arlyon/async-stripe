@@ -5,10 +5,7 @@
 use crate::client::{Client, Response};
 use crate::ids::{SetupAttemptId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, ApiErrors, Application, Customer, Mandate, PaymentMethod,
-    PaymentMethodDetailsCardWalletApplePay, PaymentMethodDetailsCardWalletGooglePay, SetupIntent,
-};
+use crate::resources::{Account, ApiErrors, Application, Customer, Mandate, PaymentMethod, PaymentMethodDetailsCardPresentOffline, PaymentMethodDetailsCardWalletApplePay, PaymentMethodDetailsCardWalletGooglePay, SetupIntent};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentFlowsSetupIntentSetupAttempt".
@@ -71,10 +68,12 @@ pub struct SetupAttempt {
 }
 
 impl SetupAttempt {
+
     /// Returns a list of SetupAttempts that associate with a provided SetupIntent.
-    pub fn list(client: &Client, params: &ListSetupAttempts<'_>) -> Response<List<SetupAttempt>> {
-        client.get_query("/setup_attempts", params)
-    }
+pub fn list(client: &Client, params: &ListSetupAttempts<'_>) -> Response<List<SetupAttempt>> {
+   client.get_query("/setup_attempts", params)
+}
+
 }
 
 impl Object for SetupAttempt {
@@ -89,8 +88,12 @@ impl Object for SetupAttempt {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetails {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<SetupAttemptPaymentMethodDetailsAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amazon_pay: Option<SetupAttemptPaymentMethodDetailsAmazonPay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit: Option<SetupAttemptPaymentMethodDetailsAuBecsDebit>,
@@ -117,13 +120,22 @@ pub struct SetupAttemptPaymentMethodDetails {
     pub ideal: Option<SetupAttemptPaymentMethodDetailsIdeal>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub kakao_pay: Option<SetupAttemptPaymentMethodDetailsKakaoPay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<SetupAttemptPaymentMethodDetailsKlarna>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kr_card: Option<SetupAttemptPaymentMethodDetailsKrCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<SetupAttemptPaymentMethodDetailsLink>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paypal: Option<SetupAttemptPaymentMethodDetailsPaypal>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay: Option<SetupAttemptPaymentMethodDetailsRevolutPay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<SetupAttemptPaymentMethodDetailsSepaDebit>,
@@ -143,16 +155,24 @@ pub struct SetupAttemptPaymentMethodDetails {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SetupAttemptPaymentMethodDetailsAcssDebit {}
+pub struct SetupAttemptPaymentMethodDetailsAcssDebit {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SetupAttemptPaymentMethodDetailsAuBecsDebit {}
+pub struct SetupAttemptPaymentMethodDetailsAmazonPay {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SetupAttemptPaymentMethodDetailsBacsDebit {}
+pub struct SetupAttemptPaymentMethodDetailsAuBecsDebit {
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SetupAttemptPaymentMethodDetailsBacsDebit {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsBancontact {
+
     /// Bank code of bank associated with the bank account.
     pub bank_code: Option<String>,
 
@@ -183,13 +203,15 @@ pub struct SetupAttemptPaymentMethodDetailsBancontact {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SetupAttemptPaymentMethodDetailsBoleto {}
+pub struct SetupAttemptPaymentMethodDetailsBoleto {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsCard {
+
     /// Card brand.
     ///
-    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: Option<String>,
 
     /// Check results by Card networks on Card address and CVC at the time of authorization.
@@ -241,7 +263,7 @@ pub struct SetupAttemptPaymentMethodDetailsCard {
 
     /// Identifies which network this charge was processed on.
     ///
-    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub network: Option<String>,
 
     /// Populated if this authorization used 3D Secure authentication.
@@ -253,6 +275,7 @@ pub struct SetupAttemptPaymentMethodDetailsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsCardChecks {
+
     /// If a address line1 was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
     pub address_line1_check: Option<String>,
 
@@ -265,12 +288,17 @@ pub struct SetupAttemptPaymentMethodDetailsCardChecks {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsCardPresent {
+
     /// The ID of the Card PaymentMethod which was generated by this SetupAttempt.
     pub generated_card: Option<Expandable<PaymentMethod>>,
+
+    /// Details about payments collected offline.
+    pub offline: Option<PaymentMethodDetailsCardPresentOffline>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsCardWallet {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub apple_pay: Option<PaymentMethodDetailsCardWalletApplePay>,
 
@@ -286,10 +314,12 @@ pub struct SetupAttemptPaymentMethodDetailsCardWallet {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SetupAttemptPaymentMethodDetailsCashapp {}
+pub struct SetupAttemptPaymentMethodDetailsCashapp {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsIdeal {
+
     /// The customer's bank.
     ///
     /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
@@ -315,19 +345,36 @@ pub struct SetupAttemptPaymentMethodDetailsIdeal {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SetupAttemptPaymentMethodDetailsKlarna {}
+pub struct SetupAttemptPaymentMethodDetailsKakaoPay {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SetupAttemptPaymentMethodDetailsLink {}
+pub struct SetupAttemptPaymentMethodDetailsKlarna {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SetupAttemptPaymentMethodDetailsPaypal {}
+pub struct SetupAttemptPaymentMethodDetailsKrCard {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SetupAttemptPaymentMethodDetailsSepaDebit {}
+pub struct SetupAttemptPaymentMethodDetailsLink {
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SetupAttemptPaymentMethodDetailsPaypal {
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SetupAttemptPaymentMethodDetailsRevolutPay {
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SetupAttemptPaymentMethodDetailsSepaDebit {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsSofort {
+
     /// Bank code of bank associated with the bank account.
     pub bank_code: Option<String>,
 
@@ -358,10 +405,12 @@ pub struct SetupAttemptPaymentMethodDetailsSofort {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SetupAttemptPaymentMethodDetailsUsBankAccount {}
+pub struct SetupAttemptPaymentMethodDetailsUsBankAccount {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ThreeDSecureDetails {
+
     /// For authenticated transactions: how the customer was authenticated by
     /// the issuing bank.
     pub authentication_flow: Option<ThreeDSecureDetailsAuthenticationFlow>,
@@ -389,6 +438,7 @@ pub struct ThreeDSecureDetails {
 /// The parameters for `SetupAttempt::list`.
 #[derive(Clone, Debug, Serialize)]
 pub struct ListSetupAttempts<'a> {
+
     /// A filter on the list, based on the object `created` field.
     ///
     /// The value can be a string with an integer Unix timestamp or a dictionary with a number of different query options.
@@ -439,9 +489,8 @@ impl<'a> ListSetupAttempts<'a> {
 impl Paginable for ListSetupAttempts<'_> {
     type O = SetupAttempt;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// An enum representing the possible values of an `SetupAttempt`'s `flow_directions` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]

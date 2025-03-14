@@ -2,8 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::ApplicationId;
-use crate::params::Object;
+use crate::ids::{ApplicationId};
+use crate::params::{Object};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Application".
