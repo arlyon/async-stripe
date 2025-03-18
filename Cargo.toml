@@ -9,7 +9,7 @@ members = [
 name = "async-stripe"
 version = "0.40.0"
 description = "API bindings for the Stripe HTTP API"
-rust-version = "1.78.0"
+rust-version = "1.82.0"
 authors = [
   "Anna Baldwin <abaldwin@developers.wyyerd.com>",
   "Kevin Stenerson <kestred@users.noreply.github.com>",
@@ -160,7 +160,7 @@ actix-web = "4.2.1"
 
 # MSRV PINS
 #
-# We have a few deps that have MSRVs that are higher than our own. 
+# We have a few deps that have MSRVs that are higher than our own.
 # We pin them here to ensure that we can run tests on the MSRV
 bumpalo = ">=3.0.0, <= 3.15.0"
 
