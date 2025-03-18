@@ -104,7 +104,7 @@ impl IdempotencyKey {
     /// Creates new validated idempotency key.
     ///
     /// # Errors
-    /// This function returns error when they key is empty or when 
+    /// This function returns error when they key is empty or when
     /// its longer than 255 characters
     pub fn new(val: impl AsRef<str>) -> Result<Self, IdempotentKeyError> {
         let val = val.as_ref();
