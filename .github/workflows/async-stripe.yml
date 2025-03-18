@@ -167,7 +167,7 @@ jobs:
             fs.writeFileSync("./public-api/pr_number", text);
       - name: Compare with latest version published on crates.io
         run: cargo public-api diff latest --features runtime-tokio-hyper >> "public-api/diff"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: public-api
           path: public-api/
