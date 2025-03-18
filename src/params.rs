@@ -327,7 +327,7 @@ where
     /// use stripe::{Customer, ListCustomers, StripeError, Client};
     /// let client = Client::new("sk_test_123");
     /// let params = ListCustomers { ..Default::default() };
-    /// let all_customers = Customer::list(&client, &params).unwrap().paginate(params).get_all(&client).unwrap()
+    /// let all_customers = Customer::list(&client, &params).unwrap().paginate(params).get_all(&client).unwrap();
     /// ```
     #[cfg(feature = "blocking")]
     pub fn get_all(self, client: &Client) -> Response<Vec<T::O>> {
@@ -356,7 +356,7 @@ where
     /// use stripe::{Customer, ListCustomers, StripeError, Client};
     /// let client = Client::new("sk_test_123");
     /// let params = ListCustomers { ..Default::default() };
-    /// let all_customers = Customer::list(&client, &params).await.unwrap().paginate(params).get_all(&client).await.unwrap()
+    /// let all_customers = Customer::list(&client, &params).await.unwrap().paginate(params).get_all(&client).await.unwrap();
     /// ```
     #[cfg(all(feature = "async", feature = "stream", not(feature = "blocking")))]
     pub async fn get_all(self, client: &Client) -> Result<Vec<T::O>, StripeError> {
