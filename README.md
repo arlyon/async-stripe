@@ -24,7 +24,8 @@ Want to see a changelog of the Stripe API? [Look no further](https://stripe.com/
 > async-stripe = { git = "https://github.com/arlyon/async-stripe", branch = "next" }
 > ```
 >
-> Your feedback is invaluable to us, so please report any issues or suggestions you may have. We are still expecting a few breaking changes before RC.
+> Your feedback is invaluable to us, so please report any issues or suggestions you may have. We are still expecting a few breaking changes before RC. We recommend
+> using the in-progress [Migration Guide](https://github.com/arlyon/async-stripe/blob/next/CHANGELOG.md) when upgrading.
 
 ## Documentation
 
