@@ -1,3 +1,10 @@
+## [0.40.1](https://github.com/arlyon/async-stripe/compare/v0.40.0...v0.40.1) (2025-03-18)
+
+
+### Bug Fixes
+
+* Make customer session module public ([f149d15](https://github.com/arlyon/async-stripe/commit/f149d15cf3b5a509580157150f798a2ff6af7c48))
+
 # [0.40.0](https://github.com/arlyon/async-stripe/compare/v0.39.2...v0.40.0) (2024-09-26)
 
 
