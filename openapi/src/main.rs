@@ -1,47 +1,17 @@
-use std::fmt::Debug;
 use std::fs;
 use std::fs::File;
 use std::path::Path;
 
 use anyhow::{bail, Context, Result};
-use clap::Parser;
 use petgraph::dot::{Config, Dot};
 use stripe_openapi_codegen::codegen::CodeGen;
 use stripe_openapi_codegen::crates::ALL_CRATES;
 use stripe_openapi_codegen::spec::Spec;
-use stripe_openapi_codegen::spec_fetch;
 use stripe_openapi_codegen::spec_fetch::fetch_spec;
 use stripe_openapi_codegen::url_finder::{update_api_doc_data, UrlFinder};
 use stripe_openapi_codegen::utils::write_to_file;
+use stripe_openapi_codegen::Command;
 use tracing::info;
-
-#[derive(Debug, Parser)]
-struct Command {
-    /// Input path for the OpenAPI spec, defaults to `spec3.sdk.json`
-    #[arg(default_value = "spec3.sdk.json")]
-    spec_path: String,
-    /// Output directory for generated code, defaults to `out`
-    #[arg(long, default_value = "out")]
-    out: String,
-    /// If not passed, skips the step of fetching the spec. Otherwise, `latest` for the
-    /// newest spec release, `current` for the version used in the latest codegen update,
-    /// or a specific version, such as `v171`
-    #[arg(long, value_parser = spec_fetch::parse_spec_version)]
-    fetch: Option<spec_fetch::SpecVersion>,
-    /// Instead of writing files, generate a graph of dependencies in `graphviz` `DOT` format. Writes
-    /// to `graph.txt`
-    #[arg(long)]
-    graph: bool,
-    /// Update the Stripe API docs instead of using the existing data in the repo
-    #[arg(long)]
-    update_api_docs: bool,
-    /// The URL to target for the stripe docs.
-    #[arg(long, default_value = "https://stripe.com/docs/api")]
-    api_docs_url: String,
-    /// Skip the step of copying the generated code from `out` to `generated/`.
-    #[arg(long)]
-    dry_run: bool,
-}
 
 fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
@@ -89,10 +59,10 @@ fn main() -> Result<()> {
     let mut fmt_cmd = std::process::Command::new("cargo");
     fmt_cmd.arg("+nightly").arg("fmt").arg("--");
     for krate in &*ALL_CRATES {
-        fmt_cmd.arg(format!("out/{}/src/mod.rs", krate.generated_out_path()));
+        fmt_cmd.arg(format!("{}/{}/src/mod.rs", out_path.display(), krate.generated_out_path()));
     }
-    fmt_cmd.arg("out/async-stripe-webhook/mod.rs");
-    fmt_cmd.arg("out/tests/mod.rs");
+    fmt_cmd.arg(format!("{}/async-stripe-webhook/mod.rs", out_path.display()));
+    fmt_cmd.arg(format!("{}/tests/mod.rs", out_path.display()));
 
     if !args.dry_run {
         info!("Formatting generated files");
@@ -102,12 +72,13 @@ fn main() -> Result<()> {
         }
 
         info!("Copying generated files");
-        run_rsync("out/crates/", "../generated/")?;
-        run_rsync("out/async-stripe-webhook/", "../async-stripe-webhook/src/generated/")?;
-        run_rsync("out/tests/", "../tests/tests/it/generated/")?;
+        run_rsync(&format!("{}/crates/", out_path.display()), "../generated/")?;
+        run_rsync(&format!("{}/async-stripe-webhook/", out_path.display()),
+                  "../async-stripe-webhook/src/generated/")?;
+        run_rsync(&format!("{}/tests/", out_path.display()), "../tests/tests/it/generated/")?;
 
         std::process::Command::new("cp")
-            .arg("out/crate_info.md")
+            .arg(format!("{}/crate_info.md", out_path.display()))
             .arg("../crate_info.md")
             .output()?;
     }
