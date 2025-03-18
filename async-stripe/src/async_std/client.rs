@@ -76,7 +76,7 @@ impl Client {
         let mut last_error = StripeError::ClientError("Invalid strategy".to_string());
 
         if let Some(key) = strategy.get_key() {
-            request.insert_header("Idempotency-Key", key);
+            request.insert_header("idempotency-key", key.as_str());
         }
 
         let body = request.body_bytes().await?;
