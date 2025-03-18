@@ -11,8 +11,7 @@ on:
 
 env:
   RUSTFLAGS: -Dwarnings
-  rust_min: 1.75
-
+  rust_min: 1.82
 jobs:
   format:
     runs-on: ubuntu-latest

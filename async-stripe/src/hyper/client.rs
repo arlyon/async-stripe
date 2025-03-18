@@ -109,6 +109,16 @@ impl Client {
         let mut last_error = StripeError::ClientError("invalid strategy".into());
 
         if let Some(key) = strategy.get_key() {
+            // false positive from clippy on this lint.
+            // why this is ok:
+            // clippy detects any type that has AtomicPtr as interior mutable type and
+            // by default this lint is disabled for `bytes::Bytes`.
+            // see this issue for more information:
+            // https://github.com/rust-lang/rust-clippy/issues/5812
+            // this struct has two reprs: either standard header name and that is enum of all
+            // standrd header names, or its represented by `bytes::Bytes`.
+            // also, on 1.84.1 this does not trigger the false positive
+            #[allow(clippy::declare_interior_mutable_const)]
             const HEADER_NAME: HeaderName = HeaderName::from_static("idempotency-key");
             req_builder = req_builder.header(HEADER_NAME, key.as_str());
         }
