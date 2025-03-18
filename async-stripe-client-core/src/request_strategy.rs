@@ -11,7 +11,7 @@ pub enum RequestStrategy {
     /// Run the request once.
     Once,
     /// Run it once with a given idempotency key.
-    Idempotent(String),
+    Idempotent(IdempotencyKey),
     /// This strategy will retry the request up to the
     /// specified number of times using the same, random,
     /// idempotency key, up to n times.
@@ -64,22 +64,82 @@ impl RequestStrategy {
     /// Send the request once with a generated UUID.
     #[cfg(feature = "uuid")]
     pub fn idempotent_with_uuid() -> Self {
-        use uuid::Uuid;
-        Self::Idempotent(Uuid::new_v4().to_string())
+        Self::Idempotent(IdempotencyKey::new_uuid_v4())
     }
 
     /// Extract the current idempotency key to use for the next request, if any.
-    pub fn get_key(&self) -> Option<String> {
+    pub fn get_key(&self) -> Option<IdempotencyKey> {
         match self {
             RequestStrategy::Once => None,
             RequestStrategy::Idempotent(key) => Some(key.clone()),
             #[cfg(feature = "uuid")]
             RequestStrategy::Retry(_) | RequestStrategy::ExponentialBackoff(_) => {
-                Some(uuid::Uuid::new_v4().to_string())
+                Some(IdempotencyKey::new_uuid_v4())
             }
             #[cfg(not(feature = "uuid"))]
             RequestStrategy::Retry(_) | RequestStrategy::ExponentialBackoff(_) => None,
         }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[repr(transparent)]
+/// Represents valid idempotency key
+/// - Cannot be empty
+/// - Cannot be longer than 255 charachters
+pub struct IdempotencyKey(String);
+
+#[derive(Debug, thiserror::Error)]
+/// Error that can be returned when constructing [`IdempotencyKey`]
+pub enum IdempotentKeyError {
+    #[error("Idempotency Key cannot be empty")]
+    /// Idempotency key cannot be empty
+    EmptyKey,
+    #[error("Idempotency key cannot be longer than 255 characters (you supplied: {0})")]
+    /// Idempotency key cannot be longer than 255 characters
+    KeyTooLong(usize),
+}
+
+impl IdempotencyKey {
+    /// Creates new validated idempotency key.
+    ///
+    /// # Errors
+    /// This function returns error when they key is empty or when
+    /// its longer than 255 characters
+    pub fn new(val: impl AsRef<str>) -> Result<Self, IdempotentKeyError> {
+        let val = val.as_ref();
+        if val.is_empty() {
+            Err(IdempotentKeyError::EmptyKey)
+        } else if val.len() > 255 {
+            Err(IdempotentKeyError::KeyTooLong(val.len()))
+        } else {
+            Ok(Self(val.to_owned()))
+        }
+    }
+
+    #[cfg(feature = "uuid")]
+    /// Generates new UUID as new idempotency key
+    pub fn new_uuid_v4() -> Self {
+        let uuid = uuid::Uuid::new_v4().to_string();
+        Self(uuid)
+    }
+
+    /// Borrows self as string slice
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+
+    /// Consumes self and returns inner string
+    pub fn into_inner(self) -> String {
+        self.0
+    }
+}
+
+impl TryFrom<String> for IdempotencyKey {
+    type Error = IdempotentKeyError;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        Self::new(value)
     }
 }
 
@@ -102,11 +162,13 @@ mod tests {
     use std::time::Duration;
 
     use super::{Outcome, RequestStrategy};
+    use crate::IdempotencyKey;
 
     #[test]
     fn test_idempotent_strategy() {
-        let strategy = RequestStrategy::Idempotent("key".to_string());
-        assert_eq!(strategy.get_key(), Some("key".to_string()));
+        let key: IdempotencyKey = "key".to_string().try_into().unwrap();
+        let strategy = RequestStrategy::Idempotent(key.clone());
+        assert_eq!(strategy.get_key(), Some(key));
     }
 
     #[test]
@@ -122,7 +184,7 @@ mod tests {
     fn test_uuid_idempotency() {
         use uuid::Uuid;
         let strategy = RequestStrategy::Retry(3);
-        assert!(Uuid::parse_str(&strategy.get_key().unwrap()).is_ok());
+        assert!(Uuid::parse_str(&strategy.get_key().unwrap().as_str()).is_ok());
     }
 
     #[test]

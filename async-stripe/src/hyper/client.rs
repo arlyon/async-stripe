@@ -112,7 +112,7 @@ impl Client {
             // also, on 1.84.1 this does not trigger the false positive
             #[allow(clippy::declare_interior_mutable_const)]
             const HEADER_NAME: HeaderName = HeaderName::from_static("idempotency-key");
-            req_builder = req_builder.header(HEADER_NAME, key);
+            req_builder = req_builder.header(HEADER_NAME, key.as_str());
         }
 
         let req = req_builder.body(Full::new(body.unwrap_or_default()))?;
