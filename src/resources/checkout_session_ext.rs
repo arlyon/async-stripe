@@ -2,7 +2,7 @@ use crate::client::{Client, Response};
 use crate::ids::CheckoutSessionId;
 use crate::params::Expand;
 use crate::resources::CheckoutSession;
-use crate::{CheckoutSessionItem, List};
+use crate::{CheckoutSessionItem, CheckoutSessionItemId, List};
 
 /// The parameters for `CheckoutSession::retrieve_line_items`.
 #[derive(Clone, Debug, serde::Serialize, Default)]
@@ -12,7 +12,7 @@ pub struct RetrieveCheckoutSessionLineItems {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<CheckoutSessionId>,
+    pub ending_before: Option<CheckoutSessionItemId>,
 
     /// A limit on the number of objects to be returned.
     ///
@@ -25,7 +25,7 @@ pub struct RetrieveCheckoutSessionLineItems {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<CheckoutSessionId>,
+    pub starting_after: Option<CheckoutSessionItemId>,
 }
 
 impl CheckoutSession {
