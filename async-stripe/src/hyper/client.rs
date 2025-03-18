@@ -115,11 +115,7 @@ impl Client {
             req_builder = req_builder.header(HEADER_NAME, key);
         }
 
-        let body = match body {
-            None => Full::new(Bytes::new()),
-            Some(bytes) => Full::new(bytes),
-        };
-        let req = req_builder.body(body)?;
+        let req = req_builder.body(Full::new(body.unwrap_or_default()))?;
 
         loop {
             return match strategy.test(last_status.map(|s| s.as_u16()), last_retry_header, tries) {
