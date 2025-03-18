@@ -2,8 +2,6 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, QuoteId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
@@ -12,6 +10,7 @@ use crate::resources::{
     Discount, Invoice, QuotesResourceTotalDetails, Subscription, SubscriptionSchedule, TaxRate,
     TestHelpersTestClock,
 };
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Quote".
 ///

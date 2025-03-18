@@ -2,10 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::ids::PlatformTaxFeeId;
 use crate::params::Object;
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PlatformTax".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

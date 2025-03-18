@@ -2,10 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::params::Expandable;
 use crate::resources::{ShippingRate, TaxRate};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "InvoicesShippingCost".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

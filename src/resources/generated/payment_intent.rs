@@ -2,8 +2,6 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{
     CustomerId, MandateId, PaymentIntentId, PaymentMethodConfigurationId, PaymentMethodId,
@@ -17,6 +15,7 @@ use crate::resources::{
     PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodOptionsCustomerBalanceEuBankAccount,
     PaymentMethodOptionsUsBankAccountMandateOptions, PaymentSource, Review, Shipping,
 };
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentIntent".
 ///

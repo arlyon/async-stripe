@@ -2,8 +2,6 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PaymentMethodId, PaymentSourceId, PromotionCodeId};
 use crate::params::{
@@ -13,6 +11,7 @@ use crate::resources::{
     Address, CashBalance, Currency, Discount, InvoiceSettingRenderingOptions, PaymentMethod,
     PaymentSource, PaymentSourceParams, Shipping, Subscription, TaxId, TestHelpersTestClock,
 };
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Customer".
 ///
