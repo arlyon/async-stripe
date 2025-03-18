@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, TokenId};
 use crate::params::{Expand, Metadata, Object, Timestamp};
 use crate::resources::{Address, BankAccount, Card, CompanyParams, PersonParams, TokenType};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Token".
 ///

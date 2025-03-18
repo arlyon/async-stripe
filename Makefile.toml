@@ -33,18 +33,21 @@ rg -N --no-filename -i '^pub (struct|enum) ([A-Z][a-zA-z0-9]+).*?$'  src/resourc
 [tasks.openapi-generate-no-fetch]
 cwd = "openapi"
 command = "cargo"
+toolchain = "1.82.0"
 args = ["run", "spec3.sdk.json"]
 dependencies = ["openapi-delete-out"]
 
 [tasks.openapi-generate]
 cwd = "openapi"
 command = "cargo"
+toolchain = "1.82.0"
 args = ["run", "spec3.sdk.json", "--fetch", "current"]
 dependencies = ["openapi-delete-out"]
 
 [tasks.openapi-generate-latest]
 cwd = "openapi"
 command = "cargo"
+toolchain = "1.82.0"
 args = ["run", "spec3.sdk.json", "--fetch", "latest"]
 dependencies = ["openapi-delete-out"]
 
@@ -57,16 +60,16 @@ args = ["-a", "--delete-during", "out/", "../src/resources/generated"]
 
 [tasks.fmt]
 command = "cargo"
-toolchain = "nightly"
+toolchain = "1.82.0"
 install_crate = "rustfmt"
 # we set this to true because missing files currently cause rustfmt to fail
 # which impacts our weekly CI job 
-ignore_errors = true 
+ignore_errors = true
 args = ["fmt"]
 
 [tasks.check]
 command = "cargo"
-toolchain = "nightly"
+toolchain = "1.82.0"
 install_crate = "rustfmt"
 args = ["fmt", "--", "--check"]
 

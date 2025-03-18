@@ -3,9 +3,9 @@
 // ======================================
 
 use crate::client::{Client, Response};
-use crate::ids::{CustomerId};
+use crate::ids::CustomerId;
 use crate::params::{Expand, Expandable, Object, Timestamp};
-use crate::resources::{Customer};
+use crate::resources::Customer;
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CustomerSessionResourceCustomerSession".
@@ -13,7 +13,6 @@ use serde::{Deserialize, Serialize};
 /// For more details see <https://stripe.com/docs/api/customer_sessions/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerSession {
-
     /// The client secret of this customer session.
     ///
     /// Used on the client to set up secure access to the given `customer`.  The client secret can be used to provide access to `customer` from your frontend.
@@ -40,7 +39,6 @@ pub struct CustomerSession {
 }
 
 impl CustomerSession {
-
     /// Creates a customer session object that includes a single-use client secret that you can use on your front-end to grant client-side API access for certain customer resources.
     pub fn create(client: &Client, params: CreateCustomerSession<'_>) -> Response<CustomerSession> {
         #[allow(clippy::needless_borrows_for_generic_args)]
@@ -58,7 +56,6 @@ impl Object for CustomerSession {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerSessionResourceComponents {
-
     pub buy_button: CustomerSessionResourceComponentsResourceBuyButton,
 
     pub pricing_table: CustomerSessionResourceComponentsResourcePricingTable,
@@ -66,14 +63,12 @@ pub struct CustomerSessionResourceComponents {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerSessionResourceComponentsResourceBuyButton {
-
     /// Whether the buy button is enabled.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerSessionResourceComponentsResourcePricingTable {
-
     /// Whether the pricing table is enabled.
     pub enabled: bool,
 }
@@ -81,7 +76,6 @@ pub struct CustomerSessionResourceComponentsResourcePricingTable {
 /// The parameters for `CustomerSession::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateCustomerSession<'a> {
-
     /// Configuration for each component.
     ///
     /// Exactly 1 component must be enabled.
@@ -97,17 +91,12 @@ pub struct CreateCustomerSession<'a> {
 
 impl<'a> CreateCustomerSession<'a> {
     pub fn new(components: CreateCustomerSessionComponents, customer: CustomerId) -> Self {
-        CreateCustomerSession {
-            components,
-            customer,
-            expand: Default::default(),
-        }
+        CreateCustomerSession { components, customer, expand: Default::default() }
     }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerSessionComponents {
-
     /// Configuration for buy button.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub buy_button: Option<CreateCustomerSessionComponentsBuyButton>,
@@ -119,14 +108,12 @@ pub struct CreateCustomerSessionComponents {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerSessionComponentsBuyButton {
-
     /// Whether the buy button is enabled.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerSessionComponentsPricingTable {
-
     /// Whether the pricing table is enabled.
     pub enabled: bool,
 }

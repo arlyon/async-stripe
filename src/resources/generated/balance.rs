@@ -2,10 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::params::Object;
 use crate::resources::{BalanceAmountBySourceType, Currency};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Balance".
 ///

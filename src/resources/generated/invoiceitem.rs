@@ -2,8 +2,6 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, InvoiceItemId, PriceId, SubscriptionId};
 use crate::params::{
@@ -13,6 +11,7 @@ use crate::resources::{
     Currency, Customer, Discount, Invoice, Period, Plan, Price, Subscription, TaxRate,
     TestHelpersTestClock,
 };
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "InvoiceItem".
 ///

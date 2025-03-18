@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::ids::ScheduledQueryRunId;
 use crate::params::{Object, Timestamp};
 use crate::resources::File;
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "ScheduledQueryRun".
 ///

@@ -8,10 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install minimal nightly with rustfmt
-        uses: dtolnay/rust-toolchain@v1
+      - name: Install toolchain 1.82.0 with rustfmt
+        uses: dtolnay/rust-toolchain@1.82.0
         with:
-          toolchain: nightly
           components: rustfmt
       - uses: davidB/rust-cargo-make@v1
       - name: regenerate openapi

@@ -24,7 +24,8 @@ Want to see a changelog of the Stripe API? [Look no further](https://stripe.com/
 > async-stripe = { git = "https://github.com/arlyon/async-stripe", branch = "next" }
 > ```
 >
-> Your feedback is invaluable to us, so please report any issues or suggestions you may have. We are still expecting a few breaking changes before RC.
+> Your feedback is invaluable to us, so please report any issues or suggestions you may have. We are still expecting a few breaking changes before RC. We recommend
+> using the in-progress [Migration Guide](https://github.com/arlyon/async-stripe/blob/next/CHANGELOG.md) when upgrading.
 
 ## Documentation
 
@@ -78,7 +79,7 @@ If you don't see the specific version you are on, prefer the next available vers
 
 ## MSRV
 
-We currently have `1.78.0` pinned in CI, so any version of rustc newer than that should work.
+We currently have `1.82.0` pinned in CI, so any version of rustc newer than that should work.
 If this is not the case, please open an issue. As a policy, we permit MSRV increases in non-breaking releases.
 If you have a compelling usecase for bumping it, we are usually open to do so, as long as
 the rust version is not too new (generally 3 releases).
