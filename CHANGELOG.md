@@ -1,3 +1,10 @@
+## [0.40.2](https://github.com/arlyon/async-stripe/compare/v0.40.1...v0.40.2) (2025-03-21)
+
+
+### Bug Fixes
+
+* Remove quotes from EventType display ([4b0deeb](https://github.com/arlyon/async-stripe/commit/4b0deeb1d7e7662b0e19a6845b9944be394726f4))
+
 ## [0.40.1](https://github.com/arlyon/async-stripe/compare/v0.40.0...v0.40.1) (2025-03-18)
 
 
