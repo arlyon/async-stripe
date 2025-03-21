@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::CardId;
+use crate::ids::{CardId};
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Account, Currency, Customer};
 use serde::{Deserialize, Serialize};
@@ -18,6 +18,7 @@ pub struct Card {
     /// The account this card belongs to.
     ///
     /// This attribute will not be in the card object if the card belongs to a customer or recipient instead.
+    /// This property is only available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<Expandable<Account>>,
 
@@ -53,6 +54,13 @@ pub struct Card {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_zip_check: Option<String>,
 
+    /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+    ///
+    /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+    /// The field defaults to “unspecified”.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_redisplay: Option<CardAllowRedisplay>,
+
     /// A set of available payout methods for this card.
     ///
     /// Only values from this set should be passed as the `method` when creating a payout.
@@ -61,7 +69,7 @@ pub struct Card {
 
     /// Card brand.
     ///
-    /// Can be `American Express`, `Diners Club`, `Discover`, `Eftpos Australia`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
+    /// Can be `American Express`, `Diners Club`, `Discover`, `Eftpos Australia`, `Girocard`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub brand: Option<String>,
 
@@ -71,10 +79,12 @@ pub struct Card {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
 
-    /// Three-letter [ISO code for currency](https://stripe.com/docs/payouts).
+    /// Three-letter [ISO code for currency](https://www.iso.org/iso-4217-currency-codes.html) in lowercase.
     ///
+    /// Must be a [supported currency](https://docs.stripe.com/currencies).
     /// Only applicable on accounts (not customers or recipients).
     /// The card can be used as a transfer destination for funds in this currency.
+    /// This property is only available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
@@ -93,6 +103,8 @@ pub struct Card {
     pub cvc_check: Option<String>,
 
     /// Whether this card is the default external account for its currency.
+    ///
+    /// This property is only available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_for_currency: Option<bool>,
 
@@ -157,6 +169,13 @@ pub struct Card {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub networks: Option<TokenCardNetworks>,
+
+    /// Status of a card based on the card issuer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub regulated_status: Option<CardRegulatedStatus>,
+
     /// For external accounts that are cards, possible values are `new` and `errored`.
     ///
     /// If a payout fails, the status is set to `errored` and [scheduled payouts](https://stripe.com/docs/payouts#payout-schedule) are stopped until account details are updated.
@@ -177,6 +196,51 @@ impl Object for Card {
     }
     fn object(&self) -> &'static str {
         "card"
+    }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TokenCardNetworks {
+
+    /// The preferred network for co-branded cards.
+    ///
+    /// Can be `cartes_bancaires`, `mastercard`, `visa` or `invalid_preference` if requested network is not valid for the card.
+    pub preferred: Option<String>,
+}
+
+/// An enum representing the possible values of an `Card`'s `allow_redisplay` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CardAllowRedisplay {
+    Always,
+    Limited,
+    Unspecified,
+}
+
+impl CardAllowRedisplay {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CardAllowRedisplay::Always => "always",
+            CardAllowRedisplay::Limited => "limited",
+            CardAllowRedisplay::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for CardAllowRedisplay {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CardAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CardAllowRedisplay {
+    fn default() -> Self {
+        Self::Always
     }
 }
 
@@ -211,5 +275,39 @@ impl std::fmt::Display for CardAvailablePayoutMethods {
 impl std::default::Default for CardAvailablePayoutMethods {
     fn default() -> Self {
         Self::Instant
+    }
+}
+
+/// An enum representing the possible values of an `Card`'s `regulated_status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CardRegulatedStatus {
+    Regulated,
+    Unregulated,
+}
+
+impl CardRegulatedStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CardRegulatedStatus::Regulated => "regulated",
+            CardRegulatedStatus::Unregulated => "unregulated",
+        }
+    }
+}
+
+impl AsRef<str> for CardRegulatedStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CardRegulatedStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CardRegulatedStatus {
+    fn default() -> Self {
+        Self::Regulated
     }
 }
