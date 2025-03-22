@@ -4,15 +4,15 @@
 
 use serde::{Deserialize, Serialize};
 
-/// The resource representing a Stripe "TreasuryFinancialAccountsResourceAchToggleSettings".
+/// The resource representing a Stripe "TreasuryFinancialAccountsResourceOutboundAchToggleSettings".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct TreasuryFinancialAccountsResourceAchToggleSettings {
+pub struct TreasuryFinancialAccountsResourceOutboundAchToggleSettings {
 
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
 
     /// Whether the Feature is operational.
-    pub status: TreasuryFinancialAccountsResourceAchToggleSettingsStatus,
+    pub status: TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus,
 
     /// Additional details; includes at least one entry when the status is not `active`.
     pub status_details: Vec<TreasuryFinancialAccountsResourceTogglesSettingStatusDetails>,
@@ -32,37 +32,37 @@ pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
     pub restriction: Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction>,
 }
 
-/// An enum representing the possible values of an `TreasuryFinancialAccountsResourceAchToggleSettings`'s `status` field.
+/// An enum representing the possible values of an `TreasuryFinancialAccountsResourceOutboundAchToggleSettings`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
-pub enum TreasuryFinancialAccountsResourceAchToggleSettingsStatus {
+pub enum TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus {
     Active,
     Pending,
     Restricted,
 }
 
-impl TreasuryFinancialAccountsResourceAchToggleSettingsStatus {
+impl TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryFinancialAccountsResourceAchToggleSettingsStatus::Active => "active",
-            TreasuryFinancialAccountsResourceAchToggleSettingsStatus::Pending => "pending",
-            TreasuryFinancialAccountsResourceAchToggleSettingsStatus::Restricted => "restricted",
+            TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus::Active => "active",
+            TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus::Pending => "pending",
+            TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus::Restricted => "restricted",
         }
     }
 }
 
-impl AsRef<str> for TreasuryFinancialAccountsResourceAchToggleSettingsStatus {
+impl AsRef<str> for TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for TreasuryFinancialAccountsResourceAchToggleSettingsStatus {
+impl std::fmt::Display for TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default for TreasuryFinancialAccountsResourceAchToggleSettingsStatus {
+impl std::default::Default for TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus {
     fn default() -> Self {
         Self::Active
     }

@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::CustomerBalanceTransactionId;
+use crate::ids::{CustomerBalanceTransactionId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{CreditNote, Currency, Customer, Invoice};
 use serde::{Deserialize, Serialize};

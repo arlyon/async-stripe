@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::UsageRecordId;
+use crate::ids::{UsageRecordId};
 use crate::params::{Object, Timestamp};
 use serde::{Deserialize, Serialize};
 
