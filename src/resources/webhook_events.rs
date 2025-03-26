@@ -304,6 +304,10 @@ pub enum EventType {
     RecipientDeleted,
     #[serde(rename = "recipient.updated")]
     RecipientUpdated,
+    #[serde(rename = "refund.created")]
+    RefundCreated,
+    #[serde(rename = "refund.updated")]
+    RefundUpdated,
     #[serde(rename = "reporting.report_run.failed")]
     ReportingReportRunFailed,
     #[serde(rename = "reporting.report_run.succeeded")]
