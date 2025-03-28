@@ -15,6 +15,8 @@ pub struct PaymentMethodDomain {
     /// Unique identifier for the object.
     pub id: PaymentMethodDomainId,
 
+    pub amazon_pay: PaymentMethodDomainResourcePaymentMethodStatus,
+
     pub apple_pay: PaymentMethodDomainResourcePaymentMethodStatus,
 
     /// Time at which the object was created.
@@ -102,7 +104,7 @@ pub struct CreatePaymentMethodDomain<'a> {
 
     /// Whether this payment method domain is enabled.
     ///
-    /// If the domain is not enabled, payment methods that require a payment method domain will not appear in Elements.
+    /// If the domain is not enabled, payment methods that require a payment method domain will not appear in Elements or Embedded Checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 
@@ -131,7 +133,7 @@ pub struct ListPaymentMethodDomains<'a> {
 
     /// Whether this payment method domain is enabled.
     ///
-    /// If the domain is not enabled, payment methods will not appear in Elements.
+    /// If the domain is not enabled, payment methods will not appear in Elements or Embedded Checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 
@@ -183,7 +185,7 @@ pub struct UpdatePaymentMethodDomain<'a> {
 
     /// Whether this payment method domain is enabled.
     ///
-    /// If the domain is not enabled, payment methods that require a payment method domain will not appear in Elements.
+    /// If the domain is not enabled, payment methods that require a payment method domain will not appear in Elements or Embedded Checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 

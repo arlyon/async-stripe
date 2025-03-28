@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::BankAccountId;
+use crate::ids::{BankAccountId};
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Account, BankAccountStatus, Currency, Customer};
 use serde::{Deserialize, Serialize};
@@ -13,7 +13,9 @@ pub struct BankAccount {
     /// Unique identifier for the object.
     pub id: BankAccountId,
 
-    /// The ID of the account that the bank account is associated with.
+    /// The account this bank account belongs to.
+    ///
+    /// Only applicable on Accounts (not customers or recipients) This property is only available when returned as an [External Account](/api/external_account_bank_accounts/object) where [controller.is_controller](/api/accounts/object#account_object-controller-is_controller) is `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<Expandable<Account>>,
 
@@ -99,8 +101,8 @@ pub struct BankAccount {
     /// If customer bank account verification has succeeded, the bank account status will be `verified`.
     /// If the verification failed for any reason, such as microdeposit failure, the status will be `verification_failed`.
     /// If a payout sent to this bank account fails, we'll set the status to `errored` and will not continue to send [scheduled payouts](https://stripe.com/docs/payouts#payout-schedule) until the bank details are updated.  For external accounts, possible values are `new`, `errored` and `verification_failed`.
-    /// If a payouts fails, the status is set to `errored` and scheduled payouts are stopped until account details are updated.
-    /// In India, if we can't [verify the owner of the bank account](https://support.stripe.com/questions/bank-account-ownership-verification), we'll set the status to `verification_failed`.
+    /// If a payout fails, the status is set to `errored` and scheduled payouts are stopped until account details are updated.
+    /// In the US and India, if we can't [verify the owner of the bank account](https://support.stripe.com/questions/bank-account-ownership-verification), we'll set the status to `verification_failed`.
     /// Other validations aren't run against external accounts because they're only used for payouts.
     /// This means the other statuses don't apply.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -119,6 +121,7 @@ impl Object for BankAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ExternalAccountRequirements {
+
     /// Fields that need to be collected to keep the external account enabled.
     ///
     /// If not collected by `current_deadline`, these fields appear in `past_due` as well, and the account is disabled.
@@ -132,15 +135,17 @@ pub struct ExternalAccountRequirements {
     /// These fields need to be collected to enable the external account.
     pub past_due: Option<Vec<String>>,
 
-    /// Fields that may become required depending on the results of verification or review.
+    /// Fields that might become required depending on the results of verification or review.
     ///
-    /// Will be an empty array unless an asynchronous verification is pending.
+    /// It's an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
+    /// Fields might appear in `eventually_due`, `currently_due`, or `past_due` and in `pending_verification` if verification fails but another verification is still pending.
     pub pending_verification: Option<Vec<String>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountRequirementsError {
+
     /// The code for the type of error.
     pub code: AccountRequirementsErrorCode,
 
@@ -155,6 +160,7 @@ pub struct AccountRequirementsError {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum AccountRequirementsErrorCode {
+    InformationMissing,
     InvalidAddressCityStatePostalCode,
     InvalidAddressHighwayContractBox,
     InvalidAddressPrivateMailbox,
@@ -168,6 +174,7 @@ pub enum AccountRequirementsErrorCode {
     InvalidProductDescriptionLength,
     InvalidProductDescriptionUrlMatch,
     InvalidRepresentativeCountry,
+    InvalidSignator,
     InvalidStatementDescriptorBusinessMismatch,
     InvalidStatementDescriptorDenylisted,
     InvalidStatementDescriptorLength,
@@ -229,6 +236,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationDocumentTypeNotSupported,
     VerificationExtraneousDirectors,
     VerificationFailedAddressMatch,
+    VerificationFailedAuthorizerAuthority,
     VerificationFailedBusinessIecNumber,
     VerificationFailedDocumentMatch,
     VerificationFailedIdNumberMatch,
@@ -236,18 +244,23 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedKeyedMatch,
     VerificationFailedNameMatch,
     VerificationFailedOther,
+    VerificationFailedRepresentativeAuthority,
     VerificationFailedResidentialAddress,
     VerificationFailedTaxIdMatch,
     VerificationFailedTaxIdNotIssued,
     VerificationMissingDirectors,
     VerificationMissingExecutives,
     VerificationMissingOwners,
+    VerificationRejectedOwnershipExemptionReason,
     VerificationRequiresAdditionalMemorandumOfAssociations,
+    VerificationRequiresAdditionalProofOfRegistration,
+    VerificationSupportability,
 }
 
 impl AccountRequirementsErrorCode {
     pub fn as_str(self) -> &'static str {
         match self {
+            AccountRequirementsErrorCode::InformationMissing => "information_missing",
             AccountRequirementsErrorCode::InvalidAddressCityStatePostalCode => "invalid_address_city_state_postal_code",
             AccountRequirementsErrorCode::InvalidAddressHighwayContractBox => "invalid_address_highway_contract_box",
             AccountRequirementsErrorCode::InvalidAddressPrivateMailbox => "invalid_address_private_mailbox",
@@ -260,6 +273,7 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::InvalidProductDescriptionLength => "invalid_product_description_length",
             AccountRequirementsErrorCode::InvalidProductDescriptionUrlMatch => "invalid_product_description_url_match",
             AccountRequirementsErrorCode::InvalidRepresentativeCountry => "invalid_representative_country",
+            AccountRequirementsErrorCode::InvalidSignator => "invalid_signator",
             AccountRequirementsErrorCode::InvalidStatementDescriptorBusinessMismatch => "invalid_statement_descriptor_business_mismatch",
             AccountRequirementsErrorCode::InvalidStatementDescriptorDenylisted => "invalid_statement_descriptor_denylisted",
             AccountRequirementsErrorCode::InvalidStatementDescriptorLength => "invalid_statement_descriptor_length",
@@ -321,6 +335,7 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationDocumentTypeNotSupported => "verification_document_type_not_supported",
             AccountRequirementsErrorCode::VerificationExtraneousDirectors => "verification_extraneous_directors",
             AccountRequirementsErrorCode::VerificationFailedAddressMatch => "verification_failed_address_match",
+            AccountRequirementsErrorCode::VerificationFailedAuthorizerAuthority => "verification_failed_authorizer_authority",
             AccountRequirementsErrorCode::VerificationFailedBusinessIecNumber => "verification_failed_business_iec_number",
             AccountRequirementsErrorCode::VerificationFailedDocumentMatch => "verification_failed_document_match",
             AccountRequirementsErrorCode::VerificationFailedIdNumberMatch => "verification_failed_id_number_match",
@@ -328,13 +343,17 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationFailedKeyedMatch => "verification_failed_keyed_match",
             AccountRequirementsErrorCode::VerificationFailedNameMatch => "verification_failed_name_match",
             AccountRequirementsErrorCode::VerificationFailedOther => "verification_failed_other",
+            AccountRequirementsErrorCode::VerificationFailedRepresentativeAuthority => "verification_failed_representative_authority",
             AccountRequirementsErrorCode::VerificationFailedResidentialAddress => "verification_failed_residential_address",
             AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => "verification_failed_tax_id_match",
             AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",
             AccountRequirementsErrorCode::VerificationMissingDirectors => "verification_missing_directors",
             AccountRequirementsErrorCode::VerificationMissingExecutives => "verification_missing_executives",
             AccountRequirementsErrorCode::VerificationMissingOwners => "verification_missing_owners",
+            AccountRequirementsErrorCode::VerificationRejectedOwnershipExemptionReason => "verification_rejected_ownership_exemption_reason",
             AccountRequirementsErrorCode::VerificationRequiresAdditionalMemorandumOfAssociations => "verification_requires_additional_memorandum_of_associations",
+            AccountRequirementsErrorCode::VerificationRequiresAdditionalProofOfRegistration => "verification_requires_additional_proof_of_registration",
+            AccountRequirementsErrorCode::VerificationSupportability => "verification_supportability",
         }
     }
 }
@@ -352,7 +371,7 @@ impl std::fmt::Display for AccountRequirementsErrorCode {
 }
 impl std::default::Default for AccountRequirementsErrorCode {
     fn default() -> Self {
-        Self::InvalidAddressCityStatePostalCode
+        Self::InformationMissing
     }
 }
 
