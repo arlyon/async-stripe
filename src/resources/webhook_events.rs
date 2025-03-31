@@ -551,6 +551,10 @@ impl Webhook {
             return Err(WebhookError::BadTimestamp(signature.t));
         }
 
+        self.parse_payload(payload)
+    }
+
+    fn parse_payload(&self, payload: &str) -> Result<Event, WebhookError> {
         Ok(serde_json::from_str(payload)?)
     }
 }
@@ -674,5 +678,203 @@ mod tests {
         assert_eq!(event.id, "evt_123".parse::<crate::EventId>().unwrap());
         assert_eq!(event.account, "acct_123".parse().ok());
         assert_eq!(event.created, 1533204620);
+    }
+
+    #[cfg(feature = "webhook-events")]
+    #[test]
+    fn test_parse_payload() {
+        let payload = r#"{
+  "id": "evt_123",
+  "object": "event",
+  "account": "acct_123",
+  "api_version": "2020-08-27",
+  "created": 1743259255,
+  "data": {
+    "object": {
+      "id": "acct_123",
+      "object": "account",
+      "business_profile": {
+        "annual_revenue": null,
+        "estimated_worker_count": null,
+        "mcc": "5734",
+        "name": null,
+        "support_address": null,
+        "support_email": null,
+        "support_phone": null,
+        "support_url": null,
+        "url": null
+      },
+      "business_type": "sole_prop",
+      "capabilities": {
+        "card_payments": "active",
+        "jcb_payments": "active",
+        "link_payments": "active",
+        "transfers": "active"
+      },
+      "charges_enabled": true,
+      "company": {},
+      "controller": {
+        "type": "application",
+        "fees": {
+          "payer": "account"
+        },
+        "is_controller": true,
+        "losses": {
+          "payments": "stripe"
+        },
+        "requirement_collection": "stripe",
+        "stripe_dashboard": {
+          "type": "full"
+        }
+      },
+      "country": "JP",
+      "default_currency": "jpy",
+      "details_submitted": true,
+      "email": null,
+      "individual": {
+        "id": "person_123",
+        "object": "person",
+        "account": "acct_123",
+        "created": 1743258786
+      },
+      "payouts_enabled": true,
+      "settings": {
+        "bacs_debit_payments": {
+          "display_name": null,
+          "service_user_number": null
+        },
+        "branding": {
+          "icon": null,
+          "logo": null,
+          "primary_color": null,
+          "secondary_color": null
+        },
+        "card_issuing": {
+          "tos_acceptance": {
+            "date": null,
+            "ip": null
+          }
+        },
+        "card_payments": {
+          "statement_descriptor_prefix": "ABC",
+          "statement_descriptor_prefix_kanji": null,
+          "statement_descriptor_prefix_kana": null,
+          "decline_on": {
+            "avs_failure": false,
+            "cvc_failure": false
+          }
+        },
+        "dashboard": {
+          "display_name": "ABC",
+          "timezone": "Etc/UTC"
+        },
+        "invoices": {
+          "default_account_tax_ids": null,
+          "hosted_payment_method_save": "always"
+        },
+        "payments": {
+          "statement_descriptor": "ABC",
+          "statement_descriptor_kana": "AB",
+          "statement_descriptor_kanji": "AB"
+        },
+        "payouts": {
+          "debit_negative_balances": true,
+          "schedule": {
+            "delay_days": 4,
+            "interval": "manual"
+          },
+          "statement_descriptor": null
+        },
+        "sepa_debit_payments": {}
+      },
+      "type": "standard",
+      "created": 1743258630,
+      "external_accounts": {
+        "object": "list",
+        "data": [
+          {
+            "id": "ba_123",
+            "object": "bank_account",
+            "account": "acct_123",
+            "account_holder_name": "ABC",
+            "account_holder_type": null,
+            "account_type": "futsu",
+            "available_payout_methods": [
+              "standard"
+            ],
+            "bank_name": "BANK",
+            "country": "JP",
+            "currency": "jpy",
+            "default_for_currency": true,
+            "fingerprint": "adfsdfsdf",
+            "future_requirements": {
+              "currently_due": [],
+              "errors": [],
+              "past_due": [],
+              "pending_verification": []
+            },
+            "last4": "1234",
+            "metadata": {},
+            "requirements": {
+              "currently_due": [],
+              "errors": [],
+              "past_due": [],
+              "pending_verification": []
+            },
+            "routing_number": "00000000",
+            "status": "new"
+          }
+        ],
+        "has_more": false,
+        "total_count": 1,
+        "url": "/v1/accounts/acct_123/external_accounts"
+      },
+      "future_requirements": {
+        "alternatives": [],
+        "current_deadline": null,
+        "currently_due": [],
+        "disabled_reason": null,
+        "errors": [],
+        "eventually_due": [],
+        "past_due": [],
+        "pending_verification": []
+      },
+      "metadata": null,
+      "requirements": {
+        "alternatives": [],
+        "current_deadline": null,
+        "currently_due": [],
+        "disabled_reason": null,
+        "errors": [],
+        "eventually_due": [],
+        "past_due": [],
+        "pending_verification": []
+      },
+      "tos_acceptance": {
+        "date": 1743259139
+      }
+    },
+    "previous_attributes": {
+      "payouts_enabled": false,
+      "requirements": {
+        "disabled_reason": "requirements.pending_verification",
+        "pending_verification": [
+          "individual.verification.document"
+        ]
+      }
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 2,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "account.updated"
+}"#;
+        let event_timestamp = 1533204620;
+        let webhook = super::Webhook { current_timestamp: event_timestamp };
+
+        let _event = webhook.parse_payload(payload).expect("Failed to construct event");
     }
 }
