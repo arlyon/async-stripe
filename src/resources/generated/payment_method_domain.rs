@@ -15,6 +15,8 @@ pub struct PaymentMethodDomain {
     /// Unique identifier for the object.
     pub id: PaymentMethodDomainId,
 
+    pub amazon_pay: PaymentMethodDomainResourcePaymentMethodStatus,
+
     pub apple_pay: PaymentMethodDomainResourcePaymentMethodStatus,
 
     /// Time at which the object was created.

@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::ApplicationFeeRefundId;
+use crate::ids::{ApplicationFeeRefundId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{ApplicationFee, BalanceTransaction, Currency};
 use serde::{Deserialize, Serialize};
