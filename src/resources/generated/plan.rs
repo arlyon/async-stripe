@@ -3,11 +3,8 @@
 // ======================================
 
 use crate::client::{Client, Response};
-use crate::ids::PlanId;
-use crate::params::{
-    Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery,
-    Timestamp,
-};
+use crate::ids::{PlanId};
+use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{CreateProduct, Currency, Product};
 use serde::{Deserialize, Serialize};
 
@@ -22,13 +19,6 @@ pub struct Plan {
     /// Whether the plan can be used for new purchases.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
-
-    /// Specifies a usage aggregation strategy for plans of `usage_type=metered`.
-    ///
-    /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
-    /// Defaults to `sum`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub aggregate_usage: Option<PlanAggregateUsage>,
 
     /// The unit amount in cents (or local equivalent) to be charged, represented as a whole integer if possible.
     ///
@@ -88,6 +78,10 @@ pub struct Plan {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
+    /// The meter tracking the usage of a metered price.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub meter: Option<String>,
+
     /// A brief description of the plan, hidden from customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<String>,
@@ -131,10 +125,12 @@ pub struct Plan {
 }
 
 impl Plan {
+
     /// Returns a list of your plans.
-    pub fn list(client: &Client, params: &ListPlans<'_>) -> Response<List<Plan>> {
-        client.get_query("/plans", params)
-    }
+pub fn list(client: &Client, params: &ListPlans<'_>) -> Response<List<Plan>> {
+   client.get_query("/plans", params)
+}
+
 
     /// Retrieves the plan with the given ID.
     pub fn retrieve(client: &Client, id: &PlanId, expand: &[&str]) -> Response<Plan> {
@@ -170,6 +166,7 @@ impl Object for Plan {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PlanTier {
+
     /// Price for the entire tier.
     pub flat_amount: Option<i64>,
 
@@ -188,6 +185,7 @@ pub struct PlanTier {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TransformUsage {
+
     /// Divide usage by this number.
     pub divide_by: i64,
 
@@ -198,6 +196,7 @@ pub struct TransformUsage {
 /// The parameters for `Plan::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPlans<'a> {
+
     /// Only return plans that are active or inactive (e.g., pass `false` to list all inactive plans).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -253,12 +252,12 @@ impl<'a> ListPlans<'a> {
 impl Paginable for ListPlans<'_> {
     type O = Plan;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `Plan::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePlan<'a> {
+
     /// Whether the plan is currently available for new subscriptions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -300,44 +299,6 @@ impl<'a> UpdatePlan<'a> {
             product: Default::default(),
             trial_period_days: Default::default(),
         }
-    }
-}
-
-/// An enum representing the possible values of an `Plan`'s `aggregate_usage` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum PlanAggregateUsage {
-    LastDuringPeriod,
-    LastEver,
-    Max,
-    Sum,
-}
-
-impl PlanAggregateUsage {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            PlanAggregateUsage::LastDuringPeriod => "last_during_period",
-            PlanAggregateUsage::LastEver => "last_ever",
-            PlanAggregateUsage::Max => "max",
-            PlanAggregateUsage::Sum => "sum",
-        }
-    }
-}
-
-impl AsRef<str> for PlanAggregateUsage {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PlanAggregateUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for PlanAggregateUsage {
-    fn default() -> Self {
-        Self::LastDuringPeriod
     }
 }
 
