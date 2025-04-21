@@ -21,10 +21,11 @@ use crate::webhook::write_generated_for_webhooks;
 pub struct CodeGen {
     pub components: Components,
     pub spec: Spec,
+    pub version: String,
 }
 
 impl CodeGen {
-    pub fn new(spec: Spec, url_finder: UrlFinder) -> anyhow::Result<Self> {
+    pub fn new(spec: Spec, url_finder: UrlFinder, version: String) -> anyhow::Result<Self> {
         let mut components = get_components(&spec)?;
 
         // Attach doc urls for top-level components
@@ -34,7 +35,7 @@ impl CodeGen {
             }
         }
 
-        Ok(Self { components, spec })
+        Ok(Self { components, spec, version })
     }
 
     fn write_api_version_file(&self) -> anyhow::Result<()> {
@@ -97,7 +98,7 @@ impl CodeGen {
                 .map(|c| self.components.get(c).mod_path())
                 .collect();
 
-            let toml = gen_crate_toml(*krate, neighbors.collect(), request_features);
+            let toml = gen_crate_toml(*krate, neighbors.collect(), request_features, &self.version);
             write_to_file(toml, base_path.join("Cargo.toml"))?;
 
             let lib_name = krate.lib_name();
@@ -113,7 +114,7 @@ impl CodeGen {
             #![allow(clippy::large_enum_variant)]
             #![allow(rustdoc::broken_intra_doc_links)]
             #![allow(rustdoc::invalid_html_tags)]
-            
+
             {doc_comment}
             extern crate self as {lib_name};
 
@@ -136,7 +137,7 @@ impl CodeGen {
         let req_file_content = formatdoc! {
             r#"
             use stripe_client_core::{{StripeClient, StripeBlockingClient, StripeRequest, RequestBuilder, StripeMethod}};
-            
+
             {req_content}
             "#
         };

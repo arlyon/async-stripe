@@ -12,20 +12,28 @@ fn get_serialization_feature(deps: &[Crate], kind: &str) -> String {
     features.into_iter().map(|f| format!(r#""{f}""#)).collect::<Vec<_>>().join(",")
 }
 
-pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<String>) -> String {
+pub fn gen_crate_toml(
+    krate: Crate,
+    crate_deps: Vec<Crate>,
+    crate_features: Vec<String>,
+    version: &str,
+) -> String {
     let mut crate_dep_section = String::new();
 
     for dep in &crate_deps {
         let dep_name = dep.crate_name();
         let dep_path = format!("../../generated/{dep_name}");
-        let _ = writeln!(crate_dep_section, r#"{dep_name} = {{path = "{dep_path}"}}"#);
+        let _ = writeln!(
+            crate_dep_section,
+            r#"{dep_name} = {{path = "{dep_path}", version = "{version}"}}"#
+        );
     }
 
     // Dependencies only needed for libraries which implement Stripe requests
     let request_deps = if krate == Crate::SHARED {
         ""
     } else {
-        r#"async-stripe-client-core = {path = "../../async-stripe-client-core"}"#
+        r#"async-stripe-client-core = {path = "../../async-stripe-client-core", version = "{version}"}"#
     };
 
     let ser_features = get_serialization_feature(&crate_deps, "serialize");
@@ -50,19 +58,19 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
         repository.workspace = true
         keywords.workspace = true
         categories.workspace = true
-        
+
         [lib]
         path = "src/mod.rs"
         name = "{lib_name}"
-        
+
         [dependencies]
         serde.workspace = true
         serde_json = {{ workspace = true, optional = true }}
         smol_str.workspace = true
         miniserde.workspace = true
-        async-stripe-types = {{path = "../../async-stripe-types"}}
+        async-stripe-types = {{path = "../../async-stripe-types", version = "{version}"}}
         {request_deps}
-        
+
         {crate_dep_section}
 
         [features]
@@ -91,7 +99,7 @@ fn gen_feature_section(mut crate_features: Vec<String>) -> String {
     formatdoc! {
         r#"
         {feature_section}
-        
+
         [package.metadata.docs.rs]
         features = ["full"]
         "#
