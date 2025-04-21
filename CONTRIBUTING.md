@@ -83,3 +83,13 @@ cargo test --features runtime-blocking
 
 It is encouraged to open an issue before you create a PR as a place for pre-implementation
 discussion. If you're unsure about your contribution or simply want to ask a question about anything just open an issue and we'll chat.
+
+## Publishing
+
+Right now we publish alpha releases manually using https://crates.io/crates/cargo-workspaces#version
+You can version and publish atomically with:
+
+```sh
+cargo workspaces version minor --allow-branch next
+cargo workspaces publish --from-git
+```
