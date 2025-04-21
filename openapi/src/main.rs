@@ -17,6 +17,9 @@ use tracing::info;
 
 #[derive(Debug, Parser)]
 struct Command {
+    /// Version of the library to generate
+    #[arg(long)]
+    version: String,
     /// Input path for the OpenAPI spec, defaults to `spec3.sdk.json`
     #[arg(default_value = "spec3.sdk.json")]
     spec_path: String,
@@ -66,7 +69,7 @@ fn main() -> Result<()> {
     info!("Finished parsing spec");
 
     let url_finder = UrlFinder::new().context("couldn't initialize url finder")?;
-    let codegen = CodeGen::new(spec, url_finder)?;
+    let codegen = CodeGen::new(spec, url_finder, args.version)?;
 
     if args.update_api_docs {
         update_api_doc_data(&args.api_docs_url, &codegen.components)?;
