@@ -91,5 +91,5 @@ You can version and publish atomically with:
 
 ```sh
 cargo workspaces version minor --allow-branch next
-cargo workspaces publish --from-git
+cargo workspaces publish --from-git --allow-branch next
 ```
