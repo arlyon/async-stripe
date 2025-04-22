@@ -83,3 +83,14 @@ cargo test --features runtime-blocking
 
 It is encouraged to open an issue before you create a PR as a place for pre-implementation
 discussion. If you're unsure about your contribution or simply want to ask a question about anything just open an issue and we'll chat.
+
+## Versioning
+
+Due to the nature of the generated crates, all crates are versioned together. To bump the versions, will need to
+do the following steps:
+
+1. Bump the version in `Cargo.toml`
+2. Run the code generation with the new version `cd openapi && cargo run -- <version>`
+3. Update any version requirements in the manually managed packages
+4. Commit the changes
+5. Publish the changes `cargo workspaces publish --from-git --allow-branch next`
