@@ -68,8 +68,9 @@ pub use error::StripeError;
 #[cfg(feature = "__hyper")]
 pub use hyper::*;
 pub use stripe_client_core::{
-    CustomizedStripeRequest, IdempotencyKey, IdempotentKeyError, ListPaginator, PaginationExt,
-    RequestStrategy, StripeRequest,
+    ApiVersion, CustomizedStripeRequest, IdempotencyKey, IdempotentKeyError, Outcome, ListPaginator, 
+    PaginationExt, RequestBuilder, RequestStrategy, SharedConfigBuilder, StripeClient, StripeMethod,
+    StripeRequest,
 };
 pub use stripe_shared::api_errors::*;
 pub use stripe_shared::{AccountId, ApplicationId};
