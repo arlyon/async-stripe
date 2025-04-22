@@ -10,12 +10,10 @@ pub struct PaymentLinksResourcePaymentIntentData {
     pub metadata: std::collections::HashMap<String, String>,
     /// Indicates that you intend to make future payments with the payment method collected during checkout.
     pub setup_future_usage: Option<PaymentLinksResourcePaymentIntentDataSetupFutureUsage>,
-    /// Extra information about the payment.
-    /// This will appear on your customer's statement when this payment succeeds in creating a charge.
+    /// For a non-card payment, information about the charge that appears on the customer's statement when this payment succeeds in creating a charge.
     pub statement_descriptor: Option<String>,
-    /// Provides information about the charge that customers see on their statements.
-    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor.
-    /// Maximum 22 characters for the concatenated descriptor.
+    /// For a card payment, information about the charge that appears on the customer's statement when this payment succeeds in creating a charge.
+    /// Concatenated with the account's statement descriptor prefix to form the complete statement descriptor.
     pub statement_descriptor_suffix: Option<String>,
     /// A string that identifies the resulting payment as part of a group.
     /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.

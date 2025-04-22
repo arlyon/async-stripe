@@ -4,6 +4,7 @@
 pub struct TreasuryReceivedCreditsResourceSourceFlowsDetails {
     pub credit_reversal: Option<stripe_treasury::TreasuryCreditReversal>,
     pub outbound_payment: Option<stripe_treasury::TreasuryOutboundPayment>,
+    pub outbound_transfer: Option<stripe_treasury::TreasuryOutboundTransfer>,
     pub payout: Option<stripe_shared::Payout>,
     /// The type of the source flow that originated the ReceivedCredit.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
@@ -13,6 +14,7 @@ pub struct TreasuryReceivedCreditsResourceSourceFlowsDetails {
 pub struct TreasuryReceivedCreditsResourceSourceFlowsDetailsBuilder {
     credit_reversal: Option<Option<stripe_treasury::TreasuryCreditReversal>>,
     outbound_payment: Option<Option<stripe_treasury::TreasuryOutboundPayment>>,
+    outbound_transfer: Option<Option<stripe_treasury::TreasuryOutboundTransfer>>,
     payout: Option<Option<stripe_shared::Payout>>,
     type_: Option<TreasuryReceivedCreditsResourceSourceFlowsDetailsType>,
 }
@@ -59,6 +61,7 @@ const _: () = {
             Ok(match k {
                 "credit_reversal" => Deserialize::begin(&mut self.credit_reversal),
                 "outbound_payment" => Deserialize::begin(&mut self.outbound_payment),
+                "outbound_transfer" => Deserialize::begin(&mut self.outbound_transfer),
                 "payout" => Deserialize::begin(&mut self.payout),
                 "type" => Deserialize::begin(&mut self.type_),
 
@@ -70,21 +73,30 @@ const _: () = {
             Self {
                 credit_reversal: Deserialize::default(),
                 outbound_payment: Deserialize::default(),
+                outbound_transfer: Deserialize::default(),
                 payout: Deserialize::default(),
                 type_: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(credit_reversal), Some(outbound_payment), Some(payout), Some(type_)) = (
+            let (
+                Some(credit_reversal),
+                Some(outbound_payment),
+                Some(outbound_transfer),
+                Some(payout),
+                Some(type_),
+            ) = (
                 self.credit_reversal.take(),
                 self.outbound_payment.take(),
+                self.outbound_transfer.take(),
                 self.payout.take(),
                 self.type_,
-            ) else {
+            )
+            else {
                 return None;
             };
-            Some(Self::Out { credit_reversal, outbound_payment, payout, type_ })
+            Some(Self::Out { credit_reversal, outbound_payment, outbound_transfer, payout, type_ })
         }
     }
 
@@ -113,6 +125,7 @@ const _: () = {
                 match k.as_str() {
                     "credit_reversal" => b.credit_reversal = FromValueOpt::from_value(v),
                     "outbound_payment" => b.outbound_payment = FromValueOpt::from_value(v),
+                    "outbound_transfer" => b.outbound_transfer = FromValueOpt::from_value(v),
                     "payout" => b.payout = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
 
@@ -129,6 +142,7 @@ pub enum TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
     CreditReversal,
     Other,
     OutboundPayment,
+    OutboundTransfer,
     Payout,
 }
 impl TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
@@ -138,6 +152,7 @@ impl TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
             CreditReversal => "credit_reversal",
             Other => "other",
             OutboundPayment => "outbound_payment",
+            OutboundTransfer => "outbound_transfer",
             Payout => "payout",
         }
     }
@@ -151,6 +166,7 @@ impl std::str::FromStr for TreasuryReceivedCreditsResourceSourceFlowsDetailsType
             "credit_reversal" => Ok(CreditReversal),
             "other" => Ok(Other),
             "outbound_payment" => Ok(OutboundPayment),
+            "outbound_transfer" => Ok(OutboundTransfer),
             "payout" => Ok(Payout),
             _ => Err(stripe_types::StripeParseError),
         }

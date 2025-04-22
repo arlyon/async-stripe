@@ -47,10 +47,12 @@ pub struct CreditNote {
     pub out_of_band_amount: Option<i64>,
     /// The link to download the PDF of the credit note.
     pub pdf: String,
+    /// The pretax credit amounts (ex: discount, credit grants, etc) for all line items.
+    pub pretax_credit_amounts: Vec<stripe_shared::CreditNotesPretaxCreditAmount>,
     /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
     pub reason: Option<stripe_shared::CreditNoteReason>,
-    /// Refund related to this credit note.
-    pub refund: Option<stripe_types::Expandable<stripe_shared::Refund>>,
+    /// Refunds related to this credit note.
+    pub refunds: Vec<stripe_shared::CreditNoteRefund>,
     /// The details of the cost of shipping, including the ShippingRate applied to the invoice.
     pub shipping_cost: Option<stripe_shared::InvoicesResourceShippingCost>,
     /// Status of this credit note, one of `issued` or `void`.
@@ -60,12 +62,12 @@ pub struct CreditNote {
     pub subtotal: i64,
     /// The integer amount in cents (or local equivalent) representing the amount of the credit note, excluding all tax and invoice level discounts.
     pub subtotal_excluding_tax: Option<i64>,
-    /// The aggregate amounts calculated per tax rate for all line items.
-    pub tax_amounts: Vec<stripe_shared::CreditNoteTaxAmount>,
     /// The integer amount in cents (or local equivalent) representing the total amount of the credit note, including tax and all discount.
     pub total: i64,
     /// The integer amount in cents (or local equivalent) representing the total amount of the credit note, excluding tax, but including discounts.
     pub total_excluding_tax: Option<i64>,
+    /// The aggregate tax information for all line items.
+    pub total_taxes: Option<Vec<stripe_shared::BillingBillResourceInvoicingTaxesTax>>,
     /// Type of this credit note, one of `pre_payment` or `post_payment`.
     /// A `pre_payment` credit note means it was issued when the invoice was open.
     /// A `post_payment` credit note means it was issued when the invoice was paid.
@@ -95,15 +97,16 @@ pub struct CreditNoteBuilder {
     number: Option<String>,
     out_of_band_amount: Option<Option<i64>>,
     pdf: Option<String>,
+    pretax_credit_amounts: Option<Vec<stripe_shared::CreditNotesPretaxCreditAmount>>,
     reason: Option<Option<stripe_shared::CreditNoteReason>>,
-    refund: Option<Option<stripe_types::Expandable<stripe_shared::Refund>>>,
+    refunds: Option<Vec<stripe_shared::CreditNoteRefund>>,
     shipping_cost: Option<Option<stripe_shared::InvoicesResourceShippingCost>>,
     status: Option<CreditNoteStatus>,
     subtotal: Option<i64>,
     subtotal_excluding_tax: Option<Option<i64>>,
-    tax_amounts: Option<Vec<stripe_shared::CreditNoteTaxAmount>>,
     total: Option<i64>,
     total_excluding_tax: Option<Option<i64>>,
+    total_taxes: Option<Option<Vec<stripe_shared::BillingBillResourceInvoicingTaxesTax>>>,
     type_: Option<CreditNoteType>,
     voided_at: Option<Option<stripe_types::Timestamp>>,
 }
@@ -168,15 +171,16 @@ const _: () = {
                 "number" => Deserialize::begin(&mut self.number),
                 "out_of_band_amount" => Deserialize::begin(&mut self.out_of_band_amount),
                 "pdf" => Deserialize::begin(&mut self.pdf),
+                "pretax_credit_amounts" => Deserialize::begin(&mut self.pretax_credit_amounts),
                 "reason" => Deserialize::begin(&mut self.reason),
-                "refund" => Deserialize::begin(&mut self.refund),
+                "refunds" => Deserialize::begin(&mut self.refunds),
                 "shipping_cost" => Deserialize::begin(&mut self.shipping_cost),
                 "status" => Deserialize::begin(&mut self.status),
                 "subtotal" => Deserialize::begin(&mut self.subtotal),
                 "subtotal_excluding_tax" => Deserialize::begin(&mut self.subtotal_excluding_tax),
-                "tax_amounts" => Deserialize::begin(&mut self.tax_amounts),
                 "total" => Deserialize::begin(&mut self.total),
                 "total_excluding_tax" => Deserialize::begin(&mut self.total_excluding_tax),
+                "total_taxes" => Deserialize::begin(&mut self.total_taxes),
                 "type" => Deserialize::begin(&mut self.type_),
                 "voided_at" => Deserialize::begin(&mut self.voided_at),
 
@@ -204,15 +208,16 @@ const _: () = {
                 number: Deserialize::default(),
                 out_of_band_amount: Deserialize::default(),
                 pdf: Deserialize::default(),
+                pretax_credit_amounts: Deserialize::default(),
                 reason: Deserialize::default(),
-                refund: Deserialize::default(),
+                refunds: Deserialize::default(),
                 shipping_cost: Deserialize::default(),
                 status: Deserialize::default(),
                 subtotal: Deserialize::default(),
                 subtotal_excluding_tax: Deserialize::default(),
-                tax_amounts: Deserialize::default(),
                 total: Deserialize::default(),
                 total_excluding_tax: Deserialize::default(),
+                total_taxes: Deserialize::default(),
                 type_: Deserialize::default(),
                 voided_at: Deserialize::default(),
             }
@@ -238,15 +243,16 @@ const _: () = {
                 Some(number),
                 Some(out_of_band_amount),
                 Some(pdf),
+                Some(pretax_credit_amounts),
                 Some(reason),
-                Some(refund),
+                Some(refunds),
                 Some(shipping_cost),
                 Some(status),
                 Some(subtotal),
                 Some(subtotal_excluding_tax),
-                Some(tax_amounts),
                 Some(total),
                 Some(total_excluding_tax),
+                Some(total_taxes),
                 Some(type_),
                 Some(voided_at),
             ) = (
@@ -268,15 +274,16 @@ const _: () = {
                 self.number.take(),
                 self.out_of_band_amount,
                 self.pdf.take(),
+                self.pretax_credit_amounts.take(),
                 self.reason,
-                self.refund.take(),
+                self.refunds.take(),
                 self.shipping_cost.take(),
                 self.status,
                 self.subtotal,
                 self.subtotal_excluding_tax,
-                self.tax_amounts.take(),
                 self.total,
                 self.total_excluding_tax,
+                self.total_taxes.take(),
                 self.type_,
                 self.voided_at,
             )
@@ -302,15 +309,16 @@ const _: () = {
                 number,
                 out_of_band_amount,
                 pdf,
+                pretax_credit_amounts,
                 reason,
-                refund,
+                refunds,
                 shipping_cost,
                 status,
                 subtotal,
                 subtotal_excluding_tax,
-                tax_amounts,
                 total,
                 total_excluding_tax,
+                total_taxes,
                 type_,
                 voided_at,
             })
@@ -360,17 +368,20 @@ const _: () = {
                     "number" => b.number = FromValueOpt::from_value(v),
                     "out_of_band_amount" => b.out_of_band_amount = FromValueOpt::from_value(v),
                     "pdf" => b.pdf = FromValueOpt::from_value(v),
+                    "pretax_credit_amounts" => {
+                        b.pretax_credit_amounts = FromValueOpt::from_value(v)
+                    }
                     "reason" => b.reason = FromValueOpt::from_value(v),
-                    "refund" => b.refund = FromValueOpt::from_value(v),
+                    "refunds" => b.refunds = FromValueOpt::from_value(v),
                     "shipping_cost" => b.shipping_cost = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "subtotal" => b.subtotal = FromValueOpt::from_value(v),
                     "subtotal_excluding_tax" => {
                         b.subtotal_excluding_tax = FromValueOpt::from_value(v)
                     }
-                    "tax_amounts" => b.tax_amounts = FromValueOpt::from_value(v),
                     "total" => b.total = FromValueOpt::from_value(v),
                     "total_excluding_tax" => b.total_excluding_tax = FromValueOpt::from_value(v),
+                    "total_taxes" => b.total_taxes = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "voided_at" => b.voided_at = FromValueOpt::from_value(v),
 
@@ -385,7 +396,7 @@ const _: () = {
 impl serde::Serialize for CreditNote {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CreditNote", 30)?;
+        let mut s = s.serialize_struct("CreditNote", 31)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_shipping", &self.amount_shipping)?;
         s.serialize_field("created", &self.created)?;
@@ -404,15 +415,16 @@ impl serde::Serialize for CreditNote {
         s.serialize_field("number", &self.number)?;
         s.serialize_field("out_of_band_amount", &self.out_of_band_amount)?;
         s.serialize_field("pdf", &self.pdf)?;
+        s.serialize_field("pretax_credit_amounts", &self.pretax_credit_amounts)?;
         s.serialize_field("reason", &self.reason)?;
-        s.serialize_field("refund", &self.refund)?;
+        s.serialize_field("refunds", &self.refunds)?;
         s.serialize_field("shipping_cost", &self.shipping_cost)?;
         s.serialize_field("status", &self.status)?;
         s.serialize_field("subtotal", &self.subtotal)?;
         s.serialize_field("subtotal_excluding_tax", &self.subtotal_excluding_tax)?;
-        s.serialize_field("tax_amounts", &self.tax_amounts)?;
         s.serialize_field("total", &self.total)?;
         s.serialize_field("total_excluding_tax", &self.total_excluding_tax)?;
+        s.serialize_field("total_taxes", &self.total_taxes)?;
         s.serialize_field("type", &self.type_)?;
         s.serialize_field("voided_at", &self.voided_at)?;
 

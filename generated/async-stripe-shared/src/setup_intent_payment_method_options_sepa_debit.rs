@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupIntentPaymentMethodOptionsSepaDebit {
@@ -62,7 +62,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mandate_options),) = (self.mandate_options,) else {
+            let (Some(mandate_options),) = (self.mandate_options.take(),) else {
                 return None;
             };
             Some(Self::Out { mandate_options })

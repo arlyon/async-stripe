@@ -18,11 +18,15 @@ pub struct TerminalConfigurationConfigurationResourceTipping {
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     pub hkd:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
+    pub jpy:
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     pub myr:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     pub nok:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     pub nzd:
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
+    pub pln:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     pub sek:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
@@ -57,6 +61,9 @@ pub struct TerminalConfigurationConfigurationResourceTippingBuilder {
     hkd: Option<
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     >,
+    jpy: Option<
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
+    >,
     myr: Option<
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     >,
@@ -64,6 +71,9 @@ pub struct TerminalConfigurationConfigurationResourceTippingBuilder {
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     >,
     nzd: Option<
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
+    >,
+    pln: Option<
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     >,
     sek: Option<
@@ -125,9 +135,11 @@ const _: () = {
                 "eur" => Deserialize::begin(&mut self.eur),
                 "gbp" => Deserialize::begin(&mut self.gbp),
                 "hkd" => Deserialize::begin(&mut self.hkd),
+                "jpy" => Deserialize::begin(&mut self.jpy),
                 "myr" => Deserialize::begin(&mut self.myr),
                 "nok" => Deserialize::begin(&mut self.nok),
                 "nzd" => Deserialize::begin(&mut self.nzd),
+                "pln" => Deserialize::begin(&mut self.pln),
                 "sek" => Deserialize::begin(&mut self.sek),
                 "sgd" => Deserialize::begin(&mut self.sgd),
                 "usd" => Deserialize::begin(&mut self.usd),
@@ -146,9 +158,11 @@ const _: () = {
                 eur: Deserialize::default(),
                 gbp: Deserialize::default(),
                 hkd: Deserialize::default(),
+                jpy: Deserialize::default(),
                 myr: Deserialize::default(),
                 nok: Deserialize::default(),
                 nzd: Deserialize::default(),
+                pln: Deserialize::default(),
                 sek: Deserialize::default(),
                 sgd: Deserialize::default(),
                 usd: Deserialize::default(),
@@ -165,9 +179,11 @@ const _: () = {
                 Some(eur),
                 Some(gbp),
                 Some(hkd),
+                Some(jpy),
                 Some(myr),
                 Some(nok),
                 Some(nzd),
+                Some(pln),
                 Some(sek),
                 Some(sgd),
                 Some(usd),
@@ -180,9 +196,11 @@ const _: () = {
                 self.eur.take(),
                 self.gbp.take(),
                 self.hkd.take(),
+                self.jpy.take(),
                 self.myr.take(),
                 self.nok.take(),
                 self.nzd.take(),
+                self.pln.take(),
                 self.sek.take(),
                 self.sgd.take(),
                 self.usd.take(),
@@ -190,7 +208,24 @@ const _: () = {
             else {
                 return None;
             };
-            Some(Self::Out { aud, cad, chf, czk, dkk, eur, gbp, hkd, myr, nok, nzd, sek, sgd, usd })
+            Some(Self::Out {
+                aud,
+                cad,
+                chf,
+                czk,
+                dkk,
+                eur,
+                gbp,
+                hkd,
+                jpy,
+                myr,
+                nok,
+                nzd,
+                pln,
+                sek,
+                sgd,
+                usd,
+            })
         }
     }
 
@@ -225,9 +260,11 @@ const _: () = {
                     "eur" => b.eur = FromValueOpt::from_value(v),
                     "gbp" => b.gbp = FromValueOpt::from_value(v),
                     "hkd" => b.hkd = FromValueOpt::from_value(v),
+                    "jpy" => b.jpy = FromValueOpt::from_value(v),
                     "myr" => b.myr = FromValueOpt::from_value(v),
                     "nok" => b.nok = FromValueOpt::from_value(v),
                     "nzd" => b.nzd = FromValueOpt::from_value(v),
+                    "pln" => b.pln = FromValueOpt::from_value(v),
                     "sek" => b.sek = FromValueOpt::from_value(v),
                     "sgd" => b.sgd = FromValueOpt::from_value(v),
                     "usd" => b.usd = FromValueOpt::from_value(v),

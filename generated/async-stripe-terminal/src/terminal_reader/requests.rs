@@ -617,6 +617,10 @@ impl ProcessPaymentIntentTerminalReaderBuilder {
 /// Configuration overrides
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ProcessPaymentIntentTerminalReaderProcessConfig {
+    /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+    /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_redisplay: Option<ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay>,
     /// Enables cancel button on transaction screens.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enable_customer_cancellation: Option<bool>,
@@ -629,12 +633,81 @@ pub struct ProcessPaymentIntentTerminalReaderProcessConfig {
 }
 impl ProcessPaymentIntentTerminalReaderProcessConfig {
     pub fn new() -> Self {
-        Self { enable_customer_cancellation: None, skip_tipping: None, tipping: None }
+        Self {
+            allow_redisplay: None,
+            enable_customer_cancellation: None,
+            skip_tipping: None,
+            tipping: None,
+        }
     }
 }
 impl Default for ProcessPaymentIntentTerminalReaderProcessConfig {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
+    Always,
+    Limited,
+    Unspecified,
+}
+impl ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
+    pub fn as_str(self) -> &'static str {
+        use ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay::*;
+        match self {
+            Always => "always",
+            Limited => "limited",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay::*;
+        match s {
+            "always" => Ok(Always),
+            "limited" => Ok(Limited),
+            "unspecified" => Ok(Unspecified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay",
+            )
+        })
     }
 }
 /// Tipping configuration for this transaction.
@@ -718,7 +791,7 @@ impl StripeRequest for ProcessPaymentIntentTerminalReader {
 }
 #[derive(Clone, Debug, serde::Serialize)]
 struct ProcessSetupIntentTerminalReaderBuilder {
-    customer_consent_collected: bool,
+    allow_redisplay: ProcessSetupIntentTerminalReaderAllowRedisplay,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -726,13 +799,78 @@ struct ProcessSetupIntentTerminalReaderBuilder {
     setup_intent: String,
 }
 impl ProcessSetupIntentTerminalReaderBuilder {
-    fn new(customer_consent_collected: impl Into<bool>, setup_intent: impl Into<String>) -> Self {
+    fn new(
+        allow_redisplay: impl Into<ProcessSetupIntentTerminalReaderAllowRedisplay>,
+        setup_intent: impl Into<String>,
+    ) -> Self {
         Self {
-            customer_consent_collected: customer_consent_collected.into(),
+            allow_redisplay: allow_redisplay.into(),
             expand: None,
             process_config: None,
             setup_intent: setup_intent.into(),
         }
+    }
+}
+/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ProcessSetupIntentTerminalReaderAllowRedisplay {
+    Always,
+    Limited,
+    Unspecified,
+}
+impl ProcessSetupIntentTerminalReaderAllowRedisplay {
+    pub fn as_str(self) -> &'static str {
+        use ProcessSetupIntentTerminalReaderAllowRedisplay::*;
+        match self {
+            Always => "always",
+            Limited => "limited",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for ProcessSetupIntentTerminalReaderAllowRedisplay {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ProcessSetupIntentTerminalReaderAllowRedisplay::*;
+        match s {
+            "always" => Ok(Always),
+            "limited" => Ok(Limited),
+            "unspecified" => Ok(Unspecified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for ProcessSetupIntentTerminalReaderAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ProcessSetupIntentTerminalReaderAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ProcessSetupIntentTerminalReaderAllowRedisplay {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ProcessSetupIntentTerminalReaderAllowRedisplay {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ProcessSetupIntentTerminalReaderAllowRedisplay",
+            )
+        })
     }
 }
 /// Configuration overrides
@@ -762,13 +900,13 @@ impl ProcessSetupIntentTerminalReader {
     /// Construct a new `ProcessSetupIntentTerminalReader`.
     pub fn new(
         reader: impl Into<stripe_terminal::TerminalReaderId>,
-        customer_consent_collected: impl Into<bool>,
+        allow_redisplay: impl Into<ProcessSetupIntentTerminalReaderAllowRedisplay>,
         setup_intent: impl Into<String>,
     ) -> Self {
         Self {
             reader: reader.into(),
             inner: ProcessSetupIntentTerminalReaderBuilder::new(
-                customer_consent_collected.into(),
+                allow_redisplay.into(),
                 setup_intent.into(),
             ),
         }

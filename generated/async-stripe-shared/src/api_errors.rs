@@ -2,6 +2,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ApiErrors {
+    /// For card errors resulting from a card issuer decline, a short string indicating [how to proceed with an error](https://stripe.com/docs/declines#retrying-issuer-declines) if they provide one.
+    pub advice_code: Option<String>,
     /// For card errors, the ID of the failed charge.
     pub charge: Option<String>,
     /// For some errors that could be handled programmatically, a short string indicating the [error code](https://stripe.com/docs/error-codes) reported.
@@ -13,6 +15,10 @@ pub struct ApiErrors {
     /// A human-readable message providing more details about the error.
     /// For card errors, these messages can be shown to your users.
     pub message: Option<String>,
+    /// For card errors resulting from a card issuer decline, a 2 digit code which indicates the advice given to merchant by the card network on how to proceed with an error.
+    pub network_advice_code: Option<String>,
+    /// For card errors resulting from a card issuer decline, a brand specific 2, 3, or 4 digit code which indicates the reason the authorization failed.
+    pub network_decline_code: Option<String>,
     /// If the error is parameter-specific, the parameter related to the error.
     /// For example, you can use this to display a message near the correct form field.
     pub param: Option<String>,
@@ -32,11 +38,14 @@ pub struct ApiErrors {
 }
 #[doc(hidden)]
 pub struct ApiErrorsBuilder {
+    advice_code: Option<Option<String>>,
     charge: Option<Option<String>>,
     code: Option<Option<ApiErrorsCode>>,
     decline_code: Option<Option<String>>,
     doc_url: Option<Option<String>>,
     message: Option<Option<String>>,
+    network_advice_code: Option<Option<String>>,
+    network_decline_code: Option<Option<String>>,
     param: Option<Option<String>>,
     payment_intent: Option<Option<stripe_shared::PaymentIntent>>,
     payment_method: Option<Option<stripe_shared::PaymentMethod>>,
@@ -84,11 +93,14 @@ const _: () = {
         type Out = ApiErrors;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "advice_code" => Deserialize::begin(&mut self.advice_code),
                 "charge" => Deserialize::begin(&mut self.charge),
                 "code" => Deserialize::begin(&mut self.code),
                 "decline_code" => Deserialize::begin(&mut self.decline_code),
                 "doc_url" => Deserialize::begin(&mut self.doc_url),
                 "message" => Deserialize::begin(&mut self.message),
+                "network_advice_code" => Deserialize::begin(&mut self.network_advice_code),
+                "network_decline_code" => Deserialize::begin(&mut self.network_decline_code),
                 "param" => Deserialize::begin(&mut self.param),
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
                 "payment_method" => Deserialize::begin(&mut self.payment_method),
@@ -104,11 +116,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                advice_code: Deserialize::default(),
                 charge: Deserialize::default(),
                 code: Deserialize::default(),
                 decline_code: Deserialize::default(),
                 doc_url: Deserialize::default(),
                 message: Deserialize::default(),
+                network_advice_code: Deserialize::default(),
+                network_decline_code: Deserialize::default(),
                 param: Deserialize::default(),
                 payment_intent: Deserialize::default(),
                 payment_method: Deserialize::default(),
@@ -122,11 +137,14 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(advice_code),
                 Some(charge),
                 Some(code),
                 Some(decline_code),
                 Some(doc_url),
                 Some(message),
+                Some(network_advice_code),
+                Some(network_decline_code),
                 Some(param),
                 Some(payment_intent),
                 Some(payment_method),
@@ -136,11 +154,14 @@ const _: () = {
                 Some(source),
                 Some(type_),
             ) = (
+                self.advice_code.take(),
                 self.charge.take(),
                 self.code.take(),
                 self.decline_code.take(),
                 self.doc_url.take(),
                 self.message.take(),
+                self.network_advice_code.take(),
+                self.network_decline_code.take(),
                 self.param.take(),
                 self.payment_intent.take(),
                 self.payment_method.take(),
@@ -154,11 +175,14 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                advice_code,
                 charge,
                 code,
                 decline_code,
                 doc_url,
                 message,
+                network_advice_code,
+                network_decline_code,
                 param,
                 payment_intent,
                 payment_method,
@@ -194,11 +218,14 @@ const _: () = {
             let mut b = ApiErrorsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "advice_code" => b.advice_code = FromValueOpt::from_value(v),
                     "charge" => b.charge = FromValueOpt::from_value(v),
                     "code" => b.code = FromValueOpt::from_value(v),
                     "decline_code" => b.decline_code = FromValueOpt::from_value(v),
                     "doc_url" => b.doc_url = FromValueOpt::from_value(v),
                     "message" => b.message = FromValueOpt::from_value(v),
+                    "network_advice_code" => b.network_advice_code = FromValueOpt::from_value(v),
+                    "network_decline_code" => b.network_decline_code = FromValueOpt::from_value(v),
                     "param" => b.param = FromValueOpt::from_value(v),
                     "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
                     "payment_method" => b.payment_method = FromValueOpt::from_value(v),
@@ -242,10 +269,6 @@ pub enum ApiErrorsCode {
     BankAccountUnverified,
     BankAccountVerificationFailed,
     BillingInvalidMandate,
-    BillingPolicyRemoteFunctionResponseInvalid,
-    BillingPolicyRemoteFunctionTimeout,
-    BillingPolicyRemoteFunctionUnexpectedStatusCode,
-    BillingPolicyRemoteFunctionUnreachable,
     BitcoinUpgradeRequired,
     CaptureChargeAuthorizationExpired,
     CaptureUnauthorizedPayment,
@@ -256,6 +279,7 @@ pub enum ApiErrorsCode {
     ChargeAlreadyRefunded,
     ChargeDisputed,
     ChargeExceedsSourceLimit,
+    ChargeExceedsTransactionLimit,
     ChargeExpiredForCapture,
     ChargeInvalidParameter,
     ChargeNotRefundable,
@@ -273,6 +297,7 @@ pub enum ApiErrorsCode {
     FinancialConnectionsNoSuccessfulTransactionRefresh,
     ForwardingApiInactive,
     ForwardingApiInvalidParameter,
+    ForwardingApiRetryableUpstreamError,
     ForwardingApiUpstreamConnectionError,
     ForwardingApiUpstreamConnectionTimeout,
     IdempotencyKeyInUse,
@@ -293,6 +318,7 @@ pub enum ApiErrorsCode {
     InvalidCvc,
     InvalidExpiryMonth,
     InvalidExpiryYear,
+    InvalidMandateReferencePrefixFormat,
     InvalidNumber,
     InvalidSourceUsage,
     InvalidTaxLocation,
@@ -368,6 +394,7 @@ pub enum ApiErrorsCode {
     SetupIntentAuthenticationFailure,
     SetupIntentInvalidParameter,
     SetupIntentMandateInvalid,
+    SetupIntentMobileWalletUnsupported,
     SetupIntentSetupAttemptExpired,
     SetupIntentUnexpectedState,
     ShippingAddressInvalid,
@@ -377,10 +404,13 @@ pub enum ApiErrorsCode {
     StatusTransitionInvalid,
     StripeTaxInactive,
     TaxIdInvalid,
+    TaxIdProhibited,
     TaxesCalculationFailed,
     TerminalLocationCountryUnsupported,
     TerminalReaderBusy,
     TerminalReaderHardwareFault,
+    TerminalReaderInvalidLocationForActivation,
+    TerminalReaderInvalidLocationForPayment,
     TerminalReaderOffline,
     TerminalReaderTimeout,
     TestmodeChargesOnly,
@@ -423,14 +453,6 @@ impl ApiErrorsCode {
             BankAccountUnverified => "bank_account_unverified",
             BankAccountVerificationFailed => "bank_account_verification_failed",
             BillingInvalidMandate => "billing_invalid_mandate",
-            BillingPolicyRemoteFunctionResponseInvalid => {
-                "billing_policy_remote_function_response_invalid"
-            }
-            BillingPolicyRemoteFunctionTimeout => "billing_policy_remote_function_timeout",
-            BillingPolicyRemoteFunctionUnexpectedStatusCode => {
-                "billing_policy_remote_function_unexpected_status_code"
-            }
-            BillingPolicyRemoteFunctionUnreachable => "billing_policy_remote_function_unreachable",
             BitcoinUpgradeRequired => "bitcoin_upgrade_required",
             CaptureChargeAuthorizationExpired => "capture_charge_authorization_expired",
             CaptureUnauthorizedPayment => "capture_unauthorized_payment",
@@ -441,6 +463,7 @@ impl ApiErrorsCode {
             ChargeAlreadyRefunded => "charge_already_refunded",
             ChargeDisputed => "charge_disputed",
             ChargeExceedsSourceLimit => "charge_exceeds_source_limit",
+            ChargeExceedsTransactionLimit => "charge_exceeds_transaction_limit",
             ChargeExpiredForCapture => "charge_expired_for_capture",
             ChargeInvalidParameter => "charge_invalid_parameter",
             ChargeNotRefundable => "charge_not_refundable",
@@ -460,6 +483,7 @@ impl ApiErrorsCode {
             }
             ForwardingApiInactive => "forwarding_api_inactive",
             ForwardingApiInvalidParameter => "forwarding_api_invalid_parameter",
+            ForwardingApiRetryableUpstreamError => "forwarding_api_retryable_upstream_error",
             ForwardingApiUpstreamConnectionError => "forwarding_api_upstream_connection_error",
             ForwardingApiUpstreamConnectionTimeout => "forwarding_api_upstream_connection_timeout",
             IdempotencyKeyInUse => "idempotency_key_in_use",
@@ -480,6 +504,7 @@ impl ApiErrorsCode {
             InvalidCvc => "invalid_cvc",
             InvalidExpiryMonth => "invalid_expiry_month",
             InvalidExpiryYear => "invalid_expiry_year",
+            InvalidMandateReferencePrefixFormat => "invalid_mandate_reference_prefix_format",
             InvalidNumber => "invalid_number",
             InvalidSourceUsage => "invalid_source_usage",
             InvalidTaxLocation => "invalid_tax_location",
@@ -571,6 +596,7 @@ impl ApiErrorsCode {
             SetupIntentAuthenticationFailure => "setup_intent_authentication_failure",
             SetupIntentInvalidParameter => "setup_intent_invalid_parameter",
             SetupIntentMandateInvalid => "setup_intent_mandate_invalid",
+            SetupIntentMobileWalletUnsupported => "setup_intent_mobile_wallet_unsupported",
             SetupIntentSetupAttemptExpired => "setup_intent_setup_attempt_expired",
             SetupIntentUnexpectedState => "setup_intent_unexpected_state",
             ShippingAddressInvalid => "shipping_address_invalid",
@@ -580,10 +606,17 @@ impl ApiErrorsCode {
             StatusTransitionInvalid => "status_transition_invalid",
             StripeTaxInactive => "stripe_tax_inactive",
             TaxIdInvalid => "tax_id_invalid",
+            TaxIdProhibited => "tax_id_prohibited",
             TaxesCalculationFailed => "taxes_calculation_failed",
             TerminalLocationCountryUnsupported => "terminal_location_country_unsupported",
             TerminalReaderBusy => "terminal_reader_busy",
             TerminalReaderHardwareFault => "terminal_reader_hardware_fault",
+            TerminalReaderInvalidLocationForActivation => {
+                "terminal_reader_invalid_location_for_activation"
+            }
+            TerminalReaderInvalidLocationForPayment => {
+                "terminal_reader_invalid_location_for_payment"
+            }
             TerminalReaderOffline => "terminal_reader_offline",
             TerminalReaderTimeout => "terminal_reader_timeout",
             TestmodeChargesOnly => "testmode_charges_only",
@@ -631,16 +664,6 @@ impl std::str::FromStr for ApiErrorsCode {
             "bank_account_unverified" => Ok(BankAccountUnverified),
             "bank_account_verification_failed" => Ok(BankAccountVerificationFailed),
             "billing_invalid_mandate" => Ok(BillingInvalidMandate),
-            "billing_policy_remote_function_response_invalid" => {
-                Ok(BillingPolicyRemoteFunctionResponseInvalid)
-            }
-            "billing_policy_remote_function_timeout" => Ok(BillingPolicyRemoteFunctionTimeout),
-            "billing_policy_remote_function_unexpected_status_code" => {
-                Ok(BillingPolicyRemoteFunctionUnexpectedStatusCode)
-            }
-            "billing_policy_remote_function_unreachable" => {
-                Ok(BillingPolicyRemoteFunctionUnreachable)
-            }
             "bitcoin_upgrade_required" => Ok(BitcoinUpgradeRequired),
             "capture_charge_authorization_expired" => Ok(CaptureChargeAuthorizationExpired),
             "capture_unauthorized_payment" => Ok(CaptureUnauthorizedPayment),
@@ -651,6 +674,7 @@ impl std::str::FromStr for ApiErrorsCode {
             "charge_already_refunded" => Ok(ChargeAlreadyRefunded),
             "charge_disputed" => Ok(ChargeDisputed),
             "charge_exceeds_source_limit" => Ok(ChargeExceedsSourceLimit),
+            "charge_exceeds_transaction_limit" => Ok(ChargeExceedsTransactionLimit),
             "charge_expired_for_capture" => Ok(ChargeExpiredForCapture),
             "charge_invalid_parameter" => Ok(ChargeInvalidParameter),
             "charge_not_refundable" => Ok(ChargeNotRefundable),
@@ -670,6 +694,7 @@ impl std::str::FromStr for ApiErrorsCode {
             }
             "forwarding_api_inactive" => Ok(ForwardingApiInactive),
             "forwarding_api_invalid_parameter" => Ok(ForwardingApiInvalidParameter),
+            "forwarding_api_retryable_upstream_error" => Ok(ForwardingApiRetryableUpstreamError),
             "forwarding_api_upstream_connection_error" => Ok(ForwardingApiUpstreamConnectionError),
             "forwarding_api_upstream_connection_timeout" => {
                 Ok(ForwardingApiUpstreamConnectionTimeout)
@@ -692,6 +717,7 @@ impl std::str::FromStr for ApiErrorsCode {
             "invalid_cvc" => Ok(InvalidCvc),
             "invalid_expiry_month" => Ok(InvalidExpiryMonth),
             "invalid_expiry_year" => Ok(InvalidExpiryYear),
+            "invalid_mandate_reference_prefix_format" => Ok(InvalidMandateReferencePrefixFormat),
             "invalid_number" => Ok(InvalidNumber),
             "invalid_source_usage" => Ok(InvalidSourceUsage),
             "invalid_tax_location" => Ok(InvalidTaxLocation),
@@ -787,6 +813,7 @@ impl std::str::FromStr for ApiErrorsCode {
             "setup_intent_authentication_failure" => Ok(SetupIntentAuthenticationFailure),
             "setup_intent_invalid_parameter" => Ok(SetupIntentInvalidParameter),
             "setup_intent_mandate_invalid" => Ok(SetupIntentMandateInvalid),
+            "setup_intent_mobile_wallet_unsupported" => Ok(SetupIntentMobileWalletUnsupported),
             "setup_intent_setup_attempt_expired" => Ok(SetupIntentSetupAttemptExpired),
             "setup_intent_unexpected_state" => Ok(SetupIntentUnexpectedState),
             "shipping_address_invalid" => Ok(ShippingAddressInvalid),
@@ -796,10 +823,17 @@ impl std::str::FromStr for ApiErrorsCode {
             "status_transition_invalid" => Ok(StatusTransitionInvalid),
             "stripe_tax_inactive" => Ok(StripeTaxInactive),
             "tax_id_invalid" => Ok(TaxIdInvalid),
+            "tax_id_prohibited" => Ok(TaxIdProhibited),
             "taxes_calculation_failed" => Ok(TaxesCalculationFailed),
             "terminal_location_country_unsupported" => Ok(TerminalLocationCountryUnsupported),
             "terminal_reader_busy" => Ok(TerminalReaderBusy),
             "terminal_reader_hardware_fault" => Ok(TerminalReaderHardwareFault),
+            "terminal_reader_invalid_location_for_activation" => {
+                Ok(TerminalReaderInvalidLocationForActivation)
+            }
+            "terminal_reader_invalid_location_for_payment" => {
+                Ok(TerminalReaderInvalidLocationForPayment)
+            }
             "terminal_reader_offline" => Ok(TerminalReaderOffline),
             "terminal_reader_timeout" => Ok(TerminalReaderTimeout),
             "testmode_charges_only" => Ok(TestmodeChargesOnly),

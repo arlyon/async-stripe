@@ -1,13 +1,15 @@
 /// A billing meter event summary represents an aggregated view of a customer's billing meter events within a specified timeframe.
 /// It indicates how much.
 /// usage was accrued by a customer for that period.
+///
+/// Note: Meters events are aggregated asynchronously so the meter event summaries provide an eventually consistent view of the reported usage.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingMeterEventSummary {
     /// Aggregated value of all the events within `start_time` (inclusive) and `end_time` (inclusive).
     /// The aggregation strategy is defined on meter via `default_aggregation`.
     pub aggregated_value: f64,
-    /// End timestamp for this event summary (inclusive).
+    /// End timestamp for this event summary (exclusive). Must be aligned with minute boundaries.
     pub end_time: stripe_types::Timestamp,
     /// Unique identifier for the object.
     pub id: stripe_billing::BillingMeterEventSummaryId,
@@ -15,7 +17,7 @@ pub struct BillingMeterEventSummary {
     pub livemode: bool,
     /// The meter associated with this event summary.
     pub meter: String,
-    /// Start timestamp for this event summary (inclusive).
+    /// Start timestamp for this event summary (inclusive). Must be aligned with minute boundaries.
     pub start_time: stripe_types::Timestamp,
 }
 #[doc(hidden)]

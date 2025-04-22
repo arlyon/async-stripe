@@ -4,6 +4,7 @@
 pub struct SetupIntentPaymentMethodOptions {
     pub acss_debit: Option<stripe_shared::SetupIntentPaymentMethodOptionsAcssDebit>,
     pub amazon_pay: Option<stripe_shared::SetupIntentPaymentMethodOptionsAmazonPay>,
+    pub bacs_debit: Option<stripe_shared::SetupIntentPaymentMethodOptionsBacsDebit>,
     pub card: Option<stripe_shared::SetupIntentPaymentMethodOptionsCard>,
     pub card_present: Option<stripe_shared::SetupIntentPaymentMethodOptionsCardPresent>,
     pub link: Option<stripe_shared::SetupIntentPaymentMethodOptionsLink>,
@@ -15,6 +16,7 @@ pub struct SetupIntentPaymentMethodOptions {
 pub struct SetupIntentPaymentMethodOptionsBuilder {
     acss_debit: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsAcssDebit>>,
     amazon_pay: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsAmazonPay>>,
+    bacs_debit: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsBacsDebit>>,
     card: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsCard>>,
     card_present: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsCardPresent>>,
     link: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsLink>>,
@@ -65,6 +67,7 @@ const _: () = {
             Ok(match k {
                 "acss_debit" => Deserialize::begin(&mut self.acss_debit),
                 "amazon_pay" => Deserialize::begin(&mut self.amazon_pay),
+                "bacs_debit" => Deserialize::begin(&mut self.bacs_debit),
                 "card" => Deserialize::begin(&mut self.card),
                 "card_present" => Deserialize::begin(&mut self.card_present),
                 "link" => Deserialize::begin(&mut self.link),
@@ -80,6 +83,7 @@ const _: () = {
             Self {
                 acss_debit: Deserialize::default(),
                 amazon_pay: Deserialize::default(),
+                bacs_debit: Deserialize::default(),
                 card: Deserialize::default(),
                 card_present: Deserialize::default(),
                 link: Deserialize::default(),
@@ -93,6 +97,7 @@ const _: () = {
             let (
                 Some(acss_debit),
                 Some(amazon_pay),
+                Some(bacs_debit),
                 Some(card),
                 Some(card_present),
                 Some(link),
@@ -102,11 +107,12 @@ const _: () = {
             ) = (
                 self.acss_debit.take(),
                 self.amazon_pay,
+                self.bacs_debit.take(),
                 self.card.take(),
                 self.card_present,
                 self.link.take(),
                 self.paypal.take(),
-                self.sepa_debit,
+                self.sepa_debit.take(),
                 self.us_bank_account.take(),
             )
             else {
@@ -115,6 +121,7 @@ const _: () = {
             Some(Self::Out {
                 acss_debit,
                 amazon_pay,
+                bacs_debit,
                 card,
                 card_present,
                 link,
@@ -150,6 +157,7 @@ const _: () = {
                 match k.as_str() {
                     "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
                     "amazon_pay" => b.amazon_pay = FromValueOpt::from_value(v),
+                    "bacs_debit" => b.bacs_debit = FromValueOpt::from_value(v),
                     "card" => b.card = FromValueOpt::from_value(v),
                     "card_present" => b.card_present = FromValueOpt::from_value(v),
                     "link" => b.link = FromValueOpt::from_value(v),

@@ -158,6 +158,8 @@ struct CreateFromCalculationTaxTransactionBuilder {
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    posted_at: Option<stripe_types::Timestamp>,
     reference: String,
 }
 impl CreateFromCalculationTaxTransactionBuilder {
@@ -166,11 +168,13 @@ impl CreateFromCalculationTaxTransactionBuilder {
             calculation: calculation.into(),
             expand: None,
             metadata: None,
+            posted_at: None,
             reference: reference.into(),
         }
     }
 }
-/// Creates a Tax `Transaction` from a calculation.
+/// Creates a Tax Transaction from a calculation, if that calculation hasn’t expired.
+/// Calculations expire after 90 days.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateFromCalculationTaxTransaction {
     inner: CreateFromCalculationTaxTransactionBuilder,
@@ -199,6 +203,13 @@ impl CreateFromCalculationTaxTransaction {
         metadata: impl Into<std::collections::HashMap<String, String>>,
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
+        self
+    }
+    /// The Unix timestamp representing when the tax liability is assumed or reduced, which determines the liability posting period and handling in tax liability reports.
+    /// The timestamp must fall within the `tax_date` and the current time, unless the `tax_date` is scheduled in advance.
+    /// Defaults to the current time.
+    pub fn posted_at(mut self, posted_at: impl Into<stripe_types::Timestamp>) -> Self {
+        self.inner.posted_at = Some(posted_at.into());
         self
     }
 }

@@ -283,112 +283,7 @@ impl StripeRequest for RetrieveSubscriptionItem {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
-struct UsageRecordSummariesSubscriptionItemBuilder {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    expand: Option<Vec<String>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<String>,
-}
-impl UsageRecordSummariesSubscriptionItemBuilder {
-    fn new() -> Self {
-        Self { ending_before: None, expand: None, limit: None, starting_after: None }
-    }
-}
-/// For the specified subscription item, returns a list of summary objects.
-/// Each object in the list provides usage information that’s been summarized from multiple usage records and over a subscription billing period (e.g., 15 usage records in the month of September).
-///
-/// The list is sorted in reverse-chronological order (newest first).
-/// The first list item represents the most current usage period that hasn’t ended yet.
-/// Since new usage records can still be added, the returned summary information for the subscription item’s ID should be seen as unstable until the subscription billing period ends.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct UsageRecordSummariesSubscriptionItem {
-    inner: UsageRecordSummariesSubscriptionItemBuilder,
-    subscription_item: stripe_shared::SubscriptionItemId,
-}
-impl UsageRecordSummariesSubscriptionItem {
-    /// Construct a new `UsageRecordSummariesSubscriptionItem`.
-    pub fn new(subscription_item: impl Into<stripe_shared::SubscriptionItemId>) -> Self {
-        Self {
-            subscription_item: subscription_item.into(),
-            inner: UsageRecordSummariesSubscriptionItemBuilder::new(),
-        }
-    }
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    pub fn ending_before(mut self, ending_before: impl Into<String>) -> Self {
-        self.inner.ending_before = Some(ending_before.into());
-        self
-    }
-    /// Specifies which fields in the response should be expanded.
-    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
-        self.inner.expand = Some(expand.into());
-        self
-    }
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    pub fn limit(mut self, limit: impl Into<i64>) -> Self {
-        self.inner.limit = Some(limit.into());
-        self
-    }
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
-        self.inner.starting_after = Some(starting_after.into());
-        self
-    }
-}
-impl UsageRecordSummariesSubscriptionItem {
-    /// Send the request and return the deserialized response.
-    pub async fn send<C: StripeClient>(
-        &self,
-        client: &C,
-    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
-        self.customize().send(client).await
-    }
-
-    /// Send the request and return the deserialized response, blocking until completion.
-    pub fn send_blocking<C: StripeBlockingClient>(
-        &self,
-        client: &C,
-    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
-        self.customize().send_blocking(client)
-    }
-
-    pub fn paginate(
-        &self,
-    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::UsageRecordSummary>>
-    {
-        let subscription_item = &self.subscription_item;
-
-        stripe_client_core::ListPaginator::new_list(
-            format!("/subscription_items/{subscription_item}/usage_record_summaries"),
-            &self.inner,
-        )
-    }
-}
-
-impl StripeRequest for UsageRecordSummariesSubscriptionItem {
-    type Output = stripe_types::List<stripe_shared::UsageRecordSummary>;
-
-    fn build(&self) -> RequestBuilder {
-        let subscription_item = &self.subscription_item;
-        RequestBuilder::new(
-            StripeMethod::Get,
-            format!("/subscription_items/{subscription_item}/usage_record_summaries"),
-        )
-        .query(&self.inner)
-    }
-}
-#[derive(Clone, Debug, serde::Serialize)]
 struct CreateSubscriptionItemBuilder {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    billing_thresholds: Option<ItemBillingThresholdsParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
     discounts: Option<Vec<DiscountsDataParam>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -416,7 +311,6 @@ struct CreateSubscriptionItemBuilder {
 impl CreateSubscriptionItemBuilder {
     fn new(subscription: impl Into<String>) -> Self {
         Self {
-            billing_thresholds: None,
             discounts: None,
             expand: None,
             metadata: None,
@@ -516,7 +410,7 @@ pub struct CreateSubscriptionItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: CreateSubscriptionItemPriceDataRecurring,
@@ -762,15 +656,6 @@ impl CreateSubscriptionItem {
     pub fn new(subscription: impl Into<String>) -> Self {
         Self { inner: CreateSubscriptionItemBuilder::new(subscription.into()) }
     }
-    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-    /// When updating, pass an empty string to remove previously-defined thresholds.
-    pub fn billing_thresholds(
-        mut self,
-        billing_thresholds: impl Into<ItemBillingThresholdsParam>,
-    ) -> Self {
-        self.inner.billing_thresholds = Some(billing_thresholds.into());
-        self
-    }
     /// The coupons to redeem into discounts for the subscription item.
     pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
         self.inner.discounts = Some(discounts.into());
@@ -887,8 +772,6 @@ impl StripeRequest for CreateSubscriptionItem {
 #[derive(Clone, Debug, serde::Serialize)]
 struct UpdateSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing_thresholds: Option<ItemBillingThresholdsParam>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     discounts: Option<Vec<DiscountsDataParam>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -916,7 +799,6 @@ struct UpdateSubscriptionItemBuilder {
 impl UpdateSubscriptionItemBuilder {
     fn new() -> Self {
         Self {
-            billing_thresholds: None,
             discounts: None,
             expand: None,
             metadata: None,
@@ -1011,12 +893,13 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemPaymentBehavior {
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: UpdateSubscriptionItemPriceDataRecurring,
@@ -1263,15 +1146,6 @@ impl UpdateSubscriptionItem {
     pub fn new(item: impl Into<stripe_shared::SubscriptionItemId>) -> Self {
         Self { item: item.into(), inner: UpdateSubscriptionItemBuilder::new() }
     }
-    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-    /// When updating, pass an empty string to remove previously-defined thresholds.
-    pub fn billing_thresholds(
-        mut self,
-        billing_thresholds: impl Into<ItemBillingThresholdsParam>,
-    ) -> Self {
-        self.inner.billing_thresholds = Some(billing_thresholds.into());
-        self
-    }
     /// The coupons to redeem into discounts for the subscription item.
     pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
         self.inner.discounts = Some(discounts.into());
@@ -1294,6 +1168,7 @@ impl UpdateSubscriptionItem {
         self
     }
     /// Indicates if a customer is on or off-session while an invoice payment is attempted.
+    /// Defaults to `false` (on-session).
     pub fn off_session(mut self, off_session: impl Into<bool>) -> Self {
         self.inner.off_session = Some(off_session.into());
         self
@@ -1328,12 +1203,14 @@ impl UpdateSubscriptionItem {
         self
     }
     /// The ID of the price object.
+    /// One of `price` or `price_data` is required.
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
     pub fn price(mut self, price: impl Into<String>) -> Self {
         self.inner.price = Some(price.into());
         self
     }
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// One of `price` or `price_data` is required.
     pub fn price_data(mut self, price_data: impl Into<UpdateSubscriptionItemPriceData>) -> Self {
         self.inner.price_data = Some(price_data.into());
         self
@@ -1394,16 +1271,6 @@ impl StripeRequest for UpdateSubscriptionItem {
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ItemBillingThresholdsParam {
-    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
-    pub usage_gte: i64,
-}
-impl ItemBillingThresholdsParam {
-    pub fn new(usage_gte: impl Into<i64>) -> Self {
-        Self { usage_gte: usage_gte.into() }
-    }
-}
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct DiscountsDataParam {
     /// ID of the coupon to create a new discount for.

@@ -2,14 +2,20 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputePaymentMethodDetails {
+    pub amazon_pay: Option<stripe_shared::DisputePaymentMethodDetailsAmazonPay>,
     pub card: Option<stripe_shared::DisputePaymentMethodDetailsCard>,
+    pub klarna: Option<stripe_shared::DisputePaymentMethodDetailsKlarna>,
+    pub paypal: Option<stripe_shared::DisputePaymentMethodDetailsPaypal>,
     /// Payment method type.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: DisputePaymentMethodDetailsType,
 }
 #[doc(hidden)]
 pub struct DisputePaymentMethodDetailsBuilder {
+    amazon_pay: Option<Option<stripe_shared::DisputePaymentMethodDetailsAmazonPay>>,
     card: Option<Option<stripe_shared::DisputePaymentMethodDetailsCard>>,
+    klarna: Option<Option<stripe_shared::DisputePaymentMethodDetailsKlarna>>,
+    paypal: Option<Option<stripe_shared::DisputePaymentMethodDetailsPaypal>>,
     type_: Option<DisputePaymentMethodDetailsType>,
 }
 
@@ -53,7 +59,10 @@ const _: () = {
         type Out = DisputePaymentMethodDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "amazon_pay" => Deserialize::begin(&mut self.amazon_pay),
                 "card" => Deserialize::begin(&mut self.card),
+                "klarna" => Deserialize::begin(&mut self.klarna),
+                "paypal" => Deserialize::begin(&mut self.paypal),
                 "type" => Deserialize::begin(&mut self.type_),
 
                 _ => <dyn Visitor>::ignore(),
@@ -61,14 +70,26 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { card: Deserialize::default(), type_: Deserialize::default() }
+            Self {
+                amazon_pay: Deserialize::default(),
+                card: Deserialize::default(),
+                klarna: Deserialize::default(),
+                paypal: Deserialize::default(),
+                type_: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(card), Some(type_)) = (self.card.take(), self.type_) else {
+            let (Some(amazon_pay), Some(card), Some(klarna), Some(paypal), Some(type_)) = (
+                self.amazon_pay,
+                self.card.take(),
+                self.klarna.take(),
+                self.paypal.take(),
+                self.type_,
+            ) else {
                 return None;
             };
-            Some(Self::Out { card, type_ })
+            Some(Self::Out { amazon_pay, card, klarna, paypal, type_ })
         }
     }
 
@@ -95,7 +116,10 @@ const _: () = {
             let mut b = DisputePaymentMethodDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "amazon_pay" => b.amazon_pay = FromValueOpt::from_value(v),
                     "card" => b.card = FromValueOpt::from_value(v),
+                    "klarna" => b.klarna = FromValueOpt::from_value(v),
+                    "paypal" => b.paypal = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
@@ -108,13 +132,19 @@ const _: () = {
 /// Payment method type.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum DisputePaymentMethodDetailsType {
+    AmazonPay,
     Card,
+    Klarna,
+    Paypal,
 }
 impl DisputePaymentMethodDetailsType {
     pub fn as_str(self) -> &'static str {
         use DisputePaymentMethodDetailsType::*;
         match self {
+            AmazonPay => "amazon_pay",
             Card => "card",
+            Klarna => "klarna",
+            Paypal => "paypal",
         }
     }
 }
@@ -124,7 +154,10 @@ impl std::str::FromStr for DisputePaymentMethodDetailsType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputePaymentMethodDetailsType::*;
         match s {
+            "amazon_pay" => Ok(AmazonPay),
             "card" => Ok(Card),
+            "klarna" => Ok(Klarna),
+            "paypal" => Ok(Paypal),
             _ => Err(stripe_types::StripeParseError),
         }
     }

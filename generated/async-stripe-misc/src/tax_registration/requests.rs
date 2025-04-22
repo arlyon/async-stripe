@@ -252,30 +252,81 @@ pub struct CreateTaxRegistrationCountryOptions {
     /// Options for the registration in AE.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ae: Option<CreateTaxRegistrationCountryOptionsAe>,
+    /// Options for the registration in AL.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub al: Option<CreateTaxRegistrationCountryOptionsAl>,
+    /// Options for the registration in AM.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub am: Option<CreateTaxRegistrationCountryOptionsAm>,
+    /// Options for the registration in AO.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ao: Option<CreateTaxRegistrationCountryOptionsAo>,
     /// Options for the registration in AT.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub at: Option<CreateTaxRegistrationCountryOptionsAt>,
     /// Options for the registration in AU.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub au: Option<CreateTaxRegistrationCountryOptionsAu>,
+    /// Options for the registration in AW.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub aw: Option<CreateTaxRegistrationCountryOptionsAw>,
+    /// Options for the registration in AZ.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub az: Option<CreateTaxRegistrationCountryOptionsAz>,
+    /// Options for the registration in BA.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ba: Option<CreateTaxRegistrationCountryOptionsBa>,
+    /// Options for the registration in BB.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bb: Option<CreateTaxRegistrationCountryOptionsBb>,
+    /// Options for the registration in BD.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bd: Option<CreateTaxRegistrationCountryOptionsBd>,
     /// Options for the registration in BE.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub be: Option<CreateTaxRegistrationCountryOptionsBe>,
+    /// Options for the registration in BF.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bf: Option<CreateTaxRegistrationCountryOptionsBf>,
     /// Options for the registration in BG.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bg: Option<CreateTaxRegistrationCountryOptionsBg>,
+    /// Options for the registration in BH.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bh: Option<CreateTaxRegistrationCountryOptionsBh>,
+    /// Options for the registration in BJ.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bj: Option<CreateTaxRegistrationCountryOptionsBj>,
+    /// Options for the registration in BS.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bs: Option<CreateTaxRegistrationCountryOptionsBs>,
+    /// Options for the registration in BY.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub by: Option<CreateTaxRegistrationCountryOptionsBy>,
     /// Options for the registration in CA.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ca: Option<CreateTaxRegistrationCountryOptionsCa>,
+    /// Options for the registration in CD.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cd: Option<CreateTaxRegistrationCountryOptionsCd>,
     /// Options for the registration in CH.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ch: Option<CreateTaxRegistrationCountryOptionsCh>,
     /// Options for the registration in CL.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cl: Option<CreateTaxRegistrationCountryOptionsCl>,
+    /// Options for the registration in CM.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cm: Option<CreateTaxRegistrationCountryOptionsCm>,
     /// Options for the registration in CO.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub co: Option<CreateTaxRegistrationCountryOptionsCo>,
+    /// Options for the registration in CR.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cr: Option<CreateTaxRegistrationCountryOptionsCr>,
+    /// Options for the registration in CV.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cv: Option<CreateTaxRegistrationCountryOptionsCv>,
     /// Options for the registration in CY.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cy: Option<CreateTaxRegistrationCountryOptionsCy>,
@@ -288,12 +339,21 @@ pub struct CreateTaxRegistrationCountryOptions {
     /// Options for the registration in DK.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dk: Option<CreateTaxRegistrationCountryOptionsDk>,
+    /// Options for the registration in EC.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ec: Option<CreateTaxRegistrationCountryOptionsEc>,
     /// Options for the registration in EE.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ee: Option<CreateTaxRegistrationCountryOptionsEe>,
+    /// Options for the registration in EG.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eg: Option<CreateTaxRegistrationCountryOptionsEg>,
     /// Options for the registration in ES.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub es: Option<CreateTaxRegistrationCountryOptionsEs>,
+    /// Options for the registration in ET.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub et: Option<CreateTaxRegistrationCountryOptionsEt>,
     /// Options for the registration in FI.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fi: Option<CreateTaxRegistrationCountryOptionsFi>,
@@ -303,6 +363,12 @@ pub struct CreateTaxRegistrationCountryOptions {
     /// Options for the registration in GB.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gb: Option<CreateTaxRegistrationCountryOptionsGb>,
+    /// Options for the registration in GE.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ge: Option<CreateTaxRegistrationCountryOptionsGe>,
+    /// Options for the registration in GN.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gn: Option<CreateTaxRegistrationCountryOptionsGn>,
     /// Options for the registration in GR.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gr: Option<CreateTaxRegistrationCountryOptionsGr>,
@@ -318,6 +384,10 @@ pub struct CreateTaxRegistrationCountryOptions {
     /// Options for the registration in IE.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ie: Option<CreateTaxRegistrationCountryOptionsIe>,
+    /// Options for the registration in IN.
+    #[serde(rename = "in")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub in_: Option<CreateTaxRegistrationCountryOptionsIn>,
     /// Options for the registration in IS.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is: Option<CreateTaxRegistrationCountryOptionsIs>,
@@ -327,9 +397,24 @@ pub struct CreateTaxRegistrationCountryOptions {
     /// Options for the registration in JP.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub jp: Option<CreateTaxRegistrationCountryOptionsJp>,
+    /// Options for the registration in KE.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ke: Option<CreateTaxRegistrationCountryOptionsKe>,
+    /// Options for the registration in KG.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kg: Option<CreateTaxRegistrationCountryOptionsKg>,
+    /// Options for the registration in KH.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kh: Option<CreateTaxRegistrationCountryOptionsKh>,
     /// Options for the registration in KR.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kr: Option<CreateTaxRegistrationCountryOptionsKr>,
+    /// Options for the registration in KZ.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kz: Option<CreateTaxRegistrationCountryOptionsKz>,
+    /// Options for the registration in LA.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub la: Option<CreateTaxRegistrationCountryOptionsLa>,
     /// Options for the registration in LT.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lt: Option<CreateTaxRegistrationCountryOptionsLt>,
@@ -339,6 +424,21 @@ pub struct CreateTaxRegistrationCountryOptions {
     /// Options for the registration in LV.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lv: Option<CreateTaxRegistrationCountryOptionsLv>,
+    /// Options for the registration in MA.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ma: Option<CreateTaxRegistrationCountryOptionsMa>,
+    /// Options for the registration in MD.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub md: Option<CreateTaxRegistrationCountryOptionsMd>,
+    /// Options for the registration in ME.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub me: Option<CreateTaxRegistrationCountryOptionsMe>,
+    /// Options for the registration in MK.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mk: Option<CreateTaxRegistrationCountryOptionsMk>,
+    /// Options for the registration in MR.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mr: Option<CreateTaxRegistrationCountryOptionsMr>,
     /// Options for the registration in MT.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mt: Option<CreateTaxRegistrationCountryOptionsMt>,
@@ -348,15 +448,30 @@ pub struct CreateTaxRegistrationCountryOptions {
     /// Options for the registration in MY.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub my: Option<CreateTaxRegistrationCountryOptionsMy>,
+    /// Options for the registration in NG.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ng: Option<CreateTaxRegistrationCountryOptionsNg>,
     /// Options for the registration in NL.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nl: Option<CreateTaxRegistrationCountryOptionsNl>,
     /// Options for the registration in NO.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub no: Option<CreateTaxRegistrationCountryOptionsNo>,
+    /// Options for the registration in NP.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub np: Option<CreateTaxRegistrationCountryOptionsNp>,
     /// Options for the registration in NZ.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nz: Option<CreateTaxRegistrationCountryOptionsNz>,
+    /// Options for the registration in OM.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub om: Option<CreateTaxRegistrationCountryOptionsOm>,
+    /// Options for the registration in PE.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pe: Option<CreateTaxRegistrationCountryOptionsPe>,
+    /// Options for the registration in PH.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ph: Option<CreateTaxRegistrationCountryOptionsPh>,
     /// Options for the registration in PL.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pl: Option<CreateTaxRegistrationCountryOptionsPl>,
@@ -366,6 +481,12 @@ pub struct CreateTaxRegistrationCountryOptions {
     /// Options for the registration in RO.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ro: Option<CreateTaxRegistrationCountryOptionsRo>,
+    /// Options for the registration in RS.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rs: Option<CreateTaxRegistrationCountryOptionsRs>,
+    /// Options for the registration in RU.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ru: Option<CreateTaxRegistrationCountryOptionsRu>,
     /// Options for the registration in SA.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sa: Option<CreateTaxRegistrationCountryOptionsSa>,
@@ -381,74 +502,150 @@ pub struct CreateTaxRegistrationCountryOptions {
     /// Options for the registration in SK.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sk: Option<CreateTaxRegistrationCountryOptionsSk>,
+    /// Options for the registration in SN.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sn: Option<CreateTaxRegistrationCountryOptionsSn>,
+    /// Options for the registration in SR.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sr: Option<CreateTaxRegistrationCountryOptionsSr>,
     /// Options for the registration in TH.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub th: Option<CreateTaxRegistrationCountryOptionsTh>,
+    /// Options for the registration in TJ.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tj: Option<CreateTaxRegistrationCountryOptionsTj>,
     /// Options for the registration in TR.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tr: Option<CreateTaxRegistrationCountryOptionsTr>,
+    /// Options for the registration in TZ.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tz: Option<CreateTaxRegistrationCountryOptionsTz>,
+    /// Options for the registration in UG.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ug: Option<CreateTaxRegistrationCountryOptionsUg>,
     /// Options for the registration in US.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us: Option<CreateTaxRegistrationCountryOptionsUs>,
+    /// Options for the registration in UY.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub uy: Option<CreateTaxRegistrationCountryOptionsUy>,
+    /// Options for the registration in UZ.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub uz: Option<CreateTaxRegistrationCountryOptionsUz>,
     /// Options for the registration in VN.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub vn: Option<CreateTaxRegistrationCountryOptionsVn>,
     /// Options for the registration in ZA.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub za: Option<CreateTaxRegistrationCountryOptionsZa>,
+    /// Options for the registration in ZM.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zm: Option<CreateTaxRegistrationCountryOptionsZm>,
+    /// Options for the registration in ZW.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zw: Option<CreateTaxRegistrationCountryOptionsZw>,
 }
 impl CreateTaxRegistrationCountryOptions {
     pub fn new() -> Self {
         Self {
             ae: None,
+            al: None,
+            am: None,
+            ao: None,
             at: None,
             au: None,
+            aw: None,
+            az: None,
+            ba: None,
+            bb: None,
+            bd: None,
             be: None,
+            bf: None,
             bg: None,
+            bh: None,
+            bj: None,
+            bs: None,
+            by: None,
             ca: None,
+            cd: None,
             ch: None,
             cl: None,
+            cm: None,
             co: None,
+            cr: None,
+            cv: None,
             cy: None,
             cz: None,
             de: None,
             dk: None,
+            ec: None,
             ee: None,
+            eg: None,
             es: None,
+            et: None,
             fi: None,
             fr: None,
             gb: None,
+            ge: None,
+            gn: None,
             gr: None,
             hr: None,
             hu: None,
             id: None,
             ie: None,
+            in_: None,
             is: None,
             it: None,
             jp: None,
+            ke: None,
+            kg: None,
+            kh: None,
             kr: None,
+            kz: None,
+            la: None,
             lt: None,
             lu: None,
             lv: None,
+            ma: None,
+            md: None,
+            me: None,
+            mk: None,
+            mr: None,
             mt: None,
             mx: None,
             my: None,
+            ng: None,
             nl: None,
             no: None,
+            np: None,
             nz: None,
+            om: None,
+            pe: None,
+            ph: None,
             pl: None,
             pt: None,
             ro: None,
+            rs: None,
+            ru: None,
             sa: None,
             se: None,
             sg: None,
             si: None,
             sk: None,
+            sn: None,
+            sr: None,
             th: None,
+            tj: None,
             tr: None,
+            tz: None,
+            ug: None,
             us: None,
+            uy: None,
+            uz: None,
             vn: None,
             za: None,
+            zm: None,
+            zw: None,
         }
     }
 }
@@ -519,6 +716,201 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAeType 
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAeType")
+        })
+    }
+}
+/// Options for the registration in AL.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsAl {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsAlType,
+}
+impl CreateTaxRegistrationCountryOptionsAl {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAlType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsAlType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsAlType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsAlType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAlType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsAlType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAlType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAlType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsAlType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAlType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAlType")
+        })
+    }
+}
+/// Options for the registration in AM.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsAm {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsAmType,
+}
+impl CreateTaxRegistrationCountryOptionsAm {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAmType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsAmType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsAmType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsAmType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAmType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsAmType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAmType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAmType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsAmType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAmType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAmType")
+        })
+    }
+}
+/// Options for the registration in AO.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsAo {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsAoType,
+}
+impl CreateTaxRegistrationCountryOptionsAo {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAoType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsAoType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsAoType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsAoType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAoType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsAoType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAoType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAoType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsAoType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAoType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAoType")
         })
     }
 }
@@ -735,6 +1127,331 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAuType 
         })
     }
 }
+/// Options for the registration in AW.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsAw {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsAwType,
+}
+impl CreateTaxRegistrationCountryOptionsAw {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAwType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsAwType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsAwType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsAwType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAwType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsAwType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAwType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAwType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsAwType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAwType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAwType")
+        })
+    }
+}
+/// Options for the registration in AZ.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsAz {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsAzType,
+}
+impl CreateTaxRegistrationCountryOptionsAz {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAzType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsAzType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsAzType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsAzType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAzType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsAzType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsAzType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAzType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAzType")
+        })
+    }
+}
+/// Options for the registration in BA.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBa {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsBaType,
+}
+impl CreateTaxRegistrationCountryOptionsBa {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBaType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsBaType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsBaType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsBaType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBaType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBaType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBaType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBaType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBaType")
+        })
+    }
+}
+/// Options for the registration in BB.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBb {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsBbType,
+}
+impl CreateTaxRegistrationCountryOptionsBb {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBbType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsBbType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsBbType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsBbType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBbType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBbType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBbType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBbType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBbType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBbType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBbType")
+        })
+    }
+}
+/// Options for the registration in BD.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBd {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsBdType,
+}
+impl CreateTaxRegistrationCountryOptionsBd {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBdType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsBdType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsBdType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsBdType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBdType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBdType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBdType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBdType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBdType")
+        })
+    }
+}
 /// Options for the registration in BE.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBe {
@@ -880,6 +1597,71 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBeType 
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBeType")
+        })
+    }
+}
+/// Options for the registration in BF.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBf {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsBfType,
+}
+impl CreateTaxRegistrationCountryOptionsBf {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBfType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsBfType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsBfType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsBfType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBfType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBfType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBfType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBfType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBfType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBfType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBfType")
         })
     }
 }
@@ -1031,6 +1813,266 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBgType 
         })
     }
 }
+/// Options for the registration in BH.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBh {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsBhType,
+}
+impl CreateTaxRegistrationCountryOptionsBh {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBhType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsBhType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsBhType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsBhType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBhType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBhType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBhType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBhType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBhType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBhType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBhType")
+        })
+    }
+}
+/// Options for the registration in BJ.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBj {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsBjType,
+}
+impl CreateTaxRegistrationCountryOptionsBj {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBjType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsBjType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsBjType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsBjType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBjType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBjType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBjType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBjType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBjType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBjType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBjType")
+        })
+    }
+}
+/// Options for the registration in BS.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBs {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsBsType,
+}
+impl CreateTaxRegistrationCountryOptionsBs {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBsType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsBsType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsBsType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsBsType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBsType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBsType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBsType")
+        })
+    }
+}
+/// Options for the registration in BY.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBy {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsByType,
+}
+impl CreateTaxRegistrationCountryOptionsBy {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsByType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsByType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsByType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsByType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsByType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsByType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsByType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsByType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsByType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsByType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsByType")
+        })
+    }
+}
 /// Options for the registration in CA.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCa {
@@ -1113,6 +2155,71 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCaType 
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCaType")
+        })
+    }
+}
+/// Options for the registration in CD.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsCd {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsCdType,
+}
+impl CreateTaxRegistrationCountryOptionsCd {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCdType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsCdType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsCdType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsCdType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCdType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsCdType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsCdType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCdType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCdType")
         })
     }
 }
@@ -1246,6 +2353,71 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsClType 
         })
     }
 }
+/// Options for the registration in CM.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsCm {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsCmType,
+}
+impl CreateTaxRegistrationCountryOptionsCm {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCmType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsCmType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsCmType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsCmType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCmType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsCmType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCmType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCmType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsCmType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCmType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCmType")
+        })
+    }
+}
 /// Options for the registration in CO.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCo {
@@ -1308,6 +2480,136 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCoType 
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCoType")
+        })
+    }
+}
+/// Options for the registration in CR.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsCr {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsCrType,
+}
+impl CreateTaxRegistrationCountryOptionsCr {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCrType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsCrType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsCrType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsCrType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCrType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsCrType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsCrType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCrType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCrType")
+        })
+    }
+}
+/// Options for the registration in CV.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsCv {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsCvType,
+}
+impl CreateTaxRegistrationCountryOptionsCv {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCvType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsCvType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsCvType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsCvType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCvType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsCvType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCvType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCvType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsCvType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCvType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCvType")
         })
     }
 }
@@ -1903,6 +3205,71 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDkType 
         })
     }
 }
+/// Options for the registration in EC.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsEc {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsEcType,
+}
+impl CreateTaxRegistrationCountryOptionsEc {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsEcType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsEcType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsEcType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsEcType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEcType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsEcType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEcType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEcType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsEcType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEcType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEcType")
+        })
+    }
+}
 /// Options for the registration in EE.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEe {
@@ -2051,6 +3418,71 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEeType 
         })
     }
 }
+/// Options for the registration in EG.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsEg {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsEgType,
+}
+impl CreateTaxRegistrationCountryOptionsEg {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsEgType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsEgType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsEgType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsEgType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEgType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsEgType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsEgType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEgType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEgType")
+        })
+    }
+}
 /// Options for the registration in ES.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEs {
@@ -2196,6 +3628,71 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEsType 
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEsType")
+        })
+    }
+}
+/// Options for the registration in ET.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsEt {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsEtType,
+}
+impl CreateTaxRegistrationCountryOptionsEt {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsEtType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsEtType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsEtType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsEtType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEtType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsEtType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsEtType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEtType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEtType")
         })
     }
 }
@@ -2557,6 +4054,136 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGbType 
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGbType")
+        })
+    }
+}
+/// Options for the registration in GE.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsGe {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsGeType,
+}
+impl CreateTaxRegistrationCountryOptionsGe {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsGeType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsGeType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsGeType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsGeType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGeType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsGeType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsGeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsGeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGeType")
+        })
+    }
+}
+/// Options for the registration in GN.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsGn {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsGnType,
+}
+impl CreateTaxRegistrationCountryOptionsGn {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsGnType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsGnType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsGnType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsGnType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGnType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsGnType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsGnType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGnType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsGnType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGnType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGnType")
         })
     }
 }
@@ -3217,6 +4844,71 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIeType 
         })
     }
 }
+/// Options for the registration in IN.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsIn {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsInType,
+}
+impl CreateTaxRegistrationCountryOptionsIn {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsInType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsInType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsInType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsInType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsInType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsInType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsInType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsInType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsInType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsInType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsInType")
+        })
+    }
+}
 /// Options for the registration in IS.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIs {
@@ -3495,6 +5187,201 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsJpType 
         })
     }
 }
+/// Options for the registration in KE.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsKe {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsKeType,
+}
+impl CreateTaxRegistrationCountryOptionsKe {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsKeType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsKeType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsKeType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsKeType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKeType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsKeType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsKeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsKeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsKeType")
+        })
+    }
+}
+/// Options for the registration in KG.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsKg {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsKgType,
+}
+impl CreateTaxRegistrationCountryOptionsKg {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsKgType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsKgType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsKgType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsKgType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKgType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsKgType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsKgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsKgType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKgType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsKgType")
+        })
+    }
+}
+/// Options for the registration in KH.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsKh {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsKhType,
+}
+impl CreateTaxRegistrationCountryOptionsKh {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsKhType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsKhType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsKhType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsKhType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKhType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsKhType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsKhType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKhType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsKhType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKhType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsKhType")
+        })
+    }
+}
 /// Options for the registration in KR.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsKr {
@@ -3557,6 +5444,136 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKrType 
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsKrType")
+        })
+    }
+}
+/// Options for the registration in KZ.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsKz {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsKzType,
+}
+impl CreateTaxRegistrationCountryOptionsKz {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsKzType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsKzType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsKzType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsKzType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKzType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsKzType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsKzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsKzType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKzType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsKzType")
+        })
+    }
+}
+/// Options for the registration in LA.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsLa {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsLaType,
+}
+impl CreateTaxRegistrationCountryOptionsLa {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsLaType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsLaType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsLaType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsLaType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLaType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsLaType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsLaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsLaType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLaType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLaType")
         })
     }
 }
@@ -4004,6 +6021,331 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLvType 
         })
     }
 }
+/// Options for the registration in MA.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsMa {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsMaType,
+}
+impl CreateTaxRegistrationCountryOptionsMa {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMaType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsMaType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsMaType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsMaType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMaType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsMaType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsMaType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMaType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMaType")
+        })
+    }
+}
+/// Options for the registration in MD.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsMd {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsMdType,
+}
+impl CreateTaxRegistrationCountryOptionsMd {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMdType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsMdType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsMdType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsMdType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMdType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsMdType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsMdType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMdType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMdType")
+        })
+    }
+}
+/// Options for the registration in ME.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsMe {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsMeType,
+}
+impl CreateTaxRegistrationCountryOptionsMe {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMeType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsMeType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsMeType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsMeType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMeType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsMeType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsMeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMeType")
+        })
+    }
+}
+/// Options for the registration in MK.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsMk {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsMkType,
+}
+impl CreateTaxRegistrationCountryOptionsMk {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMkType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsMkType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsMkType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsMkType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMkType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsMkType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMkType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMkType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsMkType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMkType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMkType")
+        })
+    }
+}
+/// Options for the registration in MR.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsMr {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsMrType,
+}
+impl CreateTaxRegistrationCountryOptionsMr {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMrType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsMrType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsMrType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsMrType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMrType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsMrType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsMrType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMrType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMrType")
+        })
+    }
+}
 /// Options for the registration in MT.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMt {
@@ -4282,6 +6624,71 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMyType 
         })
     }
 }
+/// Options for the registration in NG.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsNg {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsNgType,
+}
+impl CreateTaxRegistrationCountryOptionsNg {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsNgType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsNgType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsNgType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsNgType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNgType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsNgType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsNgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsNgType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNgType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNgType")
+        })
+    }
+}
 /// Options for the registration in NL.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNl {
@@ -4495,6 +6902,71 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNoType 
         })
     }
 }
+/// Options for the registration in NP.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsNp {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsNpType,
+}
+impl CreateTaxRegistrationCountryOptionsNp {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsNpType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsNpType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsNpType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsNpType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNpType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsNpType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsNpType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNpType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsNpType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNpType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNpType")
+        })
+    }
+}
 /// Options for the registration in NZ.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNz {
@@ -4557,6 +7029,201 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNzType 
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNzType")
+        })
+    }
+}
+/// Options for the registration in OM.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsOm {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsOmType,
+}
+impl CreateTaxRegistrationCountryOptionsOm {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsOmType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsOmType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsOmType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsOmType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsOmType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsOmType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsOmType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsOmType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsOmType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsOmType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsOmType")
+        })
+    }
+}
+/// Options for the registration in PE.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsPe {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsPeType,
+}
+impl CreateTaxRegistrationCountryOptionsPe {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsPeType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsPeType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsPeType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsPeType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPeType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsPeType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsPeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsPeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsPeType")
+        })
+    }
+}
+/// Options for the registration in PH.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsPh {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsPhType,
+}
+impl CreateTaxRegistrationCountryOptionsPh {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsPhType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsPhType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsPhType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsPhType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPhType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsPhType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsPhType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPhType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsPhType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPhType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsPhType")
         })
     }
 }
@@ -5001,6 +7668,136 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRoType 
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsRoType")
+        })
+    }
+}
+/// Options for the registration in RS.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsRs {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsRsType,
+}
+impl CreateTaxRegistrationCountryOptionsRs {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsRsType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsRsType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsRsType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsRsType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRsType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsRsType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsRsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsRsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsRsType")
+        })
+    }
+}
+/// Options for the registration in RU.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsRu {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsRuType,
+}
+impl CreateTaxRegistrationCountryOptionsRu {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsRuType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsRuType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsRuType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsRuType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRuType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsRuType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsRuType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRuType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsRuType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRuType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsRuType")
         })
     }
 }
@@ -5578,6 +8375,136 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSkType 
         })
     }
 }
+/// Options for the registration in SN.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsSn {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsSnType,
+}
+impl CreateTaxRegistrationCountryOptionsSn {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSnType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsSnType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsSnType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsSnType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSnType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsSnType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSnType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSnType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsSnType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSnType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSnType")
+        })
+    }
+}
+/// Options for the registration in SR.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsSr {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsSrType,
+}
+impl CreateTaxRegistrationCountryOptionsSr {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSrType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsSrType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsSrType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsSrType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSrType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsSrType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsSrType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSrType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSrType")
+        })
+    }
+}
 /// Options for the registration in TH.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTh {
@@ -5640,6 +8567,71 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsThType 
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsThType")
+        })
+    }
+}
+/// Options for the registration in TJ.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsTj {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsTjType,
+}
+impl CreateTaxRegistrationCountryOptionsTj {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsTjType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsTjType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsTjType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsTjType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTjType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsTjType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsTjType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTjType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsTjType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTjType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsTjType")
         })
     }
 }
@@ -5708,6 +8700,136 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTrType 
         })
     }
 }
+/// Options for the registration in TZ.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsTz {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsTzType,
+}
+impl CreateTaxRegistrationCountryOptionsTz {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsTzType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsTzType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsTzType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsTzType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTzType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsTzType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsTzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsTzType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTzType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsTzType")
+        })
+    }
+}
+/// Options for the registration in UG.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsUg {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsUgType,
+}
+impl CreateTaxRegistrationCountryOptionsUg {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsUgType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsUgType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsUgType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsUgType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUgType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsUgType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsUgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsUgType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUgType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsUgType")
+        })
+    }
+}
 /// Options for the registration in US.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUs {
@@ -5719,6 +8841,9 @@ pub struct CreateTaxRegistrationCountryOptionsUs {
     pub local_lease_tax: Option<CreateTaxRegistrationCountryOptionsUsLocalLeaseTax>,
     /// Two-letter US state code ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     pub state: String,
+    /// Options for the state sales tax registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state_sales_tax: Option<CreateTaxRegistrationCountryOptionsUsStateSalesTax>,
     /// Type of registration to be created in the US.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsUsType,
@@ -5732,6 +8857,7 @@ impl CreateTaxRegistrationCountryOptionsUs {
             local_amusement_tax: None,
             local_lease_tax: None,
             state: state.into(),
+            state_sales_tax: None,
             type_: type_.into(),
         }
     }
@@ -5740,7 +8866,7 @@ impl CreateTaxRegistrationCountryOptionsUs {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUsLocalAmusementTax {
     /// A [FIPS code](https://www.census.gov/library/reference/code-lists/ansi.html) representing the local jurisdiction.
-    /// Supported FIPS codes are: `14000` (Chicago), `06613` (Bloomington), `21696` (East Dundee), `24582` (Evanston), and `68081` (Schiller Park).
+    /// Supported FIPS codes are: `14000` (Chicago), `06613` (Bloomington), `21696` (East Dundee), `24582` (Evanston), `45421` (Lynwood), `64343` (River Grove), and `68081` (Schiller Park).
     pub jurisdiction: String,
 }
 impl CreateTaxRegistrationCountryOptionsUsLocalAmusementTax {
@@ -5760,12 +8886,107 @@ impl CreateTaxRegistrationCountryOptionsUsLocalLeaseTax {
         Self { jurisdiction: jurisdiction.into() }
     }
 }
+/// Options for the state sales tax registration.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsUsStateSalesTax {
+    /// Elections for the state sales tax registration.
+    pub elections: Vec<CreateTaxRegistrationCountryOptionsUsStateSalesTaxElections>,
+}
+impl CreateTaxRegistrationCountryOptionsUsStateSalesTax {
+    pub fn new(
+        elections: impl Into<Vec<CreateTaxRegistrationCountryOptionsUsStateSalesTaxElections>>,
+    ) -> Self {
+        Self { elections: elections.into() }
+    }
+}
+/// Elections for the state sales tax registration.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsUsStateSalesTaxElections {
+    /// A [FIPS code](https://www.census.gov/library/reference/code-lists/ansi.html) representing the local jurisdiction.
+    /// Supported FIPS codes are: `003` (Allegheny County) and `60000` (Philadelphia City).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jurisdiction: Option<String>,
+    /// The type of the election for the state sales tax registration.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType,
+}
+impl CreateTaxRegistrationCountryOptionsUsStateSalesTaxElections {
+    pub fn new(
+        type_: impl Into<CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType>,
+    ) -> Self {
+        Self { jurisdiction: None, type_: type_.into() }
+    }
+}
+/// The type of the election for the state sales tax registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType {
+    LocalUseTax,
+    SimplifiedSellersUseTax,
+    SingleLocalUseTax,
+}
+impl CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType::*;
+        match self {
+            LocalUseTax => "local_use_tax",
+            SimplifiedSellersUseTax => "simplified_sellers_use_tax",
+            SingleLocalUseTax => "single_local_use_tax",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType::*;
+        match s {
+            "local_use_tax" => Ok(LocalUseTax),
+            "simplified_sellers_use_tax" => Ok(SimplifiedSellersUseTax),
+            "single_local_use_tax" => Ok(SingleLocalUseTax),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType",
+            )
+        })
+    }
+}
 /// Type of registration to be created in the US.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsUsType {
     LocalAmusementTax,
     LocalLeaseTax,
     StateCommunicationsTax,
+    StateRetailDeliveryFee,
     StateSalesTax,
 }
 impl CreateTaxRegistrationCountryOptionsUsType {
@@ -5775,6 +8996,7 @@ impl CreateTaxRegistrationCountryOptionsUsType {
             LocalAmusementTax => "local_amusement_tax",
             LocalLeaseTax => "local_lease_tax",
             StateCommunicationsTax => "state_communications_tax",
+            StateRetailDeliveryFee => "state_retail_delivery_fee",
             StateSalesTax => "state_sales_tax",
         }
     }
@@ -5788,6 +9010,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUsType {
             "local_amusement_tax" => Ok(LocalAmusementTax),
             "local_lease_tax" => Ok(LocalLeaseTax),
             "state_communications_tax" => Ok(StateCommunicationsTax),
+            "state_retail_delivery_fee" => Ok(StateRetailDeliveryFee),
             "state_sales_tax" => Ok(StateSalesTax),
             _ => Err(stripe_types::StripeParseError),
         }
@@ -5819,6 +9042,136 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUsType 
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsUsType")
+        })
+    }
+}
+/// Options for the registration in UY.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsUy {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsUyType,
+}
+impl CreateTaxRegistrationCountryOptionsUy {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsUyType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsUyType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsUyType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsUyType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUyType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsUyType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsUyType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUyType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsUyType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUyType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsUyType")
+        })
+    }
+}
+/// Options for the registration in UZ.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsUz {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsUzType,
+}
+impl CreateTaxRegistrationCountryOptionsUz {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsUzType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsUzType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsUzType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsUzType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUzType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsUzType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsUzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsUzType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUzType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsUzType")
         })
     }
 }
@@ -5949,6 +9302,136 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZaType 
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsZaType")
+        })
+    }
+}
+/// Options for the registration in ZM.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsZm {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsZmType,
+}
+impl CreateTaxRegistrationCountryOptionsZm {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsZmType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsZmType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsZmType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsZmType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZmType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsZmType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsZmType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZmType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsZmType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZmType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsZmType")
+        })
+    }
+}
+/// Options for the registration in ZW.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsZw {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsZwType,
+}
+impl CreateTaxRegistrationCountryOptionsZw {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsZwType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsZwType {
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsZwType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsZwType::*;
+        match self {
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZwType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsZwType::*;
+        match s {
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsZwType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZwType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsZwType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZwType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsZwType")
         })
     }
 }

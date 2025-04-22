@@ -46,6 +46,9 @@ pub struct Invoice {
     /// If there is a positive `starting_balance` for the invoice (the customer owes money), the `amount_due` will also take that into account.
     /// The charge that gets generated for the invoice will be for the amount specified in `amount_due`.
     pub amount_due: i64,
+    /// Amount that was overpaid on the invoice.
+    /// The amount overpaid is credited to the customer's credit balance.
+    pub amount_overpaid: i64,
     /// The amount, in cents (or local equivalent), that was paid.
     pub amount_paid: i64,
     /// The difference between amount_due and amount_paid, in cents (or local equivalent).
@@ -54,11 +57,11 @@ pub struct Invoice {
     pub amount_shipping: i64,
     /// ID of the Connect Application that created the invoice.
     pub application: Option<stripe_types::Expandable<stripe_shared::Application>>,
-    /// The fee in cents (or local equivalent) that will be applied to the invoice and transferred to the application owner's Stripe account when the invoice is paid.
-    pub application_fee_amount: Option<i64>,
     /// Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
     /// Any payment attempt counts as the first attempt, and subsequently only automatic retries increment the attempt count.
     /// In other words, manual payment attempts after the first attempt do not affect the retry schedule.
+    /// If a failure is returned with a non-retryable return code, the invoice can no longer be retried unless a new payment method is obtained.
+    /// Retries will continue to be scheduled, and attempt_count will continue to increment, but retries will only be executed if a new payment method is obtained.
     pub attempt_count: u64,
     /// Whether an attempt has been made to pay the invoice.
     /// An invoice is not attempted until 1 hour after the `invoice.created` webhook, for example, so you might not want to display that invoice as unpaid to your users.
@@ -67,6 +70,10 @@ pub struct Invoice {
     /// If `false`, the invoice's state doesn't automatically advance without an explicit action.
     pub auto_advance: Option<bool>,
     pub automatic_tax: stripe_shared::AutomaticTax,
+    /// The time when this invoice is currently scheduled to be automatically finalized.
+    /// The field will be `null` if the invoice is not scheduled to finalize in the future.
+    /// If the invoice is not in the draft state, this field will always be `null` - see `finalized_at` for the time when an already-finalized invoice was finalized.
+    pub automatically_finalizes_at: Option<stripe_types::Timestamp>,
     /// Indicates the reason why the invoice was created.
     ///
     /// * `manual`: Unrelated to a subscription, for example, created via the invoice editor.
@@ -78,12 +85,13 @@ pub struct Invoice {
     /// * `subscription_update`: A subscription was updated.
     /// * `upcoming`: Reserved for simulated invoices, per the upcoming invoice endpoint.
     pub billing_reason: Option<InvoiceBillingReason>,
-    /// ID of the latest charge generated for this invoice, if any.
-    pub charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     /// Either `charge_automatically`, or `send_invoice`.
     /// When charging automatically, Stripe will attempt to pay this invoice using the default source attached to the customer.
     /// When sending an invoice, Stripe will email this invoice to the customer with payment instructions.
     pub collection_method: stripe_shared::InvoiceCollectionMethod,
+    /// The confirmation secret associated with this invoice.
+    /// Currently, this contains the client_secret of the PaymentIntent that Stripe creates during invoice finalization.
+    pub confirmation_secret: Option<stripe_shared::InvoicesResourceConfirmationSecret>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -135,9 +143,6 @@ pub struct Invoice {
     /// Often useful for displaying to users.
     /// Referenced as 'memo' in the Dashboard.
     pub description: Option<String>,
-    /// Describes the current discount applied to this invoice, if there is one.
-    /// Not populated if there are multiple discounts.
-    pub discount: Option<stripe_shared::Discount>,
     /// The discounts applied to the invoice.
     /// Line item discounts are applied before invoice discounts.
     /// Use `expand[]=discounts` to expand each discount.
@@ -192,16 +197,11 @@ pub struct Invoice {
     /// If set, the invoice will be presented with the branding and support information of the specified account.
     /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
-    /// Whether payment was successfully collected for this invoice.
-    /// An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance.
-    pub paid: bool,
-    /// Returns true if the invoice was manually marked paid, returns false if the invoice hasn't been paid yet or was paid on Stripe.
-    pub paid_out_of_band: bool,
-    /// The PaymentIntent associated with this invoice.
-    /// The PaymentIntent is generated when the invoice is finalized, and can then be used to pay the invoice.
-    /// Note that voiding an invoice will cancel the PaymentIntent.
-    pub payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
+    /// The parent that generated this invoice
+    pub parent: Option<stripe_shared::BillingBillResourceInvoicingParentsInvoiceParent>,
     pub payment_settings: stripe_shared::InvoicesPaymentSettings,
+    /// Payments for this invoice
+    pub payments: Option<stripe_types::List<stripe_shared::InvoicePayment>>,
     /// End of the usage period during which invoice items were added to this invoice.
     /// This looks back one period for a subscription invoice.
     /// Use the [line item period](/api/invoices/line_item#invoice_line_item_object-period) to get the service period for each price.
@@ -214,8 +214,6 @@ pub struct Invoice {
     pub post_payment_credit_notes_amount: i64,
     /// Total amount of all pre-payment credit notes issued for this invoice.
     pub pre_payment_credit_notes_amount: i64,
-    /// The quote this invoice was generated from.
-    pub quote: Option<stripe_types::Expandable<stripe_shared::Quote>>,
     /// This is the transaction number that appears on email receipts sent for this invoice.
     pub receipt_number: Option<String>,
     /// The rendering-related settings that control how the invoice is displayed on customer-facing surfaces such as PDF and Hosted Invoice Page.
@@ -235,20 +233,13 @@ pub struct Invoice {
     /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
     pub status: Option<stripe_shared::InvoiceStatus>,
     pub status_transitions: stripe_shared::InvoicesResourceStatusTransitions,
-    /// The subscription that this invoice was prepared for, if any.
     pub subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
-    /// Details about the subscription that created this invoice.
-    pub subscription_details: Option<stripe_shared::SubscriptionDetailsData>,
-    /// Only set for upcoming invoices that preview prorations. The time used to calculate prorations.
-    pub subscription_proration_date: Option<stripe_types::Timestamp>,
     /// Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or exclusive tax is applied.
     /// Item discounts are already incorporated.
     pub subtotal: i64,
     /// The integer amount in cents (or local equivalent) representing the subtotal of the invoice before any invoice level discount or tax is applied.
     /// Item discounts are already incorporated.
     pub subtotal_excluding_tax: Option<i64>,
-    /// The amount of tax on this invoice. This is the sum of all the tax amounts on this invoice.
-    pub tax: Option<i64>,
     /// ID of the test clock this invoice belongs to.
     pub test_clock: Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>,
     pub threshold_reason: Option<stripe_shared::InvoiceThresholdReason>,
@@ -258,10 +249,11 @@ pub struct Invoice {
     pub total_discount_amounts: Option<Vec<stripe_shared::DiscountsResourceDiscountAmount>>,
     /// The integer amount in cents (or local equivalent) representing the total amount of the invoice including all discounts but excluding all tax.
     pub total_excluding_tax: Option<i64>,
-    /// The aggregate amounts calculated per tax rate for all line items.
-    pub total_tax_amounts: Vec<stripe_shared::InvoiceTaxAmount>,
-    /// The account (if any) the payment will be attributed to for tax reporting, and where funds from the payment will be transferred to for the invoice.
-    pub transfer_data: Option<stripe_shared::InvoiceTransferData>,
+    /// Contains pretax credit amounts (ex: discount, credit grants, etc) that apply to this invoice.
+    /// This is a combined list of total_pretax_credit_amounts across all invoice line items.
+    pub total_pretax_credit_amounts: Option<Vec<stripe_shared::InvoicesResourcePretaxCreditAmount>>,
+    /// The aggregate tax information of all line items.
+    pub total_taxes: Option<Vec<stripe_shared::BillingBillResourceInvoicingTaxesTax>>,
     /// Invoices are automatically paid or sent 1 hour after webhooks are delivered, or until all webhook delivery attempts have [been exhausted](https://stripe.com/docs/billing/webhooks#understand).
     /// This field tracks the time when webhooks for this invoice were successfully delivered.
     /// If the invoice had no webhooks to deliver, this will be set while the invoice is being created.
@@ -273,18 +265,19 @@ pub struct InvoiceBuilder {
     account_name: Option<Option<String>>,
     account_tax_ids: Option<Option<Vec<stripe_types::Expandable<stripe_shared::TaxId>>>>,
     amount_due: Option<i64>,
+    amount_overpaid: Option<i64>,
     amount_paid: Option<i64>,
     amount_remaining: Option<i64>,
     amount_shipping: Option<i64>,
     application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
-    application_fee_amount: Option<Option<i64>>,
     attempt_count: Option<u64>,
     attempted: Option<bool>,
     auto_advance: Option<Option<bool>>,
     automatic_tax: Option<stripe_shared::AutomaticTax>,
+    automatically_finalizes_at: Option<Option<stripe_types::Timestamp>>,
     billing_reason: Option<Option<InvoiceBillingReason>>,
-    charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
     collection_method: Option<stripe_shared::InvoiceCollectionMethod>,
+    confirmation_secret: Option<Option<stripe_shared::InvoicesResourceConfirmationSecret>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
     custom_fields: Option<Option<Vec<stripe_shared::InvoiceSettingCustomField>>>,
@@ -300,7 +293,6 @@ pub struct InvoiceBuilder {
     default_source: Option<Option<stripe_types::Expandable<stripe_shared::PaymentSource>>>,
     default_tax_rates: Option<Vec<stripe_shared::TaxRate>>,
     description: Option<Option<String>>,
-    discount: Option<Option<stripe_shared::Discount>>,
     discounts: Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>,
     due_date: Option<Option<stripe_types::Timestamp>>,
     effective_at: Option<Option<stripe_types::Timestamp>>,
@@ -319,15 +311,13 @@ pub struct InvoiceBuilder {
     next_payment_attempt: Option<Option<stripe_types::Timestamp>>,
     number: Option<Option<String>>,
     on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
-    paid: Option<bool>,
-    paid_out_of_band: Option<bool>,
-    payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
+    parent: Option<Option<stripe_shared::BillingBillResourceInvoicingParentsInvoiceParent>>,
     payment_settings: Option<stripe_shared::InvoicesPaymentSettings>,
+    payments: Option<Option<stripe_types::List<stripe_shared::InvoicePayment>>>,
     period_end: Option<stripe_types::Timestamp>,
     period_start: Option<stripe_types::Timestamp>,
     post_payment_credit_notes_amount: Option<i64>,
     pre_payment_credit_notes_amount: Option<i64>,
-    quote: Option<Option<stripe_types::Expandable<stripe_shared::Quote>>>,
     receipt_number: Option<Option<String>>,
     rendering: Option<Option<stripe_shared::InvoicesResourceInvoiceRendering>>,
     shipping_cost: Option<Option<stripe_shared::InvoicesResourceShippingCost>>,
@@ -337,18 +327,16 @@ pub struct InvoiceBuilder {
     status: Option<Option<stripe_shared::InvoiceStatus>>,
     status_transitions: Option<stripe_shared::InvoicesResourceStatusTransitions>,
     subscription: Option<Option<stripe_types::Expandable<stripe_shared::Subscription>>>,
-    subscription_details: Option<Option<stripe_shared::SubscriptionDetailsData>>,
-    subscription_proration_date: Option<Option<stripe_types::Timestamp>>,
     subtotal: Option<i64>,
     subtotal_excluding_tax: Option<Option<i64>>,
-    tax: Option<Option<i64>>,
     test_clock: Option<Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>>,
     threshold_reason: Option<Option<stripe_shared::InvoiceThresholdReason>>,
     total: Option<i64>,
     total_discount_amounts: Option<Option<Vec<stripe_shared::DiscountsResourceDiscountAmount>>>,
     total_excluding_tax: Option<Option<i64>>,
-    total_tax_amounts: Option<Vec<stripe_shared::InvoiceTaxAmount>>,
-    transfer_data: Option<Option<stripe_shared::InvoiceTransferData>>,
+    total_pretax_credit_amounts:
+        Option<Option<Vec<stripe_shared::InvoicesResourcePretaxCreditAmount>>>,
+    total_taxes: Option<Option<Vec<stripe_shared::BillingBillResourceInvoicingTaxesTax>>>,
     webhooks_delivered_at: Option<Option<stripe_types::Timestamp>>,
 }
 
@@ -393,18 +381,21 @@ const _: () = {
                 "account_name" => Deserialize::begin(&mut self.account_name),
                 "account_tax_ids" => Deserialize::begin(&mut self.account_tax_ids),
                 "amount_due" => Deserialize::begin(&mut self.amount_due),
+                "amount_overpaid" => Deserialize::begin(&mut self.amount_overpaid),
                 "amount_paid" => Deserialize::begin(&mut self.amount_paid),
                 "amount_remaining" => Deserialize::begin(&mut self.amount_remaining),
                 "amount_shipping" => Deserialize::begin(&mut self.amount_shipping),
                 "application" => Deserialize::begin(&mut self.application),
-                "application_fee_amount" => Deserialize::begin(&mut self.application_fee_amount),
                 "attempt_count" => Deserialize::begin(&mut self.attempt_count),
                 "attempted" => Deserialize::begin(&mut self.attempted),
                 "auto_advance" => Deserialize::begin(&mut self.auto_advance),
                 "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
+                "automatically_finalizes_at" => {
+                    Deserialize::begin(&mut self.automatically_finalizes_at)
+                }
                 "billing_reason" => Deserialize::begin(&mut self.billing_reason),
-                "charge" => Deserialize::begin(&mut self.charge),
                 "collection_method" => Deserialize::begin(&mut self.collection_method),
+                "confirmation_secret" => Deserialize::begin(&mut self.confirmation_secret),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "custom_fields" => Deserialize::begin(&mut self.custom_fields),
@@ -420,7 +411,6 @@ const _: () = {
                 "default_source" => Deserialize::begin(&mut self.default_source),
                 "default_tax_rates" => Deserialize::begin(&mut self.default_tax_rates),
                 "description" => Deserialize::begin(&mut self.description),
-                "discount" => Deserialize::begin(&mut self.discount),
                 "discounts" => Deserialize::begin(&mut self.discounts),
                 "due_date" => Deserialize::begin(&mut self.due_date),
                 "effective_at" => Deserialize::begin(&mut self.effective_at),
@@ -439,10 +429,9 @@ const _: () = {
                 "next_payment_attempt" => Deserialize::begin(&mut self.next_payment_attempt),
                 "number" => Deserialize::begin(&mut self.number),
                 "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
-                "paid" => Deserialize::begin(&mut self.paid),
-                "paid_out_of_band" => Deserialize::begin(&mut self.paid_out_of_band),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
+                "parent" => Deserialize::begin(&mut self.parent),
                 "payment_settings" => Deserialize::begin(&mut self.payment_settings),
+                "payments" => Deserialize::begin(&mut self.payments),
                 "period_end" => Deserialize::begin(&mut self.period_end),
                 "period_start" => Deserialize::begin(&mut self.period_start),
                 "post_payment_credit_notes_amount" => {
@@ -451,7 +440,6 @@ const _: () = {
                 "pre_payment_credit_notes_amount" => {
                     Deserialize::begin(&mut self.pre_payment_credit_notes_amount)
                 }
-                "quote" => Deserialize::begin(&mut self.quote),
                 "receipt_number" => Deserialize::begin(&mut self.receipt_number),
                 "rendering" => Deserialize::begin(&mut self.rendering),
                 "shipping_cost" => Deserialize::begin(&mut self.shipping_cost),
@@ -461,20 +449,17 @@ const _: () = {
                 "status" => Deserialize::begin(&mut self.status),
                 "status_transitions" => Deserialize::begin(&mut self.status_transitions),
                 "subscription" => Deserialize::begin(&mut self.subscription),
-                "subscription_details" => Deserialize::begin(&mut self.subscription_details),
-                "subscription_proration_date" => {
-                    Deserialize::begin(&mut self.subscription_proration_date)
-                }
                 "subtotal" => Deserialize::begin(&mut self.subtotal),
                 "subtotal_excluding_tax" => Deserialize::begin(&mut self.subtotal_excluding_tax),
-                "tax" => Deserialize::begin(&mut self.tax),
                 "test_clock" => Deserialize::begin(&mut self.test_clock),
                 "threshold_reason" => Deserialize::begin(&mut self.threshold_reason),
                 "total" => Deserialize::begin(&mut self.total),
                 "total_discount_amounts" => Deserialize::begin(&mut self.total_discount_amounts),
                 "total_excluding_tax" => Deserialize::begin(&mut self.total_excluding_tax),
-                "total_tax_amounts" => Deserialize::begin(&mut self.total_tax_amounts),
-                "transfer_data" => Deserialize::begin(&mut self.transfer_data),
+                "total_pretax_credit_amounts" => {
+                    Deserialize::begin(&mut self.total_pretax_credit_amounts)
+                }
+                "total_taxes" => Deserialize::begin(&mut self.total_taxes),
                 "webhooks_delivered_at" => Deserialize::begin(&mut self.webhooks_delivered_at),
 
                 _ => <dyn Visitor>::ignore(),
@@ -487,18 +472,19 @@ const _: () = {
                 account_name: Deserialize::default(),
                 account_tax_ids: Deserialize::default(),
                 amount_due: Deserialize::default(),
+                amount_overpaid: Deserialize::default(),
                 amount_paid: Deserialize::default(),
                 amount_remaining: Deserialize::default(),
                 amount_shipping: Deserialize::default(),
                 application: Deserialize::default(),
-                application_fee_amount: Deserialize::default(),
                 attempt_count: Deserialize::default(),
                 attempted: Deserialize::default(),
                 auto_advance: Deserialize::default(),
                 automatic_tax: Deserialize::default(),
+                automatically_finalizes_at: Deserialize::default(),
                 billing_reason: Deserialize::default(),
-                charge: Deserialize::default(),
                 collection_method: Deserialize::default(),
+                confirmation_secret: Deserialize::default(),
                 created: Deserialize::default(),
                 currency: Deserialize::default(),
                 custom_fields: Deserialize::default(),
@@ -514,7 +500,6 @@ const _: () = {
                 default_source: Deserialize::default(),
                 default_tax_rates: Deserialize::default(),
                 description: Deserialize::default(),
-                discount: Deserialize::default(),
                 discounts: Deserialize::default(),
                 due_date: Deserialize::default(),
                 effective_at: Deserialize::default(),
@@ -533,15 +518,13 @@ const _: () = {
                 next_payment_attempt: Deserialize::default(),
                 number: Deserialize::default(),
                 on_behalf_of: Deserialize::default(),
-                paid: Deserialize::default(),
-                paid_out_of_band: Deserialize::default(),
-                payment_intent: Deserialize::default(),
+                parent: Deserialize::default(),
                 payment_settings: Deserialize::default(),
+                payments: Deserialize::default(),
                 period_end: Deserialize::default(),
                 period_start: Deserialize::default(),
                 post_payment_credit_notes_amount: Deserialize::default(),
                 pre_payment_credit_notes_amount: Deserialize::default(),
-                quote: Deserialize::default(),
                 receipt_number: Deserialize::default(),
                 rendering: Deserialize::default(),
                 shipping_cost: Deserialize::default(),
@@ -551,18 +534,15 @@ const _: () = {
                 status: Deserialize::default(),
                 status_transitions: Deserialize::default(),
                 subscription: Deserialize::default(),
-                subscription_details: Deserialize::default(),
-                subscription_proration_date: Deserialize::default(),
                 subtotal: Deserialize::default(),
                 subtotal_excluding_tax: Deserialize::default(),
-                tax: Deserialize::default(),
                 test_clock: Deserialize::default(),
                 threshold_reason: Deserialize::default(),
                 total: Deserialize::default(),
                 total_discount_amounts: Deserialize::default(),
                 total_excluding_tax: Deserialize::default(),
-                total_tax_amounts: Deserialize::default(),
-                transfer_data: Deserialize::default(),
+                total_pretax_credit_amounts: Deserialize::default(),
+                total_taxes: Deserialize::default(),
                 webhooks_delivered_at: Deserialize::default(),
             }
         }
@@ -573,18 +553,19 @@ const _: () = {
                 Some(account_name),
                 Some(account_tax_ids),
                 Some(amount_due),
+                Some(amount_overpaid),
                 Some(amount_paid),
                 Some(amount_remaining),
                 Some(amount_shipping),
                 Some(application),
-                Some(application_fee_amount),
                 Some(attempt_count),
                 Some(attempted),
                 Some(auto_advance),
                 Some(automatic_tax),
+                Some(automatically_finalizes_at),
                 Some(billing_reason),
-                Some(charge),
                 Some(collection_method),
+                Some(confirmation_secret),
                 Some(created),
                 Some(currency),
                 Some(custom_fields),
@@ -600,7 +581,6 @@ const _: () = {
                 Some(default_source),
                 Some(default_tax_rates),
                 Some(description),
-                Some(discount),
                 Some(discounts),
                 Some(due_date),
                 Some(effective_at),
@@ -619,15 +599,13 @@ const _: () = {
                 Some(next_payment_attempt),
                 Some(number),
                 Some(on_behalf_of),
-                Some(paid),
-                Some(paid_out_of_band),
-                Some(payment_intent),
+                Some(parent),
                 Some(payment_settings),
+                Some(payments),
                 Some(period_end),
                 Some(period_start),
                 Some(post_payment_credit_notes_amount),
                 Some(pre_payment_credit_notes_amount),
-                Some(quote),
                 Some(receipt_number),
                 Some(rendering),
                 Some(shipping_cost),
@@ -637,36 +615,34 @@ const _: () = {
                 Some(status),
                 Some(status_transitions),
                 Some(subscription),
-                Some(subscription_details),
-                Some(subscription_proration_date),
                 Some(subtotal),
                 Some(subtotal_excluding_tax),
-                Some(tax),
                 Some(test_clock),
                 Some(threshold_reason),
                 Some(total),
                 Some(total_discount_amounts),
                 Some(total_excluding_tax),
-                Some(total_tax_amounts),
-                Some(transfer_data),
+                Some(total_pretax_credit_amounts),
+                Some(total_taxes),
                 Some(webhooks_delivered_at),
             ) = (
                 self.account_country.take(),
                 self.account_name.take(),
                 self.account_tax_ids.take(),
                 self.amount_due,
+                self.amount_overpaid,
                 self.amount_paid,
                 self.amount_remaining,
                 self.amount_shipping,
                 self.application.take(),
-                self.application_fee_amount,
                 self.attempt_count,
                 self.attempted,
                 self.auto_advance,
                 self.automatic_tax.take(),
+                self.automatically_finalizes_at,
                 self.billing_reason,
-                self.charge.take(),
                 self.collection_method,
+                self.confirmation_secret.take(),
                 self.created,
                 self.currency,
                 self.custom_fields.take(),
@@ -682,7 +658,6 @@ const _: () = {
                 self.default_source.take(),
                 self.default_tax_rates.take(),
                 self.description.take(),
-                self.discount.take(),
                 self.discounts.take(),
                 self.due_date,
                 self.effective_at,
@@ -701,15 +676,13 @@ const _: () = {
                 self.next_payment_attempt,
                 self.number.take(),
                 self.on_behalf_of.take(),
-                self.paid,
-                self.paid_out_of_band,
-                self.payment_intent.take(),
+                self.parent.take(),
                 self.payment_settings.take(),
+                self.payments.take(),
                 self.period_end,
                 self.period_start,
                 self.post_payment_credit_notes_amount,
                 self.pre_payment_credit_notes_amount,
-                self.quote.take(),
                 self.receipt_number.take(),
                 self.rendering.take(),
                 self.shipping_cost.take(),
@@ -719,18 +692,15 @@ const _: () = {
                 self.status,
                 self.status_transitions,
                 self.subscription.take(),
-                self.subscription_details.take(),
-                self.subscription_proration_date,
                 self.subtotal,
                 self.subtotal_excluding_tax,
-                self.tax,
                 self.test_clock.take(),
                 self.threshold_reason.take(),
                 self.total,
                 self.total_discount_amounts.take(),
                 self.total_excluding_tax,
-                self.total_tax_amounts.take(),
-                self.transfer_data.take(),
+                self.total_pretax_credit_amounts.take(),
+                self.total_taxes.take(),
                 self.webhooks_delivered_at,
             )
             else {
@@ -741,18 +711,19 @@ const _: () = {
                 account_name,
                 account_tax_ids,
                 amount_due,
+                amount_overpaid,
                 amount_paid,
                 amount_remaining,
                 amount_shipping,
                 application,
-                application_fee_amount,
                 attempt_count,
                 attempted,
                 auto_advance,
                 automatic_tax,
+                automatically_finalizes_at,
                 billing_reason,
-                charge,
                 collection_method,
+                confirmation_secret,
                 created,
                 currency,
                 custom_fields,
@@ -768,7 +739,6 @@ const _: () = {
                 default_source,
                 default_tax_rates,
                 description,
-                discount,
                 discounts,
                 due_date,
                 effective_at,
@@ -787,15 +757,13 @@ const _: () = {
                 next_payment_attempt,
                 number,
                 on_behalf_of,
-                paid,
-                paid_out_of_band,
-                payment_intent,
+                parent,
                 payment_settings,
+                payments,
                 period_end,
                 period_start,
                 post_payment_credit_notes_amount,
                 pre_payment_credit_notes_amount,
-                quote,
                 receipt_number,
                 rendering,
                 shipping_cost,
@@ -805,18 +773,15 @@ const _: () = {
                 status,
                 status_transitions,
                 subscription,
-                subscription_details,
-                subscription_proration_date,
                 subtotal,
                 subtotal_excluding_tax,
-                tax,
                 test_clock,
                 threshold_reason,
                 total,
                 total_discount_amounts,
                 total_excluding_tax,
-                total_tax_amounts,
-                transfer_data,
+                total_pretax_credit_amounts,
+                total_taxes,
                 webhooks_delivered_at,
             })
         }
@@ -849,20 +814,21 @@ const _: () = {
                     "account_name" => b.account_name = FromValueOpt::from_value(v),
                     "account_tax_ids" => b.account_tax_ids = FromValueOpt::from_value(v),
                     "amount_due" => b.amount_due = FromValueOpt::from_value(v),
+                    "amount_overpaid" => b.amount_overpaid = FromValueOpt::from_value(v),
                     "amount_paid" => b.amount_paid = FromValueOpt::from_value(v),
                     "amount_remaining" => b.amount_remaining = FromValueOpt::from_value(v),
                     "amount_shipping" => b.amount_shipping = FromValueOpt::from_value(v),
                     "application" => b.application = FromValueOpt::from_value(v),
-                    "application_fee_amount" => {
-                        b.application_fee_amount = FromValueOpt::from_value(v)
-                    }
                     "attempt_count" => b.attempt_count = FromValueOpt::from_value(v),
                     "attempted" => b.attempted = FromValueOpt::from_value(v),
                     "auto_advance" => b.auto_advance = FromValueOpt::from_value(v),
                     "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
+                    "automatically_finalizes_at" => {
+                        b.automatically_finalizes_at = FromValueOpt::from_value(v)
+                    }
                     "billing_reason" => b.billing_reason = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
                     "collection_method" => b.collection_method = FromValueOpt::from_value(v),
+                    "confirmation_secret" => b.confirmation_secret = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
@@ -880,7 +846,6 @@ const _: () = {
                     "default_source" => b.default_source = FromValueOpt::from_value(v),
                     "default_tax_rates" => b.default_tax_rates = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
-                    "discount" => b.discount = FromValueOpt::from_value(v),
                     "discounts" => b.discounts = FromValueOpt::from_value(v),
                     "due_date" => b.due_date = FromValueOpt::from_value(v),
                     "effective_at" => b.effective_at = FromValueOpt::from_value(v),
@@ -901,10 +866,9 @@ const _: () = {
                     "next_payment_attempt" => b.next_payment_attempt = FromValueOpt::from_value(v),
                     "number" => b.number = FromValueOpt::from_value(v),
                     "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "paid" => b.paid = FromValueOpt::from_value(v),
-                    "paid_out_of_band" => b.paid_out_of_band = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
+                    "parent" => b.parent = FromValueOpt::from_value(v),
                     "payment_settings" => b.payment_settings = FromValueOpt::from_value(v),
+                    "payments" => b.payments = FromValueOpt::from_value(v),
                     "period_end" => b.period_end = FromValueOpt::from_value(v),
                     "period_start" => b.period_start = FromValueOpt::from_value(v),
                     "post_payment_credit_notes_amount" => {
@@ -913,7 +877,6 @@ const _: () = {
                     "pre_payment_credit_notes_amount" => {
                         b.pre_payment_credit_notes_amount = FromValueOpt::from_value(v)
                     }
-                    "quote" => b.quote = FromValueOpt::from_value(v),
                     "receipt_number" => b.receipt_number = FromValueOpt::from_value(v),
                     "rendering" => b.rendering = FromValueOpt::from_value(v),
                     "shipping_cost" => b.shipping_cost = FromValueOpt::from_value(v),
@@ -923,15 +886,10 @@ const _: () = {
                     "status" => b.status = FromValueOpt::from_value(v),
                     "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
                     "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "subscription_details" => b.subscription_details = FromValueOpt::from_value(v),
-                    "subscription_proration_date" => {
-                        b.subscription_proration_date = FromValueOpt::from_value(v)
-                    }
                     "subtotal" => b.subtotal = FromValueOpt::from_value(v),
                     "subtotal_excluding_tax" => {
                         b.subtotal_excluding_tax = FromValueOpt::from_value(v)
                     }
-                    "tax" => b.tax = FromValueOpt::from_value(v),
                     "test_clock" => b.test_clock = FromValueOpt::from_value(v),
                     "threshold_reason" => b.threshold_reason = FromValueOpt::from_value(v),
                     "total" => b.total = FromValueOpt::from_value(v),
@@ -939,8 +897,10 @@ const _: () = {
                         b.total_discount_amounts = FromValueOpt::from_value(v)
                     }
                     "total_excluding_tax" => b.total_excluding_tax = FromValueOpt::from_value(v),
-                    "total_tax_amounts" => b.total_tax_amounts = FromValueOpt::from_value(v),
-                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
+                    "total_pretax_credit_amounts" => {
+                        b.total_pretax_credit_amounts = FromValueOpt::from_value(v)
+                    }
+                    "total_taxes" => b.total_taxes = FromValueOpt::from_value(v),
                     "webhooks_delivered_at" => {
                         b.webhooks_delivered_at = FromValueOpt::from_value(v)
                     }
@@ -956,23 +916,24 @@ const _: () = {
 impl serde::Serialize for Invoice {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Invoice", 82)?;
+        let mut s = s.serialize_struct("Invoice", 77)?;
         s.serialize_field("account_country", &self.account_country)?;
         s.serialize_field("account_name", &self.account_name)?;
         s.serialize_field("account_tax_ids", &self.account_tax_ids)?;
         s.serialize_field("amount_due", &self.amount_due)?;
+        s.serialize_field("amount_overpaid", &self.amount_overpaid)?;
         s.serialize_field("amount_paid", &self.amount_paid)?;
         s.serialize_field("amount_remaining", &self.amount_remaining)?;
         s.serialize_field("amount_shipping", &self.amount_shipping)?;
         s.serialize_field("application", &self.application)?;
-        s.serialize_field("application_fee_amount", &self.application_fee_amount)?;
         s.serialize_field("attempt_count", &self.attempt_count)?;
         s.serialize_field("attempted", &self.attempted)?;
         s.serialize_field("auto_advance", &self.auto_advance)?;
         s.serialize_field("automatic_tax", &self.automatic_tax)?;
+        s.serialize_field("automatically_finalizes_at", &self.automatically_finalizes_at)?;
         s.serialize_field("billing_reason", &self.billing_reason)?;
-        s.serialize_field("charge", &self.charge)?;
         s.serialize_field("collection_method", &self.collection_method)?;
+        s.serialize_field("confirmation_secret", &self.confirmation_secret)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("custom_fields", &self.custom_fields)?;
@@ -988,7 +949,6 @@ impl serde::Serialize for Invoice {
         s.serialize_field("default_source", &self.default_source)?;
         s.serialize_field("default_tax_rates", &self.default_tax_rates)?;
         s.serialize_field("description", &self.description)?;
-        s.serialize_field("discount", &self.discount)?;
         s.serialize_field("discounts", &self.discounts)?;
         s.serialize_field("due_date", &self.due_date)?;
         s.serialize_field("effective_at", &self.effective_at)?;
@@ -1007,10 +967,9 @@ impl serde::Serialize for Invoice {
         s.serialize_field("next_payment_attempt", &self.next_payment_attempt)?;
         s.serialize_field("number", &self.number)?;
         s.serialize_field("on_behalf_of", &self.on_behalf_of)?;
-        s.serialize_field("paid", &self.paid)?;
-        s.serialize_field("paid_out_of_band", &self.paid_out_of_band)?;
-        s.serialize_field("payment_intent", &self.payment_intent)?;
+        s.serialize_field("parent", &self.parent)?;
         s.serialize_field("payment_settings", &self.payment_settings)?;
+        s.serialize_field("payments", &self.payments)?;
         s.serialize_field("period_end", &self.period_end)?;
         s.serialize_field("period_start", &self.period_start)?;
         s.serialize_field(
@@ -1021,7 +980,6 @@ impl serde::Serialize for Invoice {
             "pre_payment_credit_notes_amount",
             &self.pre_payment_credit_notes_amount,
         )?;
-        s.serialize_field("quote", &self.quote)?;
         s.serialize_field("receipt_number", &self.receipt_number)?;
         s.serialize_field("rendering", &self.rendering)?;
         s.serialize_field("shipping_cost", &self.shipping_cost)?;
@@ -1031,18 +989,15 @@ impl serde::Serialize for Invoice {
         s.serialize_field("status", &self.status)?;
         s.serialize_field("status_transitions", &self.status_transitions)?;
         s.serialize_field("subscription", &self.subscription)?;
-        s.serialize_field("subscription_details", &self.subscription_details)?;
-        s.serialize_field("subscription_proration_date", &self.subscription_proration_date)?;
         s.serialize_field("subtotal", &self.subtotal)?;
         s.serialize_field("subtotal_excluding_tax", &self.subtotal_excluding_tax)?;
-        s.serialize_field("tax", &self.tax)?;
         s.serialize_field("test_clock", &self.test_clock)?;
         s.serialize_field("threshold_reason", &self.threshold_reason)?;
         s.serialize_field("total", &self.total)?;
         s.serialize_field("total_discount_amounts", &self.total_discount_amounts)?;
         s.serialize_field("total_excluding_tax", &self.total_excluding_tax)?;
-        s.serialize_field("total_tax_amounts", &self.total_tax_amounts)?;
-        s.serialize_field("transfer_data", &self.transfer_data)?;
+        s.serialize_field("total_pretax_credit_amounts", &self.total_pretax_credit_amounts)?;
+        s.serialize_field("total_taxes", &self.total_taxes)?;
         s.serialize_field("webhooks_delivered_at", &self.webhooks_delivered_at)?;
 
         s.serialize_field("object", "invoice")?;

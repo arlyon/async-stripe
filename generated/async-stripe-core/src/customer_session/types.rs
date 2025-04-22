@@ -1,9 +1,13 @@
-/// A customer session allows you to grant client access to Stripe's frontend SDKs (like StripeJs)
-/// control over a customer.
+/// A Customer Session allows you to grant Stripe's frontend SDKs (like Stripe.js) client-side access
+/// control over a Customer.
+///
+/// Related guides: [Customer Session with the Payment Element](/payments/accept-a-payment-deferred?platform=web&type=payment#save-payment-methods),.
+/// [Customer Session with the Pricing Table](/payments/checkout/pricing-table#customer-session),
+/// [Customer Session with the Buy Button](/payment-links/buy-button#pass-an-existing-customer).
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerSession {
-    /// The client secret of this customer session.
+    /// The client secret of this Customer Session.
     /// Used on the client to set up secure access to the given `customer`.
     ///
     /// The client secret can be used to provide access to `customer` from your frontend.
@@ -13,9 +17,9 @@ pub struct CustomerSession {
     pub components: Option<stripe_core::CustomerSessionResourceComponents>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
-    /// The customer the customer session was created for.
+    /// The Customer the Customer Session was created for.
     pub customer: stripe_types::Expandable<stripe_shared::Customer>,
-    /// The timestamp at which this customer session will expire.
+    /// The timestamp at which this Customer Session will expire.
     pub expires_at: stripe_types::Timestamp,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -102,7 +106,7 @@ const _: () = {
                 Some(livemode),
             ) = (
                 self.client_secret.take(),
-                self.components,
+                self.components.take(),
                 self.created,
                 self.customer.take(),
                 self.expires_at,

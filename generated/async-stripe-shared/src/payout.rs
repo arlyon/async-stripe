@@ -13,6 +13,12 @@
 pub struct Payout {
     /// The amount (in cents (or local equivalent)) that transfers to your bank account or debit card.
     pub amount: i64,
+    /// The application fee (if any) for the payout.
+    /// [See the Connect documentation](https://stripe.com/docs/connect/instant-payouts#monetization-and-fees) for details.
+    pub application_fee: Option<stripe_types::Expandable<stripe_shared::ApplicationFee>>,
+    /// The amount of the application fee (if any) requested for the payout.
+    /// [See the Connect documentation](https://stripe.com/docs/connect/instant-payouts#monetization-and-fees) for details.
+    pub application_fee_amount: Option<i64>,
     /// Date that you can expect the payout to arrive in the bank.
     /// This factors in delays to account for weekends or bank holidays.
     pub arrival_date: stripe_types::Timestamp,
@@ -63,6 +69,9 @@ pub struct Payout {
     /// The status changes to `paid` if the transaction succeeds, or to `failed` or `canceled` (within 5 business days).
     /// Some payouts that fail might initially show as `paid`, then change to `failed`.
     pub status: String,
+    /// A value that generates from the beneficiary's bank that allows users to track payouts with their bank.
+    /// Banks might call this a "reference number" or something similar.
+    pub trace_id: Option<stripe_shared::PayoutsTraceId>,
     /// Can be `bank_account` or `card`.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: PayoutType,
@@ -70,6 +79,8 @@ pub struct Payout {
 #[doc(hidden)]
 pub struct PayoutBuilder {
     amount: Option<i64>,
+    application_fee: Option<Option<stripe_types::Expandable<stripe_shared::ApplicationFee>>>,
+    application_fee_amount: Option<Option<i64>>,
     arrival_date: Option<stripe_types::Timestamp>,
     automatic: Option<bool>,
     balance_transaction:
@@ -92,6 +103,7 @@ pub struct PayoutBuilder {
     source_type: Option<String>,
     statement_descriptor: Option<Option<String>>,
     status: Option<String>,
+    trace_id: Option<Option<stripe_shared::PayoutsTraceId>>,
     type_: Option<PayoutType>,
 }
 
@@ -133,6 +145,8 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
+                "application_fee" => Deserialize::begin(&mut self.application_fee),
+                "application_fee_amount" => Deserialize::begin(&mut self.application_fee_amount),
                 "arrival_date" => Deserialize::begin(&mut self.arrival_date),
                 "automatic" => Deserialize::begin(&mut self.automatic),
                 "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
@@ -155,6 +169,7 @@ const _: () = {
                 "source_type" => Deserialize::begin(&mut self.source_type),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "status" => Deserialize::begin(&mut self.status),
+                "trace_id" => Deserialize::begin(&mut self.trace_id),
                 "type" => Deserialize::begin(&mut self.type_),
 
                 _ => <dyn Visitor>::ignore(),
@@ -164,6 +179,8 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: Deserialize::default(),
+                application_fee: Deserialize::default(),
+                application_fee_amount: Deserialize::default(),
                 arrival_date: Deserialize::default(),
                 automatic: Deserialize::default(),
                 balance_transaction: Deserialize::default(),
@@ -184,6 +201,7 @@ const _: () = {
                 source_type: Deserialize::default(),
                 statement_descriptor: Deserialize::default(),
                 status: Deserialize::default(),
+                trace_id: Deserialize::default(),
                 type_: Deserialize::default(),
             }
         }
@@ -191,6 +209,8 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
+                Some(application_fee),
+                Some(application_fee_amount),
                 Some(arrival_date),
                 Some(automatic),
                 Some(balance_transaction),
@@ -211,9 +231,12 @@ const _: () = {
                 Some(source_type),
                 Some(statement_descriptor),
                 Some(status),
+                Some(trace_id),
                 Some(type_),
             ) = (
                 self.amount,
+                self.application_fee.take(),
+                self.application_fee_amount,
                 self.arrival_date,
                 self.automatic,
                 self.balance_transaction.take(),
@@ -234,6 +257,7 @@ const _: () = {
                 self.source_type.take(),
                 self.statement_descriptor.take(),
                 self.status.take(),
+                self.trace_id.take(),
                 self.type_,
             )
             else {
@@ -241,6 +265,8 @@ const _: () = {
             };
             Some(Self::Out {
                 amount,
+                application_fee,
+                application_fee_amount,
                 arrival_date,
                 automatic,
                 balance_transaction,
@@ -261,6 +287,7 @@ const _: () = {
                 source_type,
                 statement_descriptor,
                 status,
+                trace_id,
                 type_,
             })
         }
@@ -290,6 +317,10 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "amount" => b.amount = FromValueOpt::from_value(v),
+                    "application_fee" => b.application_fee = FromValueOpt::from_value(v),
+                    "application_fee_amount" => {
+                        b.application_fee_amount = FromValueOpt::from_value(v)
+                    }
                     "arrival_date" => b.arrival_date = FromValueOpt::from_value(v),
                     "automatic" => b.automatic = FromValueOpt::from_value(v),
                     "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
@@ -314,6 +345,7 @@ const _: () = {
                     "source_type" => b.source_type = FromValueOpt::from_value(v),
                     "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
+                    "trace_id" => b.trace_id = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}
@@ -327,8 +359,10 @@ const _: () = {
 impl serde::Serialize for Payout {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Payout", 23)?;
+        let mut s = s.serialize_struct("Payout", 26)?;
         s.serialize_field("amount", &self.amount)?;
+        s.serialize_field("application_fee", &self.application_fee)?;
+        s.serialize_field("application_fee_amount", &self.application_fee_amount)?;
         s.serialize_field("arrival_date", &self.arrival_date)?;
         s.serialize_field("automatic", &self.automatic)?;
         s.serialize_field("balance_transaction", &self.balance_transaction)?;
@@ -349,6 +383,7 @@ impl serde::Serialize for Payout {
         s.serialize_field("source_type", &self.source_type)?;
         s.serialize_field("statement_descriptor", &self.statement_descriptor)?;
         s.serialize_field("status", &self.status)?;
+        s.serialize_field("trace_id", &self.trace_id)?;
         s.serialize_field("type", &self.type_)?;
 
         s.serialize_field("object", "payout")?;

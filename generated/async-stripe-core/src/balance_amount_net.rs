@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BalanceAmountNet {
@@ -7,12 +7,15 @@ pub struct BalanceAmountNet {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
+    /// Breakdown of balance by destination.
+    pub net_available: Option<Vec<stripe_core::BalanceNetAvailable>>,
     pub source_types: Option<stripe_core::BalanceAmountBySourceType>,
 }
 #[doc(hidden)]
 pub struct BalanceAmountNetBuilder {
     amount: Option<i64>,
     currency: Option<stripe_types::Currency>,
+    net_available: Option<Option<Vec<stripe_core::BalanceNetAvailable>>>,
     source_types: Option<Option<stripe_core::BalanceAmountBySourceType>>,
 }
 
@@ -58,6 +61,7 @@ const _: () = {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "currency" => Deserialize::begin(&mut self.currency),
+                "net_available" => Deserialize::begin(&mut self.net_available),
                 "source_types" => Deserialize::begin(&mut self.source_types),
 
                 _ => <dyn Visitor>::ignore(),
@@ -68,17 +72,18 @@ const _: () = {
             Self {
                 amount: Deserialize::default(),
                 currency: Deserialize::default(),
+                net_available: Deserialize::default(),
                 source_types: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(currency), Some(source_types)) =
-                (self.amount, self.currency, self.source_types)
+            let (Some(amount), Some(currency), Some(net_available), Some(source_types)) =
+                (self.amount, self.currency, self.net_available.take(), self.source_types)
             else {
                 return None;
             };
-            Some(Self::Out { amount, currency, source_types })
+            Some(Self::Out { amount, currency, net_available, source_types })
         }
     }
 
@@ -107,6 +112,7 @@ const _: () = {
                 match k.as_str() {
                     "amount" => b.amount = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
+                    "net_available" => b.net_available = FromValueOpt::from_value(v),
                     "source_types" => b.source_types = FromValueOpt::from_value(v),
 
                     _ => {}

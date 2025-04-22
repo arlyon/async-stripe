@@ -10,6 +10,8 @@ pub struct LegalEntityCompany {
     /// Whether the company's directors have been provided.
     /// This Boolean will be `true` if you've manually indicated that all directors are provided via [the `directors_provided` parameter](https://stripe.com/docs/api/accounts/update#update_account-company-directors_provided).
     pub directors_provided: Option<bool>,
+    /// This hash is used to attest that the director information provided to Stripe is both current and correct.
+    pub directorship_declaration: Option<stripe_shared::LegalEntityDirectorshipDeclaration>,
     /// Whether the company's executives have been provided.
     /// This Boolean will be `true` if you've manually indicated that all executives are provided via [the `executives_provided` parameter](https://stripe.com/docs/api/accounts/update#update_account-company-executives_provided), or if Stripe determined that sufficient executives were provided.
     pub executives_provided: Option<bool>,
@@ -18,10 +20,13 @@ pub struct LegalEntityCompany {
     /// The purpose code to use for export transactions (India only).
     pub export_purpose_code: Option<String>,
     /// The company's legal name.
+    /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     pub name: Option<String>,
     /// The Kana variation of the company's legal name (Japan only).
+    /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     pub name_kana: Option<String>,
     /// The Kanji variation of the company's legal name (Japan only).
+    /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     pub name_kanji: Option<String>,
     /// Whether the company's owners have been provided.
     /// This Boolean will be `true` if you've manually indicated that all owners are provided via [the `owners_provided` parameter](https://stripe.com/docs/api/accounts/update#update_account-company-owners_provided), or if Stripe determined that sufficient owners were provided.
@@ -29,9 +34,14 @@ pub struct LegalEntityCompany {
     pub owners_provided: Option<bool>,
     /// This hash is used to attest that the beneficial owner information provided to Stripe is both current and correct.
     pub ownership_declaration: Option<stripe_shared::LegalEntityUboDeclaration>,
+    /// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
+    /// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
+    pub ownership_exemption_reason: Option<LegalEntityCompanyOwnershipExemptionReason>,
     /// The company's phone number (used for verification).
     pub phone: Option<String>,
+    pub registration_date: Option<stripe_shared::LegalEntityRegistrationDate>,
     /// The category identifying the legal structure of the company or legal entity.
+    /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
     pub structure: Option<LegalEntityCompanyStructure>,
     /// Whether the company's business ID number was provided.
@@ -49,6 +59,7 @@ pub struct LegalEntityCompanyBuilder {
     address_kana: Option<Option<stripe_shared::LegalEntityJapanAddress>>,
     address_kanji: Option<Option<stripe_shared::LegalEntityJapanAddress>>,
     directors_provided: Option<Option<bool>>,
+    directorship_declaration: Option<Option<stripe_shared::LegalEntityDirectorshipDeclaration>>,
     executives_provided: Option<Option<bool>>,
     export_license_id: Option<Option<String>>,
     export_purpose_code: Option<Option<String>>,
@@ -57,7 +68,9 @@ pub struct LegalEntityCompanyBuilder {
     name_kanji: Option<Option<String>>,
     owners_provided: Option<Option<bool>>,
     ownership_declaration: Option<Option<stripe_shared::LegalEntityUboDeclaration>>,
+    ownership_exemption_reason: Option<Option<LegalEntityCompanyOwnershipExemptionReason>>,
     phone: Option<Option<String>>,
+    registration_date: Option<Option<stripe_shared::LegalEntityRegistrationDate>>,
     structure: Option<Option<LegalEntityCompanyStructure>>,
     tax_id_provided: Option<Option<bool>>,
     tax_id_registrar: Option<Option<String>>,
@@ -109,6 +122,9 @@ const _: () = {
                 "address_kana" => Deserialize::begin(&mut self.address_kana),
                 "address_kanji" => Deserialize::begin(&mut self.address_kanji),
                 "directors_provided" => Deserialize::begin(&mut self.directors_provided),
+                "directorship_declaration" => {
+                    Deserialize::begin(&mut self.directorship_declaration)
+                }
                 "executives_provided" => Deserialize::begin(&mut self.executives_provided),
                 "export_license_id" => Deserialize::begin(&mut self.export_license_id),
                 "export_purpose_code" => Deserialize::begin(&mut self.export_purpose_code),
@@ -117,7 +133,11 @@ const _: () = {
                 "name_kanji" => Deserialize::begin(&mut self.name_kanji),
                 "owners_provided" => Deserialize::begin(&mut self.owners_provided),
                 "ownership_declaration" => Deserialize::begin(&mut self.ownership_declaration),
+                "ownership_exemption_reason" => {
+                    Deserialize::begin(&mut self.ownership_exemption_reason)
+                }
                 "phone" => Deserialize::begin(&mut self.phone),
+                "registration_date" => Deserialize::begin(&mut self.registration_date),
                 "structure" => Deserialize::begin(&mut self.structure),
                 "tax_id_provided" => Deserialize::begin(&mut self.tax_id_provided),
                 "tax_id_registrar" => Deserialize::begin(&mut self.tax_id_registrar),
@@ -134,6 +154,7 @@ const _: () = {
                 address_kana: Deserialize::default(),
                 address_kanji: Deserialize::default(),
                 directors_provided: Deserialize::default(),
+                directorship_declaration: Deserialize::default(),
                 executives_provided: Deserialize::default(),
                 export_license_id: Deserialize::default(),
                 export_purpose_code: Deserialize::default(),
@@ -142,7 +163,9 @@ const _: () = {
                 name_kanji: Deserialize::default(),
                 owners_provided: Deserialize::default(),
                 ownership_declaration: Deserialize::default(),
+                ownership_exemption_reason: Deserialize::default(),
                 phone: Deserialize::default(),
+                registration_date: Deserialize::default(),
                 structure: Deserialize::default(),
                 tax_id_provided: Deserialize::default(),
                 tax_id_registrar: Deserialize::default(),
@@ -157,6 +180,7 @@ const _: () = {
                 Some(address_kana),
                 Some(address_kanji),
                 Some(directors_provided),
+                Some(directorship_declaration),
                 Some(executives_provided),
                 Some(export_license_id),
                 Some(export_purpose_code),
@@ -165,7 +189,9 @@ const _: () = {
                 Some(name_kanji),
                 Some(owners_provided),
                 Some(ownership_declaration),
+                Some(ownership_exemption_reason),
                 Some(phone),
+                Some(registration_date),
                 Some(structure),
                 Some(tax_id_provided),
                 Some(tax_id_registrar),
@@ -176,6 +202,7 @@ const _: () = {
                 self.address_kana.take(),
                 self.address_kanji.take(),
                 self.directors_provided,
+                self.directorship_declaration.take(),
                 self.executives_provided,
                 self.export_license_id.take(),
                 self.export_purpose_code.take(),
@@ -184,7 +211,9 @@ const _: () = {
                 self.name_kanji.take(),
                 self.owners_provided,
                 self.ownership_declaration.take(),
+                self.ownership_exemption_reason,
                 self.phone.take(),
+                self.registration_date,
                 self.structure.take(),
                 self.tax_id_provided,
                 self.tax_id_registrar.take(),
@@ -199,6 +228,7 @@ const _: () = {
                 address_kana,
                 address_kanji,
                 directors_provided,
+                directorship_declaration,
                 executives_provided,
                 export_license_id,
                 export_purpose_code,
@@ -207,7 +237,9 @@ const _: () = {
                 name_kanji,
                 owners_provided,
                 ownership_declaration,
+                ownership_exemption_reason,
                 phone,
+                registration_date,
                 structure,
                 tax_id_provided,
                 tax_id_registrar,
@@ -244,6 +276,9 @@ const _: () = {
                     "address_kana" => b.address_kana = FromValueOpt::from_value(v),
                     "address_kanji" => b.address_kanji = FromValueOpt::from_value(v),
                     "directors_provided" => b.directors_provided = FromValueOpt::from_value(v),
+                    "directorship_declaration" => {
+                        b.directorship_declaration = FromValueOpt::from_value(v)
+                    }
                     "executives_provided" => b.executives_provided = FromValueOpt::from_value(v),
                     "export_license_id" => b.export_license_id = FromValueOpt::from_value(v),
                     "export_purpose_code" => b.export_purpose_code = FromValueOpt::from_value(v),
@@ -254,7 +289,11 @@ const _: () = {
                     "ownership_declaration" => {
                         b.ownership_declaration = FromValueOpt::from_value(v)
                     }
+                    "ownership_exemption_reason" => {
+                        b.ownership_exemption_reason = FromValueOpt::from_value(v)
+                    }
                     "phone" => b.phone = FromValueOpt::from_value(v),
+                    "registration_date" => b.registration_date = FromValueOpt::from_value(v),
                     "structure" => b.structure = FromValueOpt::from_value(v),
                     "tax_id_provided" => b.tax_id_provided = FromValueOpt::from_value(v),
                     "tax_id_registrar" => b.tax_id_registrar = FromValueOpt::from_value(v),
@@ -268,7 +307,88 @@ const _: () = {
         }
     }
 };
+/// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
+/// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum LegalEntityCompanyOwnershipExemptionReason {
+    QualifiedEntityExceedsOwnershipThreshold,
+    QualifiesAsFinancialInstitution,
+}
+impl LegalEntityCompanyOwnershipExemptionReason {
+    pub fn as_str(self) -> &'static str {
+        use LegalEntityCompanyOwnershipExemptionReason::*;
+        match self {
+            QualifiedEntityExceedsOwnershipThreshold => {
+                "qualified_entity_exceeds_ownership_threshold"
+            }
+            QualifiesAsFinancialInstitution => "qualifies_as_financial_institution",
+        }
+    }
+}
+
+impl std::str::FromStr for LegalEntityCompanyOwnershipExemptionReason {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use LegalEntityCompanyOwnershipExemptionReason::*;
+        match s {
+            "qualified_entity_exceeds_ownership_threshold" => {
+                Ok(QualifiedEntityExceedsOwnershipThreshold)
+            }
+            "qualifies_as_financial_institution" => Ok(QualifiesAsFinancialInstitution),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for LegalEntityCompanyOwnershipExemptionReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for LegalEntityCompanyOwnershipExemptionReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for LegalEntityCompanyOwnershipExemptionReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for LegalEntityCompanyOwnershipExemptionReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<LegalEntityCompanyOwnershipExemptionReason> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            LegalEntityCompanyOwnershipExemptionReason::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(LegalEntityCompanyOwnershipExemptionReason);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for LegalEntityCompanyOwnershipExemptionReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for LegalEntityCompanyOwnershipExemptionReason")
+        })
+    }
+}
 /// The category identifying the legal structure of the company or legal entity.
+/// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
 /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]

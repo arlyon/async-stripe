@@ -206,7 +206,6 @@ impl CreateIdTransferReversal {
         self
     }
     /// An arbitrary string which you can attach to a reversal object.
-    /// It is displayed alongside the reversal in the Dashboard.
     /// This will be unset if you POST an empty value.
     pub fn description(mut self, description: impl Into<String>) -> Self {
         self.inner.description = Some(description.into());

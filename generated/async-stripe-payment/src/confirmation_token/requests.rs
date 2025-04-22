@@ -68,6 +68,8 @@ struct CreateConfirmationTokenBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_data: Option<CreateConfirmationTokenPaymentMethodData>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    payment_method_options: Option<CreateConfirmationTokenPaymentMethodOptions>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     return_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     setup_future_usage: Option<stripe_payment::ConfirmationTokenSetupFutureUsage>,
@@ -80,6 +82,7 @@ impl CreateConfirmationTokenBuilder {
             expand: None,
             payment_method: None,
             payment_method_data: None,
+            payment_method_options: None,
             return_url: None,
             setup_future_usage: None,
             shipping: None,
@@ -109,6 +112,10 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// The field defaults to `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_redisplay: Option<CreateConfirmationTokenPaymentMethodDataAllowRedisplay>,
+    /// If this is a Alma PaymentMethod, this hash contains details about the Alma payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub alma: Option<miniserde::json::Value>,
     /// If this is a AmazonPay PaymentMethod, this hash contains details about the AmazonPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -123,6 +130,10 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub bancontact: Option<miniserde::json::Value>,
+    /// If this is a `billie` PaymentMethod, this hash contains details about the Billie payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub billie: Option<miniserde::json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<CreateConfirmationTokenPaymentMethodDataBillingDetails>,
@@ -162,6 +173,10 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub interac_present: Option<miniserde::json::Value>,
+    /// If this is a `kakao_pay` PaymentMethod, this hash contains details about the Kakao Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub kakao_pay: Option<miniserde::json::Value>,
     /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<CreateConfirmationTokenPaymentMethodDataKlarna>,
@@ -169,6 +184,10 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub konbini: Option<miniserde::json::Value>,
+    /// If this is a `kr_card` PaymentMethod, this hash contains details about the Korean Card payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub kr_card: Option<miniserde::json::Value>,
     /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -183,6 +202,16 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub mobilepay: Option<miniserde::json::Value>,
+    /// If this is a `multibanco` PaymentMethod, this hash contains details about the Multibanco payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub multibanco: Option<miniserde::json::Value>,
+    /// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub naver_pay: Option<CreateConfirmationTokenPaymentMethodDataNaverPay>,
+    /// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nz_bank_account: Option<CreateConfirmationTokenPaymentMethodDataNzBankAccount>,
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -190,6 +219,14 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<CreateConfirmationTokenPaymentMethodDataP24>,
+    /// If this is a `pay_by_bank` PaymentMethod, this hash contains details about the PayByBank payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub pay_by_bank: Option<miniserde::json::Value>,
+    /// If this is a `payco` PaymentMethod, this hash contains details about the PAYCO payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub payco: Option<miniserde::json::Value>,
     /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -210,10 +247,18 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<CreateConfirmationTokenPaymentMethodDataRadarOptions>,
-    /// If this is a `Revolut Pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
+    /// If this is a `revolut_pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub revolut_pay: Option<miniserde::json::Value>,
+    /// If this is a `samsung_pay` PaymentMethod, this hash contains details about the SamsungPay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub samsung_pay: Option<miniserde::json::Value>,
+    /// If this is a `satispay` PaymentMethod, this hash contains details about the Satispay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub satispay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateConfirmationTokenPaymentMethodDataSepaDebit>,
@@ -224,6 +269,10 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub swish: Option<miniserde::json::Value>,
+    /// If this is a TWINT PaymentMethod, this hash contains details about the TWINT payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub twint: Option<miniserde::json::Value>,
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
@@ -249,10 +298,12 @@ impl CreateConfirmationTokenPaymentMethodData {
             afterpay_clearpay: None,
             alipay: None,
             allow_redisplay: None,
+            alma: None,
             amazon_pay: None,
             au_becs_debit: None,
             bacs_debit: None,
             bancontact: None,
+            billie: None,
             billing_details: None,
             blik: None,
             boleto: None,
@@ -264,22 +315,32 @@ impl CreateConfirmationTokenPaymentMethodData {
             grabpay: None,
             ideal: None,
             interac_present: None,
+            kakao_pay: None,
             klarna: None,
             konbini: None,
+            kr_card: None,
             link: None,
             metadata: None,
             mobilepay: None,
+            multibanco: None,
+            naver_pay: None,
+            nz_bank_account: None,
             oxxo: None,
             p24: None,
+            pay_by_bank: None,
+            payco: None,
             paynow: None,
             paypal: None,
             pix: None,
             promptpay: None,
             radar_options: None,
             revolut_pay: None,
+            samsung_pay: None,
+            satispay: None,
             sepa_debit: None,
             sofort: None,
             swish: None,
+            twint: None,
             type_: type_.into(),
             us_bank_account: None,
             wechat_pay: None,
@@ -421,10 +482,14 @@ pub struct CreateConfirmationTokenPaymentMethodDataBillingDetails {
     /// Billing phone number (including extension).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+    /// Taxpayer identification number.
+    /// Used only for transactions between LATAM buyers and non-LATAM sellers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id: Option<String>,
 }
 impl CreateConfirmationTokenPaymentMethodDataBillingDetails {
     pub fn new() -> Self {
-        Self { address: None, email: None, name: None, phone: None }
+        Self { address: None, email: None, name: None, phone: None, tax_id: None }
     }
 }
 impl Default for CreateConfirmationTokenPaymentMethodDataBillingDetails {
@@ -822,6 +887,8 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataFp
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateConfirmationTokenPaymentMethodDataIdeal {
     /// The customer's bank.
+    /// Only use this parameter for existing customers.
+    /// Don't use it for new customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<CreateConfirmationTokenPaymentMethodDataIdealBank>,
 }
@@ -836,6 +903,8 @@ impl Default for CreateConfirmationTokenPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
+/// Only use this parameter for existing customers.
+/// Don't use it for new customers.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodDataIdealBank {
@@ -965,6 +1034,118 @@ pub struct CreateConfirmationTokenPaymentMethodDataKlarnaDob {
 impl CreateConfirmationTokenPaymentMethodDataKlarnaDob {
     pub fn new(day: impl Into<i64>, month: impl Into<i64>, year: impl Into<i64>) -> Self {
         Self { day: day.into(), month: month.into(), year: year.into() }
+    }
+}
+/// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateConfirmationTokenPaymentMethodDataNaverPay {
+    /// Whether to use Naver Pay points or a card to fund this transaction.
+    /// If not provided, this defaults to `card`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding: Option<CreateConfirmationTokenPaymentMethodDataNaverPayFunding>,
+}
+impl CreateConfirmationTokenPaymentMethodDataNaverPay {
+    pub fn new() -> Self {
+        Self { funding: None }
+    }
+}
+impl Default for CreateConfirmationTokenPaymentMethodDataNaverPay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether to use Naver Pay points or a card to fund this transaction.
+/// If not provided, this defaults to `card`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateConfirmationTokenPaymentMethodDataNaverPayFunding {
+    Card,
+    Points,
+}
+impl CreateConfirmationTokenPaymentMethodDataNaverPayFunding {
+    pub fn as_str(self) -> &'static str {
+        use CreateConfirmationTokenPaymentMethodDataNaverPayFunding::*;
+        match self {
+            Card => "card",
+            Points => "points",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataNaverPayFunding {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateConfirmationTokenPaymentMethodDataNaverPayFunding::*;
+        match s {
+            "card" => Ok(Card),
+            "points" => Ok(Points),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateConfirmationTokenPaymentMethodDataNaverPayFunding {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateConfirmationTokenPaymentMethodDataNaverPayFunding {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateConfirmationTokenPaymentMethodDataNaverPayFunding {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataNaverPayFunding {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateConfirmationTokenPaymentMethodDataNaverPayFunding",
+            )
+        })
+    }
+}
+/// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateConfirmationTokenPaymentMethodDataNzBankAccount {
+    /// The name on the bank account.
+    /// Only required if the account holder name is different from the name of the authorized signatory collected in the PaymentMethod’s billing details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_holder_name: Option<String>,
+    /// The account number for the bank account.
+    pub account_number: String,
+    /// The numeric code for the bank account's bank.
+    pub bank_code: String,
+    /// The numeric code for the bank account's bank branch.
+    pub branch_code: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+    /// The suffix of the bank account number.
+    pub suffix: String,
+}
+impl CreateConfirmationTokenPaymentMethodDataNzBankAccount {
+    pub fn new(
+        account_number: impl Into<String>,
+        bank_code: impl Into<String>,
+        branch_code: impl Into<String>,
+        suffix: impl Into<String>,
+    ) -> Self {
+        Self {
+            account_holder_name: None,
+            account_number: account_number.into(),
+            bank_code: bank_code.into(),
+            branch_code: branch_code.into(),
+            reference: None,
+            suffix: suffix.into(),
+        }
     }
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
@@ -1234,10 +1415,12 @@ pub enum CreateConfirmationTokenPaymentMethodDataType {
     Affirm,
     AfterpayClearpay,
     Alipay,
+    Alma,
     AmazonPay,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Billie,
     Blik,
     Boleto,
     Cashapp,
@@ -1247,20 +1430,30 @@ pub enum CreateConfirmationTokenPaymentMethodDataType {
     Giropay,
     Grabpay,
     Ideal,
+    KakaoPay,
     Klarna,
     Konbini,
+    KrCard,
     Link,
     Mobilepay,
+    Multibanco,
+    NaverPay,
+    NzBankAccount,
     Oxxo,
     P24,
+    PayByBank,
+    Payco,
     Paynow,
     Paypal,
     Pix,
     Promptpay,
     RevolutPay,
+    SamsungPay,
+    Satispay,
     SepaDebit,
     Sofort,
     Swish,
+    Twint,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -1275,10 +1468,12 @@ impl CreateConfirmationTokenPaymentMethodDataType {
             Affirm => "affirm",
             AfterpayClearpay => "afterpay_clearpay",
             Alipay => "alipay",
+            Alma => "alma",
             AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
+            Billie => "billie",
             Blik => "blik",
             Boleto => "boleto",
             Cashapp => "cashapp",
@@ -1288,20 +1483,30 @@ impl CreateConfirmationTokenPaymentMethodDataType {
             Giropay => "giropay",
             Grabpay => "grabpay",
             Ideal => "ideal",
+            KakaoPay => "kakao_pay",
             Klarna => "klarna",
             Konbini => "konbini",
+            KrCard => "kr_card",
             Link => "link",
             Mobilepay => "mobilepay",
+            Multibanco => "multibanco",
+            NaverPay => "naver_pay",
+            NzBankAccount => "nz_bank_account",
             Oxxo => "oxxo",
             P24 => "p24",
+            PayByBank => "pay_by_bank",
+            Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
             Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
+            SamsungPay => "samsung_pay",
+            Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Swish => "swish",
+            Twint => "twint",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -1319,10 +1524,12 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataType {
             "affirm" => Ok(Affirm),
             "afterpay_clearpay" => Ok(AfterpayClearpay),
             "alipay" => Ok(Alipay),
+            "alma" => Ok(Alma),
             "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
+            "billie" => Ok(Billie),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "cashapp" => Ok(Cashapp),
@@ -1332,20 +1539,30 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataType {
             "giropay" => Ok(Giropay),
             "grabpay" => Ok(Grabpay),
             "ideal" => Ok(Ideal),
+            "kakao_pay" => Ok(KakaoPay),
             "klarna" => Ok(Klarna),
             "konbini" => Ok(Konbini),
+            "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
             "mobilepay" => Ok(Mobilepay),
+            "multibanco" => Ok(Multibanco),
+            "naver_pay" => Ok(NaverPay),
+            "nz_bank_account" => Ok(NzBankAccount),
             "oxxo" => Ok(Oxxo),
             "p24" => Ok(P24),
+            "pay_by_bank" => Ok(PayByBank),
+            "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
+            "samsung_pay" => Ok(SamsungPay),
+            "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
+            "twint" => Ok(Twint),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -1528,6 +1745,186 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountType"))
     }
 }
+/// Payment-method-specific configuration for this ConfirmationToken.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateConfirmationTokenPaymentMethodOptions {
+    /// Configuration for any card payments confirmed using this ConfirmationToken.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<CreateConfirmationTokenPaymentMethodOptionsCard>,
+}
+impl CreateConfirmationTokenPaymentMethodOptions {
+    pub fn new() -> Self {
+        Self { card: None }
+    }
+}
+impl Default for CreateConfirmationTokenPaymentMethodOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration for any card payments confirmed using this ConfirmationToken.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateConfirmationTokenPaymentMethodOptionsCard {
+    /// Installment configuration for payments confirmed using this ConfirmationToken.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub installments: Option<CreateConfirmationTokenPaymentMethodOptionsCardInstallments>,
+}
+impl CreateConfirmationTokenPaymentMethodOptionsCard {
+    pub fn new() -> Self {
+        Self { installments: None }
+    }
+}
+impl Default for CreateConfirmationTokenPaymentMethodOptionsCard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Installment configuration for payments confirmed using this ConfirmationToken.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateConfirmationTokenPaymentMethodOptionsCardInstallments {
+    /// The selected installment plan to use for this payment attempt.
+    /// This parameter can only be provided during confirmation.
+    pub plan: CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlan,
+}
+impl CreateConfirmationTokenPaymentMethodOptionsCardInstallments {
+    pub fn new(
+        plan: impl Into<CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlan>,
+    ) -> Self {
+        Self { plan: plan.into() }
+    }
+}
+/// The selected installment plan to use for this payment attempt.
+/// This parameter can only be provided during confirmation.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlan {
+    /// For `fixed_count` installment plans, this is required.
+    /// It represents the number of installment payments your customer will make to their credit card.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub count: Option<u64>,
+    /// For `fixed_count` installment plans, this is required.
+    /// It represents the interval between installment payments your customer will make to their credit card.
+    /// One of `month`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval: Option<CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval>,
+    /// Type of installment plan, one of `fixed_count`.
+    #[serde(rename = "type")]
+    pub type_: CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType,
+}
+impl CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlan {
+    pub fn new(
+        type_: impl Into<CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType>,
+    ) -> Self {
+        Self { count: None, interval: None, type_: type_.into() }
+    }
+}
+/// For `fixed_count` installment plans, this is required.
+/// It represents the interval between installment payments your customer will make to their credit card.
+/// One of `month`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval {
+    Month,
+}
+impl CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval {
+    pub fn as_str(self) -> &'static str {
+        use CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval::*;
+        match self {
+            Month => "month",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval::*;
+        match s {
+            "month" => Ok(Month),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval"))
+    }
+}
+/// Type of installment plan, one of `fixed_count`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType {
+    FixedCount,
+}
+impl CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType {
+    pub fn as_str(self) -> &'static str {
+        use CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType::*;
+        match self {
+            FixedCount => "fixed_count",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType::*;
+        match s {
+            "fixed_count" => Ok(FixedCount),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType"))
+    }
+}
 /// Shipping information for this ConfirmationToken.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateConfirmationTokenShipping {
@@ -1605,6 +2002,14 @@ impl CreateConfirmationToken {
         payment_method_data: impl Into<CreateConfirmationTokenPaymentMethodData>,
     ) -> Self {
         self.inner.payment_method_data = Some(payment_method_data.into());
+        self
+    }
+    /// Payment-method-specific configuration for this ConfirmationToken.
+    pub fn payment_method_options(
+        mut self,
+        payment_method_options: impl Into<CreateConfirmationTokenPaymentMethodOptions>,
+    ) -> Self {
+        self.inner.payment_method_options = Some(payment_method_options.into());
         self
     }
     /// Return URL used to confirm the Intent.

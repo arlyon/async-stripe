@@ -120,6 +120,7 @@ const _: () = {
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum AccountRequirementsErrorCode {
+    InformationMissing,
     InvalidAddressCityStatePostalCode,
     InvalidAddressHighwayContractBox,
     InvalidAddressPrivateMailbox,
@@ -132,6 +133,7 @@ pub enum AccountRequirementsErrorCode {
     InvalidProductDescriptionLength,
     InvalidProductDescriptionUrlMatch,
     InvalidRepresentativeCountry,
+    InvalidSignator,
     InvalidStatementDescriptorBusinessMismatch,
     InvalidStatementDescriptorDenylisted,
     InvalidStatementDescriptorLength,
@@ -193,6 +195,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationDocumentTypeNotSupported,
     VerificationExtraneousDirectors,
     VerificationFailedAddressMatch,
+    VerificationFailedAuthorizerAuthority,
     VerificationFailedBusinessIecNumber,
     VerificationFailedDocumentMatch,
     VerificationFailedIdNumberMatch,
@@ -204,10 +207,14 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedResidentialAddress,
     VerificationFailedTaxIdMatch,
     VerificationFailedTaxIdNotIssued,
+    VerificationLegalEntityStructureMismatch,
     VerificationMissingDirectors,
     VerificationMissingExecutives,
     VerificationMissingOwners,
+    VerificationRejectedOwnershipExemptionReason,
     VerificationRequiresAdditionalMemorandumOfAssociations,
+    VerificationRequiresAdditionalProofOfRegistration,
+    VerificationSupportability,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -215,6 +222,7 @@ impl AccountRequirementsErrorCode {
     pub fn as_str(&self) -> &str {
         use AccountRequirementsErrorCode::*;
         match self {
+            InformationMissing => "information_missing",
             InvalidAddressCityStatePostalCode => "invalid_address_city_state_postal_code",
             InvalidAddressHighwayContractBox => "invalid_address_highway_contract_box",
             InvalidAddressPrivateMailbox => "invalid_address_private_mailbox",
@@ -227,6 +235,7 @@ impl AccountRequirementsErrorCode {
             InvalidProductDescriptionLength => "invalid_product_description_length",
             InvalidProductDescriptionUrlMatch => "invalid_product_description_url_match",
             InvalidRepresentativeCountry => "invalid_representative_country",
+            InvalidSignator => "invalid_signator",
             InvalidStatementDescriptorBusinessMismatch => {
                 "invalid_statement_descriptor_business_mismatch"
             }
@@ -318,6 +327,7 @@ impl AccountRequirementsErrorCode {
             VerificationDocumentTypeNotSupported => "verification_document_type_not_supported",
             VerificationExtraneousDirectors => "verification_extraneous_directors",
             VerificationFailedAddressMatch => "verification_failed_address_match",
+            VerificationFailedAuthorizerAuthority => "verification_failed_authorizer_authority",
             VerificationFailedBusinessIecNumber => "verification_failed_business_iec_number",
             VerificationFailedDocumentMatch => "verification_failed_document_match",
             VerificationFailedIdNumberMatch => "verification_failed_id_number_match",
@@ -331,12 +341,22 @@ impl AccountRequirementsErrorCode {
             VerificationFailedResidentialAddress => "verification_failed_residential_address",
             VerificationFailedTaxIdMatch => "verification_failed_tax_id_match",
             VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",
+            VerificationLegalEntityStructureMismatch => {
+                "verification_legal_entity_structure_mismatch"
+            }
             VerificationMissingDirectors => "verification_missing_directors",
             VerificationMissingExecutives => "verification_missing_executives",
             VerificationMissingOwners => "verification_missing_owners",
+            VerificationRejectedOwnershipExemptionReason => {
+                "verification_rejected_ownership_exemption_reason"
+            }
             VerificationRequiresAdditionalMemorandumOfAssociations => {
                 "verification_requires_additional_memorandum_of_associations"
             }
+            VerificationRequiresAdditionalProofOfRegistration => {
+                "verification_requires_additional_proof_of_registration"
+            }
+            VerificationSupportability => "verification_supportability",
             Unknown(v) => v,
         }
     }
@@ -347,6 +367,7 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountRequirementsErrorCode::*;
         match s {
+            "information_missing" => Ok(InformationMissing),
             "invalid_address_city_state_postal_code" => Ok(InvalidAddressCityStatePostalCode),
             "invalid_address_highway_contract_box" => Ok(InvalidAddressHighwayContractBox),
             "invalid_address_private_mailbox" => Ok(InvalidAddressPrivateMailbox),
@@ -359,6 +380,7 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
             "invalid_product_description_length" => Ok(InvalidProductDescriptionLength),
             "invalid_product_description_url_match" => Ok(InvalidProductDescriptionUrlMatch),
             "invalid_representative_country" => Ok(InvalidRepresentativeCountry),
+            "invalid_signator" => Ok(InvalidSignator),
             "invalid_statement_descriptor_business_mismatch" => {
                 Ok(InvalidStatementDescriptorBusinessMismatch)
             }
@@ -452,6 +474,7 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
             "verification_document_type_not_supported" => Ok(VerificationDocumentTypeNotSupported),
             "verification_extraneous_directors" => Ok(VerificationExtraneousDirectors),
             "verification_failed_address_match" => Ok(VerificationFailedAddressMatch),
+            "verification_failed_authorizer_authority" => Ok(VerificationFailedAuthorizerAuthority),
             "verification_failed_business_iec_number" => Ok(VerificationFailedBusinessIecNumber),
             "verification_failed_document_match" => Ok(VerificationFailedDocumentMatch),
             "verification_failed_id_number_match" => Ok(VerificationFailedIdNumberMatch),
@@ -465,12 +488,22 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
             "verification_failed_residential_address" => Ok(VerificationFailedResidentialAddress),
             "verification_failed_tax_id_match" => Ok(VerificationFailedTaxIdMatch),
             "verification_failed_tax_id_not_issued" => Ok(VerificationFailedTaxIdNotIssued),
+            "verification_legal_entity_structure_mismatch" => {
+                Ok(VerificationLegalEntityStructureMismatch)
+            }
             "verification_missing_directors" => Ok(VerificationMissingDirectors),
             "verification_missing_executives" => Ok(VerificationMissingExecutives),
             "verification_missing_owners" => Ok(VerificationMissingOwners),
+            "verification_rejected_ownership_exemption_reason" => {
+                Ok(VerificationRejectedOwnershipExemptionReason)
+            }
             "verification_requires_additional_memorandum_of_associations" => {
                 Ok(VerificationRequiresAdditionalMemorandumOfAssociations)
             }
+            "verification_requires_additional_proof_of_registration" => {
+                Ok(VerificationRequiresAdditionalProofOfRegistration)
+            }
+            "verification_supportability" => Ok(VerificationSupportability),
             v => Ok(Unknown(v.to_owned())),
         }
     }

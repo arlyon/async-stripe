@@ -91,15 +91,21 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollect {
 pub struct CreateAccountLinkCollectionOptions {
     /// Specifies whether the platform collects only currently_due requirements (`currently_due`) or both currently_due and eventually_due requirements (`eventually_due`).
     /// If you don't specify `collection_options`, the default value is `currently_due`.
-    pub fields: CreateAccountLinkCollectionOptionsFields,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fields: Option<CreateAccountLinkCollectionOptionsFields>,
     /// Specifies whether the platform collects future_requirements in addition to requirements in Connect Onboarding.
     /// The default value is `omit`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub future_requirements: Option<CreateAccountLinkCollectionOptionsFutureRequirements>,
 }
 impl CreateAccountLinkCollectionOptions {
-    pub fn new(fields: impl Into<CreateAccountLinkCollectionOptionsFields>) -> Self {
-        Self { fields: fields.into(), future_requirements: None }
+    pub fn new() -> Self {
+        Self { fields: None, future_requirements: None }
+    }
+}
+impl Default for CreateAccountLinkCollectionOptions {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Specifies whether the platform collects only currently_due requirements (`currently_due`) or both currently_due and eventually_due requirements (`eventually_due`).

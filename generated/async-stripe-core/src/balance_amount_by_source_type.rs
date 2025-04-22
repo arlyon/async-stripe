@@ -2,11 +2,11 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BalanceAmountBySourceType {
-    /// Amount for bank account.
+    /// Amount coming from [legacy US ACH payments](https://docs.stripe.com/ach-deprecated).
     pub bank_account: Option<i64>,
-    /// Amount for card.
+    /// Amount coming from most payment methods, including cards as well as [non-legacy bank debits](https://docs.stripe.com/payments/bank-debits).
     pub card: Option<i64>,
-    /// Amount for FPX.
+    /// Amount coming from [FPX](https://docs.stripe.com/payments/fpx), a Malaysian payment method.
     pub fpx: Option<i64>,
 }
 #[doc(hidden)]

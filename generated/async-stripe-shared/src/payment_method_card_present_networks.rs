@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodCardPresentNetworks {
-    /// All available networks for the card.
+    /// All networks available for selection via [payment_method_options.card.network](/api/payment_intents/confirm#confirm_payment_intent-payment_method_options-card-network).
     pub available: Vec<String>,
     /// The preferred network for the card.
     pub preferred: Option<String>,

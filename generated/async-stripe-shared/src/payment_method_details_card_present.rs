@@ -5,8 +5,10 @@ pub struct PaymentMethodDetailsCardPresent {
     /// The authorized amount
     pub amount_authorized: Option<i64>,
     /// Card brand.
-    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: Option<String>,
+    /// The [product code](https://stripe.com/docs/card-product-codes) that identifies the specific program or product associated with a card.
+    pub brand_product: Option<String>,
     /// When using manual capture, a future timestamp after which the charge will be automatically refunded if uncaptured.
     pub capture_before: Option<stripe_types::Timestamp>,
     /// The cardholder name as read from the card, in [ISO 7813](https://en.wikipedia.org/wiki/ISO/IEC_7813) format.
@@ -49,21 +51,29 @@ pub struct PaymentMethodDetailsCardPresent {
     /// The last four digits of the card.
     pub last4: Option<String>,
     /// Identifies which network this charge was processed on.
-    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub network: Option<String>,
+    /// This is used by the financial networks to identify a transaction.
+    /// Visa calls this the Transaction ID, Mastercard calls this the Trace ID, and American Express calls this the Acquirer Reference Data.
+    /// This value will be present if it is returned by the financial network in the authorization response, and null otherwise.
+    pub network_transaction_id: Option<String>,
     /// Details about payments collected offline.
     pub offline: Option<stripe_shared::PaymentMethodDetailsCardPresentOffline>,
     /// Defines whether the authorized amount can be over-captured or not
     pub overcapture_supported: bool,
+    /// EMV tag 5F2D. Preferred languages specified by the integrated circuit chip.
+    pub preferred_locales: Option<Vec<String>>,
     /// How card details were read in this transaction.
     pub read_method: Option<PaymentMethodDetailsCardPresentReadMethod>,
     /// A collection of fields required to be displayed on receipts. Only required for EMV transactions.
     pub receipt: Option<stripe_shared::PaymentMethodDetailsCardPresentReceipt>,
+    pub wallet: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet>,
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsCardPresentBuilder {
     amount_authorized: Option<Option<i64>>,
     brand: Option<Option<String>>,
+    brand_product: Option<Option<String>>,
     capture_before: Option<Option<stripe_types::Timestamp>>,
     cardholder_name: Option<Option<String>>,
     country: Option<Option<String>>,
@@ -79,10 +89,13 @@ pub struct PaymentMethodDetailsCardPresentBuilder {
     issuer: Option<Option<String>>,
     last4: Option<Option<String>>,
     network: Option<Option<String>>,
+    network_transaction_id: Option<Option<String>>,
     offline: Option<Option<stripe_shared::PaymentMethodDetailsCardPresentOffline>>,
     overcapture_supported: Option<bool>,
+    preferred_locales: Option<Option<Vec<String>>>,
     read_method: Option<Option<PaymentMethodDetailsCardPresentReadMethod>>,
     receipt: Option<Option<stripe_shared::PaymentMethodDetailsCardPresentReceipt>>,
+    wallet: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet>>,
 }
 
 #[allow(
@@ -127,6 +140,7 @@ const _: () = {
             Ok(match k {
                 "amount_authorized" => Deserialize::begin(&mut self.amount_authorized),
                 "brand" => Deserialize::begin(&mut self.brand),
+                "brand_product" => Deserialize::begin(&mut self.brand_product),
                 "capture_before" => Deserialize::begin(&mut self.capture_before),
                 "cardholder_name" => Deserialize::begin(&mut self.cardholder_name),
                 "country" => Deserialize::begin(&mut self.country),
@@ -144,10 +158,13 @@ const _: () = {
                 "issuer" => Deserialize::begin(&mut self.issuer),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "network" => Deserialize::begin(&mut self.network),
+                "network_transaction_id" => Deserialize::begin(&mut self.network_transaction_id),
                 "offline" => Deserialize::begin(&mut self.offline),
                 "overcapture_supported" => Deserialize::begin(&mut self.overcapture_supported),
+                "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
                 "read_method" => Deserialize::begin(&mut self.read_method),
                 "receipt" => Deserialize::begin(&mut self.receipt),
+                "wallet" => Deserialize::begin(&mut self.wallet),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -157,6 +174,7 @@ const _: () = {
             Self {
                 amount_authorized: Deserialize::default(),
                 brand: Deserialize::default(),
+                brand_product: Deserialize::default(),
                 capture_before: Deserialize::default(),
                 cardholder_name: Deserialize::default(),
                 country: Deserialize::default(),
@@ -172,10 +190,13 @@ const _: () = {
                 issuer: Deserialize::default(),
                 last4: Deserialize::default(),
                 network: Deserialize::default(),
+                network_transaction_id: Deserialize::default(),
                 offline: Deserialize::default(),
                 overcapture_supported: Deserialize::default(),
+                preferred_locales: Deserialize::default(),
                 read_method: Deserialize::default(),
                 receipt: Deserialize::default(),
+                wallet: Deserialize::default(),
             }
         }
 
@@ -183,6 +204,7 @@ const _: () = {
             let (
                 Some(amount_authorized),
                 Some(brand),
+                Some(brand_product),
                 Some(capture_before),
                 Some(cardholder_name),
                 Some(country),
@@ -198,13 +220,17 @@ const _: () = {
                 Some(issuer),
                 Some(last4),
                 Some(network),
+                Some(network_transaction_id),
                 Some(offline),
                 Some(overcapture_supported),
+                Some(preferred_locales),
                 Some(read_method),
                 Some(receipt),
+                Some(wallet),
             ) = (
                 self.amount_authorized,
                 self.brand.take(),
+                self.brand_product.take(),
                 self.capture_before,
                 self.cardholder_name.take(),
                 self.country.take(),
@@ -220,10 +246,13 @@ const _: () = {
                 self.issuer.take(),
                 self.last4.take(),
                 self.network.take(),
+                self.network_transaction_id.take(),
                 self.offline,
                 self.overcapture_supported,
+                self.preferred_locales.take(),
                 self.read_method,
                 self.receipt.take(),
+                self.wallet,
             )
             else {
                 return None;
@@ -231,6 +260,7 @@ const _: () = {
             Some(Self::Out {
                 amount_authorized,
                 brand,
+                brand_product,
                 capture_before,
                 cardholder_name,
                 country,
@@ -246,10 +276,13 @@ const _: () = {
                 issuer,
                 last4,
                 network,
+                network_transaction_id,
                 offline,
                 overcapture_supported,
+                preferred_locales,
                 read_method,
                 receipt,
+                wallet,
             })
         }
     }
@@ -279,6 +312,7 @@ const _: () = {
                 match k.as_str() {
                     "amount_authorized" => b.amount_authorized = FromValueOpt::from_value(v),
                     "brand" => b.brand = FromValueOpt::from_value(v),
+                    "brand_product" => b.brand_product = FromValueOpt::from_value(v),
                     "capture_before" => b.capture_before = FromValueOpt::from_value(v),
                     "cardholder_name" => b.cardholder_name = FromValueOpt::from_value(v),
                     "country" => b.country = FromValueOpt::from_value(v),
@@ -296,12 +330,17 @@ const _: () = {
                     "issuer" => b.issuer = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "network" => b.network = FromValueOpt::from_value(v),
+                    "network_transaction_id" => {
+                        b.network_transaction_id = FromValueOpt::from_value(v)
+                    }
                     "offline" => b.offline = FromValueOpt::from_value(v),
                     "overcapture_supported" => {
                         b.overcapture_supported = FromValueOpt::from_value(v)
                     }
+                    "preferred_locales" => b.preferred_locales = FromValueOpt::from_value(v),
                     "read_method" => b.read_method = FromValueOpt::from_value(v),
                     "receipt" => b.receipt = FromValueOpt::from_value(v),
+                    "wallet" => b.wallet = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

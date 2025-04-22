@@ -13,6 +13,7 @@ pub struct PortalSubscriptionUpdate {
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
     /// Defaults to a value of `none` if you don't set it during creation.
     pub proration_behavior: PortalSubscriptionUpdateProrationBehavior,
+    pub schedule_at_period_end: stripe_billing::PortalResourceScheduleUpdateAtPeriodEnd,
 }
 #[doc(hidden)]
 pub struct PortalSubscriptionUpdateBuilder {
@@ -20,6 +21,7 @@ pub struct PortalSubscriptionUpdateBuilder {
     enabled: Option<bool>,
     products: Option<Option<Vec<stripe_billing::PortalSubscriptionUpdateProduct>>>,
     proration_behavior: Option<PortalSubscriptionUpdateProrationBehavior>,
+    schedule_at_period_end: Option<stripe_billing::PortalResourceScheduleUpdateAtPeriodEnd>,
 }
 
 #[allow(
@@ -66,6 +68,7 @@ const _: () = {
                 "enabled" => Deserialize::begin(&mut self.enabled),
                 "products" => Deserialize::begin(&mut self.products),
                 "proration_behavior" => Deserialize::begin(&mut self.proration_behavior),
+                "schedule_at_period_end" => Deserialize::begin(&mut self.schedule_at_period_end),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -77,6 +80,7 @@ const _: () = {
                 enabled: Deserialize::default(),
                 products: Deserialize::default(),
                 proration_behavior: Deserialize::default(),
+                schedule_at_period_end: Deserialize::default(),
             }
         }
 
@@ -86,16 +90,24 @@ const _: () = {
                 Some(enabled),
                 Some(products),
                 Some(proration_behavior),
+                Some(schedule_at_period_end),
             ) = (
                 self.default_allowed_updates.take(),
                 self.enabled,
                 self.products.take(),
                 self.proration_behavior,
+                self.schedule_at_period_end.take(),
             )
             else {
                 return None;
             };
-            Some(Self::Out { default_allowed_updates, enabled, products, proration_behavior })
+            Some(Self::Out {
+                default_allowed_updates,
+                enabled,
+                products,
+                proration_behavior,
+                schedule_at_period_end,
+            })
         }
     }
 
@@ -128,6 +140,9 @@ const _: () = {
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
                     "products" => b.products = FromValueOpt::from_value(v),
                     "proration_behavior" => b.proration_behavior = FromValueOpt::from_value(v),
+                    "schedule_at_period_end" => {
+                        b.schedule_at_period_end = FromValueOpt::from_value(v)
+                    }
 
                     _ => {}
                 }

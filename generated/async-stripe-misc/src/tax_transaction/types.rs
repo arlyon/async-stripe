@@ -23,6 +23,8 @@ pub struct TaxTransaction {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The Unix timestamp representing when the tax liability is assumed or reduced.
+    pub posted_at: stripe_types::Timestamp,
     /// A custom unique identifier, such as 'myOrder_123'.
     pub reference: String,
     /// If `type=reversal`, contains information about what was reversed.
@@ -47,6 +49,7 @@ pub struct TaxTransactionBuilder {
     line_items: Option<Option<stripe_types::List<stripe_misc::TaxTransactionLineItem>>>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    posted_at: Option<stripe_types::Timestamp>,
     reference: Option<String>,
     reversal: Option<Option<stripe_misc::TaxProductResourceTaxTransactionResourceReversal>>,
     ship_from_details: Option<Option<stripe_misc::TaxProductResourceShipFromDetails>>,
@@ -103,6 +106,7 @@ const _: () = {
                 "line_items" => Deserialize::begin(&mut self.line_items),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
+                "posted_at" => Deserialize::begin(&mut self.posted_at),
                 "reference" => Deserialize::begin(&mut self.reference),
                 "reversal" => Deserialize::begin(&mut self.reversal),
                 "ship_from_details" => Deserialize::begin(&mut self.ship_from_details),
@@ -124,6 +128,7 @@ const _: () = {
                 line_items: Deserialize::default(),
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
+                posted_at: Deserialize::default(),
                 reference: Deserialize::default(),
                 reversal: Deserialize::default(),
                 ship_from_details: Deserialize::default(),
@@ -143,6 +148,7 @@ const _: () = {
                 Some(line_items),
                 Some(livemode),
                 Some(metadata),
+                Some(posted_at),
                 Some(reference),
                 Some(reversal),
                 Some(ship_from_details),
@@ -158,6 +164,7 @@ const _: () = {
                 self.line_items.take(),
                 self.livemode,
                 self.metadata.take(),
+                self.posted_at,
                 self.reference.take(),
                 self.reversal.take(),
                 self.ship_from_details.take(),
@@ -177,6 +184,7 @@ const _: () = {
                 line_items,
                 livemode,
                 metadata,
+                posted_at,
                 reference,
                 reversal,
                 ship_from_details,
@@ -218,6 +226,7 @@ const _: () = {
                     "line_items" => b.line_items = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "posted_at" => b.posted_at = FromValueOpt::from_value(v),
                     "reference" => b.reference = FromValueOpt::from_value(v),
                     "reversal" => b.reversal = FromValueOpt::from_value(v),
                     "ship_from_details" => b.ship_from_details = FromValueOpt::from_value(v),
@@ -236,7 +245,7 @@ const _: () = {
 impl serde::Serialize for TaxTransaction {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TaxTransaction", 15)?;
+        let mut s = s.serialize_struct("TaxTransaction", 16)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
@@ -245,6 +254,7 @@ impl serde::Serialize for TaxTransaction {
         s.serialize_field("line_items", &self.line_items)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("posted_at", &self.posted_at)?;
         s.serialize_field("reference", &self.reference)?;
         s.serialize_field("reversal", &self.reversal)?;
         s.serialize_field("ship_from_details", &self.ship_from_details)?;

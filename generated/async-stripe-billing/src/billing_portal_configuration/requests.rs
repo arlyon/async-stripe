@@ -175,7 +175,8 @@ impl StripeRequest for RetrieveBillingPortalConfiguration {
 }
 #[derive(Clone, Debug, serde::Serialize)]
 struct CreateBillingPortalConfigurationBuilder {
-    business_profile: CreateBillingPortalConfigurationBusinessProfile,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    business_profile: Option<CreateBillingPortalConfigurationBusinessProfile>,
     #[serde(skip_serializing_if = "Option::is_none")]
     default_return_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -187,12 +188,9 @@ struct CreateBillingPortalConfigurationBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
 }
 impl CreateBillingPortalConfigurationBuilder {
-    fn new(
-        business_profile: impl Into<CreateBillingPortalConfigurationBusinessProfile>,
-        features: impl Into<CreateBillingPortalConfigurationFeatures>,
-    ) -> Self {
+    fn new(features: impl Into<CreateBillingPortalConfigurationFeatures>) -> Self {
         Self {
-            business_profile: business_profile.into(),
+            business_profile: None,
             default_return_url: None,
             expand: None,
             features: features.into(),
@@ -378,6 +376,7 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancel {
     pub mode: Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode>,
     /// Whether to create prorations when canceling subscriptions.
     /// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
+    /// Passing `always_invoice` will result in an error.
     /// No prorations are generated when canceling a subscription at the end of its natural billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior:
@@ -558,6 +557,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Whether to create prorations when canceling subscriptions.
 /// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
+/// Passing `always_invoice` will result in an error.
 /// No prorations are generated when canceling a subscription at the end of its natural billing period.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
@@ -629,31 +629,33 @@ impl<'de> serde::Deserialize<'de>
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
-    pub default_allowed_updates:
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_allowed_updates: Option<
         Vec<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates>,
+    >,
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// The list of up to 10 products that support subscription updates.
-    pub products: Vec<SubscriptionUpdateProductParam>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub products: Option<Vec<SubscriptionUpdateProductParam>>,
     /// Determines how to handle prorations resulting from subscription updates.
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior:
         Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
+    /// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub schedule_at_period_end:
+        Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd>,
 }
 impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
-    pub fn new(
-        default_allowed_updates: impl Into<
-            Vec<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates>,
-        >,
-        enabled: impl Into<bool>,
-        products: impl Into<Vec<SubscriptionUpdateProductParam>>,
-    ) -> Self {
+    pub fn new(enabled: impl Into<bool>) -> Self {
         Self {
-            default_allowed_updates: default_allowed_updates.into(),
+            default_allowed_updates: None,
             enabled: enabled.into(),
-            products: products.into(),
+            products: None,
             proration_behavior: None,
+            schedule_at_period_end: None,
         }
     }
 }
@@ -792,6 +794,109 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior"))
     }
 }
+/// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
+    /// List of conditions.
+    /// When any condition is true, the update will be scheduled at the end of the current period.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<
+        Vec<
+            CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions,
+        >,
+    >,
+}
+impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
+    pub fn new() -> Self {
+        Self { conditions: None }
+    }
+}
+impl Default for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// List of conditions.
+/// When any condition is true, the update will be scheduled at the end of the current period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
+    /// The type of condition.
+    #[serde(rename = "type")]
+    pub type_:
+        CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType,
+}
+impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
+    pub fn new(
+        type_: impl Into<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType>,
+    ) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// The type of condition.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    DecreasingItemAmount,
+    ShorteningInterval,
+}
+impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType {
+    pub fn as_str(self) -> &'static str {
+        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType::*;
+        match self {
+            DecreasingItemAmount => "decreasing_item_amount",
+            ShorteningInterval => "shortening_interval",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType::*;
+        match s {
+            "decreasing_item_amount" => Ok(DecreasingItemAmount),
+            "shortening_interval" => Ok(ShorteningInterval),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType"))
+    }
+}
 /// The hosted login page for this configuration.
 /// Learn more about the portal login page in our [integration docs](https://stripe.com/docs/billing/subscriptions/integrating-customer-portal#share).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -811,16 +916,16 @@ pub struct CreateBillingPortalConfiguration {
 }
 impl CreateBillingPortalConfiguration {
     /// Construct a new `CreateBillingPortalConfiguration`.
-    pub fn new(
+    pub fn new(features: impl Into<CreateBillingPortalConfigurationFeatures>) -> Self {
+        Self { inner: CreateBillingPortalConfigurationBuilder::new(features.into()) }
+    }
+    /// The business information shown to customers in the portal.
+    pub fn business_profile(
+        mut self,
         business_profile: impl Into<CreateBillingPortalConfigurationBusinessProfile>,
-        features: impl Into<CreateBillingPortalConfigurationFeatures>,
     ) -> Self {
-        Self {
-            inner: CreateBillingPortalConfigurationBuilder::new(
-                business_profile.into(),
-                features.into(),
-            ),
-        }
+        self.inner.business_profile = Some(business_profile.into());
+        self
     }
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
     /// This can be [overriden](https://stripe.com/docs/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
@@ -1093,6 +1198,7 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
     pub mode: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode>,
     /// Whether to create prorations when canceling subscriptions.
     /// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
+    /// Passing `always_invoice` will result in an error.
     /// No prorations are generated when canceling a subscription at the end of its natural billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior:
@@ -1268,6 +1374,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Whether to create prorations when canceling subscriptions.
 /// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
+/// Passing `always_invoice` will result in an error.
 /// No prorations are generated when canceling a subscription at the end of its natural billing period.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
@@ -1354,6 +1461,10 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior:
         Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
+    /// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub schedule_at_period_end:
+        Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd>,
 }
 impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     pub fn new() -> Self {
@@ -1362,6 +1473,7 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
             enabled: None,
             products: None,
             proration_behavior: None,
+            schedule_at_period_end: None,
         }
     }
 }
@@ -1503,6 +1615,109 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior"))
+    }
+}
+/// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
+    /// List of conditions.
+    /// When any condition is true, the update will be scheduled at the end of the current period.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<
+        Vec<
+            UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions,
+        >,
+    >,
+}
+impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
+    pub fn new() -> Self {
+        Self { conditions: None }
+    }
+}
+impl Default for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// List of conditions.
+/// When any condition is true, the update will be scheduled at the end of the current period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
+    /// The type of condition.
+    #[serde(rename = "type")]
+    pub type_:
+        UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType,
+}
+impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
+    pub fn new(
+        type_: impl Into<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType>,
+    ) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// The type of condition.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    DecreasingItemAmount,
+    ShorteningInterval,
+}
+impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType {
+    pub fn as_str(self) -> &'static str {
+        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType::*;
+        match self {
+            DecreasingItemAmount => "decreasing_item_amount",
+            ShorteningInterval => "shortening_interval",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType::*;
+        match s {
+            "decreasing_item_amount" => Ok(DecreasingItemAmount),
+            "shortening_interval" => Ok(ShorteningInterval),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType"))
     }
 }
 /// The hosted login page for this configuration.

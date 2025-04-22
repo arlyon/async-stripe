@@ -33,7 +33,7 @@ impl CreateTerminalConnectionToken {
     /// The id of the location that this connection token is scoped to.
     /// If specified the connection token will only be usable with readers assigned to that location, otherwise the connection token will be usable with all readers.
     /// Note that location scoping only applies to internet-connected readers.
-    /// For more details, see [the docs on scoping connection tokens](https://stripe.com/docs/terminal/fleet/locations#connection-tokens).
+    /// For more details, see [the docs on scoping connection tokens](https://docs.stripe.com/terminal/fleet/locations-and-zones?dashboard-or-api=api#connection-tokens).
     pub fn location(mut self, location: impl Into<String>) -> Self {
         self.inner.location = Some(location.into());
         self

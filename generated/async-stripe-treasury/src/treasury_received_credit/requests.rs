@@ -50,6 +50,7 @@ pub enum ListTreasuryReceivedCreditLinkedFlowsSourceFlowType {
     CreditReversal,
     Other,
     OutboundPayment,
+    OutboundTransfer,
     Payout,
 }
 impl ListTreasuryReceivedCreditLinkedFlowsSourceFlowType {
@@ -59,6 +60,7 @@ impl ListTreasuryReceivedCreditLinkedFlowsSourceFlowType {
             CreditReversal => "credit_reversal",
             Other => "other",
             OutboundPayment => "outbound_payment",
+            OutboundTransfer => "outbound_transfer",
             Payout => "payout",
         }
     }
@@ -72,6 +74,7 @@ impl std::str::FromStr for ListTreasuryReceivedCreditLinkedFlowsSourceFlowType {
             "credit_reversal" => Ok(CreditReversal),
             "other" => Ok(Other),
             "outbound_payment" => Ok(OutboundPayment),
+            "outbound_transfer" => Ok(OutboundTransfer),
             "payout" => Ok(Payout),
             _ => Err(stripe_types::StripeParseError),
         }

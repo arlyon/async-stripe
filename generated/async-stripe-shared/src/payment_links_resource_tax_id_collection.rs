@@ -4,10 +4,12 @@
 pub struct PaymentLinksResourceTaxIdCollection {
     /// Indicates whether tax ID collection is enabled for the session.
     pub enabled: bool,
+    pub required: PaymentLinksResourceTaxIdCollectionRequired,
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourceTaxIdCollectionBuilder {
     enabled: Option<bool>,
+    required: Option<PaymentLinksResourceTaxIdCollectionRequired>,
 }
 
 #[allow(
@@ -51,20 +53,21 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "enabled" => Deserialize::begin(&mut self.enabled),
+                "required" => Deserialize::begin(&mut self.required),
 
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { enabled: Deserialize::default() }
+            Self { enabled: Deserialize::default(), required: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled),) = (self.enabled,) else {
+            let (Some(enabled), Some(required)) = (self.enabled, self.required) else {
                 return None;
             };
-            Some(Self::Out { enabled })
+            Some(Self::Out { enabled, required })
         }
     }
 
@@ -92,6 +95,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
+                    "required" => b.required = FromValueOpt::from_value(v),
 
                     _ => {}
                 }
@@ -100,3 +104,79 @@ const _: () = {
         }
     }
 };
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum PaymentLinksResourceTaxIdCollectionRequired {
+    IfSupported,
+    Never,
+}
+impl PaymentLinksResourceTaxIdCollectionRequired {
+    pub fn as_str(self) -> &'static str {
+        use PaymentLinksResourceTaxIdCollectionRequired::*;
+        match self {
+            IfSupported => "if_supported",
+            Never => "never",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentLinksResourceTaxIdCollectionRequired {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentLinksResourceTaxIdCollectionRequired::*;
+        match s {
+            "if_supported" => Ok(IfSupported),
+            "never" => Ok(Never),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for PaymentLinksResourceTaxIdCollectionRequired {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentLinksResourceTaxIdCollectionRequired {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentLinksResourceTaxIdCollectionRequired {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentLinksResourceTaxIdCollectionRequired {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentLinksResourceTaxIdCollectionRequired> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentLinksResourceTaxIdCollectionRequired::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentLinksResourceTaxIdCollectionRequired);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PaymentLinksResourceTaxIdCollectionRequired {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentLinksResourceTaxIdCollectionRequired",
+            )
+        })
+    }
+}

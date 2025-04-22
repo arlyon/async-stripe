@@ -2,6 +2,10 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodPaypal {
+    /// Two-letter ISO code representing the buyer's country.
+    /// Values are provided by PayPal directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    pub country: Option<String>,
     /// Owner's email. Values are provided by PayPal directly
     /// (if supported) at the time of authorization or settlement. They cannot be set or mutated.
     pub payer_email: Option<String>,
@@ -10,6 +14,7 @@ pub struct PaymentMethodPaypal {
 }
 #[doc(hidden)]
 pub struct PaymentMethodPaypalBuilder {
+    country: Option<Option<String>>,
     payer_email: Option<Option<String>>,
     payer_id: Option<Option<String>>,
 }
@@ -54,6 +59,7 @@ const _: () = {
         type Out = PaymentMethodPaypal;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "country" => Deserialize::begin(&mut self.country),
                 "payer_email" => Deserialize::begin(&mut self.payer_email),
                 "payer_id" => Deserialize::begin(&mut self.payer_id),
 
@@ -62,16 +68,20 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { payer_email: Deserialize::default(), payer_id: Deserialize::default() }
+            Self {
+                country: Deserialize::default(),
+                payer_email: Deserialize::default(),
+                payer_id: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(payer_email), Some(payer_id)) =
-                (self.payer_email.take(), self.payer_id.take())
+            let (Some(country), Some(payer_email), Some(payer_id)) =
+                (self.country.take(), self.payer_email.take(), self.payer_id.take())
             else {
                 return None;
             };
-            Some(Self::Out { payer_email, payer_id })
+            Some(Self::Out { country, payer_email, payer_id })
         }
     }
 
@@ -98,6 +108,7 @@ const _: () = {
             let mut b = PaymentMethodPaypalBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "country" => b.country = FromValueOpt::from_value(v),
                     "payer_email" => b.payer_email = FromValueOpt::from_value(v),
                     "payer_id" => b.payer_id = FromValueOpt::from_value(v),
 

@@ -17,7 +17,7 @@ pub struct PaymentLinksResourceInvoiceSettings {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Options for invoice PDF rendering.
-    pub rendering_options: Option<stripe_shared::InvoiceSettingRenderingOptions>,
+    pub rendering_options: Option<stripe_shared::InvoiceSettingCheckoutRenderingOptions>,
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourceInvoiceSettingsBuilder {
@@ -27,7 +27,7 @@ pub struct PaymentLinksResourceInvoiceSettingsBuilder {
     footer: Option<Option<String>>,
     issuer: Option<Option<stripe_shared::ConnectAccountReference>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
-    rendering_options: Option<Option<stripe_shared::InvoiceSettingRenderingOptions>>,
+    rendering_options: Option<Option<stripe_shared::InvoiceSettingCheckoutRenderingOptions>>,
 }
 
 #[allow(

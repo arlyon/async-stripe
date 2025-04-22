@@ -143,7 +143,7 @@ impl RetrieveEventBuilder {
         Self { expand: None }
     }
 }
-/// Retrieves the details of an event.
+/// Retrieves the details of an event if it was created in the last 30 days.
 /// Supply the unique identifier of the event, which you might have received in a webhook.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct RetrieveEvent {

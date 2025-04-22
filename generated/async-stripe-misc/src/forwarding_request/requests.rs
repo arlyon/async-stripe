@@ -180,6 +180,8 @@ impl StripeRequest for RetrieveForwardingRequest {
 struct CreateForwardingRequestBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<std::collections::HashMap<String, String>>,
     payment_method: String,
     replacements: Vec<stripe_misc::ForwardingRequestReplacements>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -194,6 +196,7 @@ impl CreateForwardingRequestBuilder {
     ) -> Self {
         Self {
             expand: None,
+            metadata: None,
             payment_method: payment_method.into(),
             replacements: replacements.into(),
             request: None,
@@ -259,6 +262,17 @@ impl CreateForwardingRequest {
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
         self.inner.expand = Some(expand.into());
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
         self
     }
     /// The request body and headers to be sent to the destination endpoint.

@@ -4,8 +4,10 @@
 pub struct PaymentMethodDetailsCard {
     /// The authorized amount.
 pub amount_authorized: Option<i64>,
+    /// Authorization code on the charge.
+pub authorization_code: Option<String>,
         /// Card brand.
-    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
 pub brand: Option<String>,
         /// When using manual capture, a future timestamp at which the charge will be automatically refunded if uncaptured.
 pub capture_before: Option<stripe_types::Timestamp>,
@@ -49,11 +51,17 @@ pub mandate: Option<String>,
 pub moto: Option<bool>,
 pub multicapture: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticapture>,
         /// Identifies which network this charge was processed on.
-    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
 pub network: Option<String>,
         /// If this card has network token credentials, this contains the details of the network token credentials.
 pub network_token: Option<stripe_shared::PaymentMethodDetailsCardNetworkToken>,
+        /// This is used by the financial networks to identify a transaction.
+    /// Visa calls this the Transaction ID, Mastercard calls this the Trace ID, and American Express calls this the Acquirer Reference Data.
+    /// This value will be present if it is returned by the financial network in the authorization response, and null otherwise.
+pub network_transaction_id: Option<String>,
 pub overcapture: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercapture>,
+    /// Status of a card based on the card issuer.
+pub regulated_status: Option<PaymentMethodDetailsCardRegulatedStatus>,
     /// Populated if this transaction used 3D Secure authentication.
 pub three_d_secure: Option<stripe_shared::ThreeDSecureDetailsCharge>,
     /// If this Card is part of a card wallet, this contains the details of the card wallet.
@@ -63,6 +71,7 @@ pub wallet: Option<stripe_shared::PaymentMethodDetailsCardWallet>,
 #[doc(hidden)]
 pub struct PaymentMethodDetailsCardBuilder {
     amount_authorized: Option<Option<i64>>,
+authorization_code: Option<Option<String>>,
 brand: Option<Option<String>>,
 capture_before: Option<Option<stripe_types::Timestamp>>,
 checks: Option<Option<stripe_shared::PaymentMethodDetailsCardChecks>>,
@@ -83,7 +92,9 @@ moto: Option<Option<bool>>,
 multicapture: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticapture>>,
 network: Option<Option<String>>,
 network_token: Option<Option<stripe_shared::PaymentMethodDetailsCardNetworkToken>>,
+network_transaction_id: Option<Option<String>>,
 overcapture: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercapture>>,
+regulated_status: Option<Option<PaymentMethodDetailsCardRegulatedStatus>>,
 three_d_secure: Option<Option<stripe_shared::ThreeDSecureDetailsCharge>>,
 wallet: Option<Option<stripe_shared::PaymentMethodDetailsCardWallet>>,
 
@@ -130,6 +141,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount_authorized" => Deserialize::begin(&mut self.amount_authorized),
+                "authorization_code" => Deserialize::begin(&mut self.authorization_code),
                 "brand" => Deserialize::begin(&mut self.brand),
                 "capture_before" => Deserialize::begin(&mut self.capture_before),
                 "checks" => Deserialize::begin(&mut self.checks),
@@ -152,7 +164,9 @@ const _: () = {
                 "multicapture" => Deserialize::begin(&mut self.multicapture),
                 "network" => Deserialize::begin(&mut self.network),
                 "network_token" => Deserialize::begin(&mut self.network_token),
+                "network_transaction_id" => Deserialize::begin(&mut self.network_transaction_id),
                 "overcapture" => Deserialize::begin(&mut self.overcapture),
+                "regulated_status" => Deserialize::begin(&mut self.regulated_status),
                 "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
                 "wallet" => Deserialize::begin(&mut self.wallet),
 
@@ -163,6 +177,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount_authorized: Deserialize::default(),
+                authorization_code: Deserialize::default(),
                 brand: Deserialize::default(),
                 capture_before: Deserialize::default(),
                 checks: Deserialize::default(),
@@ -183,7 +198,9 @@ const _: () = {
                 multicapture: Deserialize::default(),
                 network: Deserialize::default(),
                 network_token: Deserialize::default(),
+                network_transaction_id: Deserialize::default(),
                 overcapture: Deserialize::default(),
+                regulated_status: Deserialize::default(),
                 three_d_secure: Deserialize::default(),
                 wallet: Deserialize::default(),
             }
@@ -192,6 +209,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount_authorized),
+                Some(authorization_code),
                 Some(brand),
                 Some(capture_before),
                 Some(checks),
@@ -212,11 +230,14 @@ const _: () = {
                 Some(multicapture),
                 Some(network),
                 Some(network_token),
+                Some(network_transaction_id),
                 Some(overcapture),
+                Some(regulated_status),
                 Some(three_d_secure),
                 Some(wallet),
             ) = (
                 self.amount_authorized,
+                self.authorization_code.take(),
                 self.brand.take(),
                 self.capture_before,
                 self.checks.take(),
@@ -237,7 +258,9 @@ const _: () = {
                 self.multicapture,
                 self.network.take(),
                 self.network_token,
+                self.network_transaction_id.take(),
                 self.overcapture,
+                self.regulated_status,
                 self.three_d_secure.take(),
                 self.wallet.take(),
             )
@@ -246,6 +269,7 @@ const _: () = {
             };
             Some(Self::Out {
                 amount_authorized,
+                authorization_code,
                 brand,
                 capture_before,
                 checks,
@@ -266,7 +290,9 @@ const _: () = {
                 multicapture,
                 network,
                 network_token,
+                network_transaction_id,
                 overcapture,
+                regulated_status,
                 three_d_secure,
                 wallet,
             })
@@ -297,6 +323,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "amount_authorized" => b.amount_authorized = FromValueOpt::from_value(v),
+                    "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
                     "brand" => b.brand = FromValueOpt::from_value(v),
                     "capture_before" => b.capture_before = FromValueOpt::from_value(v),
                     "checks" => b.checks = FromValueOpt::from_value(v),
@@ -321,7 +348,11 @@ const _: () = {
                     "multicapture" => b.multicapture = FromValueOpt::from_value(v),
                     "network" => b.network = FromValueOpt::from_value(v),
                     "network_token" => b.network_token = FromValueOpt::from_value(v),
+                    "network_transaction_id" => {
+                        b.network_transaction_id = FromValueOpt::from_value(v)
+                    }
                     "overcapture" => b.overcapture = FromValueOpt::from_value(v),
+                    "regulated_status" => b.regulated_status = FromValueOpt::from_value(v),
                     "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
                     "wallet" => b.wallet = FromValueOpt::from_value(v),
 
@@ -332,3 +363,77 @@ const _: () = {
         }
     }
 };
+/// Status of a card based on the card issuer.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum PaymentMethodDetailsCardRegulatedStatus {
+    Regulated,
+    Unregulated,
+}
+impl PaymentMethodDetailsCardRegulatedStatus {
+    pub fn as_str(self) -> &'static str {
+        use PaymentMethodDetailsCardRegulatedStatus::*;
+        match self {
+            Regulated => "regulated",
+            Unregulated => "unregulated",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentMethodDetailsCardRegulatedStatus {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentMethodDetailsCardRegulatedStatus::*;
+        match s {
+            "regulated" => Ok(Regulated),
+            "unregulated" => Ok(Unregulated),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for PaymentMethodDetailsCardRegulatedStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentMethodDetailsCardRegulatedStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentMethodDetailsCardRegulatedStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentMethodDetailsCardRegulatedStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardRegulatedStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentMethodDetailsCardRegulatedStatus::from_str(s).map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsCardRegulatedStatus);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardRegulatedStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentMethodDetailsCardRegulatedStatus")
+        })
+    }
+}

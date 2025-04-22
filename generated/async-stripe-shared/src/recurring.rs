@@ -2,8 +2,6 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Recurring {
-    /// Specifies a usage aggregation strategy for prices of `usage_type=metered`. Defaults to `sum`.
-    pub aggregate_usage: Option<RecurringAggregateUsage>,
     /// The frequency at which a subscription is billed. One of `day`, `week`, `month` or `year`.
     pub interval: RecurringInterval,
     /// The number of intervals (specified in the `interval` attribute) between subscription billings.
@@ -22,7 +20,6 @@ pub struct Recurring {
 }
 #[doc(hidden)]
 pub struct RecurringBuilder {
-    aggregate_usage: Option<Option<RecurringAggregateUsage>>,
     interval: Option<RecurringInterval>,
     interval_count: Option<u64>,
     meter: Option<Option<String>>,
@@ -67,7 +64,6 @@ const _: () = {
         type Out = Recurring;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "aggregate_usage" => Deserialize::begin(&mut self.aggregate_usage),
                 "interval" => Deserialize::begin(&mut self.interval),
                 "interval_count" => Deserialize::begin(&mut self.interval_count),
                 "meter" => Deserialize::begin(&mut self.meter),
@@ -80,7 +76,6 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                aggregate_usage: Deserialize::default(),
                 interval: Deserialize::default(),
                 interval_count: Deserialize::default(),
                 meter: Deserialize::default(),
@@ -91,14 +86,12 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(aggregate_usage),
                 Some(interval),
                 Some(interval_count),
                 Some(meter),
                 Some(trial_period_days),
                 Some(usage_type),
             ) = (
-                self.aggregate_usage,
                 self.interval,
                 self.interval_count,
                 self.meter.take(),
@@ -108,14 +101,7 @@ const _: () = {
             else {
                 return None;
             };
-            Some(Self::Out {
-                aggregate_usage,
-                interval,
-                interval_count,
-                meter,
-                trial_period_days,
-                usage_type,
-            })
+            Some(Self::Out { interval, interval_count, meter, trial_period_days, usage_type })
         }
     }
 
@@ -142,7 +128,6 @@ const _: () = {
             let mut b = RecurringBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "aggregate_usage" => b.aggregate_usage = FromValueOpt::from_value(v),
                     "interval" => b.interval = FromValueOpt::from_value(v),
                     "interval_count" => b.interval_count = FromValueOpt::from_value(v),
                     "meter" => b.meter = FromValueOpt::from_value(v),
@@ -156,83 +141,6 @@ const _: () = {
         }
     }
 };
-/// Specifies a usage aggregation strategy for prices of `usage_type=metered`. Defaults to `sum`.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum RecurringAggregateUsage {
-    LastDuringPeriod,
-    LastEver,
-    Max,
-    Sum,
-}
-impl RecurringAggregateUsage {
-    pub fn as_str(self) -> &'static str {
-        use RecurringAggregateUsage::*;
-        match self {
-            LastDuringPeriod => "last_during_period",
-            LastEver => "last_ever",
-            Max => "max",
-            Sum => "sum",
-        }
-    }
-}
-
-impl std::str::FromStr for RecurringAggregateUsage {
-    type Err = stripe_types::StripeParseError;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use RecurringAggregateUsage::*;
-        match s {
-            "last_during_period" => Ok(LastDuringPeriod),
-            "last_ever" => Ok(LastEver),
-            "max" => Ok(Max),
-            "sum" => Ok(Sum),
-            _ => Err(stripe_types::StripeParseError),
-        }
-    }
-}
-impl std::fmt::Display for RecurringAggregateUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for RecurringAggregateUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for RecurringAggregateUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for RecurringAggregateUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<RecurringAggregateUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(RecurringAggregateUsage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(RecurringAggregateUsage);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for RecurringAggregateUsage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for RecurringAggregateUsage"))
-    }
-}
 /// The frequency at which a subscription is billed. One of `day`, `week`, `month` or `year`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum RecurringInterval {

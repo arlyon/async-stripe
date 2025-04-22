@@ -2,23 +2,27 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingTransactionFuelData {
+    /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
+    pub industry_product_code: Option<String>,
+    /// The quantity of `unit`s of fuel that was dispensed, represented as a decimal string with at most 12 decimal places.
+    pub quantity_decimal: Option<String>,
     /// The type of fuel that was purchased.
     /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: String,
-    /// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
+    /// The units for `quantity_decimal`.
+    /// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
     pub unit: String,
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
     pub unit_cost_decimal: String,
-    /// The volume of the fuel that was pumped, represented as a decimal string with at most 12 decimal places.
-    pub volume_decimal: Option<String>,
 }
 #[doc(hidden)]
 pub struct IssuingTransactionFuelDataBuilder {
+    industry_product_code: Option<Option<String>>,
+    quantity_decimal: Option<Option<String>>,
     type_: Option<String>,
     unit: Option<String>,
     unit_cost_decimal: Option<String>,
-    volume_decimal: Option<Option<String>>,
 }
 
 #[allow(
@@ -61,10 +65,11 @@ const _: () = {
         type Out = IssuingTransactionFuelData;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "industry_product_code" => Deserialize::begin(&mut self.industry_product_code),
+                "quantity_decimal" => Deserialize::begin(&mut self.quantity_decimal),
                 "type" => Deserialize::begin(&mut self.type_),
                 "unit" => Deserialize::begin(&mut self.unit),
                 "unit_cost_decimal" => Deserialize::begin(&mut self.unit_cost_decimal),
-                "volume_decimal" => Deserialize::begin(&mut self.volume_decimal),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -72,23 +77,38 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                industry_product_code: Deserialize::default(),
+                quantity_decimal: Deserialize::default(),
                 type_: Deserialize::default(),
                 unit: Deserialize::default(),
                 unit_cost_decimal: Deserialize::default(),
-                volume_decimal: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(type_), Some(unit), Some(unit_cost_decimal), Some(volume_decimal)) = (
+            let (
+                Some(industry_product_code),
+                Some(quantity_decimal),
+                Some(type_),
+                Some(unit),
+                Some(unit_cost_decimal),
+            ) = (
+                self.industry_product_code.take(),
+                self.quantity_decimal.take(),
                 self.type_.take(),
                 self.unit.take(),
                 self.unit_cost_decimal.take(),
-                self.volume_decimal.take(),
-            ) else {
+            )
+            else {
                 return None;
             };
-            Some(Self::Out { type_, unit, unit_cost_decimal, volume_decimal })
+            Some(Self::Out {
+                industry_product_code,
+                quantity_decimal,
+                type_,
+                unit,
+                unit_cost_decimal,
+            })
         }
     }
 
@@ -115,10 +135,13 @@ const _: () = {
             let mut b = IssuingTransactionFuelDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "industry_product_code" => {
+                        b.industry_product_code = FromValueOpt::from_value(v)
+                    }
+                    "quantity_decimal" => b.quantity_decimal = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "unit" => b.unit = FromValueOpt::from_value(v),
                     "unit_cost_decimal" => b.unit_cost_decimal = FromValueOpt::from_value(v),
-                    "volume_decimal" => b.volume_decimal = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

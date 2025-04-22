@@ -1,14 +1,16 @@
-/// Configuration for the components supported by this customer session.
-#[derive(Copy, Clone, Debug)]
+/// Configuration for the components supported by this Customer Session.
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerSessionResourceComponents {
     pub buy_button: stripe_core::CustomerSessionResourceComponentsResourceBuyButton,
+    pub payment_element: stripe_core::CustomerSessionResourceComponentsResourcePaymentElement,
     pub pricing_table: stripe_core::CustomerSessionResourceComponentsResourcePricingTable,
 }
 #[doc(hidden)]
 pub struct CustomerSessionResourceComponentsBuilder {
     buy_button: Option<stripe_core::CustomerSessionResourceComponentsResourceBuyButton>,
+    payment_element: Option<stripe_core::CustomerSessionResourceComponentsResourcePaymentElement>,
     pricing_table: Option<stripe_core::CustomerSessionResourceComponentsResourcePricingTable>,
 }
 
@@ -53,6 +55,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "buy_button" => Deserialize::begin(&mut self.buy_button),
+                "payment_element" => Deserialize::begin(&mut self.payment_element),
                 "pricing_table" => Deserialize::begin(&mut self.pricing_table),
 
                 _ => <dyn Visitor>::ignore(),
@@ -60,15 +63,20 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { buy_button: Deserialize::default(), pricing_table: Deserialize::default() }
+            Self {
+                buy_button: Deserialize::default(),
+                payment_element: Deserialize::default(),
+                pricing_table: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(buy_button), Some(pricing_table)) = (self.buy_button, self.pricing_table)
+            let (Some(buy_button), Some(payment_element), Some(pricing_table)) =
+                (self.buy_button, self.payment_element.take(), self.pricing_table)
             else {
                 return None;
             };
-            Some(Self::Out { buy_button, pricing_table })
+            Some(Self::Out { buy_button, payment_element, pricing_table })
         }
     }
 
@@ -96,6 +104,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "buy_button" => b.buy_button = FromValueOpt::from_value(v),
+                    "payment_element" => b.payment_element = FromValueOpt::from_value(v),
                     "pricing_table" => b.pricing_table = FromValueOpt::from_value(v),
 
                     _ => {}

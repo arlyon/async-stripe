@@ -215,8 +215,6 @@ struct CreatePlanBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    aggregate_usage: Option<stripe_shared::PlanAggregateUsage>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     amount_decimal: Option<String>,
@@ -256,7 +254,6 @@ impl CreatePlanBuilder {
     ) -> Self {
         Self {
             active: None,
-            aggregate_usage: None,
             amount: None,
             amount_decimal: None,
             billing_scheme: None,
@@ -464,16 +461,6 @@ impl CreatePlan {
     /// Whether the plan is currently available for new subscriptions. Defaults to `true`.
     pub fn active(mut self, active: impl Into<bool>) -> Self {
         self.inner.active = Some(active.into());
-        self
-    }
-    /// Specifies a usage aggregation strategy for plans of `usage_type=metered`.
-    /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
-    /// Defaults to `sum`.
-    pub fn aggregate_usage(
-        mut self,
-        aggregate_usage: impl Into<stripe_shared::PlanAggregateUsage>,
-    ) -> Self {
-        self.inner.aggregate_usage = Some(aggregate_usage.into());
         self
     }
     /// A positive integer in cents (or local equivalent) (or 0 for a free plan) representing how much to charge on a recurring basis.

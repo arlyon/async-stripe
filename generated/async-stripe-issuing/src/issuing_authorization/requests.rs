@@ -420,7 +420,8 @@ impl StripeRequest for DeclineIssuingAuthorization {
 }
 #[derive(Clone, Debug, serde::Serialize)]
 struct CreateIssuingAuthorizationBuilder {
-    amount: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     amount_details: Option<CreateIssuingAuthorizationAmountDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -431,7 +432,15 @@ struct CreateIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    fleet: Option<CreateIssuingAuthorizationFleet>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    fuel: Option<CreateIssuingAuthorizationFuel>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     is_amount_controllable: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    merchant_amount: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    merchant_currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
     merchant_data: Option<CreateIssuingAuthorizationMerchantData>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -442,15 +451,19 @@ struct CreateIssuingAuthorizationBuilder {
     wallet: Option<CreateIssuingAuthorizationWallet>,
 }
 impl CreateIssuingAuthorizationBuilder {
-    fn new(amount: impl Into<i64>, card: impl Into<String>) -> Self {
+    fn new(card: impl Into<String>) -> Self {
         Self {
-            amount: amount.into(),
+            amount: None,
             amount_details: None,
             authorization_method: None,
             card: card.into(),
             currency: None,
             expand: None,
+            fleet: None,
+            fuel: None,
             is_amount_controllable: None,
+            merchant_amount: None,
+            merchant_currency: None,
             merchant_data: None,
             network_data: None,
             verification_data: None,
@@ -477,6 +490,339 @@ impl CreateIssuingAuthorizationAmountDetails {
 impl Default for CreateIssuingAuthorizationAmountDetails {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Fleet-specific information for authorizations using Fleet cards.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingAuthorizationFleet {
+    /// Answers to prompts presented to the cardholder at the point of sale.
+    /// Prompted fields vary depending on the configuration of your physical fleet cards.
+    /// Typical points of sale support only numeric entry.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cardholder_prompt_data: Option<FleetCardholderPromptDataSpecs>,
+    /// The type of purchase. One of `fuel_purchase`, `non_fuel_purchase`, or `fuel_and_non_fuel_purchase`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub purchase_type: Option<CreateIssuingAuthorizationFleetPurchaseType>,
+    /// More information about the total amount.
+    /// This information is not guaranteed to be accurate as some merchants may provide unreliable data.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reported_breakdown: Option<FleetReportedBreakdownSpecs>,
+    /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub service_type: Option<CreateIssuingAuthorizationFleetServiceType>,
+}
+impl CreateIssuingAuthorizationFleet {
+    pub fn new() -> Self {
+        Self {
+            cardholder_prompt_data: None,
+            purchase_type: None,
+            reported_breakdown: None,
+            service_type: None,
+        }
+    }
+}
+impl Default for CreateIssuingAuthorizationFleet {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The type of purchase. One of `fuel_purchase`, `non_fuel_purchase`, or `fuel_and_non_fuel_purchase`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingAuthorizationFleetPurchaseType {
+    FuelAndNonFuelPurchase,
+    FuelPurchase,
+    NonFuelPurchase,
+}
+impl CreateIssuingAuthorizationFleetPurchaseType {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingAuthorizationFleetPurchaseType::*;
+        match self {
+            FuelAndNonFuelPurchase => "fuel_and_non_fuel_purchase",
+            FuelPurchase => "fuel_purchase",
+            NonFuelPurchase => "non_fuel_purchase",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingAuthorizationFleetPurchaseType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingAuthorizationFleetPurchaseType::*;
+        match s {
+            "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
+            "fuel_purchase" => Ok(FuelPurchase),
+            "non_fuel_purchase" => Ok(NonFuelPurchase),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateIssuingAuthorizationFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingAuthorizationFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingAuthorizationFleetPurchaseType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFleetPurchaseType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateIssuingAuthorizationFleetPurchaseType",
+            )
+        })
+    }
+}
+/// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingAuthorizationFleetServiceType {
+    FullService,
+    NonFuelTransaction,
+    SelfService,
+}
+impl CreateIssuingAuthorizationFleetServiceType {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingAuthorizationFleetServiceType::*;
+        match self {
+            FullService => "full_service",
+            NonFuelTransaction => "non_fuel_transaction",
+            SelfService => "self_service",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingAuthorizationFleetServiceType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingAuthorizationFleetServiceType::*;
+        match s {
+            "full_service" => Ok(FullService),
+            "non_fuel_transaction" => Ok(NonFuelTransaction),
+            "self_service" => Ok(SelfService),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateIssuingAuthorizationFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingAuthorizationFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingAuthorizationFleetServiceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFleetServiceType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateIssuingAuthorizationFleetServiceType")
+        })
+    }
+}
+/// Information about fuel that was purchased with this transaction.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingAuthorizationFuel {
+    /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub industry_product_code: Option<String>,
+    /// The quantity of `unit`s of fuel that was dispensed, represented as a decimal string with at most 12 decimal places.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity_decimal: Option<String>,
+    /// The type of fuel that was purchased.
+    /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CreateIssuingAuthorizationFuelType>,
+    /// The units for `quantity_decimal`.
+    /// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit: Option<CreateIssuingAuthorizationFuelUnit>,
+    /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_cost_decimal: Option<String>,
+}
+impl CreateIssuingAuthorizationFuel {
+    pub fn new() -> Self {
+        Self {
+            industry_product_code: None,
+            quantity_decimal: None,
+            type_: None,
+            unit: None,
+            unit_cost_decimal: None,
+        }
+    }
+}
+impl Default for CreateIssuingAuthorizationFuel {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The type of fuel that was purchased.
+/// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingAuthorizationFuelType {
+    Diesel,
+    Other,
+    UnleadedPlus,
+    UnleadedRegular,
+    UnleadedSuper,
+}
+impl CreateIssuingAuthorizationFuelType {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingAuthorizationFuelType::*;
+        match self {
+            Diesel => "diesel",
+            Other => "other",
+            UnleadedPlus => "unleaded_plus",
+            UnleadedRegular => "unleaded_regular",
+            UnleadedSuper => "unleaded_super",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingAuthorizationFuelType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingAuthorizationFuelType::*;
+        match s {
+            "diesel" => Ok(Diesel),
+            "other" => Ok(Other),
+            "unleaded_plus" => Ok(UnleadedPlus),
+            "unleaded_regular" => Ok(UnleadedRegular),
+            "unleaded_super" => Ok(UnleadedSuper),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateIssuingAuthorizationFuelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingAuthorizationFuelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingAuthorizationFuelType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFuelType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateIssuingAuthorizationFuelType")
+        })
+    }
+}
+/// The units for `quantity_decimal`.
+/// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingAuthorizationFuelUnit {
+    ChargingMinute,
+    ImperialGallon,
+    Kilogram,
+    KilowattHour,
+    Liter,
+    Other,
+    Pound,
+    UsGallon,
+}
+impl CreateIssuingAuthorizationFuelUnit {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingAuthorizationFuelUnit::*;
+        match self {
+            ChargingMinute => "charging_minute",
+            ImperialGallon => "imperial_gallon",
+            Kilogram => "kilogram",
+            KilowattHour => "kilowatt_hour",
+            Liter => "liter",
+            Other => "other",
+            Pound => "pound",
+            UsGallon => "us_gallon",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingAuthorizationFuelUnit {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingAuthorizationFuelUnit::*;
+        match s {
+            "charging_minute" => Ok(ChargingMinute),
+            "imperial_gallon" => Ok(ImperialGallon),
+            "kilogram" => Ok(Kilogram),
+            "kilowatt_hour" => Ok(KilowattHour),
+            "liter" => Ok(Liter),
+            "other" => Ok(Other),
+            "pound" => Ok(Pound),
+            "us_gallon" => Ok(UsGallon),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateIssuingAuthorizationFuelUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingAuthorizationFuelUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingAuthorizationFuelUnit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFuelUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateIssuingAuthorizationFuelUnit")
+        })
     }
 }
 /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
@@ -2146,8 +2492,14 @@ pub struct CreateIssuingAuthorization {
 }
 impl CreateIssuingAuthorization {
     /// Construct a new `CreateIssuingAuthorization`.
-    pub fn new(amount: impl Into<i64>, card: impl Into<String>) -> Self {
-        Self { inner: CreateIssuingAuthorizationBuilder::new(amount.into(), card.into()) }
+    pub fn new(card: impl Into<String>) -> Self {
+        Self { inner: CreateIssuingAuthorizationBuilder::new(card.into()) }
+    }
+    /// The total amount to attempt to authorize.
+    /// This amount is in the provided currency, or defaults to the card's currency, and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    pub fn amount(mut self, amount: impl Into<i64>) -> Self {
+        self.inner.amount = Some(amount.into());
+        self
     }
     /// Detailed breakdown of amount components.
     /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
@@ -2179,9 +2531,36 @@ impl CreateIssuingAuthorization {
         self.inner.expand = Some(expand.into());
         self
     }
+    /// Fleet-specific information for authorizations using Fleet cards.
+    pub fn fleet(mut self, fleet: impl Into<CreateIssuingAuthorizationFleet>) -> Self {
+        self.inner.fleet = Some(fleet.into());
+        self
+    }
+    /// Information about fuel that was purchased with this transaction.
+    pub fn fuel(mut self, fuel: impl Into<CreateIssuingAuthorizationFuel>) -> Self {
+        self.inner.fuel = Some(fuel.into());
+        self
+    }
     /// If set `true`, you may provide [amount](https://stripe.com/docs/api/issuing/authorizations/approve#approve_issuing_authorization-amount) to control how much to hold for the authorization.
     pub fn is_amount_controllable(mut self, is_amount_controllable: impl Into<bool>) -> Self {
         self.inner.is_amount_controllable = Some(is_amount_controllable.into());
+        self
+    }
+    /// The total amount to attempt to authorize.
+    /// This amount is in the provided merchant currency, and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    pub fn merchant_amount(mut self, merchant_amount: impl Into<i64>) -> Self {
+        self.inner.merchant_amount = Some(merchant_amount.into());
+        self
+    }
+    /// The currency of the authorization.
+    /// If not provided, defaults to the currency of the card.
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub fn merchant_currency(
+        mut self,
+        merchant_currency: impl Into<stripe_types::Currency>,
+    ) -> Self {
+        self.inner.merchant_currency = Some(merchant_currency.into());
         self
     }
     /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
@@ -2266,6 +2645,9 @@ impl CaptureIssuingAuthorizationBuilder {
 /// Additional purchase information that is optionally provided by the merchant.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetails {
+    /// Fleet-specific information for transactions using Fleet cards.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fleet: Option<CaptureIssuingAuthorizationPurchaseDetailsFleet>,
     /// Information about the flight that was purchased with this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flight: Option<CaptureIssuingAuthorizationPurchaseDetailsFlight>,
@@ -2284,12 +2666,175 @@ pub struct CaptureIssuingAuthorizationPurchaseDetails {
 }
 impl CaptureIssuingAuthorizationPurchaseDetails {
     pub fn new() -> Self {
-        Self { flight: None, fuel: None, lodging: None, receipt: None, reference: None }
+        Self {
+            fleet: None,
+            flight: None,
+            fuel: None,
+            lodging: None,
+            receipt: None,
+            reference: None,
+        }
     }
 }
 impl Default for CaptureIssuingAuthorizationPurchaseDetails {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Fleet-specific information for transactions using Fleet cards.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CaptureIssuingAuthorizationPurchaseDetailsFleet {
+    /// Answers to prompts presented to the cardholder at the point of sale.
+    /// Prompted fields vary depending on the configuration of your physical fleet cards.
+    /// Typical points of sale support only numeric entry.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cardholder_prompt_data: Option<FleetCardholderPromptDataSpecs>,
+    /// The type of purchase. One of `fuel_purchase`, `non_fuel_purchase`, or `fuel_and_non_fuel_purchase`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub purchase_type: Option<CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType>,
+    /// More information about the total amount.
+    /// This information is not guaranteed to be accurate as some merchants may provide unreliable data.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reported_breakdown: Option<FleetReportedBreakdownSpecs>,
+    /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub service_type: Option<CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType>,
+}
+impl CaptureIssuingAuthorizationPurchaseDetailsFleet {
+    pub fn new() -> Self {
+        Self {
+            cardholder_prompt_data: None,
+            purchase_type: None,
+            reported_breakdown: None,
+            service_type: None,
+        }
+    }
+}
+impl Default for CaptureIssuingAuthorizationPurchaseDetailsFleet {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The type of purchase. One of `fuel_purchase`, `non_fuel_purchase`, or `fuel_and_non_fuel_purchase`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType {
+    FuelAndNonFuelPurchase,
+    FuelPurchase,
+    NonFuelPurchase,
+}
+impl CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType {
+    pub fn as_str(self) -> &'static str {
+        use CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType::*;
+        match self {
+            FuelAndNonFuelPurchase => "fuel_and_non_fuel_purchase",
+            FuelPurchase => "fuel_purchase",
+            NonFuelPurchase => "non_fuel_purchase",
+        }
+    }
+}
+
+impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType::*;
+        match s {
+            "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
+            "fuel_purchase" => Ok(FuelPurchase),
+            "non_fuel_purchase" => Ok(NonFuelPurchase),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType",
+            )
+        })
+    }
+}
+/// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType {
+    FullService,
+    NonFuelTransaction,
+    SelfService,
+}
+impl CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType {
+    pub fn as_str(self) -> &'static str {
+        use CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType::*;
+        match self {
+            FullService => "full_service",
+            NonFuelTransaction => "non_fuel_transaction",
+            SelfService => "self_service",
+        }
+    }
+}
+
+impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType::*;
+        match s {
+            "full_service" => Ok(FullService),
+            "non_fuel_transaction" => Ok(NonFuelTransaction),
+            "self_service" => Ok(SelfService),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType",
+            )
+        })
     }
 }
 /// Information about the flight that was purchased with this transaction.
@@ -2369,24 +2914,34 @@ impl Default for CaptureIssuingAuthorizationPurchaseDetailsFlightSegments {
 /// Information about fuel that was purchased with this transaction.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsFuel {
+    /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub industry_product_code: Option<String>,
+    /// The quantity of `unit`s of fuel that was dispensed, represented as a decimal string with at most 12 decimal places.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity_decimal: Option<String>,
     /// The type of fuel that was purchased.
     /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CaptureIssuingAuthorizationPurchaseDetailsFuelType>,
-    /// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
+    /// The units for `quantity_decimal`.
+    /// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit: Option<CaptureIssuingAuthorizationPurchaseDetailsFuelUnit>,
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_cost_decimal: Option<String>,
-    /// The volume of the fuel that was pumped, represented as a decimal string with at most 12 decimal places.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub volume_decimal: Option<String>,
 }
 impl CaptureIssuingAuthorizationPurchaseDetailsFuel {
     pub fn new() -> Self {
-        Self { type_: None, unit: None, unit_cost_decimal: None, volume_decimal: None }
+        Self {
+            industry_product_code: None,
+            quantity_decimal: None,
+            type_: None,
+            unit: None,
+            unit_cost_decimal: None,
+        }
     }
 }
 impl Default for CaptureIssuingAuthorizationPurchaseDetailsFuel {
@@ -2462,19 +3017,30 @@ impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetails
         })
     }
 }
-/// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
+/// The units for `quantity_decimal`.
+/// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
+    ChargingMinute,
+    ImperialGallon,
+    Kilogram,
+    KilowattHour,
     Liter,
     Other,
+    Pound,
     UsGallon,
 }
 impl CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
     pub fn as_str(self) -> &'static str {
         use CaptureIssuingAuthorizationPurchaseDetailsFuelUnit::*;
         match self {
+            ChargingMinute => "charging_minute",
+            ImperialGallon => "imperial_gallon",
+            Kilogram => "kilogram",
+            KilowattHour => "kilowatt_hour",
             Liter => "liter",
             Other => "other",
+            Pound => "pound",
             UsGallon => "us_gallon",
         }
     }
@@ -2485,8 +3051,13 @@ impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CaptureIssuingAuthorizationPurchaseDetailsFuelUnit::*;
         match s {
+            "charging_minute" => Ok(ChargingMinute),
+            "imperial_gallon" => Ok(ImperialGallon),
+            "kilogram" => Ok(Kilogram),
+            "kilowatt_hour" => Ok(KilowattHour),
             "liter" => Ok(Liter),
             "other" => Ok(Other),
+            "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
             _ => Err(stripe_types::StripeParseError),
         }
@@ -2698,6 +3269,479 @@ impl StripeRequest for ExpireIssuingAuthorization {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+struct FinalizeAmountIssuingAuthorizationBuilder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+    final_amount: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    fleet: Option<FinalizeAmountIssuingAuthorizationFleet>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    fuel: Option<FinalizeAmountIssuingAuthorizationFuel>,
+}
+impl FinalizeAmountIssuingAuthorizationBuilder {
+    fn new(final_amount: impl Into<i64>) -> Self {
+        Self { expand: None, final_amount: final_amount.into(), fleet: None, fuel: None }
+    }
+}
+/// Fleet-specific information for authorizations using Fleet cards.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FinalizeAmountIssuingAuthorizationFleet {
+    /// Answers to prompts presented to the cardholder at the point of sale.
+    /// Prompted fields vary depending on the configuration of your physical fleet cards.
+    /// Typical points of sale support only numeric entry.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cardholder_prompt_data: Option<FleetCardholderPromptDataSpecs>,
+    /// The type of purchase. One of `fuel_purchase`, `non_fuel_purchase`, or `fuel_and_non_fuel_purchase`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub purchase_type: Option<FinalizeAmountIssuingAuthorizationFleetPurchaseType>,
+    /// More information about the total amount.
+    /// This information is not guaranteed to be accurate as some merchants may provide unreliable data.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reported_breakdown: Option<FleetReportedBreakdownSpecs>,
+    /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub service_type: Option<FinalizeAmountIssuingAuthorizationFleetServiceType>,
+}
+impl FinalizeAmountIssuingAuthorizationFleet {
+    pub fn new() -> Self {
+        Self {
+            cardholder_prompt_data: None,
+            purchase_type: None,
+            reported_breakdown: None,
+            service_type: None,
+        }
+    }
+}
+impl Default for FinalizeAmountIssuingAuthorizationFleet {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The type of purchase. One of `fuel_purchase`, `non_fuel_purchase`, or `fuel_and_non_fuel_purchase`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum FinalizeAmountIssuingAuthorizationFleetPurchaseType {
+    FuelAndNonFuelPurchase,
+    FuelPurchase,
+    NonFuelPurchase,
+}
+impl FinalizeAmountIssuingAuthorizationFleetPurchaseType {
+    pub fn as_str(self) -> &'static str {
+        use FinalizeAmountIssuingAuthorizationFleetPurchaseType::*;
+        match self {
+            FuelAndNonFuelPurchase => "fuel_and_non_fuel_purchase",
+            FuelPurchase => "fuel_purchase",
+            NonFuelPurchase => "non_fuel_purchase",
+        }
+    }
+}
+
+impl std::str::FromStr for FinalizeAmountIssuingAuthorizationFleetPurchaseType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FinalizeAmountIssuingAuthorizationFleetPurchaseType::*;
+        match s {
+            "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
+            "fuel_purchase" => Ok(FuelPurchase),
+            "non_fuel_purchase" => Ok(NonFuelPurchase),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for FinalizeAmountIssuingAuthorizationFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for FinalizeAmountIssuingAuthorizationFleetPurchaseType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for FinalizeAmountIssuingAuthorizationFleetPurchaseType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for FinalizeAmountIssuingAuthorizationFleetPurchaseType",
+            )
+        })
+    }
+}
+/// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum FinalizeAmountIssuingAuthorizationFleetServiceType {
+    FullService,
+    NonFuelTransaction,
+    SelfService,
+}
+impl FinalizeAmountIssuingAuthorizationFleetServiceType {
+    pub fn as_str(self) -> &'static str {
+        use FinalizeAmountIssuingAuthorizationFleetServiceType::*;
+        match self {
+            FullService => "full_service",
+            NonFuelTransaction => "non_fuel_transaction",
+            SelfService => "self_service",
+        }
+    }
+}
+
+impl std::str::FromStr for FinalizeAmountIssuingAuthorizationFleetServiceType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FinalizeAmountIssuingAuthorizationFleetServiceType::*;
+        match s {
+            "full_service" => Ok(FullService),
+            "non_fuel_transaction" => Ok(NonFuelTransaction),
+            "self_service" => Ok(SelfService),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for FinalizeAmountIssuingAuthorizationFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for FinalizeAmountIssuingAuthorizationFleetServiceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for FinalizeAmountIssuingAuthorizationFleetServiceType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for FinalizeAmountIssuingAuthorizationFleetServiceType",
+            )
+        })
+    }
+}
+/// Information about fuel that was purchased with this transaction.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FinalizeAmountIssuingAuthorizationFuel {
+    /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub industry_product_code: Option<String>,
+    /// The quantity of `unit`s of fuel that was dispensed, represented as a decimal string with at most 12 decimal places.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity_decimal: Option<String>,
+    /// The type of fuel that was purchased.
+    /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<FinalizeAmountIssuingAuthorizationFuelType>,
+    /// The units for `quantity_decimal`.
+    /// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit: Option<FinalizeAmountIssuingAuthorizationFuelUnit>,
+    /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_cost_decimal: Option<String>,
+}
+impl FinalizeAmountIssuingAuthorizationFuel {
+    pub fn new() -> Self {
+        Self {
+            industry_product_code: None,
+            quantity_decimal: None,
+            type_: None,
+            unit: None,
+            unit_cost_decimal: None,
+        }
+    }
+}
+impl Default for FinalizeAmountIssuingAuthorizationFuel {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The type of fuel that was purchased.
+/// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum FinalizeAmountIssuingAuthorizationFuelType {
+    Diesel,
+    Other,
+    UnleadedPlus,
+    UnleadedRegular,
+    UnleadedSuper,
+}
+impl FinalizeAmountIssuingAuthorizationFuelType {
+    pub fn as_str(self) -> &'static str {
+        use FinalizeAmountIssuingAuthorizationFuelType::*;
+        match self {
+            Diesel => "diesel",
+            Other => "other",
+            UnleadedPlus => "unleaded_plus",
+            UnleadedRegular => "unleaded_regular",
+            UnleadedSuper => "unleaded_super",
+        }
+    }
+}
+
+impl std::str::FromStr for FinalizeAmountIssuingAuthorizationFuelType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FinalizeAmountIssuingAuthorizationFuelType::*;
+        match s {
+            "diesel" => Ok(Diesel),
+            "other" => Ok(Other),
+            "unleaded_plus" => Ok(UnleadedPlus),
+            "unleaded_regular" => Ok(UnleadedRegular),
+            "unleaded_super" => Ok(UnleadedSuper),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for FinalizeAmountIssuingAuthorizationFuelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFuelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for FinalizeAmountIssuingAuthorizationFuelType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for FinalizeAmountIssuingAuthorizationFuelType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for FinalizeAmountIssuingAuthorizationFuelType")
+        })
+    }
+}
+/// The units for `quantity_decimal`.
+/// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum FinalizeAmountIssuingAuthorizationFuelUnit {
+    ChargingMinute,
+    ImperialGallon,
+    Kilogram,
+    KilowattHour,
+    Liter,
+    Other,
+    Pound,
+    UsGallon,
+}
+impl FinalizeAmountIssuingAuthorizationFuelUnit {
+    pub fn as_str(self) -> &'static str {
+        use FinalizeAmountIssuingAuthorizationFuelUnit::*;
+        match self {
+            ChargingMinute => "charging_minute",
+            ImperialGallon => "imperial_gallon",
+            Kilogram => "kilogram",
+            KilowattHour => "kilowatt_hour",
+            Liter => "liter",
+            Other => "other",
+            Pound => "pound",
+            UsGallon => "us_gallon",
+        }
+    }
+}
+
+impl std::str::FromStr for FinalizeAmountIssuingAuthorizationFuelUnit {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FinalizeAmountIssuingAuthorizationFuelUnit::*;
+        match s {
+            "charging_minute" => Ok(ChargingMinute),
+            "imperial_gallon" => Ok(ImperialGallon),
+            "kilogram" => Ok(Kilogram),
+            "kilowatt_hour" => Ok(KilowattHour),
+            "liter" => Ok(Liter),
+            "other" => Ok(Other),
+            "pound" => Ok(Pound),
+            "us_gallon" => Ok(UsGallon),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for FinalizeAmountIssuingAuthorizationFuelUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFuelUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for FinalizeAmountIssuingAuthorizationFuelUnit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for FinalizeAmountIssuingAuthorizationFuelUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for FinalizeAmountIssuingAuthorizationFuelUnit")
+        })
+    }
+}
+/// Finalize the amount on an Authorization prior to capture, when the initial authorization was for an estimated amount.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FinalizeAmountIssuingAuthorization {
+    inner: FinalizeAmountIssuingAuthorizationBuilder,
+    authorization: String,
+}
+impl FinalizeAmountIssuingAuthorization {
+    /// Construct a new `FinalizeAmountIssuingAuthorization`.
+    pub fn new(authorization: impl Into<String>, final_amount: impl Into<i64>) -> Self {
+        Self {
+            authorization: authorization.into(),
+            inner: FinalizeAmountIssuingAuthorizationBuilder::new(final_amount.into()),
+        }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+    /// Fleet-specific information for authorizations using Fleet cards.
+    pub fn fleet(mut self, fleet: impl Into<FinalizeAmountIssuingAuthorizationFleet>) -> Self {
+        self.inner.fleet = Some(fleet.into());
+        self
+    }
+    /// Information about fuel that was purchased with this transaction.
+    pub fn fuel(mut self, fuel: impl Into<FinalizeAmountIssuingAuthorizationFuel>) -> Self {
+        self.inner.fuel = Some(fuel.into());
+        self
+    }
+}
+impl FinalizeAmountIssuingAuthorization {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for FinalizeAmountIssuingAuthorization {
+    type Output = stripe_shared::IssuingAuthorization;
+
+    fn build(&self) -> RequestBuilder {
+        let authorization = &self.authorization;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/issuing/authorizations/{authorization}/finalize_amount"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+struct RespondIssuingAuthorizationBuilder {
+    confirmed: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+}
+impl RespondIssuingAuthorizationBuilder {
+    fn new(confirmed: impl Into<bool>) -> Self {
+        Self { confirmed: confirmed.into(), expand: None }
+    }
+}
+/// Respond to a fraud challenge on a testmode Issuing authorization, simulating either a confirmation of fraud or a correction of legitimacy.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RespondIssuingAuthorization {
+    inner: RespondIssuingAuthorizationBuilder,
+    authorization: String,
+}
+impl RespondIssuingAuthorization {
+    /// Construct a new `RespondIssuingAuthorization`.
+    pub fn new(authorization: impl Into<String>, confirmed: impl Into<bool>) -> Self {
+        Self {
+            authorization: authorization.into(),
+            inner: RespondIssuingAuthorizationBuilder::new(confirmed.into()),
+        }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+}
+impl RespondIssuingAuthorization {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for RespondIssuingAuthorization {
+    type Output = stripe_shared::IssuingAuthorization;
+
+    fn build(&self) -> RequestBuilder {
+        let authorization = &self.authorization;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!(
+                "/test_helpers/issuing/authorizations/{authorization}/fraud_challenges/respond"
+            ),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
 struct IncrementIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -2836,5 +3880,116 @@ impl StripeRequest for ReverseIssuingAuthorization {
             format!("/test_helpers/issuing/authorizations/{authorization}/reverse"),
         )
         .form(&self.inner)
+    }
+}
+
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FleetCardholderPromptDataSpecs {
+    /// Driver ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub driver_id: Option<String>,
+    /// Odometer reading.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub odometer: Option<i64>,
+    /// An alphanumeric ID.
+    /// This field is used when a vehicle ID, driver ID, or generic ID is entered by the cardholder, but the merchant or card network did not specify the prompt type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unspecified_id: Option<String>,
+    /// User ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_id: Option<String>,
+    /// Vehicle number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle_number: Option<String>,
+}
+impl FleetCardholderPromptDataSpecs {
+    pub fn new() -> Self {
+        Self {
+            driver_id: None,
+            odometer: None,
+            unspecified_id: None,
+            user_id: None,
+            vehicle_number: None,
+        }
+    }
+}
+impl Default for FleetCardholderPromptDataSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FleetReportedBreakdownFuelSpecs {
+    /// Gross fuel amount that should equal Fuel Volume multipled by Fuel Unit Cost, inclusive of taxes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gross_amount_decimal: Option<String>,
+}
+impl FleetReportedBreakdownFuelSpecs {
+    pub fn new() -> Self {
+        Self { gross_amount_decimal: None }
+    }
+}
+impl Default for FleetReportedBreakdownFuelSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FleetReportedBreakdownNonFuelSpecs {
+    /// Gross non-fuel amount that should equal the sum of the line items, inclusive of taxes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gross_amount_decimal: Option<String>,
+}
+impl FleetReportedBreakdownNonFuelSpecs {
+    pub fn new() -> Self {
+        Self { gross_amount_decimal: None }
+    }
+}
+impl Default for FleetReportedBreakdownNonFuelSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FleetReportedBreakdownTaxSpecs {
+    /// Amount of state or provincial Sales Tax included in the transaction amount.
+    /// Null if not reported by merchant or not subject to tax.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub local_amount_decimal: Option<String>,
+    /// Amount of national Sales Tax or VAT included in the transaction amount.
+    /// Null if not reported by merchant or not subject to tax.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub national_amount_decimal: Option<String>,
+}
+impl FleetReportedBreakdownTaxSpecs {
+    pub fn new() -> Self {
+        Self { local_amount_decimal: None, national_amount_decimal: None }
+    }
+}
+impl Default for FleetReportedBreakdownTaxSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FleetReportedBreakdownSpecs {
+    /// Breakdown of fuel portion of the purchase.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fuel: Option<FleetReportedBreakdownFuelSpecs>,
+    /// Breakdown of non-fuel portion of the purchase.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub non_fuel: Option<FleetReportedBreakdownNonFuelSpecs>,
+    /// Information about tax included in this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<FleetReportedBreakdownTaxSpecs>,
+}
+impl FleetReportedBreakdownSpecs {
+    pub fn new() -> Self {
+        Self { fuel: None, non_fuel: None, tax: None }
+    }
+}
+impl Default for FleetReportedBreakdownSpecs {
+    fn default() -> Self {
+        Self::new()
     }
 }

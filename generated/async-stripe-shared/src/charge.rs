@@ -31,6 +31,7 @@ pub struct Charge {
     pub billing_details: stripe_shared::BillingDetails,
     /// The full statement descriptor that is passed to card networks, and that is displayed on your customers' credit card and bank statements.
     /// Allows you to see what the statement descriptor looks like after the static and dynamic portions are combined.
+    /// This value only exists for card payments.
     pub calculated_statement_descriptor: Option<String>,
     /// If the charge was created without capturing, this Boolean represents whether it is still uncaptured or has since been captured.
     pub captured: bool,
@@ -56,8 +57,6 @@ pub struct Charge {
     pub fraud_details: Option<stripe_shared::ChargeFraudDetails>,
     /// Unique identifier for the object.
     pub id: stripe_shared::ChargeId,
-    /// ID of the invoice this charge is for if one exists.
-    pub invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
     pub level3: Option<stripe_shared::Level3>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -78,6 +77,7 @@ pub struct Charge {
     pub payment_method: Option<String>,
     /// Details about the payment method at the time of the transaction.
     pub payment_method_details: Option<stripe_shared::PaymentMethodDetails>,
+    pub presentment_details: Option<stripe_shared::PaymentFlowsPaymentIntentPresentmentDetails>,
     pub radar_options: Option<stripe_shared::RadarRadarOptions>,
     /// This is the email address that the receipt for this charge was sent to.
     pub receipt_email: Option<String>,
@@ -103,15 +103,17 @@ pub struct Charge {
     pub source: Option<stripe_shared::PaymentSource>,
     /// The transfer ID which created this charge.
     /// Only present if the charge came from another Stripe account.
-    /// [See the Connect documentation](https://stripe.com/docs/connect/destination-charges) for details.
+    /// [See the Connect documentation](https://docs.stripe.com/connect/destination-charges) for details.
     pub source_transfer: Option<stripe_types::Expandable<stripe_shared::Transfer>>,
-    /// For card charges, use `statement_descriptor_suffix` instead.
-    /// Otherwise, you can use this value as the complete description of a charge on your customers’ statements.
-    /// Must contain at least one letter, maximum 22 characters.
+    /// For a non-card charge, text that appears on the customer's statement as the statement descriptor.
+    /// This value overrides the account's default statement descriptor.
+    /// For information about requirements, including the 22-character limit, see [the Statement Descriptor docs](https://docs.stripe.com/get-started/account/statement-descriptors).
+    ///
+    /// For a card charge, this value is ignored unless you don't specify a `statement_descriptor_suffix`, in which case this value is used as the suffix.
     pub statement_descriptor: Option<String>,
-    /// Provides information about the charge that customers see on their statements.
-    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that’s set on the account to form the complete statement descriptor.
-    /// Maximum 22 characters for the concatenated descriptor.
+    /// Provides information about a card charge.
+    /// Concatenated to the account's [statement descriptor prefix](https://docs.stripe.com/get-started/account/statement-descriptors#static) to form the complete statement descriptor that appears on the customer's statement.
+    /// If the account has no prefix value, the suffix is concatenated to the account's statement descriptor.
     pub statement_descriptor_suffix: Option<String>,
     /// The status of the payment is either `succeeded`, `pending`, or `failed`.
     pub status: ChargeStatus,
@@ -149,7 +151,6 @@ pub struct ChargeBuilder {
     failure_message: Option<Option<String>>,
     fraud_details: Option<Option<stripe_shared::ChargeFraudDetails>>,
     id: Option<stripe_shared::ChargeId>,
-    invoice: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
     level3: Option<Option<stripe_shared::Level3>>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
@@ -159,6 +160,7 @@ pub struct ChargeBuilder {
     payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
     payment_method: Option<Option<String>>,
     payment_method_details: Option<Option<stripe_shared::PaymentMethodDetails>>,
+    presentment_details: Option<Option<stripe_shared::PaymentFlowsPaymentIntentPresentmentDetails>>,
     radar_options: Option<Option<stripe_shared::RadarRadarOptions>>,
     receipt_email: Option<Option<String>>,
     receipt_number: Option<Option<String>>,
@@ -239,7 +241,6 @@ const _: () = {
                 "failure_message" => Deserialize::begin(&mut self.failure_message),
                 "fraud_details" => Deserialize::begin(&mut self.fraud_details),
                 "id" => Deserialize::begin(&mut self.id),
-                "invoice" => Deserialize::begin(&mut self.invoice),
                 "level3" => Deserialize::begin(&mut self.level3),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
@@ -249,6 +250,7 @@ const _: () = {
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
                 "payment_method" => Deserialize::begin(&mut self.payment_method),
                 "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
+                "presentment_details" => Deserialize::begin(&mut self.presentment_details),
                 "radar_options" => Deserialize::begin(&mut self.radar_options),
                 "receipt_email" => Deserialize::begin(&mut self.receipt_email),
                 "receipt_number" => Deserialize::begin(&mut self.receipt_number),
@@ -295,7 +297,6 @@ const _: () = {
                 failure_message: Deserialize::default(),
                 fraud_details: Deserialize::default(),
                 id: Deserialize::default(),
-                invoice: Deserialize::default(),
                 level3: Deserialize::default(),
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
@@ -305,6 +306,7 @@ const _: () = {
                 payment_intent: Deserialize::default(),
                 payment_method: Deserialize::default(),
                 payment_method_details: Deserialize::default(),
+                presentment_details: Deserialize::default(),
                 radar_options: Deserialize::default(),
                 receipt_email: Deserialize::default(),
                 receipt_number: Deserialize::default(),
@@ -347,7 +349,6 @@ const _: () = {
                 Some(failure_message),
                 Some(fraud_details),
                 Some(id),
-                Some(invoice),
                 Some(level3),
                 Some(livemode),
                 Some(metadata),
@@ -357,6 +358,7 @@ const _: () = {
                 Some(payment_intent),
                 Some(payment_method),
                 Some(payment_method_details),
+                Some(presentment_details),
                 Some(radar_options),
                 Some(receipt_email),
                 Some(receipt_number),
@@ -395,7 +397,6 @@ const _: () = {
                 self.failure_message.take(),
                 self.fraud_details.take(),
                 self.id.take(),
-                self.invoice.take(),
                 self.level3.take(),
                 self.livemode,
                 self.metadata.take(),
@@ -405,6 +406,7 @@ const _: () = {
                 self.payment_intent.take(),
                 self.payment_method.take(),
                 self.payment_method_details.take(),
+                self.presentment_details,
                 self.radar_options.take(),
                 self.receipt_email.take(),
                 self.receipt_number.take(),
@@ -447,7 +449,6 @@ const _: () = {
                 failure_message,
                 fraud_details,
                 id,
-                invoice,
                 level3,
                 livemode,
                 metadata,
@@ -457,6 +458,7 @@ const _: () = {
                 payment_intent,
                 payment_method,
                 payment_method_details,
+                presentment_details,
                 radar_options,
                 receipt_email,
                 receipt_number,
@@ -527,7 +529,6 @@ const _: () = {
                     "failure_message" => b.failure_message = FromValueOpt::from_value(v),
                     "fraud_details" => b.fraud_details = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
                     "level3" => b.level3 = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
@@ -539,6 +540,7 @@ const _: () = {
                     "payment_method_details" => {
                         b.payment_method_details = FromValueOpt::from_value(v)
                     }
+                    "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
                     "radar_options" => b.radar_options = FromValueOpt::from_value(v),
                     "receipt_email" => b.receipt_email = FromValueOpt::from_value(v),
                     "receipt_number" => b.receipt_number = FromValueOpt::from_value(v),
@@ -594,7 +596,6 @@ impl serde::Serialize for Charge {
         s.serialize_field("failure_message", &self.failure_message)?;
         s.serialize_field("fraud_details", &self.fraud_details)?;
         s.serialize_field("id", &self.id)?;
-        s.serialize_field("invoice", &self.invoice)?;
         s.serialize_field("level3", &self.level3)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
@@ -604,6 +605,7 @@ impl serde::Serialize for Charge {
         s.serialize_field("payment_intent", &self.payment_intent)?;
         s.serialize_field("payment_method", &self.payment_method)?;
         s.serialize_field("payment_method_details", &self.payment_method_details)?;
+        s.serialize_field("presentment_details", &self.presentment_details)?;
         s.serialize_field("radar_options", &self.radar_options)?;
         s.serialize_field("receipt_email", &self.receipt_email)?;
         s.serialize_field("receipt_number", &self.receipt_number)?;

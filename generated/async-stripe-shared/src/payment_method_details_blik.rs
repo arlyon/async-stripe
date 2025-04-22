@@ -1,9 +1,14 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentMethodDetailsBlik {}
+pub struct PaymentMethodDetailsBlik {
+    /// A unique and immutable identifier assigned by BLIK to every buyer.
+    pub buyer_id: Option<String>,
+}
 #[doc(hidden)]
-pub struct PaymentMethodDetailsBlikBuilder {}
+pub struct PaymentMethodDetailsBlikBuilder {
+    buyer_id: Option<Option<String>>,
+}
 
 #[allow(
     unused_variables,
@@ -45,19 +50,21 @@ const _: () = {
         type Out = PaymentMethodDetailsBlik;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "buyer_id" => Deserialize::begin(&mut self.buyer_id),
+
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { buyer_id: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
+            let (Some(buyer_id),) = (self.buyer_id.take(),) else {
                 return None;
             };
-            Some(Self::Out {})
+            Some(Self::Out { buyer_id })
         }
     }
 
@@ -84,6 +91,8 @@ const _: () = {
             let mut b = PaymentMethodDetailsBlikBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),
+
                     _ => {}
                 }
             }

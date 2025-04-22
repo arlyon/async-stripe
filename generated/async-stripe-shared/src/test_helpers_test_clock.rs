@@ -20,6 +20,7 @@ pub struct TestHelpersTestClock {
     pub name: Option<String>,
     /// The status of the Test Clock.
     pub status: TestHelpersTestClockStatus,
+    pub status_details: stripe_shared::BillingClocksResourceStatusDetailsStatusDetails,
 }
 #[doc(hidden)]
 pub struct TestHelpersTestClockBuilder {
@@ -30,6 +31,7 @@ pub struct TestHelpersTestClockBuilder {
     livemode: Option<bool>,
     name: Option<Option<String>>,
     status: Option<TestHelpersTestClockStatus>,
+    status_details: Option<stripe_shared::BillingClocksResourceStatusDetailsStatusDetails>,
 }
 
 #[allow(
@@ -79,6 +81,7 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "name" => Deserialize::begin(&mut self.name),
                 "status" => Deserialize::begin(&mut self.status),
+                "status_details" => Deserialize::begin(&mut self.status_details),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -93,6 +96,7 @@ const _: () = {
                 livemode: Deserialize::default(),
                 name: Deserialize::default(),
                 status: Deserialize::default(),
+                status_details: Deserialize::default(),
             }
         }
 
@@ -105,6 +109,7 @@ const _: () = {
                 Some(livemode),
                 Some(name),
                 Some(status),
+                Some(status_details),
             ) = (
                 self.created,
                 self.deletes_after,
@@ -113,11 +118,21 @@ const _: () = {
                 self.livemode,
                 self.name.take(),
                 self.status,
+                self.status_details,
             )
             else {
                 return None;
             };
-            Some(Self::Out { created, deletes_after, frozen_time, id, livemode, name, status })
+            Some(Self::Out {
+                created,
+                deletes_after,
+                frozen_time,
+                id,
+                livemode,
+                name,
+                status,
+                status_details,
+            })
         }
     }
 
@@ -151,6 +166,7 @@ const _: () = {
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
+                    "status_details" => b.status_details = FromValueOpt::from_value(v),
 
                     _ => {}
                 }
@@ -163,7 +179,7 @@ const _: () = {
 impl serde::Serialize for TestHelpersTestClock {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TestHelpersTestClock", 8)?;
+        let mut s = s.serialize_struct("TestHelpersTestClock", 9)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("deletes_after", &self.deletes_after)?;
         s.serialize_field("frozen_time", &self.frozen_time)?;
@@ -171,6 +187,7 @@ impl serde::Serialize for TestHelpersTestClock {
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("name", &self.name)?;
         s.serialize_field("status", &self.status)?;
+        s.serialize_field("status_details", &self.status_details)?;
 
         s.serialize_field("object", "test_helpers.test_clock")?;
         s.end()

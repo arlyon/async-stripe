@@ -408,6 +408,8 @@ impl UpdateTerminalLocationBuilder {
     }
 }
 /// The full address of the location.
+/// You can't change the location's `country`.
+/// If you need to modify the `country` field, create a new `Location` object and re-register any existing readers to that location.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateTerminalLocationAddress {
     /// City, district, suburb, town, or village.
@@ -452,6 +454,8 @@ impl UpdateTerminalLocation {
         Self { location: location.into(), inner: UpdateTerminalLocationBuilder::new() }
     }
     /// The full address of the location.
+    /// You can't change the location's `country`.
+    /// If you need to modify the `country` field, create a new `Location` object and re-register any existing readers to that location.
     pub fn address(mut self, address: impl Into<UpdateTerminalLocationAddress>) -> Self {
         self.inner.address = Some(address.into());
         self

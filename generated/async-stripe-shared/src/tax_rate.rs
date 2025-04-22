@@ -1,6 +1,6 @@
-/// Tax rates can be applied to [invoices](https://stripe.com/docs/billing/invoices/tax-rates), [subscriptions](https://stripe.com/docs/billing/subscriptions/taxes) and [Checkout Sessions](https://stripe.com/docs/payments/checkout/set-up-a-subscription#tax-rates) to collect tax.
+/// Tax rates can be applied to [invoices](/invoicing/taxes/tax-rates), [subscriptions](/billing/taxes/tax-rates) and [Checkout Sessions](/payments/checkout/use-manual-tax-rates) to collect tax.
 ///
-/// Related guide: [Tax rates](https://stripe.com/docs/billing/taxes/tax-rates)
+/// Related guide: [Tax rates](/billing/taxes/tax-rates)
 ///
 /// For more details see <<https://stripe.com/docs/api/tax_rates/object>>.
 #[derive(Clone, Debug)]
@@ -23,6 +23,10 @@ pub struct TaxRate {
     /// this percentage reflects the rate actually used to calculate tax based on the product's taxability
     /// and whether the user is registered to collect taxes in the corresponding jurisdiction.
     pub effective_percentage: Option<f64>,
+    /// The amount of the tax rate when the `rate_type` is `flat_amount`.
+    /// Tax rates with `rate_type` `percentage` can vary based on the transaction, resulting in this field being `null`.
+    /// This field exposes the amount and currency of the flat tax rate.
+    pub flat_amount: Option<stripe_shared::TaxRateFlatAmount>,
     /// Unique identifier for the object.
     pub id: stripe_shared::TaxRateId,
     /// This specifies if the tax rate is inclusive or exclusive.
@@ -42,7 +46,11 @@ pub struct TaxRate {
     /// Tax rate percentage out of 100.
     /// For tax calculations with automatic_tax[enabled]=true, this percentage includes the statutory tax rate of non-taxable jurisdictions.
     pub percentage: f64,
-    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix.
+    /// Indicates the type of tax rate applied to the taxable amount.
+    /// This value can be `null` when no tax applies to the location.
+    /// This field is only present for TaxRates created by Stripe Tax.
+    pub rate_type: Option<TaxRateRateType>,
+    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2), without country prefix.
     /// For example, "NY" for New York, United States.
     pub state: Option<String>,
     /// The high-level tax type, such as `vat` or `sales_tax`.
@@ -56,6 +64,7 @@ pub struct TaxRateBuilder {
     description: Option<Option<String>>,
     display_name: Option<String>,
     effective_percentage: Option<Option<f64>>,
+    flat_amount: Option<Option<stripe_shared::TaxRateFlatAmount>>,
     id: Option<stripe_shared::TaxRateId>,
     inclusive: Option<bool>,
     jurisdiction: Option<Option<String>>,
@@ -63,6 +72,7 @@ pub struct TaxRateBuilder {
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     percentage: Option<f64>,
+    rate_type: Option<Option<TaxRateRateType>>,
     state: Option<Option<String>>,
     tax_type: Option<Option<stripe_shared::TaxRateTaxType>>,
 }
@@ -110,6 +120,7 @@ const _: () = {
                 "description" => Deserialize::begin(&mut self.description),
                 "display_name" => Deserialize::begin(&mut self.display_name),
                 "effective_percentage" => Deserialize::begin(&mut self.effective_percentage),
+                "flat_amount" => Deserialize::begin(&mut self.flat_amount),
                 "id" => Deserialize::begin(&mut self.id),
                 "inclusive" => Deserialize::begin(&mut self.inclusive),
                 "jurisdiction" => Deserialize::begin(&mut self.jurisdiction),
@@ -117,6 +128,7 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "percentage" => Deserialize::begin(&mut self.percentage),
+                "rate_type" => Deserialize::begin(&mut self.rate_type),
                 "state" => Deserialize::begin(&mut self.state),
                 "tax_type" => Deserialize::begin(&mut self.tax_type),
 
@@ -132,6 +144,7 @@ const _: () = {
                 description: Deserialize::default(),
                 display_name: Deserialize::default(),
                 effective_percentage: Deserialize::default(),
+                flat_amount: Deserialize::default(),
                 id: Deserialize::default(),
                 inclusive: Deserialize::default(),
                 jurisdiction: Deserialize::default(),
@@ -139,6 +152,7 @@ const _: () = {
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
                 percentage: Deserialize::default(),
+                rate_type: Deserialize::default(),
                 state: Deserialize::default(),
                 tax_type: Deserialize::default(),
             }
@@ -152,6 +166,7 @@ const _: () = {
                 Some(description),
                 Some(display_name),
                 Some(effective_percentage),
+                Some(flat_amount),
                 Some(id),
                 Some(inclusive),
                 Some(jurisdiction),
@@ -159,6 +174,7 @@ const _: () = {
                 Some(livemode),
                 Some(metadata),
                 Some(percentage),
+                Some(rate_type),
                 Some(state),
                 Some(tax_type),
             ) = (
@@ -168,6 +184,7 @@ const _: () = {
                 self.description.take(),
                 self.display_name.take(),
                 self.effective_percentage,
+                self.flat_amount,
                 self.id.take(),
                 self.inclusive,
                 self.jurisdiction.take(),
@@ -175,8 +192,9 @@ const _: () = {
                 self.livemode,
                 self.metadata.take(),
                 self.percentage,
+                self.rate_type,
                 self.state.take(),
-                self.tax_type,
+                self.tax_type.take(),
             )
             else {
                 return None;
@@ -188,6 +206,7 @@ const _: () = {
                 description,
                 display_name,
                 effective_percentage,
+                flat_amount,
                 id,
                 inclusive,
                 jurisdiction,
@@ -195,6 +214,7 @@ const _: () = {
                 livemode,
                 metadata,
                 percentage,
+                rate_type,
                 state,
                 tax_type,
             })
@@ -230,6 +250,7 @@ const _: () = {
                     "description" => b.description = FromValueOpt::from_value(v),
                     "display_name" => b.display_name = FromValueOpt::from_value(v),
                     "effective_percentage" => b.effective_percentage = FromValueOpt::from_value(v),
+                    "flat_amount" => b.flat_amount = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "inclusive" => b.inclusive = FromValueOpt::from_value(v),
                     "jurisdiction" => b.jurisdiction = FromValueOpt::from_value(v),
@@ -237,6 +258,7 @@ const _: () = {
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "percentage" => b.percentage = FromValueOpt::from_value(v),
+                    "rate_type" => b.rate_type = FromValueOpt::from_value(v),
                     "state" => b.state = FromValueOpt::from_value(v),
                     "tax_type" => b.tax_type = FromValueOpt::from_value(v),
 
@@ -251,13 +273,14 @@ const _: () = {
 impl serde::Serialize for TaxRate {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TaxRate", 16)?;
+        let mut s = s.serialize_struct("TaxRate", 18)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("country", &self.country)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("description", &self.description)?;
         s.serialize_field("display_name", &self.display_name)?;
         s.serialize_field("effective_percentage", &self.effective_percentage)?;
+        s.serialize_field("flat_amount", &self.flat_amount)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("inclusive", &self.inclusive)?;
         s.serialize_field("jurisdiction", &self.jurisdiction)?;
@@ -265,6 +288,7 @@ impl serde::Serialize for TaxRate {
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("percentage", &self.percentage)?;
+        s.serialize_field("rate_type", &self.rate_type)?;
         s.serialize_field("state", &self.state)?;
         s.serialize_field("tax_type", &self.tax_type)?;
 
@@ -356,6 +380,79 @@ impl<'de> serde::Deserialize<'de> for TaxRateJurisdictionLevel {
             .map_err(|_| serde::de::Error::custom("Unknown value for TaxRateJurisdictionLevel"))
     }
 }
+/// Indicates the type of tax rate applied to the taxable amount.
+/// This value can be `null` when no tax applies to the location.
+/// This field is only present for TaxRates created by Stripe Tax.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum TaxRateRateType {
+    FlatAmount,
+    Percentage,
+}
+impl TaxRateRateType {
+    pub fn as_str(self) -> &'static str {
+        use TaxRateRateType::*;
+        match self {
+            FlatAmount => "flat_amount",
+            Percentage => "percentage",
+        }
+    }
+}
+
+impl std::str::FromStr for TaxRateRateType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TaxRateRateType::*;
+        match s {
+            "flat_amount" => Ok(FlatAmount),
+            "percentage" => Ok(Percentage),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for TaxRateRateType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxRateRateType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for TaxRateRateType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for TaxRateRateType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<TaxRateRateType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TaxRateRateType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(TaxRateRateType);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for TaxRateRateType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for TaxRateRateType"))
+    }
+}
 impl stripe_types::Object for TaxRate {
     type Id = stripe_shared::TaxRateId;
     fn id(&self) -> &Self::Id {
@@ -367,7 +464,8 @@ impl stripe_types::Object for TaxRate {
     }
 }
 stripe_types::def_id!(TaxRateId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxRateTaxType {
     AmusementTax,
     CommunicationsTax,
@@ -378,12 +476,16 @@ pub enum TaxRateTaxType {
     LeaseTax,
     Pst,
     Qst,
+    RetailDeliveryFee,
     Rst,
     SalesTax,
+    ServiceTax,
     Vat,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxRateTaxType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxRateTaxType::*;
         match self {
             AmusementTax => "amusement_tax",
@@ -395,15 +497,18 @@ impl TaxRateTaxType {
             LeaseTax => "lease_tax",
             Pst => "pst",
             Qst => "qst",
+            RetailDeliveryFee => "retail_delivery_fee",
             Rst => "rst",
             SalesTax => "sales_tax",
+            ServiceTax => "service_tax",
             Vat => "vat",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxRateTaxType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxRateTaxType::*;
         match s {
@@ -416,10 +521,12 @@ impl std::str::FromStr for TaxRateTaxType {
             "lease_tax" => Ok(LeaseTax),
             "pst" => Ok(Pst),
             "qst" => Ok(Qst),
+            "retail_delivery_fee" => Ok(RetailDeliveryFee),
             "rst" => Ok(Rst),
             "sales_tax" => Ok(SalesTax),
+            "service_tax" => Ok(ServiceTax),
             "vat" => Ok(Vat),
-            _ => Err(stripe_types::StripeParseError),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -451,7 +558,7 @@ impl miniserde::Deserialize for TaxRateTaxType {
 impl miniserde::de::Visitor for crate::Place<TaxRateTaxType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TaxRateTaxType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TaxRateTaxType::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -462,6 +569,6 @@ impl<'de> serde::Deserialize<'de> for TaxRateTaxType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxRateTaxType"))
+        Ok(Self::from_str(&s).unwrap())
     }
 }

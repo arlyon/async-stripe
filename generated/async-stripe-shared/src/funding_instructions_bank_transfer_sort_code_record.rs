@@ -3,17 +3,21 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct FundingInstructionsBankTransferSortCodeRecord {
+    pub account_holder_address: stripe_shared::Address,
     /// The name of the person or business that owns the bank account
     pub account_holder_name: String,
     /// The account number
     pub account_number: String,
+    pub bank_address: stripe_shared::Address,
     /// The six-digit sort code
     pub sort_code: String,
 }
 #[doc(hidden)]
 pub struct FundingInstructionsBankTransferSortCodeRecordBuilder {
+    account_holder_address: Option<stripe_shared::Address>,
     account_holder_name: Option<String>,
     account_number: Option<String>,
+    bank_address: Option<stripe_shared::Address>,
     sort_code: Option<String>,
 }
 
@@ -57,8 +61,10 @@ const _: () = {
         type Out = FundingInstructionsBankTransferSortCodeRecord;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "account_holder_address" => Deserialize::begin(&mut self.account_holder_address),
                 "account_holder_name" => Deserialize::begin(&mut self.account_holder_name),
                 "account_number" => Deserialize::begin(&mut self.account_number),
+                "bank_address" => Deserialize::begin(&mut self.bank_address),
                 "sort_code" => Deserialize::begin(&mut self.sort_code),
 
                 _ => <dyn Visitor>::ignore(),
@@ -67,21 +73,38 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                account_holder_address: Deserialize::default(),
                 account_holder_name: Deserialize::default(),
                 account_number: Deserialize::default(),
+                bank_address: Deserialize::default(),
                 sort_code: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(account_holder_name), Some(account_number), Some(sort_code)) = (
+            let (
+                Some(account_holder_address),
+                Some(account_holder_name),
+                Some(account_number),
+                Some(bank_address),
+                Some(sort_code),
+            ) = (
+                self.account_holder_address.take(),
                 self.account_holder_name.take(),
                 self.account_number.take(),
+                self.bank_address.take(),
                 self.sort_code.take(),
-            ) else {
+            )
+            else {
                 return None;
             };
-            Some(Self::Out { account_holder_name, account_number, sort_code })
+            Some(Self::Out {
+                account_holder_address,
+                account_holder_name,
+                account_number,
+                bank_address,
+                sort_code,
+            })
         }
     }
 
@@ -108,8 +131,12 @@ const _: () = {
             let mut b = FundingInstructionsBankTransferSortCodeRecordBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "account_holder_address" => {
+                        b.account_holder_address = FromValueOpt::from_value(v)
+                    }
                     "account_holder_name" => b.account_holder_name = FromValueOpt::from_value(v),
                     "account_number" => b.account_number = FromValueOpt::from_value(v),
+                    "bank_address" => b.bank_address = FromValueOpt::from_value(v),
                     "sort_code" => b.sort_code = FromValueOpt::from_value(v),
 
                     _ => {}

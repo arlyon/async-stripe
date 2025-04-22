@@ -1,5 +1,7 @@
-/// Use [InboundTransfers](https://stripe.com/docs/treasury/moving-money/financial-accounts/into/inbound-transfers) to add funds to your [FinancialAccount](https://stripe.com/docs/api#financial_accounts) via a PaymentMethod that is owned by you.
+/// Use [InboundTransfers](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/into/inbound-transfers) to add funds to your [FinancialAccount](https://stripe.com/docs/api#financial_accounts) via a PaymentMethod that is owned by you.
 /// The funds will be transferred via an ACH debit.
+///
+/// Related guide: [Moving money with Treasury using InboundTransfer objects](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/into/inbound-transfers).
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryInboundTransfer {
@@ -30,7 +32,7 @@ pub struct TreasuryInboundTransfer {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// The origin payment method to be debited for an InboundTransfer.
-    pub origin_payment_method: String,
+    pub origin_payment_method: Option<String>,
     /// Details about the PaymentMethod for an InboundTransfer.
     pub origin_payment_method_details: Option<stripe_treasury::InboundTransfers>,
     /// Returns `true` if the funds for an InboundTransfer were returned after the InboundTransfer went to the `succeeded` state.
@@ -64,7 +66,7 @@ pub struct TreasuryInboundTransferBuilder {
         Option<stripe_treasury::TreasuryInboundTransfersResourceInboundTransferResourceLinkedFlows>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
-    origin_payment_method: Option<String>,
+    origin_payment_method: Option<Option<String>>,
     origin_payment_method_details: Option<Option<stripe_treasury::InboundTransfers>>,
     returned: Option<Option<bool>>,
     statement_descriptor: Option<String>,

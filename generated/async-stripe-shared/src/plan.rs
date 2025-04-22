@@ -16,10 +16,6 @@
 pub struct Plan {
     /// Whether the plan can be used for new purchases.
     pub active: bool,
-    /// Specifies a usage aggregation strategy for plans of `usage_type=metered`.
-    /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
-    /// Defaults to `sum`.
-    pub aggregate_usage: Option<stripe_shared::PlanAggregateUsage>,
     /// The unit amount in cents (or local equivalent) to be charged, represented as a whole integer if possible.
     /// Only set if `billing_scheme=per_unit`.
     pub amount: Option<i64>,
@@ -77,7 +73,6 @@ pub struct Plan {
 #[doc(hidden)]
 pub struct PlanBuilder {
     active: Option<bool>,
-    aggregate_usage: Option<Option<stripe_shared::PlanAggregateUsage>>,
     amount: Option<Option<i64>>,
     amount_decimal: Option<Option<String>>,
     billing_scheme: Option<stripe_shared::PlanBillingScheme>,
@@ -136,7 +131,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "active" => Deserialize::begin(&mut self.active),
-                "aggregate_usage" => Deserialize::begin(&mut self.aggregate_usage),
                 "amount" => Deserialize::begin(&mut self.amount),
                 "amount_decimal" => Deserialize::begin(&mut self.amount_decimal),
                 "billing_scheme" => Deserialize::begin(&mut self.billing_scheme),
@@ -163,7 +157,6 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 active: Deserialize::default(),
-                aggregate_usage: Deserialize::default(),
                 amount: Deserialize::default(),
                 amount_decimal: Deserialize::default(),
                 billing_scheme: Deserialize::default(),
@@ -188,7 +181,6 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(active),
-                Some(aggregate_usage),
                 Some(amount),
                 Some(amount_decimal),
                 Some(billing_scheme),
@@ -209,7 +201,6 @@ const _: () = {
                 Some(usage_type),
             ) = (
                 self.active,
-                self.aggregate_usage,
                 self.amount,
                 self.amount_decimal.take(),
                 self.billing_scheme,
@@ -234,7 +225,6 @@ const _: () = {
             };
             Some(Self::Out {
                 active,
-                aggregate_usage,
                 amount,
                 amount_decimal,
                 billing_scheme,
@@ -281,7 +271,6 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "active" => b.active = FromValueOpt::from_value(v),
-                    "aggregate_usage" => b.aggregate_usage = FromValueOpt::from_value(v),
                     "amount" => b.amount = FromValueOpt::from_value(v),
                     "amount_decimal" => b.amount_decimal = FromValueOpt::from_value(v),
                     "billing_scheme" => b.billing_scheme = FromValueOpt::from_value(v),
@@ -312,9 +301,8 @@ const _: () = {
 impl serde::Serialize for Plan {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Plan", 21)?;
+        let mut s = s.serialize_struct("Plan", 20)?;
         s.serialize_field("active", &self.active)?;
-        s.serialize_field("aggregate_usage", &self.aggregate_usage)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_decimal", &self.amount_decimal)?;
         s.serialize_field("billing_scheme", &self.billing_scheme)?;
@@ -349,81 +337,6 @@ impl stripe_types::Object for Plan {
     }
 }
 stripe_types::def_id!(PlanId);
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum PlanAggregateUsage {
-    LastDuringPeriod,
-    LastEver,
-    Max,
-    Sum,
-}
-impl PlanAggregateUsage {
-    pub fn as_str(self) -> &'static str {
-        use PlanAggregateUsage::*;
-        match self {
-            LastDuringPeriod => "last_during_period",
-            LastEver => "last_ever",
-            Max => "max",
-            Sum => "sum",
-        }
-    }
-}
-
-impl std::str::FromStr for PlanAggregateUsage {
-    type Err = stripe_types::StripeParseError;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PlanAggregateUsage::*;
-        match s {
-            "last_during_period" => Ok(LastDuringPeriod),
-            "last_ever" => Ok(LastEver),
-            "max" => Ok(Max),
-            "sum" => Ok(Sum),
-            _ => Err(stripe_types::StripeParseError),
-        }
-    }
-}
-impl std::fmt::Display for PlanAggregateUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for PlanAggregateUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for PlanAggregateUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PlanAggregateUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PlanAggregateUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PlanAggregateUsage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PlanAggregateUsage);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PlanAggregateUsage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PlanAggregateUsage"))
-    }
-}
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PlanBillingScheme {
     PerUnit,

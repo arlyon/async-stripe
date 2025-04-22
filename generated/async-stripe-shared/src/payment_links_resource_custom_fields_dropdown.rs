@@ -2,11 +2,14 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentLinksResourceCustomFieldsDropdown {
+    /// The value that will pre-fill on the payment page.
+    pub default_value: Option<String>,
     /// The options available for the customer to select. Up to 200 options allowed.
     pub options: Vec<stripe_shared::PaymentLinksResourceCustomFieldsDropdownOption>,
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourceCustomFieldsDropdownBuilder {
+    default_value: Option<Option<String>>,
     options: Option<Vec<stripe_shared::PaymentLinksResourceCustomFieldsDropdownOption>>,
 }
 
@@ -50,6 +53,7 @@ const _: () = {
         type Out = PaymentLinksResourceCustomFieldsDropdown;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "default_value" => Deserialize::begin(&mut self.default_value),
                 "options" => Deserialize::begin(&mut self.options),
 
                 _ => <dyn Visitor>::ignore(),
@@ -57,14 +61,16 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { options: Deserialize::default() }
+            Self { default_value: Deserialize::default(), options: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(options),) = (self.options.take(),) else {
+            let (Some(default_value), Some(options)) =
+                (self.default_value.take(), self.options.take())
+            else {
                 return None;
             };
-            Some(Self::Out { options })
+            Some(Self::Out { default_value, options })
         }
     }
 
@@ -91,6 +97,7 @@ const _: () = {
             let mut b = PaymentLinksResourceCustomFieldsDropdownBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "default_value" => b.default_value = FromValueOpt::from_value(v),
                     "options" => b.options = FromValueOpt::from_value(v),
 
                     _ => {}

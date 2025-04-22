@@ -1,6 +1,6 @@
 /// An Issuing `Cardholder` object represents an individual or business entity who is [issued](https://stripe.com/docs/issuing) cards.
 ///
-/// Related guide: [How to create a cardholder](https://stripe.com/docs/issuing/cards#create-cardholder).
+/// Related guide: [How to create a cardholder](https://stripe.com/docs/issuing/cards/virtual/issue-cards#create-cardholder).
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/cardholders/object>>.
 #[derive(Clone, Debug)]

@@ -20,6 +20,8 @@ pub struct Dispute {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
+    /// List of eligibility types that are included in `enhanced_evidence`.
+    pub enhanced_eligibility_types: Vec<DisputeEnhancedEligibilityTypes>,
     pub evidence: stripe_shared::DisputeEvidence,
     pub evidence_details: stripe_shared::DisputeEvidenceDetails,
     /// Unique identifier for the object.
@@ -52,6 +54,7 @@ pub struct DisputeBuilder {
     charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
+    enhanced_eligibility_types: Option<Vec<DisputeEnhancedEligibilityTypes>>,
     evidence: Option<stripe_shared::DisputeEvidence>,
     evidence_details: Option<stripe_shared::DisputeEvidenceDetails>,
     id: Option<stripe_shared::DisputeId>,
@@ -107,6 +110,9 @@ const _: () = {
                 "charge" => Deserialize::begin(&mut self.charge),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
+                "enhanced_eligibility_types" => {
+                    Deserialize::begin(&mut self.enhanced_eligibility_types)
+                }
                 "evidence" => Deserialize::begin(&mut self.evidence),
                 "evidence_details" => Deserialize::begin(&mut self.evidence_details),
                 "id" => Deserialize::begin(&mut self.id),
@@ -130,6 +136,7 @@ const _: () = {
                 charge: Deserialize::default(),
                 created: Deserialize::default(),
                 currency: Deserialize::default(),
+                enhanced_eligibility_types: Deserialize::default(),
                 evidence: Deserialize::default(),
                 evidence_details: Deserialize::default(),
                 id: Deserialize::default(),
@@ -151,6 +158,7 @@ const _: () = {
                 Some(charge),
                 Some(created),
                 Some(currency),
+                Some(enhanced_eligibility_types),
                 Some(evidence),
                 Some(evidence_details),
                 Some(id),
@@ -168,8 +176,9 @@ const _: () = {
                 self.charge.take(),
                 self.created,
                 self.currency,
+                self.enhanced_eligibility_types.take(),
                 self.evidence.take(),
-                self.evidence_details,
+                self.evidence_details.take(),
                 self.id.take(),
                 self.is_charge_refundable,
                 self.livemode,
@@ -189,6 +198,7 @@ const _: () = {
                 charge,
                 created,
                 currency,
+                enhanced_eligibility_types,
                 evidence,
                 evidence_details,
                 id,
@@ -232,6 +242,9 @@ const _: () = {
                     "charge" => b.charge = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
+                    "enhanced_eligibility_types" => {
+                        b.enhanced_eligibility_types = FromValueOpt::from_value(v)
+                    }
                     "evidence" => b.evidence = FromValueOpt::from_value(v),
                     "evidence_details" => b.evidence_details = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
@@ -257,12 +270,13 @@ const _: () = {
 impl serde::Serialize for Dispute {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Dispute", 17)?;
+        let mut s = s.serialize_struct("Dispute", 18)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("balance_transactions", &self.balance_transactions)?;
         s.serialize_field("charge", &self.charge)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("enhanced_eligibility_types", &self.enhanced_eligibility_types)?;
         s.serialize_field("evidence", &self.evidence)?;
         s.serialize_field("evidence_details", &self.evidence_details)?;
         s.serialize_field("id", &self.id)?;
@@ -277,6 +291,76 @@ impl serde::Serialize for Dispute {
 
         s.serialize_field("object", "dispute")?;
         s.end()
+    }
+}
+/// List of eligibility types that are included in `enhanced_evidence`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum DisputeEnhancedEligibilityTypes {
+    VisaCompellingEvidence3,
+}
+impl DisputeEnhancedEligibilityTypes {
+    pub fn as_str(self) -> &'static str {
+        use DisputeEnhancedEligibilityTypes::*;
+        match self {
+            VisaCompellingEvidence3 => "visa_compelling_evidence_3",
+        }
+    }
+}
+
+impl std::str::FromStr for DisputeEnhancedEligibilityTypes {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DisputeEnhancedEligibilityTypes::*;
+        match s {
+            "visa_compelling_evidence_3" => Ok(VisaCompellingEvidence3),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for DisputeEnhancedEligibilityTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for DisputeEnhancedEligibilityTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for DisputeEnhancedEligibilityTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for DisputeEnhancedEligibilityTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<DisputeEnhancedEligibilityTypes> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(DisputeEnhancedEligibilityTypes::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(DisputeEnhancedEligibilityTypes);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for DisputeEnhancedEligibilityTypes {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for DisputeEnhancedEligibilityTypes")
+        })
     }
 }
 /// Current status of dispute.

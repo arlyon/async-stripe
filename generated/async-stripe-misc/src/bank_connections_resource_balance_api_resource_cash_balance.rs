@@ -2,7 +2,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BankConnectionsResourceBalanceApiResourceCashBalance {
-    /// The funds available to the account holder. Typically this is the current balance less any holds.
+    /// The funds available to the account holder.
+    /// Typically this is the current balance after subtracting any outbound pending transactions and adding any inbound pending transactions.
     ///
     /// Each key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///

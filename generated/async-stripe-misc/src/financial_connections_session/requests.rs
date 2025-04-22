@@ -165,12 +165,91 @@ impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionAccountHo
 /// Filters to restrict the kinds of accounts to collect.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateFinancialConnectionsSessionFilters {
+    /// Restricts the Session to subcategories of accounts that can be linked.
+    /// Valid subcategories are: `checking`, `savings`, `mortgage`, `line_of_credit`, `credit_card`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_subcategories:
+        Option<Vec<CreateFinancialConnectionsSessionFiltersAccountSubcategories>>,
     /// List of countries from which to collect accounts.
-    pub countries: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub countries: Option<Vec<String>>,
 }
 impl CreateFinancialConnectionsSessionFilters {
-    pub fn new(countries: impl Into<Vec<String>>) -> Self {
-        Self { countries: countries.into() }
+    pub fn new() -> Self {
+        Self { account_subcategories: None, countries: None }
+    }
+}
+impl Default for CreateFinancialConnectionsSessionFilters {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Restricts the Session to subcategories of accounts that can be linked.
+/// Valid subcategories are: `checking`, `savings`, `mortgage`, `line_of_credit`, `credit_card`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateFinancialConnectionsSessionFiltersAccountSubcategories {
+    Checking,
+    CreditCard,
+    LineOfCredit,
+    Mortgage,
+    Savings,
+}
+impl CreateFinancialConnectionsSessionFiltersAccountSubcategories {
+    pub fn as_str(self) -> &'static str {
+        use CreateFinancialConnectionsSessionFiltersAccountSubcategories::*;
+        match self {
+            Checking => "checking",
+            CreditCard => "credit_card",
+            LineOfCredit => "line_of_credit",
+            Mortgage => "mortgage",
+            Savings => "savings",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateFinancialConnectionsSessionFiltersAccountSubcategories {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateFinancialConnectionsSessionFiltersAccountSubcategories::*;
+        match s {
+            "checking" => Ok(Checking),
+            "credit_card" => Ok(CreditCard),
+            "line_of_credit" => Ok(LineOfCredit),
+            "mortgage" => Ok(Mortgage),
+            "savings" => Ok(Savings),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateFinancialConnectionsSessionFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateFinancialConnectionsSessionFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateFinancialConnectionsSessionFiltersAccountSubcategories {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionFiltersAccountSubcategories {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateFinancialConnectionsSessionFiltersAccountSubcategories",
+            )
+        })
     }
 }
 /// To launch the Financial Connections authorization flow, create a `Session`.

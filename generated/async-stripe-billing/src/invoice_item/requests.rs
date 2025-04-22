@@ -6,11 +6,11 @@ use stripe_client_core::{
 /// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct DeleteInvoiceItem {
-    invoiceitem: stripe_shared::InvoiceItemId,
+    invoiceitem: stripe_billing::InvoiceItemId,
 }
 impl DeleteInvoiceItem {
     /// Construct a new `DeleteInvoiceItem`.
-    pub fn new(invoiceitem: impl Into<stripe_shared::InvoiceItemId>) -> Self {
+    pub fn new(invoiceitem: impl Into<stripe_billing::InvoiceItemId>) -> Self {
         Self { invoiceitem: invoiceitem.into() }
     }
 }
@@ -33,7 +33,7 @@ impl DeleteInvoiceItem {
 }
 
 impl StripeRequest for DeleteInvoiceItem {
-    type Output = stripe_shared::DeletedInvoiceitem;
+    type Output = stripe_billing::DeletedInvoiceitem;
 
     fn build(&self) -> RequestBuilder {
         let invoiceitem = &self.invoiceitem;
@@ -159,13 +159,13 @@ impl ListInvoiceItem {
 
     pub fn paginate(
         &self,
-    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::InvoiceItem>> {
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_billing::InvoiceItem>> {
         stripe_client_core::ListPaginator::new_list("/invoiceitems", &self.inner)
     }
 }
 
 impl StripeRequest for ListInvoiceItem {
-    type Output = stripe_types::List<stripe_shared::InvoiceItem>;
+    type Output = stripe_types::List<stripe_billing::InvoiceItem>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/invoiceitems").query(&self.inner)
@@ -185,11 +185,11 @@ impl RetrieveInvoiceItemBuilder {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct RetrieveInvoiceItem {
     inner: RetrieveInvoiceItemBuilder,
-    invoiceitem: stripe_shared::InvoiceItemId,
+    invoiceitem: stripe_billing::InvoiceItemId,
 }
 impl RetrieveInvoiceItem {
     /// Construct a new `RetrieveInvoiceItem`.
-    pub fn new(invoiceitem: impl Into<stripe_shared::InvoiceItemId>) -> Self {
+    pub fn new(invoiceitem: impl Into<stripe_billing::InvoiceItemId>) -> Self {
         Self { invoiceitem: invoiceitem.into(), inner: RetrieveInvoiceItemBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
@@ -217,7 +217,7 @@ impl RetrieveInvoiceItem {
 }
 
 impl StripeRequest for RetrieveInvoiceItem {
-    type Output = stripe_shared::InvoiceItem;
+    type Output = stripe_billing::InvoiceItem;
 
     fn build(&self) -> RequestBuilder {
         let invoiceitem = &self.invoiceitem;
@@ -247,9 +247,9 @@ struct CreateInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     period: Option<Period>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    price: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     price_data: Option<CreateInvoiceItemPriceData>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pricing: Option<PricingParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
     quantity: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -260,8 +260,6 @@ struct CreateInvoiceItemBuilder {
     tax_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_rates: Option<Vec<String>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    unit_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     unit_amount_decimal: Option<String>,
 }
@@ -278,14 +276,13 @@ impl CreateInvoiceItemBuilder {
             invoice: None,
             metadata: None,
             period: None,
-            price: None,
             price_data: None,
+            pricing: None,
             quantity: None,
             subscription: None,
             tax_behavior: None,
             tax_code: None,
             tax_rates: None,
-            unit_amount: None,
             unit_amount_decimal: None,
         }
     }
@@ -296,7 +293,7 @@ pub struct CreateInvoiceItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
@@ -518,14 +515,14 @@ impl CreateInvoiceItem {
         self.inner.period = Some(period.into());
         self
     }
-    /// The ID of the price object.
-    pub fn price(mut self, price: impl Into<String>) -> Self {
-        self.inner.price = Some(price.into());
-        self
-    }
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     pub fn price_data(mut self, price_data: impl Into<CreateInvoiceItemPriceData>) -> Self {
         self.inner.price_data = Some(price_data.into());
+        self
+    }
+    /// The pricing information for the invoice item.
+    pub fn pricing(mut self, pricing: impl Into<PricingParam>) -> Self {
+        self.inner.pricing = Some(pricing.into());
         self
     }
     /// Non-negative integer. The quantity of units for the invoice item.
@@ -534,7 +531,7 @@ impl CreateInvoiceItem {
         self
     }
     /// The ID of a subscription to add this invoice item to.
-    /// When left blank, the invoice item will be be added to the next upcoming scheduled invoice.
+    /// When left blank, the invoice item is added to the next upcoming scheduled invoice.
     /// When set, scheduled invoices for subscriptions other than the specified subscription will ignore the invoice item.
     /// Use this when you want to express that an invoice item has been accrued within the context of a particular subscription.
     pub fn subscription(mut self, subscription: impl Into<String>) -> Self {
@@ -560,15 +557,10 @@ impl CreateInvoiceItem {
         self.inner.tax_rates = Some(tax_rates.into());
         self
     }
-    /// The integer unit amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
-    /// This `unit_amount` will be multiplied by the quantity to get the full amount.
-    /// Passing in a negative `unit_amount` will reduce the `amount_due` on the invoice.
-    pub fn unit_amount(mut self, unit_amount: impl Into<i64>) -> Self {
-        self.inner.unit_amount = Some(unit_amount.into());
-        self
-    }
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
+    /// The decimal unit amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
+    /// This `unit_amount_decimal` will be multiplied by the quantity to get the full amount.
+    /// Passing in a negative `unit_amount_decimal` will reduce the `amount_due` on the invoice.
+    /// Accepts at most 12 decimal places.
     pub fn unit_amount_decimal(mut self, unit_amount_decimal: impl Into<String>) -> Self {
         self.inner.unit_amount_decimal = Some(unit_amount_decimal.into());
         self
@@ -593,7 +585,7 @@ impl CreateInvoiceItem {
 }
 
 impl StripeRequest for CreateInvoiceItem {
-    type Output = stripe_shared::InvoiceItem;
+    type Output = stripe_billing::InvoiceItem;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/invoiceitems").form(&self.inner)
@@ -616,9 +608,9 @@ struct UpdateInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     period: Option<Period>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    price: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     price_data: Option<UpdateInvoiceItemPriceData>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pricing: Option<PricingParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
     quantity: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -627,8 +619,6 @@ struct UpdateInvoiceItemBuilder {
     tax_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_rates: Option<Vec<String>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    unit_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     unit_amount_decimal: Option<String>,
 }
@@ -642,13 +632,12 @@ impl UpdateInvoiceItemBuilder {
             expand: None,
             metadata: None,
             period: None,
-            price: None,
             price_data: None,
+            pricing: None,
             quantity: None,
             tax_behavior: None,
             tax_code: None,
             tax_rates: None,
-            unit_amount: None,
             unit_amount_decimal: None,
         }
     }
@@ -659,7 +648,7 @@ pub struct UpdateInvoiceItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
@@ -814,11 +803,11 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceItemTaxBehavior {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateInvoiceItem {
     inner: UpdateInvoiceItemBuilder,
-    invoiceitem: stripe_shared::InvoiceItemId,
+    invoiceitem: stripe_billing::InvoiceItemId,
 }
 impl UpdateInvoiceItem {
     /// Construct a new `UpdateInvoiceItem`.
-    pub fn new(invoiceitem: impl Into<stripe_shared::InvoiceItemId>) -> Self {
+    pub fn new(invoiceitem: impl Into<stripe_billing::InvoiceItemId>) -> Self {
         Self { invoiceitem: invoiceitem.into(), inner: UpdateInvoiceItemBuilder::new() }
     }
     /// The integer amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
@@ -871,14 +860,14 @@ impl UpdateInvoiceItem {
         self.inner.period = Some(period.into());
         self
     }
-    /// The ID of the price object.
-    pub fn price(mut self, price: impl Into<String>) -> Self {
-        self.inner.price = Some(price.into());
-        self
-    }
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     pub fn price_data(mut self, price_data: impl Into<UpdateInvoiceItemPriceData>) -> Self {
         self.inner.price_data = Some(price_data.into());
+        self
+    }
+    /// The pricing information for the invoice item.
+    pub fn pricing(mut self, pricing: impl Into<PricingParam>) -> Self {
+        self.inner.pricing = Some(pricing.into());
         self
     }
     /// Non-negative integer. The quantity of units for the invoice item.
@@ -906,15 +895,10 @@ impl UpdateInvoiceItem {
         self.inner.tax_rates = Some(tax_rates.into());
         self
     }
-    /// The integer unit amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
-    /// This unit_amount will be multiplied by the quantity to get the full amount.
-    /// If you want to apply a credit to the customer's account, pass a negative unit_amount.
-    pub fn unit_amount(mut self, unit_amount: impl Into<i64>) -> Self {
-        self.inner.unit_amount = Some(unit_amount.into());
-        self
-    }
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
+    /// The decimal unit amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
+    /// This `unit_amount_decimal` will be multiplied by the quantity to get the full amount.
+    /// Passing in a negative `unit_amount_decimal` will reduce the `amount_due` on the invoice.
+    /// Accepts at most 12 decimal places.
     pub fn unit_amount_decimal(mut self, unit_amount_decimal: impl Into<String>) -> Self {
         self.inner.unit_amount_decimal = Some(unit_amount_decimal.into());
         self
@@ -939,7 +923,7 @@ impl UpdateInvoiceItem {
 }
 
 impl StripeRequest for UpdateInvoiceItem {
-    type Output = stripe_shared::InvoiceItem;
+    type Output = stripe_billing::InvoiceItem;
 
     fn build(&self) -> RequestBuilder {
         let invoiceitem = &self.invoiceitem;
@@ -983,5 +967,21 @@ impl Period {
         start: impl Into<stripe_types::Timestamp>,
     ) -> Self {
         Self { end: end.into(), start: start.into() }
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct PricingParam {
+    /// The ID of the price object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<String>,
+}
+impl PricingParam {
+    pub fn new() -> Self {
+        Self { price: None }
+    }
+}
+impl Default for PricingParam {
+    fn default() -> Self {
+        Self::new()
     }
 }

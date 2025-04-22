@@ -2,11 +2,11 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsAmountDetails {
-    pub tip: Option<stripe_shared::PaymentFlowsAmountDetailsResourceTip>,
+    pub tip: Option<stripe_shared::PaymentFlowsAmountDetailsClientResourceTip>,
 }
 #[doc(hidden)]
 pub struct PaymentFlowsAmountDetailsBuilder {
-    tip: Option<Option<stripe_shared::PaymentFlowsAmountDetailsResourceTip>>,
+    tip: Option<Option<stripe_shared::PaymentFlowsAmountDetailsClientResourceTip>>,
 }
 
 #[allow(

@@ -2,6 +2,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingTransactionPurchaseDetails {
+    /// Fleet-specific information for transactions using Fleet cards.
+    pub fleet: Option<stripe_shared::IssuingTransactionFleetData>,
     /// Information about the flight that was purchased with this transaction.
     pub flight: Option<stripe_shared::IssuingTransactionFlightData>,
     /// Information about fuel that was purchased with this transaction.
@@ -15,6 +17,7 @@ pub struct IssuingTransactionPurchaseDetails {
 }
 #[doc(hidden)]
 pub struct IssuingTransactionPurchaseDetailsBuilder {
+    fleet: Option<Option<stripe_shared::IssuingTransactionFleetData>>,
     flight: Option<Option<stripe_shared::IssuingTransactionFlightData>>,
     fuel: Option<Option<stripe_shared::IssuingTransactionFuelData>>,
     lodging: Option<Option<stripe_shared::IssuingTransactionLodgingData>>,
@@ -62,6 +65,7 @@ const _: () = {
         type Out = IssuingTransactionPurchaseDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "fleet" => Deserialize::begin(&mut self.fleet),
                 "flight" => Deserialize::begin(&mut self.flight),
                 "fuel" => Deserialize::begin(&mut self.fuel),
                 "lodging" => Deserialize::begin(&mut self.lodging),
@@ -74,6 +78,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                fleet: Deserialize::default(),
                 flight: Deserialize::default(),
                 fuel: Deserialize::default(),
                 lodging: Deserialize::default(),
@@ -83,16 +88,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(flight), Some(fuel), Some(lodging), Some(receipt), Some(reference)) = (
+            let (
+                Some(fleet),
+                Some(flight),
+                Some(fuel),
+                Some(lodging),
+                Some(receipt),
+                Some(reference),
+            ) = (
+                self.fleet.take(),
                 self.flight.take(),
                 self.fuel.take(),
                 self.lodging,
                 self.receipt.take(),
                 self.reference.take(),
-            ) else {
+            )
+            else {
                 return None;
             };
-            Some(Self::Out { flight, fuel, lodging, receipt, reference })
+            Some(Self::Out { fleet, flight, fuel, lodging, receipt, reference })
         }
     }
 
@@ -119,6 +133,7 @@ const _: () = {
             let mut b = IssuingTransactionPurchaseDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "fleet" => b.fleet = FromValueOpt::from_value(v),
                     "flight" => b.flight = FromValueOpt::from_value(v),
                     "fuel" => b.fuel = FromValueOpt::from_value(v),
                     "lodging" => b.lodging = FromValueOpt::from_value(v),

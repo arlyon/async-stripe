@@ -15,6 +15,8 @@ struct ListIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    related_customer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_misc::IdentityVerificationSessionStatus>,
@@ -27,6 +29,7 @@ impl ListIdentityVerificationSessionBuilder {
             ending_before: None,
             expand: None,
             limit: None,
+            related_customer: None,
             starting_after: None,
             status: None,
         }
@@ -69,6 +72,10 @@ impl ListIdentityVerificationSession {
     /// Limit can range between 1 and 100, and the default is 10.
     pub fn limit(mut self, limit: impl Into<i64>) -> Self {
         self.inner.limit = Some(limit.into());
+        self
+    }
+    pub fn related_customer(mut self, related_customer: impl Into<String>) -> Self {
+        self.inner.related_customer = Some(related_customer.into());
         self
     }
     /// A cursor for use in pagination.
@@ -196,6 +203,8 @@ struct CreateIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     provided_details: Option<ProvidedDetailsParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    related_customer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     return_url: Option<String>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -211,6 +220,7 @@ impl CreateIdentityVerificationSessionBuilder {
             metadata: None,
             options: None,
             provided_details: None,
+            related_customer: None,
             return_url: None,
             type_: None,
             verification_flow: None,
@@ -434,6 +444,11 @@ impl CreateIdentityVerificationSession {
         self.inner.provided_details = Some(provided_details.into());
         self
     }
+    /// Customer ID
+    pub fn related_customer(mut self, related_customer: impl Into<String>) -> Self {
+        self.inner.related_customer = Some(related_customer.into());
+        self
+    }
     /// The URL that the user will be redirected to upon completing the verification flow.
     pub fn return_url(mut self, return_url: impl Into<String>) -> Self {
         self.inner.return_url = Some(return_url.into());
@@ -445,7 +460,7 @@ impl CreateIdentityVerificationSession {
         self.inner.type_ = Some(type_.into());
         self
     }
-    /// The ID of a Verification Flow from the Dashboard.
+    /// The ID of a verification flow from the Dashboard.
     /// See <https://docs.stripe.com/identity/verification-flows>.
     pub fn verification_flow(mut self, verification_flow: impl Into<String>) -> Self {
         self.inner.verification_flow = Some(verification_flow.into());

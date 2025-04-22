@@ -32,6 +32,13 @@ pub struct IssuingAuthorization {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
+    /// Fleet-specific information for authorizations using Fleet cards.
+    pub fleet: Option<stripe_shared::IssuingAuthorizationFleetData>,
+    /// Fraud challenges sent to the cardholder, if this authorization was declined for fraud risk reasons.
+    pub fraud_challenges: Option<Vec<stripe_shared::IssuingAuthorizationFraudChallenge>>,
+    /// Information about fuel that was purchased with this transaction.
+    /// Typically this information is received from the merchant after the authorization has been approved and the fuel dispensed.
+    pub fuel: Option<stripe_shared::IssuingAuthorizationFuelData>,
     /// Unique identifier for the object.
     pub id: stripe_shared::IssuingAuthorizationId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -69,6 +76,8 @@ pub struct IssuingAuthorization {
     /// [Treasury](https://stripe.com/docs/api/treasury) details related to this authorization if it was created on a [FinancialAccount](https://stripe.com/docs/api/treasury/financial_accounts).
     pub treasury: Option<stripe_shared::IssuingAuthorizationTreasury>,
     pub verification_data: stripe_shared::IssuingAuthorizationVerificationData,
+    /// Whether the authorization bypassed fraud risk checks because the cardholder has previously completed a fraud challenge on a similar high-risk authorization from the same merchant.
+    pub verified_by_fraud_challenge: Option<bool>,
     /// The digital wallet used for this transaction.
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
     /// Will populate as `null` when no digital wallet was utilized.
@@ -85,6 +94,9 @@ pub struct IssuingAuthorizationBuilder {
     cardholder: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCardholder>>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
+    fleet: Option<Option<stripe_shared::IssuingAuthorizationFleetData>>,
+    fraud_challenges: Option<Option<Vec<stripe_shared::IssuingAuthorizationFraudChallenge>>>,
+    fuel: Option<Option<stripe_shared::IssuingAuthorizationFuelData>>,
     id: Option<stripe_shared::IssuingAuthorizationId>,
     livemode: Option<bool>,
     merchant_amount: Option<i64>,
@@ -99,6 +111,7 @@ pub struct IssuingAuthorizationBuilder {
     transactions: Option<Vec<stripe_shared::IssuingTransaction>>,
     treasury: Option<Option<stripe_shared::IssuingAuthorizationTreasury>>,
     verification_data: Option<stripe_shared::IssuingAuthorizationVerificationData>,
+    verified_by_fraud_challenge: Option<Option<bool>>,
     wallet: Option<Option<String>>,
 }
 
@@ -151,6 +164,9 @@ const _: () = {
                 "cardholder" => Deserialize::begin(&mut self.cardholder),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
+                "fleet" => Deserialize::begin(&mut self.fleet),
+                "fraud_challenges" => Deserialize::begin(&mut self.fraud_challenges),
+                "fuel" => Deserialize::begin(&mut self.fuel),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "merchant_amount" => Deserialize::begin(&mut self.merchant_amount),
@@ -165,6 +181,9 @@ const _: () = {
                 "transactions" => Deserialize::begin(&mut self.transactions),
                 "treasury" => Deserialize::begin(&mut self.treasury),
                 "verification_data" => Deserialize::begin(&mut self.verification_data),
+                "verified_by_fraud_challenge" => {
+                    Deserialize::begin(&mut self.verified_by_fraud_challenge)
+                }
                 "wallet" => Deserialize::begin(&mut self.wallet),
 
                 _ => <dyn Visitor>::ignore(),
@@ -182,6 +201,9 @@ const _: () = {
                 cardholder: Deserialize::default(),
                 created: Deserialize::default(),
                 currency: Deserialize::default(),
+                fleet: Deserialize::default(),
+                fraud_challenges: Deserialize::default(),
+                fuel: Deserialize::default(),
                 id: Deserialize::default(),
                 livemode: Deserialize::default(),
                 merchant_amount: Deserialize::default(),
@@ -196,6 +218,7 @@ const _: () = {
                 transactions: Deserialize::default(),
                 treasury: Deserialize::default(),
                 verification_data: Deserialize::default(),
+                verified_by_fraud_challenge: Deserialize::default(),
                 wallet: Deserialize::default(),
             }
         }
@@ -211,6 +234,9 @@ const _: () = {
                 Some(cardholder),
                 Some(created),
                 Some(currency),
+                Some(fleet),
+                Some(fraud_challenges),
+                Some(fuel),
                 Some(id),
                 Some(livemode),
                 Some(merchant_amount),
@@ -225,6 +251,7 @@ const _: () = {
                 Some(transactions),
                 Some(treasury),
                 Some(verification_data),
+                Some(verified_by_fraud_challenge),
                 Some(wallet),
             ) = (
                 self.amount,
@@ -236,6 +263,9 @@ const _: () = {
                 self.cardholder.take(),
                 self.created,
                 self.currency,
+                self.fleet.take(),
+                self.fraud_challenges.take(),
+                self.fuel.take(),
                 self.id.take(),
                 self.livemode,
                 self.merchant_amount,
@@ -250,6 +280,7 @@ const _: () = {
                 self.transactions.take(),
                 self.treasury.take(),
                 self.verification_data.take(),
+                self.verified_by_fraud_challenge,
                 self.wallet.take(),
             )
             else {
@@ -265,6 +296,9 @@ const _: () = {
                 cardholder,
                 created,
                 currency,
+                fleet,
+                fraud_challenges,
+                fuel,
                 id,
                 livemode,
                 merchant_amount,
@@ -279,6 +313,7 @@ const _: () = {
                 transactions,
                 treasury,
                 verification_data,
+                verified_by_fraud_challenge,
                 wallet,
             })
         }
@@ -316,6 +351,9 @@ const _: () = {
                     "cardholder" => b.cardholder = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
+                    "fleet" => b.fleet = FromValueOpt::from_value(v),
+                    "fraud_challenges" => b.fraud_challenges = FromValueOpt::from_value(v),
+                    "fuel" => b.fuel = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "merchant_amount" => b.merchant_amount = FromValueOpt::from_value(v),
@@ -330,6 +368,9 @@ const _: () = {
                     "transactions" => b.transactions = FromValueOpt::from_value(v),
                     "treasury" => b.treasury = FromValueOpt::from_value(v),
                     "verification_data" => b.verification_data = FromValueOpt::from_value(v),
+                    "verified_by_fraud_challenge" => {
+                        b.verified_by_fraud_challenge = FromValueOpt::from_value(v)
+                    }
                     "wallet" => b.wallet = FromValueOpt::from_value(v),
 
                     _ => {}
@@ -343,7 +384,7 @@ const _: () = {
 impl serde::Serialize for IssuingAuthorization {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("IssuingAuthorization", 25)?;
+        let mut s = s.serialize_struct("IssuingAuthorization", 29)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_details", &self.amount_details)?;
         s.serialize_field("approved", &self.approved)?;
@@ -353,6 +394,9 @@ impl serde::Serialize for IssuingAuthorization {
         s.serialize_field("cardholder", &self.cardholder)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("fleet", &self.fleet)?;
+        s.serialize_field("fraud_challenges", &self.fraud_challenges)?;
+        s.serialize_field("fuel", &self.fuel)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("merchant_amount", &self.merchant_amount)?;
@@ -367,6 +411,7 @@ impl serde::Serialize for IssuingAuthorization {
         s.serialize_field("transactions", &self.transactions)?;
         s.serialize_field("treasury", &self.treasury)?;
         s.serialize_field("verification_data", &self.verification_data)?;
+        s.serialize_field("verified_by_fraud_challenge", &self.verified_by_fraud_challenge)?;
         s.serialize_field("wallet", &self.wallet)?;
 
         s.serialize_field("object", "issuing.authorization")?;
@@ -468,6 +513,7 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationAuthorizationMethod {
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum IssuingAuthorizationStatus {
     Closed,
+    Expired,
     Pending,
     Reversed,
 }
@@ -476,6 +522,7 @@ impl IssuingAuthorizationStatus {
         use IssuingAuthorizationStatus::*;
         match self {
             Closed => "closed",
+            Expired => "expired",
             Pending => "pending",
             Reversed => "reversed",
         }
@@ -488,6 +535,7 @@ impl std::str::FromStr for IssuingAuthorizationStatus {
         use IssuingAuthorizationStatus::*;
         match s {
             "closed" => Ok(Closed),
+            "expired" => Ok(Expired),
             "pending" => Ok(Pending),
             "reversed" => Ok(Reversed),
             _ => Err(stripe_types::StripeParseError),

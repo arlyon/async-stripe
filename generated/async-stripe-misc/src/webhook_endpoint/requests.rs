@@ -231,6 +231,7 @@ pub enum CreateWebhookEndpointEnabledEvents {
     ApplicationFeeRefundUpdated,
     ApplicationFeeRefunded,
     BalanceAvailable,
+    BillingAlertTriggered,
     BillingPortalConfigurationCreated,
     BillingPortalConfigurationUpdated,
     BillingPortalSessionCreated,
@@ -308,6 +309,8 @@ pub enum CreateWebhookEndpointEnabledEvents {
     InvoiceFinalizationFailed,
     InvoiceFinalized,
     InvoiceMarkedUncollectible,
+    InvoiceOverdue,
+    InvoiceOverpaid,
     InvoicePaid,
     InvoicePaymentActionRequired,
     InvoicePaymentFailed,
@@ -316,6 +319,7 @@ pub enum CreateWebhookEndpointEnabledEvents {
     InvoiceUpcoming,
     InvoiceUpdated,
     InvoiceVoided,
+    InvoiceWillBeDue,
     InvoiceitemCreated,
     InvoiceitemDeleted,
     IssuingAuthorizationCreated,
@@ -328,11 +332,17 @@ pub enum CreateWebhookEndpointEnabledEvents {
     IssuingDisputeClosed,
     IssuingDisputeCreated,
     IssuingDisputeFundsReinstated,
+    IssuingDisputeFundsRescinded,
     IssuingDisputeSubmitted,
     IssuingDisputeUpdated,
+    IssuingPersonalizationDesignActivated,
+    IssuingPersonalizationDesignDeactivated,
+    IssuingPersonalizationDesignRejected,
+    IssuingPersonalizationDesignUpdated,
     IssuingTokenCreated,
     IssuingTokenUpdated,
     IssuingTransactionCreated,
+    IssuingTransactionPurchaseDetailsReceiptUpdated,
     IssuingTransactionUpdated,
     MandateUpdated,
     PaymentIntentAmountCapturableUpdated,
@@ -376,6 +386,7 @@ pub enum CreateWebhookEndpointEnabledEvents {
     RadarEarlyFraudWarningCreated,
     RadarEarlyFraudWarningUpdated,
     RefundCreated,
+    RefundFailed,
     RefundUpdated,
     ReportingReportRunFailed,
     ReportingReportRunSucceeded,
@@ -438,12 +449,14 @@ pub enum CreateWebhookEndpointEnabledEvents {
     TreasuryOutboundPaymentFailed,
     TreasuryOutboundPaymentPosted,
     TreasuryOutboundPaymentReturned,
+    TreasuryOutboundPaymentTrackingDetailsUpdated,
     TreasuryOutboundTransferCanceled,
     TreasuryOutboundTransferCreated,
     TreasuryOutboundTransferExpectedArrivalDateUpdated,
     TreasuryOutboundTransferFailed,
     TreasuryOutboundTransferPosted,
     TreasuryOutboundTransferReturned,
+    TreasuryOutboundTransferTrackingDetailsUpdated,
     TreasuryReceivedCreditCreated,
     TreasuryReceivedCreditFailed,
     TreasuryReceivedCreditSucceeded,
@@ -466,6 +479,7 @@ impl CreateWebhookEndpointEnabledEvents {
             ApplicationFeeRefundUpdated => "application_fee.refund.updated",
             ApplicationFeeRefunded => "application_fee.refunded",
             BalanceAvailable => "balance.available",
+            BillingAlertTriggered => "billing.alert.triggered",
             BillingPortalConfigurationCreated => "billing_portal.configuration.created",
             BillingPortalConfigurationUpdated => "billing_portal.configuration.updated",
             BillingPortalSessionCreated => "billing_portal.session.created",
@@ -557,6 +571,8 @@ impl CreateWebhookEndpointEnabledEvents {
             InvoiceFinalizationFailed => "invoice.finalization_failed",
             InvoiceFinalized => "invoice.finalized",
             InvoiceMarkedUncollectible => "invoice.marked_uncollectible",
+            InvoiceOverdue => "invoice.overdue",
+            InvoiceOverpaid => "invoice.overpaid",
             InvoicePaid => "invoice.paid",
             InvoicePaymentActionRequired => "invoice.payment_action_required",
             InvoicePaymentFailed => "invoice.payment_failed",
@@ -565,6 +581,7 @@ impl CreateWebhookEndpointEnabledEvents {
             InvoiceUpcoming => "invoice.upcoming",
             InvoiceUpdated => "invoice.updated",
             InvoiceVoided => "invoice.voided",
+            InvoiceWillBeDue => "invoice.will_be_due",
             InvoiceitemCreated => "invoiceitem.created",
             InvoiceitemDeleted => "invoiceitem.deleted",
             IssuingAuthorizationCreated => "issuing_authorization.created",
@@ -577,11 +594,19 @@ impl CreateWebhookEndpointEnabledEvents {
             IssuingDisputeClosed => "issuing_dispute.closed",
             IssuingDisputeCreated => "issuing_dispute.created",
             IssuingDisputeFundsReinstated => "issuing_dispute.funds_reinstated",
+            IssuingDisputeFundsRescinded => "issuing_dispute.funds_rescinded",
             IssuingDisputeSubmitted => "issuing_dispute.submitted",
             IssuingDisputeUpdated => "issuing_dispute.updated",
+            IssuingPersonalizationDesignActivated => "issuing_personalization_design.activated",
+            IssuingPersonalizationDesignDeactivated => "issuing_personalization_design.deactivated",
+            IssuingPersonalizationDesignRejected => "issuing_personalization_design.rejected",
+            IssuingPersonalizationDesignUpdated => "issuing_personalization_design.updated",
             IssuingTokenCreated => "issuing_token.created",
             IssuingTokenUpdated => "issuing_token.updated",
             IssuingTransactionCreated => "issuing_transaction.created",
+            IssuingTransactionPurchaseDetailsReceiptUpdated => {
+                "issuing_transaction.purchase_details_receipt_updated"
+            }
             IssuingTransactionUpdated => "issuing_transaction.updated",
             MandateUpdated => "mandate.updated",
             PaymentIntentAmountCapturableUpdated => "payment_intent.amount_capturable_updated",
@@ -625,6 +650,7 @@ impl CreateWebhookEndpointEnabledEvents {
             RadarEarlyFraudWarningCreated => "radar.early_fraud_warning.created",
             RadarEarlyFraudWarningUpdated => "radar.early_fraud_warning.updated",
             RefundCreated => "refund.created",
+            RefundFailed => "refund.failed",
             RefundUpdated => "refund.updated",
             ReportingReportRunFailed => "reporting.report_run.failed",
             ReportingReportRunSucceeded => "reporting.report_run.succeeded",
@@ -693,6 +719,9 @@ impl CreateWebhookEndpointEnabledEvents {
             TreasuryOutboundPaymentFailed => "treasury.outbound_payment.failed",
             TreasuryOutboundPaymentPosted => "treasury.outbound_payment.posted",
             TreasuryOutboundPaymentReturned => "treasury.outbound_payment.returned",
+            TreasuryOutboundPaymentTrackingDetailsUpdated => {
+                "treasury.outbound_payment.tracking_details_updated"
+            }
             TreasuryOutboundTransferCanceled => "treasury.outbound_transfer.canceled",
             TreasuryOutboundTransferCreated => "treasury.outbound_transfer.created",
             TreasuryOutboundTransferExpectedArrivalDateUpdated => {
@@ -701,6 +730,9 @@ impl CreateWebhookEndpointEnabledEvents {
             TreasuryOutboundTransferFailed => "treasury.outbound_transfer.failed",
             TreasuryOutboundTransferPosted => "treasury.outbound_transfer.posted",
             TreasuryOutboundTransferReturned => "treasury.outbound_transfer.returned",
+            TreasuryOutboundTransferTrackingDetailsUpdated => {
+                "treasury.outbound_transfer.tracking_details_updated"
+            }
             TreasuryReceivedCreditCreated => "treasury.received_credit.created",
             TreasuryReceivedCreditFailed => "treasury.received_credit.failed",
             TreasuryReceivedCreditSucceeded => "treasury.received_credit.succeeded",
@@ -726,6 +758,7 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "application_fee.refund.updated" => Ok(ApplicationFeeRefundUpdated),
             "application_fee.refunded" => Ok(ApplicationFeeRefunded),
             "balance.available" => Ok(BalanceAvailable),
+            "billing.alert.triggered" => Ok(BillingAlertTriggered),
             "billing_portal.configuration.created" => Ok(BillingPortalConfigurationCreated),
             "billing_portal.configuration.updated" => Ok(BillingPortalConfigurationUpdated),
             "billing_portal.session.created" => Ok(BillingPortalSessionCreated),
@@ -825,6 +858,8 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "invoice.finalization_failed" => Ok(InvoiceFinalizationFailed),
             "invoice.finalized" => Ok(InvoiceFinalized),
             "invoice.marked_uncollectible" => Ok(InvoiceMarkedUncollectible),
+            "invoice.overdue" => Ok(InvoiceOverdue),
+            "invoice.overpaid" => Ok(InvoiceOverpaid),
             "invoice.paid" => Ok(InvoicePaid),
             "invoice.payment_action_required" => Ok(InvoicePaymentActionRequired),
             "invoice.payment_failed" => Ok(InvoicePaymentFailed),
@@ -833,6 +868,7 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "invoice.upcoming" => Ok(InvoiceUpcoming),
             "invoice.updated" => Ok(InvoiceUpdated),
             "invoice.voided" => Ok(InvoiceVoided),
+            "invoice.will_be_due" => Ok(InvoiceWillBeDue),
             "invoiceitem.created" => Ok(InvoiceitemCreated),
             "invoiceitem.deleted" => Ok(InvoiceitemDeleted),
             "issuing_authorization.created" => Ok(IssuingAuthorizationCreated),
@@ -845,11 +881,21 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "issuing_dispute.closed" => Ok(IssuingDisputeClosed),
             "issuing_dispute.created" => Ok(IssuingDisputeCreated),
             "issuing_dispute.funds_reinstated" => Ok(IssuingDisputeFundsReinstated),
+            "issuing_dispute.funds_rescinded" => Ok(IssuingDisputeFundsRescinded),
             "issuing_dispute.submitted" => Ok(IssuingDisputeSubmitted),
             "issuing_dispute.updated" => Ok(IssuingDisputeUpdated),
+            "issuing_personalization_design.activated" => Ok(IssuingPersonalizationDesignActivated),
+            "issuing_personalization_design.deactivated" => {
+                Ok(IssuingPersonalizationDesignDeactivated)
+            }
+            "issuing_personalization_design.rejected" => Ok(IssuingPersonalizationDesignRejected),
+            "issuing_personalization_design.updated" => Ok(IssuingPersonalizationDesignUpdated),
             "issuing_token.created" => Ok(IssuingTokenCreated),
             "issuing_token.updated" => Ok(IssuingTokenUpdated),
             "issuing_transaction.created" => Ok(IssuingTransactionCreated),
+            "issuing_transaction.purchase_details_receipt_updated" => {
+                Ok(IssuingTransactionPurchaseDetailsReceiptUpdated)
+            }
             "issuing_transaction.updated" => Ok(IssuingTransactionUpdated),
             "mandate.updated" => Ok(MandateUpdated),
             "payment_intent.amount_capturable_updated" => Ok(PaymentIntentAmountCapturableUpdated),
@@ -893,6 +939,7 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "radar.early_fraud_warning.created" => Ok(RadarEarlyFraudWarningCreated),
             "radar.early_fraud_warning.updated" => Ok(RadarEarlyFraudWarningUpdated),
             "refund.created" => Ok(RefundCreated),
+            "refund.failed" => Ok(RefundFailed),
             "refund.updated" => Ok(RefundUpdated),
             "reporting.report_run.failed" => Ok(ReportingReportRunFailed),
             "reporting.report_run.succeeded" => Ok(ReportingReportRunSucceeded),
@@ -961,6 +1008,9 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "treasury.outbound_payment.failed" => Ok(TreasuryOutboundPaymentFailed),
             "treasury.outbound_payment.posted" => Ok(TreasuryOutboundPaymentPosted),
             "treasury.outbound_payment.returned" => Ok(TreasuryOutboundPaymentReturned),
+            "treasury.outbound_payment.tracking_details_updated" => {
+                Ok(TreasuryOutboundPaymentTrackingDetailsUpdated)
+            }
             "treasury.outbound_transfer.canceled" => Ok(TreasuryOutboundTransferCanceled),
             "treasury.outbound_transfer.created" => Ok(TreasuryOutboundTransferCreated),
             "treasury.outbound_transfer.expected_arrival_date_updated" => {
@@ -969,6 +1019,9 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "treasury.outbound_transfer.failed" => Ok(TreasuryOutboundTransferFailed),
             "treasury.outbound_transfer.posted" => Ok(TreasuryOutboundTransferPosted),
             "treasury.outbound_transfer.returned" => Ok(TreasuryOutboundTransferReturned),
+            "treasury.outbound_transfer.tracking_details_updated" => {
+                Ok(TreasuryOutboundTransferTrackingDetailsUpdated)
+            }
             "treasury.received_credit.created" => Ok(TreasuryReceivedCreditCreated),
             "treasury.received_credit.failed" => Ok(TreasuryReceivedCreditFailed),
             "treasury.received_credit.succeeded" => Ok(TreasuryReceivedCreditSucceeded),
@@ -1121,6 +1174,7 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     ApplicationFeeRefundUpdated,
     ApplicationFeeRefunded,
     BalanceAvailable,
+    BillingAlertTriggered,
     BillingPortalConfigurationCreated,
     BillingPortalConfigurationUpdated,
     BillingPortalSessionCreated,
@@ -1198,6 +1252,8 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     InvoiceFinalizationFailed,
     InvoiceFinalized,
     InvoiceMarkedUncollectible,
+    InvoiceOverdue,
+    InvoiceOverpaid,
     InvoicePaid,
     InvoicePaymentActionRequired,
     InvoicePaymentFailed,
@@ -1206,6 +1262,7 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     InvoiceUpcoming,
     InvoiceUpdated,
     InvoiceVoided,
+    InvoiceWillBeDue,
     InvoiceitemCreated,
     InvoiceitemDeleted,
     IssuingAuthorizationCreated,
@@ -1218,11 +1275,17 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     IssuingDisputeClosed,
     IssuingDisputeCreated,
     IssuingDisputeFundsReinstated,
+    IssuingDisputeFundsRescinded,
     IssuingDisputeSubmitted,
     IssuingDisputeUpdated,
+    IssuingPersonalizationDesignActivated,
+    IssuingPersonalizationDesignDeactivated,
+    IssuingPersonalizationDesignRejected,
+    IssuingPersonalizationDesignUpdated,
     IssuingTokenCreated,
     IssuingTokenUpdated,
     IssuingTransactionCreated,
+    IssuingTransactionPurchaseDetailsReceiptUpdated,
     IssuingTransactionUpdated,
     MandateUpdated,
     PaymentIntentAmountCapturableUpdated,
@@ -1266,6 +1329,7 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     RadarEarlyFraudWarningCreated,
     RadarEarlyFraudWarningUpdated,
     RefundCreated,
+    RefundFailed,
     RefundUpdated,
     ReportingReportRunFailed,
     ReportingReportRunSucceeded,
@@ -1328,12 +1392,14 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     TreasuryOutboundPaymentFailed,
     TreasuryOutboundPaymentPosted,
     TreasuryOutboundPaymentReturned,
+    TreasuryOutboundPaymentTrackingDetailsUpdated,
     TreasuryOutboundTransferCanceled,
     TreasuryOutboundTransferCreated,
     TreasuryOutboundTransferExpectedArrivalDateUpdated,
     TreasuryOutboundTransferFailed,
     TreasuryOutboundTransferPosted,
     TreasuryOutboundTransferReturned,
+    TreasuryOutboundTransferTrackingDetailsUpdated,
     TreasuryReceivedCreditCreated,
     TreasuryReceivedCreditFailed,
     TreasuryReceivedCreditSucceeded,
@@ -1356,6 +1422,7 @@ impl UpdateWebhookEndpointEnabledEvents {
             ApplicationFeeRefundUpdated => "application_fee.refund.updated",
             ApplicationFeeRefunded => "application_fee.refunded",
             BalanceAvailable => "balance.available",
+            BillingAlertTriggered => "billing.alert.triggered",
             BillingPortalConfigurationCreated => "billing_portal.configuration.created",
             BillingPortalConfigurationUpdated => "billing_portal.configuration.updated",
             BillingPortalSessionCreated => "billing_portal.session.created",
@@ -1447,6 +1514,8 @@ impl UpdateWebhookEndpointEnabledEvents {
             InvoiceFinalizationFailed => "invoice.finalization_failed",
             InvoiceFinalized => "invoice.finalized",
             InvoiceMarkedUncollectible => "invoice.marked_uncollectible",
+            InvoiceOverdue => "invoice.overdue",
+            InvoiceOverpaid => "invoice.overpaid",
             InvoicePaid => "invoice.paid",
             InvoicePaymentActionRequired => "invoice.payment_action_required",
             InvoicePaymentFailed => "invoice.payment_failed",
@@ -1455,6 +1524,7 @@ impl UpdateWebhookEndpointEnabledEvents {
             InvoiceUpcoming => "invoice.upcoming",
             InvoiceUpdated => "invoice.updated",
             InvoiceVoided => "invoice.voided",
+            InvoiceWillBeDue => "invoice.will_be_due",
             InvoiceitemCreated => "invoiceitem.created",
             InvoiceitemDeleted => "invoiceitem.deleted",
             IssuingAuthorizationCreated => "issuing_authorization.created",
@@ -1467,11 +1537,19 @@ impl UpdateWebhookEndpointEnabledEvents {
             IssuingDisputeClosed => "issuing_dispute.closed",
             IssuingDisputeCreated => "issuing_dispute.created",
             IssuingDisputeFundsReinstated => "issuing_dispute.funds_reinstated",
+            IssuingDisputeFundsRescinded => "issuing_dispute.funds_rescinded",
             IssuingDisputeSubmitted => "issuing_dispute.submitted",
             IssuingDisputeUpdated => "issuing_dispute.updated",
+            IssuingPersonalizationDesignActivated => "issuing_personalization_design.activated",
+            IssuingPersonalizationDesignDeactivated => "issuing_personalization_design.deactivated",
+            IssuingPersonalizationDesignRejected => "issuing_personalization_design.rejected",
+            IssuingPersonalizationDesignUpdated => "issuing_personalization_design.updated",
             IssuingTokenCreated => "issuing_token.created",
             IssuingTokenUpdated => "issuing_token.updated",
             IssuingTransactionCreated => "issuing_transaction.created",
+            IssuingTransactionPurchaseDetailsReceiptUpdated => {
+                "issuing_transaction.purchase_details_receipt_updated"
+            }
             IssuingTransactionUpdated => "issuing_transaction.updated",
             MandateUpdated => "mandate.updated",
             PaymentIntentAmountCapturableUpdated => "payment_intent.amount_capturable_updated",
@@ -1515,6 +1593,7 @@ impl UpdateWebhookEndpointEnabledEvents {
             RadarEarlyFraudWarningCreated => "radar.early_fraud_warning.created",
             RadarEarlyFraudWarningUpdated => "radar.early_fraud_warning.updated",
             RefundCreated => "refund.created",
+            RefundFailed => "refund.failed",
             RefundUpdated => "refund.updated",
             ReportingReportRunFailed => "reporting.report_run.failed",
             ReportingReportRunSucceeded => "reporting.report_run.succeeded",
@@ -1583,6 +1662,9 @@ impl UpdateWebhookEndpointEnabledEvents {
             TreasuryOutboundPaymentFailed => "treasury.outbound_payment.failed",
             TreasuryOutboundPaymentPosted => "treasury.outbound_payment.posted",
             TreasuryOutboundPaymentReturned => "treasury.outbound_payment.returned",
+            TreasuryOutboundPaymentTrackingDetailsUpdated => {
+                "treasury.outbound_payment.tracking_details_updated"
+            }
             TreasuryOutboundTransferCanceled => "treasury.outbound_transfer.canceled",
             TreasuryOutboundTransferCreated => "treasury.outbound_transfer.created",
             TreasuryOutboundTransferExpectedArrivalDateUpdated => {
@@ -1591,6 +1673,9 @@ impl UpdateWebhookEndpointEnabledEvents {
             TreasuryOutboundTransferFailed => "treasury.outbound_transfer.failed",
             TreasuryOutboundTransferPosted => "treasury.outbound_transfer.posted",
             TreasuryOutboundTransferReturned => "treasury.outbound_transfer.returned",
+            TreasuryOutboundTransferTrackingDetailsUpdated => {
+                "treasury.outbound_transfer.tracking_details_updated"
+            }
             TreasuryReceivedCreditCreated => "treasury.received_credit.created",
             TreasuryReceivedCreditFailed => "treasury.received_credit.failed",
             TreasuryReceivedCreditSucceeded => "treasury.received_credit.succeeded",
@@ -1616,6 +1701,7 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "application_fee.refund.updated" => Ok(ApplicationFeeRefundUpdated),
             "application_fee.refunded" => Ok(ApplicationFeeRefunded),
             "balance.available" => Ok(BalanceAvailable),
+            "billing.alert.triggered" => Ok(BillingAlertTriggered),
             "billing_portal.configuration.created" => Ok(BillingPortalConfigurationCreated),
             "billing_portal.configuration.updated" => Ok(BillingPortalConfigurationUpdated),
             "billing_portal.session.created" => Ok(BillingPortalSessionCreated),
@@ -1715,6 +1801,8 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "invoice.finalization_failed" => Ok(InvoiceFinalizationFailed),
             "invoice.finalized" => Ok(InvoiceFinalized),
             "invoice.marked_uncollectible" => Ok(InvoiceMarkedUncollectible),
+            "invoice.overdue" => Ok(InvoiceOverdue),
+            "invoice.overpaid" => Ok(InvoiceOverpaid),
             "invoice.paid" => Ok(InvoicePaid),
             "invoice.payment_action_required" => Ok(InvoicePaymentActionRequired),
             "invoice.payment_failed" => Ok(InvoicePaymentFailed),
@@ -1723,6 +1811,7 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "invoice.upcoming" => Ok(InvoiceUpcoming),
             "invoice.updated" => Ok(InvoiceUpdated),
             "invoice.voided" => Ok(InvoiceVoided),
+            "invoice.will_be_due" => Ok(InvoiceWillBeDue),
             "invoiceitem.created" => Ok(InvoiceitemCreated),
             "invoiceitem.deleted" => Ok(InvoiceitemDeleted),
             "issuing_authorization.created" => Ok(IssuingAuthorizationCreated),
@@ -1735,11 +1824,21 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "issuing_dispute.closed" => Ok(IssuingDisputeClosed),
             "issuing_dispute.created" => Ok(IssuingDisputeCreated),
             "issuing_dispute.funds_reinstated" => Ok(IssuingDisputeFundsReinstated),
+            "issuing_dispute.funds_rescinded" => Ok(IssuingDisputeFundsRescinded),
             "issuing_dispute.submitted" => Ok(IssuingDisputeSubmitted),
             "issuing_dispute.updated" => Ok(IssuingDisputeUpdated),
+            "issuing_personalization_design.activated" => Ok(IssuingPersonalizationDesignActivated),
+            "issuing_personalization_design.deactivated" => {
+                Ok(IssuingPersonalizationDesignDeactivated)
+            }
+            "issuing_personalization_design.rejected" => Ok(IssuingPersonalizationDesignRejected),
+            "issuing_personalization_design.updated" => Ok(IssuingPersonalizationDesignUpdated),
             "issuing_token.created" => Ok(IssuingTokenCreated),
             "issuing_token.updated" => Ok(IssuingTokenUpdated),
             "issuing_transaction.created" => Ok(IssuingTransactionCreated),
+            "issuing_transaction.purchase_details_receipt_updated" => {
+                Ok(IssuingTransactionPurchaseDetailsReceiptUpdated)
+            }
             "issuing_transaction.updated" => Ok(IssuingTransactionUpdated),
             "mandate.updated" => Ok(MandateUpdated),
             "payment_intent.amount_capturable_updated" => Ok(PaymentIntentAmountCapturableUpdated),
@@ -1783,6 +1882,7 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "radar.early_fraud_warning.created" => Ok(RadarEarlyFraudWarningCreated),
             "radar.early_fraud_warning.updated" => Ok(RadarEarlyFraudWarningUpdated),
             "refund.created" => Ok(RefundCreated),
+            "refund.failed" => Ok(RefundFailed),
             "refund.updated" => Ok(RefundUpdated),
             "reporting.report_run.failed" => Ok(ReportingReportRunFailed),
             "reporting.report_run.succeeded" => Ok(ReportingReportRunSucceeded),
@@ -1851,6 +1951,9 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "treasury.outbound_payment.failed" => Ok(TreasuryOutboundPaymentFailed),
             "treasury.outbound_payment.posted" => Ok(TreasuryOutboundPaymentPosted),
             "treasury.outbound_payment.returned" => Ok(TreasuryOutboundPaymentReturned),
+            "treasury.outbound_payment.tracking_details_updated" => {
+                Ok(TreasuryOutboundPaymentTrackingDetailsUpdated)
+            }
             "treasury.outbound_transfer.canceled" => Ok(TreasuryOutboundTransferCanceled),
             "treasury.outbound_transfer.created" => Ok(TreasuryOutboundTransferCreated),
             "treasury.outbound_transfer.expected_arrival_date_updated" => {
@@ -1859,6 +1962,9 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "treasury.outbound_transfer.failed" => Ok(TreasuryOutboundTransferFailed),
             "treasury.outbound_transfer.posted" => Ok(TreasuryOutboundTransferPosted),
             "treasury.outbound_transfer.returned" => Ok(TreasuryOutboundTransferReturned),
+            "treasury.outbound_transfer.tracking_details_updated" => {
+                Ok(TreasuryOutboundTransferTrackingDetailsUpdated)
+            }
             "treasury.received_credit.created" => Ok(TreasuryReceivedCreditCreated),
             "treasury.received_credit.failed" => Ok(TreasuryReceivedCreditFailed),
             "treasury.received_credit.succeeded" => Ok(TreasuryReceivedCreditSucceeded),

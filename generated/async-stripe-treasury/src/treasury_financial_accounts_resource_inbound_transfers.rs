@@ -3,11 +3,11 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountsResourceInboundTransfers {
-    pub ach: Option<stripe_treasury::TreasuryFinancialAccountsResourceAchToggleSettings>,
+    pub ach: Option<stripe_treasury::TreasuryFinancialAccountsResourceInboundAchToggleSettings>,
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountsResourceInboundTransfersBuilder {
-    ach: Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceAchToggleSettings>>,
+    ach: Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceInboundAchToggleSettings>>,
 }
 
 #[allow(

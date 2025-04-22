@@ -6,7 +6,7 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxCalculation {
-    /// Total after taxes.
+    /// Total amount after taxes in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount_total: i64,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).

@@ -34,6 +34,10 @@ pub mod outbound_transfers_payment_method_details;
 #[doc(inline)]
 pub use outbound_transfers_payment_method_details::*;
 #[doc(hidden)]
+pub mod outbound_transfers_payment_method_details_financial_account;
+#[doc(inline)]
+pub use outbound_transfers_payment_method_details_financial_account::*;
+#[doc(hidden)]
 pub mod outbound_transfers_payment_method_details_us_bank_account;
 #[doc(inline)]
 pub use outbound_transfers_payment_method_details_us_bank_account::*;
@@ -74,10 +78,6 @@ pub mod treasury_financial_accounts_resource_aba_toggle_settings;
 #[doc(inline)]
 pub use treasury_financial_accounts_resource_aba_toggle_settings::*;
 #[doc(hidden)]
-pub mod treasury_financial_accounts_resource_ach_toggle_settings;
-#[doc(inline)]
-pub use treasury_financial_accounts_resource_ach_toggle_settings::*;
-#[doc(hidden)]
 pub mod treasury_financial_accounts_resource_balance;
 #[doc(inline)]
 pub use treasury_financial_accounts_resource_balance::*;
@@ -94,9 +94,17 @@ pub mod treasury_financial_accounts_resource_financial_addresses_features;
 #[doc(inline)]
 pub use treasury_financial_accounts_resource_financial_addresses_features::*;
 #[doc(hidden)]
+pub mod treasury_financial_accounts_resource_inbound_ach_toggle_settings;
+#[doc(inline)]
+pub use treasury_financial_accounts_resource_inbound_ach_toggle_settings::*;
+#[doc(hidden)]
 pub mod treasury_financial_accounts_resource_inbound_transfers;
 #[doc(inline)]
 pub use treasury_financial_accounts_resource_inbound_transfers::*;
+#[doc(hidden)]
+pub mod treasury_financial_accounts_resource_outbound_ach_toggle_settings;
+#[doc(inline)]
+pub use treasury_financial_accounts_resource_outbound_ach_toggle_settings::*;
 #[doc(hidden)]
 pub mod treasury_financial_accounts_resource_outbound_payments;
 #[doc(inline)]
@@ -134,6 +142,10 @@ pub mod treasury_inbound_transfers_resource_inbound_transfer_resource_status_tra
 #[doc(inline)]
 pub use treasury_inbound_transfers_resource_inbound_transfer_resource_status_transitions::*;
 #[doc(hidden)]
+pub mod treasury_outbound_payments_resource_ach_tracking_details;
+#[doc(inline)]
+pub use treasury_outbound_payments_resource_ach_tracking_details::*;
+#[doc(hidden)]
 pub mod treasury_outbound_payments_resource_outbound_payment_resource_end_user_details;
 #[doc(inline)]
 pub use treasury_outbound_payments_resource_outbound_payment_resource_end_user_details::*;
@@ -142,9 +154,25 @@ pub mod treasury_outbound_payments_resource_outbound_payment_resource_status_tra
 #[doc(inline)]
 pub use treasury_outbound_payments_resource_outbound_payment_resource_status_transitions::*;
 #[doc(hidden)]
+pub mod treasury_outbound_payments_resource_outbound_payment_resource_tracking_details;
+#[doc(inline)]
+pub use treasury_outbound_payments_resource_outbound_payment_resource_tracking_details::*;
+#[doc(hidden)]
 pub mod treasury_outbound_payments_resource_returned_status;
 #[doc(inline)]
 pub use treasury_outbound_payments_resource_returned_status::*;
+#[doc(hidden)]
+pub mod treasury_outbound_payments_resource_us_domestic_wire_tracking_details;
+#[doc(inline)]
+pub use treasury_outbound_payments_resource_us_domestic_wire_tracking_details::*;
+#[doc(hidden)]
+pub mod treasury_outbound_transfers_resource_ach_tracking_details;
+#[doc(inline)]
+pub use treasury_outbound_transfers_resource_ach_tracking_details::*;
+#[doc(hidden)]
+pub mod treasury_outbound_transfers_resource_outbound_transfer_resource_tracking_details;
+#[doc(inline)]
+pub use treasury_outbound_transfers_resource_outbound_transfer_resource_tracking_details::*;
 #[doc(hidden)]
 pub mod treasury_outbound_transfers_resource_returned_details;
 #[doc(inline)]
@@ -153,6 +181,10 @@ pub use treasury_outbound_transfers_resource_returned_details::*;
 pub mod treasury_outbound_transfers_resource_status_transitions;
 #[doc(inline)]
 pub use treasury_outbound_transfers_resource_status_transitions::*;
+#[doc(hidden)]
+pub mod treasury_outbound_transfers_resource_us_domestic_wire_tracking_details;
+#[doc(inline)]
+pub use treasury_outbound_transfers_resource_us_domestic_wire_tracking_details::*;
 #[doc(hidden)]
 pub mod treasury_received_credits_resource_linked_flows;
 #[doc(inline)]

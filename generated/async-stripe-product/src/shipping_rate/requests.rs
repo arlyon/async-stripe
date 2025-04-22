@@ -491,7 +491,7 @@ impl CreateShippingRate {
         self.inner.tax_code = Some(tax_code.into());
         self
     }
-    /// The type of calculation to use on the shipping rate. Can only be `fixed_amount` for now.
+    /// The type of calculation to use on the shipping rate.
     pub fn type_(mut self, type_: impl Into<stripe_shared::ShippingRateType>) -> Self {
         self.inner.type_ = Some(type_.into());
         self

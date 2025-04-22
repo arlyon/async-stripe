@@ -2,11 +2,12 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PersonAdditionalTosAcceptances {
-    pub account: stripe_shared::PersonAdditionalTosAcceptance,
+    /// Details on the legal guardian's acceptance of the main Stripe service agreement.
+    pub account: Option<stripe_shared::PersonAdditionalTosAcceptance>,
 }
 #[doc(hidden)]
 pub struct PersonAdditionalTosAcceptancesBuilder {
-    account: Option<stripe_shared::PersonAdditionalTosAcceptance>,
+    account: Option<Option<stripe_shared::PersonAdditionalTosAcceptance>>,
 }
 
 #[allow(

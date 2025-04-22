@@ -10,6 +10,9 @@ pub struct BillingDetails {
     pub name: Option<String>,
     /// Billing phone number (including extension).
     pub phone: Option<String>,
+    /// Taxpayer identification number.
+    /// Used only for transactions between LATAM buyers and non-LATAM sellers.
+    pub tax_id: Option<String>,
 }
 #[doc(hidden)]
 pub struct BillingDetailsBuilder {
@@ -17,6 +20,7 @@ pub struct BillingDetailsBuilder {
     email: Option<Option<String>>,
     name: Option<Option<String>>,
     phone: Option<Option<String>>,
+    tax_id: Option<Option<String>>,
 }
 
 #[allow(
@@ -63,6 +67,7 @@ const _: () = {
                 "email" => Deserialize::begin(&mut self.email),
                 "name" => Deserialize::begin(&mut self.name),
                 "phone" => Deserialize::begin(&mut self.phone),
+                "tax_id" => Deserialize::begin(&mut self.tax_id),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -74,16 +79,21 @@ const _: () = {
                 email: Deserialize::default(),
                 name: Deserialize::default(),
                 phone: Deserialize::default(),
+                tax_id: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(address), Some(email), Some(name), Some(phone)) =
-                (self.address.take(), self.email.take(), self.name.take(), self.phone.take())
-            else {
+            let (Some(address), Some(email), Some(name), Some(phone), Some(tax_id)) = (
+                self.address.take(),
+                self.email.take(),
+                self.name.take(),
+                self.phone.take(),
+                self.tax_id.take(),
+            ) else {
                 return None;
             };
-            Some(Self::Out { address, email, name, phone })
+            Some(Self::Out { address, email, name, phone, tax_id })
         }
     }
 
@@ -114,6 +124,7 @@ const _: () = {
                     "email" => b.email = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
                     "phone" => b.phone = FromValueOpt::from_value(v),
+                    "tax_id" => b.tax_id = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

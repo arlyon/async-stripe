@@ -24,6 +24,7 @@ pub use stripe_shared::account_card_payments_settings::*;
 pub use stripe_shared::account_dashboard_settings::*;
 pub use stripe_shared::account_decline_charge_on::*;
 pub use stripe_shared::account_future_requirements::*;
+pub use stripe_shared::account_group_membership::*;
 pub use stripe_shared::account_invoices_settings::*;
 pub mod account_link;
 pub use account_session::types::*;
@@ -72,6 +73,38 @@ pub mod connect_embedded_base_features;
 #[doc(inline)]
 pub use connect_embedded_base_features::*;
 #[doc(hidden)]
+pub mod connect_embedded_financial_account_config_claim;
+#[doc(inline)]
+pub use connect_embedded_financial_account_config_claim::*;
+#[doc(hidden)]
+pub mod connect_embedded_financial_account_features;
+#[doc(inline)]
+pub use connect_embedded_financial_account_features::*;
+#[doc(hidden)]
+pub mod connect_embedded_financial_account_transactions_config_claim;
+#[doc(inline)]
+pub use connect_embedded_financial_account_transactions_config_claim::*;
+#[doc(hidden)]
+pub mod connect_embedded_financial_account_transactions_features;
+#[doc(inline)]
+pub use connect_embedded_financial_account_transactions_features::*;
+#[doc(hidden)]
+pub mod connect_embedded_issuing_card_config_claim;
+#[doc(inline)]
+pub use connect_embedded_issuing_card_config_claim::*;
+#[doc(hidden)]
+pub mod connect_embedded_issuing_card_features;
+#[doc(inline)]
+pub use connect_embedded_issuing_card_features::*;
+#[doc(hidden)]
+pub mod connect_embedded_issuing_cards_list_config_claim;
+#[doc(inline)]
+pub use connect_embedded_issuing_cards_list_config_claim::*;
+#[doc(hidden)]
+pub mod connect_embedded_issuing_cards_list_features;
+#[doc(inline)]
+pub use connect_embedded_issuing_cards_list_features::*;
+#[doc(hidden)]
 pub mod connect_embedded_payments_config_claim;
 #[doc(inline)]
 pub use connect_embedded_payments_config_claim::*;
@@ -80,9 +113,9 @@ pub mod connect_embedded_payments_features;
 #[doc(inline)]
 pub use connect_embedded_payments_features::*;
 #[doc(hidden)]
-pub mod connect_embedded_payouts_config_claim;
+pub mod connect_embedded_payouts_config;
 #[doc(inline)]
-pub use connect_embedded_payouts_config_claim::*;
+pub use connect_embedded_payouts_config::*;
 #[doc(hidden)]
 pub mod connect_embedded_payouts_features;
 #[doc(inline)]
@@ -107,19 +140,25 @@ pub use stripe_shared::application_fee_refund::*;
 pub use stripe_shared::legal_entity_company::*;
 pub use stripe_shared::legal_entity_company_verification::*;
 pub use stripe_shared::legal_entity_company_verification_document::*;
+pub use stripe_shared::legal_entity_directorship_declaration::*;
 pub use stripe_shared::legal_entity_dob::*;
 pub use stripe_shared::legal_entity_japan_address::*;
 pub use stripe_shared::legal_entity_person_verification::*;
 pub use stripe_shared::legal_entity_person_verification_document::*;
+pub use stripe_shared::legal_entity_registration_date::*;
 pub use stripe_shared::legal_entity_ubo_declaration::*;
 pub mod login_link;
 pub mod person;
 pub use stripe_shared::person::*;
 pub use stripe_shared::person_additional_tos_acceptance::*;
 pub use stripe_shared::person_additional_tos_acceptances::*;
+pub use stripe_shared::person_ethnicity_details::*;
 pub use stripe_shared::person_future_requirements::*;
+pub use stripe_shared::person_race_details::*;
 pub use stripe_shared::person_relationship::*;
 pub use stripe_shared::person_requirements::*;
+pub use stripe_shared::person_us_cfpb_data::*;
+pub use stripe_shared::platform_earning_fee_source::*;
 #[doc(hidden)]
 pub mod secret_service_resource_scope;
 #[doc(inline)]

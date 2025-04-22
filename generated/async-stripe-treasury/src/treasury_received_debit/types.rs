@@ -283,6 +283,7 @@ pub enum TreasuryReceivedDebitFailureCode {
     AccountClosed,
     AccountFrozen,
     InsufficientFunds,
+    InternationalTransaction,
     Other,
 }
 impl TreasuryReceivedDebitFailureCode {
@@ -292,6 +293,7 @@ impl TreasuryReceivedDebitFailureCode {
             AccountClosed => "account_closed",
             AccountFrozen => "account_frozen",
             InsufficientFunds => "insufficient_funds",
+            InternationalTransaction => "international_transaction",
             Other => "other",
         }
     }
@@ -305,6 +307,7 @@ impl std::str::FromStr for TreasuryReceivedDebitFailureCode {
             "account_closed" => Ok(AccountClosed),
             "account_frozen" => Ok(AccountFrozen),
             "insufficient_funds" => Ok(InsufficientFunds),
+            "international_transaction" => Ok(InternationalTransaction),
             "other" => Ok(Other),
             _ => Err(stripe_types::StripeParseError),
         }

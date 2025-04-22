@@ -1,6 +1,6 @@
 /// This is an object representing a person associated with a Stripe account.
 ///
-/// A platform cannot access a person for an account where [account.controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`, which includes Standard and Express accounts, after creating an Account Link or Account Session to start Connect onboarding.
+/// A platform can only access a subset of data in a person for an account where [account.controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`, which includes Standard and Express accounts, after creating an Account Link or Account Session to start Connect onboarding.
 ///
 /// See the [Standard onboarding](/connect/standard-accounts) or [Express onboarding](/connect/express-accounts) documentation for information about prefilling information and account onboarding steps.
 /// Learn more about [handling identity verification with the API](/connect/handling-api-verification#person-information).
@@ -21,18 +21,23 @@ pub struct Person {
     pub created: stripe_types::Timestamp,
     pub dob: Option<stripe_shared::LegalEntityDob>,
     /// The person's email address.
+    /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     pub email: Option<String>,
     /// The person's first name.
+    /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     pub first_name: Option<String>,
     /// The Kana variation of the person's first name (Japan only).
+    /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     pub first_name_kana: Option<String>,
     /// The Kanji variation of the person's first name (Japan only).
+    /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     pub first_name_kanji: Option<String>,
     /// A list of alternate names or aliases that the person is known by.
+    /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     pub full_name_aliases: Option<Vec<String>>,
     /// Information about the [upcoming new requirements for this person](https://stripe.com/docs/connect/custom-accounts/future-requirements), including what information needs to be collected, and by when.
     pub future_requirements: Option<stripe_shared::PersonFutureRequirements>,
-    /// The person's gender (International regulations require either "male" or "female").
+    /// The person's gender.
     pub gender: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_shared::PersonId,
@@ -43,10 +48,13 @@ pub struct Person {
     /// Whether the person's `id_number_secondary` was provided.
     pub id_number_secondary_provided: Option<bool>,
     /// The person's last name.
+    /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     pub last_name: Option<String>,
     /// The Kana variation of the person's last name (Japan only).
+    /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     pub last_name_kana: Option<String>,
     /// The Kanji variation of the person's last name (Japan only).
+    /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     pub last_name_kanji: Option<String>,
     /// The person's maiden name.
     pub maiden_name: Option<String>,
@@ -58,13 +66,15 @@ pub struct Person {
     /// The person's phone number.
     pub phone: Option<String>,
     /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
-    pub political_exposure: Option<PersonPoliticalExposure>,
+    pub political_exposure: Option<stripe_shared::PersonPoliticalExposure>,
     pub registered_address: Option<stripe_shared::Address>,
     pub relationship: Option<stripe_shared::PersonRelationship>,
     /// Information about the requirements for this person, including what information needs to be collected, and by when.
     pub requirements: Option<stripe_shared::PersonRequirements>,
     /// Whether the last four digits of the person's Social Security number have been provided (U.S. only).
     pub ssn_last_4_provided: Option<bool>,
+    /// Demographic data related to the person.
+    pub us_cfpb_data: Option<stripe_shared::PersonUsCfpbData>,
     pub verification: Option<stripe_shared::LegalEntityPersonVerification>,
 }
 #[doc(hidden)]
@@ -93,11 +103,12 @@ pub struct PersonBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     nationality: Option<Option<String>>,
     phone: Option<Option<String>>,
-    political_exposure: Option<Option<PersonPoliticalExposure>>,
+    political_exposure: Option<Option<stripe_shared::PersonPoliticalExposure>>,
     registered_address: Option<Option<stripe_shared::Address>>,
     relationship: Option<Option<stripe_shared::PersonRelationship>>,
     requirements: Option<Option<stripe_shared::PersonRequirements>>,
     ssn_last_4_provided: Option<Option<bool>>,
+    us_cfpb_data: Option<Option<stripe_shared::PersonUsCfpbData>>,
     verification: Option<Option<stripe_shared::LegalEntityPersonVerification>>,
 }
 
@@ -171,6 +182,7 @@ const _: () = {
                 "relationship" => Deserialize::begin(&mut self.relationship),
                 "requirements" => Deserialize::begin(&mut self.requirements),
                 "ssn_last_4_provided" => Deserialize::begin(&mut self.ssn_last_4_provided),
+                "us_cfpb_data" => Deserialize::begin(&mut self.us_cfpb_data),
                 "verification" => Deserialize::begin(&mut self.verification),
 
                 _ => <dyn Visitor>::ignore(),
@@ -208,6 +220,7 @@ const _: () = {
                 relationship: Deserialize::default(),
                 requirements: Deserialize::default(),
                 ssn_last_4_provided: Deserialize::default(),
+                us_cfpb_data: Deserialize::default(),
                 verification: Deserialize::default(),
             }
         }
@@ -243,6 +256,7 @@ const _: () = {
                 Some(relationship),
                 Some(requirements),
                 Some(ssn_last_4_provided),
+                Some(us_cfpb_data),
                 Some(verification),
             ) = (
                 self.account.take(),
@@ -274,6 +288,7 @@ const _: () = {
                 self.relationship.take(),
                 self.requirements.take(),
                 self.ssn_last_4_provided,
+                self.us_cfpb_data.take(),
                 self.verification.take(),
             )
             else {
@@ -309,6 +324,7 @@ const _: () = {
                 relationship,
                 requirements,
                 ssn_last_4_provided,
+                us_cfpb_data,
                 verification,
             })
         }
@@ -370,6 +386,7 @@ const _: () = {
                     "relationship" => b.relationship = FromValueOpt::from_value(v),
                     "requirements" => b.requirements = FromValueOpt::from_value(v),
                     "ssn_last_4_provided" => b.ssn_last_4_provided = FromValueOpt::from_value(v),
+                    "us_cfpb_data" => b.us_cfpb_data = FromValueOpt::from_value(v),
                     "verification" => b.verification = FromValueOpt::from_value(v),
 
                     _ => {}
@@ -383,7 +400,7 @@ const _: () = {
 impl serde::Serialize for Person {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Person", 31)?;
+        let mut s = s.serialize_struct("Person", 32)?;
         s.serialize_field("account", &self.account)?;
         s.serialize_field("additional_tos_acceptances", &self.additional_tos_acceptances)?;
         s.serialize_field("address", &self.address)?;
@@ -413,13 +430,24 @@ impl serde::Serialize for Person {
         s.serialize_field("relationship", &self.relationship)?;
         s.serialize_field("requirements", &self.requirements)?;
         s.serialize_field("ssn_last_4_provided", &self.ssn_last_4_provided)?;
+        s.serialize_field("us_cfpb_data", &self.us_cfpb_data)?;
         s.serialize_field("verification", &self.verification)?;
 
         s.serialize_field("object", "person")?;
         s.end()
     }
 }
-/// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
+impl stripe_types::Object for Person {
+    type Id = stripe_shared::PersonId;
+    fn id(&self) -> &Self::Id {
+        &self.id
+    }
+
+    fn into_id(self) -> Self::Id {
+        self.id
+    }
+}
+stripe_types::def_id!(PersonId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PersonPoliticalExposure {
     Existing,
@@ -457,7 +485,6 @@ impl std::fmt::Debug for PersonPoliticalExposure {
         f.write_str(self.as_str())
     }
 }
-#[cfg(feature = "serialize")]
 impl serde::Serialize for PersonPoliticalExposure {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -490,14 +517,3 @@ impl<'de> serde::Deserialize<'de> for PersonPoliticalExposure {
             .map_err(|_| serde::de::Error::custom("Unknown value for PersonPoliticalExposure"))
     }
 }
-impl stripe_types::Object for Person {
-    type Id = stripe_shared::PersonId;
-    fn id(&self) -> &Self::Id {
-        &self.id
-    }
-
-    fn into_id(self) -> Self::Id {
-        self.id
-    }
-}
-stripe_types::def_id!(PersonId);

@@ -14,14 +14,10 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase.
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
     pub billing_cycle_anchor: Option<SubscriptionSchedulePhaseConfigurationBillingCycleAnchor>,
-    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-    pub billing_thresholds: Option<stripe_shared::SubscriptionBillingThresholds>,
     /// Either `charge_automatically`, or `send_invoice`.
     /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     pub collection_method: Option<SubscriptionSchedulePhaseConfigurationCollectionMethod>,
-    /// ID of the coupon to use during this phase of the subscription schedule.
-    pub coupon: Option<stripe_types::Expandable<stripe_shared::Coupon>>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
@@ -66,9 +62,7 @@ pub struct SubscriptionSchedulePhaseConfigurationBuilder {
     application_fee_percent: Option<Option<f64>>,
     automatic_tax: Option<Option<stripe_shared::SchedulesPhaseAutomaticTax>>,
     billing_cycle_anchor: Option<Option<SubscriptionSchedulePhaseConfigurationBillingCycleAnchor>>,
-    billing_thresholds: Option<Option<stripe_shared::SubscriptionBillingThresholds>>,
     collection_method: Option<Option<SubscriptionSchedulePhaseConfigurationCollectionMethod>>,
-    coupon: Option<Option<stripe_types::Expandable<stripe_shared::Coupon>>>,
     currency: Option<stripe_types::Currency>,
     default_payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
     default_tax_rates: Option<Option<Vec<stripe_shared::TaxRate>>>,
@@ -129,9 +123,7 @@ const _: () = {
                 "application_fee_percent" => Deserialize::begin(&mut self.application_fee_percent),
                 "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
                 "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
-                "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
                 "collection_method" => Deserialize::begin(&mut self.collection_method),
-                "coupon" => Deserialize::begin(&mut self.coupon),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "default_payment_method" => Deserialize::begin(&mut self.default_payment_method),
                 "default_tax_rates" => Deserialize::begin(&mut self.default_tax_rates),
@@ -157,9 +149,7 @@ const _: () = {
                 application_fee_percent: Deserialize::default(),
                 automatic_tax: Deserialize::default(),
                 billing_cycle_anchor: Deserialize::default(),
-                billing_thresholds: Deserialize::default(),
                 collection_method: Deserialize::default(),
-                coupon: Deserialize::default(),
                 currency: Deserialize::default(),
                 default_payment_method: Deserialize::default(),
                 default_tax_rates: Deserialize::default(),
@@ -183,9 +173,7 @@ const _: () = {
                 Some(application_fee_percent),
                 Some(automatic_tax),
                 Some(billing_cycle_anchor),
-                Some(billing_thresholds),
                 Some(collection_method),
-                Some(coupon),
                 Some(currency),
                 Some(default_payment_method),
                 Some(default_tax_rates),
@@ -205,9 +193,7 @@ const _: () = {
                 self.application_fee_percent,
                 self.automatic_tax.take(),
                 self.billing_cycle_anchor,
-                self.billing_thresholds,
                 self.collection_method,
-                self.coupon.take(),
                 self.currency,
                 self.default_payment_method.take(),
                 self.default_tax_rates.take(),
@@ -231,9 +217,7 @@ const _: () = {
                 application_fee_percent,
                 automatic_tax,
                 billing_cycle_anchor,
-                billing_thresholds,
                 collection_method,
-                coupon,
                 currency,
                 default_payment_method,
                 default_tax_rates,
@@ -281,9 +265,7 @@ const _: () = {
                     }
                     "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
                     "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
-                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
                     "collection_method" => b.collection_method = FromValueOpt::from_value(v),
-                    "coupon" => b.coupon = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "default_payment_method" => {
                         b.default_payment_method = FromValueOpt::from_value(v)

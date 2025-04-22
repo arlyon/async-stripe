@@ -12,7 +12,7 @@ pub struct Review {
     /// The charge associated with this review.
     pub charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     /// The reason the review was closed, or null if it has not yet been closed.
-    /// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, or `redacted`.
+    /// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, `redacted`, or `canceled`.
     pub closed_reason: Option<ReviewClosedReason>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
@@ -32,7 +32,7 @@ pub struct Review {
     /// The PaymentIntent ID associated with this review, if one exists.
     pub payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
     /// The reason the review is currently open or closed.
-    /// One of `rule`, `manual`, `approved`, `refunded`, `refunded_as_fraud`, `disputed`, or `redacted`.
+    /// One of `rule`, `manual`, `approved`, `refunded`, `refunded_as_fraud`, `disputed`, `redacted`, or `canceled`.
     pub reason: String,
     /// Information related to the browsing session of the user who initiated the payment.
     pub session: Option<stripe_shared::RadarReviewResourceSession>,
@@ -246,10 +246,11 @@ impl serde::Serialize for Review {
     }
 }
 /// The reason the review was closed, or null if it has not yet been closed.
-/// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, or `redacted`.
+/// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, `redacted`, or `canceled`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ReviewClosedReason {
     Approved,
+    Canceled,
     Disputed,
     Redacted,
     Refunded,
@@ -260,6 +261,7 @@ impl ReviewClosedReason {
         use ReviewClosedReason::*;
         match self {
             Approved => "approved",
+            Canceled => "canceled",
             Disputed => "disputed",
             Redacted => "redacted",
             Refunded => "refunded",
@@ -274,6 +276,7 @@ impl std::str::FromStr for ReviewClosedReason {
         use ReviewClosedReason::*;
         match s {
             "approved" => Ok(Approved),
+            "canceled" => Ok(Canceled),
             "disputed" => Ok(Disputed),
             "redacted" => Ok(Redacted),
             "refunded" => Ok(Refunded),

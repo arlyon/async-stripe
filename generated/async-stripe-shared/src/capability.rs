@@ -16,7 +16,7 @@ pub struct Capability {
     /// Time at which the capability was requested. Measured in seconds since the Unix epoch.
     pub requested_at: Option<stripe_types::Timestamp>,
     pub requirements: Option<stripe_shared::AccountCapabilityRequirements>,
-    /// The status of the capability. Can be `active`, `inactive`, `pending`, or `unrequested`.
+    /// The status of the capability.
     pub status: CapabilityStatus,
 }
 #[doc(hidden)]
@@ -182,7 +182,7 @@ impl serde::Serialize for Capability {
         s.end()
     }
 }
-/// The status of the capability. Can be `active`, `inactive`, `pending`, or `unrequested`.
+/// The status of the capability.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CapabilityStatus {
     Active,

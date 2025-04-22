@@ -104,6 +104,7 @@ const _: () = {
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum BillingMeterResourceAggregationSettingsFormula {
     Count,
+    Last,
     Sum,
 }
 impl BillingMeterResourceAggregationSettingsFormula {
@@ -111,6 +112,7 @@ impl BillingMeterResourceAggregationSettingsFormula {
         use BillingMeterResourceAggregationSettingsFormula::*;
         match self {
             Count => "count",
+            Last => "last",
             Sum => "sum",
         }
     }
@@ -122,6 +124,7 @@ impl std::str::FromStr for BillingMeterResourceAggregationSettingsFormula {
         use BillingMeterResourceAggregationSettingsFormula::*;
         match s {
             "count" => Ok(Count),
+            "last" => Ok(Last),
             "sum" => Ok(Sum),
             _ => Err(stripe_types::StripeParseError),
         }

@@ -5,17 +5,28 @@ use stripe_client_core::{
 #[derive(Clone, Debug, serde::Serialize)]
 struct ListEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    archived: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    lookup_key: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
 impl ListEntitlementsFeatureBuilder {
     fn new() -> Self {
-        Self { ending_before: None, expand: None, limit: None, starting_after: None }
+        Self {
+            archived: None,
+            ending_before: None,
+            expand: None,
+            limit: None,
+            lookup_key: None,
+            starting_after: None,
+        }
     }
 }
 /// Retrieve a list of features
@@ -27,6 +38,11 @@ impl ListEntitlementsFeature {
     /// Construct a new `ListEntitlementsFeature`.
     pub fn new() -> Self {
         Self { inner: ListEntitlementsFeatureBuilder::new() }
+    }
+    /// If set, filter results to only include features with the given archive status.
+    pub fn archived(mut self, archived: impl Into<bool>) -> Self {
+        self.inner.archived = Some(archived.into());
+        self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
@@ -44,6 +60,11 @@ impl ListEntitlementsFeature {
     /// Limit can range between 1 and 100, and the default is 10.
     pub fn limit(mut self, limit: impl Into<i64>) -> Self {
         self.inner.limit = Some(limit.into());
+        self
+    }
+    /// If set, filter results to only include features with the given lookup_key.
+    pub fn lookup_key(mut self, lookup_key: impl Into<String>) -> Self {
+        self.inner.lookup_key = Some(lookup_key.into());
         self
     }
     /// A cursor for use in pagination.

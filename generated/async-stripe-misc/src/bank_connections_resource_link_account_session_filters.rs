@@ -2,11 +2,17 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BankConnectionsResourceLinkAccountSessionFilters {
+    /// Restricts the Session to subcategories of accounts that can be linked.
+    /// Valid subcategories are: `checking`, `savings`, `mortgage`, `line_of_credit`, `credit_card`.
+    pub account_subcategories:
+        Option<Vec<BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories>>,
     /// List of countries from which to filter accounts.
     pub countries: Option<Vec<String>>,
 }
 #[doc(hidden)]
 pub struct BankConnectionsResourceLinkAccountSessionFiltersBuilder {
+    account_subcategories:
+        Option<Option<Vec<BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories>>>,
     countries: Option<Option<Vec<String>>>,
 }
 
@@ -50,6 +56,7 @@ const _: () = {
         type Out = BankConnectionsResourceLinkAccountSessionFilters;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "account_subcategories" => Deserialize::begin(&mut self.account_subcategories),
                 "countries" => Deserialize::begin(&mut self.countries),
 
                 _ => <dyn Visitor>::ignore(),
@@ -57,14 +64,19 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { countries: Deserialize::default() }
+            Self {
+                account_subcategories: Deserialize::default(),
+                countries: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(countries),) = (self.countries.take(),) else {
+            let (Some(account_subcategories), Some(countries)) =
+                (self.account_subcategories.take(), self.countries.take())
+            else {
                 return None;
             };
-            Some(Self::Out { countries })
+            Some(Self::Out { account_subcategories, countries })
         }
     }
 
@@ -91,6 +103,9 @@ const _: () = {
             let mut b = BankConnectionsResourceLinkAccountSessionFiltersBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "account_subcategories" => {
+                        b.account_subcategories = FromValueOpt::from_value(v)
+                    }
                     "countries" => b.countries = FromValueOpt::from_value(v),
 
                     _ => {}
@@ -100,3 +115,94 @@ const _: () = {
         }
     }
 };
+/// Restricts the Session to subcategories of accounts that can be linked.
+/// Valid subcategories are: `checking`, `savings`, `mortgage`, `line_of_credit`, `credit_card`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
+    Checking,
+    CreditCard,
+    LineOfCredit,
+    Mortgage,
+    Savings,
+}
+impl BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
+    pub fn as_str(self) -> &'static str {
+        use BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories::*;
+        match self {
+            Checking => "checking",
+            CreditCard => "credit_card",
+            LineOfCredit => "line_of_credit",
+            Mortgage => "mortgage",
+            Savings => "savings",
+        }
+    }
+}
+
+impl std::str::FromStr for BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories::*;
+        match s {
+            "checking" => Ok(Checking),
+            "credit_card" => Ok(CreditCard),
+            "line_of_credit" => Ok(LineOfCredit),
+            "mortgage" => Ok(Mortgage),
+            "savings" => Ok(Savings),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize
+    for BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories
+{
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(
+    BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories
+);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories"))
+    }
+}

@@ -33,7 +33,8 @@ impl ListRefundBuilder {
     }
 }
 /// Returns a list of all refunds you created.
-/// We return the refunds in sorted order, with the most recent refunds appearing first The 10 most recent refunds are always available by default on the Charge object.
+/// We return the refunds in sorted order, with the most recent refunds appearing first.
+/// The 10 most recent refunds are always available by default on the Charge object.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ListRefund {
     inner: ListRefundBuilder,

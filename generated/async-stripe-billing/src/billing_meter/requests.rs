@@ -107,7 +107,7 @@ impl RetrieveBillingMeterBuilder {
         Self { expand: None }
     }
 }
-/// Retrieves a billing meter given an ID
+/// Retrieves a billing meter given an ID.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct RetrieveBillingMeter {
     inner: RetrieveBillingMeterBuilder,
@@ -184,7 +184,7 @@ impl CreateBillingMeterBuilder {
 /// Fields that specify how to map a meter event to a customer.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateBillingMeterCustomerMapping {
-    /// The key in the usage event payload to use for mapping the event to a customer.
+    /// The key in the meter event payload to use for mapping the event to a customer.
     pub event_payload_key: String,
     /// The method for mapping a meter event to a customer. Must be `by_id`.
     #[serde(rename = "type")]
@@ -255,7 +255,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterCustomerMappingType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateBillingMeterDefaultAggregation {
     /// Specifies how events are aggregated.
-    /// Allowed values are `count` to count the number of events and `sum` to sum each event's value.
+    /// Allowed values are `count` to count the number of events, `sum` to sum each event's value and `last` to take the last event's value in the window.
     pub formula: CreateBillingMeterDefaultAggregationFormula,
 }
 impl CreateBillingMeterDefaultAggregation {
@@ -264,10 +264,11 @@ impl CreateBillingMeterDefaultAggregation {
     }
 }
 /// Specifies how events are aggregated.
-/// Allowed values are `count` to count the number of events and `sum` to sum each event's value.
+/// Allowed values are `count` to count the number of events, `sum` to sum each event's value and `last` to take the last event's value in the window.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateBillingMeterDefaultAggregationFormula {
     Count,
+    Last,
     Sum,
 }
 impl CreateBillingMeterDefaultAggregationFormula {
@@ -275,6 +276,7 @@ impl CreateBillingMeterDefaultAggregationFormula {
         use CreateBillingMeterDefaultAggregationFormula::*;
         match self {
             Count => "count",
+            Last => "last",
             Sum => "sum",
         }
     }
@@ -286,6 +288,7 @@ impl std::str::FromStr for CreateBillingMeterDefaultAggregationFormula {
         use CreateBillingMeterDefaultAggregationFormula::*;
         match s {
             "count" => Ok(Count),
+            "last" => Ok(Last),
             "sum" => Ok(Sum),
             _ => Err(stripe_types::StripeParseError),
         }
@@ -334,7 +337,7 @@ impl CreateBillingMeterValueSettings {
         Self { event_payload_key: event_payload_key.into() }
     }
 }
-/// Creates a billing meter
+/// Creates a billing meter.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateBillingMeter {
     inner: CreateBillingMeterBuilder,
@@ -421,7 +424,7 @@ impl UpdateBillingMeterBuilder {
         Self { display_name: None, expand: None }
     }
 }
-/// Updates a billing meter
+/// Updates a billing meter.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateBillingMeter {
     inner: UpdateBillingMeterBuilder,
@@ -432,7 +435,7 @@ impl UpdateBillingMeter {
     pub fn new(id: impl Into<stripe_billing::BillingMeterId>) -> Self {
         Self { id: id.into(), inner: UpdateBillingMeterBuilder::new() }
     }
-    /// The meter's name.
+    /// The meter’s name. Not visible to the customer.
     pub fn display_name(mut self, display_name: impl Into<String>) -> Self {
         self.inner.display_name = Some(display_name.into());
         self
@@ -479,7 +482,8 @@ impl DeactivateBillingMeterBuilder {
         Self { expand: None }
     }
 }
-/// Deactivates a billing meter
+/// When a meter is deactivated, no more meter events will be accepted for this meter.
+/// You can’t attach a deactivated meter to a price.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct DeactivateBillingMeter {
     inner: DeactivateBillingMeterBuilder,
@@ -533,7 +537,7 @@ impl ReactivateBillingMeterBuilder {
         Self { expand: None }
     }
 }
-/// Reactivates a billing meter
+/// When a meter is reactivated, events for this meter can be accepted and you can attach the meter to a price.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ReactivateBillingMeter {
     inner: ReactivateBillingMeterBuilder,

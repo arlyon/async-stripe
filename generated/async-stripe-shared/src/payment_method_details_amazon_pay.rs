@@ -1,9 +1,13 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentMethodDetailsAmazonPay {}
+pub struct PaymentMethodDetailsAmazonPay {
+    pub funding: Option<stripe_shared::AmazonPayUnderlyingPaymentMethodFundingDetails>,
+}
 #[doc(hidden)]
-pub struct PaymentMethodDetailsAmazonPayBuilder {}
+pub struct PaymentMethodDetailsAmazonPayBuilder {
+    funding: Option<Option<stripe_shared::AmazonPayUnderlyingPaymentMethodFundingDetails>>,
+}
 
 #[allow(
     unused_variables,
@@ -45,19 +49,21 @@ const _: () = {
         type Out = PaymentMethodDetailsAmazonPay;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "funding" => Deserialize::begin(&mut self.funding),
+
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { funding: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
+            let (Some(funding),) = (self.funding.take(),) else {
                 return None;
             };
-            Some(Self::Out {})
+            Some(Self::Out { funding })
         }
     }
 
@@ -84,6 +90,8 @@ const _: () = {
             let mut b = PaymentMethodDetailsAmazonPayBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "funding" => b.funding = FromValueOpt::from_value(v),
+
                     _ => {}
                 }
             }
