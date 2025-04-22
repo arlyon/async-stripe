@@ -18,7 +18,7 @@ tokio = { version = "1.24.1", features = ["rt", "macros"] }
 async-stripe-types = { path = "../async-stripe-types", features = ["serialize"] }
 async-stripe-client-core = { path = "../async-stripe-client-core" }
 async-stripe-connect = { path = "../generated/async-stripe-connect", features = ["account", "transfer_reversal", "serialize", "deserialize"] }
-async-stripe-billing = { path = "../generated/async-stripe-billing", features = ["invoice", "plan", "subscription", "subscription_item", "usage_record", "serialize"] }
+async-stripe-billing = { path = "../generated/async-stripe-billing", features = ["invoice", "plan", "subscription", "subscription_item", "serialize"] }
 async-stripe-core = { path = "../generated/async-stripe-core", features = ["customer", "charge", "token", "serialize"] }
 async-stripe-checkout = { path = "../generated/async-stripe-checkout", features = ["checkout_session", "serialize"] }
 async-stripe-product = { path = "../generated/async-stripe-product", features = ["product", "price", "promotion_code", "serialize"] }
