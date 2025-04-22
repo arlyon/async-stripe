@@ -20,6 +20,9 @@ pub struct ConfirmationToken {
     pub mandate_data: Option<stripe_payment::ConfirmationTokensResourceMandateData>,
     /// ID of the PaymentIntent that this ConfirmationToken was used to confirm, or null if this ConfirmationToken has not yet been used.
     pub payment_intent: Option<String>,
+    /// Payment-method-specific configuration for this ConfirmationToken.
+    pub payment_method_options:
+        Option<stripe_payment::ConfirmationTokensResourcePaymentMethodOptions>,
     /// Payment details collected by the Payment Element, used to create a PaymentMethod when a PaymentIntent or SetupIntent is confirmed with this ConfirmationToken.
     pub payment_method_preview:
         Option<stripe_payment::ConfirmationTokensResourcePaymentMethodPreview>,
@@ -45,6 +48,8 @@ pub struct ConfirmationTokenBuilder {
     livemode: Option<bool>,
     mandate_data: Option<Option<stripe_payment::ConfirmationTokensResourceMandateData>>,
     payment_intent: Option<Option<String>>,
+    payment_method_options:
+        Option<Option<stripe_payment::ConfirmationTokensResourcePaymentMethodOptions>>,
     payment_method_preview:
         Option<Option<stripe_payment::ConfirmationTokensResourcePaymentMethodPreview>>,
     return_url: Option<Option<String>>,
@@ -100,6 +105,7 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "mandate_data" => Deserialize::begin(&mut self.mandate_data),
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
+                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
                 "payment_method_preview" => Deserialize::begin(&mut self.payment_method_preview),
                 "return_url" => Deserialize::begin(&mut self.return_url),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
@@ -119,6 +125,7 @@ const _: () = {
                 livemode: Deserialize::default(),
                 mandate_data: Deserialize::default(),
                 payment_intent: Deserialize::default(),
+                payment_method_options: Deserialize::default(),
                 payment_method_preview: Deserialize::default(),
                 return_url: Deserialize::default(),
                 setup_future_usage: Deserialize::default(),
@@ -136,6 +143,7 @@ const _: () = {
                 Some(livemode),
                 Some(mandate_data),
                 Some(payment_intent),
+                Some(payment_method_options),
                 Some(payment_method_preview),
                 Some(return_url),
                 Some(setup_future_usage),
@@ -149,6 +157,7 @@ const _: () = {
                 self.livemode,
                 self.mandate_data.take(),
                 self.payment_intent.take(),
+                self.payment_method_options.take(),
                 self.payment_method_preview.take(),
                 self.return_url.take(),
                 self.setup_future_usage,
@@ -166,6 +175,7 @@ const _: () = {
                 livemode,
                 mandate_data,
                 payment_intent,
+                payment_method_options,
                 payment_method_preview,
                 return_url,
                 setup_future_usage,
@@ -205,6 +215,9 @@ const _: () = {
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "mandate_data" => b.mandate_data = FromValueOpt::from_value(v),
                     "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
+                    "payment_method_options" => {
+                        b.payment_method_options = FromValueOpt::from_value(v)
+                    }
                     "payment_method_preview" => {
                         b.payment_method_preview = FromValueOpt::from_value(v)
                     }
@@ -225,13 +238,14 @@ const _: () = {
 impl serde::Serialize for ConfirmationToken {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("ConfirmationToken", 13)?;
+        let mut s = s.serialize_struct("ConfirmationToken", 14)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("expires_at", &self.expires_at)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("mandate_data", &self.mandate_data)?;
         s.serialize_field("payment_intent", &self.payment_intent)?;
+        s.serialize_field("payment_method_options", &self.payment_method_options)?;
         s.serialize_field("payment_method_preview", &self.payment_method_preview)?;
         s.serialize_field("return_url", &self.return_url)?;
         s.serialize_field("setup_future_usage", &self.setup_future_usage)?;

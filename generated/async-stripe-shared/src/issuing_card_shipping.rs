@@ -3,6 +3,8 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardShipping {
     pub address: stripe_shared::Address,
+    /// Address validation details for the shipment.
+    pub address_validation: Option<stripe_shared::IssuingCardShippingAddressValidation>,
     /// The delivery company that shipped a card.
     pub carrier: Option<IssuingCardShippingCarrier>,
     /// Additional information that may be required for clearing customs.
@@ -35,6 +37,7 @@ pub struct IssuingCardShipping {
 #[doc(hidden)]
 pub struct IssuingCardShippingBuilder {
     address: Option<stripe_shared::Address>,
+    address_validation: Option<Option<stripe_shared::IssuingCardShippingAddressValidation>>,
     carrier: Option<Option<IssuingCardShippingCarrier>>,
     customs: Option<Option<stripe_shared::IssuingCardShippingCustoms>>,
     eta: Option<Option<stripe_types::Timestamp>>,
@@ -89,6 +92,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "address" => Deserialize::begin(&mut self.address),
+                "address_validation" => Deserialize::begin(&mut self.address_validation),
                 "carrier" => Deserialize::begin(&mut self.carrier),
                 "customs" => Deserialize::begin(&mut self.customs),
                 "eta" => Deserialize::begin(&mut self.eta),
@@ -108,6 +112,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 address: Deserialize::default(),
+                address_validation: Deserialize::default(),
                 carrier: Deserialize::default(),
                 customs: Deserialize::default(),
                 eta: Deserialize::default(),
@@ -125,6 +130,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(address),
+                Some(address_validation),
                 Some(carrier),
                 Some(customs),
                 Some(eta),
@@ -138,6 +144,7 @@ const _: () = {
                 Some(type_),
             ) = (
                 self.address.take(),
+                self.address_validation.take(),
                 self.carrier,
                 self.customs.take(),
                 self.eta,
@@ -155,6 +162,7 @@ const _: () = {
             };
             Some(Self::Out {
                 address,
+                address_validation,
                 carrier,
                 customs,
                 eta,
@@ -194,6 +202,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "address" => b.address = FromValueOpt::from_value(v),
+                    "address_validation" => b.address_validation = FromValueOpt::from_value(v),
                     "carrier" => b.carrier = FromValueOpt::from_value(v),
                     "customs" => b.customs = FromValueOpt::from_value(v),
                     "eta" => b.eta = FromValueOpt::from_value(v),
@@ -373,6 +382,7 @@ pub enum IssuingCardShippingStatus {
     Pending,
     Returned,
     Shipped,
+    Submitted,
 }
 impl IssuingCardShippingStatus {
     pub fn as_str(self) -> &'static str {
@@ -384,6 +394,7 @@ impl IssuingCardShippingStatus {
             Pending => "pending",
             Returned => "returned",
             Shipped => "shipped",
+            Submitted => "submitted",
         }
     }
 }
@@ -399,6 +410,7 @@ impl std::str::FromStr for IssuingCardShippingStatus {
             "pending" => Ok(Pending),
             "returned" => Ok(Returned),
             "shipped" => Ok(Shipped),
+            "submitted" => Ok(Submitted),
             _ => Err(stripe_types::StripeParseError),
         }
     }

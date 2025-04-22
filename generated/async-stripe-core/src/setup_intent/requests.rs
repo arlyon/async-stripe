@@ -466,6 +466,10 @@ pub struct CreateSetupIntentPaymentMethodData {
     /// The field defaults to `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_redisplay: Option<CreateSetupIntentPaymentMethodDataAllowRedisplay>,
+    /// If this is a Alma PaymentMethod, this hash contains details about the Alma payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub alma: Option<miniserde::json::Value>,
     /// If this is a AmazonPay PaymentMethod, this hash contains details about the AmazonPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -480,6 +484,10 @@ pub struct CreateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub bancontact: Option<miniserde::json::Value>,
+    /// If this is a `billie` PaymentMethod, this hash contains details about the Billie payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub billie: Option<miniserde::json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetailsInnerParams>,
@@ -519,6 +527,10 @@ pub struct CreateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub interac_present: Option<miniserde::json::Value>,
+    /// If this is a `kakao_pay` PaymentMethod, this hash contains details about the Kakao Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub kakao_pay: Option<miniserde::json::Value>,
     /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<CreateSetupIntentPaymentMethodDataKlarna>,
@@ -526,6 +538,10 @@ pub struct CreateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub konbini: Option<miniserde::json::Value>,
+    /// If this is a `kr_card` PaymentMethod, this hash contains details about the Korean Card payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub kr_card: Option<miniserde::json::Value>,
     /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -540,6 +556,16 @@ pub struct CreateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub mobilepay: Option<miniserde::json::Value>,
+    /// If this is a `multibanco` PaymentMethod, this hash contains details about the Multibanco payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub multibanco: Option<miniserde::json::Value>,
+    /// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub naver_pay: Option<CreateSetupIntentPaymentMethodDataNaverPay>,
+    /// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nz_bank_account: Option<CreateSetupIntentPaymentMethodDataNzBankAccount>,
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -547,6 +573,14 @@ pub struct CreateSetupIntentPaymentMethodData {
     /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<CreateSetupIntentPaymentMethodDataP24>,
+    /// If this is a `pay_by_bank` PaymentMethod, this hash contains details about the PayByBank payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub pay_by_bank: Option<miniserde::json::Value>,
+    /// If this is a `payco` PaymentMethod, this hash contains details about the PAYCO payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub payco: Option<miniserde::json::Value>,
     /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -567,10 +601,18 @@ pub struct CreateSetupIntentPaymentMethodData {
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<RadarOptionsWithHiddenOptions>,
-    /// If this is a `Revolut Pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
+    /// If this is a `revolut_pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub revolut_pay: Option<miniserde::json::Value>,
+    /// If this is a `samsung_pay` PaymentMethod, this hash contains details about the SamsungPay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub samsung_pay: Option<miniserde::json::Value>,
+    /// If this is a `satispay` PaymentMethod, this hash contains details about the Satispay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub satispay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateSetupIntentPaymentMethodDataSepaDebit>,
@@ -581,6 +623,10 @@ pub struct CreateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub swish: Option<miniserde::json::Value>,
+    /// If this is a TWINT PaymentMethod, this hash contains details about the TWINT payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub twint: Option<miniserde::json::Value>,
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
@@ -606,10 +652,12 @@ impl CreateSetupIntentPaymentMethodData {
             afterpay_clearpay: None,
             alipay: None,
             allow_redisplay: None,
+            alma: None,
             amazon_pay: None,
             au_becs_debit: None,
             bacs_debit: None,
             bancontact: None,
+            billie: None,
             billing_details: None,
             blik: None,
             boleto: None,
@@ -621,22 +669,32 @@ impl CreateSetupIntentPaymentMethodData {
             grabpay: None,
             ideal: None,
             interac_present: None,
+            kakao_pay: None,
             klarna: None,
             konbini: None,
+            kr_card: None,
             link: None,
             metadata: None,
             mobilepay: None,
+            multibanco: None,
+            naver_pay: None,
+            nz_bank_account: None,
             oxxo: None,
             p24: None,
+            pay_by_bank: None,
+            payco: None,
             paynow: None,
             paypal: None,
             pix: None,
             promptpay: None,
             radar_options: None,
             revolut_pay: None,
+            samsung_pay: None,
+            satispay: None,
             sepa_debit: None,
             sofort: None,
             swish: None,
+            twint: None,
             type_: type_.into(),
             us_bank_account: None,
             wechat_pay: None,
@@ -1098,6 +1156,8 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodDataFpxBank 
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataIdeal {
     /// The customer's bank.
+    /// Only use this parameter for existing customers.
+    /// Don't use it for new customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<CreateSetupIntentPaymentMethodDataIdealBank>,
 }
@@ -1112,6 +1172,8 @@ impl Default for CreateSetupIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
+/// Only use this parameter for existing customers.
+/// Don't use it for new customers.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateSetupIntentPaymentMethodDataIdealBank {
@@ -1226,6 +1288,118 @@ impl CreateSetupIntentPaymentMethodDataKlarna {
 impl Default for CreateSetupIntentPaymentMethodDataKlarna {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataNaverPay {
+    /// Whether to use Naver Pay points or a card to fund this transaction.
+    /// If not provided, this defaults to `card`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding: Option<CreateSetupIntentPaymentMethodDataNaverPayFunding>,
+}
+impl CreateSetupIntentPaymentMethodDataNaverPay {
+    pub fn new() -> Self {
+        Self { funding: None }
+    }
+}
+impl Default for CreateSetupIntentPaymentMethodDataNaverPay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether to use Naver Pay points or a card to fund this transaction.
+/// If not provided, this defaults to `card`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSetupIntentPaymentMethodDataNaverPayFunding {
+    Card,
+    Points,
+}
+impl CreateSetupIntentPaymentMethodDataNaverPayFunding {
+    pub fn as_str(self) -> &'static str {
+        use CreateSetupIntentPaymentMethodDataNaverPayFunding::*;
+        match self {
+            Card => "card",
+            Points => "points",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSetupIntentPaymentMethodDataNaverPayFunding {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSetupIntentPaymentMethodDataNaverPayFunding::*;
+        match s {
+            "card" => Ok(Card),
+            "points" => Ok(Points),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateSetupIntentPaymentMethodDataNaverPayFunding {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodDataNaverPayFunding {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSetupIntentPaymentMethodDataNaverPayFunding {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodDataNaverPayFunding {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSetupIntentPaymentMethodDataNaverPayFunding",
+            )
+        })
+    }
+}
+/// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataNzBankAccount {
+    /// The name on the bank account.
+    /// Only required if the account holder name is different from the name of the authorized signatory collected in the PaymentMethod’s billing details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_holder_name: Option<String>,
+    /// The account number for the bank account.
+    pub account_number: String,
+    /// The numeric code for the bank account's bank.
+    pub bank_code: String,
+    /// The numeric code for the bank account's bank branch.
+    pub branch_code: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+    /// The suffix of the bank account number.
+    pub suffix: String,
+}
+impl CreateSetupIntentPaymentMethodDataNzBankAccount {
+    pub fn new(
+        account_number: impl Into<String>,
+        bank_code: impl Into<String>,
+        branch_code: impl Into<String>,
+        suffix: impl Into<String>,
+    ) -> Self {
+        Self {
+            account_holder_name: None,
+            account_number: account_number.into(),
+            bank_code: bank_code.into(),
+            branch_code: branch_code.into(),
+            reference: None,
+            suffix: suffix.into(),
+        }
     }
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
@@ -1477,10 +1651,12 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     Affirm,
     AfterpayClearpay,
     Alipay,
+    Alma,
     AmazonPay,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Billie,
     Blik,
     Boleto,
     Cashapp,
@@ -1490,20 +1666,30 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     Giropay,
     Grabpay,
     Ideal,
+    KakaoPay,
     Klarna,
     Konbini,
+    KrCard,
     Link,
     Mobilepay,
+    Multibanco,
+    NaverPay,
+    NzBankAccount,
     Oxxo,
     P24,
+    PayByBank,
+    Payco,
     Paynow,
     Paypal,
     Pix,
     Promptpay,
     RevolutPay,
+    SamsungPay,
+    Satispay,
     SepaDebit,
     Sofort,
     Swish,
+    Twint,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -1518,10 +1704,12 @@ impl CreateSetupIntentPaymentMethodDataType {
             Affirm => "affirm",
             AfterpayClearpay => "afterpay_clearpay",
             Alipay => "alipay",
+            Alma => "alma",
             AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
+            Billie => "billie",
             Blik => "blik",
             Boleto => "boleto",
             Cashapp => "cashapp",
@@ -1531,20 +1719,30 @@ impl CreateSetupIntentPaymentMethodDataType {
             Giropay => "giropay",
             Grabpay => "grabpay",
             Ideal => "ideal",
+            KakaoPay => "kakao_pay",
             Klarna => "klarna",
             Konbini => "konbini",
+            KrCard => "kr_card",
             Link => "link",
             Mobilepay => "mobilepay",
+            Multibanco => "multibanco",
+            NaverPay => "naver_pay",
+            NzBankAccount => "nz_bank_account",
             Oxxo => "oxxo",
             P24 => "p24",
+            PayByBank => "pay_by_bank",
+            Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
             Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
+            SamsungPay => "samsung_pay",
+            Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Swish => "swish",
+            Twint => "twint",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -1562,10 +1760,12 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataType {
             "affirm" => Ok(Affirm),
             "afterpay_clearpay" => Ok(AfterpayClearpay),
             "alipay" => Ok(Alipay),
+            "alma" => Ok(Alma),
             "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
+            "billie" => Ok(Billie),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "cashapp" => Ok(Cashapp),
@@ -1575,20 +1775,30 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataType {
             "giropay" => Ok(Giropay),
             "grabpay" => Ok(Grabpay),
             "ideal" => Ok(Ideal),
+            "kakao_pay" => Ok(KakaoPay),
             "klarna" => Ok(Klarna),
             "konbini" => Ok(Konbini),
+            "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
             "mobilepay" => Ok(Mobilepay),
+            "multibanco" => Ok(Multibanco),
+            "naver_pay" => Ok(NaverPay),
+            "nz_bank_account" => Ok(NzBankAccount),
             "oxxo" => Ok(Oxxo),
             "p24" => Ok(P24),
+            "pay_by_bank" => Ok(PayByBank),
+            "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
+            "samsung_pay" => Ok(SamsungPay),
+            "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
+            "twint" => Ok(Twint),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -1783,6 +1993,9 @@ pub struct CreateSetupIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub amazon_pay: Option<miniserde::json::Value>,
+    /// If this is a `bacs_debit` SetupIntent, this sub-hash contains details about the Bacs Debit payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit: Option<CreateSetupIntentPaymentMethodOptionsBacsDebit>,
     /// Configuration for any card setup attempted on this SetupIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateSetupIntentPaymentMethodOptionsCard>,
@@ -1808,6 +2021,7 @@ impl CreateSetupIntentPaymentMethodOptions {
         Self {
             acss_debit: None,
             amazon_pay: None,
+            bacs_debit: None,
             card: None,
             card_present: None,
             link: None,
@@ -2193,6 +2407,23 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod"))
     }
 }
+/// If this is a `bacs_debit` SetupIntent, this sub-hash contains details about the Bacs Debit payment method options.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateSetupIntentPaymentMethodOptionsBacsDebit {
+    /// Additional fields for Mandate creation
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<PaymentMethodOptionsMandateOptionsParam>,
+}
+impl CreateSetupIntentPaymentMethodOptionsBacsDebit {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for CreateSetupIntentPaymentMethodOptionsBacsDebit {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// Configuration for any card setup attempted on this SetupIntent.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsCard {
@@ -2488,8 +2719,10 @@ pub enum CreateSetupIntentPaymentMethodOptionsCardNetwork {
     Diners,
     Discover,
     EftposAu,
+    Girocard,
     Interac,
     Jcb,
+    Link,
     Mastercard,
     Unionpay,
     Unknown,
@@ -2504,8 +2737,10 @@ impl CreateSetupIntentPaymentMethodOptionsCardNetwork {
             Diners => "diners",
             Discover => "discover",
             EftposAu => "eftpos_au",
+            Girocard => "girocard",
             Interac => "interac",
             Jcb => "jcb",
+            Link => "link",
             Mastercard => "mastercard",
             Unionpay => "unionpay",
             Unknown => "unknown",
@@ -2524,8 +2759,10 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsCardNetwork {
             "diners" => Ok(Diners),
             "discover" => Ok(Discover),
             "eftpos_au" => Ok(EftposAu),
+            "girocard" => Ok(Girocard),
             "interac" => Ok(Interac),
             "jcb" => Ok(Jcb),
+            "link" => Ok(Link),
             "mastercard" => Ok(Mastercard),
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
@@ -3020,8 +3257,7 @@ impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodOptionsCardT
 pub struct CreateSetupIntentPaymentMethodOptionsSepaDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub mandate_options: Option<miniserde::json::Value>,
+    pub mandate_options: Option<CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions>,
 }
 impl CreateSetupIntentPaymentMethodOptionsSepaDebit {
     pub fn new() -> Self {
@@ -3029,6 +3265,26 @@ impl CreateSetupIntentPaymentMethodOptionsSepaDebit {
     }
 }
 impl Default for CreateSetupIntentPaymentMethodOptionsSepaDebit {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Additional fields for Mandate creation
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {
+    /// Prefix used to generate the Mandate reference.
+    /// Must be at most 12 characters long.
+    /// Must consist of only uppercase letters, numbers, spaces, or the following special characters: '/', '_', '-', '&', '.'.
+    /// Cannot begin with 'STRIPE'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference_prefix: Option<String>,
+}
+impl CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {
+    pub fn new() -> Self {
+        Self { reference_prefix: None }
+    }
+}
+impl Default for CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {
     fn default() -> Self {
         Self::new()
     }
@@ -3069,6 +3325,10 @@ impl Default for CreateSetupIntentPaymentMethodOptionsUsBankAccount {
 /// Additional fields for Financial Connections Session creation
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
+    /// Provide filters for the linked accounts that the customer can select for the payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filters:
+        Option<CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters>,
     /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
@@ -3087,12 +3347,86 @@ pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnection
 }
 impl CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     pub fn new() -> Self {
-        Self { permissions: None, prefetch: None, return_url: None }
+        Self { filters: None, permissions: None, prefetch: None, return_url: None }
     }
 }
 impl Default for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Provide filters for the linked accounts that the customer can select for the payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+        /// The account subcategories to use to filter for selectable accounts.
+    /// Valid subcategories are `checking` and `savings`.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub account_subcategories: Option<Vec<CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories>>,
+
+}
+impl CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+    pub fn new() -> Self {
+        Self { account_subcategories: None }
+    }
+}
+impl Default for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account subcategories to use to filter for selectable accounts.
+/// Valid subcategories are `checking` and `savings`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories
+{
+    Checking,
+    Savings,
+}
+impl CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    pub fn as_str(self) -> &'static str {
+        use CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
+        match self {
+Checking => "checking",
+Savings => "savings",
+
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
+        match s {
+    "checking" => Ok(Checking),
+"savings" => Ok(Savings),
+_ => Err(stripe_types::StripeParseError)
+
+        }
+    }
+}
+impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"))
     }
 }
 /// The list of permissions to request.
@@ -3446,6 +3780,8 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If you populate this hash, this SetupIntent generates a `single_use` mandate after successful completion.
+///
+/// Single-use mandates are only valid for the following payment methods: `acss_debit`, `alipay`, `au_becs_debit`, `bacs_debit`, `bancontact`, `boleto`, `ideal`, `link`, `sepa_debit`, and `us_bank_account`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSetupIntentSingleUse {
     /// Amount the customer is granting permission to collect later.
@@ -3618,7 +3954,7 @@ impl CreateSetupIntent {
         self.inner.payment_method = Some(payment_method.into());
         self
     }
-    /// The ID of the payment method configuration to use with this SetupIntent.
+    /// The ID of the [payment method configuration](https://stripe.com/docs/api/payment_method_configurations) to use with this SetupIntent.
     pub fn payment_method_configuration(
         mut self,
         payment_method_configuration: impl Into<String>,
@@ -3644,7 +3980,7 @@ impl CreateSetupIntent {
         self
     }
     /// The list of payment method types (for example, card) that this SetupIntent can use.
-    /// If you don't provide this, it defaults to ["card"].
+    /// If you don't provide this, Stripe will dynamically show relevant payment methods from your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
     pub fn payment_method_types(mut self, payment_method_types: impl Into<Vec<String>>) -> Self {
         self.inner.payment_method_types = Some(payment_method_types.into());
         self
@@ -3657,6 +3993,8 @@ impl CreateSetupIntent {
         self
     }
     /// If you populate this hash, this SetupIntent generates a `single_use` mandate after successful completion.
+    ///
+    /// Single-use mandates are only valid for the following payment methods: `acss_debit`, `alipay`, `au_becs_debit`, `bacs_debit`, `bancontact`, `boleto`, `ideal`, `link`, `sepa_debit`, and `us_bank_account`.
     pub fn single_use(mut self, single_use: impl Into<CreateSetupIntentSingleUse>) -> Self {
         self.inner.single_use = Some(single_use.into());
         self
@@ -3769,6 +4107,10 @@ pub struct UpdateSetupIntentPaymentMethodData {
     /// The field defaults to `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_redisplay: Option<UpdateSetupIntentPaymentMethodDataAllowRedisplay>,
+    /// If this is a Alma PaymentMethod, this hash contains details about the Alma payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub alma: Option<miniserde::json::Value>,
     /// If this is a AmazonPay PaymentMethod, this hash contains details about the AmazonPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -3783,6 +4125,10 @@ pub struct UpdateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub bancontact: Option<miniserde::json::Value>,
+    /// If this is a `billie` PaymentMethod, this hash contains details about the Billie payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub billie: Option<miniserde::json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetailsInnerParams>,
@@ -3822,6 +4168,10 @@ pub struct UpdateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub interac_present: Option<miniserde::json::Value>,
+    /// If this is a `kakao_pay` PaymentMethod, this hash contains details about the Kakao Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub kakao_pay: Option<miniserde::json::Value>,
     /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<UpdateSetupIntentPaymentMethodDataKlarna>,
@@ -3829,6 +4179,10 @@ pub struct UpdateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub konbini: Option<miniserde::json::Value>,
+    /// If this is a `kr_card` PaymentMethod, this hash contains details about the Korean Card payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub kr_card: Option<miniserde::json::Value>,
     /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -3843,6 +4197,16 @@ pub struct UpdateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub mobilepay: Option<miniserde::json::Value>,
+    /// If this is a `multibanco` PaymentMethod, this hash contains details about the Multibanco payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub multibanco: Option<miniserde::json::Value>,
+    /// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub naver_pay: Option<UpdateSetupIntentPaymentMethodDataNaverPay>,
+    /// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nz_bank_account: Option<UpdateSetupIntentPaymentMethodDataNzBankAccount>,
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -3850,6 +4214,14 @@ pub struct UpdateSetupIntentPaymentMethodData {
     /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<UpdateSetupIntentPaymentMethodDataP24>,
+    /// If this is a `pay_by_bank` PaymentMethod, this hash contains details about the PayByBank payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub pay_by_bank: Option<miniserde::json::Value>,
+    /// If this is a `payco` PaymentMethod, this hash contains details about the PAYCO payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub payco: Option<miniserde::json::Value>,
     /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -3870,10 +4242,18 @@ pub struct UpdateSetupIntentPaymentMethodData {
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<RadarOptionsWithHiddenOptions>,
-    /// If this is a `Revolut Pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
+    /// If this is a `revolut_pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub revolut_pay: Option<miniserde::json::Value>,
+    /// If this is a `samsung_pay` PaymentMethod, this hash contains details about the SamsungPay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub samsung_pay: Option<miniserde::json::Value>,
+    /// If this is a `satispay` PaymentMethod, this hash contains details about the Satispay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub satispay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<UpdateSetupIntentPaymentMethodDataSepaDebit>,
@@ -3884,6 +4264,10 @@ pub struct UpdateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub swish: Option<miniserde::json::Value>,
+    /// If this is a TWINT PaymentMethod, this hash contains details about the TWINT payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub twint: Option<miniserde::json::Value>,
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
@@ -3909,10 +4293,12 @@ impl UpdateSetupIntentPaymentMethodData {
             afterpay_clearpay: None,
             alipay: None,
             allow_redisplay: None,
+            alma: None,
             amazon_pay: None,
             au_becs_debit: None,
             bacs_debit: None,
             bancontact: None,
+            billie: None,
             billing_details: None,
             blik: None,
             boleto: None,
@@ -3924,22 +4310,32 @@ impl UpdateSetupIntentPaymentMethodData {
             grabpay: None,
             ideal: None,
             interac_present: None,
+            kakao_pay: None,
             klarna: None,
             konbini: None,
+            kr_card: None,
             link: None,
             metadata: None,
             mobilepay: None,
+            multibanco: None,
+            naver_pay: None,
+            nz_bank_account: None,
             oxxo: None,
             p24: None,
+            pay_by_bank: None,
+            payco: None,
             paynow: None,
             paypal: None,
             pix: None,
             promptpay: None,
             radar_options: None,
             revolut_pay: None,
+            samsung_pay: None,
+            satispay: None,
             sepa_debit: None,
             sofort: None,
             swish: None,
+            twint: None,
             type_: type_.into(),
             us_bank_account: None,
             wechat_pay: None,
@@ -4401,6 +4797,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodDataFpxBank 
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataIdeal {
     /// The customer's bank.
+    /// Only use this parameter for existing customers.
+    /// Don't use it for new customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<UpdateSetupIntentPaymentMethodDataIdealBank>,
 }
@@ -4415,6 +4813,8 @@ impl Default for UpdateSetupIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
+/// Only use this parameter for existing customers.
+/// Don't use it for new customers.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateSetupIntentPaymentMethodDataIdealBank {
@@ -4529,6 +4929,118 @@ impl UpdateSetupIntentPaymentMethodDataKlarna {
 impl Default for UpdateSetupIntentPaymentMethodDataKlarna {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataNaverPay {
+    /// Whether to use Naver Pay points or a card to fund this transaction.
+    /// If not provided, this defaults to `card`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding: Option<UpdateSetupIntentPaymentMethodDataNaverPayFunding>,
+}
+impl UpdateSetupIntentPaymentMethodDataNaverPay {
+    pub fn new() -> Self {
+        Self { funding: None }
+    }
+}
+impl Default for UpdateSetupIntentPaymentMethodDataNaverPay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether to use Naver Pay points or a card to fund this transaction.
+/// If not provided, this defaults to `card`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateSetupIntentPaymentMethodDataNaverPayFunding {
+    Card,
+    Points,
+}
+impl UpdateSetupIntentPaymentMethodDataNaverPayFunding {
+    pub fn as_str(self) -> &'static str {
+        use UpdateSetupIntentPaymentMethodDataNaverPayFunding::*;
+        match self {
+            Card => "card",
+            Points => "points",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataNaverPayFunding {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSetupIntentPaymentMethodDataNaverPayFunding::*;
+        match s {
+            "card" => Ok(Card),
+            "points" => Ok(Points),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodDataNaverPayFunding {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodDataNaverPayFunding {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateSetupIntentPaymentMethodDataNaverPayFunding {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodDataNaverPayFunding {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSetupIntentPaymentMethodDataNaverPayFunding",
+            )
+        })
+    }
+}
+/// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataNzBankAccount {
+    /// The name on the bank account.
+    /// Only required if the account holder name is different from the name of the authorized signatory collected in the PaymentMethod’s billing details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_holder_name: Option<String>,
+    /// The account number for the bank account.
+    pub account_number: String,
+    /// The numeric code for the bank account's bank.
+    pub bank_code: String,
+    /// The numeric code for the bank account's bank branch.
+    pub branch_code: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+    /// The suffix of the bank account number.
+    pub suffix: String,
+}
+impl UpdateSetupIntentPaymentMethodDataNzBankAccount {
+    pub fn new(
+        account_number: impl Into<String>,
+        bank_code: impl Into<String>,
+        branch_code: impl Into<String>,
+        suffix: impl Into<String>,
+    ) -> Self {
+        Self {
+            account_holder_name: None,
+            account_number: account_number.into(),
+            bank_code: bank_code.into(),
+            branch_code: branch_code.into(),
+            reference: None,
+            suffix: suffix.into(),
+        }
     }
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
@@ -4780,10 +5292,12 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     Affirm,
     AfterpayClearpay,
     Alipay,
+    Alma,
     AmazonPay,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Billie,
     Blik,
     Boleto,
     Cashapp,
@@ -4793,20 +5307,30 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     Giropay,
     Grabpay,
     Ideal,
+    KakaoPay,
     Klarna,
     Konbini,
+    KrCard,
     Link,
     Mobilepay,
+    Multibanco,
+    NaverPay,
+    NzBankAccount,
     Oxxo,
     P24,
+    PayByBank,
+    Payco,
     Paynow,
     Paypal,
     Pix,
     Promptpay,
     RevolutPay,
+    SamsungPay,
+    Satispay,
     SepaDebit,
     Sofort,
     Swish,
+    Twint,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -4821,10 +5345,12 @@ impl UpdateSetupIntentPaymentMethodDataType {
             Affirm => "affirm",
             AfterpayClearpay => "afterpay_clearpay",
             Alipay => "alipay",
+            Alma => "alma",
             AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
+            Billie => "billie",
             Blik => "blik",
             Boleto => "boleto",
             Cashapp => "cashapp",
@@ -4834,20 +5360,30 @@ impl UpdateSetupIntentPaymentMethodDataType {
             Giropay => "giropay",
             Grabpay => "grabpay",
             Ideal => "ideal",
+            KakaoPay => "kakao_pay",
             Klarna => "klarna",
             Konbini => "konbini",
+            KrCard => "kr_card",
             Link => "link",
             Mobilepay => "mobilepay",
+            Multibanco => "multibanco",
+            NaverPay => "naver_pay",
+            NzBankAccount => "nz_bank_account",
             Oxxo => "oxxo",
             P24 => "p24",
+            PayByBank => "pay_by_bank",
+            Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
             Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
+            SamsungPay => "samsung_pay",
+            Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Swish => "swish",
+            Twint => "twint",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -4865,10 +5401,12 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataType {
             "affirm" => Ok(Affirm),
             "afterpay_clearpay" => Ok(AfterpayClearpay),
             "alipay" => Ok(Alipay),
+            "alma" => Ok(Alma),
             "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
+            "billie" => Ok(Billie),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "cashapp" => Ok(Cashapp),
@@ -4878,20 +5416,30 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataType {
             "giropay" => Ok(Giropay),
             "grabpay" => Ok(Grabpay),
             "ideal" => Ok(Ideal),
+            "kakao_pay" => Ok(KakaoPay),
             "klarna" => Ok(Klarna),
             "konbini" => Ok(Konbini),
+            "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
             "mobilepay" => Ok(Mobilepay),
+            "multibanco" => Ok(Multibanco),
+            "naver_pay" => Ok(NaverPay),
+            "nz_bank_account" => Ok(NzBankAccount),
             "oxxo" => Ok(Oxxo),
             "p24" => Ok(P24),
+            "pay_by_bank" => Ok(PayByBank),
+            "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
+            "samsung_pay" => Ok(SamsungPay),
+            "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
+            "twint" => Ok(Twint),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -5086,6 +5634,9 @@ pub struct UpdateSetupIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub amazon_pay: Option<miniserde::json::Value>,
+    /// If this is a `bacs_debit` SetupIntent, this sub-hash contains details about the Bacs Debit payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit: Option<UpdateSetupIntentPaymentMethodOptionsBacsDebit>,
     /// Configuration for any card setup attempted on this SetupIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateSetupIntentPaymentMethodOptionsCard>,
@@ -5111,6 +5662,7 @@ impl UpdateSetupIntentPaymentMethodOptions {
         Self {
             acss_debit: None,
             amazon_pay: None,
+            bacs_debit: None,
             card: None,
             card_present: None,
             link: None,
@@ -5496,6 +6048,23 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod"))
     }
 }
+/// If this is a `bacs_debit` SetupIntent, this sub-hash contains details about the Bacs Debit payment method options.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateSetupIntentPaymentMethodOptionsBacsDebit {
+    /// Additional fields for Mandate creation
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<PaymentMethodOptionsMandateOptionsParam>,
+}
+impl UpdateSetupIntentPaymentMethodOptionsBacsDebit {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for UpdateSetupIntentPaymentMethodOptionsBacsDebit {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// Configuration for any card setup attempted on this SetupIntent.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsCard {
@@ -5791,8 +6360,10 @@ pub enum UpdateSetupIntentPaymentMethodOptionsCardNetwork {
     Diners,
     Discover,
     EftposAu,
+    Girocard,
     Interac,
     Jcb,
+    Link,
     Mastercard,
     Unionpay,
     Unknown,
@@ -5807,8 +6378,10 @@ impl UpdateSetupIntentPaymentMethodOptionsCardNetwork {
             Diners => "diners",
             Discover => "discover",
             EftposAu => "eftpos_au",
+            Girocard => "girocard",
             Interac => "interac",
             Jcb => "jcb",
+            Link => "link",
             Mastercard => "mastercard",
             Unionpay => "unionpay",
             Unknown => "unknown",
@@ -5827,8 +6400,10 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsCardNetwork {
             "diners" => Ok(Diners),
             "discover" => Ok(Discover),
             "eftpos_au" => Ok(EftposAu),
+            "girocard" => Ok(Girocard),
             "interac" => Ok(Interac),
             "jcb" => Ok(Jcb),
+            "link" => Ok(Link),
             "mastercard" => Ok(Mastercard),
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
@@ -6323,8 +6898,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodOptionsCardT
 pub struct UpdateSetupIntentPaymentMethodOptionsSepaDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub mandate_options: Option<miniserde::json::Value>,
+    pub mandate_options: Option<UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions>,
 }
 impl UpdateSetupIntentPaymentMethodOptionsSepaDebit {
     pub fn new() -> Self {
@@ -6332,6 +6906,26 @@ impl UpdateSetupIntentPaymentMethodOptionsSepaDebit {
     }
 }
 impl Default for UpdateSetupIntentPaymentMethodOptionsSepaDebit {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Additional fields for Mandate creation
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {
+    /// Prefix used to generate the Mandate reference.
+    /// Must be at most 12 characters long.
+    /// Must consist of only uppercase letters, numbers, spaces, or the following special characters: '/', '_', '-', '&', '.'.
+    /// Cannot begin with 'STRIPE'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference_prefix: Option<String>,
+}
+impl UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {
+    pub fn new() -> Self {
+        Self { reference_prefix: None }
+    }
+}
+impl Default for UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {
     fn default() -> Self {
         Self::new()
     }
@@ -6372,6 +6966,10 @@ impl Default for UpdateSetupIntentPaymentMethodOptionsUsBankAccount {
 /// Additional fields for Financial Connections Session creation
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
+    /// Provide filters for the linked accounts that the customer can select for the payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filters:
+        Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters>,
     /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
@@ -6390,12 +6988,86 @@ pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnection
 }
 impl UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     pub fn new() -> Self {
-        Self { permissions: None, prefetch: None, return_url: None }
+        Self { filters: None, permissions: None, prefetch: None, return_url: None }
     }
 }
 impl Default for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Provide filters for the linked accounts that the customer can select for the payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+        /// The account subcategories to use to filter for selectable accounts.
+    /// Valid subcategories are `checking` and `savings`.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub account_subcategories: Option<Vec<UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories>>,
+
+}
+impl UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+    pub fn new() -> Self {
+        Self { account_subcategories: None }
+    }
+}
+impl Default for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account subcategories to use to filter for selectable accounts.
+/// Valid subcategories are `checking` and `savings`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories
+{
+    Checking,
+    Savings,
+}
+impl UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    pub fn as_str(self) -> &'static str {
+        use UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
+        match self {
+Checking => "checking",
+Savings => "savings",
+
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
+        match s {
+    "checking" => Ok(Checking),
+"savings" => Ok(Savings),
+_ => Err(stripe_types::StripeParseError)
+
+        }
+    }
+}
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"))
     }
 }
 /// The list of permissions to request.
@@ -6809,11 +7481,12 @@ impl UpdateSetupIntent {
         self
     }
     /// ID of the payment method (a PaymentMethod, Card, or saved Source object) to attach to this SetupIntent.
+    /// To unset this field to null, pass in an empty string.
     pub fn payment_method(mut self, payment_method: impl Into<String>) -> Self {
         self.inner.payment_method = Some(payment_method.into());
         self
     }
-    /// The ID of the payment method configuration to use with this SetupIntent.
+    /// The ID of the [payment method configuration](https://stripe.com/docs/api/payment_method_configurations) to use with this SetupIntent.
     pub fn payment_method_configuration(
         mut self,
         payment_method_configuration: impl Into<String>,
@@ -6839,7 +7512,7 @@ impl UpdateSetupIntent {
         self
     }
     /// The list of payment method types (for example, card) that this SetupIntent can set up.
-    /// If you don't provide this array, it defaults to ["card"].
+    /// If you don't provide this, Stripe will dynamically show relevant payment methods from your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
     pub fn payment_method_types(mut self, payment_method_types: impl Into<Vec<String>>) -> Self {
         self.inner.payment_method_types = Some(payment_method_types.into());
         self
@@ -6888,6 +7561,8 @@ impl CancelSetupIntentBuilder {
 ///
 ///
 /// After you cancel it, setup is abandoned and any operations on the SetupIntent fail with an error.
+/// You can’t cancel the SetupIntent for a Checkout Session.
+/// [Expire the Checkout Session](https://stripe.com/docs/api/checkout/sessions/expire) instead.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CancelSetupIntent {
     inner: CancelSetupIntentBuilder,
@@ -7203,6 +7878,10 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     /// The field defaults to `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_redisplay: Option<ConfirmSetupIntentPaymentMethodDataAllowRedisplay>,
+    /// If this is a Alma PaymentMethod, this hash contains details about the Alma payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub alma: Option<miniserde::json::Value>,
     /// If this is a AmazonPay PaymentMethod, this hash contains details about the AmazonPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -7217,6 +7896,10 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub bancontact: Option<miniserde::json::Value>,
+    /// If this is a `billie` PaymentMethod, this hash contains details about the Billie payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub billie: Option<miniserde::json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetailsInnerParams>,
@@ -7256,6 +7939,10 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub interac_present: Option<miniserde::json::Value>,
+    /// If this is a `kakao_pay` PaymentMethod, this hash contains details about the Kakao Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub kakao_pay: Option<miniserde::json::Value>,
     /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<ConfirmSetupIntentPaymentMethodDataKlarna>,
@@ -7263,6 +7950,10 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub konbini: Option<miniserde::json::Value>,
+    /// If this is a `kr_card` PaymentMethod, this hash contains details about the Korean Card payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub kr_card: Option<miniserde::json::Value>,
     /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -7277,6 +7968,16 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub mobilepay: Option<miniserde::json::Value>,
+    /// If this is a `multibanco` PaymentMethod, this hash contains details about the Multibanco payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub multibanco: Option<miniserde::json::Value>,
+    /// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub naver_pay: Option<ConfirmSetupIntentPaymentMethodDataNaverPay>,
+    /// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nz_bank_account: Option<ConfirmSetupIntentPaymentMethodDataNzBankAccount>,
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -7284,6 +7985,14 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<ConfirmSetupIntentPaymentMethodDataP24>,
+    /// If this is a `pay_by_bank` PaymentMethod, this hash contains details about the PayByBank payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub pay_by_bank: Option<miniserde::json::Value>,
+    /// If this is a `payco` PaymentMethod, this hash contains details about the PAYCO payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub payco: Option<miniserde::json::Value>,
     /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -7304,10 +8013,18 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<RadarOptionsWithHiddenOptions>,
-    /// If this is a `Revolut Pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
+    /// If this is a `revolut_pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub revolut_pay: Option<miniserde::json::Value>,
+    /// If this is a `samsung_pay` PaymentMethod, this hash contains details about the SamsungPay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub samsung_pay: Option<miniserde::json::Value>,
+    /// If this is a `satispay` PaymentMethod, this hash contains details about the Satispay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub satispay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<ConfirmSetupIntentPaymentMethodDataSepaDebit>,
@@ -7318,6 +8035,10 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub swish: Option<miniserde::json::Value>,
+    /// If this is a TWINT PaymentMethod, this hash contains details about the TWINT payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub twint: Option<miniserde::json::Value>,
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
@@ -7343,10 +8064,12 @@ impl ConfirmSetupIntentPaymentMethodData {
             afterpay_clearpay: None,
             alipay: None,
             allow_redisplay: None,
+            alma: None,
             amazon_pay: None,
             au_becs_debit: None,
             bacs_debit: None,
             bancontact: None,
+            billie: None,
             billing_details: None,
             blik: None,
             boleto: None,
@@ -7358,22 +8081,32 @@ impl ConfirmSetupIntentPaymentMethodData {
             grabpay: None,
             ideal: None,
             interac_present: None,
+            kakao_pay: None,
             klarna: None,
             konbini: None,
+            kr_card: None,
             link: None,
             metadata: None,
             mobilepay: None,
+            multibanco: None,
+            naver_pay: None,
+            nz_bank_account: None,
             oxxo: None,
             p24: None,
+            pay_by_bank: None,
+            payco: None,
             paynow: None,
             paypal: None,
             pix: None,
             promptpay: None,
             radar_options: None,
             revolut_pay: None,
+            samsung_pay: None,
+            satispay: None,
             sepa_debit: None,
             sofort: None,
             swish: None,
+            twint: None,
             type_: type_.into(),
             us_bank_account: None,
             wechat_pay: None,
@@ -7835,6 +8568,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodDataFpxBank
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmSetupIntentPaymentMethodDataIdeal {
     /// The customer's bank.
+    /// Only use this parameter for existing customers.
+    /// Don't use it for new customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<ConfirmSetupIntentPaymentMethodDataIdealBank>,
 }
@@ -7849,6 +8584,8 @@ impl Default for ConfirmSetupIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
+/// Only use this parameter for existing customers.
+/// Don't use it for new customers.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ConfirmSetupIntentPaymentMethodDataIdealBank {
@@ -7963,6 +8700,118 @@ impl ConfirmSetupIntentPaymentMethodDataKlarna {
 impl Default for ConfirmSetupIntentPaymentMethodDataKlarna {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct ConfirmSetupIntentPaymentMethodDataNaverPay {
+    /// Whether to use Naver Pay points or a card to fund this transaction.
+    /// If not provided, this defaults to `card`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding: Option<ConfirmSetupIntentPaymentMethodDataNaverPayFunding>,
+}
+impl ConfirmSetupIntentPaymentMethodDataNaverPay {
+    pub fn new() -> Self {
+        Self { funding: None }
+    }
+}
+impl Default for ConfirmSetupIntentPaymentMethodDataNaverPay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether to use Naver Pay points or a card to fund this transaction.
+/// If not provided, this defaults to `card`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ConfirmSetupIntentPaymentMethodDataNaverPayFunding {
+    Card,
+    Points,
+}
+impl ConfirmSetupIntentPaymentMethodDataNaverPayFunding {
+    pub fn as_str(self) -> &'static str {
+        use ConfirmSetupIntentPaymentMethodDataNaverPayFunding::*;
+        match self {
+            Card => "card",
+            Points => "points",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataNaverPayFunding {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmSetupIntentPaymentMethodDataNaverPayFunding::*;
+        match s {
+            "card" => Ok(Card),
+            "points" => Ok(Points),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for ConfirmSetupIntentPaymentMethodDataNaverPayFunding {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodDataNaverPayFunding {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ConfirmSetupIntentPaymentMethodDataNaverPayFunding {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodDataNaverPayFunding {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmSetupIntentPaymentMethodDataNaverPayFunding",
+            )
+        })
+    }
+}
+/// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmSetupIntentPaymentMethodDataNzBankAccount {
+    /// The name on the bank account.
+    /// Only required if the account holder name is different from the name of the authorized signatory collected in the PaymentMethod’s billing details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_holder_name: Option<String>,
+    /// The account number for the bank account.
+    pub account_number: String,
+    /// The numeric code for the bank account's bank.
+    pub bank_code: String,
+    /// The numeric code for the bank account's bank branch.
+    pub branch_code: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+    /// The suffix of the bank account number.
+    pub suffix: String,
+}
+impl ConfirmSetupIntentPaymentMethodDataNzBankAccount {
+    pub fn new(
+        account_number: impl Into<String>,
+        bank_code: impl Into<String>,
+        branch_code: impl Into<String>,
+        suffix: impl Into<String>,
+    ) -> Self {
+        Self {
+            account_holder_name: None,
+            account_number: account_number.into(),
+            bank_code: bank_code.into(),
+            branch_code: branch_code.into(),
+            reference: None,
+            suffix: suffix.into(),
+        }
     }
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
@@ -8214,10 +9063,12 @@ pub enum ConfirmSetupIntentPaymentMethodDataType {
     Affirm,
     AfterpayClearpay,
     Alipay,
+    Alma,
     AmazonPay,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Billie,
     Blik,
     Boleto,
     Cashapp,
@@ -8227,20 +9078,30 @@ pub enum ConfirmSetupIntentPaymentMethodDataType {
     Giropay,
     Grabpay,
     Ideal,
+    KakaoPay,
     Klarna,
     Konbini,
+    KrCard,
     Link,
     Mobilepay,
+    Multibanco,
+    NaverPay,
+    NzBankAccount,
     Oxxo,
     P24,
+    PayByBank,
+    Payco,
     Paynow,
     Paypal,
     Pix,
     Promptpay,
     RevolutPay,
+    SamsungPay,
+    Satispay,
     SepaDebit,
     Sofort,
     Swish,
+    Twint,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -8255,10 +9116,12 @@ impl ConfirmSetupIntentPaymentMethodDataType {
             Affirm => "affirm",
             AfterpayClearpay => "afterpay_clearpay",
             Alipay => "alipay",
+            Alma => "alma",
             AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
+            Billie => "billie",
             Blik => "blik",
             Boleto => "boleto",
             Cashapp => "cashapp",
@@ -8268,20 +9131,30 @@ impl ConfirmSetupIntentPaymentMethodDataType {
             Giropay => "giropay",
             Grabpay => "grabpay",
             Ideal => "ideal",
+            KakaoPay => "kakao_pay",
             Klarna => "klarna",
             Konbini => "konbini",
+            KrCard => "kr_card",
             Link => "link",
             Mobilepay => "mobilepay",
+            Multibanco => "multibanco",
+            NaverPay => "naver_pay",
+            NzBankAccount => "nz_bank_account",
             Oxxo => "oxxo",
             P24 => "p24",
+            PayByBank => "pay_by_bank",
+            Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
             Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
+            SamsungPay => "samsung_pay",
+            Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Swish => "swish",
+            Twint => "twint",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -8299,10 +9172,12 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataType {
             "affirm" => Ok(Affirm),
             "afterpay_clearpay" => Ok(AfterpayClearpay),
             "alipay" => Ok(Alipay),
+            "alma" => Ok(Alma),
             "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
+            "billie" => Ok(Billie),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "cashapp" => Ok(Cashapp),
@@ -8312,20 +9187,30 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataType {
             "giropay" => Ok(Giropay),
             "grabpay" => Ok(Grabpay),
             "ideal" => Ok(Ideal),
+            "kakao_pay" => Ok(KakaoPay),
             "klarna" => Ok(Klarna),
             "konbini" => Ok(Konbini),
+            "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
             "mobilepay" => Ok(Mobilepay),
+            "multibanco" => Ok(Multibanco),
+            "naver_pay" => Ok(NaverPay),
+            "nz_bank_account" => Ok(NzBankAccount),
             "oxxo" => Ok(Oxxo),
             "p24" => Ok(P24),
+            "pay_by_bank" => Ok(PayByBank),
+            "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
+            "samsung_pay" => Ok(SamsungPay),
+            "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
+            "twint" => Ok(Twint),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -8520,6 +9405,9 @@ pub struct ConfirmSetupIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub amazon_pay: Option<miniserde::json::Value>,
+    /// If this is a `bacs_debit` SetupIntent, this sub-hash contains details about the Bacs Debit payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit: Option<ConfirmSetupIntentPaymentMethodOptionsBacsDebit>,
     /// Configuration for any card setup attempted on this SetupIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<ConfirmSetupIntentPaymentMethodOptionsCard>,
@@ -8545,6 +9433,7 @@ impl ConfirmSetupIntentPaymentMethodOptions {
         Self {
             acss_debit: None,
             amazon_pay: None,
+            bacs_debit: None,
             card: None,
             card_present: None,
             link: None,
@@ -8930,6 +9819,23 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod"))
     }
 }
+/// If this is a `bacs_debit` SetupIntent, this sub-hash contains details about the Bacs Debit payment method options.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmSetupIntentPaymentMethodOptionsBacsDebit {
+    /// Additional fields for Mandate creation
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<PaymentMethodOptionsMandateOptionsParam>,
+}
+impl ConfirmSetupIntentPaymentMethodOptionsBacsDebit {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for ConfirmSetupIntentPaymentMethodOptionsBacsDebit {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// Configuration for any card setup attempted on this SetupIntent.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmSetupIntentPaymentMethodOptionsCard {
@@ -9221,8 +10127,10 @@ pub enum ConfirmSetupIntentPaymentMethodOptionsCardNetwork {
     Diners,
     Discover,
     EftposAu,
+    Girocard,
     Interac,
     Jcb,
+    Link,
     Mastercard,
     Unionpay,
     Unknown,
@@ -9237,8 +10145,10 @@ impl ConfirmSetupIntentPaymentMethodOptionsCardNetwork {
             Diners => "diners",
             Discover => "discover",
             EftposAu => "eftpos_au",
+            Girocard => "girocard",
             Interac => "interac",
             Jcb => "jcb",
+            Link => "link",
             Mastercard => "mastercard",
             Unionpay => "unionpay",
             Unknown => "unknown",
@@ -9257,8 +10167,10 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodOptionsCardNetwork {
             "diners" => Ok(Diners),
             "discover" => Ok(Discover),
             "eftpos_au" => Ok(EftposAu),
+            "girocard" => Ok(Girocard),
             "interac" => Ok(Interac),
             "jcb" => Ok(Jcb),
+            "link" => Ok(Link),
             "mastercard" => Ok(Mastercard),
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
@@ -9757,8 +10669,7 @@ impl<'de> serde::Deserialize<'de>
 pub struct ConfirmSetupIntentPaymentMethodOptionsSepaDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub mandate_options: Option<miniserde::json::Value>,
+    pub mandate_options: Option<ConfirmSetupIntentPaymentMethodOptionsSepaDebitMandateOptions>,
 }
 impl ConfirmSetupIntentPaymentMethodOptionsSepaDebit {
     pub fn new() -> Self {
@@ -9766,6 +10677,26 @@ impl ConfirmSetupIntentPaymentMethodOptionsSepaDebit {
     }
 }
 impl Default for ConfirmSetupIntentPaymentMethodOptionsSepaDebit {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Additional fields for Mandate creation
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {
+    /// Prefix used to generate the Mandate reference.
+    /// Must be at most 12 characters long.
+    /// Must consist of only uppercase letters, numbers, spaces, or the following special characters: '/', '_', '-', '&', '.'.
+    /// Cannot begin with 'STRIPE'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference_prefix: Option<String>,
+}
+impl ConfirmSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {
+    pub fn new() -> Self {
+        Self { reference_prefix: None }
+    }
+}
+impl Default for ConfirmSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {
     fn default() -> Self {
         Self::new()
     }
@@ -9806,6 +10737,10 @@ impl Default for ConfirmSetupIntentPaymentMethodOptionsUsBankAccount {
 /// Additional fields for Financial Connections Session creation
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
+    /// Provide filters for the linked accounts that the customer can select for the payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filters:
+        Option<ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters>,
     /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
@@ -9825,12 +10760,86 @@ pub struct ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectio
 }
 impl ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     pub fn new() -> Self {
-        Self { permissions: None, prefetch: None, return_url: None }
+        Self { filters: None, permissions: None, prefetch: None, return_url: None }
     }
 }
 impl Default for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Provide filters for the linked accounts that the customer can select for the payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+        /// The account subcategories to use to filter for selectable accounts.
+    /// Valid subcategories are `checking` and `savings`.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub account_subcategories: Option<Vec<ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories>>,
+
+}
+impl ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+    pub fn new() -> Self {
+        Self { account_subcategories: None }
+    }
+}
+impl Default for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account subcategories to use to filter for selectable accounts.
+/// Valid subcategories are `checking` and `savings`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories
+{
+    Checking,
+    Savings,
+}
+impl ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    pub fn as_str(self) -> &'static str {
+        use ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
+        match self {
+Checking => "checking",
+Savings => "savings",
+
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
+        match s {
+    "checking" => Ok(Checking),
+"savings" => Ok(Savings),
+_ => Err(stripe_types::StripeParseError)
+
+        }
+    }
+}
+impl std::fmt::Display for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"))
     }
 }
 /// The list of permissions to request.
@@ -10454,6 +11463,25 @@ impl Default for RadarOptionsWithHiddenOptions {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+pub struct PaymentMethodOptionsMandateOptionsParam {
+    /// Prefix used to generate the Mandate reference.
+    /// Must be at most 12 characters long.
+    /// Must consist of only uppercase letters, numbers, spaces, or the following special characters: '/', '_', '-', '&', '.'.
+    /// Cannot begin with 'DDIC' or 'STRIPE'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference_prefix: Option<String>,
+}
+impl PaymentMethodOptionsMandateOptionsParam {
+    pub fn new() -> Self {
+        Self { reference_prefix: None }
+    }
+}
+impl Default for PaymentMethodOptionsMandateOptionsParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct SetupIntentPaymentMethodOptionsParam {
     /// \[Deprecated\] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10500,10 +11528,14 @@ pub struct BillingDetailsInnerParams {
     /// Billing phone number (including extension).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+    /// Taxpayer identification number.
+    /// Used only for transactions between LATAM buyers and non-LATAM sellers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id: Option<String>,
 }
 impl BillingDetailsInnerParams {
     pub fn new() -> Self {
-        Self { address: None, email: None, name: None, phone: None }
+        Self { address: None, email: None, name: None, phone: None, tax_id: None }
     }
 }
 impl Default for BillingDetailsInnerParams {

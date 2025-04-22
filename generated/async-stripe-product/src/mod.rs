@@ -45,4 +45,5 @@ pub mod tax_code;
 pub use stripe_shared::tax_code::*;
 pub mod tax_rate;
 pub use stripe_shared::tax_rate::*;
+pub use stripe_shared::tax_rate_flat_amount::*;
 pub use stripe_shared::transform_quantity::*;

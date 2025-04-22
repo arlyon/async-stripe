@@ -18,7 +18,7 @@ impl ListCreditNoteCreditNoteLineItemBuilder {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
-/// When retrieving a credit note, you’ll get a **lines** property containing the the first handful of those items.
+/// When retrieving a credit note, you’ll get a **lines** property containing the first handful of those items.
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ListCreditNoteCreditNoteLineItem {

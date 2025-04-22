@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodCard {
     /// Card brand.
-    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: String,
     /// Checks on Card address and CVC if provided.
     pub checks: Option<stripe_shared::PaymentMethodCardChecks>,
@@ -28,6 +28,8 @@ pub struct PaymentMethodCard {
     pub fingerprint: Option<String>,
     /// Card funding type. Can be `credit`, `debit`, `prepaid`, or `unknown`.
     pub funding: String,
+    /// Details of the original PaymentMethod that created this object.
+    pub generated_from: Option<stripe_shared::PaymentMethodCardGeneratedCard>,
     /// Issuer identification number of the card.
     /// (For internal use only and not typically available in standard API requests.).
     pub iin: Option<String>,
@@ -38,6 +40,8 @@ pub struct PaymentMethodCard {
     pub last4: String,
     /// Contains information about card networks that can be used to process the payment.
     pub networks: Option<stripe_shared::Networks>,
+    /// Status of a card based on the card issuer.
+    pub regulated_status: Option<PaymentMethodCardRegulatedStatus>,
     /// Contains details on how this Card may be used for 3D Secure authentication.
     pub three_d_secure_usage: Option<stripe_shared::ThreeDSecureUsage>,
     /// If this Card is part of a card wallet, this contains the details of the card wallet.
@@ -54,10 +58,12 @@ pub struct PaymentMethodCardBuilder {
     exp_year: Option<i64>,
     fingerprint: Option<Option<String>>,
     funding: Option<String>,
+    generated_from: Option<Option<stripe_shared::PaymentMethodCardGeneratedCard>>,
     iin: Option<Option<String>>,
     issuer: Option<Option<String>>,
     last4: Option<String>,
     networks: Option<Option<stripe_shared::Networks>>,
+    regulated_status: Option<Option<PaymentMethodCardRegulatedStatus>>,
     three_d_secure_usage: Option<Option<stripe_shared::ThreeDSecureUsage>>,
     wallet: Option<Option<stripe_shared::PaymentMethodCardWallet>>,
 }
@@ -111,10 +117,12 @@ const _: () = {
                 "exp_year" => Deserialize::begin(&mut self.exp_year),
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
                 "funding" => Deserialize::begin(&mut self.funding),
+                "generated_from" => Deserialize::begin(&mut self.generated_from),
                 "iin" => Deserialize::begin(&mut self.iin),
                 "issuer" => Deserialize::begin(&mut self.issuer),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "networks" => Deserialize::begin(&mut self.networks),
+                "regulated_status" => Deserialize::begin(&mut self.regulated_status),
                 "three_d_secure_usage" => Deserialize::begin(&mut self.three_d_secure_usage),
                 "wallet" => Deserialize::begin(&mut self.wallet),
 
@@ -133,10 +141,12 @@ const _: () = {
                 exp_year: Deserialize::default(),
                 fingerprint: Deserialize::default(),
                 funding: Deserialize::default(),
+                generated_from: Deserialize::default(),
                 iin: Deserialize::default(),
                 issuer: Deserialize::default(),
                 last4: Deserialize::default(),
                 networks: Deserialize::default(),
+                regulated_status: Deserialize::default(),
                 three_d_secure_usage: Deserialize::default(),
                 wallet: Deserialize::default(),
             }
@@ -153,10 +163,12 @@ const _: () = {
                 Some(exp_year),
                 Some(fingerprint),
                 Some(funding),
+                Some(generated_from),
                 Some(iin),
                 Some(issuer),
                 Some(last4),
                 Some(networks),
+                Some(regulated_status),
                 Some(three_d_secure_usage),
                 Some(wallet),
             ) = (
@@ -169,10 +181,12 @@ const _: () = {
                 self.exp_year,
                 self.fingerprint.take(),
                 self.funding.take(),
+                self.generated_from.take(),
                 self.iin.take(),
                 self.issuer.take(),
                 self.last4.take(),
                 self.networks.take(),
+                self.regulated_status,
                 self.three_d_secure_usage,
                 self.wallet.take(),
             )
@@ -189,10 +203,12 @@ const _: () = {
                 exp_year,
                 fingerprint,
                 funding,
+                generated_from,
                 iin,
                 issuer,
                 last4,
                 networks,
+                regulated_status,
                 three_d_secure_usage,
                 wallet,
             })
@@ -231,10 +247,12 @@ const _: () = {
                     "exp_year" => b.exp_year = FromValueOpt::from_value(v),
                     "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
                     "funding" => b.funding = FromValueOpt::from_value(v),
+                    "generated_from" => b.generated_from = FromValueOpt::from_value(v),
                     "iin" => b.iin = FromValueOpt::from_value(v),
                     "issuer" => b.issuer = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "networks" => b.networks = FromValueOpt::from_value(v),
+                    "regulated_status" => b.regulated_status = FromValueOpt::from_value(v),
                     "three_d_secure_usage" => b.three_d_secure_usage = FromValueOpt::from_value(v),
                     "wallet" => b.wallet = FromValueOpt::from_value(v),
 
@@ -245,3 +263,76 @@ const _: () = {
         }
     }
 };
+/// Status of a card based on the card issuer.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum PaymentMethodCardRegulatedStatus {
+    Regulated,
+    Unregulated,
+}
+impl PaymentMethodCardRegulatedStatus {
+    pub fn as_str(self) -> &'static str {
+        use PaymentMethodCardRegulatedStatus::*;
+        match self {
+            Regulated => "regulated",
+            Unregulated => "unregulated",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentMethodCardRegulatedStatus {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentMethodCardRegulatedStatus::*;
+        match s {
+            "regulated" => Ok(Regulated),
+            "unregulated" => Ok(Unregulated),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for PaymentMethodCardRegulatedStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentMethodCardRegulatedStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentMethodCardRegulatedStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentMethodCardRegulatedStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentMethodCardRegulatedStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(PaymentMethodCardRegulatedStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentMethodCardRegulatedStatus);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PaymentMethodCardRegulatedStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentMethodCardRegulatedStatus")
+        })
+    }
+}

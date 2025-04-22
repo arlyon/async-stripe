@@ -1,15 +1,15 @@
 /// These bank accounts are payment methods on `Customer` objects.
 ///
 /// On the other hand [External Accounts](/api#external_accounts) are transfer
-/// destinations on `Account` objects for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection).
-/// is `application`, which includes [Custom accounts](/connect/custom-accounts).
+/// destinations on `Account` objects for connected accounts.
 /// They can be bank accounts or debit cards as well, and are documented in the links above.
 ///
 /// Related guide: [Bank debits and transfers](/payments/bank-debits-transfers)
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BankAccount {
-    /// The ID of the account that the bank account is associated with.
+    /// The account this bank account belongs to.
+    /// Only applicable on Accounts (not customers or recipients) This property is only available when returned as an [External Account](/api/external_account_bank_accounts/object) where [controller.is_controller](/api/accounts/object#account_object-controller-is_controller) is `true`.
     pub account: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// The name of the person or business that owns the bank account.
     pub account_holder_name: Option<String>,

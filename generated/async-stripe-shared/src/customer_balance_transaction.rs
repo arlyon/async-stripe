@@ -12,6 +12,8 @@ pub struct CustomerBalanceTransaction {
     /// The amount of the transaction.
     /// A negative value is a credit for the customer's balance, and a positive value is a debit to the customer's `balance`.
     pub amount: i64,
+    /// The ID of the checkout session (if any) that created the transaction.
+    pub checkout_session: Option<stripe_types::Expandable<stripe_shared::CheckoutSession>>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// The ID of the credit note (if any) related to the transaction.
@@ -36,7 +38,7 @@ pub struct CustomerBalanceTransaction {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, or `unapplied_from_invoice`.
+    /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, `unapplied_from_invoice`, `checkout_session_subscription_payment`, or `checkout_session_subscription_payment_canceled`.
     /// See the [Customer Balance page](https://stripe.com/docs/billing/customer/balance#types) to learn more about transaction types.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: CustomerBalanceTransactionType,
@@ -44,6 +46,7 @@ pub struct CustomerBalanceTransaction {
 #[doc(hidden)]
 pub struct CustomerBalanceTransactionBuilder {
     amount: Option<i64>,
+    checkout_session: Option<Option<stripe_types::Expandable<stripe_shared::CheckoutSession>>>,
     created: Option<stripe_types::Timestamp>,
     credit_note: Option<Option<stripe_types::Expandable<stripe_shared::CreditNote>>>,
     currency: Option<stripe_types::Currency>,
@@ -98,6 +101,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
+                "checkout_session" => Deserialize::begin(&mut self.checkout_session),
                 "created" => Deserialize::begin(&mut self.created),
                 "credit_note" => Deserialize::begin(&mut self.credit_note),
                 "currency" => Deserialize::begin(&mut self.currency),
@@ -117,6 +121,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: Deserialize::default(),
+                checkout_session: Deserialize::default(),
                 created: Deserialize::default(),
                 credit_note: Deserialize::default(),
                 currency: Deserialize::default(),
@@ -134,6 +139,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
+                Some(checkout_session),
                 Some(created),
                 Some(credit_note),
                 Some(currency),
@@ -147,6 +153,7 @@ const _: () = {
                 Some(type_),
             ) = (
                 self.amount,
+                self.checkout_session.take(),
                 self.created,
                 self.credit_note.take(),
                 self.currency,
@@ -164,6 +171,7 @@ const _: () = {
             };
             Some(Self::Out {
                 amount,
+                checkout_session,
                 created,
                 credit_note,
                 currency,
@@ -203,6 +211,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "amount" => b.amount = FromValueOpt::from_value(v),
+                    "checkout_session" => b.checkout_session = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "credit_note" => b.credit_note = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
@@ -226,8 +235,9 @@ const _: () = {
 impl serde::Serialize for CustomerBalanceTransaction {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CustomerBalanceTransaction", 13)?;
+        let mut s = s.serialize_struct("CustomerBalanceTransaction", 14)?;
         s.serialize_field("amount", &self.amount)?;
+        s.serialize_field("checkout_session", &self.checkout_session)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("credit_note", &self.credit_note)?;
         s.serialize_field("currency", &self.currency)?;
@@ -244,12 +254,14 @@ impl serde::Serialize for CustomerBalanceTransaction {
         s.end()
     }
 }
-/// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, or `unapplied_from_invoice`.
+/// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, `unapplied_from_invoice`, `checkout_session_subscription_payment`, or `checkout_session_subscription_payment_canceled`.
 /// See the [Customer Balance page](https://stripe.com/docs/billing/customer/balance#types) to learn more about transaction types.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CustomerBalanceTransactionType {
     Adjustment,
     AppliedToInvoice,
+    CheckoutSessionSubscriptionPayment,
+    CheckoutSessionSubscriptionPaymentCanceled,
     CreditNote,
     Initial,
     InvoiceOverpaid,
@@ -265,6 +277,10 @@ impl CustomerBalanceTransactionType {
         match self {
             Adjustment => "adjustment",
             AppliedToInvoice => "applied_to_invoice",
+            CheckoutSessionSubscriptionPayment => "checkout_session_subscription_payment",
+            CheckoutSessionSubscriptionPaymentCanceled => {
+                "checkout_session_subscription_payment_canceled"
+            }
             CreditNote => "credit_note",
             Initial => "initial",
             InvoiceOverpaid => "invoice_overpaid",
@@ -284,6 +300,10 @@ impl std::str::FromStr for CustomerBalanceTransactionType {
         match s {
             "adjustment" => Ok(Adjustment),
             "applied_to_invoice" => Ok(AppliedToInvoice),
+            "checkout_session_subscription_payment" => Ok(CheckoutSessionSubscriptionPayment),
+            "checkout_session_subscription_payment_canceled" => {
+                Ok(CheckoutSessionSubscriptionPaymentCanceled)
+            }
             "credit_note" => Ok(CreditNote),
             "initial" => Ok(Initial),
             "invoice_overpaid" => Ok(InvoiceOverpaid),

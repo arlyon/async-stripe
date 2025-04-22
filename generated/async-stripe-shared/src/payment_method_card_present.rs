@@ -3,8 +3,10 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodCardPresent {
     /// Card brand.
-    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: Option<String>,
+    /// The [product code](https://stripe.com/docs/card-product-codes) that identifies the specific program or product associated with a card.
+    pub brand_product: Option<String>,
     /// The cardholder name as read from the card, in [ISO 7813](https://en.wikipedia.org/wiki/ISO/IEC_7813) format.
     /// May include alphanumeric characters, special characters and first/last name separator (`/`).
     /// In some cases, the cardholder name may not be available depending on how the issuer has configured the card.
@@ -38,12 +40,18 @@ pub struct PaymentMethodCardPresent {
     pub last4: Option<String>,
     /// Contains information about card networks that can be used to process the payment.
     pub networks: Option<stripe_shared::PaymentMethodCardPresentNetworks>,
+    /// Details about payment methods collected offline.
+    pub offline: Option<stripe_shared::PaymentMethodDetailsCardPresentOffline>,
+    /// EMV tag 5F2D. Preferred languages specified by the integrated circuit chip.
+    pub preferred_locales: Option<Vec<String>>,
     /// How card details were read in this transaction.
     pub read_method: Option<PaymentMethodCardPresentReadMethod>,
+    pub wallet: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet>,
 }
 #[doc(hidden)]
 pub struct PaymentMethodCardPresentBuilder {
     brand: Option<Option<String>>,
+    brand_product: Option<Option<String>>,
     cardholder_name: Option<Option<String>>,
     country: Option<Option<String>>,
     description: Option<Option<String>>,
@@ -55,7 +63,10 @@ pub struct PaymentMethodCardPresentBuilder {
     issuer: Option<Option<String>>,
     last4: Option<Option<String>>,
     networks: Option<Option<stripe_shared::PaymentMethodCardPresentNetworks>>,
+    offline: Option<Option<stripe_shared::PaymentMethodDetailsCardPresentOffline>>,
+    preferred_locales: Option<Option<Vec<String>>>,
     read_method: Option<Option<PaymentMethodCardPresentReadMethod>>,
+    wallet: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet>>,
 }
 
 #[allow(
@@ -99,6 +110,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "brand" => Deserialize::begin(&mut self.brand),
+                "brand_product" => Deserialize::begin(&mut self.brand_product),
                 "cardholder_name" => Deserialize::begin(&mut self.cardholder_name),
                 "country" => Deserialize::begin(&mut self.country),
                 "description" => Deserialize::begin(&mut self.description),
@@ -110,7 +122,10 @@ const _: () = {
                 "issuer" => Deserialize::begin(&mut self.issuer),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "networks" => Deserialize::begin(&mut self.networks),
+                "offline" => Deserialize::begin(&mut self.offline),
+                "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
                 "read_method" => Deserialize::begin(&mut self.read_method),
+                "wallet" => Deserialize::begin(&mut self.wallet),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -119,6 +134,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 brand: Deserialize::default(),
+                brand_product: Deserialize::default(),
                 cardholder_name: Deserialize::default(),
                 country: Deserialize::default(),
                 description: Deserialize::default(),
@@ -130,13 +146,17 @@ const _: () = {
                 issuer: Deserialize::default(),
                 last4: Deserialize::default(),
                 networks: Deserialize::default(),
+                offline: Deserialize::default(),
+                preferred_locales: Deserialize::default(),
                 read_method: Deserialize::default(),
+                wallet: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(brand),
+                Some(brand_product),
                 Some(cardholder_name),
                 Some(country),
                 Some(description),
@@ -148,9 +168,13 @@ const _: () = {
                 Some(issuer),
                 Some(last4),
                 Some(networks),
+                Some(offline),
+                Some(preferred_locales),
                 Some(read_method),
+                Some(wallet),
             ) = (
                 self.brand.take(),
+                self.brand_product.take(),
                 self.cardholder_name.take(),
                 self.country.take(),
                 self.description.take(),
@@ -162,13 +186,17 @@ const _: () = {
                 self.issuer.take(),
                 self.last4.take(),
                 self.networks.take(),
+                self.offline,
+                self.preferred_locales.take(),
                 self.read_method,
+                self.wallet,
             )
             else {
                 return None;
             };
             Some(Self::Out {
                 brand,
+                brand_product,
                 cardholder_name,
                 country,
                 description,
@@ -180,7 +208,10 @@ const _: () = {
                 issuer,
                 last4,
                 networks,
+                offline,
+                preferred_locales,
                 read_method,
+                wallet,
             })
         }
     }
@@ -209,6 +240,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "brand" => b.brand = FromValueOpt::from_value(v),
+                    "brand_product" => b.brand_product = FromValueOpt::from_value(v),
                     "cardholder_name" => b.cardholder_name = FromValueOpt::from_value(v),
                     "country" => b.country = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
@@ -220,7 +252,10 @@ const _: () = {
                     "issuer" => b.issuer = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "networks" => b.networks = FromValueOpt::from_value(v),
+                    "offline" => b.offline = FromValueOpt::from_value(v),
+                    "preferred_locales" => b.preferred_locales = FromValueOpt::from_value(v),
                     "read_method" => b.read_method = FromValueOpt::from_value(v),
+                    "wallet" => b.wallet = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -38,13 +38,33 @@ pub mod terminal_configuration_configuration_resource_device_type_specific_confi
 #[doc(inline)]
 pub use terminal_configuration_configuration_resource_device_type_specific_config::*;
 #[doc(hidden)]
+pub mod terminal_configuration_configuration_resource_enterprise_peap_wifi;
+#[doc(inline)]
+pub use terminal_configuration_configuration_resource_enterprise_peap_wifi::*;
+#[doc(hidden)]
+pub mod terminal_configuration_configuration_resource_enterprise_tls_wifi;
+#[doc(inline)]
+pub use terminal_configuration_configuration_resource_enterprise_tls_wifi::*;
+#[doc(hidden)]
 pub mod terminal_configuration_configuration_resource_offline_config;
 #[doc(inline)]
 pub use terminal_configuration_configuration_resource_offline_config::*;
 #[doc(hidden)]
+pub mod terminal_configuration_configuration_resource_personal_psk_wifi;
+#[doc(inline)]
+pub use terminal_configuration_configuration_resource_personal_psk_wifi::*;
+#[doc(hidden)]
+pub mod terminal_configuration_configuration_resource_reboot_window;
+#[doc(inline)]
+pub use terminal_configuration_configuration_resource_reboot_window::*;
+#[doc(hidden)]
 pub mod terminal_configuration_configuration_resource_tipping;
 #[doc(inline)]
 pub use terminal_configuration_configuration_resource_tipping::*;
+#[doc(hidden)]
+pub mod terminal_configuration_configuration_resource_wifi_config;
+#[doc(inline)]
+pub use terminal_configuration_configuration_resource_wifi_config::*;
 #[doc(hidden)]
 pub mod terminal_reader_reader_resource_cart;
 #[doc(inline)]

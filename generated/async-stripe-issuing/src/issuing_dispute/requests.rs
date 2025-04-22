@@ -212,10 +212,13 @@ pub struct CreateIssuingDisputeEvidence {
     pub duplicate: Option<Duplicate>,
     /// Evidence provided when `reason` is 'fraudulent'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fraudulent: Option<Fraudulent>,
+    pub fraudulent: Option<CreateIssuingDisputeEvidenceFraudulent>,
     /// Evidence provided when `reason` is 'merchandise_not_as_described'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub merchandise_not_as_described: Option<CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed>,
+    /// Evidence provided when `reason` is 'no_valid_authorization'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub no_valid_authorization: Option<CreateIssuingDisputeEvidenceNoValidAuthorization>,
     /// Evidence provided when `reason` is 'not_received'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub not_received: Option<CreateIssuingDisputeEvidenceNotReceived>,
@@ -236,6 +239,7 @@ impl CreateIssuingDisputeEvidence {
             duplicate: None,
             fraudulent: None,
             merchandise_not_as_described: None,
+            no_valid_authorization: None,
             not_received: None,
             other: None,
             reason: None,
@@ -419,6 +423,26 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceCanceledReturn
         })
     }
 }
+/// Evidence provided when `reason` is 'fraudulent'.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingDisputeEvidenceFraudulent {
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<String>,
+    /// Explanation of why the cardholder is disputing this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<String>,
+}
+impl CreateIssuingDisputeEvidenceFraudulent {
+    pub fn new() -> Self {
+        Self { additional_documentation: None, explanation: None }
+    }
+}
+impl Default for CreateIssuingDisputeEvidenceFraudulent {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// Evidence provided when `reason` is 'merchandise_not_as_described'.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
@@ -512,6 +536,26 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus"))
+    }
+}
+/// Evidence provided when `reason` is 'no_valid_authorization'.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingDisputeEvidenceNoValidAuthorization {
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<String>,
+    /// Explanation of why the cardholder is disputing this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<String>,
+}
+impl CreateIssuingDisputeEvidenceNoValidAuthorization {
+    pub fn new() -> Self {
+        Self { additional_documentation: None, explanation: None }
+    }
+}
+impl Default for CreateIssuingDisputeEvidenceNoValidAuthorization {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Evidence provided when `reason` is 'not_received'.
@@ -703,6 +747,7 @@ pub enum CreateIssuingDisputeEvidenceReason {
     Duplicate,
     Fraudulent,
     MerchandiseNotAsDescribed,
+    NoValidAuthorization,
     NotReceived,
     Other,
     ServiceNotAsDescribed,
@@ -715,6 +760,7 @@ impl CreateIssuingDisputeEvidenceReason {
             Duplicate => "duplicate",
             Fraudulent => "fraudulent",
             MerchandiseNotAsDescribed => "merchandise_not_as_described",
+            NoValidAuthorization => "no_valid_authorization",
             NotReceived => "not_received",
             Other => "other",
             ServiceNotAsDescribed => "service_not_as_described",
@@ -731,6 +777,7 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceReason {
             "duplicate" => Ok(Duplicate),
             "fraudulent" => Ok(Fraudulent),
             "merchandise_not_as_described" => Ok(MerchandiseNotAsDescribed),
+            "no_valid_authorization" => Ok(NoValidAuthorization),
             "not_received" => Ok(NotReceived),
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),
@@ -887,10 +934,13 @@ pub struct UpdateIssuingDisputeEvidence {
     pub duplicate: Option<Duplicate>,
     /// Evidence provided when `reason` is 'fraudulent'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fraudulent: Option<Fraudulent>,
+    pub fraudulent: Option<UpdateIssuingDisputeEvidenceFraudulent>,
     /// Evidence provided when `reason` is 'merchandise_not_as_described'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub merchandise_not_as_described: Option<UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed>,
+    /// Evidence provided when `reason` is 'no_valid_authorization'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub no_valid_authorization: Option<UpdateIssuingDisputeEvidenceNoValidAuthorization>,
     /// Evidence provided when `reason` is 'not_received'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub not_received: Option<UpdateIssuingDisputeEvidenceNotReceived>,
@@ -911,6 +961,7 @@ impl UpdateIssuingDisputeEvidence {
             duplicate: None,
             fraudulent: None,
             merchandise_not_as_described: None,
+            no_valid_authorization: None,
             not_received: None,
             other: None,
             reason: None,
@@ -1094,6 +1145,26 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceCanceledReturn
         })
     }
 }
+/// Evidence provided when `reason` is 'fraudulent'.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingDisputeEvidenceFraudulent {
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<String>,
+    /// Explanation of why the cardholder is disputing this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<String>,
+}
+impl UpdateIssuingDisputeEvidenceFraudulent {
+    pub fn new() -> Self {
+        Self { additional_documentation: None, explanation: None }
+    }
+}
+impl Default for UpdateIssuingDisputeEvidenceFraudulent {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// Evidence provided when `reason` is 'merchandise_not_as_described'.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
@@ -1187,6 +1258,26 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus"))
+    }
+}
+/// Evidence provided when `reason` is 'no_valid_authorization'.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingDisputeEvidenceNoValidAuthorization {
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<String>,
+    /// Explanation of why the cardholder is disputing this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<String>,
+}
+impl UpdateIssuingDisputeEvidenceNoValidAuthorization {
+    pub fn new() -> Self {
+        Self { additional_documentation: None, explanation: None }
+    }
+}
+impl Default for UpdateIssuingDisputeEvidenceNoValidAuthorization {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Evidence provided when `reason` is 'not_received'.
@@ -1378,6 +1469,7 @@ pub enum UpdateIssuingDisputeEvidenceReason {
     Duplicate,
     Fraudulent,
     MerchandiseNotAsDescribed,
+    NoValidAuthorization,
     NotReceived,
     Other,
     ServiceNotAsDescribed,
@@ -1390,6 +1482,7 @@ impl UpdateIssuingDisputeEvidenceReason {
             Duplicate => "duplicate",
             Fraudulent => "fraudulent",
             MerchandiseNotAsDescribed => "merchandise_not_as_described",
+            NoValidAuthorization => "no_valid_authorization",
             NotReceived => "not_received",
             Other => "other",
             ServiceNotAsDescribed => "service_not_as_described",
@@ -1406,6 +1499,7 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceReason {
             "duplicate" => Ok(Duplicate),
             "fraudulent" => Ok(Fraudulent),
             "merchandise_not_as_described" => Ok(MerchandiseNotAsDescribed),
+            "no_valid_authorization" => Ok(NoValidAuthorization),
             "not_received" => Ok(NotReceived),
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),
@@ -1614,25 +1708,6 @@ impl Duplicate {
     }
 }
 impl Default for Duplicate {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct Fraudulent {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<String>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<String>,
-}
-impl Fraudulent {
-    pub fn new() -> Self {
-        Self { additional_documentation: None, explanation: None }
-    }
-}
-impl Default for Fraudulent {
     fn default() -> Self {
         Self::new()
     }

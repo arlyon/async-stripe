@@ -176,7 +176,7 @@ impl UpdateCapability {
     /// If the capability has any activation requirements, the response includes them in the `requirements` arrays.
     ///
     /// If a capability isn't permanent, you can remove it from the account by passing false.
-    /// Most capabilities are permanent after they've been requested.
+    /// Some capabilities are permanent after they've been requested.
     /// Attempting to remove a permanent capability returns an error.
     pub fn requested(mut self, requested: impl Into<bool>) -> Self {
         self.inner.requested = Some(requested.into());

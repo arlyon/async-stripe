@@ -7,8 +7,8 @@ pub struct SubscriptionsResourcePaymentSettings {
     /// The list of payment method types to provide to every invoice created by the subscription.
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
     pub payment_method_types: Option<Vec<SubscriptionsResourcePaymentSettingsPaymentMethodTypes>>,
-    /// Either `off`, or `on_subscription`.
-    /// With `on_subscription` Stripe updates `subscription.default_payment_method` when a subscription payment succeeds.
+    /// Configure whether Stripe updates `subscription.default_payment_method` when payment succeeds.
+    /// Defaults to `off`.
     pub save_default_payment_method:
         Option<SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod>,
 }
@@ -147,6 +147,7 @@ pub enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
     AchDebit,
     AcssDebit,
+    Affirm,
     AmazonPay,
     AuBecsDebit,
     BacsDebit,
@@ -160,9 +161,17 @@ pub enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     Giropay,
     Grabpay,
     Ideal,
+    JpCreditTransfer,
+    KakaoPay,
+    Klarna,
     Konbini,
+    KrCard,
     Link,
+    Multibanco,
+    NaverPay,
+    NzBankAccount,
     P24,
+    Payco,
     Paynow,
     Paypal,
     Promptpay,
@@ -170,6 +179,7 @@ pub enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     SepaCreditTransfer,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -182,6 +192,7 @@ impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
             AchCreditTransfer => "ach_credit_transfer",
             AchDebit => "ach_debit",
             AcssDebit => "acss_debit",
+            Affirm => "affirm",
             AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
@@ -195,9 +206,17 @@ impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
             Giropay => "giropay",
             Grabpay => "grabpay",
             Ideal => "ideal",
+            JpCreditTransfer => "jp_credit_transfer",
+            KakaoPay => "kakao_pay",
+            Klarna => "klarna",
             Konbini => "konbini",
+            KrCard => "kr_card",
             Link => "link",
+            Multibanco => "multibanco",
+            NaverPay => "naver_pay",
+            NzBankAccount => "nz_bank_account",
             P24 => "p24",
+            Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
             Promptpay => "promptpay",
@@ -205,6 +224,7 @@ impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
             SepaCreditTransfer => "sepa_credit_transfer",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Swish => "swish",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Unknown(v) => v,
@@ -220,6 +240,7 @@ impl std::str::FromStr for SubscriptionsResourcePaymentSettingsPaymentMethodType
             "ach_credit_transfer" => Ok(AchCreditTransfer),
             "ach_debit" => Ok(AchDebit),
             "acss_debit" => Ok(AcssDebit),
+            "affirm" => Ok(Affirm),
             "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
@@ -233,9 +254,17 @@ impl std::str::FromStr for SubscriptionsResourcePaymentSettingsPaymentMethodType
             "giropay" => Ok(Giropay),
             "grabpay" => Ok(Grabpay),
             "ideal" => Ok(Ideal),
+            "jp_credit_transfer" => Ok(JpCreditTransfer),
+            "kakao_pay" => Ok(KakaoPay),
+            "klarna" => Ok(Klarna),
             "konbini" => Ok(Konbini),
+            "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "multibanco" => Ok(Multibanco),
+            "naver_pay" => Ok(NaverPay),
+            "nz_bank_account" => Ok(NzBankAccount),
             "p24" => Ok(P24),
+            "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
             "promptpay" => Ok(Promptpay),
@@ -243,6 +272,7 @@ impl std::str::FromStr for SubscriptionsResourcePaymentSettingsPaymentMethodType
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "swish" => Ok(Swish),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             v => Ok(Unknown(v.to_owned())),
@@ -295,8 +325,8 @@ impl<'de> serde::Deserialize<'de> for SubscriptionsResourcePaymentSettingsPaymen
         Ok(Self::from_str(&s).unwrap())
     }
 }
-/// Either `off`, or `on_subscription`.
-/// With `on_subscription` Stripe updates `subscription.default_payment_method` when a subscription payment succeeds.
+/// Configure whether Stripe updates `subscription.default_payment_method` when payment succeeds.
+/// Defaults to `off`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
     Off,

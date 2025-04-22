@@ -32,6 +32,7 @@ pub struct DisputeEvidence {
     pub duplicate_charge_explanation: Option<String>,
     /// The Stripe ID for the prior charge which appears to be a duplicate of the disputed charge.
     pub duplicate_charge_id: Option<String>,
+    pub enhanced_evidence: stripe_shared::DisputeEnhancedEvidence,
     /// A description of the product or service that was sold.
     pub product_description: Option<String>,
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Any receipt or message sent to the customer notifying them of the charge.
@@ -82,6 +83,7 @@ pub struct DisputeEvidenceBuilder {
     duplicate_charge_documentation: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
     duplicate_charge_explanation: Option<Option<String>>,
     duplicate_charge_id: Option<Option<String>>,
+    enhanced_evidence: Option<stripe_shared::DisputeEnhancedEvidence>,
     product_description: Option<Option<String>>,
     receipt: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
     refund_policy: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
@@ -157,6 +159,7 @@ const _: () = {
                     Deserialize::begin(&mut self.duplicate_charge_explanation)
                 }
                 "duplicate_charge_id" => Deserialize::begin(&mut self.duplicate_charge_id),
+                "enhanced_evidence" => Deserialize::begin(&mut self.enhanced_evidence),
                 "product_description" => Deserialize::begin(&mut self.product_description),
                 "receipt" => Deserialize::begin(&mut self.receipt),
                 "refund_policy" => Deserialize::begin(&mut self.refund_policy),
@@ -197,6 +200,7 @@ const _: () = {
                 duplicate_charge_documentation: Deserialize::default(),
                 duplicate_charge_explanation: Deserialize::default(),
                 duplicate_charge_id: Deserialize::default(),
+                enhanced_evidence: Deserialize::default(),
                 product_description: Deserialize::default(),
                 receipt: Deserialize::default(),
                 refund_policy: Deserialize::default(),
@@ -229,6 +233,7 @@ const _: () = {
                 Some(duplicate_charge_documentation),
                 Some(duplicate_charge_explanation),
                 Some(duplicate_charge_id),
+                Some(enhanced_evidence),
                 Some(product_description),
                 Some(receipt),
                 Some(refund_policy),
@@ -257,6 +262,7 @@ const _: () = {
                 self.duplicate_charge_documentation.take(),
                 self.duplicate_charge_explanation.take(),
                 self.duplicate_charge_id.take(),
+                self.enhanced_evidence.take(),
                 self.product_description.take(),
                 self.receipt.take(),
                 self.refund_policy.take(),
@@ -289,6 +295,7 @@ const _: () = {
                 duplicate_charge_documentation,
                 duplicate_charge_explanation,
                 duplicate_charge_id,
+                enhanced_evidence,
                 product_description,
                 receipt,
                 refund_policy,
@@ -355,6 +362,7 @@ const _: () = {
                         b.duplicate_charge_explanation = FromValueOpt::from_value(v)
                     }
                     "duplicate_charge_id" => b.duplicate_charge_id = FromValueOpt::from_value(v),
+                    "enhanced_evidence" => b.enhanced_evidence = FromValueOpt::from_value(v),
                     "product_description" => b.product_description = FromValueOpt::from_value(v),
                     "receipt" => b.receipt = FromValueOpt::from_value(v),
                     "refund_policy" => b.refund_policy = FromValueOpt::from_value(v),

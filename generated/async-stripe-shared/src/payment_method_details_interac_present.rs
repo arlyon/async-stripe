@@ -41,8 +41,12 @@ pub struct PaymentMethodDetailsInteracPresent {
     /// The last four digits of the card.
     pub last4: Option<String>,
     /// Identifies which network this charge was processed on.
-    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub network: Option<String>,
+    /// This is used by the financial networks to identify a transaction.
+    /// Visa calls this the Transaction ID, Mastercard calls this the Trace ID, and American Express calls this the Acquirer Reference Data.
+    /// This value will be present if it is returned by the financial network in the authorization response, and null otherwise.
+    pub network_transaction_id: Option<String>,
     /// EMV tag 5F2D. Preferred languages specified by the integrated circuit chip.
     pub preferred_locales: Option<Vec<String>>,
     /// How card details were read in this transaction.
@@ -66,6 +70,7 @@ pub struct PaymentMethodDetailsInteracPresentBuilder {
     issuer: Option<Option<String>>,
     last4: Option<Option<String>>,
     network: Option<Option<String>>,
+    network_transaction_id: Option<Option<String>>,
     preferred_locales: Option<Option<Vec<String>>>,
     read_method: Option<Option<PaymentMethodDetailsInteracPresentReadMethod>>,
     receipt: Option<Option<stripe_shared::PaymentMethodDetailsInteracPresentReceipt>>,
@@ -125,6 +130,7 @@ const _: () = {
                 "issuer" => Deserialize::begin(&mut self.issuer),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "network" => Deserialize::begin(&mut self.network),
+                "network_transaction_id" => Deserialize::begin(&mut self.network_transaction_id),
                 "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
                 "read_method" => Deserialize::begin(&mut self.read_method),
                 "receipt" => Deserialize::begin(&mut self.receipt),
@@ -149,6 +155,7 @@ const _: () = {
                 issuer: Deserialize::default(),
                 last4: Deserialize::default(),
                 network: Deserialize::default(),
+                network_transaction_id: Deserialize::default(),
                 preferred_locales: Deserialize::default(),
                 read_method: Deserialize::default(),
                 receipt: Deserialize::default(),
@@ -171,6 +178,7 @@ const _: () = {
                 Some(issuer),
                 Some(last4),
                 Some(network),
+                Some(network_transaction_id),
                 Some(preferred_locales),
                 Some(read_method),
                 Some(receipt),
@@ -189,6 +197,7 @@ const _: () = {
                 self.issuer.take(),
                 self.last4.take(),
                 self.network.take(),
+                self.network_transaction_id.take(),
                 self.preferred_locales.take(),
                 self.read_method,
                 self.receipt.take(),
@@ -211,6 +220,7 @@ const _: () = {
                 issuer,
                 last4,
                 network,
+                network_transaction_id,
                 preferred_locales,
                 read_method,
                 receipt,
@@ -255,6 +265,9 @@ const _: () = {
                     "issuer" => b.issuer = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "network" => b.network = FromValueOpt::from_value(v),
+                    "network_transaction_id" => {
+                        b.network_transaction_id = FromValueOpt::from_value(v)
+                    }
                     "preferred_locales" => b.preferred_locales = FromValueOpt::from_value(v),
                     "read_method" => b.read_method = FromValueOpt::from_value(v),
                     "receipt" => b.receipt = FromValueOpt::from_value(v),

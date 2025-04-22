@@ -17,6 +17,10 @@ pub struct Source {
     pub ach_debit: Option<stripe_shared::SourceTypeAchDebit>,
     pub acss_debit: Option<stripe_shared::SourceTypeAcssDebit>,
     pub alipay: Option<stripe_shared::SourceTypeAlipay>,
+    /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+    /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+    /// The field defaults to “unspecified”.
+    pub allow_redisplay: Option<SourceAllowRedisplay>,
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount associated with the source.
     /// This is the amount for which the source will be chargeable once ready.
     /// Required for `single_use` sources.
@@ -87,6 +91,7 @@ pub struct SourceBuilder {
     ach_debit: Option<Option<stripe_shared::SourceTypeAchDebit>>,
     acss_debit: Option<Option<stripe_shared::SourceTypeAcssDebit>>,
     alipay: Option<Option<stripe_shared::SourceTypeAlipay>>,
+    allow_redisplay: Option<Option<SourceAllowRedisplay>>,
     amount: Option<Option<i64>>,
     au_becs_debit: Option<Option<stripe_shared::SourceTypeAuBecsDebit>>,
     bancontact: Option<Option<stripe_shared::SourceTypeBancontact>>,
@@ -163,6 +168,7 @@ const _: () = {
                 "ach_debit" => Deserialize::begin(&mut self.ach_debit),
                 "acss_debit" => Deserialize::begin(&mut self.acss_debit),
                 "alipay" => Deserialize::begin(&mut self.alipay),
+                "allow_redisplay" => Deserialize::begin(&mut self.allow_redisplay),
                 "amount" => Deserialize::begin(&mut self.amount),
                 "au_becs_debit" => Deserialize::begin(&mut self.au_becs_debit),
                 "bancontact" => Deserialize::begin(&mut self.bancontact),
@@ -207,6 +213,7 @@ const _: () = {
                 ach_debit: Deserialize::default(),
                 acss_debit: Deserialize::default(),
                 alipay: Deserialize::default(),
+                allow_redisplay: Deserialize::default(),
                 amount: Deserialize::default(),
                 au_becs_debit: Deserialize::default(),
                 bancontact: Deserialize::default(),
@@ -249,6 +256,7 @@ const _: () = {
                 Some(ach_debit),
                 Some(acss_debit),
                 Some(alipay),
+                Some(allow_redisplay),
                 Some(amount),
                 Some(au_becs_debit),
                 Some(bancontact),
@@ -287,6 +295,7 @@ const _: () = {
                 self.ach_debit.take(),
                 self.acss_debit.take(),
                 self.alipay.take(),
+                self.allow_redisplay,
                 self.amount,
                 self.au_becs_debit.take(),
                 self.bancontact.take(),
@@ -329,6 +338,7 @@ const _: () = {
                 ach_debit,
                 acss_debit,
                 alipay,
+                allow_redisplay,
                 amount,
                 au_becs_debit,
                 bancontact,
@@ -393,6 +403,7 @@ const _: () = {
                     "ach_debit" => b.ach_debit = FromValueOpt::from_value(v),
                     "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
                     "alipay" => b.alipay = FromValueOpt::from_value(v),
+                    "allow_redisplay" => b.allow_redisplay = FromValueOpt::from_value(v),
                     "amount" => b.amount = FromValueOpt::from_value(v),
                     "au_becs_debit" => b.au_becs_debit = FromValueOpt::from_value(v),
                     "bancontact" => b.bancontact = FromValueOpt::from_value(v),
@@ -438,11 +449,12 @@ const _: () = {
 impl serde::Serialize for Source {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Source", 38)?;
+        let mut s = s.serialize_struct("Source", 39)?;
         s.serialize_field("ach_credit_transfer", &self.ach_credit_transfer)?;
         s.serialize_field("ach_debit", &self.ach_debit)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("alipay", &self.alipay)?;
+        s.serialize_field("allow_redisplay", &self.allow_redisplay)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("au_becs_debit", &self.au_becs_debit)?;
         s.serialize_field("bancontact", &self.bancontact)?;
@@ -479,6 +491,82 @@ impl serde::Serialize for Source {
 
         s.serialize_field("object", "source")?;
         s.end()
+    }
+}
+/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+/// The field defaults to “unspecified”.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum SourceAllowRedisplay {
+    Always,
+    Limited,
+    Unspecified,
+}
+impl SourceAllowRedisplay {
+    pub fn as_str(self) -> &'static str {
+        use SourceAllowRedisplay::*;
+        match self {
+            Always => "always",
+            Limited => "limited",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for SourceAllowRedisplay {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SourceAllowRedisplay::*;
+        match s {
+            "always" => Ok(Always),
+            "limited" => Ok(Limited),
+            "unspecified" => Ok(Unspecified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for SourceAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SourceAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for SourceAllowRedisplay {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for SourceAllowRedisplay {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<SourceAllowRedisplay> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SourceAllowRedisplay::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(SourceAllowRedisplay);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for SourceAllowRedisplay {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SourceAllowRedisplay"))
     }
 }
 /// The `type` of the source.

@@ -276,7 +276,7 @@ impl CreateTaxRate {
         self.inner.metadata = Some(metadata.into());
         self
     }
-    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix.
+    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2), without country prefix.
     /// For example, "NY" for New York, United States.
     pub fn state(mut self, state: impl Into<String>) -> Self {
         self.inner.state = Some(state.into());
@@ -405,7 +405,7 @@ impl UpdateTaxRate {
         self.inner.metadata = Some(metadata.into());
         self
     }
-    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix.
+    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2), without country prefix.
     /// For example, "NY" for New York, United States.
     pub fn state(mut self, state: impl Into<String>) -> Self {
         self.inner.state = Some(state.into());

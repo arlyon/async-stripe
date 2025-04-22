@@ -19,6 +19,9 @@ pub struct ApplicationFee {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
+    /// Polymorphic source of the application fee.
+    /// Includes the ID of the object the application fee was created from.
+    pub fee_source: Option<stripe_shared::PlatformEarningFeeSource>,
     /// Unique identifier for the object.
     pub id: stripe_shared::ApplicationFeeId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -42,6 +45,7 @@ pub struct ApplicationFeeBuilder {
     charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
+    fee_source: Option<Option<stripe_shared::PlatformEarningFeeSource>>,
     id: Option<stripe_shared::ApplicationFeeId>,
     livemode: Option<bool>,
     originating_transaction: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
@@ -97,6 +101,7 @@ const _: () = {
                 "charge" => Deserialize::begin(&mut self.charge),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
+                "fee_source" => Deserialize::begin(&mut self.fee_source),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "originating_transaction" => Deserialize::begin(&mut self.originating_transaction),
@@ -117,6 +122,7 @@ const _: () = {
                 charge: Deserialize::default(),
                 created: Deserialize::default(),
                 currency: Deserialize::default(),
+                fee_source: Deserialize::default(),
                 id: Deserialize::default(),
                 livemode: Deserialize::default(),
                 originating_transaction: Deserialize::default(),
@@ -135,6 +141,7 @@ const _: () = {
                 Some(charge),
                 Some(created),
                 Some(currency),
+                Some(fee_source),
                 Some(id),
                 Some(livemode),
                 Some(originating_transaction),
@@ -149,6 +156,7 @@ const _: () = {
                 self.charge.take(),
                 self.created,
                 self.currency,
+                self.fee_source.take(),
                 self.id.take(),
                 self.livemode,
                 self.originating_transaction.take(),
@@ -167,6 +175,7 @@ const _: () = {
                 charge,
                 created,
                 currency,
+                fee_source,
                 id,
                 livemode,
                 originating_transaction,
@@ -207,6 +216,7 @@ const _: () = {
                     "charge" => b.charge = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
+                    "fee_source" => b.fee_source = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "originating_transaction" => {
@@ -226,7 +236,7 @@ const _: () = {
 impl serde::Serialize for ApplicationFee {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("ApplicationFee", 14)?;
+        let mut s = s.serialize_struct("ApplicationFee", 15)?;
         s.serialize_field("account", &self.account)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_refunded", &self.amount_refunded)?;
@@ -235,6 +245,7 @@ impl serde::Serialize for ApplicationFee {
         s.serialize_field("charge", &self.charge)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("fee_source", &self.fee_source)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("originating_transaction", &self.originating_transaction)?;

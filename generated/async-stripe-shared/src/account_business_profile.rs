@@ -7,9 +7,12 @@ pub struct AccountBusinessProfile {
     /// An estimated upper bound of employees, contractors, vendors, etc.
     /// currently working for the business.
     pub estimated_worker_count: Option<u64>,
-    /// [The merchant category code for the account](https://stripe.com/docs/connect/setting-mcc).
+    /// [The merchant category code for the account](/connect/setting-mcc).
     /// MCCs are used to classify businesses based on the goods or services they provide.
     pub mcc: Option<String>,
+    /// Whether the business is a minority-owned, women-owned, and/or LGBTQI+-owned business.
+    pub minority_owned_business_designation:
+        Option<Vec<AccountBusinessProfileMinorityOwnedBusinessDesignation>>,
     pub monthly_estimated_revenue: Option<stripe_shared::AccountMonthlyEstimatedRevenue>,
     /// The customer-facing business name.
     pub name: Option<String>,
@@ -32,6 +35,8 @@ pub struct AccountBusinessProfileBuilder {
     annual_revenue: Option<Option<stripe_shared::AccountAnnualRevenue>>,
     estimated_worker_count: Option<Option<u64>>,
     mcc: Option<Option<String>>,
+    minority_owned_business_designation:
+        Option<Option<Vec<AccountBusinessProfileMinorityOwnedBusinessDesignation>>>,
     monthly_estimated_revenue: Option<Option<stripe_shared::AccountMonthlyEstimatedRevenue>>,
     name: Option<Option<String>>,
     product_description: Option<Option<String>>,
@@ -85,6 +90,9 @@ const _: () = {
                 "annual_revenue" => Deserialize::begin(&mut self.annual_revenue),
                 "estimated_worker_count" => Deserialize::begin(&mut self.estimated_worker_count),
                 "mcc" => Deserialize::begin(&mut self.mcc),
+                "minority_owned_business_designation" => {
+                    Deserialize::begin(&mut self.minority_owned_business_designation)
+                }
                 "monthly_estimated_revenue" => {
                     Deserialize::begin(&mut self.monthly_estimated_revenue)
                 }
@@ -105,6 +113,7 @@ const _: () = {
                 annual_revenue: Deserialize::default(),
                 estimated_worker_count: Deserialize::default(),
                 mcc: Deserialize::default(),
+                minority_owned_business_designation: Deserialize::default(),
                 monthly_estimated_revenue: Deserialize::default(),
                 name: Deserialize::default(),
                 product_description: Deserialize::default(),
@@ -121,6 +130,7 @@ const _: () = {
                 Some(annual_revenue),
                 Some(estimated_worker_count),
                 Some(mcc),
+                Some(minority_owned_business_designation),
                 Some(monthly_estimated_revenue),
                 Some(name),
                 Some(product_description),
@@ -133,6 +143,7 @@ const _: () = {
                 self.annual_revenue.take(),
                 self.estimated_worker_count,
                 self.mcc.take(),
+                self.minority_owned_business_designation.take(),
                 self.monthly_estimated_revenue,
                 self.name.take(),
                 self.product_description.take(),
@@ -149,6 +160,7 @@ const _: () = {
                 annual_revenue,
                 estimated_worker_count,
                 mcc,
+                minority_owned_business_designation,
                 monthly_estimated_revenue,
                 name,
                 product_description,
@@ -189,6 +201,9 @@ const _: () = {
                         b.estimated_worker_count = FromValueOpt::from_value(v)
                     }
                     "mcc" => b.mcc = FromValueOpt::from_value(v),
+                    "minority_owned_business_designation" => {
+                        b.minority_owned_business_designation = FromValueOpt::from_value(v)
+                    }
                     "monthly_estimated_revenue" => {
                         b.monthly_estimated_revenue = FromValueOpt::from_value(v)
                     }
@@ -207,3 +222,91 @@ const _: () = {
         }
     }
 };
+/// Whether the business is a minority-owned, women-owned, and/or LGBTQI+-owned business.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum AccountBusinessProfileMinorityOwnedBusinessDesignation {
+    LgbtqiOwnedBusiness,
+    MinorityOwnedBusiness,
+    NoneOfTheseApply,
+    PreferNotToAnswer,
+    WomenOwnedBusiness,
+}
+impl AccountBusinessProfileMinorityOwnedBusinessDesignation {
+    pub fn as_str(self) -> &'static str {
+        use AccountBusinessProfileMinorityOwnedBusinessDesignation::*;
+        match self {
+            LgbtqiOwnedBusiness => "lgbtqi_owned_business",
+            MinorityOwnedBusiness => "minority_owned_business",
+            NoneOfTheseApply => "none_of_these_apply",
+            PreferNotToAnswer => "prefer_not_to_answer",
+            WomenOwnedBusiness => "women_owned_business",
+        }
+    }
+}
+
+impl std::str::FromStr for AccountBusinessProfileMinorityOwnedBusinessDesignation {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountBusinessProfileMinorityOwnedBusinessDesignation::*;
+        match s {
+            "lgbtqi_owned_business" => Ok(LgbtqiOwnedBusiness),
+            "minority_owned_business" => Ok(MinorityOwnedBusiness),
+            "none_of_these_apply" => Ok(NoneOfTheseApply),
+            "prefer_not_to_answer" => Ok(PreferNotToAnswer),
+            "women_owned_business" => Ok(WomenOwnedBusiness),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for AccountBusinessProfileMinorityOwnedBusinessDesignation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AccountBusinessProfileMinorityOwnedBusinessDesignation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for AccountBusinessProfileMinorityOwnedBusinessDesignation {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for AccountBusinessProfileMinorityOwnedBusinessDesignation {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<AccountBusinessProfileMinorityOwnedBusinessDesignation>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            AccountBusinessProfileMinorityOwnedBusinessDesignation::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(AccountBusinessProfileMinorityOwnedBusinessDesignation);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for AccountBusinessProfileMinorityOwnedBusinessDesignation {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for AccountBusinessProfileMinorityOwnedBusinessDesignation",
+            )
+        })
+    }
+}

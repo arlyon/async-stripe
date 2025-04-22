@@ -12,9 +12,6 @@
 /// You can specify a parent ID at payment time, and Stripe will automatically resolve the connected account’s associated child configuration.
 /// Parent configurations are [managed in the dashboard](https://dashboard.stripe.com/settings/payment_methods/connected_accounts) and are not available in this API.
 ///
-/// **Note:** The ability to turn off cards is in limited preview.
-/// Please [contact us](https://support.stripe.com/contact) if you require this functionality.
-///
 /// Related guides:
 /// - [Payment Method Configurations API](https://stripe.com/docs/connect/payment-method-configurations).
 /// - [Multiple configurations on dynamic payment methods](https://stripe.com/docs/payments/multiple-payment-method-configs).
@@ -31,6 +28,7 @@ pub struct PaymentMethodConfiguration {
     pub afterpay_clearpay:
         Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub alipay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub alma: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub amazon_pay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub apple_pay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     /// For child configs, the Connect application associated with the configuration.
@@ -38,6 +36,7 @@ pub struct PaymentMethodConfiguration {
     pub au_becs_debit: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub bacs_debit: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub bancontact: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub billie: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub blik: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub boleto: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub card: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
@@ -63,19 +62,25 @@ pub struct PaymentMethodConfiguration {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     pub mobilepay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub multibanco: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     /// The configuration's name.
     pub name: String,
+    pub nz_bank_account: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub oxxo: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub p24: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     /// For child configs, the configuration's parent configuration.
     pub parent: Option<String>,
+    pub pay_by_bank: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub paynow: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub paypal: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub pix: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub promptpay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub revolut_pay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub satispay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub sepa_debit: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub sofort: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub swish: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub twint: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub us_bank_account: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub wechat_pay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub zip: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
@@ -88,6 +93,7 @@ pub struct PaymentMethodConfigurationBuilder {
     afterpay_clearpay:
         Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     alipay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    alma: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     amazon_pay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     apple_pay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     application: Option<Option<String>>,
@@ -95,6 +101,7 @@ pub struct PaymentMethodConfigurationBuilder {
         Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     bacs_debit: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     bancontact: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    billie: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     blik: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     boleto: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     card: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
@@ -117,17 +124,24 @@ pub struct PaymentMethodConfigurationBuilder {
     link: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     livemode: Option<bool>,
     mobilepay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    multibanco: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     name: Option<String>,
+    nz_bank_account:
+        Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     oxxo: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     p24: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     parent: Option<Option<String>>,
+    pay_by_bank: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     paynow: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     paypal: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    pix: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     promptpay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     revolut_pay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    satispay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     sepa_debit: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     sofort: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     swish: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    twint: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     us_bank_account:
         Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     wechat_pay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
@@ -179,12 +193,14 @@ const _: () = {
                 "affirm" => Deserialize::begin(&mut self.affirm),
                 "afterpay_clearpay" => Deserialize::begin(&mut self.afterpay_clearpay),
                 "alipay" => Deserialize::begin(&mut self.alipay),
+                "alma" => Deserialize::begin(&mut self.alma),
                 "amazon_pay" => Deserialize::begin(&mut self.amazon_pay),
                 "apple_pay" => Deserialize::begin(&mut self.apple_pay),
                 "application" => Deserialize::begin(&mut self.application),
                 "au_becs_debit" => Deserialize::begin(&mut self.au_becs_debit),
                 "bacs_debit" => Deserialize::begin(&mut self.bacs_debit),
                 "bancontact" => Deserialize::begin(&mut self.bancontact),
+                "billie" => Deserialize::begin(&mut self.billie),
                 "blik" => Deserialize::begin(&mut self.blik),
                 "boleto" => Deserialize::begin(&mut self.boleto),
                 "card" => Deserialize::begin(&mut self.card),
@@ -205,17 +221,23 @@ const _: () = {
                 "link" => Deserialize::begin(&mut self.link),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "mobilepay" => Deserialize::begin(&mut self.mobilepay),
+                "multibanco" => Deserialize::begin(&mut self.multibanco),
                 "name" => Deserialize::begin(&mut self.name),
+                "nz_bank_account" => Deserialize::begin(&mut self.nz_bank_account),
                 "oxxo" => Deserialize::begin(&mut self.oxxo),
                 "p24" => Deserialize::begin(&mut self.p24),
                 "parent" => Deserialize::begin(&mut self.parent),
+                "pay_by_bank" => Deserialize::begin(&mut self.pay_by_bank),
                 "paynow" => Deserialize::begin(&mut self.paynow),
                 "paypal" => Deserialize::begin(&mut self.paypal),
+                "pix" => Deserialize::begin(&mut self.pix),
                 "promptpay" => Deserialize::begin(&mut self.promptpay),
                 "revolut_pay" => Deserialize::begin(&mut self.revolut_pay),
+                "satispay" => Deserialize::begin(&mut self.satispay),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "sofort" => Deserialize::begin(&mut self.sofort),
                 "swish" => Deserialize::begin(&mut self.swish),
+                "twint" => Deserialize::begin(&mut self.twint),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
                 "wechat_pay" => Deserialize::begin(&mut self.wechat_pay),
                 "zip" => Deserialize::begin(&mut self.zip),
@@ -231,12 +253,14 @@ const _: () = {
                 affirm: Deserialize::default(),
                 afterpay_clearpay: Deserialize::default(),
                 alipay: Deserialize::default(),
+                alma: Deserialize::default(),
                 amazon_pay: Deserialize::default(),
                 apple_pay: Deserialize::default(),
                 application: Deserialize::default(),
                 au_becs_debit: Deserialize::default(),
                 bacs_debit: Deserialize::default(),
                 bancontact: Deserialize::default(),
+                billie: Deserialize::default(),
                 blik: Deserialize::default(),
                 boleto: Deserialize::default(),
                 card: Deserialize::default(),
@@ -257,17 +281,23 @@ const _: () = {
                 link: Deserialize::default(),
                 livemode: Deserialize::default(),
                 mobilepay: Deserialize::default(),
+                multibanco: Deserialize::default(),
                 name: Deserialize::default(),
+                nz_bank_account: Deserialize::default(),
                 oxxo: Deserialize::default(),
                 p24: Deserialize::default(),
                 parent: Deserialize::default(),
+                pay_by_bank: Deserialize::default(),
                 paynow: Deserialize::default(),
                 paypal: Deserialize::default(),
+                pix: Deserialize::default(),
                 promptpay: Deserialize::default(),
                 revolut_pay: Deserialize::default(),
+                satispay: Deserialize::default(),
                 sepa_debit: Deserialize::default(),
                 sofort: Deserialize::default(),
                 swish: Deserialize::default(),
+                twint: Deserialize::default(),
                 us_bank_account: Deserialize::default(),
                 wechat_pay: Deserialize::default(),
                 zip: Deserialize::default(),
@@ -281,12 +311,14 @@ const _: () = {
                 Some(affirm),
                 Some(afterpay_clearpay),
                 Some(alipay),
+                Some(alma),
                 Some(amazon_pay),
                 Some(apple_pay),
                 Some(application),
                 Some(au_becs_debit),
                 Some(bacs_debit),
                 Some(bancontact),
+                Some(billie),
                 Some(blik),
                 Some(boleto),
                 Some(card),
@@ -307,17 +339,23 @@ const _: () = {
                 Some(link),
                 Some(livemode),
                 Some(mobilepay),
+                Some(multibanco),
                 Some(name),
+                Some(nz_bank_account),
                 Some(oxxo),
                 Some(p24),
                 Some(parent),
+                Some(pay_by_bank),
                 Some(paynow),
                 Some(paypal),
+                Some(pix),
                 Some(promptpay),
                 Some(revolut_pay),
+                Some(satispay),
                 Some(sepa_debit),
                 Some(sofort),
                 Some(swish),
+                Some(twint),
                 Some(us_bank_account),
                 Some(wechat_pay),
                 Some(zip),
@@ -327,12 +365,14 @@ const _: () = {
                 self.affirm,
                 self.afterpay_clearpay,
                 self.alipay,
+                self.alma,
                 self.amazon_pay,
                 self.apple_pay,
                 self.application.take(),
                 self.au_becs_debit,
                 self.bacs_debit,
                 self.bancontact,
+                self.billie,
                 self.blik,
                 self.boleto,
                 self.card,
@@ -353,17 +393,23 @@ const _: () = {
                 self.link,
                 self.livemode,
                 self.mobilepay,
+                self.multibanco,
                 self.name.take(),
+                self.nz_bank_account,
                 self.oxxo,
                 self.p24,
                 self.parent.take(),
+                self.pay_by_bank,
                 self.paynow,
                 self.paypal,
+                self.pix,
                 self.promptpay,
                 self.revolut_pay,
+                self.satispay,
                 self.sepa_debit,
                 self.sofort,
                 self.swish,
+                self.twint,
                 self.us_bank_account,
                 self.wechat_pay,
                 self.zip,
@@ -377,12 +423,14 @@ const _: () = {
                 affirm,
                 afterpay_clearpay,
                 alipay,
+                alma,
                 amazon_pay,
                 apple_pay,
                 application,
                 au_becs_debit,
                 bacs_debit,
                 bancontact,
+                billie,
                 blik,
                 boleto,
                 card,
@@ -403,17 +451,23 @@ const _: () = {
                 link,
                 livemode,
                 mobilepay,
+                multibanco,
                 name,
+                nz_bank_account,
                 oxxo,
                 p24,
                 parent,
+                pay_by_bank,
                 paynow,
                 paypal,
+                pix,
                 promptpay,
                 revolut_pay,
+                satispay,
                 sepa_debit,
                 sofort,
                 swish,
+                twint,
                 us_bank_account,
                 wechat_pay,
                 zip,
@@ -449,12 +503,14 @@ const _: () = {
                     "affirm" => b.affirm = FromValueOpt::from_value(v),
                     "afterpay_clearpay" => b.afterpay_clearpay = FromValueOpt::from_value(v),
                     "alipay" => b.alipay = FromValueOpt::from_value(v),
+                    "alma" => b.alma = FromValueOpt::from_value(v),
                     "amazon_pay" => b.amazon_pay = FromValueOpt::from_value(v),
                     "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
                     "application" => b.application = FromValueOpt::from_value(v),
                     "au_becs_debit" => b.au_becs_debit = FromValueOpt::from_value(v),
                     "bacs_debit" => b.bacs_debit = FromValueOpt::from_value(v),
                     "bancontact" => b.bancontact = FromValueOpt::from_value(v),
+                    "billie" => b.billie = FromValueOpt::from_value(v),
                     "blik" => b.blik = FromValueOpt::from_value(v),
                     "boleto" => b.boleto = FromValueOpt::from_value(v),
                     "card" => b.card = FromValueOpt::from_value(v),
@@ -475,17 +531,23 @@ const _: () = {
                     "link" => b.link = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "mobilepay" => b.mobilepay = FromValueOpt::from_value(v),
+                    "multibanco" => b.multibanco = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
+                    "nz_bank_account" => b.nz_bank_account = FromValueOpt::from_value(v),
                     "oxxo" => b.oxxo = FromValueOpt::from_value(v),
                     "p24" => b.p24 = FromValueOpt::from_value(v),
                     "parent" => b.parent = FromValueOpt::from_value(v),
+                    "pay_by_bank" => b.pay_by_bank = FromValueOpt::from_value(v),
                     "paynow" => b.paynow = FromValueOpt::from_value(v),
                     "paypal" => b.paypal = FromValueOpt::from_value(v),
+                    "pix" => b.pix = FromValueOpt::from_value(v),
                     "promptpay" => b.promptpay = FromValueOpt::from_value(v),
                     "revolut_pay" => b.revolut_pay = FromValueOpt::from_value(v),
+                    "satispay" => b.satispay = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
                     "sofort" => b.sofort = FromValueOpt::from_value(v),
                     "swish" => b.swish = FromValueOpt::from_value(v),
+                    "twint" => b.twint = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
                     "wechat_pay" => b.wechat_pay = FromValueOpt::from_value(v),
                     "zip" => b.zip = FromValueOpt::from_value(v),
@@ -501,18 +563,20 @@ const _: () = {
 impl serde::Serialize for PaymentMethodConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethodConfiguration", 46)?;
+        let mut s = s.serialize_struct("PaymentMethodConfiguration", 54)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("affirm", &self.affirm)?;
         s.serialize_field("afterpay_clearpay", &self.afterpay_clearpay)?;
         s.serialize_field("alipay", &self.alipay)?;
+        s.serialize_field("alma", &self.alma)?;
         s.serialize_field("amazon_pay", &self.amazon_pay)?;
         s.serialize_field("apple_pay", &self.apple_pay)?;
         s.serialize_field("application", &self.application)?;
         s.serialize_field("au_becs_debit", &self.au_becs_debit)?;
         s.serialize_field("bacs_debit", &self.bacs_debit)?;
         s.serialize_field("bancontact", &self.bancontact)?;
+        s.serialize_field("billie", &self.billie)?;
         s.serialize_field("blik", &self.blik)?;
         s.serialize_field("boleto", &self.boleto)?;
         s.serialize_field("card", &self.card)?;
@@ -533,17 +597,23 @@ impl serde::Serialize for PaymentMethodConfiguration {
         s.serialize_field("link", &self.link)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("mobilepay", &self.mobilepay)?;
+        s.serialize_field("multibanco", &self.multibanco)?;
         s.serialize_field("name", &self.name)?;
+        s.serialize_field("nz_bank_account", &self.nz_bank_account)?;
         s.serialize_field("oxxo", &self.oxxo)?;
         s.serialize_field("p24", &self.p24)?;
         s.serialize_field("parent", &self.parent)?;
+        s.serialize_field("pay_by_bank", &self.pay_by_bank)?;
         s.serialize_field("paynow", &self.paynow)?;
         s.serialize_field("paypal", &self.paypal)?;
+        s.serialize_field("pix", &self.pix)?;
         s.serialize_field("promptpay", &self.promptpay)?;
         s.serialize_field("revolut_pay", &self.revolut_pay)?;
+        s.serialize_field("satispay", &self.satispay)?;
         s.serialize_field("sepa_debit", &self.sepa_debit)?;
         s.serialize_field("sofort", &self.sofort)?;
         s.serialize_field("swish", &self.swish)?;
+        s.serialize_field("twint", &self.twint)?;
         s.serialize_field("us_bank_account", &self.us_bank_account)?;
         s.serialize_field("wechat_pay", &self.wechat_pay)?;
         s.serialize_field("zip", &self.zip)?;

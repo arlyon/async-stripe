@@ -528,7 +528,7 @@ impl<'de> serde::Deserialize<'de> for UpdateExternalAccountAccountType {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateExternalAccountDocuments {
     /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
-    /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a voided check.
+    /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a check.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_account_ownership_verification:
         Option<UpdateExternalAccountDocumentsBankAccountOwnershipVerification>,
@@ -544,7 +544,7 @@ impl Default for UpdateExternalAccountDocuments {
     }
 }
 /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
-/// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a voided check.
+/// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a check.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateExternalAccountDocumentsBankAccountOwnershipVerification {
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.

@@ -3,8 +3,10 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct FundingInstructionsBankTransferIbanRecord {
+    pub account_holder_address: stripe_shared::Address,
     /// The name of the person or business that owns the bank account
     pub account_holder_name: String,
+    pub bank_address: stripe_shared::Address,
     /// The BIC/SWIFT code of the account.
     pub bic: String,
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
@@ -14,7 +16,9 @@ pub struct FundingInstructionsBankTransferIbanRecord {
 }
 #[doc(hidden)]
 pub struct FundingInstructionsBankTransferIbanRecordBuilder {
+    account_holder_address: Option<stripe_shared::Address>,
     account_holder_name: Option<String>,
+    bank_address: Option<stripe_shared::Address>,
     bic: Option<String>,
     country: Option<String>,
     iban: Option<String>,
@@ -60,7 +64,9 @@ const _: () = {
         type Out = FundingInstructionsBankTransferIbanRecord;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "account_holder_address" => Deserialize::begin(&mut self.account_holder_address),
                 "account_holder_name" => Deserialize::begin(&mut self.account_holder_name),
+                "bank_address" => Deserialize::begin(&mut self.bank_address),
                 "bic" => Deserialize::begin(&mut self.bic),
                 "country" => Deserialize::begin(&mut self.country),
                 "iban" => Deserialize::begin(&mut self.iban),
@@ -71,7 +77,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                account_holder_address: Deserialize::default(),
                 account_holder_name: Deserialize::default(),
+                bank_address: Deserialize::default(),
                 bic: Deserialize::default(),
                 country: Deserialize::default(),
                 iban: Deserialize::default(),
@@ -79,15 +87,32 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(account_holder_name), Some(bic), Some(country), Some(iban)) = (
+            let (
+                Some(account_holder_address),
+                Some(account_holder_name),
+                Some(bank_address),
+                Some(bic),
+                Some(country),
+                Some(iban),
+            ) = (
+                self.account_holder_address.take(),
                 self.account_holder_name.take(),
+                self.bank_address.take(),
                 self.bic.take(),
                 self.country.take(),
                 self.iban.take(),
-            ) else {
+            )
+            else {
                 return None;
             };
-            Some(Self::Out { account_holder_name, bic, country, iban })
+            Some(Self::Out {
+                account_holder_address,
+                account_holder_name,
+                bank_address,
+                bic,
+                country,
+                iban,
+            })
         }
     }
 
@@ -114,7 +139,11 @@ const _: () = {
             let mut b = FundingInstructionsBankTransferIbanRecordBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "account_holder_address" => {
+                        b.account_holder_address = FromValueOpt::from_value(v)
+                    }
                     "account_holder_name" => b.account_holder_name = FromValueOpt::from_value(v),
+                    "bank_address" => b.bank_address = FromValueOpt::from_value(v),
                     "bic" => b.bic = FromValueOpt::from_value(v),
                     "country" => b.country = FromValueOpt::from_value(v),
                     "iban" => b.iban = FromValueOpt::from_value(v),

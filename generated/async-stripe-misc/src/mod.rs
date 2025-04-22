@@ -277,6 +277,10 @@ pub mod tax_product_registrations_resource_country_options_default;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_default::*;
 #[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_default_inbound_goods;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_default_inbound_goods::*;
+#[doc(hidden)]
 pub mod tax_product_registrations_resource_country_options_eu_standard;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_eu_standard::*;
@@ -300,6 +304,14 @@ pub use tax_product_registrations_resource_country_options_us_local_amusement_ta
 pub mod tax_product_registrations_resource_country_options_us_local_lease_tax;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_us_local_lease_tax::*;
+#[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_us_state_sales_tax;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_us_state_sales_tax::*;
+#[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_us_state_sales_tax_election;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_us_state_sales_tax_election::*;
 #[doc(hidden)]
 pub mod tax_product_resource_customer_details;
 #[doc(inline)]

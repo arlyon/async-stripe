@@ -176,6 +176,181 @@ impl StripeRequest for RetrieveTreasuryOutboundPayment {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+struct UpdateTreasuryOutboundPaymentBuilder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+    tracking_details: UpdateTreasuryOutboundPaymentTrackingDetails,
+}
+impl UpdateTreasuryOutboundPaymentBuilder {
+    fn new(tracking_details: impl Into<UpdateTreasuryOutboundPaymentTrackingDetails>) -> Self {
+        Self { expand: None, tracking_details: tracking_details.into() }
+    }
+}
+/// Details about network-specific tracking information.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTreasuryOutboundPaymentTrackingDetails {
+    /// ACH network tracking details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ach: Option<UpdateTreasuryOutboundPaymentTrackingDetailsAch>,
+    /// The US bank account network used to send funds.
+    #[serde(rename = "type")]
+    pub type_: UpdateTreasuryOutboundPaymentTrackingDetailsType,
+    /// US domestic wire network tracking details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_domestic_wire: Option<UpdateTreasuryOutboundPaymentTrackingDetailsUsDomesticWire>,
+}
+impl UpdateTreasuryOutboundPaymentTrackingDetails {
+    pub fn new(type_: impl Into<UpdateTreasuryOutboundPaymentTrackingDetailsType>) -> Self {
+        Self { ach: None, type_: type_.into(), us_domestic_wire: None }
+    }
+}
+/// ACH network tracking details.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTreasuryOutboundPaymentTrackingDetailsAch {
+    /// ACH trace ID for funds sent over the `ach` network.
+    pub trace_id: String,
+}
+impl UpdateTreasuryOutboundPaymentTrackingDetailsAch {
+    pub fn new(trace_id: impl Into<String>) -> Self {
+        Self { trace_id: trace_id.into() }
+    }
+}
+/// The US bank account network used to send funds.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateTreasuryOutboundPaymentTrackingDetailsType {
+    Ach,
+    UsDomesticWire,
+}
+impl UpdateTreasuryOutboundPaymentTrackingDetailsType {
+    pub fn as_str(self) -> &'static str {
+        use UpdateTreasuryOutboundPaymentTrackingDetailsType::*;
+        match self {
+            Ach => "ach",
+            UsDomesticWire => "us_domestic_wire",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateTreasuryOutboundPaymentTrackingDetailsType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateTreasuryOutboundPaymentTrackingDetailsType::*;
+        match s {
+            "ach" => Ok(Ach),
+            "us_domestic_wire" => Ok(UsDomesticWire),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdateTreasuryOutboundPaymentTrackingDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateTreasuryOutboundPaymentTrackingDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateTreasuryOutboundPaymentTrackingDetailsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateTreasuryOutboundPaymentTrackingDetailsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateTreasuryOutboundPaymentTrackingDetailsType",
+            )
+        })
+    }
+}
+/// US domestic wire network tracking details.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTreasuryOutboundPaymentTrackingDetailsUsDomesticWire {
+    /// CHIPS System Sequence Number (SSN) for funds sent over the `us_domestic_wire` network.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chips: Option<String>,
+    /// IMAD for funds sent over the `us_domestic_wire` network.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub imad: Option<String>,
+    /// OMAD for funds sent over the `us_domestic_wire` network.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub omad: Option<String>,
+}
+impl UpdateTreasuryOutboundPaymentTrackingDetailsUsDomesticWire {
+    pub fn new() -> Self {
+        Self { chips: None, imad: None, omad: None }
+    }
+}
+impl Default for UpdateTreasuryOutboundPaymentTrackingDetailsUsDomesticWire {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Updates a test mode created OutboundPayment with tracking details.
+/// The OutboundPayment must not be cancelable, and cannot be in the `canceled` or `failed` states.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTreasuryOutboundPayment {
+    inner: UpdateTreasuryOutboundPaymentBuilder,
+    id: String,
+}
+impl UpdateTreasuryOutboundPayment {
+    /// Construct a new `UpdateTreasuryOutboundPayment`.
+    pub fn new(
+        id: impl Into<String>,
+        tracking_details: impl Into<UpdateTreasuryOutboundPaymentTrackingDetails>,
+    ) -> Self {
+        Self {
+            id: id.into(),
+            inner: UpdateTreasuryOutboundPaymentBuilder::new(tracking_details.into()),
+        }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+}
+impl UpdateTreasuryOutboundPayment {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UpdateTreasuryOutboundPayment {
+    type Output = stripe_treasury::TreasuryOutboundPayment;
+
+    fn build(&self) -> RequestBuilder {
+        let id = &self.id;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/treasury/outbound_payments/{id}"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
 struct FailTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -303,7 +478,7 @@ impl ReturnOutboundPaymentTreasuryOutboundPaymentBuilder {
         Self { expand: None, returned_details: None }
     }
 }
-/// Optional hash to set the the return code.
+/// Optional hash to set the return code.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails {
     /// The return code to be set on the OutboundPayment object.
@@ -421,7 +596,7 @@ impl ReturnOutboundPaymentTreasuryOutboundPayment {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Optional hash to set the the return code.
+    /// Optional hash to set the return code.
     pub fn returned_details(
         mut self,
         returned_details: impl Into<ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails>,
@@ -564,10 +739,14 @@ pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetai
     /// Billing phone number (including extension).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+    /// Taxpayer identification number.
+    /// Used only for transactions between LATAM buyers and non-LATAM sellers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id: Option<String>,
 }
 impl CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetails {
     pub fn new() -> Self {
-        Self { address: None, email: None, name: None, phone: None }
+        Self { address: None, email: None, name: None, phone: None, tax_id: None }
     }
 }
 impl Default for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetails {

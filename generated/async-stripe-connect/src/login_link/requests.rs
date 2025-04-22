@@ -12,7 +12,7 @@ impl CreateAccountLoginLinkBuilder {
         Self { expand: None }
     }
 }
-/// Creates a single-use login link for a connected account to access the Express Dashboard.
+/// Creates a login link for a connected account to access the Express Dashboard.
 ///
 /// **You can only create login links for accounts that use the <a href="/connect/express-dashboard">Express Dashboard</a> and are connected to your platform**.
 #[derive(Clone, Debug, serde::Serialize)]

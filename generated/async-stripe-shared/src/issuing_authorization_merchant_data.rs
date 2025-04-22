@@ -20,6 +20,8 @@ pub struct IssuingAuthorizationMerchantData {
     pub postal_code: Option<String>,
     /// State where the seller is located
     pub state: Option<String>,
+    /// The seller's tax identification number. Currently populated for French merchants only.
+    pub tax_id: Option<String>,
     /// An ID assigned by the seller to the location of the sale.
     pub terminal_id: Option<String>,
     /// URL provided by the merchant on a 3DS request
@@ -35,6 +37,7 @@ pub struct IssuingAuthorizationMerchantDataBuilder {
     network_id: Option<String>,
     postal_code: Option<Option<String>>,
     state: Option<Option<String>>,
+    tax_id: Option<Option<String>>,
     terminal_id: Option<Option<String>>,
     url: Option<Option<String>>,
 }
@@ -87,6 +90,7 @@ const _: () = {
                 "network_id" => Deserialize::begin(&mut self.network_id),
                 "postal_code" => Deserialize::begin(&mut self.postal_code),
                 "state" => Deserialize::begin(&mut self.state),
+                "tax_id" => Deserialize::begin(&mut self.tax_id),
                 "terminal_id" => Deserialize::begin(&mut self.terminal_id),
                 "url" => Deserialize::begin(&mut self.url),
 
@@ -104,6 +108,7 @@ const _: () = {
                 network_id: Deserialize::default(),
                 postal_code: Deserialize::default(),
                 state: Deserialize::default(),
+                tax_id: Deserialize::default(),
                 terminal_id: Deserialize::default(),
                 url: Deserialize::default(),
             }
@@ -119,6 +124,7 @@ const _: () = {
                 Some(network_id),
                 Some(postal_code),
                 Some(state),
+                Some(tax_id),
                 Some(terminal_id),
                 Some(url),
             ) = (
@@ -130,6 +136,7 @@ const _: () = {
                 self.network_id.take(),
                 self.postal_code.take(),
                 self.state.take(),
+                self.tax_id.take(),
                 self.terminal_id.take(),
                 self.url.take(),
             )
@@ -145,6 +152,7 @@ const _: () = {
                 network_id,
                 postal_code,
                 state,
+                tax_id,
                 terminal_id,
                 url,
             })
@@ -182,6 +190,7 @@ const _: () = {
                     "network_id" => b.network_id = FromValueOpt::from_value(v),
                     "postal_code" => b.postal_code = FromValueOpt::from_value(v),
                     "state" => b.state = FromValueOpt::from_value(v),
+                    "tax_id" => b.tax_id = FromValueOpt::from_value(v),
                     "terminal_id" => b.terminal_id = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
 

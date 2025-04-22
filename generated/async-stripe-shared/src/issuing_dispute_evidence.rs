@@ -7,6 +7,7 @@ pub struct IssuingDisputeEvidence {
     pub fraudulent: Option<stripe_shared::IssuingDisputeFraudulentEvidence>,
     pub merchandise_not_as_described:
         Option<stripe_shared::IssuingDisputeMerchandiseNotAsDescribedEvidence>,
+    pub no_valid_authorization: Option<stripe_shared::IssuingDisputeNoValidAuthorizationEvidence>,
     pub not_received: Option<stripe_shared::IssuingDisputeNotReceivedEvidence>,
     pub other: Option<stripe_shared::IssuingDisputeOtherEvidence>,
     /// The reason for filing the dispute. Its value will match the field containing the evidence.
@@ -21,6 +22,8 @@ pub struct IssuingDisputeEvidenceBuilder {
     fraudulent: Option<Option<stripe_shared::IssuingDisputeFraudulentEvidence>>,
     merchandise_not_as_described:
         Option<Option<stripe_shared::IssuingDisputeMerchandiseNotAsDescribedEvidence>>,
+    no_valid_authorization:
+        Option<Option<stripe_shared::IssuingDisputeNoValidAuthorizationEvidence>>,
     not_received: Option<Option<stripe_shared::IssuingDisputeNotReceivedEvidence>>,
     other: Option<Option<stripe_shared::IssuingDisputeOtherEvidence>>,
     reason: Option<IssuingDisputeEvidenceReason>,
@@ -74,6 +77,7 @@ const _: () = {
                 "merchandise_not_as_described" => {
                     Deserialize::begin(&mut self.merchandise_not_as_described)
                 }
+                "no_valid_authorization" => Deserialize::begin(&mut self.no_valid_authorization),
                 "not_received" => Deserialize::begin(&mut self.not_received),
                 "other" => Deserialize::begin(&mut self.other),
                 "reason" => Deserialize::begin(&mut self.reason),
@@ -91,6 +95,7 @@ const _: () = {
                 duplicate: Deserialize::default(),
                 fraudulent: Deserialize::default(),
                 merchandise_not_as_described: Deserialize::default(),
+                no_valid_authorization: Deserialize::default(),
                 not_received: Deserialize::default(),
                 other: Deserialize::default(),
                 reason: Deserialize::default(),
@@ -104,6 +109,7 @@ const _: () = {
                 Some(duplicate),
                 Some(fraudulent),
                 Some(merchandise_not_as_described),
+                Some(no_valid_authorization),
                 Some(not_received),
                 Some(other),
                 Some(reason),
@@ -113,6 +119,7 @@ const _: () = {
                 self.duplicate.take(),
                 self.fraudulent.take(),
                 self.merchandise_not_as_described.take(),
+                self.no_valid_authorization.take(),
                 self.not_received.take(),
                 self.other.take(),
                 self.reason,
@@ -126,6 +133,7 @@ const _: () = {
                 duplicate,
                 fraudulent,
                 merchandise_not_as_described,
+                no_valid_authorization,
                 not_received,
                 other,
                 reason,
@@ -163,6 +171,9 @@ const _: () = {
                     "merchandise_not_as_described" => {
                         b.merchandise_not_as_described = FromValueOpt::from_value(v)
                     }
+                    "no_valid_authorization" => {
+                        b.no_valid_authorization = FromValueOpt::from_value(v)
+                    }
                     "not_received" => b.not_received = FromValueOpt::from_value(v),
                     "other" => b.other = FromValueOpt::from_value(v),
                     "reason" => b.reason = FromValueOpt::from_value(v),
@@ -184,6 +195,7 @@ pub enum IssuingDisputeEvidenceReason {
     Duplicate,
     Fraudulent,
     MerchandiseNotAsDescribed,
+    NoValidAuthorization,
     NotReceived,
     Other,
     ServiceNotAsDescribed,
@@ -196,6 +208,7 @@ impl IssuingDisputeEvidenceReason {
             Duplicate => "duplicate",
             Fraudulent => "fraudulent",
             MerchandiseNotAsDescribed => "merchandise_not_as_described",
+            NoValidAuthorization => "no_valid_authorization",
             NotReceived => "not_received",
             Other => "other",
             ServiceNotAsDescribed => "service_not_as_described",
@@ -212,6 +225,7 @@ impl std::str::FromStr for IssuingDisputeEvidenceReason {
             "duplicate" => Ok(Duplicate),
             "fraudulent" => Ok(Fraudulent),
             "merchandise_not_as_described" => Ok(MerchandiseNotAsDescribed),
+            "no_valid_authorization" => Ok(NoValidAuthorization),
             "not_received" => Ok(NotReceived),
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),

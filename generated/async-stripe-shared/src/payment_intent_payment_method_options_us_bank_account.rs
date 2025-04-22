@@ -2,30 +2,37 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentPaymentMethodOptionsUsBankAccount {
-    pub financial_connections: Option<stripe_shared::LinkedAccountOptionsUsBankAccount>,
+    pub financial_connections: Option<stripe_shared::LinkedAccountOptionsCommon>,
     pub mandate_options: Option<stripe_shared::PaymentMethodOptionsUsBankAccountMandateOptions>,
     /// Preferred transaction settlement speed
     pub preferred_settlement_speed:
         Option<PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
-    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
-    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
     ///
-    /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     pub setup_future_usage: Option<PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage>,
+    /// Controls when Stripe will attempt to debit the funds from the customer's account.
+    /// The date must be a string in YYYY-MM-DD format.
+    /// The date must be in the future and between 3 and 15 calendar days from now.
+    pub target_date: Option<String>,
     /// Bank account verification method.
     pub verification_method:
         Option<PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 #[doc(hidden)]
 pub struct PaymentIntentPaymentMethodOptionsUsBankAccountBuilder {
-    financial_connections: Option<Option<stripe_shared::LinkedAccountOptionsUsBankAccount>>,
+    financial_connections: Option<Option<stripe_shared::LinkedAccountOptionsCommon>>,
     mandate_options: Option<Option<stripe_shared::PaymentMethodOptionsUsBankAccountMandateOptions>>,
     preferred_settlement_speed:
         Option<Option<PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed>>,
     setup_future_usage:
         Option<Option<PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage>>,
+    target_date: Option<Option<String>>,
     verification_method:
         Option<Option<PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>>,
 }
@@ -76,6 +83,7 @@ const _: () = {
                     Deserialize::begin(&mut self.preferred_settlement_speed)
                 }
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "target_date" => Deserialize::begin(&mut self.target_date),
                 "verification_method" => Deserialize::begin(&mut self.verification_method),
 
                 _ => <dyn Visitor>::ignore(),
@@ -88,6 +96,7 @@ const _: () = {
                 mandate_options: Deserialize::default(),
                 preferred_settlement_speed: Deserialize::default(),
                 setup_future_usage: Deserialize::default(),
+                target_date: Deserialize::default(),
                 verification_method: Deserialize::default(),
             }
         }
@@ -98,12 +107,14 @@ const _: () = {
                 Some(mandate_options),
                 Some(preferred_settlement_speed),
                 Some(setup_future_usage),
+                Some(target_date),
                 Some(verification_method),
             ) = (
                 self.financial_connections.take(),
                 self.mandate_options,
                 self.preferred_settlement_speed,
                 self.setup_future_usage,
+                self.target_date.take(),
                 self.verification_method,
             )
             else {
@@ -114,6 +125,7 @@ const _: () = {
                 mandate_options,
                 preferred_settlement_speed,
                 setup_future_usage,
+                target_date,
                 verification_method,
             })
         }
@@ -150,6 +162,7 @@ const _: () = {
                         b.preferred_settlement_speed = FromValueOpt::from_value(v)
                     }
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
+                    "target_date" => b.target_date = FromValueOpt::from_value(v),
                     "verification_method" => b.verification_method = FromValueOpt::from_value(v),
 
                     _ => {}
@@ -242,10 +255,12 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
-/// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
-/// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
 ///
-/// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     None,

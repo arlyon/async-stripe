@@ -2,7 +2,7 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingPhysicalBundle {
-    pub features: Option<stripe_shared::IssuingPhysicalBundleFeatures>,
+    pub features: stripe_shared::IssuingPhysicalBundleFeatures,
     /// Unique identifier for the object.
     pub id: stripe_shared::IssuingPhysicalBundleId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -17,7 +17,7 @@ pub struct IssuingPhysicalBundle {
 }
 #[doc(hidden)]
 pub struct IssuingPhysicalBundleBuilder {
-    features: Option<Option<stripe_shared::IssuingPhysicalBundleFeatures>>,
+    features: Option<stripe_shared::IssuingPhysicalBundleFeatures>,
     id: Option<stripe_shared::IssuingPhysicalBundleId>,
     livemode: Option<bool>,
     name: Option<String>,

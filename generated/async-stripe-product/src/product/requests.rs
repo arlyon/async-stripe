@@ -392,6 +392,15 @@ pub struct CreateProductDefaultPriceData {
             CreateProductDefaultPriceDataCurrencyOptions,
         >,
     >,
+    /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_unit_amount: Option<CustomUnitAmount>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<CreateProductDefaultPriceDataRecurring>,
@@ -402,7 +411,7 @@ pub struct CreateProductDefaultPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreateProductDefaultPriceDataTaxBehavior>,
     /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
-    /// One of `unit_amount` or `unit_amount_decimal` is required.
+    /// One of `unit_amount`, `unit_amount_decimal`, or `custom_unit_amount` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
@@ -415,6 +424,8 @@ impl CreateProductDefaultPriceData {
         Self {
             currency: currency.into(),
             currency_options: None,
+            custom_unit_amount: None,
+            metadata: None,
             recurring: None,
             tax_behavior: None,
             unit_amount: None,
@@ -428,7 +439,7 @@ impl CreateProductDefaultPriceData {
 pub struct CreateProductDefaultPriceDataCurrencyOptions {
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_unit_amount: Option<CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount>,
+    pub custom_unit_amount: Option<CustomUnitAmount>,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -462,27 +473,6 @@ impl CreateProductDefaultPriceDataCurrencyOptions {
 impl Default for CreateProductDefaultPriceDataCurrencyOptions {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
-    /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
-    pub enabled: bool,
-    /// The maximum unit amount the customer can specify for this item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum: Option<i64>,
-    /// The minimum unit amount the customer can specify for this item.
-    /// Must be at least the minimum charge amount.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum: Option<i64>,
-    /// The starting unit amount which can be updated by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub preset: Option<i64>,
-}
-impl CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
-    pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into(), maximum: None, minimum: None, preset: None }
     }
 }
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -818,7 +808,7 @@ impl CreateProduct {
     /// This may be up to 22 characters.
     /// The statement description may not include `<`, `>`, `\`, `"`, `'` characters, and will appear on your customer's statement in capital letters.
     /// Non-ASCII characters are automatically stripped.
-    ///  It must contain at least one letter.
+    ///  It must contain at least one letter. Only used for subscription payments.
     pub fn statement_descriptor(mut self, statement_descriptor: impl Into<String>) -> Self {
         self.inner.statement_descriptor = Some(statement_descriptor.into());
         self
@@ -1003,7 +993,9 @@ impl UpdateProduct {
     /// This may be up to 22 characters.
     /// The statement description may not include `<`, `>`, `\`, `"`, `'` characters, and will appear on your customer's statement in capital letters.
     /// Non-ASCII characters are automatically stripped.
-    ///  It must contain at least one letter. May only be set if `type=service`.
+    /// It must contain at least one letter.
+    /// May only be set if `type=service`.
+    /// Only used for subscription payments.
     pub fn statement_descriptor(mut self, statement_descriptor: impl Into<String>) -> Self {
         self.inner.statement_descriptor = Some(statement_descriptor.into());
         self
@@ -1053,6 +1045,26 @@ impl StripeRequest for UpdateProduct {
     }
 }
 
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CustomUnitAmount {
+    /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
+    pub enabled: bool,
+    /// The maximum unit amount the customer can specify for this item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<i64>,
+    /// The minimum unit amount the customer can specify for this item.
+    /// Must be at least the minimum charge amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<i64>,
+    /// The starting unit amount which can be updated by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preset: Option<i64>,
+}
+impl CustomUnitAmount {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), maximum: None, minimum: None, preset: None }
+    }
+}
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct Features {
     /// The marketing feature name. Up to 80 characters long.

@@ -2,7 +2,6 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct RefundNextAction {
-    /// Contains the refund details.
     pub display_details: Option<stripe_shared::RefundNextActionDisplayDetails>,
     /// Type of the next action to perform.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]

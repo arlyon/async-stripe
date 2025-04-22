@@ -9,15 +9,35 @@
 extern crate self as stripe_billing;
 
 miniserde::make_place!(Place);
-pub use billing_meter::types::*;
+pub use billing_alert::types::*;
 pub use stripe_shared::automatic_tax::*;
+pub mod billing_alert;
+#[doc(hidden)]
+pub mod billing_alert_triggered;
+#[doc(inline)]
+pub use billing_alert_triggered::*;
+pub use billing_credit_balance_summary::types::*;
+pub mod billing_credit_balance_summary;
+pub mod billing_credit_balance_transaction;
+pub use stripe_shared::billing_credit_balance_transaction::*;
+pub mod billing_credit_grant;
+pub use billing_meter::types::*;
+pub use stripe_shared::billing_credit_grant::*;
 pub mod billing_meter;
 pub use billing_meter_event::types::*;
 pub mod billing_meter_event;
 pub use billing_meter_event_adjustment::types::*;
 pub mod billing_meter_event_adjustment;
 pub use billing_meter_event_summary::types::*;
+#[doc(hidden)]
+pub mod billing_bill_resource_invoice_item_parents_invoice_item_parent;
 pub mod billing_meter_event_summary;
+#[doc(inline)]
+pub use billing_bill_resource_invoice_item_parents_invoice_item_parent::*;
+#[doc(hidden)]
+pub mod billing_bill_resource_invoice_item_parents_invoice_item_subscription_parent;
+#[doc(inline)]
+pub use billing_bill_resource_invoice_item_parents_invoice_item_subscription_parent::*;pub use stripe_shared::billing_bill_resource_invoicing_lines_common_credited_items::*;pub use stripe_shared::billing_bill_resource_invoicing_lines_common_proration_details::*;pub use stripe_shared::billing_bill_resource_invoicing_lines_parents_invoice_line_item_invoice_item_parent::*;pub use stripe_shared::billing_bill_resource_invoicing_lines_parents_invoice_line_item_parent::*;pub use stripe_shared::billing_bill_resource_invoicing_lines_parents_invoice_line_item_subscription_item_parent::*;pub use stripe_shared::billing_bill_resource_invoicing_parents_invoice_parent::*;pub use stripe_shared::billing_bill_resource_invoicing_parents_invoice_quote_parent::*;pub use stripe_shared::billing_bill_resource_invoicing_parents_invoice_subscription_parent::*;pub use stripe_shared::billing_bill_resource_invoicing_pricing_pricing::*;pub use stripe_shared::billing_bill_resource_invoicing_pricing_pricing_price_details::*;pub use stripe_shared::billing_bill_resource_invoicing_taxes_tax::*;pub use stripe_shared::billing_bill_resource_invoicing_taxes_tax_rate_details::*;pub use stripe_shared::billing_clocks_resource_status_details_advancing_status_details::*;pub use stripe_shared::billing_clocks_resource_status_details_status_details::*;pub use stripe_shared::billing_credit_grants_resource_amount::*;pub use stripe_shared::billing_credit_grants_resource_applicability_config::*;pub use stripe_shared::billing_credit_grants_resource_applicable_price::*;pub use stripe_shared::billing_credit_grants_resource_balance_credit::*;pub use stripe_shared::billing_credit_grants_resource_balance_credits_application_invoice_voided::*;pub use stripe_shared::billing_credit_grants_resource_balance_credits_applied::*;pub use stripe_shared::billing_credit_grants_resource_balance_debit::*;pub use stripe_shared::billing_credit_grants_resource_monetary_amount::*;pub use stripe_shared::billing_credit_grants_resource_scope::*;
 #[doc(hidden)]
 pub mod billing_meter_resource_aggregation_settings;
 #[doc(inline)]
@@ -43,13 +63,21 @@ pub mod billing_portal_configuration;
 pub use billing_portal_session::types::*;
 pub mod billing_portal_session;
 pub use stripe_shared::cancellation_details::*;
+#[doc(hidden)]
+pub mod credit_balance;
+#[doc(inline)]
+pub use credit_balance::*;
 pub mod credit_note;
 pub use stripe_shared::credit_note::*;
 pub mod credit_note_line_item;
 pub use stripe_shared::credit_note_line_item::*;
-pub use stripe_shared::credit_note_tax_amount::*;
+pub use stripe_shared::credit_note_refund::*;
+pub use stripe_shared::credit_notes_pretax_credit_amount::*;
 pub use stripe_shared::deleted_invoice::*;
-pub use stripe_shared::deleted_invoiceitem::*;
+#[doc(hidden)]
+pub mod deleted_invoiceitem;
+#[doc(inline)]
+pub use deleted_invoiceitem::*;
 pub use stripe_shared::deleted_plan::*;
 pub use stripe_shared::deleted_subscription_item::*;
 pub use stripe_shared::deleted_tax_id::*;
@@ -57,22 +85,41 @@ pub use stripe_shared::deleted_test_helpers_test_clock::*;
 pub use stripe_shared::discounts_resource_discount_amount::*;
 pub use stripe_shared::discounts_resource_stackable_discount::*;
 pub mod invoice;
-pub use stripe_shared::invoice::*;pub use stripe_shared::invoice_installments_card::*;pub use stripe_shared::invoice_item_threshold_reason::*;pub use stripe_shared::invoice_line_item_period::*;pub use stripe_shared::invoice_mandate_options_card::*;pub use stripe_shared::invoice_payment_method_options_acss_debit::*;pub use stripe_shared::invoice_payment_method_options_acss_debit_mandate_options::*;pub use stripe_shared::invoice_payment_method_options_bancontact::*;pub use stripe_shared::invoice_payment_method_options_card::*;pub use stripe_shared::invoice_payment_method_options_customer_balance::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer_eu_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_konbini::*;pub use stripe_shared::invoice_payment_method_options_sepa_debit::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account_linked_account_options::*;pub use stripe_shared::invoice_rendering_pdf::*;pub use stripe_shared::invoice_setting_custom_field::*;pub use stripe_shared::invoice_setting_customer_rendering_options::*;pub use stripe_shared::invoice_setting_customer_setting::*;pub use stripe_shared::invoice_setting_quote_setting::*;pub use stripe_shared::invoice_setting_rendering_options::*;pub use stripe_shared::invoice_setting_subscription_schedule_phase_setting::*;pub use stripe_shared::invoice_setting_subscription_schedule_setting::*;pub use stripe_shared::invoice_tax_amount::*;pub use stripe_shared::invoice_threshold_reason::*;pub use stripe_shared::invoice_transfer_data::*;
+pub use stripe_shared::invoice::*;
+pub use stripe_shared::invoice_installments_card::*;
+pub use stripe_shared::invoice_item_threshold_reason::*;
+pub use stripe_shared::invoice_line_item_period::*;
+pub use stripe_shared::invoice_mandate_options_card::*;
+pub mod invoice_payment;
+pub use stripe_shared::invoice_payment::*;pub use stripe_shared::invoice_payment_method_options_acss_debit::*;pub use stripe_shared::invoice_payment_method_options_acss_debit_mandate_options::*;pub use stripe_shared::invoice_payment_method_options_bancontact::*;pub use stripe_shared::invoice_payment_method_options_card::*;pub use stripe_shared::invoice_payment_method_options_customer_balance::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer_eu_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_konbini::*;pub use stripe_shared::invoice_payment_method_options_sepa_debit::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account_linked_account_options::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account_linked_account_options_filters::*;pub use stripe_shared::invoice_rendering_pdf::*;pub use invoice_rendering_template::types::*;
+pub mod invoice_rendering_template;
+pub use stripe_shared::invoice_setting_checkout_rendering_options::*;
+pub use stripe_shared::invoice_setting_custom_field::*;
+pub use stripe_shared::invoice_setting_customer_rendering_options::*;
+pub use stripe_shared::invoice_setting_customer_setting::*;
+#[doc(hidden)]
+pub mod invoice_setting_quote_setting;
+pub use invoice_item::types::*;
+#[doc(inline)]
+pub use invoice_setting_quote_setting::*;
+pub use stripe_shared::invoice_setting_subscription_schedule_phase_setting::*;
+pub use stripe_shared::invoice_setting_subscription_schedule_setting::*;
+pub use stripe_shared::invoice_threshold_reason::*;
 pub mod invoice_item;
 pub use stripe_shared::checkout_session_item::*;
-pub use stripe_shared::invoice_item::*;
 pub use stripe_shared::invoices_payment_method_options::*;
 pub use stripe_shared::invoices_payment_settings::*;
+pub use stripe_shared::invoices_payments_invoice_payment_associated_payment::*;
+pub use stripe_shared::invoices_payments_invoice_payment_status_transitions::*;
+pub use stripe_shared::invoices_resource_confirmation_secret::*;
 pub use stripe_shared::invoices_resource_from_invoice::*;
 pub use stripe_shared::invoices_resource_invoice_rendering::*;
 pub use stripe_shared::invoices_resource_invoice_tax_id::*;
-pub use stripe_shared::invoices_resource_line_items_credited_items::*;
-pub use stripe_shared::invoices_resource_line_items_proration_details::*;
+pub use stripe_shared::invoices_resource_pretax_credit_amount::*;
 pub use stripe_shared::invoices_resource_shipping_cost::*;
 pub use stripe_shared::invoices_resource_status_transitions::*;
 pub mod invoice_line_item;
 pub use stripe_shared::invoice_line_item::*;
-pub use stripe_shared::period::*;
 pub mod plan;
 pub use stripe_shared::plan::*;
 pub use stripe_shared::plan_tier::*;
@@ -145,6 +192,14 @@ pub mod portal_payment_method_update;
 #[doc(inline)]
 pub use portal_payment_method_update::*;
 #[doc(hidden)]
+pub mod portal_resource_schedule_update_at_period_end;
+#[doc(inline)]
+pub use portal_resource_schedule_update_at_period_end::*;
+#[doc(hidden)]
+pub mod portal_resource_schedule_update_at_period_end_condition;
+#[doc(inline)]
+pub use portal_resource_schedule_update_at_period_end_condition::*;
+#[doc(hidden)]
 pub mod portal_subscription_cancel;
 #[doc(inline)]
 pub use portal_subscription_cancel::*;
@@ -160,27 +215,54 @@ pub use portal_subscription_update::*;
 pub mod portal_subscription_update_product;
 #[doc(inline)]
 pub use portal_subscription_update_product::*;
+pub use quote::types::*;
 pub mod quote;
-pub use stripe_shared::quote::*;
-pub use stripe_shared::quotes_resource_automatic_tax::*;
-pub use stripe_shared::quotes_resource_computed::*;
-pub use stripe_shared::quotes_resource_from_quote::*;
-pub use stripe_shared::quotes_resource_recurring::*;
-pub use stripe_shared::quotes_resource_status_transitions::*;
-pub use stripe_shared::quotes_resource_subscription_data_subscription_data::*;
-pub use stripe_shared::quotes_resource_total_details::*;
-pub use stripe_shared::quotes_resource_total_details_resource_breakdown::*;
-pub use stripe_shared::quotes_resource_transfer_data::*;
-pub use stripe_shared::quotes_resource_upfront::*;
+#[doc(hidden)]
+pub mod quotes_resource_automatic_tax;
+#[doc(inline)]
+pub use quotes_resource_automatic_tax::*;
+#[doc(hidden)]
+pub mod quotes_resource_computed;
+#[doc(inline)]
+pub use quotes_resource_computed::*;
+#[doc(hidden)]
+pub mod quotes_resource_from_quote;
+#[doc(inline)]
+pub use quotes_resource_from_quote::*;
+#[doc(hidden)]
+pub mod quotes_resource_recurring;
+#[doc(inline)]
+pub use quotes_resource_recurring::*;
+#[doc(hidden)]
+pub mod quotes_resource_status_transitions;
+#[doc(inline)]
+pub use quotes_resource_status_transitions::*;
+#[doc(hidden)]
+pub mod quotes_resource_subscription_data_subscription_data;
+#[doc(inline)]
+pub use quotes_resource_subscription_data_subscription_data::*;
+#[doc(hidden)]
+pub mod quotes_resource_total_details;
+#[doc(inline)]
+pub use quotes_resource_total_details::*;
+#[doc(hidden)]
+pub mod quotes_resource_total_details_resource_breakdown;
+#[doc(inline)]
+pub use quotes_resource_total_details_resource_breakdown::*;
+#[doc(hidden)]
+pub mod quotes_resource_transfer_data;
+#[doc(inline)]
+pub use quotes_resource_transfer_data::*;
+#[doc(hidden)]
+pub mod quotes_resource_upfront;
+#[doc(inline)]
+pub use quotes_resource_upfront::*;
 pub use stripe_shared::schedules_phase_automatic_tax::*;
 pub mod subscription;
 pub use stripe_shared::subscription::*;
 pub use stripe_shared::subscription_automatic_tax::*;
-pub use stripe_shared::subscription_billing_thresholds::*;
-pub use stripe_shared::subscription_details_data::*;
 pub mod subscription_item;
 pub use stripe_shared::subscription_item::*;
-pub use stripe_shared::subscription_item_billing_thresholds::*;
 pub use stripe_shared::subscription_payment_method_options_card::*;
 pub use stripe_shared::subscription_pending_invoice_item_interval::*;
 pub mod subscription_schedule;
@@ -197,14 +279,19 @@ pub use stripe_shared::subscriptions_resource_pause_collection::*;
 pub use stripe_shared::subscriptions_resource_payment_method_options::*;
 pub use stripe_shared::subscriptions_resource_payment_settings::*;
 pub use stripe_shared::subscriptions_resource_pending_update::*;
+pub use stripe_shared::subscriptions_resource_subscription_invoice_settings::*;
 pub use stripe_shared::tax_i_ds_owner::*;
 pub mod tax_id;
 pub use stripe_shared::tax_id::*;
 pub use stripe_shared::tax_id_verification::*;
 pub mod test_helpers_test_clock;
 pub use stripe_shared::test_helpers_test_clock::*;
+#[doc(hidden)]
+pub mod thresholds_resource_usage_alert_filter;
+#[doc(inline)]
+pub use thresholds_resource_usage_alert_filter::*;
+#[doc(hidden)]
+pub mod thresholds_resource_usage_threshold_config;
 pub use stripe_shared::transform_usage::*;
-pub use usage_record::types::*;
-pub mod usage_record;
-pub mod usage_record_summary;
-pub use stripe_shared::usage_record_summary::*;
+#[doc(inline)]
+pub use thresholds_resource_usage_threshold_config::*;

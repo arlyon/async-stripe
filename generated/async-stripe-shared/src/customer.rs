@@ -1,7 +1,6 @@
 /// This object represents a customer of your business.
-/// Use it to create recurring charges and track payments that belong to the same customer.
-///
-/// Related guide: [Save a card during payment](https://stripe.com/docs/payments/save-during-payment)
+/// Use it to [create recurring charges](https://stripe.com/docs/invoicing/customer), [save payment](https://stripe.com/docs/payments/save-during-payment) and contact information,.
+/// and track payments that belong to the same customer.
 ///
 /// For more details see <<https://stripe.com/docs/api/customers/object>>.
 #[derive(Clone, Debug)]
@@ -63,6 +62,7 @@ pub struct Customer {
     /// The customer's full name or business name.
     pub name: Option<String>,
     /// The suffix of the customer's next invoice number (for example, 0001).
+    /// When the account uses account level sequencing, this parameter is ignored in API requests and the field omitted in API responses.
     pub next_invoice_sequence: Option<i64>,
     /// The customer's phone number.
     pub phone: Option<String>,

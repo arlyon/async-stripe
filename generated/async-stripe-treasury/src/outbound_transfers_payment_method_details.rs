@@ -3,6 +3,8 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct OutboundTransfersPaymentMethodDetails {
     pub billing_details: stripe_treasury::TreasurySharedResourceBillingDetails,
+    pub financial_account:
+        Option<stripe_treasury::OutboundTransfersPaymentMethodDetailsFinancialAccount>,
     /// The type of the payment method used in the OutboundTransfer.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: OutboundTransfersPaymentMethodDetailsType,
@@ -12,6 +14,8 @@ pub struct OutboundTransfersPaymentMethodDetails {
 #[doc(hidden)]
 pub struct OutboundTransfersPaymentMethodDetailsBuilder {
     billing_details: Option<stripe_treasury::TreasurySharedResourceBillingDetails>,
+    financial_account:
+        Option<Option<stripe_treasury::OutboundTransfersPaymentMethodDetailsFinancialAccount>>,
     type_: Option<OutboundTransfersPaymentMethodDetailsType>,
     us_bank_account:
         Option<Option<stripe_treasury::OutboundTransfersPaymentMethodDetailsUsBankAccount>>,
@@ -58,6 +62,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "billing_details" => Deserialize::begin(&mut self.billing_details),
+                "financial_account" => Deserialize::begin(&mut self.financial_account),
                 "type" => Deserialize::begin(&mut self.type_),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
 
@@ -68,18 +73,28 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 billing_details: Deserialize::default(),
+                financial_account: Deserialize::default(),
                 type_: Deserialize::default(),
                 us_bank_account: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(billing_details), Some(type_), Some(us_bank_account)) =
-                (self.billing_details.take(), self.type_, self.us_bank_account.take())
+            let (
+                Some(billing_details),
+                Some(financial_account),
+                Some(type_),
+                Some(us_bank_account),
+            ) = (
+                self.billing_details.take(),
+                self.financial_account.take(),
+                self.type_,
+                self.us_bank_account.take(),
+            )
             else {
                 return None;
             };
-            Some(Self::Out { billing_details, type_, us_bank_account })
+            Some(Self::Out { billing_details, financial_account, type_, us_bank_account })
         }
     }
 
@@ -107,6 +122,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "billing_details" => b.billing_details = FromValueOpt::from_value(v),
+                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
 
@@ -120,12 +136,14 @@ const _: () = {
 /// The type of the payment method used in the OutboundTransfer.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum OutboundTransfersPaymentMethodDetailsType {
+    FinancialAccount,
     UsBankAccount,
 }
 impl OutboundTransfersPaymentMethodDetailsType {
     pub fn as_str(self) -> &'static str {
         use OutboundTransfersPaymentMethodDetailsType::*;
         match self {
+            FinancialAccount => "financial_account",
             UsBankAccount => "us_bank_account",
         }
     }
@@ -136,6 +154,7 @@ impl std::str::FromStr for OutboundTransfersPaymentMethodDetailsType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use OutboundTransfersPaymentMethodDetailsType::*;
         match s {
+            "financial_account" => Ok(FinancialAccount),
             "us_bank_account" => Ok(UsBankAccount),
             _ => Err(stripe_types::StripeParseError),
         }

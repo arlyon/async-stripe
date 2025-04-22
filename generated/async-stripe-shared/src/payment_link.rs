@@ -52,6 +52,8 @@ pub struct PaymentLink {
     /// The account on behalf of which to charge.
     /// See the [Connect documentation](https://support.stripe.com/questions/sending-invoices-on-behalf-of-connected-accounts) for details.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
+    /// The optional items presented to the customer at checkout.
+    pub optional_items: Option<Vec<stripe_shared::PaymentLinksResourceOptionalItem>>,
     /// Indicates the parameters to be passed to PaymentIntent creation during checkout.
     pub payment_intent_data: Option<stripe_shared::PaymentLinksResourcePaymentIntentData>,
     /// Configuration for collecting a payment method during checkout. Defaults to `always`.
@@ -100,6 +102,7 @@ pub struct PaymentLinkBuilder {
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
     on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
+    optional_items: Option<Option<Vec<stripe_shared::PaymentLinksResourceOptionalItem>>>,
     payment_intent_data: Option<Option<stripe_shared::PaymentLinksResourcePaymentIntentData>>,
     payment_method_collection: Option<PaymentLinkPaymentMethodCollection>,
     payment_method_types: Option<Option<Vec<stripe_shared::PaymentLinkPaymentMethodTypes>>>,
@@ -177,6 +180,7 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
+                "optional_items" => Deserialize::begin(&mut self.optional_items),
                 "payment_intent_data" => Deserialize::begin(&mut self.payment_intent_data),
                 "payment_method_collection" => {
                     Deserialize::begin(&mut self.payment_method_collection)
@@ -220,6 +224,7 @@ const _: () = {
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
                 on_behalf_of: Deserialize::default(),
+                optional_items: Deserialize::default(),
                 payment_intent_data: Deserialize::default(),
                 payment_method_collection: Deserialize::default(),
                 payment_method_types: Deserialize::default(),
@@ -257,6 +262,7 @@ const _: () = {
                 Some(livemode),
                 Some(metadata),
                 Some(on_behalf_of),
+                Some(optional_items),
                 Some(payment_intent_data),
                 Some(payment_method_collection),
                 Some(payment_method_types),
@@ -290,6 +296,7 @@ const _: () = {
                 self.livemode,
                 self.metadata.take(),
                 self.on_behalf_of.take(),
+                self.optional_items.take(),
                 self.payment_intent_data.take(),
                 self.payment_method_collection,
                 self.payment_method_types.take(),
@@ -327,6 +334,7 @@ const _: () = {
                 livemode,
                 metadata,
                 on_behalf_of,
+                optional_items,
                 payment_intent_data,
                 payment_method_collection,
                 payment_method_types,
@@ -394,6 +402,7 @@ const _: () = {
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
+                    "optional_items" => b.optional_items = FromValueOpt::from_value(v),
                     "payment_intent_data" => b.payment_intent_data = FromValueOpt::from_value(v),
                     "payment_method_collection" => {
                         b.payment_method_collection = FromValueOpt::from_value(v)
@@ -424,7 +433,7 @@ const _: () = {
 impl serde::Serialize for PaymentLink {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentLink", 33)?;
+        let mut s = s.serialize_struct("PaymentLink", 34)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("after_completion", &self.after_completion)?;
         s.serialize_field("allow_promotion_codes", &self.allow_promotion_codes)?;
@@ -445,6 +454,7 @@ impl serde::Serialize for PaymentLink {
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("on_behalf_of", &self.on_behalf_of)?;
+        s.serialize_field("optional_items", &self.optional_items)?;
         s.serialize_field("payment_intent_data", &self.payment_intent_data)?;
         s.serialize_field("payment_method_collection", &self.payment_method_collection)?;
         s.serialize_field("payment_method_types", &self.payment_method_types)?;
@@ -694,9 +704,11 @@ pub enum PaymentLinkPaymentMethodTypes {
     Affirm,
     AfterpayClearpay,
     Alipay,
+    Alma,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Billie,
     Blik,
     Boleto,
     Card,
@@ -709,17 +721,23 @@ pub enum PaymentLinkPaymentMethodTypes {
     Klarna,
     Konbini,
     Link,
+    Mobilepay,
+    Multibanco,
     Oxxo,
     P24,
+    PayByBank,
     Paynow,
     Paypal,
     Pix,
     Promptpay,
+    Satispay,
     SepaDebit,
     Sofort,
     Swish,
+    Twint,
     UsBankAccount,
     WechatPay,
+    Zip,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -730,9 +748,11 @@ impl PaymentLinkPaymentMethodTypes {
             Affirm => "affirm",
             AfterpayClearpay => "afterpay_clearpay",
             Alipay => "alipay",
+            Alma => "alma",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
+            Billie => "billie",
             Blik => "blik",
             Boleto => "boleto",
             Card => "card",
@@ -745,17 +765,23 @@ impl PaymentLinkPaymentMethodTypes {
             Klarna => "klarna",
             Konbini => "konbini",
             Link => "link",
+            Mobilepay => "mobilepay",
+            Multibanco => "multibanco",
             Oxxo => "oxxo",
             P24 => "p24",
+            PayByBank => "pay_by_bank",
             Paynow => "paynow",
             Paypal => "paypal",
             Pix => "pix",
             Promptpay => "promptpay",
+            Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Swish => "swish",
+            Twint => "twint",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
+            Zip => "zip",
             Unknown(v) => v,
         }
     }
@@ -769,9 +795,11 @@ impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
             "affirm" => Ok(Affirm),
             "afterpay_clearpay" => Ok(AfterpayClearpay),
             "alipay" => Ok(Alipay),
+            "alma" => Ok(Alma),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
+            "billie" => Ok(Billie),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
@@ -784,17 +812,23 @@ impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
             "klarna" => Ok(Klarna),
             "konbini" => Ok(Konbini),
             "link" => Ok(Link),
+            "mobilepay" => Ok(Mobilepay),
+            "multibanco" => Ok(Multibanco),
             "oxxo" => Ok(Oxxo),
             "p24" => Ok(P24),
+            "pay_by_bank" => Ok(PayByBank),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
+            "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
+            "twint" => Ok(Twint),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
+            "zip" => Ok(Zip),
             v => Ok(Unknown(v.to_owned())),
         }
     }
@@ -847,6 +881,7 @@ pub enum PaymentLinkSubmitType {
     Book,
     Donate,
     Pay,
+    Subscribe,
 }
 impl PaymentLinkSubmitType {
     pub fn as_str(self) -> &'static str {
@@ -856,6 +891,7 @@ impl PaymentLinkSubmitType {
             Book => "book",
             Donate => "donate",
             Pay => "pay",
+            Subscribe => "subscribe",
         }
     }
 }
@@ -869,6 +905,7 @@ impl std::str::FromStr for PaymentLinkSubmitType {
             "book" => Ok(Book),
             "donate" => Ok(Donate),
             "pay" => Ok(Pay),
+            "subscribe" => Ok(Subscribe),
             _ => Err(stripe_types::StripeParseError),
         }
     }

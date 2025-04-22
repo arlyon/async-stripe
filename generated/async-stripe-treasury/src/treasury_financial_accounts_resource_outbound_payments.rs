@@ -3,12 +3,13 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountsResourceOutboundPayments {
-    pub ach: Option<stripe_treasury::TreasuryFinancialAccountsResourceAchToggleSettings>,
+    pub ach: Option<stripe_treasury::TreasuryFinancialAccountsResourceOutboundAchToggleSettings>,
     pub us_domestic_wire: Option<stripe_treasury::TreasuryFinancialAccountsResourceToggleSettings>,
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountsResourceOutboundPaymentsBuilder {
-    ach: Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceAchToggleSettings>>,
+    ach:
+        Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceOutboundAchToggleSettings>>,
     us_domestic_wire:
         Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceToggleSettings>>,
 }

@@ -2,6 +2,12 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ChargeOutcome {
+    /// An enumerated value providing a more detailed explanation on [how to proceed with an error](https://stripe.com/docs/declines#retrying-issuer-declines).
+    pub advice_code: Option<ChargeOutcomeAdviceCode>,
+    /// For charges declined by the network, a 2 digit code which indicates the advice returned by the network on how to proceed with an error.
+    pub network_advice_code: Option<String>,
+    /// For charges declined by the network, a brand specific 2, 3, or 4 digit code which indicates the reason the authorization failed.
+    pub network_decline_code: Option<String>,
     /// Possible values are `approved_by_network`, `declined_by_network`, `not_sent_to_network`, and `reversed_after_approval`.
     /// The value `reversed_after_approval` indicates the payment was [blocked by Stripe](https://stripe.com/docs/declines#blocked-payments) after bank authorization, and may temporarily appear as "pending" on a cardholder's statement.
     pub network_status: Option<String>,
@@ -33,6 +39,9 @@ pub struct ChargeOutcome {
 }
 #[doc(hidden)]
 pub struct ChargeOutcomeBuilder {
+    advice_code: Option<Option<ChargeOutcomeAdviceCode>>,
+    network_advice_code: Option<Option<String>>,
+    network_decline_code: Option<Option<String>>,
     network_status: Option<Option<String>>,
     reason: Option<Option<String>>,
     risk_level: Option<Option<String>>,
@@ -82,6 +91,9 @@ const _: () = {
         type Out = ChargeOutcome;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "advice_code" => Deserialize::begin(&mut self.advice_code),
+                "network_advice_code" => Deserialize::begin(&mut self.network_advice_code),
+                "network_decline_code" => Deserialize::begin(&mut self.network_decline_code),
                 "network_status" => Deserialize::begin(&mut self.network_status),
                 "reason" => Deserialize::begin(&mut self.reason),
                 "risk_level" => Deserialize::begin(&mut self.risk_level),
@@ -96,6 +108,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                advice_code: Deserialize::default(),
+                network_advice_code: Deserialize::default(),
+                network_decline_code: Deserialize::default(),
                 network_status: Deserialize::default(),
                 reason: Deserialize::default(),
                 risk_level: Deserialize::default(),
@@ -108,6 +123,9 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(advice_code),
+                Some(network_advice_code),
+                Some(network_decline_code),
                 Some(network_status),
                 Some(reason),
                 Some(risk_level),
@@ -116,6 +134,9 @@ const _: () = {
                 Some(seller_message),
                 Some(type_),
             ) = (
+                self.advice_code,
+                self.network_advice_code.take(),
+                self.network_decline_code.take(),
                 self.network_status.take(),
                 self.reason.take(),
                 self.risk_level.take(),
@@ -128,6 +149,9 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                advice_code,
+                network_advice_code,
+                network_decline_code,
                 network_status,
                 reason,
                 risk_level,
@@ -162,6 +186,9 @@ const _: () = {
             let mut b = ChargeOutcomeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "advice_code" => b.advice_code = FromValueOpt::from_value(v),
+                    "network_advice_code" => b.network_advice_code = FromValueOpt::from_value(v),
+                    "network_decline_code" => b.network_decline_code = FromValueOpt::from_value(v),
                     "network_status" => b.network_status = FromValueOpt::from_value(v),
                     "reason" => b.reason = FromValueOpt::from_value(v),
                     "risk_level" => b.risk_level = FromValueOpt::from_value(v),
@@ -177,3 +204,77 @@ const _: () = {
         }
     }
 };
+/// An enumerated value providing a more detailed explanation on [how to proceed with an error](https://stripe.com/docs/declines#retrying-issuer-declines).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ChargeOutcomeAdviceCode {
+    ConfirmCardData,
+    DoNotTryAgain,
+    TryAgainLater,
+}
+impl ChargeOutcomeAdviceCode {
+    pub fn as_str(self) -> &'static str {
+        use ChargeOutcomeAdviceCode::*;
+        match self {
+            ConfirmCardData => "confirm_card_data",
+            DoNotTryAgain => "do_not_try_again",
+            TryAgainLater => "try_again_later",
+        }
+    }
+}
+
+impl std::str::FromStr for ChargeOutcomeAdviceCode {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ChargeOutcomeAdviceCode::*;
+        match s {
+            "confirm_card_data" => Ok(ConfirmCardData),
+            "do_not_try_again" => Ok(DoNotTryAgain),
+            "try_again_later" => Ok(TryAgainLater),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for ChargeOutcomeAdviceCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ChargeOutcomeAdviceCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for ChargeOutcomeAdviceCode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for ChargeOutcomeAdviceCode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<ChargeOutcomeAdviceCode> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ChargeOutcomeAdviceCode::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(ChargeOutcomeAdviceCode);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ChargeOutcomeAdviceCode {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ChargeOutcomeAdviceCode"))
+    }
+}

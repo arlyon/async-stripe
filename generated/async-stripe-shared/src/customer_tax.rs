@@ -6,7 +6,7 @@ pub struct CustomerTax {
     pub automatic_tax: CustomerTaxAutomaticTax,
     /// A recent IP address of the customer used for tax reporting and tax location inference.
     pub ip_address: Option<String>,
-    /// The customer's location as identified by Stripe Tax.
+    /// The identified tax location of the customer.
     pub location: Option<stripe_shared::CustomerTaxLocation>,
 }
 #[doc(hidden)]

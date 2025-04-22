@@ -270,10 +270,13 @@ impl CreateIssuingCardBuilder {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingCardShipping {
     /// The address that the card is shipped to.
-    pub address: CreateIssuingCardShippingAddress,
+    pub address: RequiredAddress,
+    /// Address validation settings.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_validation: Option<CreateIssuingCardShippingAddressValidation>,
     /// Customs information for the shipment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customs: Option<CreateIssuingCardShippingCustoms>,
+    pub customs: Option<CustomsParam>,
     /// The name printed on the shipping label when shipping the card.
     pub name: String,
     /// Phone number of the recipient of the shipment.
@@ -291,12 +294,10 @@ pub struct CreateIssuingCardShipping {
     pub type_: Option<CreateIssuingCardShippingType>,
 }
 impl CreateIssuingCardShipping {
-    pub fn new(
-        address: impl Into<CreateIssuingCardShippingAddress>,
-        name: impl Into<String>,
-    ) -> Self {
+    pub fn new(address: impl Into<RequiredAddress>, name: impl Into<String>) -> Self {
         Self {
             address: address.into(),
+            address_validation: None,
             customs: None,
             name: name.into(),
             phone_number: None,
@@ -306,57 +307,76 @@ impl CreateIssuingCardShipping {
         }
     }
 }
-/// The address that the card is shipped to.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateIssuingCardShippingAddress {
-    /// City, district, suburb, town, or village.
-    pub city: String,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    pub country: String,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    pub line1: String,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<String>,
-    /// ZIP or postal code.
-    pub postal_code: String,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<String>,
+/// Address validation settings.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingCardShippingAddressValidation {
+    /// The address validation capabilities to use.
+    pub mode: CreateIssuingCardShippingAddressValidationMode,
 }
-impl CreateIssuingCardShippingAddress {
-    pub fn new(
-        city: impl Into<String>,
-        country: impl Into<String>,
-        line1: impl Into<String>,
-        postal_code: impl Into<String>,
-    ) -> Self {
-        Self {
-            city: city.into(),
-            country: country.into(),
-            line1: line1.into(),
-            line2: None,
-            postal_code: postal_code.into(),
-            state: None,
+impl CreateIssuingCardShippingAddressValidation {
+    pub fn new(mode: impl Into<CreateIssuingCardShippingAddressValidationMode>) -> Self {
+        Self { mode: mode.into() }
+    }
+}
+/// The address validation capabilities to use.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingCardShippingAddressValidationMode {
+    Disabled,
+    NormalizationOnly,
+    ValidationAndNormalization,
+}
+impl CreateIssuingCardShippingAddressValidationMode {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingCardShippingAddressValidationMode::*;
+        match self {
+            Disabled => "disabled",
+            NormalizationOnly => "normalization_only",
+            ValidationAndNormalization => "validation_and_normalization",
         }
     }
 }
-/// Customs information for the shipment.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateIssuingCardShippingCustoms {
-    /// The Economic Operators Registration and Identification (EORI) number to use for Customs.
-    /// Required for bulk shipments to Europe.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub eori_number: Option<String>,
-}
-impl CreateIssuingCardShippingCustoms {
-    pub fn new() -> Self {
-        Self { eori_number: None }
+
+impl std::str::FromStr for CreateIssuingCardShippingAddressValidationMode {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingCardShippingAddressValidationMode::*;
+        match s {
+            "disabled" => Ok(Disabled),
+            "normalization_only" => Ok(NormalizationOnly),
+            "validation_and_normalization" => Ok(ValidationAndNormalization),
+            _ => Err(stripe_types::StripeParseError),
+        }
     }
 }
-impl Default for CreateIssuingCardShippingCustoms {
-    fn default() -> Self {
-        Self::new()
+impl std::fmt::Display for CreateIssuingCardShippingAddressValidationMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingCardShippingAddressValidationMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingCardShippingAddressValidationMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingCardShippingAddressValidationMode {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateIssuingCardShippingAddressValidationMode",
+            )
+        })
     }
 }
 /// Shipment service.
@@ -3823,7 +3843,7 @@ impl CreateIssuingCard {
         self.inner.replacement_reason = Some(replacement_reason.into());
         self
     }
-    /// The second line to print on the card.
+    /// The second line to print on the card. Max length: 24 characters.
     pub fn second_line(mut self, second_line: impl Into<String>) -> Self {
         self.inner.second_line = Some(second_line.into());
         self
@@ -3888,6 +3908,8 @@ struct UpdateIssuingCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     pin: Option<EncryptedPinParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    shipping: Option<UpdateIssuingCardShipping>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     spending_controls: Option<UpdateIssuingCardSpendingControls>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_shared::IssuingCardStatus>,
@@ -3900,6 +3922,7 @@ impl UpdateIssuingCardBuilder {
             metadata: None,
             personalization_design: None,
             pin: None,
+            shipping: None,
             spending_controls: None,
             status: None,
         }
@@ -3958,6 +3981,234 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardCancellationReason {
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for UpdateIssuingCardCancellationReason")
+        })
+    }
+}
+/// Updated shipping information for the card.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingCardShipping {
+    /// The address that the card is shipped to.
+    pub address: RequiredAddress,
+    /// Address validation settings.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_validation: Option<UpdateIssuingCardShippingAddressValidation>,
+    /// Customs information for the shipment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customs: Option<CustomsParam>,
+    /// The name printed on the shipping label when shipping the card.
+    pub name: String,
+    /// Phone number of the recipient of the shipment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone_number: Option<String>,
+    /// Whether a signature is required for card delivery.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_signature: Option<bool>,
+    /// Shipment service.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub service: Option<UpdateIssuingCardShippingService>,
+    /// Packaging options.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<UpdateIssuingCardShippingType>,
+}
+impl UpdateIssuingCardShipping {
+    pub fn new(address: impl Into<RequiredAddress>, name: impl Into<String>) -> Self {
+        Self {
+            address: address.into(),
+            address_validation: None,
+            customs: None,
+            name: name.into(),
+            phone_number: None,
+            require_signature: None,
+            service: None,
+            type_: None,
+        }
+    }
+}
+/// Address validation settings.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingCardShippingAddressValidation {
+    /// The address validation capabilities to use.
+    pub mode: UpdateIssuingCardShippingAddressValidationMode,
+}
+impl UpdateIssuingCardShippingAddressValidation {
+    pub fn new(mode: impl Into<UpdateIssuingCardShippingAddressValidationMode>) -> Self {
+        Self { mode: mode.into() }
+    }
+}
+/// The address validation capabilities to use.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateIssuingCardShippingAddressValidationMode {
+    Disabled,
+    NormalizationOnly,
+    ValidationAndNormalization,
+}
+impl UpdateIssuingCardShippingAddressValidationMode {
+    pub fn as_str(self) -> &'static str {
+        use UpdateIssuingCardShippingAddressValidationMode::*;
+        match self {
+            Disabled => "disabled",
+            NormalizationOnly => "normalization_only",
+            ValidationAndNormalization => "validation_and_normalization",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateIssuingCardShippingAddressValidationMode {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateIssuingCardShippingAddressValidationMode::*;
+        match s {
+            "disabled" => Ok(Disabled),
+            "normalization_only" => Ok(NormalizationOnly),
+            "validation_and_normalization" => Ok(ValidationAndNormalization),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdateIssuingCardShippingAddressValidationMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateIssuingCardShippingAddressValidationMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateIssuingCardShippingAddressValidationMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingCardShippingAddressValidationMode {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateIssuingCardShippingAddressValidationMode",
+            )
+        })
+    }
+}
+/// Shipment service.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateIssuingCardShippingService {
+    Express,
+    Priority,
+    Standard,
+}
+impl UpdateIssuingCardShippingService {
+    pub fn as_str(self) -> &'static str {
+        use UpdateIssuingCardShippingService::*;
+        match self {
+            Express => "express",
+            Priority => "priority",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateIssuingCardShippingService {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateIssuingCardShippingService::*;
+        match s {
+            "express" => Ok(Express),
+            "priority" => Ok(Priority),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdateIssuingCardShippingService {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateIssuingCardShippingService {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateIssuingCardShippingService {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingCardShippingService {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateIssuingCardShippingService")
+        })
+    }
+}
+/// Packaging options.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateIssuingCardShippingType {
+    Bulk,
+    Individual,
+}
+impl UpdateIssuingCardShippingType {
+    pub fn as_str(self) -> &'static str {
+        use UpdateIssuingCardShippingType::*;
+        match self {
+            Bulk => "bulk",
+            Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateIssuingCardShippingType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateIssuingCardShippingType::*;
+        match s {
+            "bulk" => Ok(Bulk),
+            "individual" => Ok(Individual),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdateIssuingCardShippingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateIssuingCardShippingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateIssuingCardShippingType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingCardShippingType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateIssuingCardShippingType")
         })
     }
 }
@@ -7237,6 +7488,11 @@ impl UpdateIssuingCard {
         self.inner.pin = Some(pin.into());
         self
     }
+    /// Updated shipping information for the card.
+    pub fn shipping(mut self, shipping: impl Into<UpdateIssuingCardShipping>) -> Self {
+        self.inner.shipping = Some(shipping.into());
+        self
+    }
     /// Rules that control spending for this card.
     /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
     pub fn spending_controls(
@@ -7509,6 +7765,64 @@ impl StripeRequest for ShipCardIssuingCard {
         .form(&self.inner)
     }
 }
+#[derive(Clone, Debug, serde::Serialize)]
+struct SubmitCardIssuingCardBuilder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+}
+impl SubmitCardIssuingCardBuilder {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Updates the shipping status of the specified Issuing `Card` object to `submitted`.
+/// This method requires Stripe Version ‘2024-09-30.acacia’ or later.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct SubmitCardIssuingCard {
+    inner: SubmitCardIssuingCardBuilder,
+    card: String,
+}
+impl SubmitCardIssuingCard {
+    /// Construct a new `SubmitCardIssuingCard`.
+    pub fn new(card: impl Into<String>) -> Self {
+        Self { card: card.into(), inner: SubmitCardIssuingCardBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+}
+impl SubmitCardIssuingCard {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for SubmitCardIssuingCard {
+    type Output = stripe_shared::IssuingCard;
+
+    fn build(&self) -> RequestBuilder {
+        let card = &self.card;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/issuing/cards/{card}/shipping/submit"),
+        )
+        .form(&self.inner)
+    }
+}
 
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct EncryptedPinParam {
@@ -7522,6 +7836,57 @@ impl EncryptedPinParam {
     }
 }
 impl Default for EncryptedPinParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct RequiredAddress {
+    /// City, district, suburb, town, or village.
+    pub city: String,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    pub country: String,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    pub line1: String,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    pub postal_code: String,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+impl RequiredAddress {
+    pub fn new(
+        city: impl Into<String>,
+        country: impl Into<String>,
+        line1: impl Into<String>,
+        postal_code: impl Into<String>,
+    ) -> Self {
+        Self {
+            city: city.into(),
+            country: country.into(),
+            line1: line1.into(),
+            line2: None,
+            postal_code: postal_code.into(),
+            state: None,
+        }
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CustomsParam {
+    /// The Economic Operators Registration and Identification (EORI) number to use for Customs.
+    /// Required for bulk shipments to Europe.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eori_number: Option<String>,
+}
+impl CustomsParam {
+    pub fn new() -> Self {
+        Self { eori_number: None }
+    }
+}
+impl Default for CustomsParam {
     fn default() -> Self {
         Self::new()
     }

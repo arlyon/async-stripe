@@ -2,12 +2,24 @@
   "resources": {
     "account": {
       "business_profile": {
-        "annual_revenue": null,
+        "annual_revenue": {
+          "amount": null,
+          "currency": null,
+          "fiscal_year_end": null
+        },
         "estimated_worker_count": null,
         "mcc": null,
+        "minority_owned_business_designation": null,
         "name": null,
         "product_description": null,
-        "support_address": null,
+        "support_address": {
+          "city": null,
+          "country": null,
+          "line1": null,
+          "line2": null,
+          "postal_code": null,
+          "state": null
+        },
         "support_email": null,
         "support_phone": null,
         "support_url": null,
@@ -31,7 +43,7 @@
         "data": [],
         "has_more": false,
         "object": "list",
-        "url": "/v1/accounts/acct_1OPouMJN5vQBdWEx/external_accounts"
+        "url": "/v1/accounts/acct_1PgafTB7WZ01zgkW/external_accounts"
       },
       "future_requirements": {
         "alternatives": [],
@@ -43,7 +55,7 @@
         "past_due": [],
         "pending_verification": []
       },
-      "id": "acct_1OPouMJN5vQBdWEx",
+      "id": "acct_1PgafTB7WZ01zgkW",
       "metadata": {},
       "object": "account",
       "payouts_enabled": false,
@@ -132,39 +144,78 @@
       "created": 1234567890,
       "expires_at": 1234567890,
       "object": "account_link",
-      "url": "https://pakrym-manage-mydev.dev.stripe.me/setup/s/acct_1OPouMJN5vQBdWEx/A70LFGX6VXGE"
+      "url": "https://sangeekp-15t6ai--manage-mydev.dev.stripe.me/setup/s/acct_1PgafTB7WZ01zgkW/MerI6itPZo2K"
     },
     "account_session": {
-      "account": "acct_1OPousKxBrsRi89x",
-      "client_secret": "_PEHTFHffpUcokiSVrrc6TERNdA8300TQ5tgKincvQQYRY0v",
+      "account": "acct_1Pgc7HKmsySxIypT",
+      "client_secret": "accs_secret__QXhWgWIhGJ2Zl68tEmbZ29Gtc86adyWl6eEz2h6K7HtpnoB",
       "components": {
         "account_management": {
-          "enabled": true,
+          "enabled": false,
           "features": {
+            "disable_stripe_user_authentication": true,
             "external_account_collection": true
           }
         },
         "account_onboarding": {
           "enabled": false,
           "features": {
+            "disable_stripe_user_authentication": true,
             "external_account_collection": true
           }
         },
         "balances": {
-          "enabled": true,
+          "enabled": false,
           "features": {
-            "edit_payout_schedule": true,
-            "instant_payouts": true,
-            "standard_payouts": true
+            "disable_stripe_user_authentication": true,
+            "edit_payout_schedule": false,
+            "external_account_collection": true,
+            "instant_payouts": false,
+            "standard_payouts": false
           }
         },
         "documents": {
           "enabled": false,
           "features": {}
         },
-        "notification_banner": {
+        "financial_account": {
           "enabled": true,
           "features": {
+            "disable_stripe_user_authentication": true,
+            "external_account_collection": true,
+            "send_money": true,
+            "transfer_balance": true
+          }
+        },
+        "financial_account_transactions": {
+          "enabled": true,
+          "features": {
+            "card_spend_dispute_management": true
+          }
+        },
+        "issuing_card": {
+          "enabled": true,
+          "features": {
+            "card_management": true,
+            "card_spend_dispute_management": true,
+            "cardholder_management": true,
+            "spend_control_management": true
+          }
+        },
+        "issuing_cards_list": {
+          "enabled": true,
+          "features": {
+            "card_management": true,
+            "card_spend_dispute_management": true,
+            "cardholder_management": true,
+            "disable_stripe_user_authentication": true,
+            "spend_control_management": true
+          }
+        },
+        "notification_banner": {
+          "enabled": false,
+          "features": {
+            "disable_stripe_user_authentication": true,
             "external_account_collection": true
           }
         },
@@ -172,7 +223,7 @@
           "enabled": false,
           "features": {
             "capture_payments": true,
-            "destination_on_behalf_of_charge_management": true,
+            "destination_on_behalf_of_charge_management": false,
             "dispute_management": true,
             "refund_management": true
           }
@@ -181,7 +232,7 @@
           "enabled": false,
           "features": {
             "capture_payments": true,
-            "destination_on_behalf_of_charge_management": true,
+            "destination_on_behalf_of_charge_management": false,
             "dispute_management": true,
             "refund_management": true
           }
@@ -189,13 +240,23 @@
         "payouts": {
           "enabled": false,
           "features": {
+            "disable_stripe_user_authentication": true,
             "edit_payout_schedule": false,
+            "external_account_collection": true,
             "instant_payouts": false,
             "standard_payouts": false
           }
         },
         "payouts_list": {
-          "enabled": true,
+          "enabled": false,
+          "features": {}
+        },
+        "tax_registrations": {
+          "enabled": false,
+          "features": {}
+        },
+        "tax_settings": {
+          "enabled": false,
           "features": {}
         }
       },
@@ -206,7 +267,7 @@
     "apple_pay_domain": {
       "created": 1234567890,
       "domain_name": "example.com",
-      "id": "apwc_1OPoujJN5vQBdWExuvzAhTDs",
+      "id": "apwc_1Pgc6oB7WZ01zgkWHz71O4bz",
       "livemode": true,
       "object": "apple_pay_domain"
     },
@@ -216,15 +277,19 @@
       "object": "application"
     },
     "application_fee": {
-      "account": "acct_1OPouMJN5vQBdWEx",
+      "account": "acct_1PgafTB7WZ01zgkW",
       "amount": 100,
       "amount_refunded": 0,
-      "application": "ca_PEHTxk3gWAWtTbzqUoOxfbLUkWTusmur",
-      "balance_transaction": "txn_1OPoueJN5vQBdWEx8dhHMVqh",
-      "charge": "ch_1OPoueJN5vQBdWEx5AWizjSY",
+      "application": "ca_QXhWOVlWX7KFerjnWFSGuGR21sZjCeji",
+      "balance_transaction": "txn_1PgaxNB7WZ01zgkWEV3TLf40",
+      "charge": "ch_1PgafuB7WZ01zgkWXYmPNZs8",
       "created": 1234567890,
       "currency": "usd",
-      "id": "fee_1OPounJN5vQBdWExWgwi95uU",
+      "fee_source": {
+        "charge": "ch_1PgafuB7WZ01zgkWXYmPNZs8",
+        "type": "charge"
+      },
+      "id": "fee_1Pgc6zB7WZ01zgkWOMh2at1m",
       "livemode": false,
       "object": "application_fee",
       "originating_transaction": null,
@@ -233,7 +298,7 @@
         "data": [],
         "has_more": false,
         "object": "list",
-        "url": "/v1/application_fees/fee_1OPounJN5vQBdWExWgwi95uU/refunds"
+        "url": "/v1/application_fees/fee_1Pgc6zB7WZ01zgkWOMh2at1m/refunds"
       }
     },
     "apps.secret": {
@@ -243,7 +308,6 @@
       "livemode": false,
       "name": "test-secret",
       "object": "apps.secret",
-      "payload": null,
       "scope": {
         "type": "account"
       }
@@ -285,29 +349,218 @@
       "exchange_rate": null,
       "fee": 0,
       "fee_details": [],
-      "id": "txn_1OPoueJN5vQBdWEx8dhHMVqh",
+      "id": "txn_1PgaxNB7WZ01zgkWEV3TLf40",
       "net": 100,
       "object": "balance_transaction",
       "reporting_category": "charge",
-      "source": "ch_1OPoueJN5vQBdWExHvNS496R",
+      "source": "ch_1PgafuB7WZ01zgkWXYmPNZs8",
       "status": "available",
       "type": "charge"
     },
     "bank_account": {
       "account_holder_name": "Jane Austen",
-      "account_holder_type": "individual",
+      "account_holder_type": "company",
       "account_type": null,
       "bank_name": "STRIPE TEST BANK",
       "country": "US",
       "currency": "usd",
       "customer": null,
-      "fingerprint": "1JWtPxqbdX5Gamtz",
-      "id": "ba_1OPoumJN5vQBdWExwmpTeNeE",
+      "fingerprint": "AuoSJ18zsVWV9SPc",
+      "id": "ba_1PgagAB7WZ01zgkWr3DySp2Q",
       "last4": "6789",
       "metadata": {},
       "object": "bank_account",
       "routing_number": "110000000",
       "status": "new"
+    },
+    "billing.alert": {
+      "alert_type": "usage_threshold",
+      "id": "obj_123",
+      "livemode": true,
+      "object": "billing.alert",
+      "status": null,
+      "title": "title",
+      "usage_threshold": {
+        "filters": null,
+        "gte": 102680,
+        "meter": {
+          "created": 1028554472,
+          "customer_mapping": {
+            "event_payload_key": "event_payload_key",
+            "type": "by_id"
+          },
+          "default_aggregation": {
+            "formula": "sum"
+          },
+          "display_name": "display_name",
+          "event_name": "event_name",
+          "event_time_window": null,
+          "id": "obj_123",
+          "livemode": true,
+          "object": "billing.meter",
+          "status": "active",
+          "status_transitions": {
+            "deactivated_at": null
+          },
+          "updated": 234430277,
+          "value_settings": {
+            "event_payload_key": "event_payload_key"
+          }
+        },
+        "recurrence": "one_time"
+      }
+    },
+    "billing.alert_triggered": {
+      "alert": {
+        "alert_type": "usage_threshold",
+        "id": "obj_123",
+        "livemode": true,
+        "object": "billing.alert",
+        "status": null,
+        "title": "title",
+        "usage_threshold": {
+          "filters": null,
+          "gte": 102680,
+          "meter": {
+            "created": 1028554472,
+            "customer_mapping": {
+              "event_payload_key": "event_payload_key",
+              "type": "by_id"
+            },
+            "default_aggregation": {
+              "formula": "sum"
+            },
+            "display_name": "display_name",
+            "event_name": "event_name",
+            "event_time_window": null,
+            "id": "obj_123",
+            "livemode": true,
+            "object": "billing.meter",
+            "status": "active",
+            "status_transitions": {
+              "deactivated_at": null
+            },
+            "updated": 234430277,
+            "value_settings": {
+              "event_payload_key": "event_payload_key"
+            }
+          },
+          "recurrence": "one_time"
+        }
+      },
+      "created": 1028554472,
+      "customer": "customer",
+      "livemode": true,
+      "object": "billing.alert_triggered",
+      "value": 111972721
+    },
+    "billing.credit_balance_summary": {
+      "balances": [
+        {
+          "available_balance": {
+            "monetary": {
+              "currency": "currency",
+              "value": 111972721
+            },
+            "type": "monetary"
+          },
+          "ledger_balance": {
+            "monetary": {
+              "currency": "currency",
+              "value": 111972721
+            },
+            "type": "monetary"
+          }
+        }
+      ],
+      "customer": {
+        "created": 1028554472,
+        "default_source": null,
+        "description": null,
+        "email": null,
+        "id": "obj_123",
+        "livemode": true,
+        "object": "customer",
+        "shipping": {}
+      },
+      "livemode": true,
+      "object": "billing.credit_balance_summary"
+    },
+    "billing.credit_balance_transaction": {
+      "created": 1028554472,
+      "credit": {
+        "amount": {
+          "monetary": {
+            "currency": "currency",
+            "value": 111972721
+          },
+          "type": "monetary"
+        },
+        "credits_application_invoice_voided": {
+          "invoice": "invoice",
+          "invoice_line_item": "invoice_line_item"
+        },
+        "type": "credits_application_invoice_voided"
+      },
+      "credit_grant": "credit_grant",
+      "debit": {
+        "amount": {
+          "monetary": {
+            "currency": "currency",
+            "value": 111972721
+          },
+          "type": "monetary"
+        },
+        "credits_applied": {
+          "invoice": "invoice",
+          "invoice_line_item": "invoice_line_item"
+        },
+        "type": "credits_applied"
+      },
+      "effective_at": 247108043,
+      "id": "obj_123",
+      "livemode": true,
+      "object": "billing.credit_balance_transaction",
+      "test_clock": null,
+      "type": null
+    },
+    "billing.credit_grant": {
+      "amount": {
+        "monetary": {
+          "currency": "currency",
+          "value": 111972721
+        },
+        "type": "monetary"
+      },
+      "applicability_config": {
+        "scope": {
+          "price_type": "metered"
+        }
+      },
+      "category": "paid",
+      "created": 1028554472,
+      "customer": {
+        "created": 1028554472,
+        "default_source": null,
+        "description": null,
+        "email": null,
+        "id": "obj_123",
+        "livemode": true,
+        "object": "customer",
+        "shipping": {}
+      },
+      "effective_at": null,
+      "expires_at": null,
+      "id": "obj_123",
+      "livemode": true,
+      "metadata": {
+        "undefined": "metadata"
+      },
+      "name": null,
+      "object": "billing.credit_grant",
+      "test_clock": null,
+      "updated": 234430277,
+      "voided_at": null
     },
     "billing.meter": {
       "created": 1234567890,
@@ -346,8 +599,10 @@
       "timestamp": 1234567890
     },
     "billing.meter_event_adjustment": {
-      "cancel": null,
-      "event_name": "event_name",
+      "cancel": {
+        "identifier": "1234-1234"
+      },
+      "event_name": "test-meter-event-name",
       "livemode": false,
       "object": "billing.meter_event_adjustment",
       "status": "complete",
@@ -398,11 +653,17 @@
         "subscription_update": {
           "default_allowed_updates": [],
           "enabled": false,
-          "products": null,
-          "proration_behavior": "none"
+          "proration_behavior": "none",
+          "schedule_at_period_end": {
+            "conditions": [
+              {
+                "type": "decreasing_item_amount"
+              }
+            ]
+          }
         }
       },
-      "id": "bpc_1OPouvJN5vQBdWEx6dSG6gsf",
+      "id": "bpc_1Pgc70B7WZ01zgkWSnFO04Vt",
       "is_default": true,
       "livemode": true,
       "login_page": {
@@ -414,20 +675,53 @@
       "updated": 1234567890
     },
     "billing_portal.session": {
-      "configuration": "bpc_1OPouvJN5vQBdWEx9IJMn3wL",
+      "configuration": "bpc_1Pgc7HB7WZ01zgkWxH2EPWRX",
       "created": 1234567890,
-      "customer": "cus_PEHTIoPSgT0tXQ",
-      "flow": null,
-      "id": "bps_1OPouvJN5vQBdWEx4sx4lucn",
+      "customer": "cus_QXg1o8vcGmoR32",
+      "flow": {
+        "after_completion": {
+          "hosted_confirmation": {
+            "custom_message": null
+          },
+          "redirect": {
+            "return_url": "return_url"
+          },
+          "type": "hosted_confirmation"
+        },
+        "subscription_cancel": {
+          "retention": {
+            "coupon_offer": {
+              "coupon": "coupon"
+            },
+            "type": "coupon_offer"
+          },
+          "subscription": "subscription"
+        },
+        "subscription_update": {
+          "subscription": "subscription"
+        },
+        "subscription_update_confirm": {
+          "discounts": null,
+          "items": [
+            {
+              "id": null,
+              "price": null
+            }
+          ],
+          "subscription": "subscription"
+        },
+        "type": "subscription_update"
+      },
+      "id": "bps_1Pgc7HB7WZ01zgkWNs8s9Auh",
       "livemode": true,
       "locale": null,
       "object": "billing_portal.session",
       "on_behalf_of": null,
       "return_url": "https://example.com/account",
-      "url": "https://pakrym-customer_portal-mydev.dev.stripe.me/session/{SESSION_SECRET}"
+      "url": "https://sangeekp-15t6ai--customer_portal-mydev.dev.stripe.me/session/{SESSION_SECRET}"
     },
     "capability": {
-      "account": "acct_1OPouMJN5vQBdWEx",
+      "account": "acct_1PgafTB7WZ01zgkW",
       "future_requirements": {
         "alternatives": [],
         "current_deadline": null,
@@ -469,21 +763,22 @@
       "cvc_check": "pass",
       "dynamic_last4": null,
       "exp_month": 8,
-      "exp_year": 2024,
-      "fingerprint": "r40d4vOgg3VecDJF",
+      "exp_year": 2025,
+      "fingerprint": "AOB934RVNwzk6xtn",
       "funding": "credit",
-      "id": "card_1OPoudJN5vQBdWExoijT3YAB",
+      "id": "card_1PgaftB7WZ01zgkWm3waTcFp",
       "last4": "4242",
       "metadata": {},
       "name": "Jenny Rosen",
       "object": "card",
+      "regulated_status": null,
       "tokenization_method": null
     },
     "cash_balance": {
       "available": {
         "eur": 10000
       },
-      "customer": "cus_PEHTIoPSgT0tXQ",
+      "customer": "cus_QXg1o8vcGmoR32",
       "livemode": false,
       "object": "cash_balance",
       "settings": {
@@ -498,7 +793,7 @@
       "application": null,
       "application_fee": null,
       "application_fee_amount": null,
-      "balance_transaction": "txn_1OPoueJN5vQBdWEx8dhHMVqh",
+      "balance_transaction": "txn_1PgaxNB7WZ01zgkWEV3TLf40",
       "billing_details": {
         "address": {
           "city": null,
@@ -510,7 +805,8 @@
         },
         "email": null,
         "name": "Jenny Rosen",
-        "phone": null
+        "phone": null,
+        "tax_id": null
       },
       "calculated_statement_descriptor": null,
       "captured": false,
@@ -523,19 +819,27 @@
       "failure_code": null,
       "failure_message": null,
       "fraud_details": {},
-      "id": "ch_1OPoueJN5vQBdWEx5AWizjSY",
-      "invoice": null,
+      "id": "ch_1PgafuB7WZ01zgkWXYmPNZs8",
       "livemode": false,
       "metadata": {},
       "object": "charge",
       "on_behalf_of": null,
-      "outcome": null,
+      "outcome": {
+        "advice_code": null,
+        "network_advice_code": null,
+        "network_decline_code": null,
+        "network_status": null,
+        "reason": null,
+        "seller_message": null,
+        "type": "type"
+      },
       "paid": true,
       "payment_intent": null,
-      "payment_method": "card_1OPoudJN5vQBdWExSTD9mIPF",
+      "payment_method": "card_1PgaftB7WZ01zgkWm3waTcFp",
       "payment_method_details": {
         "card": {
           "amount_authorized": null,
+          "authorization_code": null,
           "brand": "visa",
           "checks": {
             "address_line1_check": null,
@@ -544,16 +848,22 @@
           },
           "country": "US",
           "exp_month": 8,
-          "exp_year": 2024,
+          "exp_year": 2025,
           "extended_authorization": {
             "status": "disabled"
           },
-          "fingerprint": "r40d4vOgg3VecDJF",
+          "fingerprint": "AOB934RVNwzk6xtn",
           "funding": "credit",
           "incremental_authorization": {
             "status": "unavailable"
           },
-          "installments": null,
+          "installments": {
+            "plan": {
+              "count": null,
+              "interval": null,
+              "type": "fixed_count"
+            }
+          },
           "last4": "4242",
           "mandate": null,
           "multicapture": {
@@ -563,65 +873,178 @@
           "network_token": {
             "used": false
           },
+          "network_transaction_id": null,
           "overcapture": {
             "maximum_amount_capturable": 100,
             "status": "unavailable"
           },
-          "three_d_secure": null,
-          "wallet": null
+          "regulated_status": null,
+          "three_d_secure": {
+            "authentication_flow": null,
+            "electronic_commerce_indicator": null,
+            "exemption_indicator": null,
+            "result": null,
+            "result_reason": null,
+            "transaction_id": null,
+            "version": null
+          },
+          "wallet": {
+            "dynamic_last4": null,
+            "type": "link"
+          }
         },
         "type": "card"
       },
       "receipt_email": null,
       "receipt_number": null,
-      "receipt_url": "https://pakrym-manage-mydev.dev.stripe.me/receipts/payment/CAcaFwoVYWNjdF8xT1BvdU1KTjV2UUJkV0V4KL3JkawGMgZvNmQ3SW46LCKn_twcP-jc9phNH9BfAtUKJcNs5Gy9n0cn7wNp9IWz2coUhEmAKuyETwtJ",
+      "receipt_url": "https://sangeekp-15t6ai--manage-mydev.dev.stripe.me/receipts/payment/CAcaFwoVYWNjdF8xUGdhZlRCN1daMDF6Z2tXKI_ei7UGMgZv2S_KfiY6LCJrxC7awazgQA9I88krZKw5uuCkZ5Nup2tomEtAbSpdfzjVZHO3ZYP5KFZP",
       "refunded": false,
       "refunds": {
         "data": [],
         "has_more": false,
         "object": "list",
-        "url": "/v1/charges/ch_1OPoueJN5vQBdWEx5AWizjSY/refunds"
+        "url": "/v1/charges/ch_1PgafuB7WZ01zgkWXYmPNZs8/refunds"
       },
       "review": null,
-      "shipping": null,
-      "source": null,
+      "shipping": {},
+      "source": {
+        "allow_redisplay": null,
+        "amount": null,
+        "client_secret": "client_secret",
+        "created": 1028554472,
+        "currency": null,
+        "flow": "flow",
+        "id": "obj_123",
+        "livemode": true,
+        "metadata": null,
+        "object": "source",
+        "owner": {
+          "address": {
+            "city": null,
+            "country": null,
+            "line1": null,
+            "line2": null,
+            "postal_code": null,
+            "state": null
+          },
+          "email": null,
+          "name": null,
+          "phone": null,
+          "verified_address": {
+            "city": null,
+            "country": null,
+            "line1": null,
+            "line2": null,
+            "postal_code": null,
+            "state": null
+          },
+          "verified_email": null,
+          "verified_name": null,
+          "verified_phone": null
+        },
+        "statement_descriptor": null,
+        "status": "status",
+        "type": "ach_credit_transfer",
+        "usage": null
+      },
       "source_transfer": null,
       "statement_descriptor": null,
       "statement_descriptor_suffix": null,
       "status": "succeeded",
-      "transfer_data": null,
+      "transfer_data": {
+        "amount": null,
+        "destination": {
+          "id": "obj_123",
+          "object": "account"
+        }
+      },
       "transfer_group": null
     },
     "checkout.session": {
-      "after_expiration": null,
+      "adaptive_pricing": {
+        "enabled": true
+      },
+      "after_expiration": {
+        "recovery": {
+          "allow_promotion_codes": true,
+          "enabled": true,
+          "expires_at": null,
+          "url": null
+        }
+      },
       "allow_promotion_codes": null,
       "amount_subtotal": null,
       "amount_total": null,
       "automatic_tax": {
         "enabled": false,
-        "liability": null,
+        "liability": {
+          "type": "account"
+        },
+        "provider": null,
         "status": null
       },
       "billing_address_collection": null,
       "cancel_url": "https://example.com/cancel",
       "client_reference_id": null,
       "client_secret": null,
-      "consent": null,
-      "consent_collection": null,
+      "collected_information": {
+        "shipping_details": {
+          "address": {
+            "city": null,
+            "country": null,
+            "line1": null,
+            "line2": null,
+            "postal_code": null,
+            "state": null
+          },
+          "name": "name"
+        }
+      },
+      "consent": {
+        "promotions": null,
+        "terms_of_service": null
+      },
+      "consent_collection": {
+        "payment_method_reuse_agreement": {
+          "position": "hidden"
+        },
+        "promotions": null,
+        "terms_of_service": null
+      },
       "created": 1234567890,
       "currency": null,
-      "currency_conversion": null,
+      "currency_conversion": {
+        "amount_subtotal": 1555417355,
+        "amount_total": 1117121693,
+        "fx_rate": "291452898",
+        "source_currency": "source_currency"
+      },
       "custom_fields": [],
       "custom_text": {
-        "after_submit": null,
-        "shipping_address": null,
-        "submit": null,
-        "terms_of_service_acceptance": null
+        "after_submit": {
+          "message": "message"
+        },
+        "shipping_address": {
+          "message": "message"
+        },
+        "submit": {
+          "message": "message"
+        },
+        "terms_of_service_acceptance": {
+          "message": "message"
+        }
       },
       "customer": null,
       "customer_creation": null,
       "customer_details": {
-        "address": null,
+        "address": {
+          "city": null,
+          "country": null,
+          "line1": null,
+          "line2": null,
+          "postal_code": null,
+          "state": null
+        },
         "email": "example@example.com",
         "name": null,
         "phone": null,
@@ -629,41 +1052,80 @@
         "tax_ids": null
       },
       "customer_email": null,
+      "discounts": null,
       "expires_at": 1234567890,
-      "id": "cs_test_a12et9VnHfV9NETJktvuOmVoyrOB40recOCQWiVNeDlBe4IqxEIRNi1Qdf",
+      "id": "cs_test_a1YS1URlnyQCN5fUUduORoQ7Pw41PJqDWkIVQCpJPqkfIhd6tVY8XB1OLY",
       "invoice": null,
-      "invoice_creation": null,
+      "invoice_creation": {
+        "enabled": true,
+        "invoice_data": {
+          "account_tax_ids": null,
+          "custom_fields": null,
+          "description": null,
+          "footer": null,
+          "issuer": {
+            "type": "account"
+          },
+          "metadata": null,
+          "rendering_options": {
+            "amount_tax_display": null
+          }
+        }
+      },
       "livemode": false,
       "locale": null,
       "metadata": {},
       "mode": "payment",
       "object": "checkout.session",
-      "payment_intent": "pi_1OPougJN5vQBdWEx8s2Dj0YR",
+      "payment_intent": "pi_1PgafyB7WZ01zgkWSjxsAJo3",
       "payment_link": null,
       "payment_method_collection": null,
-      "payment_method_configuration_details": null,
+      "payment_method_configuration_details": {
+        "id": "obj_123",
+        "parent": null
+      },
       "payment_method_options": {},
       "payment_method_types": [
         "card"
       ],
       "payment_status": "unpaid",
+      "permissions": {
+        "update_shipping_details": null
+      },
       "phone_number_collection": {
         "enabled": false
       },
       "recovered_from": null,
-      "saved_payment_method_options": null,
+      "saved_payment_method_options": {
+        "allow_redisplay_filters": null,
+        "payment_method_remove": null,
+        "payment_method_save": null
+      },
       "setup_intent": null,
-      "shipping_address_collection": null,
-      "shipping_cost": null,
-      "shipping_details": null,
+      "shipping_address_collection": {
+        "allowed_countries": [
+          "SC"
+        ]
+      },
+      "shipping_cost": {
+        "amount_subtotal": 1555417355,
+        "amount_tax": 1424534716,
+        "amount_total": 1117121693,
+        "shipping_rate": null
+      },
       "shipping_options": [],
       "status": "open",
       "submit_type": null,
       "subscription": null,
       "success_url": "https://example.com/success",
-      "total_details": null,
+      "total_details": {
+        "amount_discount": 406046392,
+        "amount_shipping": null,
+        "amount_tax": 1424534716
+      },
       "ui_mode": "hosted",
-      "url": "https://checkout.stripe.com/pay/c/cs_test_a12et9VnHfV9NETJktvuOmVoyrOB40recOCQWiVNeDlBe4IqxEIRNi1Qdf"
+      "url": "https://checkout.stripe.com/pay/c/cs_test_a1YS1URlnyQCN5fUUduORoQ7Pw41PJqDWkIVQCpJPqkfIhd6tVY8XB1OLY",
+      "wallet_options": {}
     },
     "climate.order": {
       "amount_fees": 300,
@@ -682,7 +1144,7 @@
       "delivered_at": 1234567890,
       "delivery_details": [],
       "expected_delivery_year": 2027,
-      "id": "climorder_1OPouwJN5vQBdWExXDtawOMl",
+      "id": "climorder_1Pgc73B7WZ01zgkWaebIwEZ7",
       "livemode": false,
       "metadata": {},
       "metric_tons": "10",
@@ -715,31 +1177,14 @@
             {
               "city": "San Francisco",
               "country": "US",
-              "latitude": 37.7749,
-              "longitude": -122.4194,
+              "latitude": 37.7480408,
+              "longitude": -122.4057404,
               "region": "CA"
             }
           ],
           "name": "Charm Industrial",
           "object": "climate.supplier",
           "removal_pathway": "biomass_carbon_removal_and_storage"
-        },
-        {
-          "id": "climsup_carbon_capture_inc",
-          "info_url": "https://frontierclimate.com/portfolio/carboncapture-inc",
-          "livemode": false,
-          "locations": [
-            {
-              "city": "Los Angeles",
-              "country": "US",
-              "latitude": 34.0549,
-              "longitude": -118.2426,
-              "region": "CA"
-            }
-          ],
-          "name": "CarbonCapture Inc.",
-          "object": "climate.supplier",
-          "removal_pathway": "direct_air_capture"
         },
         {
           "id": "climsup_heirloom",
@@ -749,8 +1194,8 @@
             {
               "city": "Brisbane",
               "country": "US",
-              "latitude": 37.6808,
-              "longitude": -122.4,
+              "latitude": 37.686,
+              "longitude": -122.403,
               "region": "CA"
             }
           ],
@@ -774,6 +1219,40 @@
           "name": "Lithos",
           "object": "climate.supplier",
           "removal_pathway": "enhanced_weathering"
+        },
+        {
+          "id": "climsup_vaulted",
+          "info_url": "https://frontierclimate.com/portfolio/vaulted",
+          "livemode": false,
+          "locations": [
+            {
+              "city": "Houston",
+              "country": "US",
+              "latitude": 29.7604,
+              "longitude": -95.3698,
+              "region": "TX"
+            }
+          ],
+          "name": "Vaulted Deep",
+          "object": "climate.supplier",
+          "removal_pathway": "biomass_carbon_removal_and_storage"
+        },
+        {
+          "id": "climsup_carbon_capture_inc",
+          "info_url": "https://frontierclimate.com/portfolio/carboncapture-inc",
+          "livemode": false,
+          "locations": [
+            {
+              "city": "Los Angeles",
+              "country": "US",
+              "latitude": 34.0399975,
+              "longitude": -118.2342512,
+              "region": "CA"
+            }
+          ],
+          "name": "CarbonCapture Inc.",
+          "object": "climate.supplier",
+          "removal_pathway": "direct_air_capture"
         }
       ]
     },
@@ -785,8 +1264,8 @@
         {
           "city": "San Francisco",
           "country": "US",
-          "latitude": 37.7749,
-          "longitude": -122.4194,
+          "latitude": 37.7480408,
+          "longitude": -122.4057404,
           "region": "CA"
         }
       ],
@@ -797,12 +1276,26 @@
     "confirmation_token": {
       "created": 1234567890,
       "expires_at": 1234567890,
-      "id": "ctoken_1OwqXTC7jqlCbEWAnSWvE8pX",
+      "id": "ctoken_1Pgc73B7WZ01zgkWgFXpfTtv",
       "livemode": true,
-      "mandate_data": null,
+      "mandate_data": {
+        "customer_acceptance": {
+          "online": {
+            "ip_address": null,
+            "user_agent": null
+          },
+          "type": "type"
+        }
+      },
       "object": "confirmation_token",
       "payment_intent": null,
+      "payment_method_options": {
+        "card": {
+          "cvc_token": null
+        }
+      },
       "payment_method_preview": {
+        "allow_redisplay": "unspecified",
         "billing_details": {
           "address": {
             "city": "San Francisco",
@@ -814,15 +1307,17 @@
           },
           "email": null,
           "name": "Jane Austen",
-          "phone": null
+          "phone": null,
+          "tax_id": null
         },
-        "type": "card",
+        "customer": null,
+        "type": "us_bank_account",
         "us_bank_account": {
           "account_holder_type": "company",
           "account_type": "checking",
           "bank_name": "STRIPE TEST BANK",
           "financial_connections_account": null,
-          "fingerprint": "6wfQAEPlPmv9GKyV",
+          "fingerprint": "AuoSJ18zsVWV9SPc",
           "last4": "6789",
           "networks": {
             "preferred": "ach",
@@ -837,7 +1332,18 @@
       "return_url": "https://example.com/return",
       "setup_future_usage": "off_session",
       "setup_intent": null,
-      "shipping": null,
+      "shipping": {
+        "address": {
+          "city": "San Francisco",
+          "country": "US",
+          "line1": "1234 Fake Street",
+          "line2": null,
+          "postal_code": "94102",
+          "state": "CA"
+        },
+        "name": "Jenny Rosen",
+        "phone": null
+      },
       "use_stripe_sdk": true
     },
     "country_spec": {
@@ -1038,12 +1544,6 @@
             "business_profile.product_description",
             "business_profile.url",
             "business_type",
-            "company.address.city",
-            "company.address.line1",
-            "company.address.postal_code",
-            "company.address.state",
-            "company.name",
-            "company.tax_id",
             "external_account",
             "individual.address.city",
             "individual.address.line1",
@@ -1071,7 +1571,7 @@
       "amount_off": null,
       "created": 1234567890,
       "currency": "usd",
-      "duration": "repeating",
+      "duration": "forever",
       "duration_in_months": 3,
       "id": "Z4OV52SU",
       "livemode": false,
@@ -1089,44 +1589,44 @@
       "amount_shipping": 0,
       "created": 1234567890,
       "currency": "usd",
-      "customer": "cus_PEHTIoPSgT0tXQ",
+      "customer": "cus_QXg1o8vcGmoR32",
       "customer_balance_transaction": null,
       "discount_amount": 0,
       "discount_amounts": [],
       "effective_at": 1234567890,
-      "id": "cn_1OPouvJN5vQBdWExIhfxzf67",
-      "invoice": "in_1OPouvJN5vQBdWExRyU1EhWP",
+      "id": "cn_1Pgc75B7WZ01zgkWJMPt5riP",
+      "invoice": "in_1Pgc75B7WZ01zgkWYv4iMwt7",
       "lines": {
         "data": [
           {
             "amount": 1190,
-            "amount_excluding_tax": 1190,
             "description": "My First Invoice Item (created for API docs)",
             "discount_amount": 0,
             "discount_amounts": [],
-            "id": "cnli_1OPouvJN5vQBdWExsUfSIvWE",
-            "invoice_line_item": "il_1OPouvJN5vQBdWExpk2vqZBx",
+            "id": "cnli_1Pgc75B7WZ01zgkWla6u0GdZ",
+            "invoice_line_item": "il_1Pgc74B7WZ01zgkWWh45tUBA",
             "livemode": false,
             "object": "credit_note_line_item",
-            "quantity": 1,
-            "tax_amounts": [
+            "pretax_credit_amounts": [
               {
-                "amount": 190,
-                "inclusive": false,
-                "tax_rate": "txr_1OPouvJN5vQBdWExvkEZYzsQ",
-                "taxability_reason": null,
-                "taxable_amount": 1000
+                "amount": 1413853096,
+                "type": "credit_balance_transaction"
               }
             ],
+            "quantity": 1,
             "tax_rates": [
               {
                 "active": true,
                 "country": "DE",
-                "created": 1703175373,
+                "created": 1721954066,
                 "description": "VAT Germany",
                 "display_name": "VAT",
                 "effective_percentage": null,
-                "id": "txr_1OPouvJN5vQBdWExvkEZYzsQ",
+                "flat_amount": {
+                  "amount": 1413853096,
+                  "currency": "currency"
+                },
+                "id": "txr_1Pgc74B7WZ01zgkW94BlEhHU",
                 "inclusive": false,
                 "jurisdiction": "DE",
                 "jurisdiction_level": null,
@@ -1134,36 +1634,41 @@
                 "metadata": {},
                 "object": "tax_rate",
                 "percentage": 19,
+                "rate_type": null,
                 "state": null,
                 "tax_type": "vat"
               }
             ],
+            "taxes": null,
             "type": "invoice_line_item",
             "unit_amount": null,
-            "unit_amount_decimal": null,
-            "unit_amount_excluding_tax": "1190"
+            "unit_amount_decimal": null
           },
           {
             "amount": 500,
-            "amount_excluding_tax": 500,
             "description": "Service credit",
             "discount_amount": 0,
             "discount_amounts": [],
-            "id": "cnli_1OPouvJN5vQBdWExbjtBWlPg",
+            "id": "cnli_1Pgc75B7WZ01zgkW9m0EaOVh",
             "livemode": false,
             "object": "credit_note_line_item",
+            "pretax_credit_amounts": [
+              {
+                "amount": 1413853096,
+                "type": "credit_balance_transaction"
+              }
+            ],
             "quantity": 1,
-            "tax_amounts": [],
             "tax_rates": [],
+            "taxes": null,
             "type": "custom_line_item",
             "unit_amount": 500,
-            "unit_amount_decimal": "500",
-            "unit_amount_excluding_tax": "500"
+            "unit_amount_decimal": "500"
           }
         ],
         "has_more": false,
         "object": "list",
-        "url": "/v1/credit_notes/cn_1OPouvJN5vQBdWExIhfxzf67/lines"
+        "url": "/v1/credit_notes/cn_1Pgc75B7WZ01zgkWJMPt5riP/lines"
       },
       "livemode": false,
       "memo": null,
@@ -1171,62 +1676,128 @@
       "number": "ABCD-1234-CN-01",
       "object": "credit_note",
       "out_of_band_amount": null,
-      "pdf": "https://pakrym-manage-mydev.dev.stripe.me/credit_notes/acct_1OPouMJN5vQBdWEx/cnst_123456789/pdf?s=ap",
+      "pdf": "https://sangeekp-15t6ai--manage-mydev.dev.stripe.me/credit_notes/acct_1PgafTB7WZ01zgkW/cnst_123456789/pdf?s=ap",
+      "pretax_credit_amounts": [
+        {
+          "amount": 1413853096,
+          "type": "credit_balance_transaction"
+        }
+      ],
       "reason": null,
-      "refund": null,
-      "shipping_cost": null,
+      "refunds": [
+        {
+          "amount_refunded": 1387154914,
+          "refund": {
+            "amount": 1413853096,
+            "balance_transaction": null,
+            "charge": null,
+            "created": 1028554472,
+            "currency": "currency",
+            "id": "obj_123",
+            "metadata": null,
+            "object": "refund",
+            "payment_intent": null,
+            "reason": null,
+            "receipt_number": null,
+            "source_transfer_reversal": null,
+            "status": null,
+            "transfer_reversal": null
+          }
+        }
+      ],
+      "shipping_cost": {
+        "amount_subtotal": 1555417355,
+        "amount_tax": 1424534716,
+        "amount_total": 1117121693,
+        "shipping_rate": null
+      },
       "status": "issued",
       "subtotal": 1690,
       "subtotal_excluding_tax": 1690,
-      "tax_amounts": [
-        {
-          "amount": 190,
-          "inclusive": false,
-          "tax_rate": "txr_1OPouvJN5vQBdWExvkEZYzsQ",
-          "taxability_reason": null,
-          "taxable_amount": 1000
-        }
-      ],
       "total": 1690,
       "total_excluding_tax": null,
+      "total_taxes": null,
       "type": "pre_payment",
       "voided_at": 1234567890
     },
     "credit_note_line_item": {
       "amount": 1000,
-      "amount_excluding_tax": 1000,
       "description": "My First Invoice Item (created for API docs)",
       "discount_amount": 0,
       "discount_amounts": [],
-      "id": "cnli_1OPouvJN5vQBdWExkO30YEXZ",
-      "invoice_line_item": "il_1OPouvJN5vQBdWEx4xnltBII",
+      "id": "cnli_1Pgc75B7WZ01zgkWPb1sOn7l",
+      "invoice_line_item": "il_1Pgc75B7WZ01zgkWOwaRplc5",
       "livemode": false,
       "object": "credit_note_line_item",
+      "pretax_credit_amounts": [
+        {
+          "amount": 1413853096,
+          "type": "credit_balance_transaction"
+        }
+      ],
       "quantity": 1,
-      "tax_amounts": [],
       "tax_rates": [],
+      "taxes": null,
       "type": "invoice_line_item",
       "unit_amount": null,
-      "unit_amount_decimal": null,
-      "unit_amount_excluding_tax": "1000"
+      "unit_amount_decimal": null
     },
     "customer": {
-      "address": null,
+      "address": {
+        "city": null,
+        "country": null,
+        "line1": null,
+        "line2": null,
+        "postal_code": null,
+        "state": null
+      },
       "balance": 0,
       "created": 1234567890,
       "currency": "usd",
       "default_source": null,
       "delinquent": false,
       "description": null,
-      "discount": null,
+      "discount": {
+        "checkout_session": null,
+        "coupon": {
+          "amount_off": null,
+          "created": 1028554472,
+          "currency": null,
+          "duration": "forever",
+          "duration_in_months": null,
+          "id": "obj_123",
+          "livemode": true,
+          "max_redemptions": null,
+          "metadata": null,
+          "name": null,
+          "object": "coupon",
+          "percent_off": null,
+          "redeem_by": null,
+          "times_redeemed": 990066668,
+          "valid": true
+        },
+        "customer": null,
+        "end": null,
+        "id": "obj_123",
+        "invoice": null,
+        "invoice_item": null,
+        "object": "discount",
+        "promotion_code": null,
+        "start": 109757538,
+        "subscription": null,
+        "subscription_item": null
+      },
       "email": null,
-      "id": "cus_PEHTtYpY7elppN",
-      "invoice_prefix": "B4749BD",
+      "id": "cus_QXg1o8vcGmoR32",
+      "invoice_prefix": "7FE1103",
       "invoice_settings": {
         "custom_fields": null,
         "default_payment_method": null,
         "footer": null,
-        "rendering_options": null
+        "rendering_options": {
+          "amount_tax_display": null,
+          "template": null
+        }
       },
       "livemode": false,
       "metadata": {},
@@ -1235,19 +1806,20 @@
       "object": "customer",
       "phone": null,
       "preferred_locales": [],
-      "shipping": null,
+      "shipping": {},
       "tax_exempt": "none",
       "test_clock": null
     },
     "customer_balance_transaction": {
       "amount": -500,
+      "checkout_session": null,
       "created": 1234567890,
       "credit_note": null,
       "currency": "usd",
-      "customer": "cus_PEHTIoPSgT0tXQ",
+      "customer": "cus_QXg1o8vcGmoR32",
       "description": null,
       "ending_balance": -500,
-      "id": "cbtxn_1OPoulJN5vQBdWExjRxTJd1t",
+      "id": "cbtxn_1Pgc75B7WZ01zgkWgM0DfYYl",
       "invoice": null,
       "livemode": false,
       "metadata": null,
@@ -1257,7 +1829,7 @@
     "customer_cash_balance_transaction": {
       "created": 1234567890,
       "currency": "eur",
-      "customer": "cus_PEHTIoPSgT0tXQ",
+      "customer": "cus_QXg1o8vcGmoR32",
       "ending_balance": 10000,
       "funded": {
         "bank_transfer": {
@@ -1266,40 +1838,53 @@
             "iban_last4": "7089",
             "sender_name": "Sample Business GmbH"
           },
-          "reference": "Payment for Invoice 629C465-155",
+          "reference": "Payment for Invoice 7FE1103-155",
           "type": "eu_bank_transfer"
         }
       },
-      "id": "ccsbtxn_1OPoulJN5vQBdWExFSnWlKPa",
+      "id": "ccsbtxn_1Pgc75B7WZ01zgkWzdJj4ufI",
       "livemode": false,
       "net_amount": 5000,
       "object": "customer_cash_balance_transaction",
       "type": "funded"
     },
     "customer_session": {
-      "client_secret": "_PMG9cUABRpWoToRKwjVQsfVNtZ0oe5m5LuRYsgOe68eoLHh",
+      "client_secret": "cuss_secret_QXhWeUEtZoDV8FHnNbPiBHmAkXKnqYLGMGq7LLf8ODSQ8gL",
       "components": {
         "buy_button": {
           "enabled": false
+        },
+        "payment_element": {
+          "enabled": false,
+          "features": {
+            "payment_method_allow_redisplay_filters": [
+              "unspecified"
+            ],
+            "payment_method_redisplay": "disabled",
+            "payment_method_redisplay_limit": null,
+            "payment_method_remove": "enabled",
+            "payment_method_save": "disabled",
+            "payment_method_save_usage": null
+          }
         },
         "pricing_table": {
           "enabled": true
         }
       },
       "created": 1234567890,
-      "customer": "cus_PMG9sZduVeoHej",
+      "customer": "cus_QXg1o8vcGmoR32",
       "expires_at": 1234567890,
       "livemode": false,
       "object": "customer_session"
     },
     "deleted_account": {
       "deleted": true,
-      "id": "acct_1OPouMJN5vQBdWEx",
+      "id": "acct_1PgafTB7WZ01zgkW",
       "object": "account"
     },
     "deleted_apple_pay_domain": {
       "deleted": true,
-      "id": "apwc_1OPoujJN5vQBdWExuvzAhTDs",
+      "id": "apwc_1Pgc6oB7WZ01zgkWHz71O4bz",
       "object": "apple_pay_domain"
     },
     "deleted_application": {
@@ -1325,7 +1910,7 @@
     },
     "deleted_customer": {
       "deleted": true,
-      "id": "cus_PEHTtYpY7elppN",
+      "id": "cus_QXg1o8vcGmoR32",
       "object": "customer"
     },
     "deleted_discount": {
@@ -1364,32 +1949,32 @@
     },
     "deleted_external_account": {
       "deleted": true,
-      "id": "ba_1OPoumJN5vQBdWExwmpTeNeE",
+      "id": "ba_1PgagAB7WZ01zgkWr3DySp2Q",
       "object": "bank_account"
     },
     "deleted_invoice": {
       "deleted": true,
-      "id": "in_1OPouhJN5vQBdWExQl3czOuP",
+      "id": "in_1Pgc6tB7WZ01zgkWu9fdqL6I",
       "object": "invoice"
     },
     "deleted_invoiceitem": {
       "deleted": true,
-      "id": "ii_1OPoulJN5vQBdWExKaAxodMb",
+      "id": "ii_1Pgc6sB7WZ01zgkWrG16hkdl",
       "object": "invoiceitem"
     },
     "deleted_payment_source": {
       "deleted": true,
-      "id": "ba_1OPoumJN5vQBdWExwmpTeNeE",
+      "id": "ba_1PgagAB7WZ01zgkWr3DySp2Q",
       "object": "bank_account"
     },
     "deleted_person": {
       "deleted": true,
-      "id": "person_1OPouvJN5vQBdWEx4ogP6Lfq",
+      "id": "person_1Pgc6oB7WZ01zgkWnmLL70wS",
       "object": "person"
     },
     "deleted_plan": {
       "deleted": true,
-      "id": "price_1OPouiJN5vQBdWExAQaqTooZ",
+      "id": "price_1PgafmB7WZ01zgkW6dKueIc5",
       "object": "plan"
     },
     "deleted_price": {
@@ -1399,32 +1984,32 @@
     },
     "deleted_product": {
       "deleted": true,
-      "id": "prod_PEHTfnvdJH6K0k",
+      "id": "prod_QXg1hqf4jFNsqG",
       "object": "product"
     },
     "deleted_product_feature": {
       "deleted": true,
-      "id": "obj_123",
+      "id": "prodft_BcMBZUWCIOEgEc",
       "object": "product_feature"
     },
     "deleted_radar.value_list": {
       "deleted": true,
-      "id": "rsl_1OPouuJN5vQBdWExWiMNdstK",
+      "id": "rsl_1Pgc6xB7WZ01zgkWMAqpozsZ",
       "object": "radar.value_list"
     },
     "deleted_radar.value_list_item": {
       "deleted": true,
-      "id": "rsli_1OPouuJN5vQBdWExu3DMfSOX",
+      "id": "rsli_1Pgc6xB7WZ01zgkWS2KbiAtC",
       "object": "radar.value_list_item"
     },
     "deleted_subscription_item": {
       "deleted": true,
-      "id": "si_PEHTIbRiA7RW9V",
+      "id": "si_QXhVBoJ7NQdNXh",
       "object": "subscription_item"
     },
     "deleted_tax_id": {
       "deleted": true,
-      "id": "txi_1OPouvJN5vQBdWExlr1piCRz",
+      "id": "txi_1Pgc6sB7WZ01zgkWXkvC78jZ",
       "object": "tax_id"
     },
     "deleted_terminal.configuration": {
@@ -1434,31 +2019,31 @@
     },
     "deleted_terminal.location": {
       "deleted": true,
-      "id": "tml_NGBMEGFknv9VbAajaGp51lDl",
+      "id": "tml_j3hPESSh1Tie4LPWyRy8VLVY",
       "object": "terminal.location"
     },
     "deleted_terminal.reader": {
       "deleted": true,
-      "id": "tmr_BKknTibEn0JgG9fJJXUV93Wy",
+      "id": "tmr_iGOgDOlmFAot3zIp2JzEqXYs",
       "object": "terminal.reader"
     },
     "deleted_test_helpers.test_clock": {
       "deleted": true,
-      "id": "clock_1OPoumJN5vQBdWEx6P81PQHY",
+      "id": "clock_1Pgc6yB7WZ01zgkWVlemIOED",
       "object": "test_helpers.test_clock"
     },
     "deleted_webhook_endpoint": {
       "deleted": true,
-      "id": "we_1OPouqJN5vQBdWEx9Xl0KCo3",
+      "id": "we_1Pgc6yB7WZ01zgkWzAudq4eU",
       "object": "webhook_endpoint"
     },
     "discount": {
       "checkout_session": null,
       "coupon": {
         "amount_off": null,
-        "created": 1703175364,
+        "created": 1721954050,
         "currency": "usd",
-        "duration": "repeating",
+        "duration": "forever",
         "duration_in_months": 3,
         "id": "Z4OV52SU",
         "livemode": false,
@@ -1471,9 +2056,9 @@
         "times_redeemed": 0,
         "valid": true
       },
-      "customer": "cus_PEHTtYpY7elppN",
+      "customer": "cus_QXg1o8vcGmoR32",
       "end": 1234567890,
-      "id": "di_1OPoumJN5vQBdWExC4zKmgo8",
+      "id": "di_1Pgc6rB7WZ01zgkW7Al8Fal9",
       "invoice": null,
       "invoice_item": null,
       "object": "discount",
@@ -1485,9 +2070,12 @@
     "dispute": {
       "amount": 1000,
       "balance_transactions": [],
-      "charge": "ch_1OPoueJN5vQBdWExHvNS496R",
+      "charge": "ch_1PgafuB7WZ01zgkWXYmPNZs8",
       "created": 1234567890,
       "currency": "usd",
+      "enhanced_eligibility_types": [
+        "visa_compelling_evidence_3"
+      ],
       "evidence": {
         "access_activity_log": null,
         "billing_address": null,
@@ -1502,6 +2090,7 @@
         "duplicate_charge_documentation": null,
         "duplicate_charge_explanation": null,
         "duplicate_charge_id": null,
+        "enhanced_evidence": {},
         "product_description": null,
         "receipt": null,
         "refund_policy": null,
@@ -1518,12 +2107,13 @@
         "uncategorized_text": null
       },
       "evidence_details": {
-        "due_by": 1704844799,
+        "due_by": 1723679999,
+        "enhanced_eligibility": {},
         "has_evidence": false,
         "past_due": false,
         "submission_count": 0
       },
-      "id": "dp_1OPoujJN5vQBdWExZXzZC5oN",
+      "id": "dp_1Pgc71B7WZ01zgkWMevJiAUx",
       "is_charge_refundable": true,
       "livemode": false,
       "metadata": {},
@@ -1532,6 +2122,7 @@
       "payment_method_details": {
         "card": {
           "brand": "visa",
+          "case_type": "inquiry",
           "network_reason_code": "10.4"
         },
         "type": "card"
@@ -1540,33 +2131,54 @@
       "status": "warning_needs_response"
     },
     "entitlements.active_entitlement": {
-      "feature": "feature",
-      "id": "obj_123",
-      "livemode": true,
-      "lookup_key": "lookup_key",
+      "feature": "feat_test_61QGU1MWyFMSP9YBZ41ClCIKljWvsTgu",
+      "id": "ent_test_61QG5x2cU1GluFTYs41JqiESbLiX8C8O",
+      "livemode": false,
+      "lookup_key": "something",
       "object": "entitlements.active_entitlement"
     },
     "entitlements.active_entitlement_summary": {
       "customer": "customer",
-      "entitlements": null,
+      "entitlements": {
+        "data": [
+          {
+            "feature": {
+              "active": true,
+              "id": "obj_123",
+              "livemode": true,
+              "lookup_key": "lookup_key",
+              "metadata": {
+                "undefined": "metadata"
+              },
+              "name": "name",
+              "object": "entitlements.feature"
+            },
+            "id": "obj_123",
+            "livemode": true,
+            "lookup_key": "lookup_key",
+            "object": "entitlements.active_entitlement"
+          }
+        ],
+        "has_more": true,
+        "object": "list",
+        "url": "url"
+      },
       "livemode": true,
       "object": "entitlements.active_entitlement_summary"
     },
     "entitlements.feature": {
       "active": true,
-      "id": "obj_123",
-      "livemode": true,
-      "lookup_key": "lookup_key",
-      "metadata": {
-        "undefined": "metadata"
-      },
-      "name": "name",
+      "id": "feat_test_61QGU1MWyFMSP9YBZ41ClCIKljWvsTgu",
+      "livemode": false,
+      "lookup_key": "something",
+      "metadata": {},
+      "name": "My super awesome feature",
       "object": "entitlements.feature"
     },
     "ephemeral_key": {
       "created": 1234567890,
       "expires": 1234567890,
-      "id": "ephkey_1OPouuJN5vQBdWExzc5yUxlO",
+      "id": "ephkey_1Pgc6sB7WZ01zgkWtBC5cOXH",
       "livemode": false,
       "object": "ephemeral_key"
     },
@@ -1580,23 +2192,24 @@
           "amount": 2000,
           "amount_decimal": "2000",
           "billing_scheme": "per_unit",
-          "created": 1703175360,
+          "created": 1721948530,
           "currency": "usd",
-          "id": "price_1OPouiJN5vQBdWExAQaqTooZ",
+          "id": "price_1PgafmB7WZ01zgkW6dKueIc5",
           "interval": "month",
           "interval_count": 1,
           "livemode": false,
           "metadata": {},
+          "meter": null,
           "nickname": null,
           "object": "plan",
-          "product": "prod_PEHTfnvdJH6K0k",
+          "product": "prod_QXg1hqf4jFNsqG",
           "tiers_mode": null,
           "transform_usage": null,
           "trial_period_days": null,
           "usage_type": "licensed"
         }
       },
-      "id": "evt_1OPouqJN5vQBdWExgxCYZfvK",
+      "id": "evt_1Pgc76B7WZ01zgkWwyRHS12y",
       "livemode": false,
       "object": "event",
       "pending_webhooks": 0,
@@ -1613,14 +2226,14 @@
     },
     "external_account": {
       "account_holder_name": "Jane Austen",
-      "account_holder_type": "individual",
+      "account_holder_type": "company",
       "account_type": null,
       "bank_name": "STRIPE TEST BANK",
       "country": "US",
       "currency": "usd",
       "customer": null,
-      "fingerprint": "1JWtPxqbdX5Gamtz",
-      "id": "ba_1OPoumJN5vQBdWExwmpTeNeE",
+      "fingerprint": "AuoSJ18zsVWV9SPc",
+      "id": "ba_1PgagAB7WZ01zgkWr3DySp2Q",
       "last4": "6789",
       "metadata": {},
       "object": "bank_account",
@@ -1632,91 +2245,138 @@
       "balance_transaction": null,
       "created": 1234567890,
       "currency": "usd",
-      "fee": "fee_1OPounJN5vQBdWExWgwi95uU",
-      "id": "fr_1OPouoJN5vQBdWExfoD1ectq",
+      "fee": "fee_1Pgc6zB7WZ01zgkWOMh2at1m",
+      "id": "fr_1Pgc70B7WZ01zgkWSr1ANtFu",
       "metadata": {},
       "object": "fee_refund"
     },
     "file": {
       "created": 1234567890,
       "expires_at": 1234567890,
-      "filename": "file_1OPouvJN5vQBdWExSL8Knl9d",
-      "id": "file_1OPouvJN5vQBdWExSL8Knl9d",
+      "filename": "file_1Pgag2B7WZ01zgkWITx3dIQc",
+      "id": "file_1Pgag2B7WZ01zgkWITx3dIQc",
       "links": {
         "data": [
           {
-            "created": 1705015539,
+            "created": 1721954068,
             "expired": false,
             "expires_at": null,
-            "file": "file_1OXXd1D2qP7QtJeGUtVg07y2",
-            "id": "link_1OXXd1D2qP7QtJeG4PxdkQAI",
+            "file": "file_1Pgag2B7WZ01zgkWITx3dIQc",
+            "id": "link_1Pgc76B7WZ01zgkWPhd77i13",
             "livemode": false,
             "metadata": {},
             "object": "file_link",
-            "url": "https://pakrym-upload-mydev.dev.stripe.me/links/MDB8YWNjdF8xT1hYY1VEMnFQN1F0SmVHfGZsX3Rlc3RfUzNDbHVhMWc0dEJuaWZVTFlQbXVSelhu00rmgafjqm"
+            "url": "https://sangeekp-15t6ai--upload-mydev.dev.stripe.me/links/MDB8YWNjdF8xUGdhZlRCN1daMDF6Z2tXfGZsX3Rlc3Rfb0Jkam9sNHdEZUpXRHUzSGhXNTRkZDI500qGiHOxxv"
           },
           {
-            "created": 1711046434,
+            "created": 1721950452,
             "expired": false,
             "expires_at": null,
-            "file": "file_1OwqXWC7jqlCbEWA04W1XgtL",
-            "id": "link_1OwqXWC7jqlCbEWA5oixve1n",
+            "file": "file_1Pgag2B7WZ01zgkWITx3dIQc",
+            "id": "link_1PgbAmB7WZ01zgkW3pu4fR4P",
             "livemode": false,
             "metadata": {},
             "object": "file_link",
-            "url": "https://ramya-upload-mydev.dev.stripe.me/links/MDB8YWNjdF8xT3dxVFFDN2pxbENiRVdBfGZsX3Rlc3Rfd2hFeUJKWHFKYk5adVJ1Nmd1RVZRZVpW00TOfdfMgl"
+            "url": "https://sangeekp-15t6ai--upload-mydev.dev.stripe.me/links/MDB8YWNjdF8xUGdhZlRCN1daMDF6Z2tXfGZsX3Rlc3RfWm9xd1F0dDBtbXQ4Z1dKNzlONGh1eWpB00LxTveMUm"
           },
           {
-            "created": 1711575698,
+            "created": 1721950452,
             "expired": false,
             "expires_at": null,
-            "file": "file_1Oz4E2JDlh28ZWA1jiewbKBO",
-            "id": "link_1Oz4E2JDlh28ZWA1AhZkv28r",
+            "file": "file_1Pgag2B7WZ01zgkWITx3dIQc",
+            "id": "link_1PgbAmB7WZ01zgkWwbZvcvQ8",
             "livemode": false,
             "metadata": {},
             "object": "file_link",
-            "url": "https://crystal-npwcda--upload-mydev.dev.stripe.me/links/MDB8YWNjdF8xT3o0RExKRGxoMjhaV0ExfGZsX3Rlc3RfQmdheWFvYXR3M3JWemZkUzFaZG9YMTR000x2cmFxaR"
+            "url": "https://sangeekp-15t6ai--upload-mydev.dev.stripe.me/links/MDB8YWNjdF8xUGdhZlRCN1daMDF6Z2tXfGZsX3Rlc3RfSG53SzROQjd1eW5CalpJNWZXVTNCWkJP00ezD17LP8"
+          },
+          {
+            "created": 1721949627,
+            "expired": false,
+            "expires_at": null,
+            "file": "file_1Pgag2B7WZ01zgkWITx3dIQc",
+            "id": "link_1PgaxTB7WZ01zgkWjUTJLaVH",
+            "livemode": false,
+            "metadata": {},
+            "object": "file_link",
+            "url": "https://sangeekp-15t6ai--upload-mydev.dev.stripe.me/links/MDB8YWNjdF8xUGdhZlRCN1daMDF6Z2tXfGZsX3Rlc3RfbUJMZHhvRlhBUjJ5Sk44RnNZdU5pc3JW00dVoJx2Tt"
+          },
+          {
+            "created": 1721949626,
+            "expired": false,
+            "expires_at": null,
+            "file": "file_1Pgag2B7WZ01zgkWITx3dIQc",
+            "id": "link_1PgaxSB7WZ01zgkWTnPuQ3DJ",
+            "livemode": false,
+            "metadata": {},
+            "object": "file_link",
+            "url": "https://sangeekp-15t6ai--upload-mydev.dev.stripe.me/links/MDB8YWNjdF8xUGdhZlRCN1daMDF6Z2tXfGZsX3Rlc3RfN1NDVWF0ZXB5bUQxZDVOOU00UWRjMEJW00s1CyRs6z"
+          },
+          {
+            "created": 1721948546,
+            "expired": false,
+            "expires_at": null,
+            "file": "file_1Pgag2B7WZ01zgkWITx3dIQc",
+            "id": "link_1Pgag2B7WZ01zgkWT1SijPEZ",
+            "livemode": false,
+            "metadata": {},
+            "object": "file_link",
+            "url": "https://sangeekp-15t6ai--upload-mydev.dev.stripe.me/links/MDB8YWNjdF8xUGdhZlRCN1daMDF6Z2tXfGZsX3Rlc3RfWFc0dDAzZVB6eExGV3kzMWpwaUFqZDlW0041cNM6yo"
           }
         ],
         "has_more": false,
         "object": "list",
-        "url": "/v1/file_links?file=file_1OPouvJN5vQBdWExSL8Knl9d"
+        "url": "/v1/file_links?file=file_1Pgag2B7WZ01zgkWITx3dIQc"
       },
       "object": "file",
       "purpose": "dispute_evidence",
       "size": 9863,
       "title": null,
       "type": "png",
-      "url": "https://pakrym-upload-mydev.dev.stripe.me/v1/files/file_1OPouvJN5vQBdWExSL8Knl9d/contents"
+      "url": "https://sangeekp-15t6ai--upload-mydev.dev.stripe.me/v1/files/file_1Pgag2B7WZ01zgkWITx3dIQc/contents"
     },
     "file_link": {
       "created": 1234567890,
       "expired": false,
       "expires_at": 1234567890,
-      "file": "file_1OPouvJN5vQBdWExtMnVibvZ",
-      "id": "link_1OPouvJN5vQBdWEx8Hbtu72Q",
+      "file": "file_1Pgag2B7WZ01zgkWITx3dIQc",
+      "id": "link_1Pgc76B7WZ01zgkWPhd77i13",
       "livemode": false,
       "metadata": {},
       "object": "file_link",
-      "url": "https://pakrym-upload-mydev.dev.stripe.me/links/MDB8YWNjdF8xT1BvdU1KTjV2UUJkV0V4fGZsX3Rlc3RfNkRjY2xBMFA1UlByQ0FiQzRWZk1Hd3B300VOpaJG5C"
+      "url": "https://sangeekp-15t6ai--upload-mydev.dev.stripe.me/links/MDB8YWNjdF8xUGdhZlRCN1daMDF6Z2tXfGZsX3Rlc3Rfb0Jkam9sNHdEZUpXRHUzSGhXNTRkZDI500qGiHOxxv"
     },
     "financial_connections.account": {
       "account_holder": {
-        "customer": "cus_PEHTIoPSgT0tXQ",
+        "customer": "cus_QXg1o8vcGmoR32",
         "type": "customer"
       },
-      "balance": null,
-      "balance_refresh": null,
+      "balance": {
+        "as_of": 93102340,
+        "current": {
+          "undefined": 1126940025
+        },
+        "type": "cash"
+      },
+      "balance_refresh": {
+        "last_attempted_at": 1981828143,
+        "next_refresh_available_at": null,
+        "status": "failed"
+      },
       "category": "cash",
       "created": 1234567890,
       "display_name": "Sample Checking Account",
-      "id": "fca_1OPouwJN5vQBdWExZJ9BIvU6",
+      "id": "fca_1Pgc76B7WZ01zgkWqlYVCIub",
       "institution_name": "StripeBank",
       "last4": "6789",
       "livemode": false,
       "object": "financial_connections.account",
       "ownership": null,
-      "ownership_refresh": null,
+      "ownership_refresh": {
+        "last_attempted_at": 1981828143,
+        "next_refresh_available_at": null,
+        "status": "failed"
+      },
       "permissions": [],
       "status": "active",
       "subcategory": "checking",
@@ -1724,14 +2384,19 @@
       "supported_payment_method_types": [
         "us_bank_account"
       ],
-      "transaction_refresh": null
+      "transaction_refresh": {
+        "id": "obj_123",
+        "last_attempted_at": 1981828143,
+        "next_refresh_available_at": null,
+        "status": "failed"
+      }
     },
     "financial_connections.account_owner": {
       "email": "nobody+janesmith@stripe.com",
-      "id": "fcaown_1OPouwJN5vQBdWEx0GENYe0S",
+      "id": "fcaown_1Pgc76B7WZ01zgkWIQ4dVcgH",
       "name": "Jane Smith",
       "object": "financial_connections.account_owner",
-      "ownership": "fcaowns_1OPouwJN5vQBdWExxKE8Bg4J",
+      "ownership": "fcaowns_1Pgc76B7WZ01zgkWuEXUc7bG",
       "phone": "+1 555-555-5555",
       "raw_address": "123 Main Street, Everytown USA",
       "refreshed_at": 1234567890
@@ -1740,11 +2405,27 @@
       "created": 1028554472,
       "id": "obj_123",
       "object": "financial_connections.account_ownership",
-      "owners": null
+      "owners": {
+        "data": [
+          {
+            "email": null,
+            "id": "obj_123",
+            "name": "name",
+            "object": "financial_connections.account_owner",
+            "ownership": "ownership",
+            "phone": null,
+            "raw_address": null,
+            "refreshed_at": null
+          }
+        ],
+        "has_more": true,
+        "object": "list",
+        "url": "url"
+      }
     },
     "financial_connections.session": {
       "account_holder": {
-        "customer": "cus_PEHTIoPSgT0tXQ",
+        "customer": "cus_QXg1o8vcGmoR32",
         "type": "customer"
       },
       "accounts": {
@@ -1754,7 +2435,7 @@
         "url": "/v1/financial_connections/accounts"
       },
       "client_secret": "fcsess_..._secret_...",
-      "id": "fcsess_1OPouvJN5vQBdWExDs9PPkmC",
+      "id": "fcsess_1Pgc76B7WZ01zgkWnYmFk7mZ",
       "livemode": false,
       "object": "financial_connections.session",
       "permissions": [
@@ -1764,20 +2445,20 @@
       "prefetch": []
     },
     "financial_connections.transaction": {
-      "account": "fca_1OPouwJN5vQBdWExhxva8Q8m",
+      "account": "fca_1Pgc76B7WZ01zgkWc69S5C3k",
       "amount": 300,
       "currency": "usd",
       "description": "Rocket Rides",
-      "id": "fctxn_1OPouwJN5vQBdWExrPGADkLG",
+      "id": "fctxn_1Pgc76B7WZ01zgkW30ATGSKp",
       "livemode": false,
       "object": "financial_connections.transaction",
       "status": "posted",
       "status_transitions": {
-        "posted_at": 1703175374,
+        "posted_at": 1721954068,
         "void_at": null
       },
       "transacted_at": 1234567890,
-      "transaction_refresh": "fctxnref_PEHT703aotlKawfHY2I61XWP",
+      "transaction_refresh": "fctxnref_QXhWc2Trdr6epyWGrcV9Qajf",
       "updated": 1234567890
     },
     "forwarding.request": {
@@ -1819,19 +2500,19 @@
     },
     "funding_instructions": {
       "bank_transfer": {
-        "country": "DE",
+        "country": "US",
         "financial_addresses": [
           {
             "supported_networks": [
-              "sepa",
+              "ach",
               "domestic_wire_us"
             ],
-            "type": "iban"
+            "type": "aba"
           }
         ],
         "type": "eu_bank_transfer"
       },
-      "currency": "eur",
+      "currency": "usd",
       "funding_type": "bank_transfer",
       "livemode": false,
       "object": "funding_instructions"
@@ -1848,16 +2529,18 @@
           "postal_code": null,
           "state": "CA"
         },
-        "dob": null,
-        "error": null,
+        "error": {
+          "code": null,
+          "reason": null
+        },
         "expiration_date": {
           "day": 1,
           "month": 12,
           "year": 2025
         },
         "files": [
-          "file_PEHTDcVdS1FsitkFp1GIIfBV",
-          "file_PEHTLEOP6X1X7QoBzeaNVDVV"
+          "file_QXhWG300bR0L1WbLXBqG1wQc",
+          "file_QXhWi7GgxZg2M3XqN2Y0P4Q2"
         ],
         "first_name": "Jenny",
         "issued_date": {
@@ -1867,11 +2550,10 @@
         },
         "issuing_country": "US",
         "last_name": "Rosen",
-        "number": null,
         "status": "verified",
         "type": "driving_license"
       },
-      "id": "vr_1OPouwJN5vQBdWExD3MD40Gc",
+      "id": "vr_1Pgc76B7WZ01zgkWq9Rp33Dj",
       "livemode": false,
       "object": "identity.verification_report",
       "options": {
@@ -1879,15 +2561,18 @@
         "id_number": {}
       },
       "type": "document",
-      "verification_session": "vs_1OPouwJN5vQBdWExbazjv0rx"
+      "verification_session": "vs_1Pgc76B7WZ01zgkW1uXbT3Y9"
     },
     "identity.verification_session": {
       "client_reference_id": null,
       "client_secret": null,
       "created": 1234567890,
-      "id": "vs_1OPouwJN5vQBdWExwnxAiDeP",
-      "last_error": null,
-      "last_verification_report": "vr_PEHTCbeksNcBl9s8mpoBQapA",
+      "id": "vs_1Pgc76B7WZ01zgkWBdQi8PTU",
+      "last_error": {
+        "code": null,
+        "reason": null
+      },
+      "last_verification_report": "vr_QXhW13B2hsHOm43JtUgs0f0w",
       "livemode": false,
       "metadata": {},
       "object": "identity.verification_session",
@@ -1896,121 +2581,141 @@
           "require_matching_selfie": true
         }
       },
-      "provided_details": null,
-      "redaction": null,
+      "redaction": {
+        "status": "processing"
+      },
+      "related_customer": null,
       "status": "verified",
       "type": "document",
-      "url": null,
-      "verified_outputs": null
+      "url": null
     },
     "invoice": {
       "account_country": "US",
       "account_name": null,
       "account_tax_ids": null,
       "amount_due": 1000,
+      "amount_overpaid": 149300825,
       "amount_paid": 0,
       "amount_remaining": 1000,
       "amount_shipping": 0,
       "application": null,
-      "application_fee_amount": null,
       "attempt_count": 0,
       "attempted": false,
       "auto_advance": false,
       "automatic_tax": {
+        "disabled_reason": null,
         "enabled": false,
-        "liability": null,
+        "liability": {
+          "type": "account"
+        },
+        "provider": null,
         "status": null
       },
+      "automatically_finalizes_at": null,
       "billing_reason": "manual",
-      "charge": null,
       "collection_method": "charge_automatically",
       "created": 1234567890,
       "currency": "usd",
       "custom_fields": null,
-      "customer": "cus_PEHTtYpY7elppN",
-      "customer_address": null,
+      "customer": "cus_QXg1o8vcGmoR32",
+      "customer_address": {
+        "city": null,
+        "country": null,
+        "line1": null,
+        "line2": null,
+        "postal_code": null,
+        "state": null
+      },
       "customer_email": null,
       "customer_name": null,
       "customer_phone": null,
-      "customer_shipping": null,
+      "customer_shipping": {},
       "customer_tax_exempt": "none",
       "customer_tax_ids": [],
       "default_payment_method": null,
       "default_source": null,
       "default_tax_rates": [],
       "description": null,
-      "discount": null,
       "discounts": [],
       "due_date": 1234567890,
       "effective_at": 1234567890,
       "ending_balance": null,
       "footer": null,
-      "from_invoice": null,
+      "from_invoice": {
+        "action": "action",
+        "invoice": "invoice"
+      },
       "hosted_invoice_url": null,
-      "id": "in_1OPouhJN5vQBdWExQl3czOuP",
+      "id": "in_1Pgc6tB7WZ01zgkWu9fdqL6I",
       "invoice_pdf": null,
       "issuer": {
         "type": "self"
       },
-      "last_finalization_error": null,
+      "last_finalization_error": {
+        "type": "idempotency_error"
+      },
       "latest_revision": null,
       "lines": {
         "data": [
           {
             "amount": 1000,
-            "amount_excluding_tax": 1000,
             "currency": "usd",
             "description": "My First Invoice Item (created for API docs)",
             "discount_amounts": [],
             "discountable": true,
             "discounts": [],
-            "id": "il_1OPougJN5vQBdWExuj8Ico7Q",
-            "invoice": "in_1Ou1v0I2S8mDw66kzOu5UVSR",
-            "invoice_item": "ii_1OPougJN5vQBdWExCVUz1PP9",
+            "id": "il_1Pgc6sB7WZ01zgkWFnxLrLCq",
+            "invoice": "in_1Pgc6tB7WZ01zgkWu9fdqL6I",
             "livemode": false,
             "metadata": {},
             "object": "line_item",
+            "parent": {
+              "invoice_item_details": {
+                "invoice_item": "invoice_item",
+                "proration": true,
+                "proration_details": {
+                  "credited_items": {
+                    "invoice": "invoice",
+                    "invoice_line_items": [
+                      "invoice_line_items"
+                    ]
+                  }
+                },
+                "subscription": null
+              },
+              "subscription_item_details": {
+                "invoice_item": null,
+                "proration": true,
+                "proration_details": {
+                  "credited_items": {
+                    "invoice": "invoice",
+                    "invoice_line_items": [
+                      "invoice_line_items"
+                    ]
+                  }
+                },
+                "subscription": "subscription",
+                "subscription_item": "subscription_item"
+              },
+              "type": "invoice_item_details"
+            },
             "period": {
-              "end": 1703175358,
-              "start": 1703175358
+              "end": 1721954054,
+              "start": 1721954054
             },
-            "plan": null,
-            "price": {
-              "active": true,
-              "billing_scheme": "per_unit",
-              "created": 1703175358,
-              "currency": "usd",
-              "custom_unit_amount": null,
-              "id": "price_1OPougJN5vQBdWEx6kfkXDIL",
-              "livemode": false,
-              "lookup_key": null,
-              "metadata": {},
-              "nickname": null,
-              "object": "price",
-              "product": "prod_PEHTfnvdJH6K0k",
-              "recurring": null,
-              "tax_behavior": "unspecified",
-              "tiers_mode": null,
-              "transform_quantity": null,
-              "type": "one_time",
-              "unit_amount": 1000,
-              "unit_amount_decimal": "1000"
-            },
-            "proration": false,
-            "proration_details": {
-              "credited_items": null
+            "pretax_credit_amounts": null,
+            "pricing": {
+              "type": "price_details",
+              "unit_amount_decimal": null
             },
             "quantity": 1,
             "subscription": null,
-            "tax_amounts": [],
-            "tax_rates": [],
-            "type": "invoiceitem",
-            "unit_amount_excluding_tax": "1000"
+            "taxes": null
           }
         ],
         "has_more": false,
         "object": "list",
-        "url": "/v1/invoices/in_1OPouhJN5vQBdWExQl3czOuP/lines"
+        "url": "/v1/invoices/in_1Pgc6tB7WZ01zgkWu9fdqL6I/lines"
       },
       "livemode": false,
       "metadata": {},
@@ -2018,23 +2723,55 @@
       "number": null,
       "object": "invoice",
       "on_behalf_of": null,
-      "paid": false,
-      "paid_out_of_band": false,
-      "payment_intent": null,
+      "parent": {
+        "quote_details": {
+          "quote": "quote"
+        },
+        "subscription_details": {
+          "metadata": null,
+          "subscription": "subscription"
+        },
+        "type": "quote_details"
+      },
       "payment_settings": {
         "default_mandate": null,
-        "payment_method_options": null,
+        "payment_method_options": {
+          "acss_debit": {},
+          "bancontact": {
+            "preferred_language": "fr"
+          },
+          "card": {
+            "request_three_d_secure": null
+          },
+          "customer_balance": {
+            "funding_type": null
+          },
+          "konbini": {},
+          "sepa_debit": {},
+          "us_bank_account": {}
+        },
         "payment_method_types": null
       },
       "period_end": 1234567890,
       "period_start": 1234567890,
       "post_payment_credit_notes_amount": 0,
       "pre_payment_credit_notes_amount": 0,
-      "quote": null,
       "receipt_number": null,
-      "rendering": null,
-      "shipping_cost": null,
-      "shipping_details": null,
+      "rendering": {
+        "amount_tax_display": null,
+        "pdf": {
+          "page_size": null
+        },
+        "template": null,
+        "template_version": null
+      },
+      "shipping_cost": {
+        "amount_subtotal": 1555417355,
+        "amount_tax": 1424534716,
+        "amount_total": 1117121693,
+        "shipping_rate": null
+      },
+      "shipping_details": {},
       "starting_balance": 0,
       "statement_descriptor": null,
       "status": "draft",
@@ -2045,66 +2782,76 @@
         "voided_at": null
       },
       "subscription": null,
-      "subscription_details": {
-        "metadata": null
-      },
       "subtotal": 1000,
       "subtotal_excluding_tax": 1000,
-      "tax": null,
       "test_clock": null,
       "total": 1000,
       "total_discount_amounts": [],
       "total_excluding_tax": 1000,
-      "total_tax_amounts": [],
-      "transfer_data": null,
+      "total_pretax_credit_amounts": null,
+      "total_taxes": null,
       "webhooks_delivered_at": 1234567890
+    },
+    "invoice_payment": {
+      "amount_paid": null,
+      "amount_requested": 1112626247,
+      "created": 1028554472,
+      "currency": "currency",
+      "id": "obj_123",
+      "invoice": "invoice",
+      "is_default": true,
+      "livemode": true,
+      "object": "invoice_payment",
+      "payment": {
+        "type": "payment_intent"
+      },
+      "status": "status",
+      "status_transitions": {
+        "canceled_at": null,
+        "paid_at": null
+      }
+    },
+    "invoice_rendering_template": {
+      "created": 1028554472,
+      "id": "obj_123",
+      "livemode": true,
+      "metadata": null,
+      "nickname": null,
+      "object": "invoice_rendering_template",
+      "status": "active",
+      "version": 351608024
     },
     "invoiceitem": {
       "amount": 1000,
       "currency": "usd",
-      "customer": "cus_PEHTtYpY7elppN",
+      "customer": "cus_QXg1o8vcGmoR32",
       "date": 1234567890,
       "description": "My First Invoice Item (created for API docs)",
       "discountable": true,
       "discounts": [],
-      "id": "ii_1OPoulJN5vQBdWExKaAxodMb",
+      "id": "ii_1Pgc6sB7WZ01zgkWrG16hkdl",
       "invoice": null,
       "livemode": false,
       "metadata": {},
       "object": "invoiceitem",
-      "period": {
-        "end": 1703175363,
-        "start": 1703175363
+      "parent": {
+        "subscription_details": {
+          "subscription": "subscription"
+        },
+        "type": "subscription_details"
       },
-      "plan": null,
-      "price": {
-        "active": true,
-        "billing_scheme": "per_unit",
-        "created": 1703175358,
-        "currency": "usd",
-        "custom_unit_amount": null,
-        "id": "price_1OPougJN5vQBdWEx6kfkXDIL",
-        "livemode": false,
-        "lookup_key": null,
-        "metadata": {},
-        "nickname": null,
-        "object": "price",
-        "product": "prod_PEHTfnvdJH6K0k",
-        "recurring": null,
-        "tax_behavior": "unspecified",
-        "tiers_mode": null,
-        "transform_quantity": null,
-        "type": "one_time",
-        "unit_amount": 1000,
-        "unit_amount_decimal": "1000"
+      "period": {
+        "end": 1721954054,
+        "start": 1721954054
+      },
+      "pricing": {
+        "type": "price_details",
+        "unit_amount_decimal": null
       },
       "proration": false,
       "quantity": 1,
-      "subscription": null,
       "tax_rates": [],
-      "test_clock": null,
-      "unit_amount": 1000,
-      "unit_amount_decimal": "1000"
+      "test_clock": null
     },
     "issuing.authorization": {
       "amount": 0,
@@ -2129,11 +2876,27 @@
               "state": "CA"
             }
           },
-          "company": null,
-          "created": 1703175372,
+          "company": {
+            "tax_id_provided": true
+          },
+          "created": 1721948548,
           "email": "jenny@example.com",
-          "id": "ich_1OPouuJN5vQBdWExwzpyb2cp",
-          "individual": null,
+          "id": "ich_1Pgag4B7WZ01zgkWdPVfBngi",
+          "individual": {
+            "dob": {
+              "day": null,
+              "month": null,
+              "year": null
+            },
+            "first_name": null,
+            "last_name": null,
+            "verification": {
+              "document": {
+                "back": null,
+                "front": null
+              }
+            }
+          },
           "livemode": false,
           "metadata": {},
           "name": "Jenny Rosen",
@@ -2148,28 +2911,63 @@
           },
           "spending_controls": {
             "allowed_categories": [],
-            "allowed_merchant_countries": null,
+            "allowed_merchant_countries": [],
             "blocked_categories": [],
-            "blocked_merchant_countries": null,
+            "blocked_merchant_countries": [],
             "spending_limits": [],
             "spending_limits_currency": null
           },
           "status": "active",
           "type": "individual"
         },
-        "created": 1703175372,
+        "created": 1721948549,
         "currency": "usd",
         "exp_month": 8,
-        "exp_year": 2024,
-        "id": "ic_1OPouuJN5vQBdWEx2BuUwQc3",
+        "exp_year": 2025,
+        "id": "ic_1Pgag5B7WZ01zgkWephORn8N",
         "last4": "4242",
         "livemode": false,
         "metadata": {},
         "object": "issuing.card",
+        "personalization_design": null,
         "replaced_by": null,
         "replacement_for": null,
         "replacement_reason": null,
-        "shipping": null,
+        "shipping": {
+          "address": {
+            "city": null,
+            "country": null,
+            "line1": null,
+            "line2": null,
+            "postal_code": null,
+            "state": null
+          },
+          "address_validation": {
+            "mode": "normalization_only",
+            "normalized_address": {
+              "city": null,
+              "country": null,
+              "line1": null,
+              "line2": null,
+              "postal_code": null,
+              "state": null
+            },
+            "result": null
+          },
+          "carrier": null,
+          "customs": {
+            "eori_number": null
+          },
+          "eta": null,
+          "name": "name",
+          "phone_number": null,
+          "require_signature": null,
+          "service": "express",
+          "status": null,
+          "tracking_number": null,
+          "tracking_url": null,
+          "type": "bulk"
+        },
         "spending_controls": {
           "allowed_categories": null,
           "allowed_merchant_countries": null,
@@ -2195,7 +2993,38 @@
       "cardholder": null,
       "created": 1234567890,
       "currency": "usd",
-      "id": "iauth_1OPouuJN5vQBdWExzEwVqbW3",
+      "fleet": {
+        "cardholder_prompt_data": {
+          "alphanumeric_id": null,
+          "driver_id": null,
+          "odometer": null,
+          "unspecified_id": null,
+          "user_id": null,
+          "vehicle_number": null
+        },
+        "purchase_type": null,
+        "reported_breakdown": {
+          "fuel": {
+            "gross_amount_decimal": null
+          },
+          "non_fuel": {
+            "gross_amount_decimal": null
+          },
+          "tax": {
+            "local_amount_decimal": null,
+            "national_amount_decimal": null
+          }
+        },
+        "service_type": null
+      },
+      "fuel": {
+        "industry_product_code": null,
+        "quantity_decimal": null,
+        "type": null,
+        "unit": null,
+        "unit_cost_decimal": null
+      },
+      "id": "iauth_1Pgc77B7WZ01zgkWn0SmtHBY",
       "livemode": false,
       "merchant_amount": 0,
       "merchant_currency": "usd",
@@ -2208,11 +3037,16 @@
         "network_id": "1234567890",
         "postal_code": "94107",
         "state": "CA",
+        "tax_id": null,
         "terminal_id": null,
         "url": null
       },
       "metadata": {},
-      "network_data": null,
+      "network_data": {
+        "acquiring_institution_id": null,
+        "system_trace_audit_number": null,
+        "transaction_id": null
+      },
       "object": "issuing.authorization",
       "pending_request": {
         "amount": 700,
@@ -2233,7 +3067,10 @@
       "verification_data": {
         "address_line1_check": "not_provided",
         "address_postal_code_check": "match",
-        "authentication_exemption": null,
+        "authentication_exemption": {
+          "claimed_by": "issuer",
+          "type": "low_value_transaction"
+        },
         "cvc_check": "match",
         "expiry_check": "match",
         "postal_code": null,
@@ -2241,6 +3078,7 @@
           "result": "authenticated"
         }
       },
+      "verified_by_fraud_challenge": null,
       "wallet": null
     },
     "issuing.card": {
@@ -2257,11 +3095,27 @@
             "state": "CA"
           }
         },
-        "company": null,
-        "created": 1703175372,
+        "company": {
+          "tax_id_provided": true
+        },
+        "created": 1721948548,
         "email": "jenny@example.com",
-        "id": "ich_1OPouuJN5vQBdWExwzpyb2cp",
-        "individual": null,
+        "id": "ich_1Pgag4B7WZ01zgkWdPVfBngi",
+        "individual": {
+          "dob": {
+            "day": null,
+            "month": null,
+            "year": null
+          },
+          "first_name": null,
+          "last_name": null,
+          "verification": {
+            "document": {
+              "back": null,
+              "front": null
+            }
+          }
+        },
         "livemode": false,
         "metadata": {},
         "name": "Jenny Rosen",
@@ -2276,9 +3130,9 @@
         },
         "spending_controls": {
           "allowed_categories": [],
-          "allowed_merchant_countries": null,
+          "allowed_merchant_countries": [],
           "blocked_categories": [],
-          "blocked_merchant_countries": null,
+          "blocked_merchant_countries": [],
           "spending_limits": [],
           "spending_limits_currency": null
         },
@@ -2288,16 +3142,51 @@
       "created": 1234567890,
       "currency": "usd",
       "exp_month": 8,
-      "exp_year": 2024,
-      "id": "ic_1OPouuJN5vQBdWExIoXsQoxc",
+      "exp_year": 2025,
+      "id": "ic_1Pgag5B7WZ01zgkWephORn8N",
       "last4": "4242",
       "livemode": false,
       "metadata": {},
       "object": "issuing.card",
+      "personalization_design": null,
       "replaced_by": null,
       "replacement_for": null,
       "replacement_reason": null,
-      "shipping": null,
+      "shipping": {
+        "address": {
+          "city": null,
+          "country": null,
+          "line1": null,
+          "line2": null,
+          "postal_code": null,
+          "state": null
+        },
+        "address_validation": {
+          "mode": "normalization_only",
+          "normalized_address": {
+            "city": null,
+            "country": null,
+            "line1": null,
+            "line2": null,
+            "postal_code": null,
+            "state": null
+          },
+          "result": null
+        },
+        "carrier": null,
+        "customs": {
+          "eori_number": null
+        },
+        "eta": null,
+        "name": "name",
+        "phone_number": null,
+        "require_signature": null,
+        "service": "express",
+        "status": null,
+        "tracking_number": null,
+        "tracking_url": null,
+        "type": "bulk"
+      },
       "spending_controls": {
         "allowed_categories": null,
         "allowed_merchant_countries": null,
@@ -2331,11 +3220,27 @@
           "state": "CA"
         }
       },
-      "company": null,
+      "company": {
+        "tax_id_provided": true
+      },
       "created": 1234567890,
       "email": "jenny@example.com",
-      "id": "ich_1OPouuJN5vQBdWExwzpyb2cp",
-      "individual": null,
+      "id": "ich_1Pgag4B7WZ01zgkWdPVfBngi",
+      "individual": {
+        "dob": {
+          "day": null,
+          "month": null,
+          "year": null
+        },
+        "first_name": null,
+        "last_name": null,
+        "verification": {
+          "document": {
+            "back": null,
+            "front": null
+          }
+        }
+      },
       "livemode": false,
       "metadata": {},
       "name": "Jenny Rosen",
@@ -2350,9 +3255,9 @@
       },
       "spending_controls": {
         "allowed_categories": [],
-        "allowed_merchant_countries": null,
+        "allowed_merchant_countries": [],
         "blocked_categories": [],
-        "blocked_merchant_countries": null,
+        "blocked_merchant_countries": [],
         "spending_limits": [],
         "spending_limits_currency": null
       },
@@ -2361,28 +3266,32 @@
     },
     "issuing.dispute": {
       "amount": 100,
-      "balance_transactions": null,
       "created": 1234567890,
       "currency": "usd",
       "evidence": {
         "fraudulent": {
           "additional_documentation": null,
-          "explanation": "Fraud; card reported lost on 12/21/2023"
+          "explanation": "Fraud; card reported lost on 07/26/2024"
         },
         "reason": "fraudulent"
       },
-      "id": "idp_1OPouuJN5vQBdWEx0fS3VE9m",
+      "id": "idp_1Pgc77B7WZ01zgkWutW1sr3D",
       "livemode": false,
       "metadata": {},
       "object": "issuing.dispute",
       "status": "unsubmitted",
-      "transaction": "ipi_1OPouuJN5vQBdWExyOINiqR1"
+      "transaction": "ipi_1Pgc77B7WZ01zgkWUr0uYdLL"
     },
     "issuing.personalization_design": {
       "card_logo": null,
-      "carrier_text": null,
+      "carrier_text": {
+        "footer_body": null,
+        "footer_title": null,
+        "header_body": null,
+        "header_title": null
+      },
       "created": 1234567890,
-      "id": "ipcd_PjUvzGEbcbtY8U",
+      "id": "ipcd_QXhWDHrd50Fhhi",
       "livemode": false,
       "lookup_key": "my_card_design_lookup_key",
       "metadata": {},
@@ -2400,7 +3309,12 @@
       "status": "review"
     },
     "issuing.physical_bundle": {
-      "id": "ics_PjUv222Xszs9R1",
+      "features": {
+        "card_logo": "unsupported",
+        "carrier_text": "unsupported",
+        "second_line": "unsupported"
+      },
+      "id": "ics_QXhWOcsVbvCqqa",
       "livemode": false,
       "name": "My Card Bundle V1",
       "object": "issuing.physical_bundle",
@@ -2409,27 +3323,28 @@
     },
     "issuing.settlement": {
       "bin": "424242",
-      "clearing_date": 1703175372,
+      "clearing_date": 1721954070,
       "created": 1234567890,
       "currency": "usd",
-      "id": "ise_1OPouuJN5vQBdWExUSjMz9xA",
-      "interchange_fees": 44,
+      "id": "ise_1Pgc78B7WZ01zgkWDzAbEGQM",
+      "interchange_fees_amount": 44,
       "livemode": false,
       "metadata": {},
-      "net_total": 3575,
+      "net_total_amount": 3575,
       "network": "visa",
-      "network_fees": 37,
+      "network_fees_amount": 37,
       "network_settlement_identifier": "1000633976",
       "object": "issuing.settlement",
       "settlement_service": "international",
-      "transaction_count": 2,
-      "transaction_volume": 3656
+      "status": "complete",
+      "transaction_amount": 3656,
+      "transaction_count": 2
     },
     "issuing.token": {
-      "card": "ic_1OPouuJN5vQBdWExtrIXaPAW",
+      "card": "ic_1Pgag5B7WZ01zgkWephORn8N",
       "created": 1234567890,
       "device_fingerprint": null,
-      "id": "intok_1OPouuJN5vQBdWEx5hqkGy26",
+      "id": "intok_1Pgc78B7WZ01zgkW7VstwAxg",
       "last4": "2424",
       "livemode": false,
       "network": "visa",
@@ -2444,14 +3359,14 @@
         "atm_fee": null,
         "cashback_amount": null
       },
-      "authorization": "iauth_1OPouuJN5vQBdWExicfRiUm4",
+      "authorization": "iauth_1Pgc78B7WZ01zgkW9IPKCfII",
       "balance_transaction": null,
-      "card": "ic_1OPouuJN5vQBdWExtrIXaPAW",
-      "cardholder": "ich_1OPouuJN5vQBdWExwzpyb2cp",
+      "card": "ic_1Pgag5B7WZ01zgkWephORn8N",
+      "cardholder": "ich_1Pgag4B7WZ01zgkWdPVfBngi",
       "created": 1234567890,
       "currency": "usd",
       "dispute": null,
-      "id": "ipi_1OPouuJN5vQBdWEx9u49EzoG",
+      "id": "ipi_1Pgc78B7WZ01zgkWm0QxtFzQ",
       "livemode": false,
       "merchant_amount": -100,
       "merchant_currency": "usd",
@@ -2464,17 +3379,17 @@
         "network_id": "1234567890",
         "postal_code": "94107",
         "state": "CA",
+        "tax_id": null,
         "terminal_id": null,
         "url": null
       },
       "metadata": {},
       "network_data": {
         "authorization_code": null,
-        "processing_date": "2023-12-21",
+        "processing_date": "2024-07-26",
         "transaction_id": null
       },
       "object": "issuing.transaction",
-      "purchase_details": null,
       "token": null,
       "type": "capture",
       "wallet": "apple_pay"
@@ -2486,25 +3401,38 @@
       "amount_total": 0,
       "currency": "usd",
       "description": "T-shirt",
-      "id": "li_1OPoumJN5vQBdWExEftIkrW0",
+      "id": "li_1Pgc73B7WZ01zgkWx8kcmZPK",
       "object": "item",
       "price": {
         "active": true,
         "billing_scheme": "per_unit",
-        "created": 1703175358,
+        "created": 1721948530,
         "currency": "usd",
-        "custom_unit_amount": null,
-        "id": "price_1OPougJN5vQBdWEx6kfkXDIL",
+        "custom_unit_amount": {
+          "maximum": null,
+          "minimum": null,
+          "preset": null
+        },
+        "id": "price_1PgafmB7WZ01zgkW02Hf9z6c",
         "livemode": false,
         "lookup_key": null,
         "metadata": {},
         "nickname": null,
         "object": "price",
-        "product": "prod_PEHTfnvdJH6K0k",
-        "recurring": null,
+        "product": "prod_QXg1hqf4jFNsqG",
+        "recurring": {
+          "interval": "month",
+          "interval_count": 797691627,
+          "meter": null,
+          "trial_period_days": null,
+          "usage_type": "licensed"
+        },
         "tax_behavior": "unspecified",
         "tiers_mode": null,
-        "transform_quantity": null,
+        "transform_quantity": {
+          "divide_by": 1592560163,
+          "round": "down"
+        },
         "type": "one_time",
         "unit_amount": 1000,
         "unit_amount_decimal": "1000"
@@ -2513,59 +3441,63 @@
     },
     "line_item": {
       "amount": 1000,
-      "amount_excluding_tax": 1000,
       "currency": "usd",
       "description": "My First Invoice Item (created for API docs)",
       "discount_amounts": [],
       "discountable": true,
       "discounts": [],
-      "id": "il_tmp_1OPoulJN5vQBdWExKaAxodMb",
-      "invoice": "in_1Ou1v0I2S8mDw66kzOu5UVSR",
-      "invoice_item": "ii_1OPoulJN5vQBdWExKaAxodMb",
+      "id": "il_tmp_1Pgc6sB7WZ01zgkWrG16hkdl",
+      "invoice": "in_1Pgc6tB7WZ01zgkWu9fdqL6I",
       "livemode": false,
       "metadata": {},
       "object": "line_item",
+      "parent": {
+        "invoice_item_details": {
+          "invoice_item": "invoice_item",
+          "proration": true,
+          "proration_details": {
+            "credited_items": {
+              "invoice": "invoice",
+              "invoice_line_items": [
+                "invoice_line_items"
+              ]
+            }
+          },
+          "subscription": null
+        },
+        "subscription_item_details": {
+          "invoice_item": null,
+          "proration": true,
+          "proration_details": {
+            "credited_items": {
+              "invoice": "invoice",
+              "invoice_line_items": [
+                "invoice_line_items"
+              ]
+            }
+          },
+          "subscription": "subscription",
+          "subscription_item": "subscription_item"
+        },
+        "type": "invoice_item_details"
+      },
       "period": {
-        "end": 1703175363,
-        "start": 1703175363
+        "end": 1721954054,
+        "start": 1721954054
       },
-      "plan": null,
-      "price": {
-        "active": true,
-        "billing_scheme": "per_unit",
-        "created": 1703175358,
-        "currency": "usd",
-        "custom_unit_amount": null,
-        "id": "price_1OPougJN5vQBdWEx6kfkXDIL",
-        "livemode": false,
-        "lookup_key": null,
-        "metadata": {},
-        "nickname": null,
-        "object": "price",
-        "product": "prod_PEHTfnvdJH6K0k",
-        "recurring": null,
-        "tax_behavior": "unspecified",
-        "tiers_mode": null,
-        "transform_quantity": null,
-        "type": "one_time",
-        "unit_amount": 1000,
-        "unit_amount_decimal": "1000"
-      },
-      "proration": false,
-      "proration_details": {
-        "credited_items": null
+      "pretax_credit_amounts": null,
+      "pricing": {
+        "type": "price_details",
+        "unit_amount_decimal": null
       },
       "quantity": 1,
       "subscription": null,
-      "tax_amounts": [],
-      "tax_rates": [],
-      "type": "invoiceitem",
-      "unit_amount_excluding_tax": "1000"
+      "taxes": null
     },
     "login_link": {
       "created": 1234567890,
       "object": "login_link",
-      "url": "https://pakrym-manage-mydev.dev.stripe.me/express/acct_1OPouMJN5vQBdWEx/KDbirv0KG5kK"
+      "url": "https://sangeekp-15t6ai--manage-mydev.dev.stripe.me/express/acct_1PgafTB7WZ01zgkW/ehJImT2clfHr"
     },
     "mandate": {
       "customer_acceptance": {
@@ -2576,7 +3508,7 @@
         },
         "type": "online"
       },
-      "id": "mandate_1OPoutJN5vQBdWExCvI7QJ24",
+      "id": "mandate_1Pgc78B7WZ01zgkW9EfgTVki",
       "livemode": false,
       "multi_use": {},
       "object": "mandate",
@@ -2600,41 +3532,56 @@
       "amount_received": 0,
       "application": null,
       "application_fee_amount": null,
-      "automatic_payment_methods": null,
+      "automatic_payment_methods": {
+        "enabled": true
+      },
       "canceled_at": 1234567890,
       "cancellation_reason": null,
       "capture_method": "automatic",
-      "client_secret": "pi_1OPougJN5vQBdWEx8s2Dj0YR_secret_XeXo8Ee1ITOJzjVWEtPoWG5ha",
+      "client_secret": "pi_1PgafyB7WZ01zgkWSjxsAJo3_secret_Dm43xiq1k0ywrRRjDoi8y1gkM",
       "confirmation_method": "automatic",
       "created": 1234567890,
       "currency": "usd",
       "customer": null,
       "description": null,
-      "id": "pi_1OPougJN5vQBdWEx8s2Dj0YR",
-      "invoice": null,
-      "last_payment_error": null,
+      "id": "pi_1PgafyB7WZ01zgkWSjxsAJo3",
+      "last_payment_error": {
+        "type": "idempotency_error"
+      },
       "latest_charge": null,
       "livemode": false,
       "metadata": {},
-      "next_action": null,
+      "next_action": {
+        "type": "type"
+      },
       "object": "payment_intent",
       "on_behalf_of": null,
       "payment_method": null,
-      "payment_method_configuration_details": null,
+      "payment_method_configuration_details": {
+        "id": "obj_123",
+        "parent": null
+      },
       "payment_method_options": {},
       "payment_method_types": [
         "card"
       ],
-      "processing": null,
+      "processing": {
+        "type": "card"
+      },
       "receipt_email": null,
       "review": null,
       "setup_future_usage": null,
-      "shipping": null,
+      "shipping": {},
       "source": null,
       "statement_descriptor": null,
       "statement_descriptor_suffix": null,
       "status": "requires_payment_method",
-      "transfer_data": null,
+      "transfer_data": {
+        "destination": {
+          "id": "obj_123",
+          "object": "account"
+        }
+      },
       "transfer_group": null
     },
     "payment_link": {
@@ -2651,44 +3598,118 @@
       "application_fee_percent": null,
       "automatic_tax": {
         "enabled": false,
-        "liability": null
+        "liability": {
+          "type": "account"
+        }
       },
       "billing_address_collection": "auto",
-      "consent_collection": null,
+      "consent_collection": {
+        "payment_method_reuse_agreement": {
+          "position": "hidden"
+        },
+        "promotions": null,
+        "terms_of_service": null
+      },
       "currency": "usd",
       "custom_fields": [],
       "custom_text": {
-        "after_submit": null,
-        "shipping_address": null,
-        "submit": null,
-        "terms_of_service_acceptance": null
+        "after_submit": {
+          "message": "message"
+        },
+        "shipping_address": {
+          "message": "message"
+        },
+        "submit": {
+          "message": "message"
+        },
+        "terms_of_service_acceptance": {
+          "message": "message"
+        }
       },
       "customer_creation": "if_required",
-      "id": "plink_1OPoutJN5vQBdWExHKI59Qwy",
+      "id": "plink_1Pgc78B7WZ01zgkWC75kX0jg",
       "inactive_message": null,
-      "invoice_creation": null,
+      "invoice_creation": {
+        "enabled": true,
+        "invoice_data": {
+          "account_tax_ids": null,
+          "custom_fields": null,
+          "description": null,
+          "footer": null,
+          "issuer": {
+            "type": "account"
+          },
+          "metadata": null,
+          "rendering_options": {
+            "amount_tax_display": null
+          }
+        }
+      },
       "livemode": false,
       "metadata": {},
       "object": "payment_link",
       "on_behalf_of": null,
-      "payment_intent_data": null,
+      "payment_intent_data": {
+        "capture_method": null,
+        "description": null,
+        "metadata": {
+          "undefined": "metadata"
+        },
+        "setup_future_usage": null,
+        "statement_descriptor": null,
+        "statement_descriptor_suffix": null,
+        "transfer_group": null
+      },
       "payment_method_collection": "if_required",
       "payment_method_types": null,
       "phone_number_collection": {
         "enabled": false
       },
-      "restrictions": null,
-      "shipping_address_collection": null,
+      "restrictions": {
+        "completed_sessions": {
+          "count": 94851343,
+          "limit": 102976443
+        }
+      },
+      "shipping_address_collection": {
+        "allowed_countries": [
+          "SC"
+        ]
+      },
       "shipping_options": [],
       "submit_type": "auto",
-      "subscription_data": null,
-      "tax_id_collection": {
-        "enabled": false
+      "subscription_data": {
+        "description": null,
+        "invoice_settings": {
+          "issuer": {
+            "type": "account"
+          }
+        },
+        "metadata": {
+          "undefined": "metadata"
+        },
+        "trial_period_days": null,
+        "trial_settings": {
+          "end_behavior": {
+            "missing_payment_method": "cancel"
+          }
+        }
       },
-      "transfer_data": null,
-      "url": "https://pakrym-payment_links_ingress-mydev.dev.stripe.me/test_4gw3eYbvN3ixabe6oo"
+      "tax_id_collection": {
+        "enabled": false,
+        "required": "never"
+      },
+      "transfer_data": {
+        "amount": null,
+        "destination": {
+          "id": "obj_123",
+          "object": "account"
+        }
+      },
+      "url": "https://sangeekp-15t6ai--payment_links_ingress-mydev.dev.stripe.me/test_eVa16Q1Vd7yU1Ne8ww"
     },
     "payment_method": {
+      "allow_redisplay": "unspecified",
       "billing_details": {
         "address": {
           "city": "San Francisco",
@@ -2700,7 +3721,8 @@
         },
         "email": "jenny@example.com",
         "name": null,
-        "phone": "+15555555555"
+        "phone": "+15555555555",
+        "tax_id": null
       },
       "card": {
         "brand": "visa",
@@ -2712,9 +3734,16 @@
         "country": "US",
         "display_brand": "visa",
         "exp_month": 8,
-        "exp_year": 2024,
-        "fingerprint": "r40d4vOgg3VecDJF",
+        "exp_year": 2025,
+        "fingerprint": "AOB934RVNwzk6xtn",
         "funding": "credit",
+        "generated_from": {
+          "charge": null,
+          "payment_method_details": {
+            "type": "type"
+          },
+          "setup_attempt": null
+        },
         "last4": "4242",
         "networks": {
           "available": [
@@ -2722,14 +3751,18 @@
           ],
           "preferred": null
         },
+        "regulated_status": null,
         "three_d_secure_usage": {
           "supported": true
         },
-        "wallet": null
+        "wallet": {
+          "dynamic_last4": null,
+          "type": "link"
+        }
       },
       "created": 1234567890,
       "customer": null,
-      "id": "pm_1OPoukJN5vQBdWEx0hPok3pj",
+      "id": "pm_1Pgc75B7WZ01zgkWlHVgdEGJ",
       "livemode": false,
       "metadata": {
         "order_id": "123456789"
@@ -2771,6 +3804,14 @@
           "value": "off"
         }
       },
+      "amazon_pay": {
+        "available": false,
+        "display_preference": {
+          "overridable": null,
+          "preference": "off",
+          "value": "off"
+        }
+      },
       "apple_pay": {
         "available": true,
         "display_preference": {
@@ -2780,6 +3821,14 @@
         }
       },
       "application": null,
+      "bacs_debit": {
+        "available": false,
+        "display_preference": {
+          "overridable": null,
+          "preference": "off",
+          "value": "off"
+        }
+      },
       "bancontact": {
         "available": false,
         "display_preference": {
@@ -2845,14 +3894,14 @@
         }
       },
       "google_pay": {
-        "available": true,
+        "available": false,
         "display_preference": {
           "overridable": null,
-          "preference": "on",
-          "value": "on"
+          "preference": "off",
+          "value": "off"
         }
       },
-      "id": "pmc_1OPouxJN5vQBdWExE4OpJOVG",
+      "id": "pmc_1Pgc79B7WZ01zgkWe1iPon1Q",
       "ideal": {
         "available": false,
         "display_preference": {
@@ -2879,6 +3928,14 @@
         }
       },
       "livemode": false,
+      "multibanco": {
+        "available": false,
+        "display_preference": {
+          "overridable": null,
+          "preference": "off",
+          "value": "off"
+        }
+      },
       "name": "Default",
       "object": "payment_method_configuration",
       "p24": {
@@ -2921,9 +3978,20 @@
           "preference": "off",
           "value": "off"
         }
+      },
+      "zip": {
+        "available": false,
+        "display_preference": {
+          "overridable": null,
+          "preference": "off",
+          "value": "off"
+        }
       }
     },
     "payment_method_domain": {
+      "amazon_pay": {
+        "status": "active"
+      },
       "apple_pay": {
         "status": "active"
       },
@@ -2933,7 +4001,10 @@
       "google_pay": {
         "status": "active"
       },
-      "id": "pmd_1OPouyJN5vQBdWExgldeVH07",
+      "id": "pmd_1Pgc79B7WZ01zgkWHKCqwAQo",
+      "klarna": {
+        "status": "active"
+      },
       "link": {
         "status": "active"
       },
@@ -2945,12 +4016,24 @@
     },
     "payment_source": {
       "business_profile": {
-        "annual_revenue": null,
+        "annual_revenue": {
+          "amount": null,
+          "currency": null,
+          "fiscal_year_end": null
+        },
         "estimated_worker_count": null,
         "mcc": null,
+        "minority_owned_business_designation": null,
         "name": null,
         "product_description": null,
-        "support_address": null,
+        "support_address": {
+          "city": null,
+          "country": null,
+          "line1": null,
+          "line2": null,
+          "postal_code": null,
+          "state": null
+        },
         "support_email": null,
         "support_phone": null,
         "support_url": null,
@@ -2966,7 +4049,7 @@
         "type": "account"
       },
       "country": "US",
-      "created": 1703175339,
+      "created": 1721948512,
       "default_currency": "usd",
       "details_submitted": false,
       "email": "site@stripe.com",
@@ -2974,7 +4057,7 @@
         "data": [],
         "has_more": false,
         "object": "list",
-        "url": "/v1/accounts/acct_1OPouMJN5vQBdWEx/external_accounts"
+        "url": "/v1/accounts/acct_1PgafTB7WZ01zgkW/external_accounts"
       },
       "future_requirements": {
         "alternatives": [],
@@ -2986,7 +4069,7 @@
         "past_due": [],
         "pending_verification": []
       },
-      "id": "acct_1OPouMJN5vQBdWEx",
+      "id": "acct_1PgafTB7WZ01zgkW",
       "metadata": {},
       "object": "account",
       "payouts_enabled": false,
@@ -3073,17 +4156,19 @@
     },
     "payout": {
       "amount": 1100,
+      "application_fee": null,
+      "application_fee_amount": null,
       "arrival_date": 1234567890,
       "automatic": true,
-      "balance_transaction": "txn_1OPoueJN5vQBdWEx8dhHMVqh",
+      "balance_transaction": "txn_1PgaxNB7WZ01zgkWEV3TLf40",
       "created": 1234567890,
       "currency": "usd",
       "description": "STRIPE PAYOUT",
-      "destination": "ba_1OPounJN5vQBdWExpcDZWbix",
+      "destination": "ba_1Pgc79B7WZ01zgkWoU5vBiXt",
       "failure_balance_transaction": null,
       "failure_code": null,
       "failure_message": null,
-      "id": "po_1OPounJN5vQBdWExyK5eT2UD",
+      "id": "po_1Pgc79B7WZ01zgkWu1KToYf4",
       "livemode": false,
       "metadata": {},
       "method": "standard",
@@ -3094,10 +4179,14 @@
       "source_type": "card",
       "statement_descriptor": null,
       "status": "in_transit",
+      "trace_id": {
+        "status": "status",
+        "value": null
+      },
       "type": "bank_account"
     },
     "person": {
-      "account": "acct_1OPouMJN5vQBdWEx",
+      "account": "acct_1PgafTB7WZ01zgkW",
       "additional_tos_acceptances": {
         "account": {
           "date": null,
@@ -3120,12 +4209,13 @@
         "past_due": [],
         "pending_verification": []
       },
-      "id": "person_1OPouvJN5vQBdWEx4ogP6Lfq",
+      "id": "person_1Pgc6oB7WZ01zgkWnmLL70wS",
       "id_number_provided": false,
       "last_name": null,
       "metadata": {},
       "object": "person",
       "relationship": {
+        "authorizer": null,
         "director": false,
         "executive": false,
         "legal_guardian": false,
@@ -3163,22 +4253,25 @@
     },
     "plan": {
       "active": true,
-      "aggregate_usage": null,
       "amount": 2000,
       "amount_decimal": "2000",
       "billing_scheme": "per_unit",
       "created": 1234567890,
       "currency": "usd",
-      "id": "price_1OPouiJN5vQBdWExAQaqTooZ",
+      "id": "price_1PgafmB7WZ01zgkW6dKueIc5",
       "interval": "month",
       "interval_count": 1,
       "livemode": false,
       "metadata": {},
+      "meter": null,
       "nickname": null,
       "object": "plan",
-      "product": "prod_PEHTfnvdJH6K0k",
+      "product": "prod_QXg1hqf4jFNsqG",
       "tiers_mode": null,
-      "transform_usage": null,
+      "transform_usage": {
+        "divide_by": 1592560163,
+        "round": "down"
+      },
       "trial_period_days": null,
       "usage_type": "licensed"
     },
@@ -3187,24 +4280,31 @@
       "billing_scheme": "per_unit",
       "created": 1234567890,
       "currency": "usd",
-      "custom_unit_amount": null,
-      "id": "price_1OPouiJN5vQBdWExAQaqTooZ",
+      "custom_unit_amount": {
+        "maximum": null,
+        "minimum": null,
+        "preset": null
+      },
+      "id": "price_1PgafmB7WZ01zgkW6dKueIc5",
       "livemode": false,
       "lookup_key": null,
       "metadata": {},
       "nickname": null,
       "object": "price",
-      "product": "prod_PEHTfnvdJH6K0k",
+      "product": "prod_QXg1hqf4jFNsqG",
       "recurring": {
-        "aggregate_usage": null,
         "interval": "month",
         "interval_count": 1,
+        "meter": null,
         "trial_period_days": null,
         "usage_type": "licensed"
       },
       "tax_behavior": "unspecified",
       "tiers_mode": null,
-      "transform_quantity": null,
+      "transform_quantity": {
+        "divide_by": 1592560163,
+        "round": "down"
+      },
       "type": "recurring",
       "unit_amount": 2000,
       "unit_amount_decimal": "2000"
@@ -3212,18 +4312,21 @@
     "product": {
       "active": true,
       "created": 1234567890,
-      "default_price": "price_1OPougJN5vQBdWExAuB7D8i5",
+      "default_price": "price_1PgafmB7WZ01zgkW02Hf9z6c",
       "description": "Comfortable gray cotton t-shirt",
-      "id": "prod_PEHTfnvdJH6K0k",
+      "id": "prod_QXg1hqf4jFNsqG",
       "images": [],
       "livemode": false,
-      "marketing_features": [
-        {}
-      ],
+      "marketing_features": [],
       "metadata": {},
       "name": "T-shirt",
       "object": "product",
-      "package_dimensions": null,
+      "package_dimensions": {
+        "height": 1221029593,
+        "length": 1106363674,
+        "weight": 791592328,
+        "width": 113126854
+      },
       "shippable": null,
       "statement_descriptor": null,
       "tax_code": null,
@@ -3234,18 +4337,16 @@
     },
     "product_feature": {
       "entitlement_feature": {
-        "active": true,
-        "id": "obj_123",
-        "livemode": true,
-        "lookup_key": "lookup_key",
-        "metadata": {
-          "undefined": "metadata"
-        },
-        "name": "name",
+        "active": false,
+        "id": "",
+        "livemode": false,
+        "lookup_key": "",
+        "metadata": {},
+        "name": "",
         "object": "entitlements.feature"
       },
-      "id": "obj_123",
-      "livemode": true,
+      "id": "",
+      "livemode": false,
       "object": "product_feature"
     },
     "promotion_code": {
@@ -3253,9 +4354,9 @@
       "code": "FALL20",
       "coupon": {
         "amount_off": null,
-        "created": 1703175364,
+        "created": 1721954050,
         "currency": "usd",
-        "duration": "repeating",
+        "duration": "forever",
         "duration_in_months": 3,
         "id": "Z4OV52SU",
         "livemode": false,
@@ -3271,7 +4372,7 @@
       "created": 1234567890,
       "customer": null,
       "expires_at": 1234567890,
-      "id": "promo_1OPoumJN5vQBdWExho5DMMcC",
+      "id": "promo_1Pgc79B7WZ01zgkWNy4mn5NX",
       "livemode": false,
       "max_redemptions": null,
       "metadata": {},
@@ -3291,12 +4392,25 @@
       "application_fee_percent": null,
       "automatic_tax": {
         "enabled": false,
-        "liability": null,
+        "liability": {
+          "type": "account"
+        },
+        "provider": null,
         "status": null
       },
       "collection_method": "charge_automatically",
       "computed": {
-        "recurring": null,
+        "recurring": {
+          "amount_subtotal": 1555417355,
+          "amount_total": 1117121693,
+          "interval": "month",
+          "interval_count": 797691627,
+          "total_details": {
+            "amount_discount": 406046392,
+            "amount_shipping": null,
+            "amount_tax": 1424534716
+          }
+        },
         "upfront": {
           "amount_subtotal": 0,
           "amount_total": 0,
@@ -3309,15 +4423,18 @@
       },
       "created": 1234567890,
       "currency": "usd",
-      "customer": "cus_PEHTIoPSgT0tXQ",
+      "customer": "cus_QXg1o8vcGmoR32",
       "default_tax_rates": [],
       "description": null,
       "discounts": [],
       "expires_at": 1234567890,
       "footer": null,
-      "from_quote": null,
+      "from_quote": {
+        "is_revision": true,
+        "quote": "quote"
+      },
       "header": null,
-      "id": "qt_1OPoumJN5vQBdWExJFNWX8UZ",
+      "id": "qt_1Pgc79B7WZ01zgkWHyj9Adwl",
       "invoice": null,
       "invoice_settings": {
         "days_until_due": null,
@@ -3350,14 +4467,21 @@
         "amount_shipping": 0,
         "amount_tax": 0
       },
-      "transfer_data": null
+      "transfer_data": {
+        "amount": null,
+        "amount_percent": null,
+        "destination": {
+          "id": "obj_123",
+          "object": "account"
+        }
+      }
     },
     "radar.early_fraud_warning": {
       "actionable": true,
       "charge": "ch_1234",
       "created": 1234567890,
       "fraud_type": "misc",
-      "id": "issfr_1OPouuJN5vQBdWEx1nfPQnik",
+      "id": "issfr_1Pgc79B7WZ01zgkWxwDzEIPX",
       "livemode": false,
       "object": "radar.early_fraud_warning"
     },
@@ -3365,13 +4489,13 @@
       "alias": "custom_ip_blocklist",
       "created": 1234567890,
       "created_by": "jenny@example.com",
-      "id": "rsl_1OPouuJN5vQBdWExWiMNdstK",
+      "id": "rsl_1Pgc6xB7WZ01zgkWMAqpozsZ",
       "item_type": "ip_address",
       "list_items": {
         "data": [],
         "has_more": false,
         "object": "list",
-        "url": "/v1/radar/value_list_items?value_list=rsl_1OPouuJN5vQBdWExWiMNdstK"
+        "url": "/v1/radar/value_list_items?value_list=rsl_1Pgc6xB7WZ01zgkWMAqpozsZ"
       },
       "livemode": false,
       "metadata": {},
@@ -3381,16 +4505,16 @@
     "radar.value_list_item": {
       "created": 1234567890,
       "created_by": "jenny@example.com",
-      "id": "rsli_1OPouuJN5vQBdWExu3DMfSOX",
+      "id": "rsli_1Pgc6xB7WZ01zgkWS2KbiAtC",
       "livemode": false,
       "object": "radar.value_list_item",
       "value": "1.2.3.4",
-      "value_list": "rsl_1OPouuJN5vQBdWExHVJyCl0n"
+      "value_list": "rsl_1Pgc6xB7WZ01zgkWGZtYN8iP"
     },
     "refund": {
       "amount": 100,
       "balance_transaction": null,
-      "charge": "ch_1OPoueJN5vQBdWEx5AWizjSY",
+      "charge": "ch_1PgafuB7WZ01zgkWXYmPNZs8",
       "created": 1234567890,
       "currency": "usd",
       "destination_details": {
@@ -3399,7 +4523,7 @@
         },
         "type": "card"
       },
-      "id": "re_1OPoujJN5vQBdWExUGBANu1j",
+      "id": "re_1Pgc72B7WZ01zgkWqPvrRrPE",
       "metadata": {},
       "object": "refund",
       "payment_intent": null,
@@ -3412,7 +4536,7 @@
     "reporting.report_run": {
       "created": 1234567890,
       "error": null,
-      "id": "frr_1OPouvJN5vQBdWExgodnLu30",
+      "id": "frr_1Pgc79B7WZ01zgkWMmsefTsj",
       "livemode": true,
       "object": "reporting.report_run",
       "parameters": {
@@ -3421,22 +4545,16 @@
       },
       "report_type": "balance.summary.1",
       "result": {
-        "created": 1703175373,
-        "expires_at": 1734711373,
-        "filename": "file_1OPouvJN5vQBdWExuXVAIkHb",
-        "id": "file_1OPouvJN5vQBdWExuXVAIkHb",
-        "links": {
-          "data": [],
-          "has_more": false,
-          "object": "list",
-          "url": "/v1/file_links?file=file_1OPouvJN5vQBdWExuXVAIkHb"
-        },
+        "created": 1028554472,
+        "expires_at": null,
+        "filename": null,
+        "id": "obj_123",
         "object": "file",
-        "purpose": "finance_report_run",
-        "size": 16890,
+        "purpose": "dispute_evidence",
+        "size": 3530753,
         "title": null,
-        "type": "csv",
-        "url": "https://pakrym-upload-mydev.dev.stripe.me/v1/files/file_1OPouvJN5vQBdWExuXVAIkHb/contents"
+        "type": null,
+        "url": null
       },
       "status": "succeeded",
       "succeeded_at": 1234567890
@@ -3459,41 +4577,52 @@
     },
     "review": {
       "billing_zip": null,
-      "charge": "ch_1OPoueJN5vQBdWExHvNS496R",
+      "charge": "ch_1PgafuB7WZ01zgkWXYmPNZs8",
       "closed_reason": null,
       "created": 1234567890,
-      "id": "prv_1OPouuJN5vQBdWExaP70CbXQ",
+      "id": "prv_1Pgc79B7WZ01zgkWT6khp5C3",
       "ip_address": null,
-      "ip_address_location": null,
+      "ip_address_location": {
+        "city": null,
+        "country": null,
+        "latitude": null,
+        "longitude": null,
+        "region": null
+      },
       "livemode": false,
       "object": "review",
       "open": true,
       "opened_reason": "rule",
       "reason": "rule",
-      "session": null
+      "session": {
+        "browser": null,
+        "device": null,
+        "platform": null,
+        "version": null
+      }
     },
     "scheduled_query_run": {
       "created": 1234567890,
       "data_load_time": 1234567890,
       "file": {
-        "created": 1703175372,
+        "created": 1721948551,
         "expires_at": null,
         "filename": "path",
-        "id": "file_1OPouuJN5vQBdWExlKaWjdjo",
+        "id": "file_1Pgag7B7WZ01zgkWJbdoNCXR",
         "links": {
           "data": [],
           "has_more": false,
           "object": "list",
-          "url": "/v1/file_links?file=file_1OPouuJN5vQBdWExlKaWjdjo"
+          "url": "/v1/file_links?file=file_1Pgag7B7WZ01zgkWJbdoNCXR"
         },
         "object": "file",
         "purpose": "sigma_scheduled_query",
         "size": 500,
         "title": null,
         "type": "csv",
-        "url": "https://pakrym-upload-mydev.dev.stripe.me/v1/files/file_1OPouuJN5vQBdWExlKaWjdjo/contents"
+        "url": "https://sangeekp-15t6ai--upload-mydev.dev.stripe.me/v1/files/file_1Pgag7B7WZ01zgkWJbdoNCXR/contents"
       },
-      "id": "sqr_1OPouvJN5vQBdWExYriJptnl",
+      "id": "sqr_1Pgc7AB7WZ01zgkWvpIic1Di",
       "livemode": false,
       "object": "scheduled_query_run",
       "result_available_until": 1234567890,
@@ -3510,11 +4639,15 @@
       "livemode": false,
       "object": "setup_attempt",
       "on_behalf_of": null,
-      "payment_method": "card_1OPoudJN5vQBdWExSTD9mIPF",
+      "payment_method": "card_1PgaftB7WZ01zgkWm3waTcFp",
       "payment_method_details": {
         "card": {
           "brand": null,
-          "checks": null,
+          "checks": {
+            "address_line1_check": null,
+            "address_postal_code_check": null,
+            "cvc_check": null
+          },
           "country": null,
           "exp_month": null,
           "exp_year": null,
@@ -3522,36 +4655,56 @@
           "funding": null,
           "last4": null,
           "network": null,
-          "three_d_secure": null,
-          "wallet": null
+          "three_d_secure": {
+            "authentication_flow": null,
+            "electronic_commerce_indicator": null,
+            "result": null,
+            "result_reason": null,
+            "transaction_id": null,
+            "version": null
+          },
+          "wallet": {
+            "type": "apple_pay"
+          }
         },
         "type": "card"
       },
-      "setup_error": null,
-      "setup_intent": "seti_1OPoutJN5vQBdWExijPulwWI",
+      "setup_error": {
+        "type": "idempotency_error"
+      },
+      "setup_intent": "seti_1Pgag7B7WZ01zgkWSgwGdb8Z",
       "status": "succeeded",
       "usage": "off_session"
     },
     "setup_intent": {
       "application": null,
-      "automatic_payment_methods": null,
+      "automatic_payment_methods": {
+        "enabled": null
+      },
       "cancellation_reason": null,
-      "client_secret": "seti_1OPoutJN5vQBdWExijPulwWI_secret_PEHTJ4I4FBJxR6sDa0HTdK98RaYgSSc",
+      "client_secret": "seti_1Pgag7B7WZ01zgkWSgwGdb8Z_secret_QXg2AQLdBxJwtY51IkwvUaBVsnCqPSp",
       "created": 1234567890,
       "customer": null,
       "description": null,
       "flow_directions": null,
-      "id": "seti_1OPoutJN5vQBdWExijPulwWI",
-      "last_setup_error": null,
+      "id": "seti_1Pgag7B7WZ01zgkWSgwGdb8Z",
+      "last_setup_error": {
+        "type": "idempotency_error"
+      },
       "latest_attempt": null,
       "livemode": false,
       "mandate": null,
       "metadata": {},
-      "next_action": null,
+      "next_action": {
+        "type": "type"
+      },
       "object": "setup_intent",
       "on_behalf_of": null,
       "payment_method": null,
-      "payment_method_configuration_details": null,
+      "payment_method_configuration_details": {
+        "id": "obj_123",
+        "parent": null
+      },
       "payment_method_options": {},
       "payment_method_types": [
         "card"
@@ -3563,13 +4716,22 @@
     "shipping_rate": {
       "active": true,
       "created": 1234567890,
-      "delivery_estimate": null,
+      "delivery_estimate": {
+        "maximum": {
+          "unit": "month",
+          "value": 111972721
+        },
+        "minimum": {
+          "unit": "month",
+          "value": 111972721
+        }
+      },
       "display_name": "Ground shipping",
       "fixed_amount": {
         "amount": 500,
         "currency": "usd"
       },
-      "id": "shr_1OPoutJN5vQBdWExTw0yZ1uf",
+      "id": "shr_1Pgc7AB7WZ01zgkWVPt4WhMx",
       "livemode": false,
       "metadata": {},
       "object": "shipping_rate",
@@ -3585,21 +4747,36 @@
         "routing_number": "110000000",
         "swift_code": "TSTEZ122"
       },
+      "allow_redisplay": null,
       "amount": null,
-      "client_secret": "src_client_secret_YKwbc23bbUEBnMfgjAmYdnp0",
+      "client_secret": "src_client_secret_XDGV5PcFpAfh4klG76nYn6gH",
       "created": 1234567890,
       "currency": "usd",
       "flow": "receiver",
-      "id": "src_1OPoumJN5vQBdWExvde7Hv2e",
+      "id": "src_1Pgc75B7WZ01zgkWn9ogkWOr",
       "livemode": false,
       "metadata": {},
       "object": "source",
       "owner": {
-        "address": null,
+        "address": {
+          "city": null,
+          "country": null,
+          "line1": null,
+          "line2": null,
+          "postal_code": null,
+          "state": null
+        },
         "email": "jenny.rosen@example.com",
         "name": null,
         "phone": null,
-        "verified_address": null,
+        "verified_address": {
+          "city": null,
+          "country": null,
+          "line1": null,
+          "line2": null,
+          "postal_code": null,
+          "state": null
+        },
         "verified_email": null,
         "verified_name": null,
         "verified_phone": null
@@ -3620,7 +4797,7 @@
     "source_mandate_notification": {
       "amount": 2000,
       "created": 1234567890,
-      "id": "srcmn_1OPoutJN5vQBdWExUwb0XtbS",
+      "id": "srcmn_1Pgc7AB7WZ01zgkWIEWL0NKr",
       "livemode": false,
       "object": "source_mandate_notification",
       "reason": "debit_initiated",
@@ -3637,21 +4814,36 @@
           "routing_number": "110000000",
           "swift_code": "TSTEZ122"
         },
+        "allow_redisplay": null,
         "amount": null,
-        "client_secret": "src_client_secret_C1TZo7pymZMnlKUlzG3197O1",
-        "created": 1703175371,
+        "client_secret": "src_client_secret_3BIouoWKhSribnapj676FM92",
+        "created": 1721954072,
         "currency": "usd",
         "flow": "receiver",
-        "id": "src_1OPoutJN5vQBdWEx9IQfUhAI",
+        "id": "src_1Pgc7AB7WZ01zgkWsB6KK8DI",
         "livemode": false,
         "metadata": {},
         "object": "source",
         "owner": {
-          "address": null,
+          "address": {
+            "city": null,
+            "country": null,
+            "line1": null,
+            "line2": null,
+            "postal_code": null,
+            "state": null
+          },
           "email": "jenny.rosen@example.com",
           "name": null,
           "phone": null,
-          "verified_address": null,
+          "verified_address": {
+            "city": null,
+            "country": null,
+            "line1": null,
+            "line2": null,
+            "postal_code": null,
+            "state": null
+          },
           "verified_email": null,
           "verified_name": null,
           "verified_phone": null
@@ -3677,10 +4869,10 @@
       "amount": 500,
       "created": 1234567890,
       "currency": "usd",
-      "id": "srctxn_1OPoutJN5vQBdWExDm1bbE6Z",
+      "id": "srctxn_1Pgc7AB7WZ01zgkWGYBLSgYV",
       "livemode": false,
       "object": "source_transaction",
-      "source": "src_1OPoumJN5vQBdWExvde7Hv2e",
+      "source": "src_1Pgc75B7WZ01zgkWn9ogkWOr",
       "status": "succeeded",
       "type": "ach_credit_transfer"
     },
@@ -3688,14 +4880,22 @@
       "application": null,
       "application_fee_percent": null,
       "automatic_tax": {
+        "disabled_reason": null,
         "enabled": false,
-        "liability": null
+        "liability": {
+          "type": "account"
+        }
       },
       "billing_cycle_anchor": 1234567890,
-      "billing_cycle_anchor_config": null,
-      "billing_thresholds": null,
+      "billing_cycle_anchor_config": {
+        "day_of_month": 1361669285,
+        "hour": null,
+        "minute": null,
+        "month": null,
+        "second": null
+      },
       "cancel_at": 1234567890,
-      "cancel_at_period_end": false,
+      "cancel_at_period_end": true,
       "canceled_at": 1234567890,
       "cancellation_details": {
         "comment": null,
@@ -3705,92 +4905,33 @@
       "collection_method": "charge_automatically",
       "created": 1234567890,
       "currency": "usd",
-      "current_period_end": 1234567890,
-      "current_period_start": 1234567890,
-      "customer": "cus_PEHTIoPSgT0tXQ",
+      "customer": "cus_QXg1o8vcGmoR32",
       "days_until_due": null,
       "default_payment_method": null,
       "default_source": null,
       "default_tax_rates": [],
       "description": null,
-      "discount": null,
-      "discounts": [
-        {
-          "checkout_session": null,
-          "coupon": {
-            "amount_off": null,
-            "created": 1028554472,
-            "currency": null,
-            "duration": "forever",
-            "duration_in_months": null,
-            "id": "obj_123",
-            "livemode": true,
-            "max_redemptions": null,
-            "metadata": null,
-            "name": null,
-            "object": "coupon",
-            "percent_off": null,
-            "redeem_by": null,
-            "times_redeemed": 990066668,
-            "valid": true
-          },
-          "customer": null,
-          "end": null,
-          "id": "obj_123",
-          "invoice": null,
-          "invoice_item": null,
-          "object": "discount",
-          "promotion_code": null,
-          "start": 109757538,
-          "subscription": null,
-          "subscription_item": null
-        }
-      ],
+      "discounts": [],
       "ended_at": 1234567890,
-      "id": "sub_1OPouiJN5vQBdWExOgfg6t5C",
+      "id": "sub_1Pgc6rB7WZ01zgkWNy0Cn5nw",
+      "invoice_settings": {
+        "account_tax_ids": null,
+        "issuer": {
+          "type": "self"
+        }
+      },
       "items": {
         "data": [
           {
-            "billing_thresholds": null,
-            "created": 1703175361,
-            "discounts": [
-              {
-                "checkout_session": null,
-                "coupon": {
-                  "amount_off": null,
-                  "created": 1028554472,
-                  "currency": null,
-                  "duration": "forever",
-                  "duration_in_months": null,
-                  "id": "obj_123",
-                  "livemode": true,
-                  "max_redemptions": null,
-                  "metadata": null,
-                  "name": null,
-                  "object": "coupon",
-                  "percent_off": null,
-                  "redeem_by": null,
-                  "times_redeemed": 990066668,
-                  "valid": true
-                },
-                "customer": null,
-                "end": null,
-                "id": "obj_123",
-                "invoice": null,
-                "invoice_item": null,
-                "object": "discount",
-                "promotion_code": null,
-                "start": 109757538,
-                "subscription": null,
-                "subscription_item": null
-              }
-            ],
-            "id": "si_PEHTru8PmLRCo3",
+            "created": 1721954054,
+            "current_period_end": 976287773,
+            "current_period_start": 1896570518,
+            "discounts": [],
+            "id": "si_QXhVnC2h0Jczwc",
             "metadata": {},
             "object": "subscription_item",
             "plan": {
               "active": true,
-              "aggregate_usage": null,
               "amount": null,
               "amount_decimal": null,
               "billing_scheme": "tiered",
@@ -3801,49 +4942,60 @@
               "interval_count": 797691627,
               "livemode": true,
               "metadata": null,
+              "meter": null,
               "nickname": null,
               "object": "plan",
               "product": null,
               "tiers_mode": null,
-              "transform_usage": null,
+              "transform_usage": {
+                "divide_by": 1592560163,
+                "round": "down"
+              },
               "trial_period_days": null,
               "usage_type": "licensed"
             },
             "price": {
               "active": true,
               "billing_scheme": "per_unit",
-              "created": 1703175360,
+              "created": 1721948530,
               "currency": "usd",
-              "custom_unit_amount": null,
-              "id": "price_1OPouiJN5vQBdWExAQaqTooZ",
+              "custom_unit_amount": {
+                "maximum": null,
+                "minimum": null,
+                "preset": null
+              },
+              "id": "price_1PgafmB7WZ01zgkW6dKueIc5",
               "livemode": false,
               "lookup_key": null,
               "metadata": {},
               "nickname": null,
               "object": "price",
-              "product": "prod_PEHTfnvdJH6K0k",
+              "product": "prod_QXg1hqf4jFNsqG",
               "recurring": {
-                "aggregate_usage": null,
                 "interval": "month",
                 "interval_count": 1,
+                "meter": null,
                 "trial_period_days": null,
                 "usage_type": "licensed"
               },
               "tax_behavior": "unspecified",
               "tiers_mode": null,
-              "transform_quantity": null,
+              "transform_quantity": {
+                "divide_by": 1592560163,
+                "round": "down"
+              },
               "type": "recurring",
               "unit_amount": 2000,
               "unit_amount_decimal": "2000"
             },
             "quantity": 1,
-            "subscription": "sub_1OPouiJN5vQBdWExOgfg6t5C",
+            "subscription": "sub_1Pgc6rB7WZ01zgkWNy0Cn5nw",
             "tax_rates": []
           }
         ],
         "has_more": false,
         "object": "list",
-        "url": "/v1/subscription_items?subscription=sub_1OPouiJN5vQBdWExOgfg6t5C"
+        "url": "/v1/subscription_items?subscription=sub_1Pgc6rB7WZ01zgkWNy0Cn5nw"
       },
       "latest_invoice": null,
       "livemode": false,
@@ -3851,20 +5003,53 @@
       "next_pending_invoice_item_invoice": 1234567890,
       "object": "subscription",
       "on_behalf_of": null,
-      "pause_collection": null,
+      "pause_collection": {
+        "behavior": "mark_uncollectible",
+        "resumes_at": null
+      },
       "payment_settings": {
-        "payment_method_options": null,
+        "payment_method_options": {
+          "acss_debit": {},
+          "bancontact": {
+            "preferred_language": "fr"
+          },
+          "card": {
+            "network": null,
+            "request_three_d_secure": null
+          },
+          "customer_balance": {
+            "funding_type": null
+          },
+          "konbini": {},
+          "sepa_debit": {},
+          "us_bank_account": {}
+        },
         "payment_method_types": null,
         "save_default_payment_method": null
       },
-      "pending_invoice_item_interval": null,
+      "pending_invoice_item_interval": {
+        "interval": "month",
+        "interval_count": 797691627
+      },
       "pending_setup_intent": null,
-      "pending_update": null,
+      "pending_update": {
+        "billing_cycle_anchor": null,
+        "expires_at": 833811170,
+        "subscription_items": null,
+        "trial_end": null,
+        "trial_from_plan": null
+      },
       "schedule": null,
       "start_date": 1234567890,
       "status": "active",
       "test_clock": null,
-      "transfer_data": null,
+      "transfer_data": {
+        "amount_percent": null,
+        "destination": {
+          "id": "obj_123",
+          "object": "account"
+        }
+      },
       "trial_end": 1234567890,
       "trial_settings": {
         "end_behavior": {
@@ -3874,46 +5059,15 @@
       "trial_start": 1234567890
     },
     "subscription_item": {
-      "billing_thresholds": null,
-      "created": 1703175363,
-      "discounts": [
-        {
-          "checkout_session": null,
-          "coupon": {
-            "amount_off": null,
-            "created": 1028554472,
-            "currency": null,
-            "duration": "forever",
-            "duration_in_months": null,
-            "id": "obj_123",
-            "livemode": true,
-            "max_redemptions": null,
-            "metadata": null,
-            "name": null,
-            "object": "coupon",
-            "percent_off": null,
-            "redeem_by": null,
-            "times_redeemed": 990066668,
-            "valid": true
-          },
-          "customer": null,
-          "end": null,
-          "id": "obj_123",
-          "invoice": null,
-          "invoice_item": null,
-          "object": "discount",
-          "promotion_code": null,
-          "start": 109757538,
-          "subscription": null,
-          "subscription_item": null
-        }
-      ],
-      "id": "si_PEHTIbRiA7RW9V",
+      "created": 1721954060,
+      "current_period_end": 976287773,
+      "current_period_start": 1896570518,
+      "discounts": [],
+      "id": "si_QXhVBoJ7NQdNXh",
       "metadata": {},
       "object": "subscription_item",
       "plan": {
         "active": true,
-        "aggregate_usage": null,
         "amount": null,
         "amount_decimal": null,
         "billing_scheme": "tiered",
@@ -3924,43 +5078,54 @@
         "interval_count": 797691627,
         "livemode": true,
         "metadata": null,
+        "meter": null,
         "nickname": null,
         "object": "plan",
         "product": null,
         "tiers_mode": null,
-        "transform_usage": null,
+        "transform_usage": {
+          "divide_by": 1592560163,
+          "round": "down"
+        },
         "trial_period_days": null,
         "usage_type": "licensed"
       },
       "price": {
         "active": true,
         "billing_scheme": "per_unit",
-        "created": 1703175360,
+        "created": 1721948530,
         "currency": "usd",
-        "custom_unit_amount": null,
-        "id": "price_1OPouiJN5vQBdWExAQaqTooZ",
+        "custom_unit_amount": {
+          "maximum": null,
+          "minimum": null,
+          "preset": null
+        },
+        "id": "price_1PgafmB7WZ01zgkW6dKueIc5",
         "livemode": false,
         "lookup_key": null,
         "metadata": {},
         "nickname": null,
         "object": "price",
-        "product": "prod_PEHTfnvdJH6K0k",
+        "product": "prod_QXg1hqf4jFNsqG",
         "recurring": {
-          "aggregate_usage": null,
           "interval": "month",
           "interval_count": 1,
+          "meter": null,
           "trial_period_days": null,
           "usage_type": "licensed"
         },
         "tax_behavior": "unspecified",
         "tiers_mode": null,
-        "transform_quantity": null,
+        "transform_quantity": {
+          "divide_by": 1592560163,
+          "round": "down"
+        },
         "type": "recurring",
         "unit_amount": 2000,
         "unit_amount_decimal": "2000"
       },
       "quantity": 1,
-      "subscription": "sub_1OPoulJN5vQBdWExmDmopkQy",
+      "subscription": "sub_1Pgc6xB7WZ01zgkWJMvZp5ja",
       "tax_rates": []
     },
     "subscription_schedule": {
@@ -3968,16 +5133,21 @@
       "canceled_at": 1234567890,
       "completed_at": 1234567890,
       "created": 1234567890,
-      "current_phase": null,
-      "customer": "cus_PEHTtYpY7elppN",
+      "current_phase": {
+        "end_date": 1725067410,
+        "start_date": 1573629589
+      },
+      "customer": "cus_QXg1o8vcGmoR32",
       "default_settings": {
         "application_fee_percent": null,
         "automatic_tax": {
+          "disabled_reason": null,
           "enabled": false,
-          "liability": null
+          "liability": {
+            "type": "account"
+          }
         },
         "billing_cycle_anchor": "automatic",
-        "billing_thresholds": null,
         "collection_method": "charge_automatically",
         "default_payment_method": null,
         "description": null,
@@ -3989,10 +5159,16 @@
           }
         },
         "on_behalf_of": null,
-        "transfer_data": null
+        "transfer_data": {
+          "amount_percent": null,
+          "destination": {
+            "id": "obj_123",
+            "object": "account"
+          }
+        }
       },
       "end_behavior": "release",
-      "id": "sub_sched_1OPoulJN5vQBdWEx2v9mIBvO",
+      "id": "sub_sched_1Pgc7AB7WZ01zgkWaeHcsbnC",
       "livemode": false,
       "metadata": {},
       "object": "subscription_schedule",
@@ -4001,36 +5177,26 @@
           "add_invoice_items": [],
           "application_fee_percent": null,
           "billing_cycle_anchor": null,
-          "billing_thresholds": null,
           "collection_method": null,
-          "coupon": null,
           "currency": "usd",
           "default_payment_method": null,
           "default_tax_rates": [],
           "description": null,
-          "discounts": [
-            {
-              "coupon": null,
-              "discount": null,
-              "promotion_code": null
+          "discounts": [],
+          "end_date": 1754008472,
+          "invoice_settings": {
+            "account_tax_ids": null,
+            "days_until_due": null,
+            "issuer": {
+              "type": "account"
             }
-          ],
-          "end_date": 1735229763,
-          "invoice_settings": null,
+          },
           "items": [
             {
-              "billing_thresholds": null,
-              "discounts": [
-                {
-                  "coupon": null,
-                  "discount": null,
-                  "promotion_code": null
-                }
-              ],
+              "discounts": [],
               "metadata": {},
               "plan": {
                 "active": true,
-                "aggregate_usage": null,
                 "amount": null,
                 "amount_decimal": null,
                 "billing_scheme": "tiered",
@@ -4041,15 +5207,19 @@
                 "interval_count": 797691627,
                 "livemode": true,
                 "metadata": null,
+                "meter": null,
                 "nickname": null,
                 "object": "plan",
                 "product": null,
                 "tiers_mode": null,
-                "transform_usage": null,
+                "transform_usage": {
+                  "divide_by": 1592560163,
+                  "round": "down"
+                },
                 "trial_period_days": null,
                 "usage_type": "licensed"
               },
-              "price": "price_1OPouiJN5vQBdWExAQaqTooZ",
+              "price": "price_1PgafmB7WZ01zgkW6dKueIc5",
               "quantity": 1,
               "tax_rates": []
             }
@@ -4057,8 +5227,14 @@
           "metadata": {},
           "on_behalf_of": null,
           "proration_behavior": "create_prorations",
-          "start_date": 1703780163,
-          "transfer_data": null,
+          "start_date": 1722558872,
+          "transfer_data": {
+            "amount_percent": null,
+            "destination": {
+              "id": "obj_123",
+              "object": "account"
+            }
+          },
           "trial_end": null
         }
       ],
@@ -4087,11 +5263,19 @@
         "taxability_override": "none"
       },
       "expires_at": 1234567890,
-      "id": "taxcalc_1OPouwJN5vQBdWExxLiHCl2k",
-      "line_items": null,
+      "id": "taxcalc_1Pgc7HB7WZ01zgkW0snEQbxy",
       "livemode": false,
       "object": "tax.calculation",
-      "ship_from_details": null,
+      "ship_from_details": {
+        "address": {
+          "city": null,
+          "country": "US",
+          "line1": null,
+          "line2": null,
+          "postal_code": "75001",
+          "state": "TX"
+        }
+      },
       "shipping_cost": {
         "amount": 300,
         "amount_tax": 0,
@@ -4106,7 +5290,12 @@
           "inclusive": false,
           "tax_rate_details": {
             "country": "US",
+            "flat_amount": {
+              "amount": 1413853096,
+              "currency": "currency"
+            },
             "percentage_decimal": "9.875",
+            "rate_type": null,
             "state": "CA",
             "tax_type": "sales_tax"
           },
@@ -4118,7 +5307,12 @@
           "inclusive": false,
           "tax_rate_details": {
             "country": "US",
+            "flat_amount": {
+              "amount": 1413853096,
+              "currency": "currency"
+            },
             "percentage_decimal": "0.0",
+            "rate_type": null,
             "state": "CA",
             "tax_type": "sales_tax"
           },
@@ -4131,14 +5325,13 @@
     "tax.calculation_line_item": {
       "amount": 1499,
       "amount_tax": 148,
-      "id": "tax_li_PEHTRKid3aAj4P",
+      "id": "tax_li_QXhWXb3MbhgP1Q",
       "livemode": false,
       "object": "tax.calculation_line_item",
       "product": null,
       "quantity": 1,
       "reference": "Pepperoni Pizza",
       "tax_behavior": "exclusive",
-      "tax_breakdown": null,
       "tax_code": "txcd_40060003"
     },
     "tax.registration": {
@@ -4152,7 +5345,7 @@
       },
       "created": 1234567890,
       "expires_at": 1234567890,
-      "id": "taxreg_PEHTqoThMP4gyv",
+      "id": "taxreg_QXhWPxHxRGhVsh",
       "livemode": false,
       "object": "tax.registration",
       "status": "active"
@@ -4197,20 +5390,22 @@
         "tax_ids": [],
         "taxability_override": "none"
       },
-      "id": "tax_1OPouwJN5vQBdWExb4Vlgfcu",
+      "id": "tax_1Pgc7AB7WZ01zgkW5XONRnmb",
       "line_items": {
         "data": [
           {
             "amount": 1499,
             "amount_tax": 148,
-            "id": "tax_li_PEHTRKid3aAj4P",
+            "id": "tax_li_QXhWXb3MbhgP1Q",
             "livemode": false,
             "metadata": null,
             "object": "tax.transaction_line_item",
             "product": null,
             "quantity": 1,
             "reference": "Pepperoni Pizza",
-            "reversal": null,
+            "reversal": {
+              "original_line_item": "original_line_item"
+            },
             "tax_behavior": "exclusive",
             "tax_code": "txcd_40060003",
             "type": "transaction"
@@ -4218,14 +5413,26 @@
         ],
         "has_more": false,
         "object": "list",
-        "url": "/v1/tax/transactions/tax_1OPouwJN5vQBdWExb4Vlgfcu/line_items"
+        "url": "/v1/tax/transactions/tax_1Pgc7AB7WZ01zgkW5XONRnmb/line_items"
       },
       "livemode": false,
       "metadata": null,
       "object": "tax.transaction",
+      "posted_at": 1234567890,
       "reference": "myOrder_123",
-      "reversal": null,
-      "ship_from_details": null,
+      "reversal": {
+        "original_transaction": null
+      },
+      "ship_from_details": {
+        "address": {
+          "city": null,
+          "country": "US",
+          "line1": null,
+          "line2": null,
+          "postal_code": "75001",
+          "state": "TX"
+        }
+      },
       "shipping_cost": {
         "amount": 300,
         "amount_tax": 0,
@@ -4238,14 +5445,16 @@
     "tax.transaction_line_item": {
       "amount": 1499,
       "amount_tax": 148,
-      "id": "tax_li_PEHTRKid3aAj4P",
+      "id": "tax_li_QXhWXb3MbhgP1Q",
       "livemode": false,
       "metadata": null,
       "object": "tax.transaction_line_item",
       "product": null,
       "quantity": 1,
       "reference": "Pepperoni Pizza",
-      "reversal": null,
+      "reversal": {
+        "original_line_item": "original_line_item"
+      },
       "tax_behavior": "exclusive",
       "tax_code": "txcd_40060003",
       "type": "transaction"
@@ -4259,12 +5468,12 @@
     "tax_id": {
       "country": "DE",
       "created": 1234567890,
-      "customer": "cus_PEHTIoPSgT0tXQ",
-      "id": "txi_1OPouvJN5vQBdWExlr1piCRz",
+      "customer": "cus_QXg1o8vcGmoR32",
+      "id": "txi_1Pgc6sB7WZ01zgkWXkvC78jZ",
       "livemode": false,
       "object": "tax_id",
       "owner": {
-        "customer": "cus_PjUutxjlduca42",
+        "customer": "cus_QXg1o8vcGmoR32",
         "type": "customer"
       },
       "type": "eu_vat",
@@ -4282,7 +5491,11 @@
       "description": "VAT Germany",
       "display_name": "VAT",
       "effective_percentage": null,
-      "id": "txr_1OPoulJN5vQBdWExFxem94NU",
+      "flat_amount": {
+        "amount": 1413853096,
+        "currency": "currency"
+      },
+      "id": "txr_1Pgc7BB7WZ01zgkW4Iwwvf6z",
       "inclusive": false,
       "jurisdiction": "DE",
       "jurisdiction_level": null,
@@ -4290,12 +5503,13 @@
       "metadata": {},
       "object": "tax_rate",
       "percentage": 19,
+      "rate_type": null,
       "state": null,
       "tax_type": "vat"
     },
     "terminal.configuration": {
       "bbpos_wisepos_e": {
-        "splashscreen": "file_1OPouuJN5vQBdWExsQRSvk0Q"
+        "splashscreen": "file_1Pgc6yB7WZ01zgkWSsAMx1We"
       },
       "id": "tmc_ElVUAjF8xXG3hj",
       "is_account_default": false,
@@ -4305,7 +5519,7 @@
     },
     "terminal.connection_token": {
       "object": "terminal.connection_token",
-      "secret": "pst_test_EYaaCPF2R8lL8NK17UlpFtp"
+      "secret": "pst_test_iPPfmBn7kZ0gIJ4xpehqTnC"
     },
     "terminal.location": {
       "address": {
@@ -4317,16 +5531,21 @@
         "state": "CA"
       },
       "display_name": "My First Store",
-      "id": "tml_NGBMEGFknv9VbAajaGp51lDl",
+      "id": "tml_j3hPESSh1Tie4LPWyRy8VLVY",
       "livemode": false,
       "metadata": {},
       "object": "terminal.location"
     },
     "terminal.reader": {
-      "action": null,
+      "action": {
+        "failure_code": null,
+        "failure_message": null,
+        "status": "failed",
+        "type": "refund_payment"
+      },
       "device_sw_version": null,
       "device_type": "bbpos_wisepos_e",
-      "id": "tmr_BKknTibEn0JgG9fJJXUV93Wy",
+      "id": "tmr_iGOgDOlmFAot3zIp2JzEqXYs",
       "ip_address": "192.168.2.2",
       "label": "Blue Rabbit",
       "livemode": false,
@@ -4340,11 +5559,12 @@
       "created": 1234567890,
       "deletes_after": 1234567890,
       "frozen_time": 1234567890,
-      "id": "clock_1OPoumJN5vQBdWEx6P81PQHY",
+      "id": "clock_1Pgc6yB7WZ01zgkWVlemIOED",
       "livemode": false,
       "name": null,
       "object": "test_helpers.test_clock",
-      "status": "ready"
+      "status": "ready",
+      "status_details": {}
     },
     "token": {
       "card": {
@@ -4361,10 +5581,10 @@
         "cvc_check": "pass",
         "dynamic_last4": null,
         "exp_month": 8,
-        "exp_year": 2024,
-        "fingerprint": "r40d4vOgg3VecDJF",
+        "exp_year": 2025,
+        "fingerprint": "AOB934RVNwzk6xtn",
         "funding": "credit",
-        "id": "card_1OPoulJN5vQBdWExeqd0Lni6",
+        "id": "card_1Pgc7BB7WZ01zgkWeZoy4YdD",
         "last4": "4242",
         "metadata": {},
         "name": null,
@@ -4372,11 +5592,12 @@
           "preferred": null
         },
         "object": "card",
+        "regulated_status": null,
         "tokenization_method": null
       },
       "client_ip": null,
       "created": 1234567890,
-      "id": "tok_1OPoulJN5vQBdWExS6soPfIn",
+      "id": "tok_1Pgc7BB7WZ01zgkWptnajzKJ",
       "livemode": false,
       "object": "token",
       "type": "card",
@@ -4391,7 +5612,7 @@
       "expected_availability_date": 123456789,
       "failure_code": null,
       "failure_message": null,
-      "id": "tu_1OPounJN5vQBdWExFC5ZOuYf",
+      "id": "tu_1Pgc7BB7WZ01zgkWwH7rkBgR",
       "livemode": false,
       "metadata": {
         "order_id": "12345678"
@@ -4406,21 +5627,36 @@
           "routing_number": "110000000",
           "type": "individual"
         },
+        "allow_redisplay": null,
         "amount": null,
-        "client_secret": "src_client_secret_zJrY2MSz4b4vCQlw9TZcZLEg",
-        "created": 1710375218,
+        "client_secret": "src_client_secret_9HxmifVKxP2LNNRRod7Q23HM",
+        "created": 1721954073,
         "currency": "usd",
         "flow": "code_verification",
-        "id": "src_1Ou1vSI2S8mDw66k17wJMt0I",
+        "id": "src_1Pgc7BB7WZ01zgkWXWC57xAu",
         "livemode": false,
         "metadata": {},
         "object": "source",
         "owner": {
-          "address": null,
+          "address": {
+            "city": null,
+            "country": null,
+            "line1": null,
+            "line2": null,
+            "postal_code": null,
+            "state": null
+          },
           "email": "jenny.rosen@example.com",
           "name": "Jenny Rosen",
           "phone": null,
-          "verified_address": null,
+          "verified_address": {
+            "city": null,
+            "country": null,
+            "line1": null,
+            "line2": null,
+            "postal_code": null,
+            "state": null
+          },
           "verified_email": null,
           "verified_name": null,
           "verified_phone": null
@@ -4437,13 +5673,13 @@
     "transfer": {
       "amount": 1100,
       "amount_reversed": 0,
-      "balance_transaction": "txn_1OPoueJN5vQBdWEx8dhHMVqh",
+      "balance_transaction": "txn_1PgaxNB7WZ01zgkWEV3TLf40",
       "created": 1234567890,
       "currency": "usd",
       "description": null,
-      "destination": "acct_1OPouMJN5vQBdWEx",
-      "destination_payment": "py_PEHTHL4uD4U3Hv",
-      "id": "tr_1OPounJN5vQBdWExGHeyZqlt",
+      "destination": "acct_1PgafTB7WZ01zgkW",
+      "destination_payment": "py_QXhWZR8SdWquhf",
+      "id": "tr_1Pgc7BB7WZ01zgkWVJfE40RX",
       "livemode": false,
       "metadata": {},
       "object": "transfer",
@@ -4451,7 +5687,7 @@
         "data": [],
         "has_more": false,
         "object": "list",
-        "url": "/v1/transfers/tr_1OPounJN5vQBdWExGHeyZqlt/reversals"
+        "url": "/v1/transfers/tr_1Pgc7BB7WZ01zgkWVJfE40RX/reversals"
       },
       "reversed": false,
       "source_transaction": null,
@@ -4464,48 +5700,50 @@
       "created": 1234567890,
       "currency": "usd",
       "destination_payment_refund": null,
-      "id": "trr_1OPounJN5vQBdWExmrkKTeuo",
+      "id": "trr_1Pgc7BB7WZ01zgkWsU61ufNC",
       "metadata": {},
       "object": "transfer_reversal",
       "source_refund": null,
-      "transfer": "tr_1OPounJN5vQBdWExGHeyZqlt"
+      "transfer": "tr_1Pgc7BB7WZ01zgkWVJfE40RX"
     },
     "treasury.credit_reversal": {
       "amount": 1000,
       "created": 1234567890,
       "currency": "usd",
-      "financial_account": "fa_1OPousJN5vQBdWEx4bT8ilJV",
-      "hosted_regulatory_receipt_url": "https://pakrym-agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xT1BvdU1KTjV2UUJkV0V4KM_JkawGMga8M0E_q486Nv0d0rrdNKVtgXmdjiQ9H6AyLkOWWj7S6Gc_skc7RdLmZGn9gzZ2bQuYuVUAeCuCc_M0fyz5iw",
-      "id": "credrev_1OPouxJN5vQBdWExm49he8ue",
+      "financial_account": "fa_1Pgc7BB7WZ01zgkWxDkCj857",
+      "hosted_regulatory_receipt_url": "https://sangeekp-15t6ai--agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xUGdhZlRCN1daMDF6Z2tXKJnei7UGMgYwtqAZ_Ls6Nv2A6Ab6poMV8ZkZIvCzfMd0j7YHx2Mw0wTBTLJdPImQtMqo7SGE_TS1iV6zNCiVftARe-0iFQ",
+      "id": "credrev_1Pgc7BB7WZ01zgkWo52rqcbC",
       "livemode": false,
       "metadata": {},
       "network": "ach",
       "object": "treasury.credit_reversal",
-      "received_credit": "rc_1OPouxJN5vQBdWExlRb8gNBH",
+      "received_credit": "rc_1Pgc7BB7WZ01zgkWv2rpvGwQ",
       "status": "processing",
       "status_transitions": {
         "posted_at": null
       },
-      "transaction": "trxn_1OPousJN5vQBdWExS2LKXVAv"
+      "transaction": "trxn_1Pgc7BB7WZ01zgkWvyFCYTAP"
     },
     "treasury.debit_reversal": {
       "amount": 1000,
       "created": 1234567890,
       "currency": "usd",
-      "financial_account": "fa_1OPousJN5vQBdWEx4bT8ilJV",
-      "hosted_regulatory_receipt_url": "https://pakrym-agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xT1BvdU1KTjV2UUJkV0V4KM_JkawGMgaMklxnLBk6Nv05uSgo_HpwZ6zRfImbuWdDwzGba8s70W9PPhVOTo3JaEXfDcpkaQ-OP_gJZnKjjRutxDLaIQ",
-      "id": "debrev_1OPouxJN5vQBdWExZrkJLF3z",
-      "linked_flows": null,
+      "financial_account": "fa_1Pgc7BB7WZ01zgkWxDkCj857",
+      "hosted_regulatory_receipt_url": "https://sangeekp-15t6ai--agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xUGdhZlRCN1daMDF6Z2tXKJnei7UGMgZ3U4M-qIg6Nv3nRffl0eHDb937PJZYd2t6AXma3QzJSqHHIKA17nkwM6oG4egKu2JJvBr9Sm1wmKUWDdLmtA",
+      "id": "debrev_1Pgc7BB7WZ01zgkWSyqFZLwW",
+      "linked_flows": {
+        "issuing_dispute": null
+      },
       "livemode": false,
       "metadata": {},
       "network": "ach",
       "object": "treasury.debit_reversal",
-      "received_debit": "rd_1OPouxJN5vQBdWExmkiLsbaL",
+      "received_debit": "rd_1Pgc7BB7WZ01zgkWh1oNnhpq",
       "status": "processing",
       "status_transitions": {
         "completed_at": null
       },
-      "transaction": "trxn_1OPousJN5vQBdWExS2LKXVAv"
+      "transaction": "trxn_1Pgc7BB7WZ01zgkWvyFCYTAP"
     },
     "treasury.financial_account": {
       "active_features": [
@@ -4530,7 +5768,6 @@
         {
           "aba": {
             "account_holder_name": "Jenny Rosen",
-            "account_number": null,
             "account_number_last4": "7890",
             "bank_name": "STRIPE TEST BANK",
             "routing_number": "0000000001"
@@ -4542,7 +5779,7 @@
           "type": "aba"
         }
       ],
-      "id": "fa_1OPousJN5vQBdWEx4bT8ilJV",
+      "id": "fa_1Pgc7BB7WZ01zgkWxDkCj857",
       "livemode": true,
       "metadata": null,
       "object": "treasury.financial_account",
@@ -4550,7 +5787,11 @@
       "restricted_features": [],
       "status": "open",
       "status_details": {
-        "closed": null
+        "closed": {
+          "reasons": [
+            "closed_by_platform"
+          ]
+        }
       },
       "supported_currencies": [
         "usd"
@@ -4618,17 +5859,19 @@
       "created": 1234567890,
       "currency": "usd",
       "description": "InboundTransfer from my external bank account",
-      "failure_details": null,
-      "financial_account": "fa_1OPousJN5vQBdWEx4bT8ilJV",
-      "hosted_regulatory_receipt_url": "https://pakrym-agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xT1BvdU1KTjV2UUJkV0V4KM_JkawGMgYOEtbDkck6Nv2qFp3js1PntieIqQDERWMh17q9c735bplptY1B0Am1liqX_copS8vzlwmXl-r1E2jHWIEMxg",
-      "id": "ibt_1OPouxJN5vQBdWExcKHR4iQ8",
+      "failure_details": {
+        "code": "insufficient_funds"
+      },
+      "financial_account": "fa_1Pgc7BB7WZ01zgkWxDkCj857",
+      "hosted_regulatory_receipt_url": "https://sangeekp-15t6ai--agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xUGdhZlRCN1daMDF6Z2tXKJ_ei7UGMgYKg2PTYkI6Nv0SjUVDsJYyegKhOMmAGzmg4wwaTYDnBu71ORJHkusIcWVsk-jhNAZH7A3P6dVmpXZBTZ6_jw",
+      "id": "ibt_1Pgc7HB7WZ01zgkWPYpjGwmD",
       "linked_flows": {
         "received_debit": null
       },
       "livemode": false,
       "metadata": {},
       "object": "treasury.inbound_transfer",
-      "origin_payment_method": "pm_1OPouwJN5vQBdWExnzH1xIFm",
+      "origin_payment_method": "pm_1Pgc7BB7WZ01zgkWoKmZ8S4H",
       "origin_payment_method_details": {
         "billing_details": {
           "address": {
@@ -4647,7 +5890,7 @@
           "account_holder_type": "company",
           "account_type": "checking",
           "bank_name": "STRIPE TEST BANK",
-          "fingerprint": "oBMt5pBDd633Ahah",
+          "fingerprint": "AuoSJ18zsVWV9SPc",
           "last4": "6789",
           "network": "ach",
           "routing_number": "110000000"
@@ -4660,7 +5903,7 @@
         "failed_at": null,
         "succeeded_at": null
       },
-      "transaction": "trxn_1OPousJN5vQBdWExS2LKXVAv"
+      "transaction": "trxn_1Pgc7BB7WZ01zgkWvyFCYTAP"
     },
     "treasury.outbound_payment": {
       "amount": 10000,
@@ -4690,13 +5933,37 @@
         "present": false
       },
       "expected_arrival_date": 1234567890,
-      "financial_account": "fa_1OPousJN5vQBdWEx4bT8ilJV",
-      "hosted_regulatory_receipt_url": "https://pakrym-agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xT1BvdU1KTjV2UUJkV0V4KM_JkawGMgaR9eFFZxA6Nf1Uo94Mpn-7Tsn_H3VUq5eU5VqUXb9OIEaCinxrEDg2YK6jwW9CYt3AXOyCohxB6swPKWTL",
-      "id": "obp_1OPouxJN5vQBdWExcfBNWRw2",
+      "financial_account": "fa_1Pgc7BB7WZ01zgkWxDkCj857",
+      "hosted_regulatory_receipt_url": "https://sangeekp-15t6ai--agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xUGdhZlRCN1daMDF6Z2tXKJ_ei7UGMgZb81SroEc6Nf0M0LOh7xetIdKMMltgDcTZmCTvH7ZnNosUOThGpwFftLBt-Jpykly0SuHShBnzVpepZnst",
+      "id": "obp_1Pgc7HB7WZ01zgkW5S60LSav",
       "livemode": false,
       "metadata": {},
       "object": "treasury.outbound_payment",
-      "returned_details": null,
+      "returned_details": {
+        "code": "account_frozen",
+        "transaction": {
+          "amount": 1413853096,
+          "balance_impact": {
+            "cash": 3046195,
+            "inbound_pending": 550878511,
+            "outbound_pending": 786770760
+          },
+          "created": 1028554472,
+          "currency": "currency",
+          "description": "description",
+          "financial_account": "financial_account",
+          "flow": null,
+          "flow_type": "credit_reversal",
+          "id": "obj_123",
+          "livemode": true,
+          "object": "treasury.transaction",
+          "status": "open",
+          "status_transitions": {
+            "posted_at": null,
+            "void_at": null
+          }
+        }
+      },
       "statement_descriptor": "payment",
       "status": "processing",
       "status_transitions": {
@@ -4705,7 +5972,10 @@
         "posted_at": null,
         "returned_at": null
       },
-      "transaction": "trxn_1OPousJN5vQBdWExS2LKXVAv"
+      "tracking_details": {
+        "type": "ach"
+      },
+      "transaction": "trxn_1Pgc7BB7WZ01zgkWvyFCYTAP"
     },
     "treasury.outbound_transfer": {
       "amount": 10000,
@@ -4713,7 +5983,7 @@
       "created": 1234567890,
       "currency": "usd",
       "description": "OutboundTransfer to my external bank account",
-      "destination_payment_method": "pm_1OPouwJN5vQBdWExnzH1xIFm",
+      "destination_payment_method": "pm_1Pgc7BB7WZ01zgkWoKmZ8S4H",
       "destination_payment_method_details": {
         "billing_details": {
           "address": {
@@ -4732,20 +6002,44 @@
           "account_holder_type": "company",
           "account_type": "checking",
           "bank_name": "STRIPE TEST BANK",
-          "fingerprint": "oBMt5pBDd633Ahah",
+          "fingerprint": "AuoSJ18zsVWV9SPc",
           "last4": "6789",
           "network": "ach",
           "routing_number": "110000000"
         }
       },
       "expected_arrival_date": 1234567890,
-      "financial_account": "fa_1OPousJN5vQBdWEx4bT8ilJV",
-      "hosted_regulatory_receipt_url": "https://pakrym-agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xT1BvdU1KTjV2UUJkV0V4KM_JkawGMgbubL2Juz06Nv36NszL7bgMw-HdKdK3GPWOCnC-aVisnjcPYKMEC58GB1yGAIqB2xYannP_UefTP7OEMOIRww",
-      "id": "obt_1OPouxJN5vQBdWExpjuwR2Xd",
+      "financial_account": "fa_1Pgc7BB7WZ01zgkWxDkCj857",
+      "hosted_regulatory_receipt_url": "https://sangeekp-15t6ai--agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xUGdhZlRCN1daMDF6Z2tXKJ_ei7UGMgYlxL2q_WI6Nv0EvxGhJTn6e6eNgpjYk9CdzEc4N899gPvZHXiyD6u24zAPv2nUwIgQ-exAUakJYBUxk8cq_A",
+      "id": "obt_1Pgc7HB7WZ01zgkW6fB9s6sG",
       "livemode": false,
       "metadata": {},
       "object": "treasury.outbound_transfer",
-      "returned_details": null,
+      "returned_details": {
+        "code": "account_frozen",
+        "transaction": {
+          "amount": 1413853096,
+          "balance_impact": {
+            "cash": 3046195,
+            "inbound_pending": 550878511,
+            "outbound_pending": 786770760
+          },
+          "created": 1028554472,
+          "currency": "currency",
+          "description": "description",
+          "financial_account": "financial_account",
+          "flow": null,
+          "flow_type": "credit_reversal",
+          "id": "obj_123",
+          "livemode": true,
+          "object": "treasury.transaction",
+          "status": "open",
+          "status_transitions": {
+            "posted_at": null,
+            "void_at": null
+          }
+        }
+      },
       "statement_descriptor": "transfer",
       "status": "processing",
       "status_transitions": {
@@ -4754,7 +6048,10 @@
         "posted_at": null,
         "returned_at": null
       },
-      "transaction": "trxn_1OPousJN5vQBdWExS2LKXVAv"
+      "tracking_details": {
+        "type": "ach"
+      },
+      "transaction": "trxn_1Pgc7BB7WZ01zgkWvyFCYTAP"
     },
     "treasury.received_credit": {
       "amount": 1234,
@@ -4762,9 +6059,9 @@
       "currency": "usd",
       "description": "Stripe Test",
       "failure_code": null,
-      "financial_account": "fa_1OPousJN5vQBdWEx4bT8ilJV",
-      "hosted_regulatory_receipt_url": "https://pakrym-agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xT1BvdU1KTjV2UUJkV0V4KM_JkawGMgbR9qpUOwI6Nv1M_-1yzVcQyDBD5fWzBOC5c8-OKRj3GCgQrKwMoQk7B_x6BQ8WbJAzeH1-MYa33PH-tXw38g",
-      "id": "rc_1OPouxJN5vQBdWExlRb8gNBH",
+      "financial_account": "fa_1Pgc7BB7WZ01zgkWxDkCj857",
+      "hosted_regulatory_receipt_url": "https://sangeekp-15t6ai--agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xUGdhZlRCN1daMDF6Z2tXKJ_ei7UGMgb_mDijM3s6Nv0vHJ2VidYTyMDTmingbhaK5i-GqSNEOdMrWczfnZxlxg6ji5RDUKaCLqNe34tGLL_ncyo92g",
+      "id": "rc_1Pgc7BB7WZ01zgkWv2rpvGwQ",
       "initiating_payment_method_details": {
         "billing_details": {
           "address": {
@@ -4790,18 +6087,17 @@
         "issuing_authorization": null,
         "issuing_transaction": null,
         "source_flow": null,
-        "source_flow_details": null,
         "source_flow_type": null
       },
       "livemode": false,
       "network": "ach",
       "object": "treasury.received_credit",
       "reversal_details": {
-        "deadline": 1703548800,
+        "deadline": 1722297600,
         "restricted_reason": null
       },
       "status": "succeeded",
-      "transaction": "trxn_1OPousJN5vQBdWExS2LKXVAv"
+      "transaction": "trxn_1Pgc7BB7WZ01zgkWvyFCYTAP"
     },
     "treasury.received_debit": {
       "amount": 54321,
@@ -4809,9 +6105,9 @@
       "currency": "usd",
       "description": "Stripe Test",
       "failure_code": null,
-      "financial_account": "fa_1OPousJN5vQBdWEx4bT8ilJV",
-      "hosted_regulatory_receipt_url": "https://pakrym-agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xT1BvdU1KTjV2UUJkV0V4KM_JkawGMgZqCQzu5wU6Nv3BettKOuxLU_e9_QIggyk_Iu_hjDWSPq7SWu9O0hf2ORmZ5RoneWewCsaDdCIgZuoDPI5FOA",
-      "id": "rd_1OPouxJN5vQBdWExcQ4JcpiH",
+      "financial_account": "fa_1Pgc7BB7WZ01zgkWxDkCj857",
+      "hosted_regulatory_receipt_url": "https://sangeekp-15t6ai--agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xUGdhZlRCN1daMDF6Z2tXKJ_ei7UGMgblHg8l-qY6Nv1bWhP07tHwOkxTo4kSCyk5cLYhmwXhReJLrYy2SlP6nyY3S80SSs29lSFiEvKBYHUw_ddK7A",
+      "id": "rd_1Pgc7HB7WZ01zgkWlhCJ4BHN",
       "initiating_payment_method_details": {
         "billing_details": {
           "address": {
@@ -4843,11 +6139,11 @@
       "network": "ach",
       "object": "treasury.received_debit",
       "reversal_details": {
-        "deadline": 1703548800,
+        "deadline": 1722297600,
         "restricted_reason": null
       },
       "status": "succeeded",
-      "transaction": "trxn_1OPousJN5vQBdWExS2LKXVAv"
+      "transaction": "trxn_1Pgc7BB7WZ01zgkWvyFCYTAP"
     },
     "treasury.transaction": {
       "amount": -100,
@@ -4859,12 +6155,10 @@
       "created": 1234567890,
       "currency": "usd",
       "description": "Jane Austen (6789) | Outbound transfer | transfer",
-      "entries": null,
-      "financial_account": "fa_1OPousJN5vQBdWEx4bT8ilJV",
-      "flow": "obt_1OPouxJN5vQBdWExpjuwR2Xd",
-      "flow_details": null,
+      "financial_account": "fa_1Pgc7BB7WZ01zgkWxDkCj857",
+      "flow": "obt_1Pgc7HB7WZ01zgkW6fB9s6sG",
       "flow_type": "outbound_transfer",
-      "id": "trxn_1OPousJN5vQBdWExS2LKXVAv",
+      "id": "trxn_1Pgc7BB7WZ01zgkWvyFCYTAP",
       "livemode": false,
       "object": "treasury.transaction",
       "status": "open",
@@ -4882,35 +6176,14 @@
       "created": 1234567890,
       "currency": "usd",
       "effective_at": 1234567890,
-      "financial_account": "fa_1OPousJN5vQBdWEx4bT8ilJV",
-      "flow": "obt_1OPouxJN5vQBdWExpjuwR2Xd",
-      "flow_details": null,
+      "financial_account": "fa_1Pgc7BB7WZ01zgkWxDkCj857",
+      "flow": "obt_1Pgc7HB7WZ01zgkW6fB9s6sG",
       "flow_type": "outbound_transfer",
-      "id": "trxne_1OPouxJN5vQBdWExvDiJTOkM",
+      "id": "trxne_1Pgc7HB7WZ01zgkWRFO3VY47",
       "livemode": false,
       "object": "treasury.transaction_entry",
-      "transaction": "trxn_1OPousJN5vQBdWExS2LKXVAv",
+      "transaction": "trxn_1Pgc7BB7WZ01zgkWvyFCYTAP",
       "type": "outbound_transfer"
-    },
-    "usage_record": {
-      "id": "mbur_1OPoumJN5vQBdWExO39fivTh",
-      "livemode": false,
-      "object": "usage_record",
-      "quantity": 100,
-      "subscription_item": "si_PEHTB8PAPrlJ0Q",
-      "timestamp": 1234567890
-    },
-    "usage_record_summary": {
-      "id": "sis_1OPoumJN5vQBdWEx7TSOHJ9Q",
-      "invoice": "in_1OPoulJN5vQBdWExBI9AQC8z",
-      "livemode": false,
-      "object": "usage_record_summary",
-      "period": {
-        "end": 1703175364,
-        "start": 1700583364
-      },
-      "subscription_item": "si_PEHTi9FjaTNeBx",
-      "total_usage": 123
     },
     "webhook_endpoint": {
       "api_version": null,
@@ -4921,7 +6194,7 @@
         "charge.failed",
         "charge.succeeded"
       ],
-      "id": "we_1OPouqJN5vQBdWEx9Xl0KCo3",
+      "id": "we_1Pgc6yB7WZ01zgkWzAudq4eU",
       "livemode": false,
       "metadata": {},
       "object": "webhook_endpoint",
@@ -4929,5 +6202,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v1001"
+  "version": "v1715"
 }

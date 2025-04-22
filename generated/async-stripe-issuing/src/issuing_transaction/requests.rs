@@ -1425,6 +1425,9 @@ impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionMercha
 /// Additional purchase information that is optionally provided by the merchant.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionPurchaseDetails {
+    /// Fleet-specific information for transactions using Fleet cards.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fleet: Option<CreateForceCaptureIssuingTransactionPurchaseDetailsFleet>,
     /// Information about the flight that was purchased with this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flight: Option<FlightSpecs>,
@@ -1443,7 +1446,14 @@ pub struct CreateForceCaptureIssuingTransactionPurchaseDetails {
 }
 impl CreateForceCaptureIssuingTransactionPurchaseDetails {
     pub fn new() -> Self {
-        Self { flight: None, fuel: None, lodging: None, receipt: None, reference: None }
+        Self {
+            fleet: None,
+            flight: None,
+            fuel: None,
+            lodging: None,
+            receipt: None,
+            reference: None,
+        }
     }
 }
 impl Default for CreateForceCaptureIssuingTransactionPurchaseDetails {
@@ -1451,27 +1461,189 @@ impl Default for CreateForceCaptureIssuingTransactionPurchaseDetails {
         Self::new()
     }
 }
+/// Fleet-specific information for transactions using Fleet cards.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateForceCaptureIssuingTransactionPurchaseDetailsFleet {
+    /// Answers to prompts presented to the cardholder at the point of sale.
+    /// Prompted fields vary depending on the configuration of your physical fleet cards.
+    /// Typical points of sale support only numeric entry.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cardholder_prompt_data: Option<FleetCardholderPromptDataSpecs>,
+    /// The type of purchase. One of `fuel_purchase`, `non_fuel_purchase`, or `fuel_and_non_fuel_purchase`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub purchase_type: Option<CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType>,
+    /// More information about the total amount.
+    /// This information is not guaranteed to be accurate as some merchants may provide unreliable data.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reported_breakdown: Option<FleetReportedBreakdownSpecs>,
+    /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub service_type: Option<CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType>,
+}
+impl CreateForceCaptureIssuingTransactionPurchaseDetailsFleet {
+    pub fn new() -> Self {
+        Self {
+            cardholder_prompt_data: None,
+            purchase_type: None,
+            reported_breakdown: None,
+            service_type: None,
+        }
+    }
+}
+impl Default for CreateForceCaptureIssuingTransactionPurchaseDetailsFleet {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The type of purchase. One of `fuel_purchase`, `non_fuel_purchase`, or `fuel_and_non_fuel_purchase`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    FuelAndNonFuelPurchase,
+    FuelPurchase,
+    NonFuelPurchase,
+}
+impl CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    pub fn as_str(self) -> &'static str {
+        use CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType::*;
+        match self {
+            FuelAndNonFuelPurchase => "fuel_and_non_fuel_purchase",
+            FuelPurchase => "fuel_purchase",
+            NonFuelPurchase => "non_fuel_purchase",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType::*;
+        match s {
+            "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
+            "fuel_purchase" => Ok(FuelPurchase),
+            "non_fuel_purchase" => Ok(NonFuelPurchase),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType"))
+    }
+}
+/// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType {
+    FullService,
+    NonFuelTransaction,
+    SelfService,
+}
+impl CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType {
+    pub fn as_str(self) -> &'static str {
+        use CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType::*;
+        match self {
+            FullService => "full_service",
+            NonFuelTransaction => "non_fuel_transaction",
+            SelfService => "self_service",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType::*;
+        match s {
+            "full_service" => Ok(FullService),
+            "non_fuel_transaction" => Ok(NonFuelTransaction),
+            "self_service" => Ok(SelfService),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType"))
+    }
+}
 /// Information about fuel that was purchased with this transaction.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionPurchaseDetailsFuel {
+    /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub industry_product_code: Option<String>,
+    /// The quantity of `unit`s of fuel that was dispensed, represented as a decimal string with at most 12 decimal places.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity_decimal: Option<String>,
     /// The type of fuel that was purchased.
     /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType>,
-    /// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
+    /// The units for `quantity_decimal`.
+    /// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit: Option<CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit>,
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_cost_decimal: Option<String>,
-    /// The volume of the fuel that was pumped, represented as a decimal string with at most 12 decimal places.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub volume_decimal: Option<String>,
 }
 impl CreateForceCaptureIssuingTransactionPurchaseDetailsFuel {
     pub fn new() -> Self {
-        Self { type_: None, unit: None, unit_cost_decimal: None, volume_decimal: None }
+        Self {
+            industry_product_code: None,
+            quantity_decimal: None,
+            type_: None,
+            unit: None,
+            unit_cost_decimal: None,
+        }
     }
 }
 impl Default for CreateForceCaptureIssuingTransactionPurchaseDetailsFuel {
@@ -1547,19 +1719,30 @@ impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionPurcha
         })
     }
 }
-/// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
+/// The units for `quantity_decimal`.
+/// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
+    ChargingMinute,
+    ImperialGallon,
+    Kilogram,
+    KilowattHour,
     Liter,
     Other,
+    Pound,
     UsGallon,
 }
 impl CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
     pub fn as_str(self) -> &'static str {
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit::*;
         match self {
+            ChargingMinute => "charging_minute",
+            ImperialGallon => "imperial_gallon",
+            Kilogram => "kilogram",
+            KilowattHour => "kilowatt_hour",
             Liter => "liter",
             Other => "other",
+            Pound => "pound",
             UsGallon => "us_gallon",
         }
     }
@@ -1570,8 +1753,13 @@ impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFu
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit::*;
         match s {
+            "charging_minute" => Ok(ChargingMinute),
+            "imperial_gallon" => Ok(ImperialGallon),
+            "kilogram" => Ok(Kilogram),
+            "kilowatt_hour" => Ok(KilowattHour),
             "liter" => Ok(Liter),
             "other" => Ok(Other),
+            "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
             _ => Err(stripe_types::StripeParseError),
         }
@@ -2785,6 +2973,9 @@ impl<'de> serde::Deserialize<'de> for CreateUnlinkedRefundIssuingTransactionMerc
 /// Additional purchase information that is optionally provided by the merchant.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetails {
+    /// Fleet-specific information for transactions using Fleet cards.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fleet: Option<CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleet>,
     /// Information about the flight that was purchased with this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flight: Option<FlightSpecs>,
@@ -2803,7 +2994,14 @@ pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetails {
 }
 impl CreateUnlinkedRefundIssuingTransactionPurchaseDetails {
     pub fn new() -> Self {
-        Self { flight: None, fuel: None, lodging: None, receipt: None, reference: None }
+        Self {
+            fleet: None,
+            flight: None,
+            fuel: None,
+            lodging: None,
+            receipt: None,
+            reference: None,
+        }
     }
 }
 impl Default for CreateUnlinkedRefundIssuingTransactionPurchaseDetails {
@@ -2811,27 +3009,190 @@ impl Default for CreateUnlinkedRefundIssuingTransactionPurchaseDetails {
         Self::new()
     }
 }
+/// Fleet-specific information for transactions using Fleet cards.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleet {
+    /// Answers to prompts presented to the cardholder at the point of sale.
+    /// Prompted fields vary depending on the configuration of your physical fleet cards.
+    /// Typical points of sale support only numeric entry.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cardholder_prompt_data: Option<FleetCardholderPromptDataSpecs>,
+    /// The type of purchase. One of `fuel_purchase`, `non_fuel_purchase`, or `fuel_and_non_fuel_purchase`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub purchase_type:
+        Option<CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType>,
+    /// More information about the total amount.
+    /// This information is not guaranteed to be accurate as some merchants may provide unreliable data.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reported_breakdown: Option<FleetReportedBreakdownSpecs>,
+    /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub service_type: Option<CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType>,
+}
+impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleet {
+    pub fn new() -> Self {
+        Self {
+            cardholder_prompt_data: None,
+            purchase_type: None,
+            reported_breakdown: None,
+            service_type: None,
+        }
+    }
+}
+impl Default for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleet {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The type of purchase. One of `fuel_purchase`, `non_fuel_purchase`, or `fuel_and_non_fuel_purchase`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    FuelAndNonFuelPurchase,
+    FuelPurchase,
+    NonFuelPurchase,
+}
+impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    pub fn as_str(self) -> &'static str {
+        use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType::*;
+        match self {
+            FuelAndNonFuelPurchase => "fuel_and_non_fuel_purchase",
+            FuelPurchase => "fuel_purchase",
+            NonFuelPurchase => "non_fuel_purchase",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType::*;
+        match s {
+            "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
+            "fuel_purchase" => Ok(FuelPurchase),
+            "non_fuel_purchase" => Ok(NonFuelPurchase),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType"))
+    }
+}
+/// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType {
+    FullService,
+    NonFuelTransaction,
+    SelfService,
+}
+impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType {
+    pub fn as_str(self) -> &'static str {
+        use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType::*;
+        match self {
+            FullService => "full_service",
+            NonFuelTransaction => "non_fuel_transaction",
+            SelfService => "self_service",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType::*;
+        match s {
+            "full_service" => Ok(FullService),
+            "non_fuel_transaction" => Ok(NonFuelTransaction),
+            "self_service" => Ok(SelfService),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType"))
+    }
+}
 /// Information about fuel that was purchased with this transaction.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel {
+    /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub industry_product_code: Option<String>,
+    /// The quantity of `unit`s of fuel that was dispensed, represented as a decimal string with at most 12 decimal places.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity_decimal: Option<String>,
     /// The type of fuel that was purchased.
     /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType>,
-    /// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
+    /// The units for `quantity_decimal`.
+    /// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit: Option<CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit>,
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_cost_decimal: Option<String>,
-    /// The volume of the fuel that was pumped, represented as a decimal string with at most 12 decimal places.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub volume_decimal: Option<String>,
 }
 impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel {
     pub fn new() -> Self {
-        Self { type_: None, unit: None, unit_cost_decimal: None, volume_decimal: None }
+        Self {
+            industry_product_code: None,
+            quantity_decimal: None,
+            type_: None,
+            unit: None,
+            unit_cost_decimal: None,
+        }
     }
 }
 impl Default for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel {
@@ -2909,19 +3270,30 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
-/// The units for `volume_decimal`. One of `liter`, `us_gallon`, or `other`.
+/// The units for `quantity_decimal`.
+/// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
+    ChargingMinute,
+    ImperialGallon,
+    Kilogram,
+    KilowattHour,
     Liter,
     Other,
+    Pound,
     UsGallon,
 }
 impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
     pub fn as_str(self) -> &'static str {
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit::*;
         match self {
+            ChargingMinute => "charging_minute",
+            ImperialGallon => "imperial_gallon",
+            Kilogram => "kilogram",
+            KilowattHour => "kilowatt_hour",
             Liter => "liter",
             Other => "other",
+            Pound => "pound",
             UsGallon => "us_gallon",
         }
     }
@@ -2932,8 +3304,13 @@ impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetails
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit::*;
         match s {
+            "charging_minute" => Ok(ChargingMinute),
+            "imperial_gallon" => Ok(ImperialGallon),
+            "kilogram" => Ok(Kilogram),
+            "kilowatt_hour" => Ok(KilowattHour),
             "liter" => Ok(Liter),
             "other" => Ok(Other),
+            "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
             _ => Err(stripe_types::StripeParseError),
         }
@@ -3045,6 +3422,94 @@ impl StripeRequest for CreateUnlinkedRefundIssuingTransaction {
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
+pub struct FleetCardholderPromptDataSpecs {
+    /// Driver ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub driver_id: Option<String>,
+    /// Odometer reading.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub odometer: Option<i64>,
+    /// An alphanumeric ID.
+    /// This field is used when a vehicle ID, driver ID, or generic ID is entered by the cardholder, but the merchant or card network did not specify the prompt type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unspecified_id: Option<String>,
+    /// User ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_id: Option<String>,
+    /// Vehicle number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle_number: Option<String>,
+}
+impl FleetCardholderPromptDataSpecs {
+    pub fn new() -> Self {
+        Self {
+            driver_id: None,
+            odometer: None,
+            unspecified_id: None,
+            user_id: None,
+            vehicle_number: None,
+        }
+    }
+}
+impl Default for FleetCardholderPromptDataSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FleetReportedBreakdownFuelSpecs {
+    /// Gross fuel amount that should equal Fuel Volume multipled by Fuel Unit Cost, inclusive of taxes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gross_amount_decimal: Option<String>,
+}
+impl FleetReportedBreakdownFuelSpecs {
+    pub fn new() -> Self {
+        Self { gross_amount_decimal: None }
+    }
+}
+impl Default for FleetReportedBreakdownFuelSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FleetReportedBreakdownNonFuelSpecs {
+    /// Gross non-fuel amount that should equal the sum of the line items, inclusive of taxes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gross_amount_decimal: Option<String>,
+}
+impl FleetReportedBreakdownNonFuelSpecs {
+    pub fn new() -> Self {
+        Self { gross_amount_decimal: None }
+    }
+}
+impl Default for FleetReportedBreakdownNonFuelSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FleetReportedBreakdownTaxSpecs {
+    /// Amount of state or provincial Sales Tax included in the transaction amount.
+    /// Null if not reported by merchant or not subject to tax.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub local_amount_decimal: Option<String>,
+    /// Amount of national Sales Tax or VAT included in the transaction amount.
+    /// Null if not reported by merchant or not subject to tax.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub national_amount_decimal: Option<String>,
+}
+impl FleetReportedBreakdownTaxSpecs {
+    pub fn new() -> Self {
+        Self { local_amount_decimal: None, national_amount_decimal: None }
+    }
+}
+impl Default for FleetReportedBreakdownTaxSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct FlightSegmentSpecs {
     /// The three-letter IATA airport code of the flight's destination.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3118,6 +3583,28 @@ impl ReceiptSpecs {
     }
 }
 impl Default for ReceiptSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FleetReportedBreakdownSpecs {
+    /// Breakdown of fuel portion of the purchase.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fuel: Option<FleetReportedBreakdownFuelSpecs>,
+    /// Breakdown of non-fuel portion of the purchase.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub non_fuel: Option<FleetReportedBreakdownNonFuelSpecs>,
+    /// Information about tax included in this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<FleetReportedBreakdownTaxSpecs>,
+}
+impl FleetReportedBreakdownSpecs {
+    pub fn new() -> Self {
+        Self { fuel: None, non_fuel: None, tax: None }
+    }
+}
+impl Default for FleetReportedBreakdownSpecs {
     fn default() -> Self {
         Self::new()
     }

@@ -280,13 +280,15 @@ struct CreatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     on_behalf_of: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    optional_items: Option<Vec<CreatePaymentLinkOptionalItems>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     payment_intent_data: Option<CreatePaymentLinkPaymentIntentData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_collection: Option<CreatePaymentLinkPaymentMethodCollection>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_types: Option<Vec<stripe_shared::PaymentLinkPaymentMethodTypes>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    phone_number_collection: Option<CreatePaymentLinkPhoneNumberCollection>,
+    phone_number_collection: Option<PhoneNumberCollectionParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     restrictions: Option<RestrictionsParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -322,6 +324,7 @@ impl CreatePaymentLinkBuilder {
             line_items: line_items.into(),
             metadata: None,
             on_behalf_of: None,
+            optional_items: None,
             payment_intent_data: None,
             payment_method_collection: None,
             payment_method_types: None,
@@ -413,7 +416,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkAfterCompletionType {
 /// Configuration for automatic tax collection.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkAutomaticTax {
-    /// If `true`, tax will be calculated automatically using the customer's location.
+    /// Set to `true` to [calculate tax automatically](https://docs.stripe.com/tax) using the customer's location.
+    ///
+    /// Enabling this parameter causes the payment link to collect any billing address information necessary for tax calculation.
     pub enabled: bool,
     /// The account that's liable for tax.
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
@@ -838,8 +843,11 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkCustomFieldsLabelType {
     }
 }
 /// Configuration for `type=numeric` fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkCustomFieldsNumeric {
+    /// The value that will pre-fill the field on the payment page.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_value: Option<String>,
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum_length: Option<i64>,
@@ -849,7 +857,7 @@ pub struct CreatePaymentLinkCustomFieldsNumeric {
 }
 impl CreatePaymentLinkCustomFieldsNumeric {
     pub fn new() -> Self {
-        Self { maximum_length: None, minimum_length: None }
+        Self { default_value: None, maximum_length: None, minimum_length: None }
     }
 }
 impl Default for CreatePaymentLinkCustomFieldsNumeric {
@@ -858,8 +866,11 @@ impl Default for CreatePaymentLinkCustomFieldsNumeric {
     }
 }
 /// Configuration for `type=text` fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkCustomFieldsText {
+    /// The value that will pre-fill the field on the payment page.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_value: Option<String>,
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum_length: Option<i64>,
@@ -869,7 +880,7 @@ pub struct CreatePaymentLinkCustomFieldsText {
 }
 impl CreatePaymentLinkCustomFieldsText {
     pub fn new() -> Self {
-        Self { maximum_length: None, minimum_length: None }
+        Self { default_value: None, maximum_length: None, minimum_length: None }
     }
 }
 impl Default for CreatePaymentLinkCustomFieldsText {
@@ -1233,6 +1244,44 @@ impl CreatePaymentLinkLineItems {
         Self { adjustable_quantity: None, price: price.into(), quantity: quantity.into() }
     }
 }
+/// A list of optional items the customer can add to their order at checkout.
+/// Use this parameter to pass one-time or recurring [Prices](https://stripe.com/docs/api/prices).
+/// There is a maximum of 10 optional items allowed on a payment link, and the existing limits on the number of line items allowed on a payment link apply to the combined number of line items and optional items.
+/// There is a maximum of 20 combined line items and optional items.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentLinkOptionalItems {
+    /// When set, provides configuration for the customer to adjust the quantity of the line item created when a customer chooses to add this optional item to their order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub adjustable_quantity: Option<CreatePaymentLinkOptionalItemsAdjustableQuantity>,
+    /// The ID of the [Price](https://stripe.com/docs/api/prices) or [Plan](https://stripe.com/docs/api/plans) object.
+    pub price: String,
+    /// The initial quantity of the line item created when a customer chooses to add this optional item to their order.
+    pub quantity: u64,
+}
+impl CreatePaymentLinkOptionalItems {
+    pub fn new(price: impl Into<String>, quantity: impl Into<u64>) -> Self {
+        Self { adjustable_quantity: None, price: price.into(), quantity: quantity.into() }
+    }
+}
+/// When set, provides configuration for the customer to adjust the quantity of the line item created when a customer chooses to add this optional item to their order.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentLinkOptionalItemsAdjustableQuantity {
+    /// Set to true if the quantity can be adjusted to any non-negative integer.
+    pub enabled: bool,
+    /// The maximum quantity of this item the customer can purchase. By default this value is 99.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<i64>,
+    /// The minimum quantity of this item the customer must purchase, if they choose to purchase it.
+    /// Because this item is optional, the customer will always be able to remove it from their order, even if the `minimum` configured here is greater than 0.
+    /// By default this value is 0.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<i64>,
+}
+impl CreatePaymentLinkOptionalItemsAdjustableQuantity {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), maximum: None, minimum: None }
+    }
+}
 /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkPaymentIntentData {
@@ -1261,13 +1310,16 @@ pub struct CreatePaymentLinkPaymentIntentData {
     /// When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentLinkPaymentIntentDataSetupFutureUsage>,
-    /// Extra information about the payment.
-    /// This will appear on your customer's statement when this payment succeeds in creating a charge.
+    /// Text that appears on the customer's statement as the statement descriptor for a non-card charge.
+    /// This value overrides the account's default statement descriptor.
+    /// For information about requirements, including the 22-character limit, see [the Statement Descriptor docs](https://docs.stripe.com/get-started/account/statement-descriptors).
+    ///
+    /// Setting this value for a card charge returns an error.
+    /// For card charges, set the [statement_descriptor_suffix](https://docs.stripe.com/get-started/account/statement-descriptors#dynamic) instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
-    /// Provides information about the charge that customers see on their statements.
-    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor.
-    /// Maximum 22 characters for the concatenated descriptor.
+    /// Provides information about a card charge.
+    /// Concatenated to the account's [statement descriptor prefix](https://docs.stripe.com/get-started/account/statement-descriptors#static) to form the complete statement descriptor that appears on the customer's statement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix: Option<String>,
     /// A string that identifies the resulting payment as part of a group.
@@ -1484,25 +1536,11 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkPaymentMethodCollection {
         })
     }
 }
-/// Controls phone number collection settings during checkout.
-///
-/// We recommend that you review your privacy policy and check with your legal contacts.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePaymentLinkPhoneNumberCollection {
-    /// Set to `true` to enable phone number collection.
-    pub enabled: bool,
-}
-impl CreatePaymentLinkPhoneNumberCollection {
-    pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into() }
-    }
-}
 /// Configuration for collecting the customer's shipping address.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkShippingAddressCollection {
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
     /// shipping locations.
-    /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
     pub allowed_countries: Vec<CreatePaymentLinkShippingAddressCollectionAllowedCountries>,
 }
 impl CreatePaymentLinkShippingAddressCollection {
@@ -1514,7 +1552,6 @@ impl CreatePaymentLinkShippingAddressCollection {
 }
 /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
 /// shipping locations.
-/// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePaymentLinkShippingAddressCollectionAllowedCountries {
@@ -1702,6 +1739,7 @@ pub enum CreatePaymentLinkShippingAddressCollectionAllowedCountries {
     Sa,
     Sb,
     Sc,
+    Sd,
     Se,
     Sg,
     Sh,
@@ -1946,6 +1984,7 @@ impl CreatePaymentLinkShippingAddressCollectionAllowedCountries {
             Sa => "SA",
             Sb => "SB",
             Sc => "SC",
+            Sd => "SD",
             Se => "SE",
             Sg => "SG",
             Sh => "SH",
@@ -2193,6 +2232,7 @@ impl std::str::FromStr for CreatePaymentLinkShippingAddressCollectionAllowedCoun
             "SA" => Ok(Sa),
             "SB" => Ok(Sb),
             "SC" => Ok(Sc),
+            "SD" => Ok(Sd),
             "SE" => Ok(Se),
             "SG" => Ok(Sg),
             "SH" => Ok(Sh),
@@ -2527,12 +2567,71 @@ impl<'de> serde::Deserialize<'de>
 /// Controls tax ID collection during checkout.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkTaxIdCollection {
-    /// Set to `true` to enable tax ID collection.
+    /// Enable tax ID collection during checkout. Defaults to `false`.
     pub enabled: bool,
+    /// Describes whether a tax ID is required during checkout. Defaults to `never`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub required: Option<CreatePaymentLinkTaxIdCollectionRequired>,
 }
 impl CreatePaymentLinkTaxIdCollection {
     pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into() }
+        Self { enabled: enabled.into(), required: None }
+    }
+}
+/// Describes whether a tax ID is required during checkout. Defaults to `never`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentLinkTaxIdCollectionRequired {
+    IfSupported,
+    Never,
+}
+impl CreatePaymentLinkTaxIdCollectionRequired {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentLinkTaxIdCollectionRequired::*;
+        match self {
+            IfSupported => "if_supported",
+            Never => "never",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentLinkTaxIdCollectionRequired {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentLinkTaxIdCollectionRequired::*;
+        match s {
+            "if_supported" => Ok(IfSupported),
+            "never" => Ok(Never),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentLinkTaxIdCollectionRequired {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentLinkTaxIdCollectionRequired {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentLinkTaxIdCollectionRequired {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkTaxIdCollectionRequired {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePaymentLinkTaxIdCollectionRequired")
+        })
     }
 }
 /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.
@@ -2675,6 +2774,17 @@ impl CreatePaymentLink {
         self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
     }
+    /// A list of optional items the customer can add to their order at checkout.
+    /// Use this parameter to pass one-time or recurring [Prices](https://stripe.com/docs/api/prices).
+    /// There is a maximum of 10 optional items allowed on a payment link, and the existing limits on the number of line items allowed on a payment link apply to the combined number of line items and optional items.
+    /// There is a maximum of 20 combined line items and optional items.
+    pub fn optional_items(
+        mut self,
+        optional_items: impl Into<Vec<CreatePaymentLinkOptionalItems>>,
+    ) -> Self {
+        self.inner.optional_items = Some(optional_items.into());
+        self
+    }
     /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
     pub fn payment_intent_data(
         mut self,
@@ -2710,7 +2820,7 @@ impl CreatePaymentLink {
     /// We recommend that you review your privacy policy and check with your legal contacts.
     pub fn phone_number_collection(
         mut self,
-        phone_number_collection: impl Into<CreatePaymentLinkPhoneNumberCollection>,
+        phone_number_collection: impl Into<PhoneNumberCollectionParams>,
     ) -> Self {
         self.inner.phone_number_collection = Some(phone_number_collection.into());
         self
@@ -2831,11 +2941,17 @@ struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_types: Option<Vec<stripe_shared::PaymentLinkPaymentMethodTypes>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    phone_number_collection: Option<PhoneNumberCollectionParams>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     restrictions: Option<RestrictionsParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_address_collection: Option<UpdatePaymentLinkShippingAddressCollection>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    submit_type: Option<stripe_shared::PaymentLinkSubmitType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     subscription_data: Option<UpdatePaymentLinkSubscriptionData>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tax_id_collection: Option<UpdatePaymentLinkTaxIdCollection>,
 }
 impl UpdatePaymentLinkBuilder {
     fn new() -> Self {
@@ -2856,9 +2972,12 @@ impl UpdatePaymentLinkBuilder {
             payment_intent_data: None,
             payment_method_collection: None,
             payment_method_types: None,
+            phone_number_collection: None,
             restrictions: None,
             shipping_address_collection: None,
+            submit_type: None,
             subscription_data: None,
+            tax_id_collection: None,
         }
     }
 }
@@ -2939,7 +3058,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkAfterCompletionType {
 /// Configuration for automatic tax collection.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentLinkAutomaticTax {
-    /// If `true`, tax will be calculated automatically using the customer's location.
+    /// Set to `true` to [calculate tax automatically](https://docs.stripe.com/tax) using the customer's location.
+    ///
+    /// Enabling this parameter causes the payment link to collect any billing address information necessary for tax calculation.
     pub enabled: bool,
     /// The account that's liable for tax.
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
@@ -3139,8 +3260,11 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkCustomFieldsLabelType {
     }
 }
 /// Configuration for `type=numeric` fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsNumeric {
+    /// The value that will pre-fill the field on the payment page.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_value: Option<String>,
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum_length: Option<i64>,
@@ -3150,7 +3274,7 @@ pub struct UpdatePaymentLinkCustomFieldsNumeric {
 }
 impl UpdatePaymentLinkCustomFieldsNumeric {
     pub fn new() -> Self {
-        Self { maximum_length: None, minimum_length: None }
+        Self { default_value: None, maximum_length: None, minimum_length: None }
     }
 }
 impl Default for UpdatePaymentLinkCustomFieldsNumeric {
@@ -3159,8 +3283,11 @@ impl Default for UpdatePaymentLinkCustomFieldsNumeric {
     }
 }
 /// Configuration for `type=text` fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsText {
+    /// The value that will pre-fill the field on the payment page.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_value: Option<String>,
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum_length: Option<i64>,
@@ -3170,7 +3297,7 @@ pub struct UpdatePaymentLinkCustomFieldsText {
 }
 impl UpdatePaymentLinkCustomFieldsText {
     pub fn new() -> Self {
-        Self { maximum_length: None, minimum_length: None }
+        Self { default_value: None, maximum_length: None, minimum_length: None }
     }
 }
 impl Default for UpdatePaymentLinkCustomFieldsText {
@@ -3546,13 +3673,16 @@ pub struct UpdatePaymentLinkPaymentIntentData {
     /// Updates will clear prior values.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// Extra information about the payment.
-    /// This will appear on your customer's statement when this payment succeeds in creating a charge.
+    /// Text that appears on the customer's statement as the statement descriptor for a non-card charge.
+    /// This value overrides the account's default statement descriptor.
+    /// For information about requirements, including the 22-character limit, see [the Statement Descriptor docs](https://docs.stripe.com/get-started/account/statement-descriptors).
+    ///
+    /// Setting this value for a card charge returns an error.
+    /// For card charges, set the [statement_descriptor_suffix](https://docs.stripe.com/get-started/account/statement-descriptors#dynamic) instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
-    /// Provides information about the charge that customers see on their statements.
-    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor.
-    /// Maximum 22 characters for the concatenated descriptor.
+    /// Provides information about a card charge.
+    /// Concatenated to the account's [statement descriptor prefix](https://docs.stripe.com/get-started/account/statement-descriptors#static) to form the complete statement descriptor that appears on the customer's statement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix: Option<String>,
     /// A string that identifies the resulting payment as part of a group.
@@ -3642,7 +3772,6 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkPaymentMethodCollection {
 pub struct UpdatePaymentLinkShippingAddressCollection {
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
     /// shipping locations.
-    /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
     pub allowed_countries: Vec<UpdatePaymentLinkShippingAddressCollectionAllowedCountries>,
 }
 impl UpdatePaymentLinkShippingAddressCollection {
@@ -3654,7 +3783,6 @@ impl UpdatePaymentLinkShippingAddressCollection {
 }
 /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
 /// shipping locations.
-/// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
@@ -3842,6 +3970,7 @@ pub enum UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
     Sa,
     Sb,
     Sc,
+    Sd,
     Se,
     Sg,
     Sh,
@@ -4086,6 +4215,7 @@ impl UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
             Sa => "SA",
             Sb => "SB",
             Sc => "SC",
+            Sd => "SD",
             Se => "SE",
             Sg => "SG",
             Sh => "SH",
@@ -4333,6 +4463,7 @@ impl std::str::FromStr for UpdatePaymentLinkShippingAddressCollectionAllowedCoun
             "SA" => Ok(Sa),
             "SB" => Ok(Sb),
             "SC" => Ok(Sc),
+            "SD" => Ok(Sd),
             "SE" => Ok(Se),
             "SG" => Ok(Sg),
             "SH" => Ok(Sh),
@@ -4429,13 +4560,22 @@ pub struct UpdatePaymentLinkSubscriptionData {
     /// Updates will clear prior values.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// Integer representing the number of trial period days before the customer is charged for the first time.
+    /// Has to be at least 1.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_period_days: Option<u32>,
     /// Settings related to subscription trials.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_settings: Option<UpdatePaymentLinkSubscriptionDataTrialSettings>,
 }
 impl UpdatePaymentLinkSubscriptionData {
     pub fn new() -> Self {
-        Self { invoice_settings: None, metadata: None, trial_settings: None }
+        Self {
+            invoice_settings: None,
+            metadata: None,
+            trial_period_days: None,
+            trial_settings: None,
+        }
     }
 }
 impl Default for UpdatePaymentLinkSubscriptionData {
@@ -4633,6 +4773,76 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod"))
     }
 }
+/// Controls tax ID collection during checkout.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentLinkTaxIdCollection {
+    /// Enable tax ID collection during checkout. Defaults to `false`.
+    pub enabled: bool,
+    /// Describes whether a tax ID is required during checkout. Defaults to `never`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub required: Option<UpdatePaymentLinkTaxIdCollectionRequired>,
+}
+impl UpdatePaymentLinkTaxIdCollection {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), required: None }
+    }
+}
+/// Describes whether a tax ID is required during checkout. Defaults to `never`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentLinkTaxIdCollectionRequired {
+    IfSupported,
+    Never,
+}
+impl UpdatePaymentLinkTaxIdCollectionRequired {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentLinkTaxIdCollectionRequired::*;
+        match self {
+            IfSupported => "if_supported",
+            Never => "never",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentLinkTaxIdCollectionRequired {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentLinkTaxIdCollectionRequired::*;
+        match s {
+            "if_supported" => Ok(IfSupported),
+            "never" => Ok(Never),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentLinkTaxIdCollectionRequired {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentLinkTaxIdCollectionRequired {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentLinkTaxIdCollectionRequired {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkTaxIdCollectionRequired {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdatePaymentLinkTaxIdCollectionRequired")
+        })
+    }
+}
 /// Updates a payment link.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentLink {
@@ -4768,6 +4978,16 @@ impl UpdatePaymentLink {
         self.inner.payment_method_types = Some(payment_method_types.into());
         self
     }
+    /// Controls phone number collection settings during checkout.
+    ///
+    /// We recommend that you review your privacy policy and check with your legal contacts.
+    pub fn phone_number_collection(
+        mut self,
+        phone_number_collection: impl Into<PhoneNumberCollectionParams>,
+    ) -> Self {
+        self.inner.phone_number_collection = Some(phone_number_collection.into());
+        self
+    }
     /// Settings that restrict the usage of a payment link.
     pub fn restrictions(mut self, restrictions: impl Into<RestrictionsParams>) -> Self {
         self.inner.restrictions = Some(restrictions.into());
@@ -4781,6 +5001,15 @@ impl UpdatePaymentLink {
         self.inner.shipping_address_collection = Some(shipping_address_collection.into());
         self
     }
+    /// Describes the type of transaction being performed in order to customize relevant text on the page, such as the submit button.
+    /// Changing this value will also affect the hostname in the [url](https://stripe.com/docs/api/payment_links/payment_links/object#url) property (example: `donate.stripe.com`).
+    pub fn submit_type(
+        mut self,
+        submit_type: impl Into<stripe_shared::PaymentLinkSubmitType>,
+    ) -> Self {
+        self.inner.submit_type = Some(submit_type.into());
+        self
+    }
     /// When creating a subscription, the specified configuration data will be used.
     /// There must be at least one line item with a recurring price to use `subscription_data`.
     pub fn subscription_data(
@@ -4788,6 +5017,14 @@ impl UpdatePaymentLink {
         subscription_data: impl Into<UpdatePaymentLinkSubscriptionData>,
     ) -> Self {
         self.inner.subscription_data = Some(subscription_data.into());
+        self
+    }
+    /// Controls tax ID collection during checkout.
+    pub fn tax_id_collection(
+        mut self,
+        tax_id_collection: impl Into<UpdatePaymentLinkTaxIdCollection>,
+    ) -> Self {
+        self.inner.tax_id_collection = Some(tax_id_collection.into());
         self
     }
 }
@@ -4902,6 +5139,16 @@ impl AdjustableQuantityParams {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct PhoneNumberCollectionParams {
+    /// Set to `true` to enable phone number collection.
+    pub enabled: bool,
+}
+impl PhoneNumberCollectionParams {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into() }
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CompletedSessionsParams {
     /// The maximum number of checkout sessions that can be completed for the `completed_sessions` restriction to be met.
     pub limit: i64,
@@ -4913,12 +5160,15 @@ impl CompletedSessionsParams {
 }
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CustomFieldDropdownParam {
+    /// The value that will pre-fill the field on the payment page.Must match a `value` in the `options` array.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_value: Option<String>,
     /// The options available for the customer to select. Up to 200 options allowed.
     pub options: Vec<CustomFieldOptionParam>,
 }
 impl CustomFieldDropdownParam {
     pub fn new(options: impl Into<Vec<CustomFieldOptionParam>>) -> Self {
-        Self { options: options.into() }
+        Self { default_value: None, options: options.into() }
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]

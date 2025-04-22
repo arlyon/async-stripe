@@ -16,7 +16,7 @@ pub struct TaxCalculationLineItem {
     /// The number of units of the item being purchased. For reversals, this is the quantity reversed.
     pub quantity: u64,
     /// A custom identifier for this line item.
-    pub reference: Option<String>,
+    pub reference: String,
     /// Specifies whether the `amount` includes taxes.
     /// If `tax_behavior=inclusive`, then the amount includes taxes.
     pub tax_behavior: TaxCalculationLineItemTaxBehavior,
@@ -33,7 +33,7 @@ pub struct TaxCalculationLineItemBuilder {
     livemode: Option<bool>,
     product: Option<Option<String>>,
     quantity: Option<u64>,
-    reference: Option<Option<String>>,
+    reference: Option<String>,
     tax_behavior: Option<TaxCalculationLineItemTaxBehavior>,
     tax_breakdown: Option<Option<Vec<stripe_misc::TaxProductResourceLineItemTaxBreakdown>>>,
     tax_code: Option<String>,

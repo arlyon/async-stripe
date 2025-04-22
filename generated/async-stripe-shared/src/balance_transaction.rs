@@ -41,7 +41,7 @@ pub struct BalanceTransaction {
     pub source: Option<stripe_types::Expandable<stripe_shared::BalanceTransactionSource>>,
     /// The transaction's net funds status in the Stripe balance, which are either `available` or `pending`.
     pub status: String,
-    /// Transaction type: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `climate_order_purchase`, `climate_order_refund`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `obligation_outbound`, `obligation_reversal_inbound`, `payment`, `payment_failure_refund`, `payment_network_reserve_hold`, `payment_network_reserve_release`, `payment_refund`, `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
+    /// Transaction type: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `climate_order_purchase`, `climate_order_refund`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `obligation_outbound`, `obligation_reversal_inbound`, `payment`, `payment_failure_refund`, `payment_network_reserve_hold`, `payment_network_reserve_release`, `payment_refund`, `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`, `payout_failure`, `payout_minimum_balance_hold`, `payout_minimum_balance_release`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `stripe_balance_payment_debit`, `stripe_balance_payment_debit_reversal`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
     /// Learn more about [balance transaction types and what they represent](https://stripe.com/docs/reports/balance-transaction-types).
     /// To classify transactions for accounting purposes, consider `reporting_category` instead.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
@@ -266,7 +266,7 @@ impl serde::Serialize for BalanceTransaction {
         s.end()
     }
 }
-/// Transaction type: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `climate_order_purchase`, `climate_order_refund`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `obligation_outbound`, `obligation_reversal_inbound`, `payment`, `payment_failure_refund`, `payment_network_reserve_hold`, `payment_network_reserve_release`, `payment_refund`, `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
+/// Transaction type: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `climate_order_purchase`, `climate_order_refund`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `obligation_outbound`, `obligation_reversal_inbound`, `payment`, `payment_failure_refund`, `payment_network_reserve_hold`, `payment_network_reserve_release`, `payment_refund`, `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`, `payout_failure`, `payout_minimum_balance_hold`, `payout_minimum_balance_release`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `stripe_balance_payment_debit`, `stripe_balance_payment_debit_reversal`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
 /// Learn more about [balance transaction types and what they represent](https://stripe.com/docs/reports/balance-transaction-types).
 /// To classify transactions for accounting purposes, consider `reporting_category` instead.
 #[derive(Clone, Eq, PartialEq)]
@@ -299,10 +299,14 @@ pub enum BalanceTransactionType {
     Payout,
     PayoutCancel,
     PayoutFailure,
+    PayoutMinimumBalanceHold,
+    PayoutMinimumBalanceRelease,
     Refund,
     RefundFailure,
     ReserveTransaction,
     ReservedFunds,
+    StripeBalancePaymentDebit,
+    StripeBalancePaymentDebitReversal,
     StripeFee,
     StripeFxFee,
     TaxFee,
@@ -346,10 +350,14 @@ impl BalanceTransactionType {
             Payout => "payout",
             PayoutCancel => "payout_cancel",
             PayoutFailure => "payout_failure",
+            PayoutMinimumBalanceHold => "payout_minimum_balance_hold",
+            PayoutMinimumBalanceRelease => "payout_minimum_balance_release",
             Refund => "refund",
             RefundFailure => "refund_failure",
             ReserveTransaction => "reserve_transaction",
             ReservedFunds => "reserved_funds",
+            StripeBalancePaymentDebit => "stripe_balance_payment_debit",
+            StripeBalancePaymentDebitReversal => "stripe_balance_payment_debit_reversal",
             StripeFee => "stripe_fee",
             StripeFxFee => "stripe_fx_fee",
             TaxFee => "tax_fee",
@@ -396,10 +404,14 @@ impl std::str::FromStr for BalanceTransactionType {
             "payout" => Ok(Payout),
             "payout_cancel" => Ok(PayoutCancel),
             "payout_failure" => Ok(PayoutFailure),
+            "payout_minimum_balance_hold" => Ok(PayoutMinimumBalanceHold),
+            "payout_minimum_balance_release" => Ok(PayoutMinimumBalanceRelease),
             "refund" => Ok(Refund),
             "refund_failure" => Ok(RefundFailure),
             "reserve_transaction" => Ok(ReserveTransaction),
             "reserved_funds" => Ok(ReservedFunds),
+            "stripe_balance_payment_debit" => Ok(StripeBalancePaymentDebit),
+            "stripe_balance_payment_debit_reversal" => Ok(StripeBalancePaymentDebitReversal),
             "stripe_fee" => Ok(StripeFee),
             "stripe_fx_fee" => Ok(StripeFxFee),
             "tax_fee" => Ok(TaxFee),

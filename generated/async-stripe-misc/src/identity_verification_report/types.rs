@@ -8,7 +8,7 @@
 /// API. To configure and create VerificationReports, use the
 /// [VerificationSession](https://stripe.com/docs/api/identity/verification_sessions) API.
 ///
-/// Related guides: [Accessing verification results](https://stripe.com/docs/identity/verification-sessions#results).
+/// Related guide: [Accessing verification results](https://stripe.com/docs/identity/verification-sessions#results).
 ///
 /// For more details see <<https://stripe.com/docs/api/identity/verification_reports/object>>.
 #[derive(Clone, Debug)]
@@ -32,7 +32,7 @@ pub struct IdentityVerificationReport {
     /// Type of report.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: IdentityVerificationReportType,
-    /// The configuration token of a Verification Flow from the dashboard.
+    /// The configuration token of a verification flow from the dashboard.
     pub verification_flow: Option<String>,
     /// ID of the VerificationSession that created this report.
     pub verification_session: Option<String>,

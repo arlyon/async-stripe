@@ -2,11 +2,11 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerTaxLocation {
-    /// The customer's country as identified by Stripe Tax.
+    /// The identified tax country of the customer.
     pub country: String,
     /// The data source used to infer the customer's location.
     pub source: CustomerTaxLocationSource,
-    /// The customer's state, county, province, or region as identified by Stripe Tax.
+    /// The identified tax state, county, province, or region of the customer.
     pub state: Option<String>,
 }
 #[doc(hidden)]

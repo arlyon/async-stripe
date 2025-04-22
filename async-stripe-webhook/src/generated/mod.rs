@@ -715,6 +715,27 @@ pub enum EventObject {
     /// This event is not fired for negative transactions.
     #[cfg(feature = "async-stripe-core")]
     BalanceAvailable(stripe_core::Balance),
+    /// Occurs whenever your custom alert threshold is met.
+    #[cfg(feature = "async-stripe-billing")]
+    BillingAlertTriggered(stripe_billing::BillingAlertTriggered),
+    /// Occurs when a credit balance transaction is created
+    BillingCreditBalanceTransactionCreated(stripe_shared::BillingCreditBalanceTransaction),
+    /// Occurs when a credit grant is created
+    BillingCreditGrantCreated(stripe_shared::BillingCreditGrant),
+    /// Occurs when a credit grant is updated
+    BillingCreditGrantUpdated(stripe_shared::BillingCreditGrant),
+    /// Occurs when a meter is created
+    #[cfg(feature = "async-stripe-billing")]
+    BillingMeterCreated(stripe_billing::BillingMeter),
+    /// Occurs when a meter is deactivated
+    #[cfg(feature = "async-stripe-billing")]
+    BillingMeterDeactivated(stripe_billing::BillingMeter),
+    /// Occurs when a meter is reactivated
+    #[cfg(feature = "async-stripe-billing")]
+    BillingMeterReactivated(stripe_billing::BillingMeter),
+    /// Occurs when a meter is updated
+    #[cfg(feature = "async-stripe-billing")]
+    BillingMeterUpdated(stripe_billing::BillingMeter),
     /// Occurs whenever a portal configuration is created.
     #[cfg(feature = "async-stripe-billing")]
     BillingPortalConfigurationCreated(stripe_billing::BillingPortalConfiguration),
@@ -748,26 +769,24 @@ pub enum EventObject {
     ChargeFailed(stripe_shared::Charge),
     /// Occurs whenever a pending charge is created.
     ChargePending(stripe_shared::Charge),
-    /// Occurs whenever a refund is updated, on selected payment methods.
+    /// Occurs whenever a refund is updated on selected payment methods.
+    /// For updates on all refunds, listen to `refund.updated` instead.
     ChargeRefundUpdated(stripe_shared::Refund),
     /// Occurs whenever a charge is refunded, including partial refunds.
+    /// Listen to `refund.created` for information about the refund.
     ChargeRefunded(stripe_shared::Charge),
     /// Occurs whenever a charge is successful.
     ChargeSucceeded(stripe_shared::Charge),
     /// Occurs whenever a charge description or metadata is updated, or upon an asynchronous capture.
     ChargeUpdated(stripe_shared::Charge),
     /// Occurs when a payment intent using a delayed payment method fails.
-    #[cfg(feature = "async-stripe-checkout")]
-    CheckoutSessionAsyncPaymentFailed(stripe_checkout::CheckoutSession),
+    CheckoutSessionAsyncPaymentFailed(stripe_shared::CheckoutSession),
     /// Occurs when a payment intent using a delayed payment method finally succeeds.
-    #[cfg(feature = "async-stripe-checkout")]
-    CheckoutSessionAsyncPaymentSucceeded(stripe_checkout::CheckoutSession),
+    CheckoutSessionAsyncPaymentSucceeded(stripe_shared::CheckoutSession),
     /// Occurs when a Checkout Session has been successfully completed.
-    #[cfg(feature = "async-stripe-checkout")]
-    CheckoutSessionCompleted(stripe_checkout::CheckoutSession),
+    CheckoutSessionCompleted(stripe_shared::CheckoutSession),
     /// Occurs when a Checkout Session is expired.
-    #[cfg(feature = "async-stripe-checkout")]
-    CheckoutSessionExpired(stripe_checkout::CheckoutSession),
+    CheckoutSessionExpired(stripe_shared::CheckoutSession),
     /// Occurs when a Climate order is canceled.
     #[cfg(feature = "async-stripe-misc")]
     ClimateOrderCanceled(stripe_misc::ClimateOrder),
@@ -816,6 +835,8 @@ pub enum EventObject {
     /// Occurs whenever a source is removed from a customer.
     CustomerSourceDeleted(CustomerSourceDeleted),
     /// Occurs whenever a card or source will expire at the end of the month.
+    /// This event only works with legacy integrations using Card or Source objects.
+    /// If you use the PaymentMethod API, this event won't occur.
     CustomerSourceExpiring(CustomerSourceExpiring),
     /// Occurs whenever a source's details are changed.
     CustomerSourceUpdated(CustomerSourceUpdated),
@@ -904,11 +925,15 @@ pub enum EventObject {
     InvoiceFinalized(stripe_shared::Invoice),
     /// Occurs whenever an invoice is marked uncollectible.
     InvoiceMarkedUncollectible(stripe_shared::Invoice),
+    /// Occurs X number of days after an invoice becomes due&mdash;where X is determined by Automations
+    InvoiceOverdue(stripe_shared::Invoice),
+    /// Occurs when an invoice transitions to paid with a non-zero amount_overpaid.
+    InvoiceOverpaid(stripe_shared::Invoice),
     /// Occurs whenever an invoice payment attempt succeeds or an invoice is marked as paid out-of-band.
     InvoicePaid(stripe_shared::Invoice),
     /// Occurs whenever an invoice payment attempt requires further user action to complete.
     InvoicePaymentActionRequired(stripe_shared::Invoice),
-    /// Occurs whenever an invoice payment attempt fails, due either to a declined payment or to the lack of a stored payment method.
+    /// Occurs whenever an invoice payment attempt fails, due to either a declined payment, including soft decline, or to the lack of a stored payment method.
     InvoicePaymentFailed(stripe_shared::Invoice),
     /// Occurs whenever an invoice payment attempt succeeds.
     InvoicePaymentSucceeded(stripe_shared::Invoice),
@@ -921,10 +946,14 @@ pub enum EventObject {
     InvoiceUpdated(stripe_shared::Invoice),
     /// Occurs whenever an invoice is voided.
     InvoiceVoided(stripe_shared::Invoice),
+    /// Occurs X number of days before an invoice becomes due&mdash;where X is determined by Automations
+    InvoiceWillBeDue(stripe_shared::Invoice),
     /// Occurs whenever an invoice item is created.
-    InvoiceitemCreated(stripe_shared::InvoiceItem),
+    #[cfg(feature = "async-stripe-billing")]
+    InvoiceitemCreated(stripe_billing::InvoiceItem),
     /// Occurs whenever an invoice item is deleted.
-    InvoiceitemDeleted(stripe_shared::InvoiceItem),
+    #[cfg(feature = "async-stripe-billing")]
+    InvoiceitemDeleted(stripe_billing::InvoiceItem),
     /// Occurs whenever an authorization is created.
     IssuingAuthorizationCreated(stripe_shared::IssuingAuthorization),
     /// Represents a synchronous request for authorization, see [Using your integration to handle authorization requests](https://docs.stripe.com/issuing/purchases/authorizations#authorization-handling).
@@ -945,16 +974,28 @@ pub enum EventObject {
     IssuingDisputeCreated(stripe_shared::IssuingDispute),
     /// Occurs whenever funds are reinstated to your account for an Issuing dispute.
     IssuingDisputeFundsReinstated(stripe_shared::IssuingDispute),
+    /// Occurs whenever funds are deducted from your account for an Issuing dispute.
+    IssuingDisputeFundsRescinded(stripe_shared::IssuingDispute),
     /// Occurs whenever a dispute is submitted.
     IssuingDisputeSubmitted(stripe_shared::IssuingDispute),
     /// Occurs whenever a dispute is updated.
     IssuingDisputeUpdated(stripe_shared::IssuingDispute),
+    /// Occurs whenever a personalization design is activated following the activation of the physical bundle that belongs to it.
+    IssuingPersonalizationDesignActivated(stripe_shared::IssuingPersonalizationDesign),
+    /// Occurs whenever a personalization design is deactivated following the deactivation of the physical bundle that belongs to it.
+    IssuingPersonalizationDesignDeactivated(stripe_shared::IssuingPersonalizationDesign),
+    /// Occurs whenever a personalization design is rejected by design review.
+    IssuingPersonalizationDesignRejected(stripe_shared::IssuingPersonalizationDesign),
+    /// Occurs whenever a personalization design is updated.
+    IssuingPersonalizationDesignUpdated(stripe_shared::IssuingPersonalizationDesign),
     /// Occurs whenever an issuing digital wallet token is created.
     IssuingTokenCreated(stripe_shared::IssuingToken),
     /// Occurs whenever an issuing digital wallet token is updated.
     IssuingTokenUpdated(stripe_shared::IssuingToken),
     /// Occurs whenever an issuing transaction is created.
     IssuingTransactionCreated(stripe_shared::IssuingTransaction),
+    /// Occurs whenever an issuing transaction is updated with receipt data.
+    IssuingTransactionPurchaseDetailsReceiptUpdated(stripe_shared::IssuingTransaction),
     /// Occurs whenever an issuing transaction is updated.
     IssuingTransactionUpdated(stripe_shared::IssuingTransaction),
     /// Occurs whenever a Mandate is updated.
@@ -1032,22 +1073,28 @@ pub enum EventObject {
     /// Occurs whenever a promotion code is updated.
     PromotionCodeUpdated(stripe_shared::PromotionCode),
     /// Occurs whenever a quote is accepted.
-    QuoteAccepted(stripe_shared::Quote),
+    #[cfg(feature = "async-stripe-billing")]
+    QuoteAccepted(stripe_billing::Quote),
     /// Occurs whenever a quote is canceled.
-    QuoteCanceled(stripe_shared::Quote),
+    #[cfg(feature = "async-stripe-billing")]
+    QuoteCanceled(stripe_billing::Quote),
     /// Occurs whenever a quote is created.
-    QuoteCreated(stripe_shared::Quote),
+    #[cfg(feature = "async-stripe-billing")]
+    QuoteCreated(stripe_billing::Quote),
     /// Occurs whenever a quote is finalized.
-    QuoteFinalized(stripe_shared::Quote),
+    #[cfg(feature = "async-stripe-billing")]
+    QuoteFinalized(stripe_billing::Quote),
     /// Occurs whenever an early fraud warning is created.
     #[cfg(feature = "async-stripe-fraud")]
     RadarEarlyFraudWarningCreated(stripe_fraud::RadarEarlyFraudWarning),
     /// Occurs whenever an early fraud warning is updated.
     #[cfg(feature = "async-stripe-fraud")]
     RadarEarlyFraudWarningUpdated(stripe_fraud::RadarEarlyFraudWarning),
-    /// Occurs whenever a refund from a customer's cash balance is created.
+    /// Occurs whenever a refund is created.
     RefundCreated(stripe_shared::Refund),
-    /// Occurs whenever a refund from a customer's cash balance is updated.
+    /// Occurs whenever a refund has failed.
+    RefundFailed(stripe_shared::Refund),
+    /// Occurs whenever a refund is updated.
     RefundUpdated(stripe_shared::Refund),
     /// Occurs whenever a requested `ReportRun` failed to complete.
     #[cfg(feature = "async-stripe-misc")]
@@ -1059,7 +1106,7 @@ pub enum EventObject {
     #[cfg(feature = "async-stripe-misc")]
     ReportingReportTypeUpdated(stripe_misc::ReportingReportType),
     /// Occurs whenever a review is closed.
-    /// The review's `reason` field indicates why: `approved`, `disputed`, `refunded`, or `refunded_as_fraud`.
+    /// The review's `reason` field indicates why: `approved`, `disputed`, `refunded`, `refunded_as_fraud`, or `canceled`.
     ReviewClosed(stripe_shared::Review),
     /// Occurs whenever a review is opened.
     ReviewOpened(stripe_shared::Review),
@@ -1198,6 +1245,9 @@ pub enum EventObject {
     /// Occurs whenever an OutboundPayment was returned.
     #[cfg(feature = "async-stripe-treasury")]
     TreasuryOutboundPaymentReturned(stripe_treasury::TreasuryOutboundPayment),
+    /// Occurs whenever tracking_details on an OutboundPayment is updated.
+    #[cfg(feature = "async-stripe-treasury")]
+    TreasuryOutboundPaymentTrackingDetailsUpdated(stripe_treasury::TreasuryOutboundPayment),
     /// Occurs whenever an OutboundTransfer is canceled.
     #[cfg(feature = "async-stripe-treasury")]
     TreasuryOutboundTransferCanceled(stripe_treasury::TreasuryOutboundTransfer),
@@ -1216,6 +1266,9 @@ pub enum EventObject {
     /// Occurs whenever an OutboundTransfer is returned.
     #[cfg(feature = "async-stripe-treasury")]
     TreasuryOutboundTransferReturned(stripe_treasury::TreasuryOutboundTransfer),
+    /// Occurs whenever tracking_details on an OutboundTransfer is updated.
+    #[cfg(feature = "async-stripe-treasury")]
+    TreasuryOutboundTransferTrackingDetailsUpdated(stripe_treasury::TreasuryOutboundTransfer),
     /// Occurs whenever a received_credit is created as a result of funds being pushed by another account.
     #[cfg(feature = "async-stripe-treasury")]
     TreasuryReceivedCreditCreated(stripe_treasury::TreasuryReceivedCredit),
@@ -1267,6 +1320,31 @@ impl EventObject {
             #[cfg(feature = "async-stripe-core")]
             "balance.available" => Self::BalanceAvailable(FromValueOpt::from_value(data)?),
             #[cfg(feature = "async-stripe-billing")]
+            "billing.alert.triggered" => {
+                Self::BillingAlertTriggered(FromValueOpt::from_value(data)?)
+            }
+            "billing.credit_balance_transaction.created" => {
+                Self::BillingCreditBalanceTransactionCreated(FromValueOpt::from_value(data)?)
+            }
+            "billing.credit_grant.created" => {
+                Self::BillingCreditGrantCreated(FromValueOpt::from_value(data)?)
+            }
+            "billing.credit_grant.updated" => {
+                Self::BillingCreditGrantUpdated(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "async-stripe-billing")]
+            "billing.meter.created" => Self::BillingMeterCreated(FromValueOpt::from_value(data)?),
+            #[cfg(feature = "async-stripe-billing")]
+            "billing.meter.deactivated" => {
+                Self::BillingMeterDeactivated(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "async-stripe-billing")]
+            "billing.meter.reactivated" => {
+                Self::BillingMeterReactivated(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "async-stripe-billing")]
+            "billing.meter.updated" => Self::BillingMeterUpdated(FromValueOpt::from_value(data)?),
+            #[cfg(feature = "async-stripe-billing")]
             "billing_portal.configuration.created" => {
                 Self::BillingPortalConfigurationCreated(FromValueOpt::from_value(data)?)
             }
@@ -1299,19 +1377,15 @@ impl EventObject {
             "charge.refunded" => Self::ChargeRefunded(FromValueOpt::from_value(data)?),
             "charge.succeeded" => Self::ChargeSucceeded(FromValueOpt::from_value(data)?),
             "charge.updated" => Self::ChargeUpdated(FromValueOpt::from_value(data)?),
-            #[cfg(feature = "async-stripe-checkout")]
             "checkout.session.async_payment_failed" => {
                 Self::CheckoutSessionAsyncPaymentFailed(FromValueOpt::from_value(data)?)
             }
-            #[cfg(feature = "async-stripe-checkout")]
             "checkout.session.async_payment_succeeded" => {
                 Self::CheckoutSessionAsyncPaymentSucceeded(FromValueOpt::from_value(data)?)
             }
-            #[cfg(feature = "async-stripe-checkout")]
             "checkout.session.completed" => {
                 Self::CheckoutSessionCompleted(FromValueOpt::from_value(data)?)
             }
-            #[cfg(feature = "async-stripe-checkout")]
             "checkout.session.expired" => {
                 Self::CheckoutSessionExpired(FromValueOpt::from_value(data)?)
             }
@@ -1471,6 +1545,8 @@ impl EventObject {
             "invoice.marked_uncollectible" => {
                 Self::InvoiceMarkedUncollectible(FromValueOpt::from_value(data)?)
             }
+            "invoice.overdue" => Self::InvoiceOverdue(FromValueOpt::from_value(data)?),
+            "invoice.overpaid" => Self::InvoiceOverpaid(FromValueOpt::from_value(data)?),
             "invoice.paid" => Self::InvoicePaid(FromValueOpt::from_value(data)?),
             "invoice.payment_action_required" => {
                 Self::InvoicePaymentActionRequired(FromValueOpt::from_value(data)?)
@@ -1483,7 +1559,10 @@ impl EventObject {
             "invoice.upcoming" => Self::InvoiceUpcoming(FromValueOpt::from_value(data)?),
             "invoice.updated" => Self::InvoiceUpdated(FromValueOpt::from_value(data)?),
             "invoice.voided" => Self::InvoiceVoided(FromValueOpt::from_value(data)?),
+            "invoice.will_be_due" => Self::InvoiceWillBeDue(FromValueOpt::from_value(data)?),
+            #[cfg(feature = "async-stripe-billing")]
             "invoiceitem.created" => Self::InvoiceitemCreated(FromValueOpt::from_value(data)?),
+            #[cfg(feature = "async-stripe-billing")]
             "invoiceitem.deleted" => Self::InvoiceitemDeleted(FromValueOpt::from_value(data)?),
             "issuing_authorization.created" => {
                 Self::IssuingAuthorizationCreated(FromValueOpt::from_value(data)?)
@@ -1509,16 +1588,36 @@ impl EventObject {
             "issuing_dispute.funds_reinstated" => {
                 Self::IssuingDisputeFundsReinstated(FromValueOpt::from_value(data)?)
             }
+            "issuing_dispute.funds_rescinded" => {
+                Self::IssuingDisputeFundsRescinded(FromValueOpt::from_value(data)?)
+            }
             "issuing_dispute.submitted" => {
                 Self::IssuingDisputeSubmitted(FromValueOpt::from_value(data)?)
             }
             "issuing_dispute.updated" => {
                 Self::IssuingDisputeUpdated(FromValueOpt::from_value(data)?)
             }
+            "issuing_personalization_design.activated" => {
+                Self::IssuingPersonalizationDesignActivated(FromValueOpt::from_value(data)?)
+            }
+            "issuing_personalization_design.deactivated" => {
+                Self::IssuingPersonalizationDesignDeactivated(FromValueOpt::from_value(data)?)
+            }
+            "issuing_personalization_design.rejected" => {
+                Self::IssuingPersonalizationDesignRejected(FromValueOpt::from_value(data)?)
+            }
+            "issuing_personalization_design.updated" => {
+                Self::IssuingPersonalizationDesignUpdated(FromValueOpt::from_value(data)?)
+            }
             "issuing_token.created" => Self::IssuingTokenCreated(FromValueOpt::from_value(data)?),
             "issuing_token.updated" => Self::IssuingTokenUpdated(FromValueOpt::from_value(data)?),
             "issuing_transaction.created" => {
                 Self::IssuingTransactionCreated(FromValueOpt::from_value(data)?)
+            }
+            "issuing_transaction.purchase_details_receipt_updated" => {
+                Self::IssuingTransactionPurchaseDetailsReceiptUpdated(FromValueOpt::from_value(
+                    data,
+                )?)
             }
             "issuing_transaction.updated" => {
                 Self::IssuingTransactionUpdated(FromValueOpt::from_value(data)?)
@@ -1580,9 +1679,13 @@ impl EventObject {
             "product.updated" => Self::ProductUpdated(FromValueOpt::from_value(data)?),
             "promotion_code.created" => Self::PromotionCodeCreated(FromValueOpt::from_value(data)?),
             "promotion_code.updated" => Self::PromotionCodeUpdated(FromValueOpt::from_value(data)?),
+            #[cfg(feature = "async-stripe-billing")]
             "quote.accepted" => Self::QuoteAccepted(FromValueOpt::from_value(data)?),
+            #[cfg(feature = "async-stripe-billing")]
             "quote.canceled" => Self::QuoteCanceled(FromValueOpt::from_value(data)?),
+            #[cfg(feature = "async-stripe-billing")]
             "quote.created" => Self::QuoteCreated(FromValueOpt::from_value(data)?),
+            #[cfg(feature = "async-stripe-billing")]
             "quote.finalized" => Self::QuoteFinalized(FromValueOpt::from_value(data)?),
             #[cfg(feature = "async-stripe-fraud")]
             "radar.early_fraud_warning.created" => {
@@ -1593,6 +1696,7 @@ impl EventObject {
                 Self::RadarEarlyFraudWarningUpdated(FromValueOpt::from_value(data)?)
             }
             "refund.created" => Self::RefundCreated(FromValueOpt::from_value(data)?),
+            "refund.failed" => Self::RefundFailed(FromValueOpt::from_value(data)?),
             "refund.updated" => Self::RefundUpdated(FromValueOpt::from_value(data)?),
             #[cfg(feature = "async-stripe-misc")]
             "reporting.report_run.failed" => {
@@ -1768,6 +1872,10 @@ impl EventObject {
                 Self::TreasuryOutboundPaymentReturned(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "async-stripe-treasury")]
+            "treasury.outbound_payment.tracking_details_updated" => {
+                Self::TreasuryOutboundPaymentTrackingDetailsUpdated(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "async-stripe-treasury")]
             "treasury.outbound_transfer.canceled" => {
                 Self::TreasuryOutboundTransferCanceled(FromValueOpt::from_value(data)?)
             }
@@ -1792,6 +1900,12 @@ impl EventObject {
             #[cfg(feature = "async-stripe-treasury")]
             "treasury.outbound_transfer.returned" => {
                 Self::TreasuryOutboundTransferReturned(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "async-stripe-treasury")]
+            "treasury.outbound_transfer.tracking_details_updated" => {
+                Self::TreasuryOutboundTransferTrackingDetailsUpdated(FromValueOpt::from_value(
+                    data,
+                )?)
             }
             #[cfg(feature = "async-stripe-treasury")]
             "treasury.received_credit.created" => {

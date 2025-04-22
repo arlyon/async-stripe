@@ -45,6 +45,8 @@ pub struct IdentityVerificationSession {
     /// Redaction status of this VerificationSession.
     /// If the VerificationSession is not redacted, this field will be null.
     pub redaction: Option<stripe_misc::VerificationSessionRedaction>,
+    /// Customer ID
+    pub related_customer: Option<String>,
     /// Status of this VerificationSession.
     /// [Learn more about the lifecycle of sessions](https://stripe.com/docs/identity/how-sessions-work).
     pub status: stripe_misc::IdentityVerificationSessionStatus,
@@ -56,7 +58,7 @@ pub struct IdentityVerificationSession {
     /// Don’t store it, log it, send it in emails or expose it to anyone other than the user.
     /// Refer to our docs on [verifying identity documents](https://stripe.com/docs/identity/verify-identity-documents?platform=web&type=redirect) to learn how to redirect users to Stripe.
     pub url: Option<String>,
-    /// The configuration token of a Verification Flow from the dashboard.
+    /// The configuration token of a verification flow from the dashboard.
     pub verification_flow: Option<String>,
     /// The user’s verified data.
     pub verified_outputs: Option<stripe_misc::GelatoVerifiedOutputs>,
@@ -75,6 +77,7 @@ pub struct IdentityVerificationSessionBuilder {
     options: Option<Option<stripe_misc::GelatoVerificationSessionOptions>>,
     provided_details: Option<Option<stripe_misc::GelatoProvidedDetails>>,
     redaction: Option<Option<stripe_misc::VerificationSessionRedaction>>,
+    related_customer: Option<Option<String>>,
     status: Option<stripe_misc::IdentityVerificationSessionStatus>,
     type_: Option<IdentityVerificationSessionType>,
     url: Option<Option<String>>,
@@ -135,6 +138,7 @@ const _: () = {
                 "options" => Deserialize::begin(&mut self.options),
                 "provided_details" => Deserialize::begin(&mut self.provided_details),
                 "redaction" => Deserialize::begin(&mut self.redaction),
+                "related_customer" => Deserialize::begin(&mut self.related_customer),
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
                 "url" => Deserialize::begin(&mut self.url),
@@ -158,6 +162,7 @@ const _: () = {
                 options: Deserialize::default(),
                 provided_details: Deserialize::default(),
                 redaction: Deserialize::default(),
+                related_customer: Deserialize::default(),
                 status: Deserialize::default(),
                 type_: Deserialize::default(),
                 url: Deserialize::default(),
@@ -179,6 +184,7 @@ const _: () = {
                 Some(options),
                 Some(provided_details),
                 Some(redaction),
+                Some(related_customer),
                 Some(status),
                 Some(type_),
                 Some(url),
@@ -196,6 +202,7 @@ const _: () = {
                 self.options.take(),
                 self.provided_details.take(),
                 self.redaction,
+                self.related_customer.take(),
                 self.status,
                 self.type_,
                 self.url.take(),
@@ -217,6 +224,7 @@ const _: () = {
                 options,
                 provided_details,
                 redaction,
+                related_customer,
                 status,
                 type_,
                 url,
@@ -262,6 +270,7 @@ const _: () = {
                     "options" => b.options = FromValueOpt::from_value(v),
                     "provided_details" => b.provided_details = FromValueOpt::from_value(v),
                     "redaction" => b.redaction = FromValueOpt::from_value(v),
+                    "related_customer" => b.related_customer = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
@@ -279,7 +288,7 @@ const _: () = {
 impl serde::Serialize for IdentityVerificationSession {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("IdentityVerificationSession", 17)?;
+        let mut s = s.serialize_struct("IdentityVerificationSession", 18)?;
         s.serialize_field("client_reference_id", &self.client_reference_id)?;
         s.serialize_field("client_secret", &self.client_secret)?;
         s.serialize_field("created", &self.created)?;
@@ -291,6 +300,7 @@ impl serde::Serialize for IdentityVerificationSession {
         s.serialize_field("options", &self.options)?;
         s.serialize_field("provided_details", &self.provided_details)?;
         s.serialize_field("redaction", &self.redaction)?;
+        s.serialize_field("related_customer", &self.related_customer)?;
         s.serialize_field("status", &self.status)?;
         s.serialize_field("type", &self.type_)?;
         s.serialize_field("url", &self.url)?;

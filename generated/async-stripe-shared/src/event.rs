@@ -38,6 +38,7 @@ pub struct Event {
     /// The Stripe API version used to render `data`.
     /// This property is populated only for events on or after October 31, 2014.
     pub api_version: Option<String>,
+    pub context: Option<String>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     pub data: stripe_shared::NotificationEventData,
@@ -57,6 +58,7 @@ pub struct Event {
 pub struct EventBuilder {
     account: Option<Option<String>>,
     api_version: Option<Option<String>>,
+    context: Option<Option<String>>,
     created: Option<stripe_types::Timestamp>,
     data: Option<stripe_shared::NotificationEventData>,
     id: Option<stripe_shared::EventId>,
@@ -105,6 +107,7 @@ const _: () = {
             Ok(match k {
                 "account" => Deserialize::begin(&mut self.account),
                 "api_version" => Deserialize::begin(&mut self.api_version),
+                "context" => Deserialize::begin(&mut self.context),
                 "created" => Deserialize::begin(&mut self.created),
                 "data" => Deserialize::begin(&mut self.data),
                 "id" => Deserialize::begin(&mut self.id),
@@ -121,6 +124,7 @@ const _: () = {
             Self {
                 account: Deserialize::default(),
                 api_version: Deserialize::default(),
+                context: Deserialize::default(),
                 created: Deserialize::default(),
                 data: Deserialize::default(),
                 id: Deserialize::default(),
@@ -135,6 +139,7 @@ const _: () = {
             let (
                 Some(account),
                 Some(api_version),
+                Some(context),
                 Some(created),
                 Some(data),
                 Some(id),
@@ -145,6 +150,7 @@ const _: () = {
             ) = (
                 self.account.take(),
                 self.api_version.take(),
+                self.context.take(),
                 self.created,
                 self.data.take(),
                 self.id.take(),
@@ -159,6 +165,7 @@ const _: () = {
             Some(Self::Out {
                 account,
                 api_version,
+                context,
                 created,
                 data,
                 id,
@@ -195,6 +202,7 @@ const _: () = {
                 match k.as_str() {
                     "account" => b.account = FromValueOpt::from_value(v),
                     "api_version" => b.api_version = FromValueOpt::from_value(v),
+                    "context" => b.context = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "data" => b.data = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
@@ -214,9 +222,10 @@ const _: () = {
 impl serde::Serialize for Event {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Event", 10)?;
+        let mut s = s.serialize_struct("Event", 11)?;
         s.serialize_field("account", &self.account)?;
         s.serialize_field("api_version", &self.api_version)?;
+        s.serialize_field("context", &self.context)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("data", &self.data)?;
         s.serialize_field("id", &self.id)?;
@@ -243,6 +252,7 @@ pub enum EventType {
     ApplicationFeeRefundUpdated,
     ApplicationFeeRefunded,
     BalanceAvailable,
+    BillingAlertTriggered,
     BillingPortalConfigurationCreated,
     BillingPortalConfigurationUpdated,
     BillingPortalSessionCreated,
@@ -320,6 +330,8 @@ pub enum EventType {
     InvoiceFinalizationFailed,
     InvoiceFinalized,
     InvoiceMarkedUncollectible,
+    InvoiceOverdue,
+    InvoiceOverpaid,
     InvoicePaid,
     InvoicePaymentActionRequired,
     InvoicePaymentFailed,
@@ -328,6 +340,7 @@ pub enum EventType {
     InvoiceUpcoming,
     InvoiceUpdated,
     InvoiceVoided,
+    InvoiceWillBeDue,
     InvoiceitemCreated,
     InvoiceitemDeleted,
     IssuingAuthorizationCreated,
@@ -340,11 +353,17 @@ pub enum EventType {
     IssuingDisputeClosed,
     IssuingDisputeCreated,
     IssuingDisputeFundsReinstated,
+    IssuingDisputeFundsRescinded,
     IssuingDisputeSubmitted,
     IssuingDisputeUpdated,
+    IssuingPersonalizationDesignActivated,
+    IssuingPersonalizationDesignDeactivated,
+    IssuingPersonalizationDesignRejected,
+    IssuingPersonalizationDesignUpdated,
     IssuingTokenCreated,
     IssuingTokenUpdated,
     IssuingTransactionCreated,
+    IssuingTransactionPurchaseDetailsReceiptUpdated,
     IssuingTransactionUpdated,
     MandateUpdated,
     PaymentIntentAmountCapturableUpdated,
@@ -388,6 +407,7 @@ pub enum EventType {
     RadarEarlyFraudWarningCreated,
     RadarEarlyFraudWarningUpdated,
     RefundCreated,
+    RefundFailed,
     RefundUpdated,
     ReportingReportRunFailed,
     ReportingReportRunSucceeded,
@@ -450,12 +470,14 @@ pub enum EventType {
     TreasuryOutboundPaymentFailed,
     TreasuryOutboundPaymentPosted,
     TreasuryOutboundPaymentReturned,
+    TreasuryOutboundPaymentTrackingDetailsUpdated,
     TreasuryOutboundTransferCanceled,
     TreasuryOutboundTransferCreated,
     TreasuryOutboundTransferExpectedArrivalDateUpdated,
     TreasuryOutboundTransferFailed,
     TreasuryOutboundTransferPosted,
     TreasuryOutboundTransferReturned,
+    TreasuryOutboundTransferTrackingDetailsUpdated,
     TreasuryReceivedCreditCreated,
     TreasuryReceivedCreditFailed,
     TreasuryReceivedCreditSucceeded,
@@ -477,6 +499,7 @@ impl EventType {
             ApplicationFeeRefundUpdated => "application_fee.refund.updated",
             ApplicationFeeRefunded => "application_fee.refunded",
             BalanceAvailable => "balance.available",
+            BillingAlertTriggered => "billing.alert.triggered",
             BillingPortalConfigurationCreated => "billing_portal.configuration.created",
             BillingPortalConfigurationUpdated => "billing_portal.configuration.updated",
             BillingPortalSessionCreated => "billing_portal.session.created",
@@ -568,6 +591,8 @@ impl EventType {
             InvoiceFinalizationFailed => "invoice.finalization_failed",
             InvoiceFinalized => "invoice.finalized",
             InvoiceMarkedUncollectible => "invoice.marked_uncollectible",
+            InvoiceOverdue => "invoice.overdue",
+            InvoiceOverpaid => "invoice.overpaid",
             InvoicePaid => "invoice.paid",
             InvoicePaymentActionRequired => "invoice.payment_action_required",
             InvoicePaymentFailed => "invoice.payment_failed",
@@ -576,6 +601,7 @@ impl EventType {
             InvoiceUpcoming => "invoice.upcoming",
             InvoiceUpdated => "invoice.updated",
             InvoiceVoided => "invoice.voided",
+            InvoiceWillBeDue => "invoice.will_be_due",
             InvoiceitemCreated => "invoiceitem.created",
             InvoiceitemDeleted => "invoiceitem.deleted",
             IssuingAuthorizationCreated => "issuing_authorization.created",
@@ -588,11 +614,19 @@ impl EventType {
             IssuingDisputeClosed => "issuing_dispute.closed",
             IssuingDisputeCreated => "issuing_dispute.created",
             IssuingDisputeFundsReinstated => "issuing_dispute.funds_reinstated",
+            IssuingDisputeFundsRescinded => "issuing_dispute.funds_rescinded",
             IssuingDisputeSubmitted => "issuing_dispute.submitted",
             IssuingDisputeUpdated => "issuing_dispute.updated",
+            IssuingPersonalizationDesignActivated => "issuing_personalization_design.activated",
+            IssuingPersonalizationDesignDeactivated => "issuing_personalization_design.deactivated",
+            IssuingPersonalizationDesignRejected => "issuing_personalization_design.rejected",
+            IssuingPersonalizationDesignUpdated => "issuing_personalization_design.updated",
             IssuingTokenCreated => "issuing_token.created",
             IssuingTokenUpdated => "issuing_token.updated",
             IssuingTransactionCreated => "issuing_transaction.created",
+            IssuingTransactionPurchaseDetailsReceiptUpdated => {
+                "issuing_transaction.purchase_details_receipt_updated"
+            }
             IssuingTransactionUpdated => "issuing_transaction.updated",
             MandateUpdated => "mandate.updated",
             PaymentIntentAmountCapturableUpdated => "payment_intent.amount_capturable_updated",
@@ -636,6 +670,7 @@ impl EventType {
             RadarEarlyFraudWarningCreated => "radar.early_fraud_warning.created",
             RadarEarlyFraudWarningUpdated => "radar.early_fraud_warning.updated",
             RefundCreated => "refund.created",
+            RefundFailed => "refund.failed",
             RefundUpdated => "refund.updated",
             ReportingReportRunFailed => "reporting.report_run.failed",
             ReportingReportRunSucceeded => "reporting.report_run.succeeded",
@@ -704,6 +739,9 @@ impl EventType {
             TreasuryOutboundPaymentFailed => "treasury.outbound_payment.failed",
             TreasuryOutboundPaymentPosted => "treasury.outbound_payment.posted",
             TreasuryOutboundPaymentReturned => "treasury.outbound_payment.returned",
+            TreasuryOutboundPaymentTrackingDetailsUpdated => {
+                "treasury.outbound_payment.tracking_details_updated"
+            }
             TreasuryOutboundTransferCanceled => "treasury.outbound_transfer.canceled",
             TreasuryOutboundTransferCreated => "treasury.outbound_transfer.created",
             TreasuryOutboundTransferExpectedArrivalDateUpdated => {
@@ -712,6 +750,9 @@ impl EventType {
             TreasuryOutboundTransferFailed => "treasury.outbound_transfer.failed",
             TreasuryOutboundTransferPosted => "treasury.outbound_transfer.posted",
             TreasuryOutboundTransferReturned => "treasury.outbound_transfer.returned",
+            TreasuryOutboundTransferTrackingDetailsUpdated => {
+                "treasury.outbound_transfer.tracking_details_updated"
+            }
             TreasuryReceivedCreditCreated => "treasury.received_credit.created",
             TreasuryReceivedCreditFailed => "treasury.received_credit.failed",
             TreasuryReceivedCreditSucceeded => "treasury.received_credit.succeeded",
@@ -736,6 +777,7 @@ impl std::str::FromStr for EventType {
             "application_fee.refund.updated" => Ok(ApplicationFeeRefundUpdated),
             "application_fee.refunded" => Ok(ApplicationFeeRefunded),
             "balance.available" => Ok(BalanceAvailable),
+            "billing.alert.triggered" => Ok(BillingAlertTriggered),
             "billing_portal.configuration.created" => Ok(BillingPortalConfigurationCreated),
             "billing_portal.configuration.updated" => Ok(BillingPortalConfigurationUpdated),
             "billing_portal.session.created" => Ok(BillingPortalSessionCreated),
@@ -835,6 +877,8 @@ impl std::str::FromStr for EventType {
             "invoice.finalization_failed" => Ok(InvoiceFinalizationFailed),
             "invoice.finalized" => Ok(InvoiceFinalized),
             "invoice.marked_uncollectible" => Ok(InvoiceMarkedUncollectible),
+            "invoice.overdue" => Ok(InvoiceOverdue),
+            "invoice.overpaid" => Ok(InvoiceOverpaid),
             "invoice.paid" => Ok(InvoicePaid),
             "invoice.payment_action_required" => Ok(InvoicePaymentActionRequired),
             "invoice.payment_failed" => Ok(InvoicePaymentFailed),
@@ -843,6 +887,7 @@ impl std::str::FromStr for EventType {
             "invoice.upcoming" => Ok(InvoiceUpcoming),
             "invoice.updated" => Ok(InvoiceUpdated),
             "invoice.voided" => Ok(InvoiceVoided),
+            "invoice.will_be_due" => Ok(InvoiceWillBeDue),
             "invoiceitem.created" => Ok(InvoiceitemCreated),
             "invoiceitem.deleted" => Ok(InvoiceitemDeleted),
             "issuing_authorization.created" => Ok(IssuingAuthorizationCreated),
@@ -855,11 +900,21 @@ impl std::str::FromStr for EventType {
             "issuing_dispute.closed" => Ok(IssuingDisputeClosed),
             "issuing_dispute.created" => Ok(IssuingDisputeCreated),
             "issuing_dispute.funds_reinstated" => Ok(IssuingDisputeFundsReinstated),
+            "issuing_dispute.funds_rescinded" => Ok(IssuingDisputeFundsRescinded),
             "issuing_dispute.submitted" => Ok(IssuingDisputeSubmitted),
             "issuing_dispute.updated" => Ok(IssuingDisputeUpdated),
+            "issuing_personalization_design.activated" => Ok(IssuingPersonalizationDesignActivated),
+            "issuing_personalization_design.deactivated" => {
+                Ok(IssuingPersonalizationDesignDeactivated)
+            }
+            "issuing_personalization_design.rejected" => Ok(IssuingPersonalizationDesignRejected),
+            "issuing_personalization_design.updated" => Ok(IssuingPersonalizationDesignUpdated),
             "issuing_token.created" => Ok(IssuingTokenCreated),
             "issuing_token.updated" => Ok(IssuingTokenUpdated),
             "issuing_transaction.created" => Ok(IssuingTransactionCreated),
+            "issuing_transaction.purchase_details_receipt_updated" => {
+                Ok(IssuingTransactionPurchaseDetailsReceiptUpdated)
+            }
             "issuing_transaction.updated" => Ok(IssuingTransactionUpdated),
             "mandate.updated" => Ok(MandateUpdated),
             "payment_intent.amount_capturable_updated" => Ok(PaymentIntentAmountCapturableUpdated),
@@ -903,6 +958,7 @@ impl std::str::FromStr for EventType {
             "radar.early_fraud_warning.created" => Ok(RadarEarlyFraudWarningCreated),
             "radar.early_fraud_warning.updated" => Ok(RadarEarlyFraudWarningUpdated),
             "refund.created" => Ok(RefundCreated),
+            "refund.failed" => Ok(RefundFailed),
             "refund.updated" => Ok(RefundUpdated),
             "reporting.report_run.failed" => Ok(ReportingReportRunFailed),
             "reporting.report_run.succeeded" => Ok(ReportingReportRunSucceeded),
@@ -971,6 +1027,9 @@ impl std::str::FromStr for EventType {
             "treasury.outbound_payment.failed" => Ok(TreasuryOutboundPaymentFailed),
             "treasury.outbound_payment.posted" => Ok(TreasuryOutboundPaymentPosted),
             "treasury.outbound_payment.returned" => Ok(TreasuryOutboundPaymentReturned),
+            "treasury.outbound_payment.tracking_details_updated" => {
+                Ok(TreasuryOutboundPaymentTrackingDetailsUpdated)
+            }
             "treasury.outbound_transfer.canceled" => Ok(TreasuryOutboundTransferCanceled),
             "treasury.outbound_transfer.created" => Ok(TreasuryOutboundTransferCreated),
             "treasury.outbound_transfer.expected_arrival_date_updated" => {
@@ -979,6 +1038,9 @@ impl std::str::FromStr for EventType {
             "treasury.outbound_transfer.failed" => Ok(TreasuryOutboundTransferFailed),
             "treasury.outbound_transfer.posted" => Ok(TreasuryOutboundTransferPosted),
             "treasury.outbound_transfer.returned" => Ok(TreasuryOutboundTransferReturned),
+            "treasury.outbound_transfer.tracking_details_updated" => {
+                Ok(TreasuryOutboundTransferTrackingDetailsUpdated)
+            }
             "treasury.received_credit.created" => Ok(TreasuryReceivedCreditCreated),
             "treasury.received_credit.failed" => Ok(TreasuryReceivedCreditFailed),
             "treasury.received_credit.succeeded" => Ok(TreasuryReceivedCreditSucceeded),

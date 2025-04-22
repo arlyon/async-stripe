@@ -86,7 +86,7 @@ impl ListCharge {
         self.inner.starting_after = Some(starting_after.into());
         self
     }
-    /// Only return charges for this transfer group.
+    /// Only return charges for this transfer group, limited to 100.
     pub fn transfer_group(mut self, transfer_group: impl Into<String>) -> Self {
         self.inner.transfer_group = Some(transfer_group.into());
         self
@@ -489,16 +489,18 @@ impl CreateCharge {
         self.inner.source = Some(source.into());
         self
     }
-    /// For card charges, use `statement_descriptor_suffix` instead.
-    /// Otherwise, you can use this value as the complete description of a charge on your customers’ statements.
-    /// Must contain at least one letter, maximum 22 characters.
+    /// For a non-card charge, text that appears on the customer's statement as the statement descriptor.
+    /// This value overrides the account's default statement descriptor.
+    /// For information about requirements, including the 22-character limit, see [the Statement Descriptor docs](https://docs.stripe.com/get-started/account/statement-descriptors).
+    ///
+    /// For a card charge, this value is ignored unless you don't specify a `statement_descriptor_suffix`, in which case this value is used as the suffix.
     pub fn statement_descriptor(mut self, statement_descriptor: impl Into<String>) -> Self {
         self.inner.statement_descriptor = Some(statement_descriptor.into());
         self
     }
-    /// Provides information about the charge that customers see on their statements.
-    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that’s set on the account to form the complete statement descriptor.
-    /// Maximum 22 characters for the concatenated descriptor.
+    /// Provides information about a card charge.
+    /// Concatenated to the account's [statement descriptor prefix](https://docs.stripe.com/get-started/account/statement-descriptors#static) to form the complete statement descriptor that appears on the customer's statement.
+    /// If the account has no prefix value, the suffix is concatenated to the account's statement descriptor.
     pub fn statement_descriptor_suffix(
         mut self,
         statement_descriptor_suffix: impl Into<String>,
@@ -818,7 +820,6 @@ impl CaptureCharge {
         Self { charge: charge.into(), inner: CaptureChargeBuilder::new() }
     }
     /// The amount to capture, which must be less than or equal to the original amount.
-    /// Any additional amount will be automatically refunded.
     pub fn amount(mut self, amount: impl Into<i64>) -> Self {
         self.inner.amount = Some(amount.into());
         self
@@ -845,16 +846,18 @@ impl CaptureCharge {
         self.inner.receipt_email = Some(receipt_email.into());
         self
     }
-    /// For card charges, use `statement_descriptor_suffix` instead.
-    /// Otherwise, you can use this value as the complete description of a charge on your customers’ statements.
-    /// Must contain at least one letter, maximum 22 characters.
+    /// For a non-card charge, text that appears on the customer's statement as the statement descriptor.
+    /// This value overrides the account's default statement descriptor.
+    /// For information about requirements, including the 22-character limit, see [the Statement Descriptor docs](https://docs.stripe.com/get-started/account/statement-descriptors).
+    ///
+    /// For a card charge, this value is ignored unless you don't specify a `statement_descriptor_suffix`, in which case this value is used as the suffix.
     pub fn statement_descriptor(mut self, statement_descriptor: impl Into<String>) -> Self {
         self.inner.statement_descriptor = Some(statement_descriptor.into());
         self
     }
-    /// Provides information about the charge that customers see on their statements.
-    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that’s set on the account to form the complete statement descriptor.
-    /// Maximum 22 characters for the concatenated descriptor.
+    /// Provides information about a card charge.
+    /// Concatenated to the account's [statement descriptor prefix](https://docs.stripe.com/get-started/account/statement-descriptors#static) to form the complete statement descriptor that appears on the customer's statement.
+    /// If the account has no prefix value, the suffix is concatenated to the account's statement descriptor.
     pub fn statement_descriptor_suffix(
         mut self,
         statement_descriptor_suffix: impl Into<String>,

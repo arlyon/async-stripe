@@ -223,6 +223,8 @@ struct CreateTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    nickname: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     platform_restrictions: Option<CreateTreasuryFinancialAccountPlatformRestrictions>,
     supported_currencies: Vec<String>,
 }
@@ -232,6 +234,7 @@ impl CreateTreasuryFinancialAccountBuilder {
             expand: None,
             features: None,
             metadata: None,
+            nickname: None,
             platform_restrictions: None,
             supported_currencies: supported_currencies.into(),
         }
@@ -598,7 +601,8 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
-/// Creates a new FinancialAccount. For now, each connected account can only have one FinancialAccount.
+/// Creates a new FinancialAccount.
+/// Each connected account can have up to three FinancialAccounts by default.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccount {
     inner: CreateTreasuryFinancialAccountBuilder,
@@ -628,6 +632,11 @@ impl CreateTreasuryFinancialAccount {
         metadata: impl Into<std::collections::HashMap<String, String>>,
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
+        self
+    }
+    /// The nickname for the FinancialAccount.
+    pub fn nickname(mut self, nickname: impl Into<String>) -> Self {
+        self.inner.nickname = Some(nickname.into());
         self
     }
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
@@ -671,13 +680,24 @@ struct UpdateTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     features: Option<UpdateTreasuryFinancialAccountFeatures>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    forwarding_settings: Option<UpdateTreasuryFinancialAccountForwardingSettings>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    nickname: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     platform_restrictions: Option<UpdateTreasuryFinancialAccountPlatformRestrictions>,
 }
 impl UpdateTreasuryFinancialAccountBuilder {
     fn new() -> Self {
-        Self { expand: None, features: None, metadata: None, platform_restrictions: None }
+        Self {
+            expand: None,
+            features: None,
+            forwarding_settings: None,
+            metadata: None,
+            nickname: None,
+            platform_restrictions: None,
+        }
     }
 }
 /// Encodes whether a FinancialAccount has access to a particular feature, with a status enum and associated `status_details`.
@@ -901,6 +921,82 @@ impl UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
         Self { requested: requested.into() }
     }
 }
+/// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTreasuryFinancialAccountForwardingSettings {
+    /// The financial_account id
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_account: Option<String>,
+    /// The payment_method or bank account id. This needs to be a verified bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method: Option<String>,
+    /// The type of the bank account provided. This can be either "financial_account" or "payment_method"
+    #[serde(rename = "type")]
+    pub type_: UpdateTreasuryFinancialAccountForwardingSettingsType,
+}
+impl UpdateTreasuryFinancialAccountForwardingSettings {
+    pub fn new(type_: impl Into<UpdateTreasuryFinancialAccountForwardingSettingsType>) -> Self {
+        Self { financial_account: None, payment_method: None, type_: type_.into() }
+    }
+}
+/// The type of the bank account provided. This can be either "financial_account" or "payment_method"
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateTreasuryFinancialAccountForwardingSettingsType {
+    FinancialAccount,
+    PaymentMethod,
+}
+impl UpdateTreasuryFinancialAccountForwardingSettingsType {
+    pub fn as_str(self) -> &'static str {
+        use UpdateTreasuryFinancialAccountForwardingSettingsType::*;
+        match self {
+            FinancialAccount => "financial_account",
+            PaymentMethod => "payment_method",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateTreasuryFinancialAccountForwardingSettingsType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateTreasuryFinancialAccountForwardingSettingsType::*;
+        match s {
+            "financial_account" => Ok(FinancialAccount),
+            "payment_method" => Ok(PaymentMethod),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdateTreasuryFinancialAccountForwardingSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountForwardingSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateTreasuryFinancialAccountForwardingSettingsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateTreasuryFinancialAccountForwardingSettingsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateTreasuryFinancialAccountForwardingSettingsType",
+            )
+        })
+    }
+}
 /// The set of functionalities that the platform can restrict on the FinancialAccount.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountPlatformRestrictions {
@@ -1066,6 +1162,14 @@ impl UpdateTreasuryFinancialAccount {
         self.inner.features = Some(features.into());
         self
     }
+    /// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
+    pub fn forwarding_settings(
+        mut self,
+        forwarding_settings: impl Into<UpdateTreasuryFinancialAccountForwardingSettings>,
+    ) -> Self {
+        self.inner.forwarding_settings = Some(forwarding_settings.into());
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -1075,6 +1179,11 @@ impl UpdateTreasuryFinancialAccount {
         metadata: impl Into<std::collections::HashMap<String, String>>,
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
+        self
+    }
+    /// The nickname for the FinancialAccount.
+    pub fn nickname(mut self, nickname: impl Into<String>) -> Self {
+        self.inner.nickname = Some(nickname.into());
         self
     }
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
@@ -1112,6 +1221,153 @@ impl StripeRequest for UpdateTreasuryFinancialAccount {
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/treasury/financial_accounts/{financial_account}"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+struct CloseTreasuryFinancialAccountBuilder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    forwarding_settings: Option<CloseTreasuryFinancialAccountForwardingSettings>,
+}
+impl CloseTreasuryFinancialAccountBuilder {
+    fn new() -> Self {
+        Self { expand: None, forwarding_settings: None }
+    }
+}
+/// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CloseTreasuryFinancialAccountForwardingSettings {
+    /// The financial_account id
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_account: Option<String>,
+    /// The payment_method or bank account id. This needs to be a verified bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method: Option<String>,
+    /// The type of the bank account provided. This can be either "financial_account" or "payment_method"
+    #[serde(rename = "type")]
+    pub type_: CloseTreasuryFinancialAccountForwardingSettingsType,
+}
+impl CloseTreasuryFinancialAccountForwardingSettings {
+    pub fn new(type_: impl Into<CloseTreasuryFinancialAccountForwardingSettingsType>) -> Self {
+        Self { financial_account: None, payment_method: None, type_: type_.into() }
+    }
+}
+/// The type of the bank account provided. This can be either "financial_account" or "payment_method"
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CloseTreasuryFinancialAccountForwardingSettingsType {
+    FinancialAccount,
+    PaymentMethod,
+}
+impl CloseTreasuryFinancialAccountForwardingSettingsType {
+    pub fn as_str(self) -> &'static str {
+        use CloseTreasuryFinancialAccountForwardingSettingsType::*;
+        match self {
+            FinancialAccount => "financial_account",
+            PaymentMethod => "payment_method",
+        }
+    }
+}
+
+impl std::str::FromStr for CloseTreasuryFinancialAccountForwardingSettingsType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CloseTreasuryFinancialAccountForwardingSettingsType::*;
+        match s {
+            "financial_account" => Ok(FinancialAccount),
+            "payment_method" => Ok(PaymentMethod),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CloseTreasuryFinancialAccountForwardingSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CloseTreasuryFinancialAccountForwardingSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CloseTreasuryFinancialAccountForwardingSettingsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CloseTreasuryFinancialAccountForwardingSettingsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CloseTreasuryFinancialAccountForwardingSettingsType",
+            )
+        })
+    }
+}
+/// Closes a FinancialAccount.
+/// A FinancialAccount can only be closed if it has a zero balance, has no pending InboundTransfers, and has canceled all attached Issuing cards.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CloseTreasuryFinancialAccount {
+    inner: CloseTreasuryFinancialAccountBuilder,
+    financial_account: stripe_treasury::TreasuryFinancialAccountId,
+}
+impl CloseTreasuryFinancialAccount {
+    /// Construct a new `CloseTreasuryFinancialAccount`.
+    pub fn new(financial_account: impl Into<stripe_treasury::TreasuryFinancialAccountId>) -> Self {
+        Self {
+            financial_account: financial_account.into(),
+            inner: CloseTreasuryFinancialAccountBuilder::new(),
+        }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+    /// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
+    pub fn forwarding_settings(
+        mut self,
+        forwarding_settings: impl Into<CloseTreasuryFinancialAccountForwardingSettings>,
+    ) -> Self {
+        self.inner.forwarding_settings = Some(forwarding_settings.into());
+        self
+    }
+}
+impl CloseTreasuryFinancialAccount {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CloseTreasuryFinancialAccount {
+    type Output = stripe_treasury::TreasuryFinancialAccount;
+
+    fn build(&self) -> RequestBuilder {
+        let financial_account = &self.financial_account;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/treasury/financial_accounts/{financial_account}/close"),
         )
         .form(&self.inner)
     }

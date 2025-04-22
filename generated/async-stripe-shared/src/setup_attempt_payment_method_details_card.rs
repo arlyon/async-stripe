@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupAttemptPaymentMethodDetailsCard {
     /// Card brand.
-    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: Option<String>,
     /// Check results by Card networks on Card address and CVC at the time of authorization
     pub checks: Option<stripe_shared::SetupAttemptPaymentMethodDetailsCardChecks>,
@@ -34,7 +34,7 @@ pub struct SetupAttemptPaymentMethodDetailsCard {
     /// The last four digits of the card.
     pub last4: Option<String>,
     /// Identifies which network this charge was processed on.
-    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub network: Option<String>,
     /// Populated if this authorization used 3D Secure authentication.
     pub three_d_secure: Option<stripe_shared::ThreeDSecureDetails>,

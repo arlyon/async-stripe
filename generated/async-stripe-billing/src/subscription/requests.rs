@@ -115,13 +115,14 @@ impl<'de> serde::Deserialize<'de> for CancelSubscriptionCancellationDetailsFeedb
     }
 }
 /// Cancels a customer’s subscription immediately.
-/// The customer will not be charged again for the subscription.
+/// The customer won’t be charged again for the subscription.
+/// After it’s canceled, you can no longer update the subscription or its <a href="/metadata">metadata</a>.
 ///
-/// Note, however, that any pending invoice items that you’ve created will still be charged for at the end of the period, unless manually [deleted](https://stripe.com/docs/api#delete_invoiceitem).
-/// If you’ve set the subscription to cancel at the end of the period, any pending prorations will also be left in place and collected at the end of the period.
-/// But if the subscription is set to cancel immediately, pending prorations will be removed.
+/// Any pending invoice items that you’ve created are still charged at the end of the period, unless manually [deleted](https://stripe.com/docs/api#delete_invoiceitem).
+/// If you’ve set the subscription to cancel at the end of the period, any pending prorations are also left in place and collected at the end of the period.
+/// But if the subscription is set to cancel immediately, pending prorations are removed if `invoice_now` and `prorate` are both set to true.
 ///
-/// By default, upon subscription cancellation, Stripe will stop automatic collection of all finalized invoices for the customer.
+/// By default, upon subscription cancellation, Stripe stops automatic collection of all finalized invoices for the customer.
 /// This is intended to prevent unexpected payment attempts after the customer has canceled a subscription.
 /// However, you can resume automatic collection of the invoices manually after subscription cancellation to have us proceed.
 /// Or, you could check for unpaid invoices before allowing the customer to cancel the subscription at all.
@@ -152,11 +153,13 @@ impl CancelSubscription {
         self
     }
     /// Will generate a final invoice that invoices for any un-invoiced metered usage and new/pending proration invoice items.
+    /// Defaults to `false`.
     pub fn invoice_now(mut self, invoice_now: impl Into<bool>) -> Self {
         self.inner.invoice_now = Some(invoice_now.into());
         self
     }
     /// Will generate a proration invoice item that credits remaining unused time until the subscription period end.
+    /// Defaults to `false`.
     pub fn prorate(mut self, prorate: impl Into<bool>) -> Self {
         self.inner.prorate = Some(prorate.into());
         self
@@ -407,6 +410,7 @@ impl ListSubscription {
         self.inner.created = Some(created.into());
         self
     }
+    /// Only return subscriptions whose current_period_end falls within the given date interval.
     pub fn current_period_end(
         mut self,
         current_period_end: impl Into<stripe_types::RangeQueryTs>,
@@ -414,6 +418,7 @@ impl ListSubscription {
         self.inner.current_period_end = Some(current_period_end.into());
         self
     }
+    /// Only return subscriptions whose current_period_start falls within the given date interval.
     pub fn current_period_start(
         mut self,
         current_period_start: impl Into<stripe_types::RangeQueryTs>,
@@ -666,15 +671,11 @@ struct CreateSubscriptionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_cycle_anchor_config: Option<CreateSubscriptionBillingCycleAnchorConfig>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing_thresholds: Option<BillingThresholdsParam>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     cancel_at: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cancel_at_period_end: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     collection_method: Option<stripe_shared::SubscriptionCollectionMethod>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    coupon: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     currency: Option<stripe_types::Currency>,
     customer: String,
@@ -709,8 +710,6 @@ struct CreateSubscriptionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     pending_invoice_item_interval: Option<CreateSubscriptionPendingInvoiceItemInterval>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    promotion_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     proration_behavior: Option<CreateSubscriptionProrationBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_data: Option<TransferDataSpecs>,
@@ -732,11 +731,9 @@ impl CreateSubscriptionBuilder {
             backdate_start_date: None,
             billing_cycle_anchor: None,
             billing_cycle_anchor_config: None,
-            billing_thresholds: None,
             cancel_at: None,
             cancel_at_period_end: None,
             collection_method: None,
-            coupon: None,
             currency: None,
             customer: customer.into(),
             days_until_due: None,
@@ -754,7 +751,6 @@ impl CreateSubscriptionBuilder {
             payment_behavior: None,
             payment_settings: None,
             pending_invoice_item_interval: None,
-            promotion_code: None,
             proration_behavior: None,
             transfer_data: None,
             trial_end: None,
@@ -771,10 +767,11 @@ pub struct CreateSubscriptionAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
-    /// The ID of the price object.
+    /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreateSubscriptionAddInvoiceItemsPriceData>,
     /// Quantity for this item. Defaults to 1.
@@ -795,12 +792,13 @@ impl Default for CreateSubscriptionAddInvoiceItems {
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionAddInvoiceItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
@@ -808,7 +806,7 @@ pub struct CreateSubscriptionAddInvoiceItemsPriceData {
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior>,
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge or a negative integer representing the amount to credit to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
@@ -1112,10 +1110,6 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionInvoiceSettingsIssuerTyp
 /// A list of up to 20 subscription items, each with an attached price.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionItems {
-    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-    /// When updating, pass an empty string to remove previously-defined thresholds.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
@@ -1146,7 +1140,6 @@ pub struct CreateSubscriptionItems {
 impl CreateSubscriptionItems {
     pub fn new() -> Self {
         Self {
-            billing_thresholds: None,
             discounts: None,
             metadata: None,
             plan: None,
@@ -1168,7 +1161,7 @@ pub struct CreateSubscriptionItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: CreateSubscriptionItemsPriceDataRecurring,
@@ -1437,10 +1430,11 @@ pub struct CreateSubscriptionPaymentSettings {
     /// The list of payment method types (e.g.
     /// card) to provide to the invoice’s PaymentIntent.
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
+    /// Should not be specified with payment_method_configuration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<CreateSubscriptionPaymentSettingsPaymentMethodTypes>>,
-    /// Either `off`, or `on_subscription`.
-    /// With `on_subscription` Stripe updates `subscription.default_payment_method` when a subscription payment succeeds.
+    /// Configure whether Stripe updates `subscription.default_payment_method` when payment succeeds.
+    /// Defaults to `off` if unspecified.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub save_default_payment_method:
         Option<CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod>,
@@ -1896,8 +1890,10 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
     Diners,
     Discover,
     EftposAu,
+    Girocard,
     Interac,
     Jcb,
+    Link,
     Mastercard,
     Unionpay,
     Unknown,
@@ -1912,8 +1908,10 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
             Diners => "diners",
             Discover => "discover",
             EftposAu => "eftpos_au",
+            Girocard => "girocard",
             Interac => "interac",
             Jcb => "jcb",
+            Link => "link",
             Mastercard => "mastercard",
             Unionpay => "unionpay",
             Unknown => "unknown",
@@ -1932,8 +1930,10 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodOptions
             "diners" => Ok(Diners),
             "discover" => Ok(Discover),
             "eftpos_au" => Ok(EftposAu),
+            "girocard" => Ok(Girocard),
             "interac" => Ok(Interac),
             "jcb" => Ok(Jcb),
+            "link" => Ok(Link),
             "mastercard" => Ok(Mastercard),
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
@@ -2067,6 +2067,9 @@ impl Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAcco
 /// Additional fields for Financial Connections Session creation
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
+    /// Provide filters for the linked accounts that the customer can select for the payment method.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub filters: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters>,
         /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
@@ -2079,7 +2082,7 @@ pub prefetch: Option<Vec<CreateSubscriptionPaymentSettingsPaymentMethodOptionsUs
 }
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
     pub fn new() -> Self {
-        Self { permissions: None, prefetch: None }
+        Self { filters: None, permissions: None, prefetch: None }
     }
 }
 impl Default
@@ -2087,6 +2090,80 @@ impl Default
 {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Provide filters for the linked accounts that the customer can select for the payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+        /// The account subcategories to use to filter for selectable accounts.
+    /// Valid subcategories are `checking` and `savings`.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub account_subcategories: Option<Vec<CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories>>,
+
+}
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+    pub fn new() -> Self {
+        Self { account_subcategories: None }
+    }
+}
+impl Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account subcategories to use to filter for selectable accounts.
+/// Valid subcategories are `checking` and `savings`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories
+{
+    Checking,
+    Savings,
+}
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    pub fn as_str(self) -> &'static str {
+        use CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
+        match self {
+Checking => "checking",
+Savings => "savings",
+
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
+        match s {
+    "checking" => Ok(Checking),
+"savings" => Ok(Savings),
+_ => Err(stripe_types::StripeParseError)
+
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"))
     }
 }
 /// The list of permissions to request.
@@ -2279,12 +2356,14 @@ impl<'de> serde::Deserialize<'de>
 /// The list of payment method types (e.g.
 /// card) to provide to the invoice’s PaymentIntent.
 /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
+/// Should not be specified with payment_method_configuration.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
     AchDebit,
     AcssDebit,
+    Affirm,
     AmazonPay,
     AuBecsDebit,
     BacsDebit,
@@ -2298,9 +2377,17 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     Giropay,
     Grabpay,
     Ideal,
+    JpCreditTransfer,
+    KakaoPay,
+    Klarna,
     Konbini,
+    KrCard,
     Link,
+    Multibanco,
+    NaverPay,
+    NzBankAccount,
     P24,
+    Payco,
     Paynow,
     Paypal,
     Promptpay,
@@ -2308,6 +2395,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     SepaCreditTransfer,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -2320,6 +2408,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             AchCreditTransfer => "ach_credit_transfer",
             AchDebit => "ach_debit",
             AcssDebit => "acss_debit",
+            Affirm => "affirm",
             AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
@@ -2333,9 +2422,17 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             Giropay => "giropay",
             Grabpay => "grabpay",
             Ideal => "ideal",
+            JpCreditTransfer => "jp_credit_transfer",
+            KakaoPay => "kakao_pay",
+            Klarna => "klarna",
             Konbini => "konbini",
+            KrCard => "kr_card",
             Link => "link",
+            Multibanco => "multibanco",
+            NaverPay => "naver_pay",
+            NzBankAccount => "nz_bank_account",
             P24 => "p24",
+            Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
             Promptpay => "promptpay",
@@ -2343,6 +2440,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             SepaCreditTransfer => "sepa_credit_transfer",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Swish => "swish",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Unknown(v) => v,
@@ -2358,6 +2456,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             "ach_credit_transfer" => Ok(AchCreditTransfer),
             "ach_debit" => Ok(AchDebit),
             "acss_debit" => Ok(AcssDebit),
+            "affirm" => Ok(Affirm),
             "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
@@ -2371,9 +2470,17 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             "giropay" => Ok(Giropay),
             "grabpay" => Ok(Grabpay),
             "ideal" => Ok(Ideal),
+            "jp_credit_transfer" => Ok(JpCreditTransfer),
+            "kakao_pay" => Ok(KakaoPay),
+            "klarna" => Ok(Klarna),
             "konbini" => Ok(Konbini),
+            "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "multibanco" => Ok(Multibanco),
+            "naver_pay" => Ok(NaverPay),
+            "nz_bank_account" => Ok(NzBankAccount),
             "p24" => Ok(P24),
+            "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
             "promptpay" => Ok(Promptpay),
@@ -2381,6 +2488,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "swish" => Ok(Swish),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             v => Ok(Unknown(v.to_owned())),
@@ -2414,8 +2522,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsPaymentMe
         Ok(Self::from_str(&s).unwrap())
     }
 }
-/// Either `off`, or `on_subscription`.
-/// With `on_subscription` Stripe updates `subscription.default_payment_method` when a subscription payment succeeds.
+/// Configure whether Stripe updates `subscription.default_payment_method` when payment succeeds.
+/// Defaults to `off` if unspecified.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
     Off,
@@ -2787,15 +2895,6 @@ impl CreateSubscription {
         self.inner.billing_cycle_anchor_config = Some(billing_cycle_anchor_config.into());
         self
     }
-    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-    /// Pass an empty string to remove previously-defined thresholds.
-    pub fn billing_thresholds(
-        mut self,
-        billing_thresholds: impl Into<BillingThresholdsParam>,
-    ) -> Self {
-        self.inner.billing_thresholds = Some(billing_thresholds.into());
-        self
-    }
     /// A timestamp at which the subscription should cancel.
     /// If set to a date before the current period ends, this will cause a proration if prorations have been enabled using `proration_behavior`.
     /// If set during a future period, this will always cause a proration for that period.
@@ -2803,7 +2902,8 @@ impl CreateSubscription {
         self.inner.cancel_at = Some(cancel_at.into());
         self
     }
-    /// Boolean indicating whether this subscription should cancel at the end of the current period.
+    /// Indicate whether this subscription should cancel at the end of the current period (`current_period_end`).
+    /// Defaults to `false`.
     pub fn cancel_at_period_end(mut self, cancel_at_period_end: impl Into<bool>) -> Self {
         self.inner.cancel_at_period_end = Some(cancel_at_period_end.into());
         self
@@ -2817,14 +2917,6 @@ impl CreateSubscription {
         collection_method: impl Into<stripe_shared::SubscriptionCollectionMethod>,
     ) -> Self {
         self.inner.collection_method = Some(collection_method.into());
-        self
-    }
-    /// The ID of the coupon to apply to this subscription.
-    /// A coupon applied to a subscription will only affect invoices created for that particular subscription.
-    /// This field has been deprecated and will be removed in a future API version.
-    /// Use `discounts` instead.
-    pub fn coupon(mut self, coupon: impl Into<String>) -> Self {
-        self.inner.coupon = Some(coupon.into());
         self
     }
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -2903,6 +2995,7 @@ impl CreateSubscription {
         self
     }
     /// Indicates if a customer is on or off-session while an invoice payment is attempted.
+    /// Defaults to `false` (on-session).
     pub fn off_session(mut self, off_session: impl Into<bool>) -> Self {
         self.inner.off_session = Some(off_session.into());
         self
@@ -2955,14 +3048,6 @@ impl CreateSubscription {
         pending_invoice_item_interval: impl Into<CreateSubscriptionPendingInvoiceItemInterval>,
     ) -> Self {
         self.inner.pending_invoice_item_interval = Some(pending_invoice_item_interval.into());
-        self
-    }
-    /// The ID of a promotion code to apply to this subscription.
-    /// A promotion code applied to a subscription will only affect invoices created for that particular subscription.
-    /// This field has been deprecated and will be removed in a future API version.
-    /// Use `discounts` instead.
-    pub fn promotion_code(mut self, promotion_code: impl Into<String>) -> Self {
-        self.inner.promotion_code = Some(promotion_code.into());
         self
     }
     /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor`.
@@ -3058,9 +3143,9 @@ impl ResumeSubscriptionBuilder {
         }
     }
 }
+/// The billing cycle anchor that applies when the subscription is resumed.
 /// Either `now` or `unchanged`.
-/// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
-/// Setting the value to `unchanged` advances the subscription's billing cycle anchor to the period that surrounds the current time.
+/// The default is `now`.
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ResumeSubscriptionBillingCycleAnchor {
@@ -3191,9 +3276,9 @@ impl ResumeSubscription {
     pub fn new(subscription: impl Into<stripe_shared::SubscriptionId>) -> Self {
         Self { subscription: subscription.into(), inner: ResumeSubscriptionBuilder::new() }
     }
+    /// The billing cycle anchor that applies when the subscription is resumed.
     /// Either `now` or `unchanged`.
-    /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
-    /// Setting the value to `unchanged` advances the subscription's billing cycle anchor to the period that surrounds the current time.
+    /// The default is `now`.
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
     pub fn billing_cycle_anchor(
         mut self,
@@ -3261,8 +3346,6 @@ struct UpdateSubscriptionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_cycle_anchor: Option<UpdateSubscriptionBillingCycleAnchor>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing_thresholds: Option<BillingThresholdsParam>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     cancel_at: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cancel_at_period_end: Option<bool>,
@@ -3270,8 +3353,6 @@ struct UpdateSubscriptionBuilder {
     cancellation_details: Option<UpdateSubscriptionCancellationDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
     collection_method: Option<stripe_shared::SubscriptionCollectionMethod>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    coupon: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     days_until_due: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3305,8 +3386,6 @@ struct UpdateSubscriptionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     pending_invoice_item_interval: Option<UpdateSubscriptionPendingInvoiceItemInterval>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    promotion_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     proration_behavior: Option<UpdateSubscriptionProrationBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proration_date: Option<stripe_types::Timestamp>,
@@ -3326,12 +3405,10 @@ impl UpdateSubscriptionBuilder {
             application_fee_percent: None,
             automatic_tax: None,
             billing_cycle_anchor: None,
-            billing_thresholds: None,
             cancel_at: None,
             cancel_at_period_end: None,
             cancellation_details: None,
             collection_method: None,
-            coupon: None,
             days_until_due: None,
             default_payment_method: None,
             default_source: None,
@@ -3348,7 +3425,6 @@ impl UpdateSubscriptionBuilder {
             payment_behavior: None,
             payment_settings: None,
             pending_invoice_item_interval: None,
-            promotion_code: None,
             proration_behavior: None,
             proration_date: None,
             transfer_data: None,
@@ -3365,10 +3441,11 @@ pub struct UpdateSubscriptionAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
-    /// The ID of the price object.
+    /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<UpdateSubscriptionAddInvoiceItemsPriceData>,
     /// Quantity for this item. Defaults to 1.
@@ -3389,12 +3466,13 @@ impl Default for UpdateSubscriptionAddInvoiceItems {
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionAddInvoiceItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
@@ -3402,7 +3480,7 @@ pub struct UpdateSubscriptionAddInvoiceItemsPriceData {
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior>,
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge or a negative integer representing the amount to credit to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
     /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
@@ -3830,12 +3908,9 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionInvoiceSettingsIssuerTyp
 /// A list of up to 20 subscription items, each with an attached price.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionItems {
-    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-    /// When updating, pass an empty string to remove previously-defined thresholds.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// Delete all usage for a given subscription item.
-    /// Allowed only when `deleted` is set to `true` and the current plan's `usage_type` is `metered`.
+    /// You must pass this when deleting a usage records subscription item.
+    /// `clear_usage` has no effect if the plan has a billing meter attached.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub clear_usage: Option<bool>,
     /// A flag that, if set to `true`, will delete the specified item.
@@ -3857,10 +3932,12 @@ pub struct UpdateSubscriptionItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<String>,
     /// The ID of the price object.
+    /// One of `price` or `price_data` is required.
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<UpdateSubscriptionItemsPriceData>,
     /// Quantity for this item.
@@ -3875,7 +3952,6 @@ pub struct UpdateSubscriptionItems {
 impl UpdateSubscriptionItems {
     pub fn new() -> Self {
         Self {
-            billing_thresholds: None,
             clear_usage: None,
             deleted: None,
             discounts: None,
@@ -3895,12 +3971,13 @@ impl Default for UpdateSubscriptionItems {
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: UpdateSubscriptionItemsPriceDataRecurring,
@@ -4080,7 +4157,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemsPriceDataTaxBehavio
 }
 /// If specified, payment collection for this subscription will be paused.
 /// Note that the subscription status will be unchanged and will not be updated to `paused`.
-/// Learn more about [pausing collection](/billing/subscriptions/pause-payment).
+/// Learn more about [pausing collection](https://stripe.com/docs/billing/subscriptions/pause-payment).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionPauseCollection {
     /// The payment collection behavior for this subscription while paused.
@@ -4242,10 +4319,11 @@ pub struct UpdateSubscriptionPaymentSettings {
     /// The list of payment method types (e.g.
     /// card) to provide to the invoice’s PaymentIntent.
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
+    /// Should not be specified with payment_method_configuration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<UpdateSubscriptionPaymentSettingsPaymentMethodTypes>>,
-    /// Either `off`, or `on_subscription`.
-    /// With `on_subscription` Stripe updates `subscription.default_payment_method` when a subscription payment succeeds.
+    /// Configure whether Stripe updates `subscription.default_payment_method` when payment succeeds.
+    /// Defaults to `off` if unspecified.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub save_default_payment_method:
         Option<UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod>,
@@ -4701,8 +4779,10 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
     Diners,
     Discover,
     EftposAu,
+    Girocard,
     Interac,
     Jcb,
+    Link,
     Mastercard,
     Unionpay,
     Unknown,
@@ -4717,8 +4797,10 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
             Diners => "diners",
             Discover => "discover",
             EftposAu => "eftpos_au",
+            Girocard => "girocard",
             Interac => "interac",
             Jcb => "jcb",
+            Link => "link",
             Mastercard => "mastercard",
             Unionpay => "unionpay",
             Unknown => "unknown",
@@ -4737,8 +4819,10 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodOptions
             "diners" => Ok(Diners),
             "discover" => Ok(Discover),
             "eftpos_au" => Ok(EftposAu),
+            "girocard" => Ok(Girocard),
             "interac" => Ok(Interac),
             "jcb" => Ok(Jcb),
+            "link" => Ok(Link),
             "mastercard" => Ok(Mastercard),
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
@@ -4872,6 +4956,9 @@ impl Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAcco
 /// Additional fields for Financial Connections Session creation
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
+    /// Provide filters for the linked accounts that the customer can select for the payment method.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub filters: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters>,
         /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
@@ -4884,7 +4971,7 @@ pub prefetch: Option<Vec<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUs
 }
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
     pub fn new() -> Self {
-        Self { permissions: None, prefetch: None }
+        Self { filters: None, permissions: None, prefetch: None }
     }
 }
 impl Default
@@ -4892,6 +4979,80 @@ impl Default
 {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Provide filters for the linked accounts that the customer can select for the payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+        /// The account subcategories to use to filter for selectable accounts.
+    /// Valid subcategories are `checking` and `savings`.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub account_subcategories: Option<Vec<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories>>,
+
+}
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+    pub fn new() -> Self {
+        Self { account_subcategories: None }
+    }
+}
+impl Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account subcategories to use to filter for selectable accounts.
+/// Valid subcategories are `checking` and `savings`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories
+{
+    Checking,
+    Savings,
+}
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    pub fn as_str(self) -> &'static str {
+        use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
+        match self {
+Checking => "checking",
+Savings => "savings",
+
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
+        match s {
+    "checking" => Ok(Checking),
+"savings" => Ok(Savings),
+_ => Err(stripe_types::StripeParseError)
+
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"))
     }
 }
 /// The list of permissions to request.
@@ -5084,12 +5245,14 @@ impl<'de> serde::Deserialize<'de>
 /// The list of payment method types (e.g.
 /// card) to provide to the invoice’s PaymentIntent.
 /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
+/// Should not be specified with payment_method_configuration.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
     AchDebit,
     AcssDebit,
+    Affirm,
     AmazonPay,
     AuBecsDebit,
     BacsDebit,
@@ -5103,9 +5266,17 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     Giropay,
     Grabpay,
     Ideal,
+    JpCreditTransfer,
+    KakaoPay,
+    Klarna,
     Konbini,
+    KrCard,
     Link,
+    Multibanco,
+    NaverPay,
+    NzBankAccount,
     P24,
+    Payco,
     Paynow,
     Paypal,
     Promptpay,
@@ -5113,6 +5284,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     SepaCreditTransfer,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -5125,6 +5297,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             AchCreditTransfer => "ach_credit_transfer",
             AchDebit => "ach_debit",
             AcssDebit => "acss_debit",
+            Affirm => "affirm",
             AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
@@ -5138,9 +5311,17 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             Giropay => "giropay",
             Grabpay => "grabpay",
             Ideal => "ideal",
+            JpCreditTransfer => "jp_credit_transfer",
+            KakaoPay => "kakao_pay",
+            Klarna => "klarna",
             Konbini => "konbini",
+            KrCard => "kr_card",
             Link => "link",
+            Multibanco => "multibanco",
+            NaverPay => "naver_pay",
+            NzBankAccount => "nz_bank_account",
             P24 => "p24",
+            Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
             Promptpay => "promptpay",
@@ -5148,6 +5329,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             SepaCreditTransfer => "sepa_credit_transfer",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Swish => "swish",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Unknown(v) => v,
@@ -5163,6 +5345,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             "ach_credit_transfer" => Ok(AchCreditTransfer),
             "ach_debit" => Ok(AchDebit),
             "acss_debit" => Ok(AcssDebit),
+            "affirm" => Ok(Affirm),
             "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
@@ -5176,9 +5359,17 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             "giropay" => Ok(Giropay),
             "grabpay" => Ok(Grabpay),
             "ideal" => Ok(Ideal),
+            "jp_credit_transfer" => Ok(JpCreditTransfer),
+            "kakao_pay" => Ok(KakaoPay),
+            "klarna" => Ok(Klarna),
             "konbini" => Ok(Konbini),
+            "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "multibanco" => Ok(Multibanco),
+            "naver_pay" => Ok(NaverPay),
+            "nz_bank_account" => Ok(NzBankAccount),
             "p24" => Ok(P24),
+            "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
             "promptpay" => Ok(Promptpay),
@@ -5186,6 +5377,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "swish" => Ok(Swish),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             v => Ok(Unknown(v.to_owned())),
@@ -5219,8 +5411,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsPaymentMe
         Ok(Self::from_str(&s).unwrap())
     }
 }
-/// Either `off`, or `on_subscription`.
-/// With `on_subscription` Stripe updates `subscription.default_payment_method` when a subscription payment succeeds.
+/// Configure whether Stripe updates `subscription.default_payment_method` when payment succeeds.
+/// Defaults to `off` if unspecified.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
     Off,
@@ -5522,7 +5714,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Updates an existing subscription to match the specified parameters.
 /// When changing prices or quantities, we optionally prorate the price we charge next month to make up for any price changes.
-/// To preview how the proration is calculated, use the [upcoming invoice](https://stripe.com/docs/api/invoices/upcoming) endpoint.
+/// To preview how the proration is calculated, use the [create preview](https://stripe.com/docs/api/invoices/create_preview) endpoint.
 ///
 /// By default, we prorate subscription changes.
 /// For example, if a customer signs up on May 1 for a $100 price, they’ll be billed $100 immediately.
@@ -5534,11 +5726,12 @@ impl<'de> serde::Deserialize<'de>
 ///
 /// <ul>
 /// <li>The billing interval is changed (for example, from monthly to yearly).</li>
-/// <li>The subscription moves from free to paid, or paid to free.</li>
+/// <li>The subscription moves from free to paid.</li>
 /// <li>A trial starts or ends.</li>
 /// </ul>
 ///
 /// In these cases, we apply a credit for the unused time on the previous price, immediately charge the customer using the new price, and reset the billing date.
+/// Learn about how [Stripe immediately attempts payment for subscription changes](https://stripe.com/docs/billing/subscriptions/upgrade-downgrade#immediate-payment).
 ///
 /// If you want to charge for an upgrade immediately, pass `proration_behavior` as `always_invoice` to create prorations, automatically invoice the customer for those proration adjustments, and attempt to collect payment.
 /// If you pass `create_prorations`, the prorations are created but not automatically invoiced.
@@ -5600,15 +5793,6 @@ impl UpdateSubscription {
         self.inner.billing_cycle_anchor = Some(billing_cycle_anchor.into());
         self
     }
-    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-    /// Pass an empty string to remove previously-defined thresholds.
-    pub fn billing_thresholds(
-        mut self,
-        billing_thresholds: impl Into<BillingThresholdsParam>,
-    ) -> Self {
-        self.inner.billing_thresholds = Some(billing_thresholds.into());
-        self
-    }
     /// A timestamp at which the subscription should cancel.
     /// If set to a date before the current period ends, this will cause a proration if prorations have been enabled using `proration_behavior`.
     /// If set during a future period, this will always cause a proration for that period.
@@ -5616,7 +5800,8 @@ impl UpdateSubscription {
         self.inner.cancel_at = Some(cancel_at.into());
         self
     }
-    /// Boolean indicating whether this subscription should cancel at the end of the current period.
+    /// Indicate whether this subscription should cancel at the end of the current period (`current_period_end`).
+    /// Defaults to `false`.
     pub fn cancel_at_period_end(mut self, cancel_at_period_end: impl Into<bool>) -> Self {
         self.inner.cancel_at_period_end = Some(cancel_at_period_end.into());
         self
@@ -5638,14 +5823,6 @@ impl UpdateSubscription {
         collection_method: impl Into<stripe_shared::SubscriptionCollectionMethod>,
     ) -> Self {
         self.inner.collection_method = Some(collection_method.into());
-        self
-    }
-    /// The ID of the coupon to apply to this subscription.
-    /// A coupon applied to a subscription will only affect invoices created for that particular subscription.
-    /// This field has been deprecated and will be removed in a future API version.
-    /// Use `discounts` instead.
-    pub fn coupon(mut self, coupon: impl Into<String>) -> Self {
-        self.inner.coupon = Some(coupon.into());
         self
     }
     /// Number of days a customer has to pay invoices generated by this subscription.
@@ -5719,6 +5896,7 @@ impl UpdateSubscription {
         self
     }
     /// Indicates if a customer is on or off-session while an invoice payment is attempted.
+    /// Defaults to `false` (on-session).
     pub fn off_session(mut self, off_session: impl Into<bool>) -> Self {
         self.inner.off_session = Some(off_session.into());
         self
@@ -5730,7 +5908,7 @@ impl UpdateSubscription {
     }
     /// If specified, payment collection for this subscription will be paused.
     /// Note that the subscription status will be unchanged and will not be updated to `paused`.
-    /// Learn more about [pausing collection](/billing/subscriptions/pause-payment).
+    /// Learn more about [pausing collection](https://stripe.com/docs/billing/subscriptions/pause-payment).
     pub fn pause_collection(
         mut self,
         pause_collection: impl Into<UpdateSubscriptionPauseCollection>,
@@ -5777,12 +5955,6 @@ impl UpdateSubscription {
         pending_invoice_item_interval: impl Into<UpdateSubscriptionPendingInvoiceItemInterval>,
     ) -> Self {
         self.inner.pending_invoice_item_interval = Some(pending_invoice_item_interval.into());
-        self
-    }
-    /// The promotion code to apply to this subscription.
-    /// A promotion code applied to a subscription will only affect invoices created for that particular subscription.
-    pub fn promotion_code(mut self, promotion_code: impl Into<String>) -> Self {
-        self.inner.promotion_code = Some(promotion_code.into());
         self
     }
     /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
@@ -5881,36 +6053,6 @@ impl DiscountsDataParam {
 impl Default for DiscountsDataParam {
     fn default() -> Self {
         Self::new()
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct BillingThresholdsParam {
-    /// Monetary threshold that triggers the subscription to advance to a new billing period
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_gte: Option<i64>,
-    /// Indicates if the `billing_cycle_anchor` should be reset when a threshold is reached.
-    /// If true, `billing_cycle_anchor` will be updated to the date/time the threshold was last reached; otherwise, the value will remain unchanged.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reset_billing_cycle_anchor: Option<bool>,
-}
-impl BillingThresholdsParam {
-    pub fn new() -> Self {
-        Self { amount_gte: None, reset_billing_cycle_anchor: None }
-    }
-}
-impl Default for BillingThresholdsParam {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ItemBillingThresholdsParam {
-    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
-    pub usage_gte: i64,
-}
-impl ItemBillingThresholdsParam {
-    pub fn new(usage_gte: impl Into<i64>) -> Self {
-        Self { usage_gte: usage_gte.into() }
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]

@@ -27,7 +27,7 @@ impl CreateBillingMeterEventBuilder {
         }
     }
 }
-/// Creates a billing meter event
+/// Creates a billing meter event.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateBillingMeterEvent {
     inner: CreateBillingMeterEventBuilder,
@@ -46,9 +46,11 @@ impl CreateBillingMeterEvent {
         self
     }
     /// A unique identifier for the event.
-    /// If not provided, one will be generated.
-    /// We recommend using a globally unique identifier for this.
-    /// We'll enforce uniqueness within a rolling 24 hour period.
+    /// If not provided, one is generated.
+    /// We recommend using UUID-like identifiers.
+    /// We will enforce uniqueness within a rolling period of at least 24 hours.
+    /// The enforcement of uniqueness primarily addresses issues arising from accidental retries or other problems occurring within extremely brief time intervals.
+    /// This approach helps prevent duplicate entries and ensures data integrity in high-frequency operations.
     pub fn identifier(mut self, identifier: impl Into<String>) -> Self {
         self.inner.identifier = Some(identifier.into());
         self

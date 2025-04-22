@@ -75,8 +75,9 @@ pub struct SetupIntent {
     /// The account (if any) for which the setup is intended.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// ID of the payment method used with this SetupIntent.
+    /// If the payment method is `card_present` and isn't a digital wallet, then the [generated_card](https://docs.stripe.com/api/setup_attempts/object#setup_attempt_object-payment_method_details-card_present-generated_card) associated with the `latest_attempt` is attached to the Customer instead.
     pub payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
-    /// Information about the payment method configuration used for this Setup Intent.
+    /// Information about the [payment method configuration](https://stripe.com/docs/api/payment_method_configurations) used for this Setup Intent.
     pub payment_method_configuration_details:
         Option<stripe_shared::PaymentMethodConfigBizPaymentMethodConfigurationDetails>,
     /// Payment method-specific configuration for this SetupIntent.

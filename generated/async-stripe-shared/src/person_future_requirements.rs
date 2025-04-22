@@ -9,7 +9,7 @@ pub struct PersonFutureRequirements {
     pub currently_due: Vec<String>,
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<stripe_shared::AccountRequirementsError>,
-    /// Fields that need to be collected assuming all volume thresholds are reached.
+    /// Fields you must collect when all thresholds are reached.
     /// As they become required, they appear in `currently_due` as well, and the account's `future_requirements[current_deadline]` becomes set.
     pub eventually_due: Vec<String>,
     /// Fields that weren't collected by the account's `requirements.current_deadline`.

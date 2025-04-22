@@ -42,11 +42,6 @@ pub enum BalanceTransactionSource {
     IssuingTransaction(stripe_shared::IssuingTransaction),
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "payout"))]
     Payout(stripe_shared::Payout),
-    #[cfg_attr(
-        any(feature = "deserialize", feature = "serialize"),
-        serde(rename = "platform_tax_fee")
-    )]
-    PlatformTaxFee(stripe_shared::PlatformTaxFee),
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "refund"))]
     Refund(stripe_shared::Refund),
     #[cfg_attr(
@@ -160,9 +155,6 @@ const _: () = {
                     Self::IssuingTransaction(FromValueOpt::from_value(Value::Object(o))?)
                 }
                 "payout" => Self::Payout(FromValueOpt::from_value(Value::Object(o))?),
-                "platform_tax_fee" => {
-                    Self::PlatformTaxFee(FromValueOpt::from_value(Value::Object(o))?)
-                }
                 "refund" => Self::Refund(FromValueOpt::from_value(Value::Object(o))?),
                 "reserve_transaction" => {
                     Self::ReserveTransaction(FromValueOpt::from_value(Value::Object(o))?)
@@ -203,7 +195,6 @@ impl stripe_types::Object for BalanceTransactionSource {
             Self::IssuingDispute(v) => v.id.inner(),
             Self::IssuingTransaction(v) => v.id.inner(),
             Self::Payout(v) => v.id.inner(),
-            Self::PlatformTaxFee(v) => v.id.inner(),
             Self::Refund(v) => v.id.inner(),
             Self::ReserveTransaction(v) => v.id.inner(),
             Self::TaxDeductedAtSource(v) => v.id.inner(),
@@ -225,7 +216,6 @@ impl stripe_types::Object for BalanceTransactionSource {
             Self::IssuingDispute(v) => v.id.into_inner(),
             Self::IssuingTransaction(v) => v.id.into_inner(),
             Self::Payout(v) => v.id.into_inner(),
-            Self::PlatformTaxFee(v) => v.id.into_inner(),
             Self::Refund(v) => v.id.into_inner(),
             Self::ReserveTransaction(v) => v.id.into_inner(),
             Self::TaxDeductedAtSource(v) => v.id.into_inner(),

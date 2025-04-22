@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig {
-    /// A File ID representing an image you would like displayed on the reader.
+    /// A File ID representing an image to display on the reader
     pub splashscreen: Option<stripe_types::Expandable<stripe_shared::File>>,
 }
 #[doc(hidden)]

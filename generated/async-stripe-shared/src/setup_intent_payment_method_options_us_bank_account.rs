@@ -2,14 +2,14 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupIntentPaymentMethodOptionsUsBankAccount {
-    pub financial_connections: Option<stripe_shared::LinkedAccountOptionsUsBankAccount>,
+    pub financial_connections: Option<stripe_shared::LinkedAccountOptionsCommon>,
     pub mandate_options: Option<stripe_shared::PaymentMethodOptionsUsBankAccountMandateOptions>,
     /// Bank account verification method.
     pub verification_method: Option<SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 #[doc(hidden)]
 pub struct SetupIntentPaymentMethodOptionsUsBankAccountBuilder {
-    financial_connections: Option<Option<stripe_shared::LinkedAccountOptionsUsBankAccount>>,
+    financial_connections: Option<Option<stripe_shared::LinkedAccountOptionsCommon>>,
     mandate_options: Option<Option<stripe_shared::PaymentMethodOptionsUsBankAccountMandateOptions>>,
     verification_method:
         Option<Option<SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>>,

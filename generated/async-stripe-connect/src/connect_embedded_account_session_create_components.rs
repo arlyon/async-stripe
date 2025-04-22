@@ -4,25 +4,39 @@
 pub struct ConnectEmbeddedAccountSessionCreateComponents {
     pub account_management: stripe_connect::ConnectEmbeddedAccountConfigClaim,
     pub account_onboarding: stripe_connect::ConnectEmbeddedAccountConfigClaim,
-    pub balances: stripe_connect::ConnectEmbeddedPayoutsConfigClaim,
+    pub balances: stripe_connect::ConnectEmbeddedPayoutsConfig,
     pub documents: stripe_connect::ConnectEmbeddedBaseConfigClaim,
+    pub financial_account: stripe_connect::ConnectEmbeddedFinancialAccountConfigClaim,
+    pub financial_account_transactions:
+        stripe_connect::ConnectEmbeddedFinancialAccountTransactionsConfigClaim,
+    pub issuing_card: stripe_connect::ConnectEmbeddedIssuingCardConfigClaim,
+    pub issuing_cards_list: stripe_connect::ConnectEmbeddedIssuingCardsListConfigClaim,
     pub notification_banner: stripe_connect::ConnectEmbeddedAccountConfigClaim,
     pub payment_details: stripe_connect::ConnectEmbeddedPaymentsConfigClaim,
     pub payments: stripe_connect::ConnectEmbeddedPaymentsConfigClaim,
-    pub payouts: stripe_connect::ConnectEmbeddedPayoutsConfigClaim,
+    pub payouts: stripe_connect::ConnectEmbeddedPayoutsConfig,
     pub payouts_list: stripe_connect::ConnectEmbeddedBaseConfigClaim,
+    pub tax_registrations: stripe_connect::ConnectEmbeddedBaseConfigClaim,
+    pub tax_settings: stripe_connect::ConnectEmbeddedBaseConfigClaim,
 }
 #[doc(hidden)]
 pub struct ConnectEmbeddedAccountSessionCreateComponentsBuilder {
     account_management: Option<stripe_connect::ConnectEmbeddedAccountConfigClaim>,
     account_onboarding: Option<stripe_connect::ConnectEmbeddedAccountConfigClaim>,
-    balances: Option<stripe_connect::ConnectEmbeddedPayoutsConfigClaim>,
+    balances: Option<stripe_connect::ConnectEmbeddedPayoutsConfig>,
     documents: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
+    financial_account: Option<stripe_connect::ConnectEmbeddedFinancialAccountConfigClaim>,
+    financial_account_transactions:
+        Option<stripe_connect::ConnectEmbeddedFinancialAccountTransactionsConfigClaim>,
+    issuing_card: Option<stripe_connect::ConnectEmbeddedIssuingCardConfigClaim>,
+    issuing_cards_list: Option<stripe_connect::ConnectEmbeddedIssuingCardsListConfigClaim>,
     notification_banner: Option<stripe_connect::ConnectEmbeddedAccountConfigClaim>,
     payment_details: Option<stripe_connect::ConnectEmbeddedPaymentsConfigClaim>,
     payments: Option<stripe_connect::ConnectEmbeddedPaymentsConfigClaim>,
-    payouts: Option<stripe_connect::ConnectEmbeddedPayoutsConfigClaim>,
+    payouts: Option<stripe_connect::ConnectEmbeddedPayoutsConfig>,
     payouts_list: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
+    tax_registrations: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
+    tax_settings: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
 }
 
 #[allow(
@@ -69,11 +83,19 @@ const _: () = {
                 "account_onboarding" => Deserialize::begin(&mut self.account_onboarding),
                 "balances" => Deserialize::begin(&mut self.balances),
                 "documents" => Deserialize::begin(&mut self.documents),
+                "financial_account" => Deserialize::begin(&mut self.financial_account),
+                "financial_account_transactions" => {
+                    Deserialize::begin(&mut self.financial_account_transactions)
+                }
+                "issuing_card" => Deserialize::begin(&mut self.issuing_card),
+                "issuing_cards_list" => Deserialize::begin(&mut self.issuing_cards_list),
                 "notification_banner" => Deserialize::begin(&mut self.notification_banner),
                 "payment_details" => Deserialize::begin(&mut self.payment_details),
                 "payments" => Deserialize::begin(&mut self.payments),
                 "payouts" => Deserialize::begin(&mut self.payouts),
                 "payouts_list" => Deserialize::begin(&mut self.payouts_list),
+                "tax_registrations" => Deserialize::begin(&mut self.tax_registrations),
+                "tax_settings" => Deserialize::begin(&mut self.tax_settings),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -85,11 +107,17 @@ const _: () = {
                 account_onboarding: Deserialize::default(),
                 balances: Deserialize::default(),
                 documents: Deserialize::default(),
+                financial_account: Deserialize::default(),
+                financial_account_transactions: Deserialize::default(),
+                issuing_card: Deserialize::default(),
+                issuing_cards_list: Deserialize::default(),
                 notification_banner: Deserialize::default(),
                 payment_details: Deserialize::default(),
                 payments: Deserialize::default(),
                 payouts: Deserialize::default(),
                 payouts_list: Deserialize::default(),
+                tax_registrations: Deserialize::default(),
+                tax_settings: Deserialize::default(),
             }
         }
 
@@ -99,21 +127,33 @@ const _: () = {
                 Some(account_onboarding),
                 Some(balances),
                 Some(documents),
+                Some(financial_account),
+                Some(financial_account_transactions),
+                Some(issuing_card),
+                Some(issuing_cards_list),
                 Some(notification_banner),
                 Some(payment_details),
                 Some(payments),
                 Some(payouts),
                 Some(payouts_list),
+                Some(tax_registrations),
+                Some(tax_settings),
             ) = (
                 self.account_management,
                 self.account_onboarding,
                 self.balances,
                 self.documents,
+                self.financial_account,
+                self.financial_account_transactions,
+                self.issuing_card,
+                self.issuing_cards_list,
                 self.notification_banner,
                 self.payment_details,
                 self.payments,
                 self.payouts,
                 self.payouts_list,
+                self.tax_registrations,
+                self.tax_settings,
             )
             else {
                 return None;
@@ -123,11 +163,17 @@ const _: () = {
                 account_onboarding,
                 balances,
                 documents,
+                financial_account,
+                financial_account_transactions,
+                issuing_card,
+                issuing_cards_list,
                 notification_banner,
                 payment_details,
                 payments,
                 payouts,
                 payouts_list,
+                tax_registrations,
+                tax_settings,
             })
         }
     }
@@ -159,11 +205,19 @@ const _: () = {
                     "account_onboarding" => b.account_onboarding = FromValueOpt::from_value(v),
                     "balances" => b.balances = FromValueOpt::from_value(v),
                     "documents" => b.documents = FromValueOpt::from_value(v),
+                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
+                    "financial_account_transactions" => {
+                        b.financial_account_transactions = FromValueOpt::from_value(v)
+                    }
+                    "issuing_card" => b.issuing_card = FromValueOpt::from_value(v),
+                    "issuing_cards_list" => b.issuing_cards_list = FromValueOpt::from_value(v),
                     "notification_banner" => b.notification_banner = FromValueOpt::from_value(v),
                     "payment_details" => b.payment_details = FromValueOpt::from_value(v),
                     "payments" => b.payments = FromValueOpt::from_value(v),
                     "payouts" => b.payouts = FromValueOpt::from_value(v),
                     "payouts_list" => b.payouts_list = FromValueOpt::from_value(v),
+                    "tax_registrations" => b.tax_registrations = FromValueOpt::from_value(v),
+                    "tax_settings" => b.tax_settings = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

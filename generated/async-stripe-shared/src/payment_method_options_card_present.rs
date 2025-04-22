@@ -7,11 +7,13 @@ pub struct PaymentMethodOptionsCardPresent {
     /// Request ability to [increment](https://stripe.com/docs/terminal/features/incremental-authorizations) this PaymentIntent if the combination of MCC and card brand is eligible.
     /// Check [incremental_authorization_supported](https://stripe.com/docs/api/charges/object#charge_object-payment_method_details-card_present-incremental_authorization_supported) in the [Confirm](https://stripe.com/docs/api/payment_intents/confirm) response to verify support.
     pub request_incremental_authorization_support: Option<bool>,
+    pub routing: Option<stripe_shared::PaymentMethodOptionsCardPresentRouting>,
 }
 #[doc(hidden)]
 pub struct PaymentMethodOptionsCardPresentBuilder {
     request_extended_authorization: Option<Option<bool>>,
     request_incremental_authorization_support: Option<Option<bool>>,
+    routing: Option<Option<stripe_shared::PaymentMethodOptionsCardPresentRouting>>,
 }
 
 #[allow(
@@ -60,6 +62,7 @@ const _: () = {
                 "request_incremental_authorization_support" => {
                     Deserialize::begin(&mut self.request_incremental_authorization_support)
                 }
+                "routing" => Deserialize::begin(&mut self.routing),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -69,6 +72,7 @@ const _: () = {
             Self {
                 request_extended_authorization: Deserialize::default(),
                 request_incremental_authorization_support: Deserialize::default(),
+                routing: Deserialize::default(),
             }
         }
 
@@ -76,9 +80,11 @@ const _: () = {
             let (
                 Some(request_extended_authorization),
                 Some(request_incremental_authorization_support),
+                Some(routing),
             ) = (
                 self.request_extended_authorization,
                 self.request_incremental_authorization_support,
+                self.routing,
             )
             else {
                 return None;
@@ -86,6 +92,7 @@ const _: () = {
             Some(Self::Out {
                 request_extended_authorization,
                 request_incremental_authorization_support,
+                routing,
             })
         }
     }
@@ -119,6 +126,7 @@ const _: () = {
                     "request_incremental_authorization_support" => {
                         b.request_incremental_authorization_support = FromValueOpt::from_value(v)
                     }
+                    "routing" => b.routing = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

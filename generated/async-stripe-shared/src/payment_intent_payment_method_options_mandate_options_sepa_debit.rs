@@ -1,9 +1,17 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit {}
+pub struct PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit {
+    /// Prefix used to generate the Mandate reference.
+    /// Must be at most 12 characters long.
+    /// Must consist of only uppercase letters, numbers, spaces, or the following special characters: '/', '_', '-', '&', '.'.
+    /// Cannot begin with 'STRIPE'.
+    pub reference_prefix: Option<String>,
+}
 #[doc(hidden)]
-pub struct PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebitBuilder {}
+pub struct PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebitBuilder {
+    reference_prefix: Option<Option<String>>,
+}
 
 #[allow(
     unused_variables,
@@ -46,19 +54,21 @@ const _: () = {
         type Out = PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "reference_prefix" => Deserialize::begin(&mut self.reference_prefix),
+
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { reference_prefix: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
+            let (Some(reference_prefix),) = (self.reference_prefix.take(),) else {
                 return None;
             };
-            Some(Self::Out {})
+            Some(Self::Out { reference_prefix })
         }
     }
 
@@ -86,6 +96,8 @@ const _: () = {
                 PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebitBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "reference_prefix" => b.reference_prefix = FromValueOpt::from_value(v),
+
                     _ => {}
                 }
             }

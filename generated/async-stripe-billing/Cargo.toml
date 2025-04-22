@@ -20,15 +20,19 @@ serde.workspace = true
 serde_json = { workspace = true, optional = true }
 smol_str.workspace = true
 miniserde.workspace = true
-async-stripe-types = {path = "../../async-stripe-types"}
-async-stripe-client-core = {path = "../../async-stripe-client-core"}
+async-stripe-types = {path = "../../async-stripe-types", version = "0.22.0"}
+async-stripe-client-core = {path = "../../async-stripe-client-core", version = "0.22.0"}
 
-async-stripe-shared = {path = "../../generated/async-stripe-shared"}
+async-stripe-shared = {path = "../../generated/async-stripe-shared", version = "0.22.0"}
 
 
 [features]
 serialize = ["async-stripe-types/serialize","async-stripe-shared/serialize"]
 deserialize = ["async-stripe-types/deserialize","async-stripe-shared/deserialize", "dep:serde_json"]
+billing_alert = []
+billing_credit_balance_summary = []
+billing_credit_balance_transaction = []
+billing_credit_grant = []
 billing_meter = []
 billing_meter_event = []
 billing_meter_event_adjustment = []
@@ -40,6 +44,8 @@ credit_note_line_item = []
 invoice = []
 invoice_item = []
 invoice_line_item = []
+invoice_payment = []
+invoice_rendering_template = []
 plan = []
 quote = []
 subscription = []
@@ -47,10 +53,12 @@ subscription_item = []
 subscription_schedule = []
 tax_id = []
 test_helpers_test_clock = []
-usage_record = []
-usage_record_summary = []
 
-full = ["billing_meter",
+full = ["billing_alert",
+"billing_credit_balance_summary",
+"billing_credit_balance_transaction",
+"billing_credit_grant",
+"billing_meter",
 "billing_meter_event",
 "billing_meter_event_adjustment",
 "billing_meter_event_summary",
@@ -61,15 +69,15 @@ full = ["billing_meter",
 "invoice",
 "invoice_item",
 "invoice_line_item",
+"invoice_payment",
+"invoice_rendering_template",
 "plan",
 "quote",
 "subscription",
 "subscription_item",
 "subscription_schedule",
 "tax_id",
-"test_helpers_test_clock",
-"usage_record",
-"usage_record_summary"]
+"test_helpers_test_clock"]
 
 
 [package.metadata.docs.rs]

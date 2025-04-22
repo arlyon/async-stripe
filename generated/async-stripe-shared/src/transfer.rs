@@ -43,7 +43,7 @@ pub struct Transfer {
     /// Whether the transfer has been fully reversed.
     /// If the transfer is only partially reversed, this attribute will still be false.
     pub reversed: bool,
-    /// ID of the charge or payment that was used to fund the transfer.
+    /// ID of the charge that was used to fund the transfer.
     /// If null, the transfer was funded from the available balance.
     pub source_transaction: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     /// The source balance this transfer came from. One of `card`, `fpx`, or `bank_account`.

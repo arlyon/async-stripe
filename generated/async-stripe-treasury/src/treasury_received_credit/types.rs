@@ -282,6 +282,7 @@ impl serde::Serialize for TreasuryReceivedCredit {
 pub enum TreasuryReceivedCreditFailureCode {
     AccountClosed,
     AccountFrozen,
+    InternationalTransaction,
     Other,
 }
 impl TreasuryReceivedCreditFailureCode {
@@ -290,6 +291,7 @@ impl TreasuryReceivedCreditFailureCode {
         match self {
             AccountClosed => "account_closed",
             AccountFrozen => "account_frozen",
+            InternationalTransaction => "international_transaction",
             Other => "other",
         }
     }
@@ -302,6 +304,7 @@ impl std::str::FromStr for TreasuryReceivedCreditFailureCode {
         match s {
             "account_closed" => Ok(AccountClosed),
             "account_frozen" => Ok(AccountFrozen),
+            "international_transaction" => Ok(InternationalTransaction),
             "other" => Ok(Other),
             _ => Err(stripe_types::StripeParseError),
         }

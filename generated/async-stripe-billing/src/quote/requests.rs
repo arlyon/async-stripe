@@ -15,7 +15,7 @@ struct ListQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<stripe_shared::QuoteStatus>,
+    status: Option<stripe_billing::QuoteStatus>,
     #[serde(skip_serializing_if = "Option::is_none")]
     test_clock: Option<String>,
 }
@@ -73,7 +73,7 @@ impl ListQuote {
         self
     }
     /// The status of the quote.
-    pub fn status(mut self, status: impl Into<stripe_shared::QuoteStatus>) -> Self {
+    pub fn status(mut self, status: impl Into<stripe_billing::QuoteStatus>) -> Self {
         self.inner.status = Some(status.into());
         self
     }
@@ -108,13 +108,13 @@ impl ListQuote {
 
     pub fn paginate(
         &self,
-    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_shared::Quote>> {
+    ) -> stripe_client_core::ListPaginator<stripe_types::List<stripe_billing::Quote>> {
         stripe_client_core::ListPaginator::new_list("/quotes", &self.inner)
     }
 }
 
 impl StripeRequest for ListQuote {
-    type Output = stripe_types::List<stripe_shared::Quote>;
+    type Output = stripe_types::List<stripe_billing::Quote>;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Get, "/quotes").query(&self.inner)
@@ -134,11 +134,11 @@ impl RetrieveQuoteBuilder {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct RetrieveQuote {
     inner: RetrieveQuoteBuilder,
-    quote: stripe_shared::QuoteId,
+    quote: stripe_billing::QuoteId,
 }
 impl RetrieveQuote {
     /// Construct a new `RetrieveQuote`.
-    pub fn new(quote: impl Into<stripe_shared::QuoteId>) -> Self {
+    pub fn new(quote: impl Into<stripe_billing::QuoteId>) -> Self {
         Self { quote: quote.into(), inner: RetrieveQuoteBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
@@ -166,7 +166,7 @@ impl RetrieveQuote {
 }
 
 impl StripeRequest for RetrieveQuote {
-    type Output = stripe_shared::Quote;
+    type Output = stripe_billing::Quote;
 
     fn build(&self) -> RequestBuilder {
         let quote = &self.quote;
@@ -194,11 +194,11 @@ impl ListComputedUpfrontLineItemsQuoteBuilder {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ListComputedUpfrontLineItemsQuote {
     inner: ListComputedUpfrontLineItemsQuoteBuilder,
-    quote: stripe_shared::QuoteId,
+    quote: stripe_billing::QuoteId,
 }
 impl ListComputedUpfrontLineItemsQuote {
     /// Construct a new `ListComputedUpfrontLineItemsQuote`.
-    pub fn new(quote: impl Into<stripe_shared::QuoteId>) -> Self {
+    pub fn new(quote: impl Into<stripe_billing::QuoteId>) -> Self {
         Self { quote: quote.into(), inner: ListComputedUpfrontLineItemsQuoteBuilder::new() }
     }
     /// A cursor for use in pagination.
@@ -290,11 +290,11 @@ impl ListLineItemsQuoteBuilder {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ListLineItemsQuote {
     inner: ListLineItemsQuoteBuilder,
-    quote: stripe_shared::QuoteId,
+    quote: stripe_billing::QuoteId,
 }
 impl ListLineItemsQuote {
     /// Construct a new `ListLineItemsQuote`.
-    pub fn new(quote: impl Into<stripe_shared::QuoteId>) -> Self {
+    pub fn new(quote: impl Into<stripe_billing::QuoteId>) -> Self {
         Self { quote: quote.into(), inner: ListLineItemsQuoteBuilder::new() }
     }
     /// A cursor for use in pagination.
@@ -371,7 +371,7 @@ struct CreateQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     automatic_tax: Option<CreateQuoteAutomaticTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    collection_method: Option<stripe_shared::QuoteCollectionMethod>,
+    collection_method: Option<stripe_billing::QuoteCollectionMethod>,
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -669,7 +669,7 @@ pub struct CreateQuoteLineItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -924,7 +924,7 @@ impl CreateQuote {
     /// Defaults to `charge_automatically`.
     pub fn collection_method(
         mut self,
-        collection_method: impl Into<stripe_shared::QuoteCollectionMethod>,
+        collection_method: impl Into<stripe_billing::QuoteCollectionMethod>,
     ) -> Self {
         self.inner.collection_method = Some(collection_method.into());
         self
@@ -947,7 +947,7 @@ impl CreateQuote {
         self.inner.description = Some(description.into());
         self
     }
-    /// The discounts applied to the quote. You can only set up to one discount.
+    /// The discounts applied to the quote.
     pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
         self.inner.discounts = Some(discounts.into());
         self
@@ -1058,7 +1058,7 @@ impl CreateQuote {
 }
 
 impl StripeRequest for CreateQuote {
-    type Output = stripe_shared::Quote;
+    type Output = stripe_billing::Quote;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/quotes").form(&self.inner)
@@ -1073,7 +1073,7 @@ struct UpdateQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     automatic_tax: Option<UpdateQuoteAutomaticTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    collection_method: Option<stripe_shared::QuoteCollectionMethod>,
+    collection_method: Option<stripe_billing::QuoteCollectionMethod>,
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1359,7 +1359,7 @@ pub struct UpdateQuoteLineItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1583,11 +1583,11 @@ pub enum UpdateQuoteSubscriptionDataEffectiveDate {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateQuote {
     inner: UpdateQuoteBuilder,
-    quote: stripe_shared::QuoteId,
+    quote: stripe_billing::QuoteId,
 }
 impl UpdateQuote {
     /// Construct a new `UpdateQuote`.
-    pub fn new(quote: impl Into<stripe_shared::QuoteId>) -> Self {
+    pub fn new(quote: impl Into<stripe_billing::QuoteId>) -> Self {
         Self { quote: quote.into(), inner: UpdateQuoteBuilder::new() }
     }
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
@@ -1614,7 +1614,7 @@ impl UpdateQuote {
     /// Defaults to `charge_automatically`.
     pub fn collection_method(
         mut self,
-        collection_method: impl Into<stripe_shared::QuoteCollectionMethod>,
+        collection_method: impl Into<stripe_billing::QuoteCollectionMethod>,
     ) -> Self {
         self.inner.collection_method = Some(collection_method.into());
         self
@@ -1636,7 +1636,7 @@ impl UpdateQuote {
         self.inner.description = Some(description.into());
         self
     }
-    /// The discounts applied to the quote. You can only set up to one discount.
+    /// The discounts applied to the quote.
     pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
         self.inner.discounts = Some(discounts.into());
         self
@@ -1727,7 +1727,7 @@ impl UpdateQuote {
 }
 
 impl StripeRequest for UpdateQuote {
-    type Output = stripe_shared::Quote;
+    type Output = stripe_billing::Quote;
 
     fn build(&self) -> RequestBuilder {
         let quote = &self.quote;
@@ -1748,11 +1748,11 @@ impl AcceptQuoteBuilder {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct AcceptQuote {
     inner: AcceptQuoteBuilder,
-    quote: stripe_shared::QuoteId,
+    quote: stripe_billing::QuoteId,
 }
 impl AcceptQuote {
     /// Construct a new `AcceptQuote`.
-    pub fn new(quote: impl Into<stripe_shared::QuoteId>) -> Self {
+    pub fn new(quote: impl Into<stripe_billing::QuoteId>) -> Self {
         Self { quote: quote.into(), inner: AcceptQuoteBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
@@ -1780,7 +1780,7 @@ impl AcceptQuote {
 }
 
 impl StripeRequest for AcceptQuote {
-    type Output = stripe_shared::Quote;
+    type Output = stripe_billing::Quote;
 
     fn build(&self) -> RequestBuilder {
         let quote = &self.quote;
@@ -1801,11 +1801,11 @@ impl CancelQuoteBuilder {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CancelQuote {
     inner: CancelQuoteBuilder,
-    quote: stripe_shared::QuoteId,
+    quote: stripe_billing::QuoteId,
 }
 impl CancelQuote {
     /// Construct a new `CancelQuote`.
-    pub fn new(quote: impl Into<stripe_shared::QuoteId>) -> Self {
+    pub fn new(quote: impl Into<stripe_billing::QuoteId>) -> Self {
         Self { quote: quote.into(), inner: CancelQuoteBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
@@ -1833,7 +1833,7 @@ impl CancelQuote {
 }
 
 impl StripeRequest for CancelQuote {
-    type Output = stripe_shared::Quote;
+    type Output = stripe_billing::Quote;
 
     fn build(&self) -> RequestBuilder {
         let quote = &self.quote;
@@ -1856,11 +1856,11 @@ impl FinalizeQuoteQuoteBuilder {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct FinalizeQuoteQuote {
     inner: FinalizeQuoteQuoteBuilder,
-    quote: stripe_shared::QuoteId,
+    quote: stripe_billing::QuoteId,
 }
 impl FinalizeQuoteQuote {
     /// Construct a new `FinalizeQuoteQuote`.
-    pub fn new(quote: impl Into<stripe_shared::QuoteId>) -> Self {
+    pub fn new(quote: impl Into<stripe_billing::QuoteId>) -> Self {
         Self { quote: quote.into(), inner: FinalizeQuoteQuoteBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
@@ -1894,7 +1894,7 @@ impl FinalizeQuoteQuote {
 }
 
 impl StripeRequest for FinalizeQuoteQuote {
-    type Output = stripe_shared::Quote;
+    type Output = stripe_billing::Quote;
 
     fn build(&self) -> RequestBuilder {
         let quote = &self.quote;

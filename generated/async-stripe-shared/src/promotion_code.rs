@@ -11,6 +11,7 @@ pub struct PromotionCode {
     pub active: bool,
     /// The customer-facing code.
     /// Regardless of case, this code must be unique across all active promotion codes for each customer.
+    /// Valid characters are lower case letters (a-z), upper case letters (A-Z), and digits (0-9).
     pub code: String,
     pub coupon: stripe_shared::Coupon,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.

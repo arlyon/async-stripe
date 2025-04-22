@@ -1,10 +1,11 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputeEvidenceDetails {
     /// Date by which evidence must be submitted in order to successfully challenge dispute.
     /// Will be 0 if the customer's bank or credit card company doesn't allow a response for this particular dispute.
     pub due_by: Option<stripe_types::Timestamp>,
+    pub enhanced_eligibility: stripe_shared::DisputeEnhancedEligibility,
     /// Whether evidence has been staged for this dispute.
     pub has_evidence: bool,
     /// Whether the last evidence submission was submitted past the due date.
@@ -17,6 +18,7 @@ pub struct DisputeEvidenceDetails {
 #[doc(hidden)]
 pub struct DisputeEvidenceDetailsBuilder {
     due_by: Option<Option<stripe_types::Timestamp>>,
+    enhanced_eligibility: Option<stripe_shared::DisputeEnhancedEligibility>,
     has_evidence: Option<bool>,
     past_due: Option<bool>,
     submission_count: Option<u64>,
@@ -63,6 +65,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "due_by" => Deserialize::begin(&mut self.due_by),
+                "enhanced_eligibility" => Deserialize::begin(&mut self.enhanced_eligibility),
                 "has_evidence" => Deserialize::begin(&mut self.has_evidence),
                 "past_due" => Deserialize::begin(&mut self.past_due),
                 "submission_count" => Deserialize::begin(&mut self.submission_count),
@@ -74,6 +77,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 due_by: Deserialize::default(),
+                enhanced_eligibility: Deserialize::default(),
                 has_evidence: Deserialize::default(),
                 past_due: Deserialize::default(),
                 submission_count: Deserialize::default(),
@@ -81,12 +85,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(due_by), Some(has_evidence), Some(past_due), Some(submission_count)) =
-                (self.due_by, self.has_evidence, self.past_due, self.submission_count)
+            let (
+                Some(due_by),
+                Some(enhanced_eligibility),
+                Some(has_evidence),
+                Some(past_due),
+                Some(submission_count),
+            ) = (
+                self.due_by,
+                self.enhanced_eligibility.take(),
+                self.has_evidence,
+                self.past_due,
+                self.submission_count,
+            )
             else {
                 return None;
             };
-            Some(Self::Out { due_by, has_evidence, past_due, submission_count })
+            Some(Self::Out {
+                due_by,
+                enhanced_eligibility,
+                has_evidence,
+                past_due,
+                submission_count,
+            })
         }
     }
 
@@ -114,6 +135,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "due_by" => b.due_by = FromValueOpt::from_value(v),
+                    "enhanced_eligibility" => b.enhanced_eligibility = FromValueOpt::from_value(v),
                     "has_evidence" => b.has_evidence = FromValueOpt::from_value(v),
                     "past_due" => b.past_due = FromValueOpt::from_value(v),
                     "submission_count" => b.submission_count = FromValueOpt::from_value(v),

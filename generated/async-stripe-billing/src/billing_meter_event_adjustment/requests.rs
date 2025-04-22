@@ -38,7 +38,7 @@ impl Default for CreateBillingMeterEventAdjustmentCancel {
         Self::new()
     }
 }
-/// Creates a billing meter event adjustment
+/// Creates a billing meter event adjustment.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateBillingMeterEventAdjustment {
     inner: CreateBillingMeterEventAdjustmentBuilder,

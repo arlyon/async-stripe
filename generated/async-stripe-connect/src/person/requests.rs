@@ -70,6 +70,9 @@ impl ListAccountPersonBuilder {
 /// Filters on the list of people returned based on the person's relationship to the account's company.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ListAccountPersonRelationship {
+    /// A filter on the list of people returned based on whether these people are authorizers of the account's representative.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub authorizer: Option<bool>,
     /// A filter on the list of people returned based on whether these people are directors of the account's company.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub director: Option<bool>,
@@ -89,6 +92,7 @@ pub struct ListAccountPersonRelationship {
 impl ListAccountPersonRelationship {
     pub fn new() -> Self {
         Self {
+            authorizer: None,
             director: None,
             executive: None,
             legal_guardian: None,
@@ -244,7 +248,7 @@ struct CreateAccountPersonBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     additional_tos_acceptances: Option<PersonAdditionalTosAcceptancesSpecs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address: Option<AddressSpecs>,
+    address: Option<CreateAccountPersonAddress>,
     #[serde(skip_serializing_if = "Option::is_none")]
     address_kana: Option<CreateAccountPersonAddressKana>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -288,13 +292,15 @@ struct CreateAccountPersonBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     phone: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    political_exposure: Option<String>,
+    political_exposure: Option<stripe_shared::PersonPoliticalExposure>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    registered_address: Option<AddressSpecs>,
+    registered_address: Option<CreateAccountPersonRegisteredAddress>,
     #[serde(skip_serializing_if = "Option::is_none")]
     relationship: Option<RelationshipSpecs>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ssn_last_4: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    us_cfpb_data: Option<CreateAccountPersonUsCfpbData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     verification: Option<PersonVerificationSpecs>,
 }
@@ -328,8 +334,41 @@ impl CreateAccountPersonBuilder {
             registered_address: None,
             relationship: None,
             ssn_last_4: None,
+            us_cfpb_data: None,
             verification: None,
         }
+    }
+}
+/// The person's address.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateAccountPersonAddress {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+impl CreateAccountPersonAddress {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for CreateAccountPersonAddress {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The Kana variation of the person's address (Japan only).
@@ -418,6 +457,298 @@ impl Default for CreateAccountPersonAddressKanji {
         Self::new()
     }
 }
+/// The person's registered address.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateAccountPersonRegisteredAddress {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+impl CreateAccountPersonRegisteredAddress {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for CreateAccountPersonRegisteredAddress {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Demographic data related to the person.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateAccountPersonUsCfpbData {
+    /// The persons ethnicity details
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ethnicity_details: Option<CreateAccountPersonUsCfpbDataEthnicityDetails>,
+    /// The persons race details
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub race_details: Option<CreateAccountPersonUsCfpbDataRaceDetails>,
+    /// The persons self-identified gender
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub self_identified_gender: Option<String>,
+}
+impl CreateAccountPersonUsCfpbData {
+    pub fn new() -> Self {
+        Self { ethnicity_details: None, race_details: None, self_identified_gender: None }
+    }
+}
+impl Default for CreateAccountPersonUsCfpbData {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The persons ethnicity details
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateAccountPersonUsCfpbDataEthnicityDetails {
+    /// The persons ethnicity
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ethnicity: Option<Vec<CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity>>,
+    /// Please specify your origin, when other is selected.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ethnicity_other: Option<String>,
+}
+impl CreateAccountPersonUsCfpbDataEthnicityDetails {
+    pub fn new() -> Self {
+        Self { ethnicity: None, ethnicity_other: None }
+    }
+}
+impl Default for CreateAccountPersonUsCfpbDataEthnicityDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The persons ethnicity
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
+    Cuban,
+    HispanicOrLatino,
+    Mexican,
+    NotHispanicOrLatino,
+    OtherHispanicOrLatino,
+    PreferNotToAnswer,
+    PuertoRican,
+}
+impl CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
+    pub fn as_str(self) -> &'static str {
+        use CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity::*;
+        match self {
+            Cuban => "cuban",
+            HispanicOrLatino => "hispanic_or_latino",
+            Mexican => "mexican",
+            NotHispanicOrLatino => "not_hispanic_or_latino",
+            OtherHispanicOrLatino => "other_hispanic_or_latino",
+            PreferNotToAnswer => "prefer_not_to_answer",
+            PuertoRican => "puerto_rican",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity::*;
+        match s {
+            "cuban" => Ok(Cuban),
+            "hispanic_or_latino" => Ok(HispanicOrLatino),
+            "mexican" => Ok(Mexican),
+            "not_hispanic_or_latino" => Ok(NotHispanicOrLatino),
+            "other_hispanic_or_latino" => Ok(OtherHispanicOrLatino),
+            "prefer_not_to_answer" => Ok(PreferNotToAnswer),
+            "puerto_rican" => Ok(PuertoRican),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity",
+            )
+        })
+    }
+}
+/// The persons race details
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateAccountPersonUsCfpbDataRaceDetails {
+    /// The persons race.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub race: Option<Vec<CreateAccountPersonUsCfpbDataRaceDetailsRace>>,
+    /// Please specify your race, when other is selected.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub race_other: Option<String>,
+}
+impl CreateAccountPersonUsCfpbDataRaceDetails {
+    pub fn new() -> Self {
+        Self { race: None, race_other: None }
+    }
+}
+impl Default for CreateAccountPersonUsCfpbDataRaceDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The persons race.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateAccountPersonUsCfpbDataRaceDetailsRace {
+    AfricanAmerican,
+    AmericanIndianOrAlaskaNative,
+    Asian,
+    AsianIndian,
+    BlackOrAfricanAmerican,
+    Chinese,
+    Ethiopian,
+    Filipino,
+    GuamanianOrChamorro,
+    Haitian,
+    Jamaican,
+    Japanese,
+    Korean,
+    NativeHawaiian,
+    NativeHawaiianOrOtherPacificIslander,
+    Nigerian,
+    OtherAsian,
+    OtherBlackOrAfricanAmerican,
+    OtherPacificIslander,
+    PreferNotToAnswer,
+    Samoan,
+    Somali,
+    Vietnamese,
+    White,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateAccountPersonUsCfpbDataRaceDetailsRace {
+    pub fn as_str(&self) -> &str {
+        use CreateAccountPersonUsCfpbDataRaceDetailsRace::*;
+        match self {
+            AfricanAmerican => "african_american",
+            AmericanIndianOrAlaskaNative => "american_indian_or_alaska_native",
+            Asian => "asian",
+            AsianIndian => "asian_indian",
+            BlackOrAfricanAmerican => "black_or_african_american",
+            Chinese => "chinese",
+            Ethiopian => "ethiopian",
+            Filipino => "filipino",
+            GuamanianOrChamorro => "guamanian_or_chamorro",
+            Haitian => "haitian",
+            Jamaican => "jamaican",
+            Japanese => "japanese",
+            Korean => "korean",
+            NativeHawaiian => "native_hawaiian",
+            NativeHawaiianOrOtherPacificIslander => "native_hawaiian_or_other_pacific_islander",
+            Nigerian => "nigerian",
+            OtherAsian => "other_asian",
+            OtherBlackOrAfricanAmerican => "other_black_or_african_american",
+            OtherPacificIslander => "other_pacific_islander",
+            PreferNotToAnswer => "prefer_not_to_answer",
+            Samoan => "samoan",
+            Somali => "somali",
+            Vietnamese => "vietnamese",
+            White => "white",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateAccountPersonUsCfpbDataRaceDetailsRace {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateAccountPersonUsCfpbDataRaceDetailsRace::*;
+        match s {
+            "african_american" => Ok(AfricanAmerican),
+            "american_indian_or_alaska_native" => Ok(AmericanIndianOrAlaskaNative),
+            "asian" => Ok(Asian),
+            "asian_indian" => Ok(AsianIndian),
+            "black_or_african_american" => Ok(BlackOrAfricanAmerican),
+            "chinese" => Ok(Chinese),
+            "ethiopian" => Ok(Ethiopian),
+            "filipino" => Ok(Filipino),
+            "guamanian_or_chamorro" => Ok(GuamanianOrChamorro),
+            "haitian" => Ok(Haitian),
+            "jamaican" => Ok(Jamaican),
+            "japanese" => Ok(Japanese),
+            "korean" => Ok(Korean),
+            "native_hawaiian" => Ok(NativeHawaiian),
+            "native_hawaiian_or_other_pacific_islander" => Ok(NativeHawaiianOrOtherPacificIslander),
+            "nigerian" => Ok(Nigerian),
+            "other_asian" => Ok(OtherAsian),
+            "other_black_or_african_american" => Ok(OtherBlackOrAfricanAmerican),
+            "other_pacific_islander" => Ok(OtherPacificIslander),
+            "prefer_not_to_answer" => Ok(PreferNotToAnswer),
+            "samoan" => Ok(Samoan),
+            "somali" => Ok(Somali),
+            "vietnamese" => Ok(Vietnamese),
+            "white" => Ok(White),
+            v => Ok(Unknown(v.to_owned())),
+        }
+    }
+}
+impl std::fmt::Display for CreateAccountPersonUsCfpbDataRaceDetailsRace {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateAccountPersonUsCfpbDataRaceDetailsRace {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateAccountPersonUsCfpbDataRaceDetailsRace {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountPersonUsCfpbDataRaceDetailsRace {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap())
+    }
+}
 /// Creates a new person.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateAccountPerson {
@@ -429,7 +760,7 @@ impl CreateAccountPerson {
     pub fn new(account: impl Into<stripe_shared::AccountId>) -> Self {
         Self { account: account.into(), inner: CreateAccountPersonBuilder::new() }
     }
-    /// Details on the legal guardian's acceptance of the required Stripe agreements.
+    /// Details on the legal guardian's or authorizer's acceptance of the required Stripe agreements.
     pub fn additional_tos_acceptances(
         mut self,
         additional_tos_acceptances: impl Into<PersonAdditionalTosAcceptancesSpecs>,
@@ -438,7 +769,7 @@ impl CreateAccountPerson {
         self
     }
     /// The person's address.
-    pub fn address(mut self, address: impl Into<AddressSpecs>) -> Self {
+    pub fn address(mut self, address: impl Into<CreateAccountPersonAddress>) -> Self {
         self.inner.address = Some(address.into());
         self
     }
@@ -562,12 +893,18 @@ impl CreateAccountPerson {
         self
     }
     /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
-    pub fn political_exposure(mut self, political_exposure: impl Into<String>) -> Self {
+    pub fn political_exposure(
+        mut self,
+        political_exposure: impl Into<stripe_shared::PersonPoliticalExposure>,
+    ) -> Self {
         self.inner.political_exposure = Some(political_exposure.into());
         self
     }
     /// The person's registered address.
-    pub fn registered_address(mut self, registered_address: impl Into<AddressSpecs>) -> Self {
+    pub fn registered_address(
+        mut self,
+        registered_address: impl Into<CreateAccountPersonRegisteredAddress>,
+    ) -> Self {
         self.inner.registered_address = Some(registered_address.into());
         self
     }
@@ -579,6 +916,11 @@ impl CreateAccountPerson {
     /// The last four digits of the person's Social Security number (U.S. only).
     pub fn ssn_last_4(mut self, ssn_last_4: impl Into<String>) -> Self {
         self.inner.ssn_last_4 = Some(ssn_last_4.into());
+        self
+    }
+    /// Demographic data related to the person.
+    pub fn us_cfpb_data(mut self, us_cfpb_data: impl Into<CreateAccountPersonUsCfpbData>) -> Self {
+        self.inner.us_cfpb_data = Some(us_cfpb_data.into());
         self
     }
     /// The person's verification status.
@@ -619,7 +961,7 @@ struct UpdatePersonBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     additional_tos_acceptances: Option<PersonAdditionalTosAcceptancesSpecs>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address: Option<AddressSpecs>,
+    address: Option<UpdatePersonAddress>,
     #[serde(skip_serializing_if = "Option::is_none")]
     address_kana: Option<UpdatePersonAddressKana>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -663,13 +1005,15 @@ struct UpdatePersonBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     phone: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    political_exposure: Option<String>,
+    political_exposure: Option<stripe_shared::PersonPoliticalExposure>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    registered_address: Option<AddressSpecs>,
+    registered_address: Option<UpdatePersonRegisteredAddress>,
     #[serde(skip_serializing_if = "Option::is_none")]
     relationship: Option<RelationshipSpecs>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ssn_last_4: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    us_cfpb_data: Option<UpdatePersonUsCfpbData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     verification: Option<PersonVerificationSpecs>,
 }
@@ -703,8 +1047,41 @@ impl UpdatePersonBuilder {
             registered_address: None,
             relationship: None,
             ssn_last_4: None,
+            us_cfpb_data: None,
             verification: None,
         }
+    }
+}
+/// The person's address.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePersonAddress {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+impl UpdatePersonAddress {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for UpdatePersonAddress {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The Kana variation of the person's address (Japan only).
@@ -793,6 +1170,298 @@ impl Default for UpdatePersonAddressKanji {
         Self::new()
     }
 }
+/// The person's registered address.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePersonRegisteredAddress {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+impl UpdatePersonRegisteredAddress {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for UpdatePersonRegisteredAddress {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Demographic data related to the person.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePersonUsCfpbData {
+    /// The persons ethnicity details
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ethnicity_details: Option<UpdatePersonUsCfpbDataEthnicityDetails>,
+    /// The persons race details
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub race_details: Option<UpdatePersonUsCfpbDataRaceDetails>,
+    /// The persons self-identified gender
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub self_identified_gender: Option<String>,
+}
+impl UpdatePersonUsCfpbData {
+    pub fn new() -> Self {
+        Self { ethnicity_details: None, race_details: None, self_identified_gender: None }
+    }
+}
+impl Default for UpdatePersonUsCfpbData {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The persons ethnicity details
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePersonUsCfpbDataEthnicityDetails {
+    /// The persons ethnicity
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ethnicity: Option<Vec<UpdatePersonUsCfpbDataEthnicityDetailsEthnicity>>,
+    /// Please specify your origin, when other is selected.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ethnicity_other: Option<String>,
+}
+impl UpdatePersonUsCfpbDataEthnicityDetails {
+    pub fn new() -> Self {
+        Self { ethnicity: None, ethnicity_other: None }
+    }
+}
+impl Default for UpdatePersonUsCfpbDataEthnicityDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The persons ethnicity
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
+    Cuban,
+    HispanicOrLatino,
+    Mexican,
+    NotHispanicOrLatino,
+    OtherHispanicOrLatino,
+    PreferNotToAnswer,
+    PuertoRican,
+}
+impl UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePersonUsCfpbDataEthnicityDetailsEthnicity::*;
+        match self {
+            Cuban => "cuban",
+            HispanicOrLatino => "hispanic_or_latino",
+            Mexican => "mexican",
+            NotHispanicOrLatino => "not_hispanic_or_latino",
+            OtherHispanicOrLatino => "other_hispanic_or_latino",
+            PreferNotToAnswer => "prefer_not_to_answer",
+            PuertoRican => "puerto_rican",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePersonUsCfpbDataEthnicityDetailsEthnicity::*;
+        match s {
+            "cuban" => Ok(Cuban),
+            "hispanic_or_latino" => Ok(HispanicOrLatino),
+            "mexican" => Ok(Mexican),
+            "not_hispanic_or_latino" => Ok(NotHispanicOrLatino),
+            "other_hispanic_or_latino" => Ok(OtherHispanicOrLatino),
+            "prefer_not_to_answer" => Ok(PreferNotToAnswer),
+            "puerto_rican" => Ok(PuertoRican),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity",
+            )
+        })
+    }
+}
+/// The persons race details
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePersonUsCfpbDataRaceDetails {
+    /// The persons race.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub race: Option<Vec<UpdatePersonUsCfpbDataRaceDetailsRace>>,
+    /// Please specify your race, when other is selected.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub race_other: Option<String>,
+}
+impl UpdatePersonUsCfpbDataRaceDetails {
+    pub fn new() -> Self {
+        Self { race: None, race_other: None }
+    }
+}
+impl Default for UpdatePersonUsCfpbDataRaceDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The persons race.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePersonUsCfpbDataRaceDetailsRace {
+    AfricanAmerican,
+    AmericanIndianOrAlaskaNative,
+    Asian,
+    AsianIndian,
+    BlackOrAfricanAmerican,
+    Chinese,
+    Ethiopian,
+    Filipino,
+    GuamanianOrChamorro,
+    Haitian,
+    Jamaican,
+    Japanese,
+    Korean,
+    NativeHawaiian,
+    NativeHawaiianOrOtherPacificIslander,
+    Nigerian,
+    OtherAsian,
+    OtherBlackOrAfricanAmerican,
+    OtherPacificIslander,
+    PreferNotToAnswer,
+    Samoan,
+    Somali,
+    Vietnamese,
+    White,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePersonUsCfpbDataRaceDetailsRace {
+    pub fn as_str(&self) -> &str {
+        use UpdatePersonUsCfpbDataRaceDetailsRace::*;
+        match self {
+            AfricanAmerican => "african_american",
+            AmericanIndianOrAlaskaNative => "american_indian_or_alaska_native",
+            Asian => "asian",
+            AsianIndian => "asian_indian",
+            BlackOrAfricanAmerican => "black_or_african_american",
+            Chinese => "chinese",
+            Ethiopian => "ethiopian",
+            Filipino => "filipino",
+            GuamanianOrChamorro => "guamanian_or_chamorro",
+            Haitian => "haitian",
+            Jamaican => "jamaican",
+            Japanese => "japanese",
+            Korean => "korean",
+            NativeHawaiian => "native_hawaiian",
+            NativeHawaiianOrOtherPacificIslander => "native_hawaiian_or_other_pacific_islander",
+            Nigerian => "nigerian",
+            OtherAsian => "other_asian",
+            OtherBlackOrAfricanAmerican => "other_black_or_african_american",
+            OtherPacificIslander => "other_pacific_islander",
+            PreferNotToAnswer => "prefer_not_to_answer",
+            Samoan => "samoan",
+            Somali => "somali",
+            Vietnamese => "vietnamese",
+            White => "white",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePersonUsCfpbDataRaceDetailsRace {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePersonUsCfpbDataRaceDetailsRace::*;
+        match s {
+            "african_american" => Ok(AfricanAmerican),
+            "american_indian_or_alaska_native" => Ok(AmericanIndianOrAlaskaNative),
+            "asian" => Ok(Asian),
+            "asian_indian" => Ok(AsianIndian),
+            "black_or_african_american" => Ok(BlackOrAfricanAmerican),
+            "chinese" => Ok(Chinese),
+            "ethiopian" => Ok(Ethiopian),
+            "filipino" => Ok(Filipino),
+            "guamanian_or_chamorro" => Ok(GuamanianOrChamorro),
+            "haitian" => Ok(Haitian),
+            "jamaican" => Ok(Jamaican),
+            "japanese" => Ok(Japanese),
+            "korean" => Ok(Korean),
+            "native_hawaiian" => Ok(NativeHawaiian),
+            "native_hawaiian_or_other_pacific_islander" => Ok(NativeHawaiianOrOtherPacificIslander),
+            "nigerian" => Ok(Nigerian),
+            "other_asian" => Ok(OtherAsian),
+            "other_black_or_african_american" => Ok(OtherBlackOrAfricanAmerican),
+            "other_pacific_islander" => Ok(OtherPacificIslander),
+            "prefer_not_to_answer" => Ok(PreferNotToAnswer),
+            "samoan" => Ok(Samoan),
+            "somali" => Ok(Somali),
+            "vietnamese" => Ok(Vietnamese),
+            "white" => Ok(White),
+            v => Ok(Unknown(v.to_owned())),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePersonUsCfpbDataRaceDetailsRace {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePersonUsCfpbDataRaceDetailsRace {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePersonUsCfpbDataRaceDetailsRace {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePersonUsCfpbDataRaceDetailsRace {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap())
+    }
+}
 /// Updates an existing person.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePerson {
@@ -805,7 +1474,7 @@ impl UpdatePerson {
     pub fn new(account: impl Into<stripe_shared::AccountId>, person: impl Into<String>) -> Self {
         Self { account: account.into(), person: person.into(), inner: UpdatePersonBuilder::new() }
     }
-    /// Details on the legal guardian's acceptance of the required Stripe agreements.
+    /// Details on the legal guardian's or authorizer's acceptance of the required Stripe agreements.
     pub fn additional_tos_acceptances(
         mut self,
         additional_tos_acceptances: impl Into<PersonAdditionalTosAcceptancesSpecs>,
@@ -814,7 +1483,7 @@ impl UpdatePerson {
         self
     }
     /// The person's address.
-    pub fn address(mut self, address: impl Into<AddressSpecs>) -> Self {
+    pub fn address(mut self, address: impl Into<UpdatePersonAddress>) -> Self {
         self.inner.address = Some(address.into());
         self
     }
@@ -935,12 +1604,18 @@ impl UpdatePerson {
         self
     }
     /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
-    pub fn political_exposure(mut self, political_exposure: impl Into<String>) -> Self {
+    pub fn political_exposure(
+        mut self,
+        political_exposure: impl Into<stripe_shared::PersonPoliticalExposure>,
+    ) -> Self {
         self.inner.political_exposure = Some(political_exposure.into());
         self
     }
     /// The person's registered address.
-    pub fn registered_address(mut self, registered_address: impl Into<AddressSpecs>) -> Self {
+    pub fn registered_address(
+        mut self,
+        registered_address: impl Into<UpdatePersonRegisteredAddress>,
+    ) -> Self {
         self.inner.registered_address = Some(registered_address.into());
         self
     }
@@ -952,6 +1627,11 @@ impl UpdatePerson {
     /// The last four digits of the person's Social Security number (U.S. only).
     pub fn ssn_last_4(mut self, ssn_last_4: impl Into<String>) -> Self {
         self.inner.ssn_last_4 = Some(ssn_last_4.into());
+        self
+    }
+    /// Demographic data related to the person.
+    pub fn us_cfpb_data(mut self, us_cfpb_data: impl Into<UpdatePersonUsCfpbData>) -> Self {
+        self.inner.us_cfpb_data = Some(us_cfpb_data.into());
         self
     }
     /// The person's verification status.
@@ -1011,37 +1691,6 @@ impl Default for SettingsTermsOfServiceSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct AddressSpecs {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<String>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<String>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<String>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<String>,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<String>,
-}
-impl AddressSpecs {
-    pub fn new() -> Self {
-        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
-    }
-}
-impl Default for AddressSpecs {
-    fn default() -> Self {
-        Self::new()
-    }
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct DateOfBirthSpecs {
     /// The day of birth, between 1 and 31.
@@ -1074,6 +1723,9 @@ impl Default for DocumentsParam {
 }
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct RelationshipSpecs {
+    /// Whether the person is the authorizer of the account's representative.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub authorizer: Option<bool>,
     /// Whether the person is a director of the account's legal entity.
     /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1103,6 +1755,7 @@ pub struct RelationshipSpecs {
 impl RelationshipSpecs {
     pub fn new() -> Self {
         Self {
+            authorizer: None,
             director: None,
             executive: None,
             legal_guardian: None,

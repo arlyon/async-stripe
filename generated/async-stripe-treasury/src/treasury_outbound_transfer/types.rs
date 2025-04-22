@@ -1,9 +1,11 @@
-/// Use OutboundTransfers to transfer funds from a [FinancialAccount](https://stripe.com/docs/api#financial_accounts) to a PaymentMethod belonging to the same entity.
+/// Use [OutboundTransfers](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/out-of/outbound-transfers) to transfer funds from a [FinancialAccount](https://stripe.com/docs/api#financial_accounts) to a PaymentMethod belonging to the same entity.
 /// To send funds to a different party, use [OutboundPayments](https://stripe.com/docs/api#outbound_payments) instead.
 /// You can send funds over ACH rails or through a domestic wire transfer to a user's own external bank account.
 ///
 /// Simulate OutboundTransfer state changes with the `/v1/test_helpers/treasury/outbound_transfers` endpoints.
 /// These methods can only be called on test mode objects.
+///
+/// Related guide: [Moving money with Treasury using OutboundTransfer objects](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/out-of/outbound-transfers).
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryOutboundTransfer {
@@ -44,31 +46,35 @@ pub struct TreasuryOutboundTransfer {
     /// If an OutboundTransfer fails to arrive at its destination, its status will change to `returned`.
     pub status: stripe_treasury::TreasuryOutboundTransferStatus,
     pub status_transitions: stripe_treasury::TreasuryOutboundTransfersResourceStatusTransitions,
+    /// Details about network-specific tracking information if available.
+    pub tracking_details: Option<
+        stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetails,
+    >,
     /// The Transaction associated with this object.
     pub transaction: stripe_types::Expandable<stripe_treasury::TreasuryTransaction>,
 }
 #[doc(hidden)]
 pub struct TreasuryOutboundTransferBuilder {
     amount: Option<i64>,
-    cancelable: Option<bool>,
-    created: Option<stripe_types::Timestamp>,
-    currency: Option<stripe_types::Currency>,
-    description: Option<Option<String>>,
-    destination_payment_method: Option<Option<String>>,
-    destination_payment_method_details:
-        Option<stripe_treasury::OutboundTransfersPaymentMethodDetails>,
-    expected_arrival_date: Option<stripe_types::Timestamp>,
-    financial_account: Option<String>,
-    hosted_regulatory_receipt_url: Option<Option<String>>,
-    id: Option<stripe_treasury::TreasuryOutboundTransferId>,
-    livemode: Option<bool>,
-    metadata: Option<std::collections::HashMap<String, String>>,
-    returned_details:
-        Option<Option<stripe_treasury::TreasuryOutboundTransfersResourceReturnedDetails>>,
-    statement_descriptor: Option<String>,
-    status: Option<stripe_treasury::TreasuryOutboundTransferStatus>,
-    status_transitions: Option<stripe_treasury::TreasuryOutboundTransfersResourceStatusTransitions>,
-    transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
+cancelable: Option<bool>,
+created: Option<stripe_types::Timestamp>,
+currency: Option<stripe_types::Currency>,
+description: Option<Option<String>>,
+destination_payment_method: Option<Option<String>>,
+destination_payment_method_details: Option<stripe_treasury::OutboundTransfersPaymentMethodDetails>,
+expected_arrival_date: Option<stripe_types::Timestamp>,
+financial_account: Option<String>,
+hosted_regulatory_receipt_url: Option<Option<String>>,
+id: Option<stripe_treasury::TreasuryOutboundTransferId>,
+livemode: Option<bool>,
+metadata: Option<std::collections::HashMap<String, String>>,
+returned_details: Option<Option<stripe_treasury::TreasuryOutboundTransfersResourceReturnedDetails>>,
+statement_descriptor: Option<String>,
+status: Option<stripe_treasury::TreasuryOutboundTransferStatus>,
+status_transitions: Option<stripe_treasury::TreasuryOutboundTransfersResourceStatusTransitions>,
+tracking_details: Option<Option<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetails>>,
+transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
+
 }
 
 #[allow(
@@ -134,6 +140,7 @@ const _: () = {
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "status" => Deserialize::begin(&mut self.status),
                 "status_transitions" => Deserialize::begin(&mut self.status_transitions),
+                "tracking_details" => Deserialize::begin(&mut self.tracking_details),
                 "transaction" => Deserialize::begin(&mut self.transaction),
 
                 _ => <dyn Visitor>::ignore(),
@@ -159,6 +166,7 @@ const _: () = {
                 statement_descriptor: Deserialize::default(),
                 status: Deserialize::default(),
                 status_transitions: Deserialize::default(),
+                tracking_details: Deserialize::default(),
                 transaction: Deserialize::default(),
             }
         }
@@ -182,6 +190,7 @@ const _: () = {
                 Some(statement_descriptor),
                 Some(status),
                 Some(status_transitions),
+                Some(tracking_details),
                 Some(transaction),
             ) = (
                 self.amount,
@@ -201,6 +210,7 @@ const _: () = {
                 self.statement_descriptor.take(),
                 self.status,
                 self.status_transitions,
+                self.tracking_details.take(),
                 self.transaction.take(),
             )
             else {
@@ -224,6 +234,7 @@ const _: () = {
                 statement_descriptor,
                 status,
                 status_transitions,
+                tracking_details,
                 transaction,
             })
         }
@@ -277,6 +288,7 @@ const _: () = {
                     "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
+                    "tracking_details" => b.tracking_details = FromValueOpt::from_value(v),
                     "transaction" => b.transaction = FromValueOpt::from_value(v),
 
                     _ => {}
@@ -290,7 +302,7 @@ const _: () = {
 impl serde::Serialize for TreasuryOutboundTransfer {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TreasuryOutboundTransfer", 19)?;
+        let mut s = s.serialize_struct("TreasuryOutboundTransfer", 20)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("cancelable", &self.cancelable)?;
         s.serialize_field("created", &self.created)?;
@@ -311,6 +323,7 @@ impl serde::Serialize for TreasuryOutboundTransfer {
         s.serialize_field("statement_descriptor", &self.statement_descriptor)?;
         s.serialize_field("status", &self.status)?;
         s.serialize_field("status_transitions", &self.status_transitions)?;
+        s.serialize_field("tracking_details", &self.tracking_details)?;
         s.serialize_field("transaction", &self.transaction)?;
 
         s.serialize_field("object", "treasury.outbound_transfer")?;

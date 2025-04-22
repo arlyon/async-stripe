@@ -2,6 +2,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions {
+    pub filters:
+        Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsFilters>,
     /// The list of permissions to request. The `payment_method` permission must be included.
     pub permissions:
         Option<Vec<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions>>,
@@ -10,6 +12,9 @@ pub struct InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions {
 }
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsBuilder {
+    filters: Option<
+        Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsFilters>,
+    >,
     permissions: Option<
         Option<Vec<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions>>,
     >,
@@ -57,6 +62,7 @@ const _: () = {
         type Out = InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "filters" => Deserialize::begin(&mut self.filters),
                 "permissions" => Deserialize::begin(&mut self.permissions),
                 "prefetch" => Deserialize::begin(&mut self.prefetch),
 
@@ -65,16 +71,20 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { permissions: Deserialize::default(), prefetch: Deserialize::default() }
+            Self {
+                filters: Deserialize::default(),
+                permissions: Deserialize::default(),
+                prefetch: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(permissions), Some(prefetch)) =
-                (self.permissions.take(), self.prefetch.take())
+            let (Some(filters), Some(permissions), Some(prefetch)) =
+                (self.filters.take(), self.permissions.take(), self.prefetch.take())
             else {
                 return None;
             };
-            Some(Self::Out { permissions, prefetch })
+            Some(Self::Out { filters, permissions, prefetch })
         }
     }
 
@@ -103,6 +113,7 @@ const _: () = {
                 );
             for (k, v) in obj {
                 match k.as_str() {
+                    "filters" => b.filters = FromValueOpt::from_value(v),
                     "permissions" => b.permissions = FromValueOpt::from_value(v),
                     "prefetch" => b.prefetch = FromValueOpt::from_value(v),
 

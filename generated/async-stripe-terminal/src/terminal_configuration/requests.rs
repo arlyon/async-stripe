@@ -286,7 +286,7 @@ const _: () = {
 #[derive(Clone, Debug, serde::Serialize)]
 struct CreateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    bbpos_wisepos_e: Option<CreateTerminalConfigurationBbposWiseposE>,
+    bbpos_wisepos_e: Option<BbposWisePose>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -294,9 +294,15 @@ struct CreateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     offline: Option<Offline>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    reboot_window: Option<RebootWindow>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    stripe_s700: Option<CreateTerminalConfigurationStripeS700>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     tipping: Option<Tipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
     verifone_p400: Option<CreateTerminalConfigurationVerifoneP400>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    wifi: Option<CreateTerminalConfigurationWifi>,
 }
 impl CreateTerminalConfigurationBuilder {
     fn new() -> Self {
@@ -305,24 +311,27 @@ impl CreateTerminalConfigurationBuilder {
             expand: None,
             name: None,
             offline: None,
+            reboot_window: None,
+            stripe_s700: None,
             tipping: None,
             verifone_p400: None,
+            wifi: None,
         }
     }
 }
-/// An object containing device type specific settings for BBPOS WisePOS E readers
+/// An object containing device type specific settings for Stripe S700 readers
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateTerminalConfigurationBbposWiseposE {
+pub struct CreateTerminalConfigurationStripeS700 {
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
 }
-impl CreateTerminalConfigurationBbposWiseposE {
+impl CreateTerminalConfigurationStripeS700 {
     pub fn new() -> Self {
         Self { splashscreen: None }
     }
 }
-impl Default for CreateTerminalConfigurationBbposWiseposE {
+impl Default for CreateTerminalConfigurationStripeS700 {
     fn default() -> Self {
         Self::new()
     }
@@ -344,6 +353,93 @@ impl Default for CreateTerminalConfigurationVerifoneP400 {
         Self::new()
     }
 }
+/// Configurations for connecting to a WiFi network.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTerminalConfigurationWifi {
+    /// Credentials for a WPA-Enterprise WiFi network using the EAP-PEAP authentication method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enterprise_eap_peap: Option<EnterprisePeapConfig>,
+    /// Credentials for a WPA-Enterprise WiFi network using the EAP-TLS authentication method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enterprise_eap_tls: Option<EnterpriseTlsConfig>,
+    /// Credentials for a WPA-Personal WiFi network.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub personal_psk: Option<PersonalPskConfig>,
+    /// Security type of the WiFi network.
+    /// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
+    #[serde(rename = "type")]
+    pub type_: CreateTerminalConfigurationWifiType,
+}
+impl CreateTerminalConfigurationWifi {
+    pub fn new(type_: impl Into<CreateTerminalConfigurationWifiType>) -> Self {
+        Self {
+            enterprise_eap_peap: None,
+            enterprise_eap_tls: None,
+            personal_psk: None,
+            type_: type_.into(),
+        }
+    }
+}
+/// Security type of the WiFi network.
+/// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTerminalConfigurationWifiType {
+    EnterpriseEapPeap,
+    EnterpriseEapTls,
+    PersonalPsk,
+}
+impl CreateTerminalConfigurationWifiType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTerminalConfigurationWifiType::*;
+        match self {
+            EnterpriseEapPeap => "enterprise_eap_peap",
+            EnterpriseEapTls => "enterprise_eap_tls",
+            PersonalPsk => "personal_psk",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTerminalConfigurationWifiType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTerminalConfigurationWifiType::*;
+        match s {
+            "enterprise_eap_peap" => Ok(EnterpriseEapPeap),
+            "enterprise_eap_tls" => Ok(EnterpriseEapTls),
+            "personal_psk" => Ok(PersonalPsk),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTerminalConfigurationWifiType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTerminalConfigurationWifiType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTerminalConfigurationWifiType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTerminalConfigurationWifiType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTerminalConfigurationWifiType")
+        })
+    }
+}
 /// Creates a new `Configuration` object.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTerminalConfiguration {
@@ -355,10 +451,7 @@ impl CreateTerminalConfiguration {
         Self { inner: CreateTerminalConfigurationBuilder::new() }
     }
     /// An object containing device type specific settings for BBPOS WisePOS E readers
-    pub fn bbpos_wisepos_e(
-        mut self,
-        bbpos_wisepos_e: impl Into<CreateTerminalConfigurationBbposWiseposE>,
-    ) -> Self {
+    pub fn bbpos_wisepos_e(mut self, bbpos_wisepos_e: impl Into<BbposWisePose>) -> Self {
         self.inner.bbpos_wisepos_e = Some(bbpos_wisepos_e.into());
         self
     }
@@ -377,6 +470,19 @@ impl CreateTerminalConfiguration {
         self.inner.offline = Some(offline.into());
         self
     }
+    /// Reboot time settings for readers that support customized reboot time configuration.
+    pub fn reboot_window(mut self, reboot_window: impl Into<RebootWindow>) -> Self {
+        self.inner.reboot_window = Some(reboot_window.into());
+        self
+    }
+    /// An object containing device type specific settings for Stripe S700 readers
+    pub fn stripe_s700(
+        mut self,
+        stripe_s700: impl Into<CreateTerminalConfigurationStripeS700>,
+    ) -> Self {
+        self.inner.stripe_s700 = Some(stripe_s700.into());
+        self
+    }
     /// Tipping configurations for readers supporting on-reader tips
     pub fn tipping(mut self, tipping: impl Into<Tipping>) -> Self {
         self.inner.tipping = Some(tipping.into());
@@ -388,6 +494,11 @@ impl CreateTerminalConfiguration {
         verifone_p400: impl Into<CreateTerminalConfigurationVerifoneP400>,
     ) -> Self {
         self.inner.verifone_p400 = Some(verifone_p400.into());
+        self
+    }
+    /// Configurations for connecting to a WiFi network.
+    pub fn wifi(mut self, wifi: impl Into<CreateTerminalConfigurationWifi>) -> Self {
+        self.inner.wifi = Some(wifi.into());
         self
     }
 }
@@ -424,7 +535,7 @@ impl StripeRequest for CreateTerminalConfiguration {
 #[derive(Clone, Debug, serde::Serialize)]
 struct UpdateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    bbpos_wisepos_e: Option<UpdateTerminalConfigurationBbposWiseposE>,
+    bbpos_wisepos_e: Option<BbposWisePose>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -432,9 +543,15 @@ struct UpdateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     offline: Option<Offline>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    reboot_window: Option<RebootWindow>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    stripe_s700: Option<UpdateTerminalConfigurationStripeS700>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     tipping: Option<Tipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
     verifone_p400: Option<UpdateTerminalConfigurationVerifoneP400>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    wifi: Option<UpdateTerminalConfigurationWifi>,
 }
 impl UpdateTerminalConfigurationBuilder {
     fn new() -> Self {
@@ -443,24 +560,27 @@ impl UpdateTerminalConfigurationBuilder {
             expand: None,
             name: None,
             offline: None,
+            reboot_window: None,
+            stripe_s700: None,
             tipping: None,
             verifone_p400: None,
+            wifi: None,
         }
     }
 }
-/// An object containing device type specific settings for BBPOS WisePOS E readers
+/// An object containing device type specific settings for Stripe S700 readers
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateTerminalConfigurationBbposWiseposE {
+pub struct UpdateTerminalConfigurationStripeS700 {
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
 }
-impl UpdateTerminalConfigurationBbposWiseposE {
+impl UpdateTerminalConfigurationStripeS700 {
     pub fn new() -> Self {
         Self { splashscreen: None }
     }
 }
-impl Default for UpdateTerminalConfigurationBbposWiseposE {
+impl Default for UpdateTerminalConfigurationStripeS700 {
     fn default() -> Self {
         Self::new()
     }
@@ -482,6 +602,93 @@ impl Default for UpdateTerminalConfigurationVerifoneP400 {
         Self::new()
     }
 }
+/// Configurations for connecting to a WiFi network.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTerminalConfigurationWifi {
+    /// Credentials for a WPA-Enterprise WiFi network using the EAP-PEAP authentication method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enterprise_eap_peap: Option<EnterprisePeapConfig>,
+    /// Credentials for a WPA-Enterprise WiFi network using the EAP-TLS authentication method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enterprise_eap_tls: Option<EnterpriseTlsConfig>,
+    /// Credentials for a WPA-Personal WiFi network.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub personal_psk: Option<PersonalPskConfig>,
+    /// Security type of the WiFi network.
+    /// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
+    #[serde(rename = "type")]
+    pub type_: UpdateTerminalConfigurationWifiType,
+}
+impl UpdateTerminalConfigurationWifi {
+    pub fn new(type_: impl Into<UpdateTerminalConfigurationWifiType>) -> Self {
+        Self {
+            enterprise_eap_peap: None,
+            enterprise_eap_tls: None,
+            personal_psk: None,
+            type_: type_.into(),
+        }
+    }
+}
+/// Security type of the WiFi network.
+/// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateTerminalConfigurationWifiType {
+    EnterpriseEapPeap,
+    EnterpriseEapTls,
+    PersonalPsk,
+}
+impl UpdateTerminalConfigurationWifiType {
+    pub fn as_str(self) -> &'static str {
+        use UpdateTerminalConfigurationWifiType::*;
+        match self {
+            EnterpriseEapPeap => "enterprise_eap_peap",
+            EnterpriseEapTls => "enterprise_eap_tls",
+            PersonalPsk => "personal_psk",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateTerminalConfigurationWifiType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateTerminalConfigurationWifiType::*;
+        match s {
+            "enterprise_eap_peap" => Ok(EnterpriseEapPeap),
+            "enterprise_eap_tls" => Ok(EnterpriseEapTls),
+            "personal_psk" => Ok(PersonalPsk),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdateTerminalConfigurationWifiType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateTerminalConfigurationWifiType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateTerminalConfigurationWifiType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateTerminalConfigurationWifiType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateTerminalConfigurationWifiType")
+        })
+    }
+}
 /// Updates a new `Configuration` object.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateTerminalConfiguration {
@@ -497,10 +704,7 @@ impl UpdateTerminalConfiguration {
         }
     }
     /// An object containing device type specific settings for BBPOS WisePOS E readers
-    pub fn bbpos_wisepos_e(
-        mut self,
-        bbpos_wisepos_e: impl Into<UpdateTerminalConfigurationBbposWiseposE>,
-    ) -> Self {
+    pub fn bbpos_wisepos_e(mut self, bbpos_wisepos_e: impl Into<BbposWisePose>) -> Self {
         self.inner.bbpos_wisepos_e = Some(bbpos_wisepos_e.into());
         self
     }
@@ -519,6 +723,19 @@ impl UpdateTerminalConfiguration {
         self.inner.offline = Some(offline.into());
         self
     }
+    /// Reboot time settings for readers that support customized reboot time configuration.
+    pub fn reboot_window(mut self, reboot_window: impl Into<RebootWindow>) -> Self {
+        self.inner.reboot_window = Some(reboot_window.into());
+        self
+    }
+    /// An object containing device type specific settings for Stripe S700 readers
+    pub fn stripe_s700(
+        mut self,
+        stripe_s700: impl Into<UpdateTerminalConfigurationStripeS700>,
+    ) -> Self {
+        self.inner.stripe_s700 = Some(stripe_s700.into());
+        self
+    }
     /// Tipping configurations for readers supporting on-reader tips
     pub fn tipping(mut self, tipping: impl Into<Tipping>) -> Self {
         self.inner.tipping = Some(tipping.into());
@@ -530,6 +747,11 @@ impl UpdateTerminalConfiguration {
         verifone_p400: impl Into<UpdateTerminalConfigurationVerifoneP400>,
     ) -> Self {
         self.inner.verifone_p400 = Some(verifone_p400.into());
+        self
+    }
+    /// Configurations for connecting to a WiFi network.
+    pub fn wifi(mut self, wifi: impl Into<UpdateTerminalConfigurationWifi>) -> Self {
+        self.inner.wifi = Some(wifi.into());
         self
     }
 }
@@ -642,6 +864,22 @@ const _: () = {
     }
 };
 
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct BbposWisePose {
+    /// A File ID representing an image to display on the reader
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+impl BbposWisePose {
+    pub fn new() -> Self {
+        Self { splashscreen: None }
+    }
+}
+impl Default for BbposWisePose {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct Offline {
     /// Determines whether to allow transactions to be collected while reader is offline.
@@ -651,6 +889,19 @@ pub struct Offline {
 impl Offline {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into() }
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct RebootWindow {
+    /// Integer between 0 to 23 that represents the end hour of the reboot time window.
+    /// The value must be different than the start_hour.
+    pub end_hour: i64,
+    /// Integer between 0 to 23 that represents the start hour of the reboot time window.
+    pub start_hour: i64,
+}
+impl RebootWindow {
+    pub fn new(end_hour: impl Into<i64>, start_hour: impl Into<i64>) -> Self {
+        Self { end_hour: end_hour.into(), start_hour: start_hour.into() }
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -673,6 +924,74 @@ impl CurrencySpecificConfig {
 impl Default for CurrencySpecificConfig {
     fn default() -> Self {
         Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct EnterprisePeapConfig {
+    /// A File ID representing a PEM file containing the server certificate
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ca_certificate_file: Option<String>,
+    /// Password for connecting to the WiFi network
+    pub password: String,
+    /// Name of the WiFi network
+    pub ssid: String,
+    /// Username for connecting to the WiFi network
+    pub username: String,
+}
+impl EnterprisePeapConfig {
+    pub fn new(
+        password: impl Into<String>,
+        ssid: impl Into<String>,
+        username: impl Into<String>,
+    ) -> Self {
+        Self {
+            ca_certificate_file: None,
+            password: password.into(),
+            ssid: ssid.into(),
+            username: username.into(),
+        }
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct EnterpriseTlsConfig {
+    /// A File ID representing a PEM file containing the server certificate
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ca_certificate_file: Option<String>,
+    /// A File ID representing a PEM file containing the client certificate
+    pub client_certificate_file: String,
+    /// A File ID representing a PEM file containing the client RSA private key
+    pub private_key_file: String,
+    /// Password for the private key file
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub private_key_file_password: Option<String>,
+    /// Name of the WiFi network
+    pub ssid: String,
+}
+impl EnterpriseTlsConfig {
+    pub fn new(
+        client_certificate_file: impl Into<String>,
+        private_key_file: impl Into<String>,
+        ssid: impl Into<String>,
+    ) -> Self {
+        Self {
+            ca_certificate_file: None,
+            client_certificate_file: client_certificate_file.into(),
+            private_key_file: private_key_file.into(),
+            private_key_file_password: None,
+            ssid: ssid.into(),
+        }
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct PersonalPskConfig {
+    /// Password for connecting to the WiFi network
+    pub password: String,
+    /// Name of the WiFi network
+    pub ssid: String,
+}
+impl PersonalPskConfig {
+    pub fn new(password: impl Into<String>, ssid: impl Into<String>) -> Self {
+        Self { password: password.into(), ssid: ssid.into() }
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -701,6 +1020,9 @@ pub struct Tipping {
     /// Tipping configuration for HKD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hkd: Option<CurrencySpecificConfig>,
+    /// Tipping configuration for JPY
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jpy: Option<CurrencySpecificConfig>,
     /// Tipping configuration for MYR
     #[serde(skip_serializing_if = "Option::is_none")]
     pub myr: Option<CurrencySpecificConfig>,
@@ -710,6 +1032,9 @@ pub struct Tipping {
     /// Tipping configuration for NZD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nzd: Option<CurrencySpecificConfig>,
+    /// Tipping configuration for PLN
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pln: Option<CurrencySpecificConfig>,
     /// Tipping configuration for SEK
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sek: Option<CurrencySpecificConfig>,
@@ -731,9 +1056,11 @@ impl Tipping {
             eur: None,
             gbp: None,
             hkd: None,
+            jpy: None,
             myr: None,
             nok: None,
             nzd: None,
+            pln: None,
             sek: None,
             sgd: None,
             usd: None,

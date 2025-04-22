@@ -20,7 +20,7 @@ pub struct Coupon {
     pub currency_options: Option<
         std::collections::HashMap<stripe_types::Currency, stripe_shared::CouponCurrencyOption>,
     >,
-    /// One of `forever`, `once`, and `repeating`.
+    /// One of `forever`, `once`, or `repeating`.
     /// Describes how long a customer who applies this coupon will get the discount.
     pub duration: stripe_shared::CouponDuration,
     /// If `duration` is `repeating`, the number of months the coupon applies.

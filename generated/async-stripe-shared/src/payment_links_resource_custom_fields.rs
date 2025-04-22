@@ -104,9 +104,9 @@ const _: () = {
                 self.dropdown.take(),
                 self.key.take(),
                 self.label.take(),
-                self.numeric,
+                self.numeric.take(),
                 self.optional,
-                self.text,
+                self.text.take(),
                 self.type_,
             )
             else {

@@ -2,6 +2,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PersonRelationship {
+    /// Whether the person is the authorizer of the account's representative.
+    pub authorizer: Option<bool>,
     /// Whether the person is a director of the account's legal entity.
     /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
     pub director: Option<bool>,
@@ -23,6 +25,7 @@ pub struct PersonRelationship {
 }
 #[doc(hidden)]
 pub struct PersonRelationshipBuilder {
+    authorizer: Option<Option<bool>>,
     director: Option<Option<bool>>,
     executive: Option<Option<bool>>,
     legal_guardian: Option<Option<bool>>,
@@ -72,6 +75,7 @@ const _: () = {
         type Out = PersonRelationship;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "authorizer" => Deserialize::begin(&mut self.authorizer),
                 "director" => Deserialize::begin(&mut self.director),
                 "executive" => Deserialize::begin(&mut self.executive),
                 "legal_guardian" => Deserialize::begin(&mut self.legal_guardian),
@@ -86,6 +90,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                authorizer: Deserialize::default(),
                 director: Deserialize::default(),
                 executive: Deserialize::default(),
                 legal_guardian: Deserialize::default(),
@@ -98,6 +103,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(authorizer),
                 Some(director),
                 Some(executive),
                 Some(legal_guardian),
@@ -106,6 +112,7 @@ const _: () = {
                 Some(representative),
                 Some(title),
             ) = (
+                self.authorizer,
                 self.director,
                 self.executive,
                 self.legal_guardian,
@@ -118,6 +125,7 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                authorizer,
                 director,
                 executive,
                 legal_guardian,
@@ -152,6 +160,7 @@ const _: () = {
             let mut b = PersonRelationshipBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "authorizer" => b.authorizer = FromValueOpt::from_value(v),
                     "director" => b.director = FromValueOpt::from_value(v),
                     "executive" => b.executive = FromValueOpt::from_value(v),
                     "legal_guardian" => b.legal_guardian = FromValueOpt::from_value(v),

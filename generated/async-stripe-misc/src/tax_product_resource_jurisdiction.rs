@@ -8,7 +8,7 @@ pub struct TaxProductResourceJurisdiction {
     pub display_name: String,
     /// Indicates the level of the jurisdiction imposing the tax.
     pub level: TaxProductResourceJurisdictionLevel,
-    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix.
+    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2), without country prefix.
     /// For example, "NY" for New York, United States.
     pub state: Option<String>,
 }

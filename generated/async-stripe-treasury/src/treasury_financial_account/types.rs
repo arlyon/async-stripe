@@ -16,11 +16,14 @@ pub struct TreasuryFinancialAccount {
         Vec<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAddress>,
     /// Unique identifier for the object.
     pub id: stripe_treasury::TreasuryFinancialAccountId,
+    pub is_default: Option<bool>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The nickname for the FinancialAccount.
+    pub nickname: Option<String>,
     /// The array of paths to pending Features in the Features hash.
     pub pending_features: Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>,
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
@@ -28,7 +31,7 @@ pub struct TreasuryFinancialAccount {
         Option<stripe_treasury::TreasuryFinancialAccountsResourcePlatformRestrictions>,
     /// The array of paths to restricted Features in the Features hash.
     pub restricted_features: Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>,
-    /// The enum specifying what state the account is in.
+    /// Status of this FinancialAccount.
     pub status: TreasuryFinancialAccountStatus,
     pub status_details: stripe_treasury::TreasuryFinancialAccountsResourceStatusDetails,
     /// The currencies the FinancialAccount can hold a balance in.
@@ -45,8 +48,10 @@ pub struct TreasuryFinancialAccountBuilder {
     financial_addresses:
         Option<Vec<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAddress>>,
     id: Option<stripe_treasury::TreasuryFinancialAccountId>,
+    is_default: Option<Option<bool>>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    nickname: Option<Option<String>>,
     pending_features: Option<Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>>,
     platform_restrictions:
         Option<Option<stripe_treasury::TreasuryFinancialAccountsResourcePlatformRestrictions>>,
@@ -103,8 +108,10 @@ const _: () = {
                 "features" => Deserialize::begin(&mut self.features),
                 "financial_addresses" => Deserialize::begin(&mut self.financial_addresses),
                 "id" => Deserialize::begin(&mut self.id),
+                "is_default" => Deserialize::begin(&mut self.is_default),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
+                "nickname" => Deserialize::begin(&mut self.nickname),
                 "pending_features" => Deserialize::begin(&mut self.pending_features),
                 "platform_restrictions" => Deserialize::begin(&mut self.platform_restrictions),
                 "restricted_features" => Deserialize::begin(&mut self.restricted_features),
@@ -125,8 +132,10 @@ const _: () = {
                 features: Deserialize::default(),
                 financial_addresses: Deserialize::default(),
                 id: Deserialize::default(),
+                is_default: Deserialize::default(),
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
+                nickname: Deserialize::default(),
                 pending_features: Deserialize::default(),
                 platform_restrictions: Deserialize::default(),
                 restricted_features: Deserialize::default(),
@@ -145,8 +154,10 @@ const _: () = {
                 Some(features),
                 Some(financial_addresses),
                 Some(id),
+                Some(is_default),
                 Some(livemode),
                 Some(metadata),
+                Some(nickname),
                 Some(pending_features),
                 Some(platform_restrictions),
                 Some(restricted_features),
@@ -161,8 +172,10 @@ const _: () = {
                 self.features.take(),
                 self.financial_addresses.take(),
                 self.id.take(),
+                self.is_default,
                 self.livemode,
                 self.metadata.take(),
+                self.nickname.take(),
                 self.pending_features.take(),
                 self.platform_restrictions,
                 self.restricted_features.take(),
@@ -181,8 +194,10 @@ const _: () = {
                 features,
                 financial_addresses,
                 id,
+                is_default,
                 livemode,
                 metadata,
+                nickname,
                 pending_features,
                 platform_restrictions,
                 restricted_features,
@@ -223,8 +238,10 @@ const _: () = {
                     "features" => b.features = FromValueOpt::from_value(v),
                     "financial_addresses" => b.financial_addresses = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
+                    "is_default" => b.is_default = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "nickname" => b.nickname = FromValueOpt::from_value(v),
                     "pending_features" => b.pending_features = FromValueOpt::from_value(v),
                     "platform_restrictions" => {
                         b.platform_restrictions = FromValueOpt::from_value(v)
@@ -245,7 +262,7 @@ const _: () = {
 impl serde::Serialize for TreasuryFinancialAccount {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TreasuryFinancialAccount", 16)?;
+        let mut s = s.serialize_struct("TreasuryFinancialAccount", 18)?;
         s.serialize_field("active_features", &self.active_features)?;
         s.serialize_field("balance", &self.balance)?;
         s.serialize_field("country", &self.country)?;
@@ -253,8 +270,10 @@ impl serde::Serialize for TreasuryFinancialAccount {
         s.serialize_field("features", &self.features)?;
         s.serialize_field("financial_addresses", &self.financial_addresses)?;
         s.serialize_field("id", &self.id)?;
+        s.serialize_field("is_default", &self.is_default)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("nickname", &self.nickname)?;
         s.serialize_field("pending_features", &self.pending_features)?;
         s.serialize_field("platform_restrictions", &self.platform_restrictions)?;
         s.serialize_field("restricted_features", &self.restricted_features)?;
@@ -266,7 +285,7 @@ impl serde::Serialize for TreasuryFinancialAccount {
         s.end()
     }
 }
-/// The enum specifying what state the account is in.
+/// Status of this FinancialAccount.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TreasuryFinancialAccountStatus {
     Closed,
@@ -354,6 +373,7 @@ pub enum TreasuryFinancialAccountArray {
     CardIssuing,
     DepositInsurance,
     FinancialAddressesAba,
+    FinancialAddressesAbaForwarding,
     InboundTransfersAch,
     IntraStripeFlows,
     OutboundPaymentsAch,
@@ -369,6 +389,7 @@ impl TreasuryFinancialAccountArray {
             CardIssuing => "card_issuing",
             DepositInsurance => "deposit_insurance",
             FinancialAddressesAba => "financial_addresses.aba",
+            FinancialAddressesAbaForwarding => "financial_addresses.aba.forwarding",
             InboundTransfersAch => "inbound_transfers.ach",
             IntraStripeFlows => "intra_stripe_flows",
             OutboundPaymentsAch => "outbound_payments.ach",
@@ -388,6 +409,7 @@ impl std::str::FromStr for TreasuryFinancialAccountArray {
             "card_issuing" => Ok(CardIssuing),
             "deposit_insurance" => Ok(DepositInsurance),
             "financial_addresses.aba" => Ok(FinancialAddressesAba),
+            "financial_addresses.aba.forwarding" => Ok(FinancialAddressesAbaForwarding),
             "inbound_transfers.ach" => Ok(InboundTransfersAch),
             "intra_stripe_flows" => Ok(IntraStripeFlows),
             "outbound_payments.ach" => Ok(OutboundPaymentsAch),

@@ -7,7 +7,7 @@ pub struct BankConnectionsResourceBalance {
     pub as_of: stripe_types::Timestamp,
     pub cash: Option<stripe_misc::BankConnectionsResourceBalanceApiResourceCashBalance>,
     pub credit: Option<stripe_misc::BankConnectionsResourceBalanceApiResourceCreditBalance>,
-    /// The balances owed to (or by) the account holder.
+    /// The balances owed to (or by) the account holder, before subtracting any outbound pending transactions or adding any inbound pending transactions.
     ///
     /// Each key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///

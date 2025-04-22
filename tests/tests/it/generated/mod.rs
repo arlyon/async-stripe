@@ -11,6 +11,17 @@ pub fn check_fixtures(resources: &serde_json::Value) {
     check_object::<stripe_core::Balance>(resources, "balance");
     check_object::<stripe_core::BalanceTransaction>(resources, "balance_transaction");
     check_object::<stripe_payment::BankAccount>(resources, "bank_account");
+    check_object::<stripe_billing::BillingAlert>(resources, "billing.alert");
+    check_object::<stripe_billing::BillingAlertTriggered>(resources, "billing.alert_triggered");
+    check_object::<stripe_billing::BillingCreditBalanceSummary>(
+        resources,
+        "billing.credit_balance_summary",
+    );
+    check_object::<stripe_billing::BillingCreditBalanceTransaction>(
+        resources,
+        "billing.credit_balance_transaction",
+    );
+    check_object::<stripe_billing::BillingCreditGrant>(resources, "billing.credit_grant");
     check_object::<stripe_billing::BillingMeter>(resources, "billing.meter");
     check_object::<stripe_billing::BillingMeterEvent>(resources, "billing.meter_event");
     check_object::<stripe_billing::BillingMeterEventAdjustment>(
@@ -135,6 +146,11 @@ pub fn check_fixtures(resources: &serde_json::Value) {
         "identity.verification_session",
     );
     check_object::<stripe_billing::Invoice>(resources, "invoice");
+    check_object::<stripe_billing::InvoicePayment>(resources, "invoice_payment");
+    check_object::<stripe_billing::InvoiceRenderingTemplate>(
+        resources,
+        "invoice_rendering_template",
+    );
     check_object::<stripe_billing::InvoiceItem>(resources, "invoiceitem");
     check_object::<stripe_issuing::IssuingAuthorization>(resources, "issuing.authorization");
     check_object::<stripe_issuing::IssuingCard>(resources, "issuing.card");
@@ -162,7 +178,6 @@ pub fn check_fixtures(resources: &serde_json::Value) {
     check_object::<stripe_core::Payout>(resources, "payout");
     check_object::<stripe_connect::Person>(resources, "person");
     check_object::<stripe_billing::Plan>(resources, "plan");
-    check_object::<stripe_core::PlatformTaxFee>(resources, "platform_tax_fee");
     check_object::<stripe_product::Price>(resources, "price");
     check_object::<stripe_product::Product>(resources, "product");
     check_object::<stripe_product::ProductFeature>(resources, "product_feature");
@@ -240,7 +255,5 @@ pub fn check_fixtures(resources: &serde_json::Value) {
         resources,
         "treasury.transaction_entry",
     );
-    check_object::<stripe_billing::UsageRecord>(resources, "usage_record");
-    check_object::<stripe_billing::UsageRecordSummary>(resources, "usage_record_summary");
     check_object::<stripe_misc::WebhookEndpoint>(resources, "webhook_endpoint");
 }

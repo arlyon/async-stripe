@@ -18,10 +18,9 @@ pub struct Account {
     /// Business information about the account.
     pub business_profile: Option<stripe_shared::AccountBusinessProfile>,
     /// The business type.
-    /// After you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property is only returned for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
     pub business_type: Option<stripe_shared::AccountBusinessType>,
     pub capabilities: Option<stripe_shared::AccountCapabilities>,
-    /// Whether the account can create live charges.
+    /// Whether the account can process charges.
     pub charges_enabled: Option<bool>,
     pub company: Option<stripe_shared::LegalEntityCompany>,
     pub controller: Option<stripe_shared::AccountUnificationAccountController>,
@@ -34,6 +33,7 @@ pub struct Account {
     pub default_currency: Option<stripe_types::Currency>,
     /// Whether account details have been submitted.
     /// Accounts with Stripe Dashboard access, which includes Standard accounts, cannot receive payouts before this is true.
+    /// Accounts where this is false should be directed to [an onboarding flow](/connect/onboarding) to finish submitting account details.
     pub details_submitted: Option<bool>,
     /// An email address associated with the account.
     /// It's not used for authentication and Stripe doesn't market to this field without explicit approval from the platform.
@@ -42,13 +42,15 @@ pub struct Account {
     /// External accounts are only returned for requests where `controller[is_controller]` is true.
     pub external_accounts: Option<stripe_types::List<stripe_shared::ExternalAccount>>,
     pub future_requirements: Option<stripe_shared::AccountFutureRequirements>,
+    /// The groups associated with the account.
+    pub groups: Option<stripe_shared::AccountGroupMembership>,
     /// Unique identifier for the object.
     pub id: stripe_shared::AccountId,
     pub individual: Option<stripe_shared::Person>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// Whether Stripe can send payouts to this account.
+    /// Whether the funds in this account can be paid out.
     pub payouts_enabled: Option<bool>,
     pub requirements: Option<stripe_shared::AccountRequirements>,
     /// Options for customizing how the account functions within Stripe.
@@ -73,6 +75,7 @@ pub struct AccountBuilder {
     email: Option<Option<String>>,
     external_accounts: Option<Option<stripe_types::List<stripe_shared::ExternalAccount>>>,
     future_requirements: Option<Option<stripe_shared::AccountFutureRequirements>>,
+    groups: Option<Option<stripe_shared::AccountGroupMembership>>,
     id: Option<stripe_shared::AccountId>,
     individual: Option<Option<stripe_shared::Person>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
@@ -133,6 +136,7 @@ const _: () = {
                 "email" => Deserialize::begin(&mut self.email),
                 "external_accounts" => Deserialize::begin(&mut self.external_accounts),
                 "future_requirements" => Deserialize::begin(&mut self.future_requirements),
+                "groups" => Deserialize::begin(&mut self.groups),
                 "id" => Deserialize::begin(&mut self.id),
                 "individual" => Deserialize::begin(&mut self.individual),
                 "metadata" => Deserialize::begin(&mut self.metadata),
@@ -161,6 +165,7 @@ const _: () = {
                 email: Deserialize::default(),
                 external_accounts: Deserialize::default(),
                 future_requirements: Deserialize::default(),
+                groups: Deserialize::default(),
                 id: Deserialize::default(),
                 individual: Deserialize::default(),
                 metadata: Deserialize::default(),
@@ -187,6 +192,7 @@ const _: () = {
                 Some(email),
                 Some(external_accounts),
                 Some(future_requirements),
+                Some(groups),
                 Some(id),
                 Some(individual),
                 Some(metadata),
@@ -209,6 +215,7 @@ const _: () = {
                 self.email.take(),
                 self.external_accounts.take(),
                 self.future_requirements.take(),
+                self.groups.take(),
                 self.id.take(),
                 self.individual.take(),
                 self.metadata.take(),
@@ -235,6 +242,7 @@ const _: () = {
                 email,
                 external_accounts,
                 future_requirements,
+                groups,
                 id,
                 individual,
                 metadata,
@@ -283,6 +291,7 @@ const _: () = {
                     "email" => b.email = FromValueOpt::from_value(v),
                     "external_accounts" => b.external_accounts = FromValueOpt::from_value(v),
                     "future_requirements" => b.future_requirements = FromValueOpt::from_value(v),
+                    "groups" => b.groups = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "individual" => b.individual = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
@@ -303,7 +312,7 @@ const _: () = {
 impl serde::Serialize for Account {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Account", 22)?;
+        let mut s = s.serialize_struct("Account", 23)?;
         s.serialize_field("business_profile", &self.business_profile)?;
         s.serialize_field("business_type", &self.business_type)?;
         s.serialize_field("capabilities", &self.capabilities)?;
@@ -317,6 +326,7 @@ impl serde::Serialize for Account {
         s.serialize_field("email", &self.email)?;
         s.serialize_field("external_accounts", &self.external_accounts)?;
         s.serialize_field("future_requirements", &self.future_requirements)?;
+        s.serialize_field("groups", &self.groups)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("individual", &self.individual)?;
         s.serialize_field("metadata", &self.metadata)?;

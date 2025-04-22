@@ -11,6 +11,8 @@ pub struct PaymentIntentNextAction {
     pub display_bank_transfer_instructions:
         Option<stripe_shared::PaymentIntentNextActionDisplayBankTransferInstructions>,
     pub konbini_display_details: Option<stripe_shared::PaymentIntentNextActionKonbini>,
+    pub multibanco_display_details:
+        Option<stripe_shared::PaymentIntentNextActionDisplayMultibancoDetails>,
     pub oxxo_display_details: Option<stripe_shared::PaymentIntentNextActionDisplayOxxoDetails>,
     pub paynow_display_qr_code: Option<stripe_shared::PaymentIntentNextActionPaynowDisplayQrCode>,
     pub pix_display_qr_code: Option<stripe_shared::PaymentIntentNextActionPixDisplayQrCode>,
@@ -50,6 +52,8 @@ pub struct PaymentIntentNextActionBuilder {
     display_bank_transfer_instructions:
         Option<Option<stripe_shared::PaymentIntentNextActionDisplayBankTransferInstructions>>,
     konbini_display_details: Option<Option<stripe_shared::PaymentIntentNextActionKonbini>>,
+    multibanco_display_details:
+        Option<Option<stripe_shared::PaymentIntentNextActionDisplayMultibancoDetails>>,
     oxxo_display_details: Option<Option<stripe_shared::PaymentIntentNextActionDisplayOxxoDetails>>,
     paynow_display_qr_code:
         Option<Option<stripe_shared::PaymentIntentNextActionPaynowDisplayQrCode>>,
@@ -121,6 +125,9 @@ const _: () = {
                     Deserialize::begin(&mut self.display_bank_transfer_instructions)
                 }
                 "konbini_display_details" => Deserialize::begin(&mut self.konbini_display_details),
+                "multibanco_display_details" => {
+                    Deserialize::begin(&mut self.multibanco_display_details)
+                }
                 "oxxo_display_details" => Deserialize::begin(&mut self.oxxo_display_details),
                 "paynow_display_qr_code" => Deserialize::begin(&mut self.paynow_display_qr_code),
                 "pix_display_qr_code" => Deserialize::begin(&mut self.pix_display_qr_code),
@@ -158,6 +165,7 @@ const _: () = {
                 cashapp_handle_redirect_or_display_qr_code: Deserialize::default(),
                 display_bank_transfer_instructions: Deserialize::default(),
                 konbini_display_details: Deserialize::default(),
+                multibanco_display_details: Deserialize::default(),
                 oxxo_display_details: Deserialize::default(),
                 paynow_display_qr_code: Deserialize::default(),
                 pix_display_qr_code: Deserialize::default(),
@@ -181,6 +189,7 @@ const _: () = {
                 Some(cashapp_handle_redirect_or_display_qr_code),
                 Some(display_bank_transfer_instructions),
                 Some(konbini_display_details),
+                Some(multibanco_display_details),
                 Some(oxxo_display_details),
                 Some(paynow_display_qr_code),
                 Some(pix_display_qr_code),
@@ -200,6 +209,7 @@ const _: () = {
                 self.cashapp_handle_redirect_or_display_qr_code.take(),
                 self.display_bank_transfer_instructions.take(),
                 self.konbini_display_details.take(),
+                self.multibanco_display_details.take(),
                 self.oxxo_display_details.take(),
                 self.paynow_display_qr_code.take(),
                 self.pix_display_qr_code.take(),
@@ -223,6 +233,7 @@ const _: () = {
                 cashapp_handle_redirect_or_display_qr_code,
                 display_bank_transfer_instructions,
                 konbini_display_details,
+                multibanco_display_details,
                 oxxo_display_details,
                 paynow_display_qr_code,
                 pix_display_qr_code,
@@ -279,6 +290,9 @@ const _: () = {
                     }
                     "konbini_display_details" => {
                         b.konbini_display_details = FromValueOpt::from_value(v)
+                    }
+                    "multibanco_display_details" => {
+                        b.multibanco_display_details = FromValueOpt::from_value(v)
                     }
                     "oxxo_display_details" => b.oxxo_display_details = FromValueOpt::from_value(v),
                     "paynow_display_qr_code" => {

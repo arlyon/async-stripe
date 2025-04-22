@@ -24,6 +24,9 @@ pub struct ForwardingRequest {
     pub id: stripe_misc::ForwardingRequestId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The PaymentMethod to insert into the forwarded request.
     /// Forwarding previously consumed PaymentMethods is allowed.
     pub payment_method: String,
@@ -43,6 +46,7 @@ pub struct ForwardingRequestBuilder {
     created: Option<stripe_types::Timestamp>,
     id: Option<stripe_misc::ForwardingRequestId>,
     livemode: Option<bool>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
     payment_method: Option<String>,
     replacements: Option<Vec<stripe_misc::ForwardingRequestReplacements>>,
     request_context: Option<Option<stripe_misc::ForwardedRequestContext>>,
@@ -94,6 +98,7 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
                 "payment_method" => Deserialize::begin(&mut self.payment_method),
                 "replacements" => Deserialize::begin(&mut self.replacements),
                 "request_context" => Deserialize::begin(&mut self.request_context),
@@ -110,6 +115,7 @@ const _: () = {
                 created: Deserialize::default(),
                 id: Deserialize::default(),
                 livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
                 payment_method: Deserialize::default(),
                 replacements: Deserialize::default(),
                 request_context: Deserialize::default(),
@@ -124,6 +130,7 @@ const _: () = {
                 Some(created),
                 Some(id),
                 Some(livemode),
+                Some(metadata),
                 Some(payment_method),
                 Some(replacements),
                 Some(request_context),
@@ -134,6 +141,7 @@ const _: () = {
                 self.created,
                 self.id.take(),
                 self.livemode,
+                self.metadata.take(),
                 self.payment_method.take(),
                 self.replacements.take(),
                 self.request_context.take(),
@@ -148,6 +156,7 @@ const _: () = {
                 created,
                 id,
                 livemode,
+                metadata,
                 payment_method,
                 replacements,
                 request_context,
@@ -184,6 +193,7 @@ const _: () = {
                     "created" => b.created = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "payment_method" => b.payment_method = FromValueOpt::from_value(v),
                     "replacements" => b.replacements = FromValueOpt::from_value(v),
                     "request_context" => b.request_context = FromValueOpt::from_value(v),
@@ -202,10 +212,11 @@ const _: () = {
 impl serde::Serialize for ForwardingRequest {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("ForwardingRequest", 10)?;
+        let mut s = s.serialize_struct("ForwardingRequest", 11)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("payment_method", &self.payment_method)?;
         s.serialize_field("replacements", &self.replacements)?;
         s.serialize_field("request_context", &self.request_context)?;
@@ -234,6 +245,7 @@ pub enum ForwardingRequestReplacements {
     CardExpiry,
     CardNumber,
     CardholderName,
+    RequestSignature,
 }
 impl ForwardingRequestReplacements {
     pub fn as_str(self) -> &'static str {
@@ -243,6 +255,7 @@ impl ForwardingRequestReplacements {
             CardExpiry => "card_expiry",
             CardNumber => "card_number",
             CardholderName => "cardholder_name",
+            RequestSignature => "request_signature",
         }
     }
 }
@@ -256,6 +269,7 @@ impl std::str::FromStr for ForwardingRequestReplacements {
             "card_expiry" => Ok(CardExpiry),
             "card_number" => Ok(CardNumber),
             "cardholder_name" => Ok(CardholderName),
+            "request_signature" => Ok(RequestSignature),
             _ => Err(stripe_types::StripeParseError),
         }
     }

@@ -16,7 +16,7 @@ pub struct CheckoutSessionItem {
     /// An arbitrary string attached to the object.
     /// Often useful for displaying to users.
     /// Defaults to product name.
-    pub description: String,
+    pub description: Option<String>,
     /// The discounts applied to the line item.
     pub discounts: Option<Vec<stripe_shared::LineItemsDiscountAmount>>,
     /// Unique identifier for the object.
@@ -35,7 +35,7 @@ pub struct CheckoutSessionItemBuilder {
     amount_tax: Option<i64>,
     amount_total: Option<i64>,
     currency: Option<stripe_types::Currency>,
-    description: Option<String>,
+    description: Option<Option<String>>,
     discounts: Option<Option<Vec<stripe_shared::LineItemsDiscountAmount>>>,
     id: Option<stripe_shared::CheckoutSessionItemId>,
     price: Option<Option<stripe_shared::Price>>,

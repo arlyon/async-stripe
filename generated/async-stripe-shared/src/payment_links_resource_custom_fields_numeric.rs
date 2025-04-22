@@ -1,7 +1,9 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentLinksResourceCustomFieldsNumeric {
+    /// The value that will pre-fill the field on the payment page.
+    pub default_value: Option<String>,
     /// The maximum character length constraint for the customer's input.
     pub maximum_length: Option<i64>,
     /// The minimum character length requirement for the customer's input.
@@ -9,6 +11,7 @@ pub struct PaymentLinksResourceCustomFieldsNumeric {
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourceCustomFieldsNumericBuilder {
+    default_value: Option<Option<String>>,
     maximum_length: Option<Option<i64>>,
     minimum_length: Option<Option<i64>>,
 }
@@ -53,6 +56,7 @@ const _: () = {
         type Out = PaymentLinksResourceCustomFieldsNumeric;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "default_value" => Deserialize::begin(&mut self.default_value),
                 "maximum_length" => Deserialize::begin(&mut self.maximum_length),
                 "minimum_length" => Deserialize::begin(&mut self.minimum_length),
 
@@ -61,16 +65,20 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { maximum_length: Deserialize::default(), minimum_length: Deserialize::default() }
+            Self {
+                default_value: Deserialize::default(),
+                maximum_length: Deserialize::default(),
+                minimum_length: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(maximum_length), Some(minimum_length)) =
-                (self.maximum_length, self.minimum_length)
+            let (Some(default_value), Some(maximum_length), Some(minimum_length)) =
+                (self.default_value.take(), self.maximum_length, self.minimum_length)
             else {
                 return None;
             };
-            Some(Self::Out { maximum_length, minimum_length })
+            Some(Self::Out { default_value, maximum_length, minimum_length })
         }
     }
 
@@ -97,6 +105,7 @@ const _: () = {
             let mut b = PaymentLinksResourceCustomFieldsNumericBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "default_value" => b.default_value = FromValueOpt::from_value(v),
                     "maximum_length" => b.maximum_length = FromValueOpt::from_value(v),
                     "minimum_length" => b.minimum_length = FromValueOpt::from_value(v),
 

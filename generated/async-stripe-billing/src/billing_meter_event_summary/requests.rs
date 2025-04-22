@@ -38,14 +38,18 @@ impl ListIdBillingMeterEventSummaryBuilder {
 }
 /// Specifies what granularity to use when generating event summaries.
 /// If not specified, a single event summary would be returned for the specified time range.
+/// For hourly granularity, start and end times must align with hour boundaries (e.g., 00:00, 01:00, ..., 23:00).
+/// For daily granularity, start and end times must align with UTC day boundaries (00:00 UTC).
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ListIdBillingMeterEventSummaryValueGroupingWindow {
+    Day,
     Hour,
 }
 impl ListIdBillingMeterEventSummaryValueGroupingWindow {
     pub fn as_str(self) -> &'static str {
         use ListIdBillingMeterEventSummaryValueGroupingWindow::*;
         match self {
+            Day => "day",
             Hour => "hour",
         }
     }
@@ -56,6 +60,7 @@ impl std::str::FromStr for ListIdBillingMeterEventSummaryValueGroupingWindow {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListIdBillingMeterEventSummaryValueGroupingWindow::*;
         match s {
+            "day" => Ok(Day),
             "hour" => Ok(Hour),
             _ => Err(stripe_types::StripeParseError),
         }
@@ -142,6 +147,8 @@ impl ListIdBillingMeterEventSummary {
     }
     /// Specifies what granularity to use when generating event summaries.
     /// If not specified, a single event summary would be returned for the specified time range.
+    /// For hourly granularity, start and end times must align with hour boundaries (e.g., 00:00, 01:00, ..., 23:00).
+    /// For daily granularity, start and end times must align with UTC day boundaries (00:00 UTC).
     pub fn value_grouping_window(
         mut self,
         value_grouping_window: impl Into<ListIdBillingMeterEventSummaryValueGroupingWindow>,

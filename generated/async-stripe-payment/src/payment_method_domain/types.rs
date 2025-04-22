@@ -1,12 +1,13 @@
 /// A payment method domain represents a web domain that you have registered with Stripe.
 /// Stripe Elements use registered payment method domains to control where certain payment methods are shown.
 ///
-/// Related guides: [Payment method domains](https://stripe.com/docs/payments/payment-methods/pmd-registration).
+/// Related guide: [Payment method domains](https://stripe.com/docs/payments/payment-methods/pmd-registration).
 ///
 /// For more details see <<https://stripe.com/docs/api/payment_method_domains/object>>.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDomain {
+    pub amazon_pay: stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus,
     pub apple_pay: stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
@@ -18,6 +19,7 @@ pub struct PaymentMethodDomain {
     pub google_pay: stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus,
     /// Unique identifier for the object.
     pub id: stripe_payment::PaymentMethodDomainId,
+    pub klarna: stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus,
     pub link: stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -25,12 +27,14 @@ pub struct PaymentMethodDomain {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDomainBuilder {
+    amazon_pay: Option<stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus>,
     apple_pay: Option<stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus>,
     created: Option<stripe_types::Timestamp>,
     domain_name: Option<String>,
     enabled: Option<bool>,
     google_pay: Option<stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus>,
     id: Option<stripe_payment::PaymentMethodDomainId>,
+    klarna: Option<stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus>,
     link: Option<stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus>,
     livemode: Option<bool>,
     paypal: Option<stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus>,
@@ -76,12 +80,14 @@ const _: () = {
         type Out = PaymentMethodDomain;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "amazon_pay" => Deserialize::begin(&mut self.amazon_pay),
                 "apple_pay" => Deserialize::begin(&mut self.apple_pay),
                 "created" => Deserialize::begin(&mut self.created),
                 "domain_name" => Deserialize::begin(&mut self.domain_name),
                 "enabled" => Deserialize::begin(&mut self.enabled),
                 "google_pay" => Deserialize::begin(&mut self.google_pay),
                 "id" => Deserialize::begin(&mut self.id),
+                "klarna" => Deserialize::begin(&mut self.klarna),
                 "link" => Deserialize::begin(&mut self.link),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "paypal" => Deserialize::begin(&mut self.paypal),
@@ -92,12 +98,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                amazon_pay: Deserialize::default(),
                 apple_pay: Deserialize::default(),
                 created: Deserialize::default(),
                 domain_name: Deserialize::default(),
                 enabled: Deserialize::default(),
                 google_pay: Deserialize::default(),
                 id: Deserialize::default(),
+                klarna: Deserialize::default(),
                 link: Deserialize::default(),
                 livemode: Deserialize::default(),
                 paypal: Deserialize::default(),
@@ -106,22 +114,26 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(amazon_pay),
                 Some(apple_pay),
                 Some(created),
                 Some(domain_name),
                 Some(enabled),
                 Some(google_pay),
                 Some(id),
+                Some(klarna),
                 Some(link),
                 Some(livemode),
                 Some(paypal),
             ) = (
+                self.amazon_pay.take(),
                 self.apple_pay.take(),
                 self.created,
                 self.domain_name.take(),
                 self.enabled,
                 self.google_pay.take(),
                 self.id.take(),
+                self.klarna.take(),
                 self.link.take(),
                 self.livemode,
                 self.paypal.take(),
@@ -130,12 +142,14 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                amazon_pay,
                 apple_pay,
                 created,
                 domain_name,
                 enabled,
                 google_pay,
                 id,
+                klarna,
                 link,
                 livemode,
                 paypal,
@@ -166,12 +180,14 @@ const _: () = {
             let mut b = PaymentMethodDomainBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "amazon_pay" => b.amazon_pay = FromValueOpt::from_value(v),
                     "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "domain_name" => b.domain_name = FromValueOpt::from_value(v),
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
                     "google_pay" => b.google_pay = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
+                    "klarna" => b.klarna = FromValueOpt::from_value(v),
                     "link" => b.link = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "paypal" => b.paypal = FromValueOpt::from_value(v),
@@ -187,13 +203,15 @@ const _: () = {
 impl serde::Serialize for PaymentMethodDomain {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethodDomain", 10)?;
+        let mut s = s.serialize_struct("PaymentMethodDomain", 12)?;
+        s.serialize_field("amazon_pay", &self.amazon_pay)?;
         s.serialize_field("apple_pay", &self.apple_pay)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("domain_name", &self.domain_name)?;
         s.serialize_field("enabled", &self.enabled)?;
         s.serialize_field("google_pay", &self.google_pay)?;
         s.serialize_field("id", &self.id)?;
+        s.serialize_field("klarna", &self.klarna)?;
         s.serialize_field("link", &self.link)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("paypal", &self.paypal)?;

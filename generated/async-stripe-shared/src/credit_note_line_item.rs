@@ -6,8 +6,6 @@
 pub struct CreditNoteLineItem {
     /// The integer amount in cents (or local equivalent) representing the gross amount being credited for this line item, excluding (exclusive) tax and discounts.
     pub amount: i64,
-    /// The integer amount in cents (or local equivalent) representing the amount being credited for this line item, excluding all tax and discounts.
-    pub amount_excluding_tax: Option<i64>,
     /// Description of the item being credited.
     pub description: Option<String>,
     /// The integer amount in cents (or local equivalent) representing the discount being credited for this line item.
@@ -20,12 +18,14 @@ pub struct CreditNoteLineItem {
     pub invoice_line_item: Option<String>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+    /// The pretax credit amounts (ex: discount, credit grants, etc) for this line item.
+    pub pretax_credit_amounts: Vec<stripe_shared::CreditNotesPretaxCreditAmount>,
     /// The number of units of product being credited.
     pub quantity: Option<u64>,
-    /// The amount of tax calculated per tax rate for this line item
-    pub tax_amounts: Vec<stripe_shared::CreditNoteTaxAmount>,
     /// The tax rates which apply to the line item.
     pub tax_rates: Vec<stripe_shared::TaxRate>,
+    /// The tax information of the line item.
+    pub taxes: Option<Vec<stripe_shared::BillingBillResourceInvoicingTaxesTax>>,
     /// The type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
     /// When the type is `invoice_line_item` there is an additional `invoice_line_item` property on the resource the value of which is the id of the credited line item on the invoice.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
@@ -34,26 +34,23 @@ pub struct CreditNoteLineItem {
     pub unit_amount: Option<i64>,
     /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
     pub unit_amount_decimal: Option<String>,
-    /// The amount in cents (or local equivalent) representing the unit amount being credited for this line item, excluding all tax and discounts.
-    pub unit_amount_excluding_tax: Option<String>,
 }
 #[doc(hidden)]
 pub struct CreditNoteLineItemBuilder {
     amount: Option<i64>,
-    amount_excluding_tax: Option<Option<i64>>,
     description: Option<Option<String>>,
     discount_amount: Option<i64>,
     discount_amounts: Option<Vec<stripe_shared::DiscountsResourceDiscountAmount>>,
     id: Option<stripe_shared::CreditNoteLineItemId>,
     invoice_line_item: Option<Option<String>>,
     livemode: Option<bool>,
+    pretax_credit_amounts: Option<Vec<stripe_shared::CreditNotesPretaxCreditAmount>>,
     quantity: Option<Option<u64>>,
-    tax_amounts: Option<Vec<stripe_shared::CreditNoteTaxAmount>>,
     tax_rates: Option<Vec<stripe_shared::TaxRate>>,
+    taxes: Option<Option<Vec<stripe_shared::BillingBillResourceInvoicingTaxesTax>>>,
     type_: Option<CreditNoteLineItemType>,
     unit_amount: Option<Option<i64>>,
     unit_amount_decimal: Option<Option<String>>,
-    unit_amount_excluding_tax: Option<Option<String>>,
 }
 
 #[allow(
@@ -97,22 +94,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "amount_excluding_tax" => Deserialize::begin(&mut self.amount_excluding_tax),
                 "description" => Deserialize::begin(&mut self.description),
                 "discount_amount" => Deserialize::begin(&mut self.discount_amount),
                 "discount_amounts" => Deserialize::begin(&mut self.discount_amounts),
                 "id" => Deserialize::begin(&mut self.id),
                 "invoice_line_item" => Deserialize::begin(&mut self.invoice_line_item),
                 "livemode" => Deserialize::begin(&mut self.livemode),
+                "pretax_credit_amounts" => Deserialize::begin(&mut self.pretax_credit_amounts),
                 "quantity" => Deserialize::begin(&mut self.quantity),
-                "tax_amounts" => Deserialize::begin(&mut self.tax_amounts),
                 "tax_rates" => Deserialize::begin(&mut self.tax_rates),
+                "taxes" => Deserialize::begin(&mut self.taxes),
                 "type" => Deserialize::begin(&mut self.type_),
                 "unit_amount" => Deserialize::begin(&mut self.unit_amount),
                 "unit_amount_decimal" => Deserialize::begin(&mut self.unit_amount_decimal),
-                "unit_amount_excluding_tax" => {
-                    Deserialize::begin(&mut self.unit_amount_excluding_tax)
-                }
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -121,76 +115,72 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: Deserialize::default(),
-                amount_excluding_tax: Deserialize::default(),
                 description: Deserialize::default(),
                 discount_amount: Deserialize::default(),
                 discount_amounts: Deserialize::default(),
                 id: Deserialize::default(),
                 invoice_line_item: Deserialize::default(),
                 livemode: Deserialize::default(),
+                pretax_credit_amounts: Deserialize::default(),
                 quantity: Deserialize::default(),
-                tax_amounts: Deserialize::default(),
                 tax_rates: Deserialize::default(),
+                taxes: Deserialize::default(),
                 type_: Deserialize::default(),
                 unit_amount: Deserialize::default(),
                 unit_amount_decimal: Deserialize::default(),
-                unit_amount_excluding_tax: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
-                Some(amount_excluding_tax),
                 Some(description),
                 Some(discount_amount),
                 Some(discount_amounts),
                 Some(id),
                 Some(invoice_line_item),
                 Some(livemode),
+                Some(pretax_credit_amounts),
                 Some(quantity),
-                Some(tax_amounts),
                 Some(tax_rates),
+                Some(taxes),
                 Some(type_),
                 Some(unit_amount),
                 Some(unit_amount_decimal),
-                Some(unit_amount_excluding_tax),
             ) = (
                 self.amount,
-                self.amount_excluding_tax,
                 self.description.take(),
                 self.discount_amount,
                 self.discount_amounts.take(),
                 self.id.take(),
                 self.invoice_line_item.take(),
                 self.livemode,
+                self.pretax_credit_amounts.take(),
                 self.quantity,
-                self.tax_amounts.take(),
                 self.tax_rates.take(),
+                self.taxes.take(),
                 self.type_,
                 self.unit_amount,
                 self.unit_amount_decimal.take(),
-                self.unit_amount_excluding_tax.take(),
             )
             else {
                 return None;
             };
             Some(Self::Out {
                 amount,
-                amount_excluding_tax,
                 description,
                 discount_amount,
                 discount_amounts,
                 id,
                 invoice_line_item,
                 livemode,
+                pretax_credit_amounts,
                 quantity,
-                tax_amounts,
                 tax_rates,
+                taxes,
                 type_,
                 unit_amount,
                 unit_amount_decimal,
-                unit_amount_excluding_tax,
             })
         }
     }
@@ -219,22 +209,21 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_excluding_tax" => b.amount_excluding_tax = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
                     "discount_amount" => b.discount_amount = FromValueOpt::from_value(v),
                     "discount_amounts" => b.discount_amounts = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "invoice_line_item" => b.invoice_line_item = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "pretax_credit_amounts" => {
+                        b.pretax_credit_amounts = FromValueOpt::from_value(v)
+                    }
                     "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "tax_amounts" => b.tax_amounts = FromValueOpt::from_value(v),
                     "tax_rates" => b.tax_rates = FromValueOpt::from_value(v),
+                    "taxes" => b.taxes = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
                     "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
-                    "unit_amount_excluding_tax" => {
-                        b.unit_amount_excluding_tax = FromValueOpt::from_value(v)
-                    }
 
                     _ => {}
                 }
@@ -247,22 +236,21 @@ const _: () = {
 impl serde::Serialize for CreditNoteLineItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CreditNoteLineItem", 16)?;
+        let mut s = s.serialize_struct("CreditNoteLineItem", 15)?;
         s.serialize_field("amount", &self.amount)?;
-        s.serialize_field("amount_excluding_tax", &self.amount_excluding_tax)?;
         s.serialize_field("description", &self.description)?;
         s.serialize_field("discount_amount", &self.discount_amount)?;
         s.serialize_field("discount_amounts", &self.discount_amounts)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("invoice_line_item", &self.invoice_line_item)?;
         s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("pretax_credit_amounts", &self.pretax_credit_amounts)?;
         s.serialize_field("quantity", &self.quantity)?;
-        s.serialize_field("tax_amounts", &self.tax_amounts)?;
         s.serialize_field("tax_rates", &self.tax_rates)?;
+        s.serialize_field("taxes", &self.taxes)?;
         s.serialize_field("type", &self.type_)?;
         s.serialize_field("unit_amount", &self.unit_amount)?;
         s.serialize_field("unit_amount_decimal", &self.unit_amount_decimal)?;
-        s.serialize_field("unit_amount_excluding_tax", &self.unit_amount_excluding_tax)?;
 
         s.serialize_field("object", "credit_note_line_item")?;
         s.end()

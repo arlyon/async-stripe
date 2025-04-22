@@ -8,9 +8,6 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Card {
-    /// The account this card belongs to.
-    /// This attribute will not be in the card object if the card belongs to a customer or recipient instead.
-    /// This property is only available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
     pub account: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// City/District/Suburb/Town/Village.
     pub address_city: Option<String>,
@@ -28,19 +25,24 @@ pub struct Card {
     pub address_zip: Option<String>,
     /// If `address_zip` was provided, results of the check: `pass`, `fail`, `unavailable`, or `unchecked`.
     pub address_zip_check: Option<String>,
+    /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+    /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+    /// The field defaults to “unspecified”.
+    pub allow_redisplay: Option<CardAllowRedisplay>,
     /// A set of available payout methods for this card.
     /// Only values from this set should be passed as the `method` when creating a payout.
     pub available_payout_methods: Option<Vec<CardAvailablePayoutMethods>>,
     /// Card brand.
-    /// Can be `American Express`, `Diners Club`, `Discover`, `Eftpos Australia`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
+    /// Can be `American Express`, `Diners Club`, `Discover`, `Eftpos Australia`, `Girocard`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
     pub brand: String,
     /// Two-letter ISO code representing the country of the card.
     /// You could use this attribute to get a sense of the international breakdown of cards you've collected.
     pub country: Option<String>,
-    /// Three-letter [ISO code for currency](https://stripe.com/docs/payouts).
+    /// Three-letter [ISO code for currency](https://www.iso.org/iso-4217-currency-codes.html) in lowercase.
+    /// Must be a [supported currency](https://docs.stripe.com/currencies).
     /// Only applicable on accounts (not customers or recipients).
     /// The card can be used as a transfer destination for funds in this currency.
-    /// This property is only available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+    /// This property is only available when returned as an [External Account](/api/external_account_cards/object) where [controller.is_controller](/api/accounts/object#account_object-controller-is_controller) is `true`.
     pub currency: Option<stripe_types::Currency>,
     /// The customer that this card belongs to.
     /// This attribute will not be in the card object if the card belongs to an account or recipient instead.
@@ -86,6 +88,8 @@ pub struct Card {
     /// Cardholder name.
     pub name: Option<String>,
     pub networks: Option<stripe_shared::TokenCardNetworks>,
+    /// Status of a card based on the card issuer.
+    pub regulated_status: Option<CardRegulatedStatus>,
     /// For external accounts that are cards, possible values are `new` and `errored`.
     /// If a payout fails, the status is set to `errored` and [scheduled payouts](https://stripe.com/docs/payouts#payout-schedule) are stopped until account details are updated.
     pub status: Option<String>,
@@ -104,6 +108,7 @@ pub struct CardBuilder {
     address_state: Option<Option<String>>,
     address_zip: Option<Option<String>>,
     address_zip_check: Option<Option<String>>,
+    allow_redisplay: Option<Option<CardAllowRedisplay>>,
     available_payout_methods: Option<Option<Vec<CardAvailablePayoutMethods>>>,
     brand: Option<String>,
     country: Option<Option<String>>,
@@ -124,6 +129,7 @@ pub struct CardBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     name: Option<Option<String>>,
     networks: Option<Option<stripe_shared::TokenCardNetworks>>,
+    regulated_status: Option<Option<CardRegulatedStatus>>,
     status: Option<Option<String>>,
     tokenization_method: Option<Option<String>>,
 }
@@ -174,6 +180,7 @@ const _: () = {
                 "address_state" => Deserialize::begin(&mut self.address_state),
                 "address_zip" => Deserialize::begin(&mut self.address_zip),
                 "address_zip_check" => Deserialize::begin(&mut self.address_zip_check),
+                "allow_redisplay" => Deserialize::begin(&mut self.allow_redisplay),
                 "available_payout_methods" => {
                     Deserialize::begin(&mut self.available_payout_methods)
                 }
@@ -196,6 +203,7 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "name" => Deserialize::begin(&mut self.name),
                 "networks" => Deserialize::begin(&mut self.networks),
+                "regulated_status" => Deserialize::begin(&mut self.regulated_status),
                 "status" => Deserialize::begin(&mut self.status),
                 "tokenization_method" => Deserialize::begin(&mut self.tokenization_method),
 
@@ -214,6 +222,7 @@ const _: () = {
                 address_state: Deserialize::default(),
                 address_zip: Deserialize::default(),
                 address_zip_check: Deserialize::default(),
+                allow_redisplay: Deserialize::default(),
                 available_payout_methods: Deserialize::default(),
                 brand: Deserialize::default(),
                 country: Deserialize::default(),
@@ -234,6 +243,7 @@ const _: () = {
                 metadata: Deserialize::default(),
                 name: Deserialize::default(),
                 networks: Deserialize::default(),
+                regulated_status: Deserialize::default(),
                 status: Deserialize::default(),
                 tokenization_method: Deserialize::default(),
             }
@@ -250,6 +260,7 @@ const _: () = {
                 Some(address_state),
                 Some(address_zip),
                 Some(address_zip_check),
+                Some(allow_redisplay),
                 Some(available_payout_methods),
                 Some(brand),
                 Some(country),
@@ -270,6 +281,7 @@ const _: () = {
                 Some(metadata),
                 Some(name),
                 Some(networks),
+                Some(regulated_status),
                 Some(status),
                 Some(tokenization_method),
             ) = (
@@ -282,6 +294,7 @@ const _: () = {
                 self.address_state.take(),
                 self.address_zip.take(),
                 self.address_zip_check.take(),
+                self.allow_redisplay,
                 self.available_payout_methods.take(),
                 self.brand.take(),
                 self.country.take(),
@@ -302,6 +315,7 @@ const _: () = {
                 self.metadata.take(),
                 self.name.take(),
                 self.networks.take(),
+                self.regulated_status,
                 self.status.take(),
                 self.tokenization_method.take(),
             )
@@ -318,6 +332,7 @@ const _: () = {
                 address_state,
                 address_zip,
                 address_zip_check,
+                allow_redisplay,
                 available_payout_methods,
                 brand,
                 country,
@@ -338,6 +353,7 @@ const _: () = {
                 metadata,
                 name,
                 networks,
+                regulated_status,
                 status,
                 tokenization_method,
             })
@@ -376,6 +392,7 @@ const _: () = {
                     "address_state" => b.address_state = FromValueOpt::from_value(v),
                     "address_zip" => b.address_zip = FromValueOpt::from_value(v),
                     "address_zip_check" => b.address_zip_check = FromValueOpt::from_value(v),
+                    "allow_redisplay" => b.allow_redisplay = FromValueOpt::from_value(v),
                     "available_payout_methods" => {
                         b.available_payout_methods = FromValueOpt::from_value(v)
                     }
@@ -398,6 +415,7 @@ const _: () = {
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
                     "networks" => b.networks = FromValueOpt::from_value(v),
+                    "regulated_status" => b.regulated_status = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "tokenization_method" => b.tokenization_method = FromValueOpt::from_value(v),
 
@@ -412,7 +430,7 @@ const _: () = {
 impl serde::Serialize for Card {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Card", 32)?;
+        let mut s = s.serialize_struct("Card", 34)?;
         s.serialize_field("account", &self.account)?;
         s.serialize_field("address_city", &self.address_city)?;
         s.serialize_field("address_country", &self.address_country)?;
@@ -422,6 +440,7 @@ impl serde::Serialize for Card {
         s.serialize_field("address_state", &self.address_state)?;
         s.serialize_field("address_zip", &self.address_zip)?;
         s.serialize_field("address_zip_check", &self.address_zip_check)?;
+        s.serialize_field("allow_redisplay", &self.allow_redisplay)?;
         s.serialize_field("available_payout_methods", &self.available_payout_methods)?;
         s.serialize_field("brand", &self.brand)?;
         s.serialize_field("country", &self.country)?;
@@ -442,11 +461,88 @@ impl serde::Serialize for Card {
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("name", &self.name)?;
         s.serialize_field("networks", &self.networks)?;
+        s.serialize_field("regulated_status", &self.regulated_status)?;
         s.serialize_field("status", &self.status)?;
         s.serialize_field("tokenization_method", &self.tokenization_method)?;
 
         s.serialize_field("object", "card")?;
         s.end()
+    }
+}
+/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+/// The field defaults to “unspecified”.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CardAllowRedisplay {
+    Always,
+    Limited,
+    Unspecified,
+}
+impl CardAllowRedisplay {
+    pub fn as_str(self) -> &'static str {
+        use CardAllowRedisplay::*;
+        match self {
+            Always => "always",
+            Limited => "limited",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for CardAllowRedisplay {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardAllowRedisplay::*;
+        match s {
+            "always" => Ok(Always),
+            "limited" => Ok(Limited),
+            "unspecified" => Ok(Unspecified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CardAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CardAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for CardAllowRedisplay {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for CardAllowRedisplay {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CardAllowRedisplay> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CardAllowRedisplay::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CardAllowRedisplay);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CardAllowRedisplay {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CardAllowRedisplay"))
     }
 }
 /// A set of available payout methods for this card.
@@ -519,6 +615,77 @@ impl<'de> serde::Deserialize<'de> for CardAvailablePayoutMethods {
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CardAvailablePayoutMethods"))
+    }
+}
+/// Status of a card based on the card issuer.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CardRegulatedStatus {
+    Regulated,
+    Unregulated,
+}
+impl CardRegulatedStatus {
+    pub fn as_str(self) -> &'static str {
+        use CardRegulatedStatus::*;
+        match self {
+            Regulated => "regulated",
+            Unregulated => "unregulated",
+        }
+    }
+}
+
+impl std::str::FromStr for CardRegulatedStatus {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardRegulatedStatus::*;
+        match s {
+            "regulated" => Ok(Regulated),
+            "unregulated" => Ok(Unregulated),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CardRegulatedStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CardRegulatedStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for CardRegulatedStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for CardRegulatedStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CardRegulatedStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CardRegulatedStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CardRegulatedStatus);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CardRegulatedStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CardRegulatedStatus"))
     }
 }
 impl stripe_types::Object for Card {

@@ -4,17 +4,17 @@
 pub struct AccountCapabilityFutureRequirements {
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     pub alternatives: Option<Vec<stripe_shared::AccountRequirementsAlternative>>,
-    /// Date on which `future_requirements` merges with the main `requirements` hash and `future_requirements` becomes empty.
+    /// Date on which `future_requirements` becomes the main `requirements` hash and `future_requirements` becomes empty.
     /// After the transition, `currently_due` requirements may immediately become `past_due`, but the account may also be given a grace period depending on the capability's enablement state prior to transitioning.
     pub current_deadline: Option<stripe_types::Timestamp>,
     /// Fields that need to be collected to keep the capability enabled.
     /// If not collected by `future_requirements[current_deadline]`, these fields will transition to the main `requirements` hash.
     pub currently_due: Vec<String>,
-    /// This is typed as a string for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is empty because fields in `future_requirements` will never disable the account.
-    pub disabled_reason: Option<String>,
+    /// This is typed as an enum for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is null because fields in `future_requirements` will never disable the account.
+    pub disabled_reason: Option<AccountCapabilityFutureRequirementsDisabledReason>,
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<stripe_shared::AccountRequirementsError>,
-    /// Fields that need to be collected assuming all volume thresholds are reached.
+    /// Fields you must collect when all thresholds are reached.
     /// As they become required, they appear in `currently_due` as well.
     pub eventually_due: Vec<String>,
     /// Fields that weren't collected by `requirements.current_deadline`.
@@ -32,7 +32,7 @@ pub struct AccountCapabilityFutureRequirementsBuilder {
     alternatives: Option<Option<Vec<stripe_shared::AccountRequirementsAlternative>>>,
     current_deadline: Option<Option<stripe_types::Timestamp>>,
     currently_due: Option<Vec<String>>,
-    disabled_reason: Option<Option<String>>,
+    disabled_reason: Option<Option<AccountCapabilityFutureRequirementsDisabledReason>>,
     errors: Option<Vec<stripe_shared::AccountRequirementsError>>,
     eventually_due: Option<Vec<String>>,
     past_due: Option<Vec<String>>,
@@ -119,7 +119,7 @@ const _: () = {
                 self.alternatives.take(),
                 self.current_deadline,
                 self.currently_due.take(),
-                self.disabled_reason.take(),
+                self.disabled_reason,
                 self.errors.take(),
                 self.eventually_due.take(),
                 self.past_due.take(),
@@ -180,3 +180,104 @@ const _: () = {
         }
     }
 };
+/// This is typed as an enum for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is null because fields in `future_requirements` will never disable the account.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum AccountCapabilityFutureRequirementsDisabledReason {
+    Other,
+    PausedInactivity,
+    PendingOnboarding,
+    PendingReview,
+    PlatformDisabled,
+    PlatformPaused,
+    RejectedInactivity,
+    RejectedOther,
+    RejectedUnsupportedBusiness,
+    RequirementsFieldsNeeded,
+}
+impl AccountCapabilityFutureRequirementsDisabledReason {
+    pub fn as_str(self) -> &'static str {
+        use AccountCapabilityFutureRequirementsDisabledReason::*;
+        match self {
+            Other => "other",
+            PausedInactivity => "paused.inactivity",
+            PendingOnboarding => "pending.onboarding",
+            PendingReview => "pending.review",
+            PlatformDisabled => "platform_disabled",
+            PlatformPaused => "platform_paused",
+            RejectedInactivity => "rejected.inactivity",
+            RejectedOther => "rejected.other",
+            RejectedUnsupportedBusiness => "rejected.unsupported_business",
+            RequirementsFieldsNeeded => "requirements.fields_needed",
+        }
+    }
+}
+
+impl std::str::FromStr for AccountCapabilityFutureRequirementsDisabledReason {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountCapabilityFutureRequirementsDisabledReason::*;
+        match s {
+            "other" => Ok(Other),
+            "paused.inactivity" => Ok(PausedInactivity),
+            "pending.onboarding" => Ok(PendingOnboarding),
+            "pending.review" => Ok(PendingReview),
+            "platform_disabled" => Ok(PlatformDisabled),
+            "platform_paused" => Ok(PlatformPaused),
+            "rejected.inactivity" => Ok(RejectedInactivity),
+            "rejected.other" => Ok(RejectedOther),
+            "rejected.unsupported_business" => Ok(RejectedUnsupportedBusiness),
+            "requirements.fields_needed" => Ok(RequirementsFieldsNeeded),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for AccountCapabilityFutureRequirementsDisabledReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AccountCapabilityFutureRequirementsDisabledReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for AccountCapabilityFutureRequirementsDisabledReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for AccountCapabilityFutureRequirementsDisabledReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<AccountCapabilityFutureRequirementsDisabledReason> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            AccountCapabilityFutureRequirementsDisabledReason::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(AccountCapabilityFutureRequirementsDisabledReason);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for AccountCapabilityFutureRequirementsDisabledReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for AccountCapabilityFutureRequirementsDisabledReason",
+            )
+        })
+    }
+}

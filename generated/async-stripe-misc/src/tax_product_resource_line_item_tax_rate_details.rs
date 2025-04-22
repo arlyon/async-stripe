@@ -75,7 +75,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(display_name), Some(percentage_decimal), Some(tax_type)) =
-                (self.display_name.take(), self.percentage_decimal.take(), self.tax_type)
+                (self.display_name.take(), self.percentage_decimal.take(), self.tax_type.take())
             else {
                 return None;
             };
@@ -118,7 +118,8 @@ const _: () = {
     }
 };
 /// The tax type, such as `vat` or `sales_tax`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxProductResourceLineItemTaxRateDetailsTaxType {
     AmusementTax,
     CommunicationsTax,
@@ -129,12 +130,16 @@ pub enum TaxProductResourceLineItemTaxRateDetailsTaxType {
     LeaseTax,
     Pst,
     Qst,
+    RetailDeliveryFee,
     Rst,
     SalesTax,
+    ServiceTax,
     Vat,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxProductResourceLineItemTaxRateDetailsTaxType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductResourceLineItemTaxRateDetailsTaxType::*;
         match self {
             AmusementTax => "amusement_tax",
@@ -146,15 +151,18 @@ impl TaxProductResourceLineItemTaxRateDetailsTaxType {
             LeaseTax => "lease_tax",
             Pst => "pst",
             Qst => "qst",
+            RetailDeliveryFee => "retail_delivery_fee",
             Rst => "rst",
             SalesTax => "sales_tax",
+            ServiceTax => "service_tax",
             Vat => "vat",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxProductResourceLineItemTaxRateDetailsTaxType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceLineItemTaxRateDetailsTaxType::*;
         match s {
@@ -167,10 +175,12 @@ impl std::str::FromStr for TaxProductResourceLineItemTaxRateDetailsTaxType {
             "lease_tax" => Ok(LeaseTax),
             "pst" => Ok(Pst),
             "qst" => Ok(Qst),
+            "retail_delivery_fee" => Ok(RetailDeliveryFee),
             "rst" => Ok(Rst),
             "sales_tax" => Ok(SalesTax),
+            "service_tax" => Ok(ServiceTax),
             "vat" => Ok(Vat),
-            _ => Err(stripe_types::StripeParseError),
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -203,10 +213,7 @@ impl miniserde::Deserialize for TaxProductResourceLineItemTaxRateDetailsTaxType 
 impl miniserde::de::Visitor for crate::Place<TaxProductResourceLineItemTaxRateDetailsTaxType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            TaxProductResourceLineItemTaxRateDetailsTaxType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(TaxProductResourceLineItemTaxRateDetailsTaxType::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -217,10 +224,6 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceLineItemTaxRateDetailsTa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TaxProductResourceLineItemTaxRateDetailsTaxType",
-            )
-        })
+        Ok(Self::from_str(&s).unwrap())
     }
 }

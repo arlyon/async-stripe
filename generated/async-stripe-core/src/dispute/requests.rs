@@ -47,6 +47,7 @@ impl ListDispute {
         self.inner.charge = Some(charge.into());
         self
     }
+    /// Only return disputes that were created during the given date interval.
     pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
         self.inner.created = Some(created.into());
         self
@@ -238,6 +239,9 @@ pub struct UpdateDisputeEvidence {
     /// The Stripe ID for the prior charge which appears to be a duplicate of the disputed charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duplicate_charge_id: Option<String>,
+    /// Additional evidence for qualifying evidence programs.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enhanced_evidence: Option<UpdateDisputeEvidenceEnhancedEvidence>,
     /// A description of the product or service that was sold. Has a maximum character count of 20,000.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_description: Option<String>,
@@ -305,6 +309,7 @@ impl UpdateDisputeEvidence {
             duplicate_charge_documentation: None,
             duplicate_charge_explanation: None,
             duplicate_charge_id: None,
+            enhanced_evidence: None,
             product_description: None,
             receipt: None,
             refund_policy: None,
@@ -323,6 +328,221 @@ impl UpdateDisputeEvidence {
     }
 }
 impl Default for UpdateDisputeEvidence {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Additional evidence for qualifying evidence programs.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateDisputeEvidenceEnhancedEvidence {
+    /// Evidence provided for Visa Compelling Evidence 3.0 evidence submission.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visa_compelling_evidence_3:
+        Option<UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3>,
+    /// Evidence provided for Visa compliance evidence submission.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visa_compliance: Option<UpdateDisputeEvidenceEnhancedEvidenceVisaCompliance>,
+}
+impl UpdateDisputeEvidenceEnhancedEvidence {
+    pub fn new() -> Self {
+        Self { visa_compelling_evidence_3: None, visa_compliance: None }
+    }
+}
+impl Default for UpdateDisputeEvidenceEnhancedEvidence {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Evidence provided for Visa Compelling Evidence 3.0 evidence submission.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3 {
+    /// Disputed transaction details for Visa Compelling Evidence 3.0 evidence submission.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disputed_transaction:
+        Option<UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransaction>,
+    /// List of exactly two prior undisputed transaction objects for Visa Compelling Evidence 3.0 evidence submission.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prior_undisputed_transactions: Option<
+        Vec<
+            UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3PriorUndisputedTransactions,
+        >,
+    >,
+}
+impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3 {
+    pub fn new() -> Self {
+        Self { disputed_transaction: None, prior_undisputed_transactions: None }
+    }
+}
+impl Default for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Disputed transaction details for Visa Compelling Evidence 3.0 evidence submission.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransaction {
+    /// User Account ID used to log into business platform. Must be recognizable by the user.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub customer_account_id: Option<String>,
+        /// Unique identifier of the cardholder’s device derived from a combination of at least two hardware and software attributes.
+    /// Must be at least 20 characters.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub customer_device_fingerprint: Option<String>,
+        /// Unique identifier of the cardholder’s device such as a device serial number (e.g., International Mobile Equipment Identity [IMEI]).
+    /// Must be at least 15 characters.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub customer_device_id: Option<String>,
+    /// The email address of the customer.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub customer_email_address: Option<String>,
+    /// The IP address that the customer used when making the purchase.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub customer_purchase_ip: Option<String>,
+    /// Categorization of disputed payment.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub merchandise_or_services: Option<UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices>,
+    /// A description of the product or service that was sold.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub product_description: Option<String>,
+        /// The address to which a physical product was shipped.
+    /// All fields are required for Visa Compelling Evidence 3.0 evidence submission.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub shipping_address: Option<ShippingAddress>,
+
+}
+impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransaction {
+    pub fn new() -> Self {
+        Self {
+            customer_account_id: None,
+            customer_device_fingerprint: None,
+            customer_device_id: None,
+            customer_email_address: None,
+            customer_purchase_ip: None,
+            merchandise_or_services: None,
+            product_description: None,
+            shipping_address: None,
+        }
+    }
+}
+impl Default for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransaction {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Categorization of disputed payment.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices
+{
+    Merchandise,
+    Services,
+}
+impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
+    pub fn as_str(self) -> &'static str {
+        use UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::*;
+        match self {
+Merchandise => "merchandise",
+Services => "services",
+
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::*;
+        match s {
+    "merchandise" => Ok(Merchandise),
+"services" => Ok(Services),
+_ => Err(stripe_types::StripeParseError)
+
+        }
+    }
+}
+impl std::fmt::Display for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices"))
+    }
+}
+/// List of exactly two prior undisputed transaction objects for Visa Compelling Evidence 3.0 evidence submission.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3PriorUndisputedTransactions {
+    /// Stripe charge ID for the Visa Compelling Evidence 3.0 eligible prior charge.
+    pub charge: String,
+    /// User Account ID used to log into business platform. Must be recognizable by the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_account_id: Option<String>,
+    /// Unique identifier of the cardholder’s device derived from a combination of at least two hardware and software attributes.
+    /// Must be at least 20 characters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_device_fingerprint: Option<String>,
+    /// Unique identifier of the cardholder’s device such as a device serial number (e.g., International Mobile Equipment Identity [IMEI]).
+    /// Must be at least 15 characters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_device_id: Option<String>,
+    /// The email address of the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_email_address: Option<String>,
+    /// The IP address that the customer used when making the purchase.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_purchase_ip: Option<String>,
+    /// A description of the product or service that was sold.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_description: Option<String>,
+    /// The address to which a physical product was shipped.
+    /// All fields are required for Visa Compelling Evidence 3.0 evidence submission.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_address: Option<ShippingAddress>,
+}
+impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3PriorUndisputedTransactions {
+    pub fn new(charge: impl Into<String>) -> Self {
+        Self {
+            charge: charge.into(),
+            customer_account_id: None,
+            customer_device_fingerprint: None,
+            customer_device_id: None,
+            customer_email_address: None,
+            customer_purchase_ip: None,
+            product_description: None,
+            shipping_address: None,
+        }
+    }
+}
+/// Evidence provided for Visa compliance evidence submission.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompliance {
+    /// A field acknowledging the fee incurred when countering a Visa compliance dispute.
+    /// If this field is set to true, evidence can be submitted for the compliance dispute.
+    /// Stripe collects a 500 USD (or local equivalent) amount to cover the network costs associated with resolving compliance disputes.
+    /// Stripe refunds the 500 USD network fee if you win the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fee_acknowledged: Option<bool>,
+}
+impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompliance {
+    pub fn new() -> Self {
+        Self { fee_acknowledged: None }
+    }
+}
+impl Default for UpdateDisputeEvidenceEnhancedEvidenceVisaCompliance {
     fn default() -> Self {
         Self::new()
     }
@@ -455,5 +675,37 @@ impl StripeRequest for CloseDispute {
         let dispute = &self.dispute;
         RequestBuilder::new(StripeMethod::Post, format!("/disputes/{dispute}/close"))
             .form(&self.inner)
+    }
+}
+
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ShippingAddress {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+impl ShippingAddress {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for ShippingAddress {
+    fn default() -> Self {
+        Self::new()
     }
 }

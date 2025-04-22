@@ -229,7 +229,7 @@ impl ListPrice {
         self.inner.limit = Some(limit.into());
         self
     }
-    /// Only return the price with these lookup_keys, if any exist.
+    /// Only return the price with these lookup_keys, if any exist. You can specify up to 10 lookup_keys.
     pub fn lookup_keys(mut self, lookup_keys: impl Into<Vec<String>>) -> Self {
         self.inner.lookup_keys = Some(lookup_keys.into());
         self
@@ -630,9 +630,6 @@ impl CreatePriceProductData {
 /// The recurring components of a price such as `interval` and `usage_type`.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePriceRecurring {
-    /// Specifies a usage aggregation strategy for prices of `usage_type=metered`. Defaults to `sum`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub aggregate_usage: Option<CreatePriceRecurringAggregateUsage>,
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreatePriceRecurringInterval,
     /// The number of intervals between subscription billings.
@@ -657,75 +654,12 @@ pub struct CreatePriceRecurring {
 impl CreatePriceRecurring {
     pub fn new(interval: impl Into<CreatePriceRecurringInterval>) -> Self {
         Self {
-            aggregate_usage: None,
             interval: interval.into(),
             interval_count: None,
             meter: None,
             trial_period_days: None,
             usage_type: None,
         }
-    }
-}
-/// Specifies a usage aggregation strategy for prices of `usage_type=metered`. Defaults to `sum`.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CreatePriceRecurringAggregateUsage {
-    LastDuringPeriod,
-    LastEver,
-    Max,
-    Sum,
-}
-impl CreatePriceRecurringAggregateUsage {
-    pub fn as_str(self) -> &'static str {
-        use CreatePriceRecurringAggregateUsage::*;
-        match self {
-            LastDuringPeriod => "last_during_period",
-            LastEver => "last_ever",
-            Max => "max",
-            Sum => "sum",
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePriceRecurringAggregateUsage {
-    type Err = stripe_types::StripeParseError;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePriceRecurringAggregateUsage::*;
-        match s {
-            "last_during_period" => Ok(LastDuringPeriod),
-            "last_ever" => Ok(LastEver),
-            "max" => Ok(Max),
-            "sum" => Ok(Sum),
-            _ => Err(stripe_types::StripeParseError),
-        }
-    }
-}
-impl std::fmt::Display for CreatePriceRecurringAggregateUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for CreatePriceRecurringAggregateUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for CreatePriceRecurringAggregateUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePriceRecurringAggregateUsage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreatePriceRecurringAggregateUsage")
-        })
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
@@ -967,7 +901,8 @@ impl<'de> serde::Deserialize<'de> for CreatePriceTransformQuantityRound {
         })
     }
 }
-/// Creates a new price for an existing product. The price can be recurring or one-time.
+/// Creates a new [Price](https://docs.stripe.com/api/prices) for an existing [Product](https://docs.stripe.com/api/products).
+/// The Price can be recurring or one-time.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePrice {
     inner: CreatePriceBuilder,
@@ -1036,7 +971,7 @@ impl CreatePrice {
         self.inner.nickname = Some(nickname.into());
         self
     }
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub fn product(mut self, product: impl Into<String>) -> Self {
         self.inner.product = Some(product.into());
         self
