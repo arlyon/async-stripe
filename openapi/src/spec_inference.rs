@@ -292,10 +292,7 @@ impl<'a> Inference<'a> {
         field: &ReferenceOr<T>,
     ) -> StructField {
         let rust_type = self.field_name(field_name).infer_schema_or_ref_type(field);
-        let mut field_rename = field_name.to_snake_case();
-        if field_rename == "type" {
-            field_rename = "type_".into();
-        }
+        let field_rename = field_name.to_snake_case();
 
         // The `deleted` field is only used as a de/ser discriminant, so there is no reason to make it public
         let force_private =

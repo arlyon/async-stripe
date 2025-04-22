@@ -156,7 +156,7 @@ impl<'a> ObjectWriter<'a> {
         let builder_name = RustIdent::joined(ident, "Builder");
         let mut builder_inner = String::new();
         for field in fields {
-            let f_name = &field.field_name;
+            let f_name = &field.variable_name();
             let printable = self.components.construct_printable_type(&field.rust_type);
             let _ = writeln!(builder_inner, "{f_name}: Option<{printable}>,");
         }
@@ -200,7 +200,7 @@ fn miniserde_struct_inner(
     let mut take_out_left = String::new();
     let mut take_out_right = String::new();
     for field in fields {
-        let f_name = &field.field_name;
+        let f_name = &field.variable_name();
         let wire_name = field.wire_name();
 
         let _ = writeln!(key_inner, r#""{wire_name}" => Deserialize::begin(&mut self.{f_name}),"#);
@@ -224,7 +224,7 @@ fn miniserde_struct_inner(
     }
 
     let comma_sep_fields =
-        fields.iter().map(|f| f.field_name.clone()).collect::<Vec<_>>().join(",");
+        fields.iter().map(|f| f.variable_name().clone()).collect::<Vec<_>>().join(",");
 
     formatdoc! {r#"
     impl Deserialize for {ident} {{
