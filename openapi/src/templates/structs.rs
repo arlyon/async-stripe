@@ -63,7 +63,7 @@ impl<'a> ObjectWriter<'a> {
         for field in fields.iter().filter(|f| f.required) {
             let printable = self.get_printable(&field.rust_type);
             let typ = PrintableWithLifetime::new(&printable, self.lifetime).impl_into();
-            let _ = write!(params, "{}: {typ},", field.field_name);
+            let _ = write!(params, "{}: {typ},", field.variable_name());
         }
         params
     }
@@ -74,7 +74,7 @@ impl<'a> ObjectWriter<'a> {
         let mut cons_inner = String::new();
         let params = self.get_required_param_args(&struct_.fields);
         for field in &struct_.fields {
-            let f_name = &field.field_name;
+            let f_name = &field.variable_name();
             if field.required {
                 let _ = write!(cons_inner, "{f_name}: {f_name}.into(),");
             } else {
@@ -126,8 +126,8 @@ impl<'a> ObjectWriter<'a> {
                 let _ = writeln!(out, "{}", write_doc_comment(doc_comment, 1).trim_end());
             }
         }
-        if let Some(renamer) = &field.rename_as {
-            serde_derive.maybe_write_rename(out, renamer);
+        if let Some(renamer) = field.rename_name() {
+            serde_derive.maybe_write_rename(out, &renamer);
         }
 
         if !field.required && field.rust_type.is_option() && self.usage.used_as_request_param {
@@ -150,7 +150,7 @@ impl<'a> ObjectWriter<'a> {
 
         let printable = self.get_printable(&field.rust_type);
         let typ = PrintableWithLifetime::new(&printable, self.lifetime);
-        let _ = writeln!(out, "{} {}: {typ},", field.vis, field.field_name);
+        let _ = writeln!(out, "{} {}: {typ},", field.vis, field.variable_name());
     }
 
     fn write_serde_serialization_with_object_tag(
@@ -165,7 +165,7 @@ impl<'a> ObjectWriter<'a> {
         let mut fields_inner = String::new();
         for field in fields {
             let wire_name = field.rename_as.as_ref().unwrap_or(&field.field_name);
-            let field_name = &field.field_name;
+            let field_name = &field.variable_name();
             let _ =
                 writeln!(fields_inner, r#"s.serialize_field("{wire_name}", &self.{field_name})?;"#);
         }

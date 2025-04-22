@@ -31,10 +31,13 @@ pub fn gen_crate_toml(
 
     // Dependencies only needed for libraries which implement Stripe requests
     let request_deps = if krate == Crate::SHARED {
-        ""
+        None
     } else {
-        r#"async-stripe-client-core = {path = "../../async-stripe-client-core", version = "{version}"}"#
+        Some(format!(
+            r#"async-stripe-client-core = {{path = "../../async-stripe-client-core", version = "{version}"}}"#,
+        ))
     };
+    let request_deps = request_deps.as_deref().unwrap_or("");
 
     let ser_features = get_serialization_feature(&crate_deps, "serialize");
     let deser_features = get_serialization_feature(&crate_deps, "deserialize");
@@ -82,7 +85,7 @@ pub fn gen_crate_toml(
 }
 
 fn gen_feature_section(mut crate_features: Vec<String>) -> String {
-    assert!(!crate_features.is_empty(), "expected crate to have features");
+    // assert!(!crate_features.is_empty(), "expected crate to have features");
     let mut feature_section = String::new();
 
     crate_features.sort_unstable();

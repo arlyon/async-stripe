@@ -175,10 +175,10 @@ impl RequestSpec {
         if let Some(fields) = self.param_struct_fields() {
             for field in fields {
                 if field.required {
-                    required_struct_fields.push((&field.field_name, &field.rust_type));
+                    required_struct_fields.push((field.variable_name(), &field.rust_type));
                 } else {
                     optional_struct_fields.push((
-                        &field.field_name,
+                        field.variable_name(),
                         &field.rust_type,
                         field.doc_comment.as_ref(),
                     ))

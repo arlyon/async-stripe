@@ -1,3 +1,4 @@
+use std::borrow::Cow;
 use std::fmt::{Debug, Display, Formatter};
 
 use indexmap::IndexMap;
@@ -272,6 +273,28 @@ impl StructField {
     /// Expected name of the field when (de)serializing
     pub fn wire_name(&self) -> &str {
         self.rename_as.as_ref().unwrap_or(&self.field_name)
+    }
+
+    /// The name of the field when referenced in code. This prevents
+    /// conflicts when field names clash with reserved keywords.
+    pub fn variable_name(&self) -> Cow<'_, str> {
+        let name = self.field_name.as_str();
+        let keywords = ["type", "as", "use", "struct", "enum", "const", "async", "await", "in"];
+        if keywords.contains(&name) {
+            Cow::Owned(format!("{}_", name))
+        } else {
+            Cow::Borrowed(name)
+        }
+    }
+
+    /// Returns Some(wire_name) when the:
+    /// - the rename_as field is set
+    /// - the field name is a reserved keyword
+    pub fn rename_name(&self) -> Option<&str> {
+        self.rename_as.as_deref().or_else(|| match self.variable_name() {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(_) => Some(&self.field_name),
+        })
     }
 
     pub fn vis(mut self, vis: Visibility) -> Self {
