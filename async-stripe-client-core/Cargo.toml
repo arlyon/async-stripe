@@ -17,8 +17,8 @@ edition.workspace = true
 name = "stripe_client_core"
 
 [dependencies]
-async-stripe-shared = { path = "../generated/async-stripe-shared" }
-async-stripe-types = { path = "../async-stripe-types" }
+async-stripe-shared = { path = "../generated/async-stripe-shared", version = "1.0.0-alpha.2" }
+async-stripe-types = { path = "../async-stripe-types", version = "1.0.0-alpha.2" }
 serde_json.workspace = true
 serde.workspace = true
 serde_qs.workspace = true
