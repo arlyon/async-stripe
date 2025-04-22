@@ -94,3 +94,14 @@ In some cases, it is helpful to have additional logic associated with a datatype
 capture a create `Charge` object. This additional impl goes in the `charge_ext.rs` file in the
 `resources` folder, to provide a clean seperation between generated and hand maintained files.
 If you notice that logic is missing, please add it to (or create) the appropriate `ext` file.
+
+## Versioning
+
+Due to the nature of the generated crates, all crates are versioned together. To bump the versions, will need to
+do the following steps:
+
+1. Bump the version in `Cargo.toml`
+2. Run the code generation with the new version `cd openapi && cargo run -- <version>`
+3. Update any version requirements in the manually managed packages
+4. Commit the changes
+5. Publish the changes `cargo workspaces publish --from-git --allow-branch next`
