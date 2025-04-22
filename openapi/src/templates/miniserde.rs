@@ -86,7 +86,7 @@ fn build_inner(ident: &RustIdent, builder_name: &RustIdent, objects: &EnumOfObje
         }}
     }}
 
-    impl<'a> Map for Builder<'a> {{
+    impl Map for Builder<'_> {{
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {{
             self.builder.key(k)
         }}
@@ -270,7 +270,7 @@ fn miniserde_struct_inner(
         }}
     }}
 
-    impl<'a> Map for Builder<'a> {{
+    impl Map for Builder<'_> {{
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {{
             self.builder.key(k)
         }}
