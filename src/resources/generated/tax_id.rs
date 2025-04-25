@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::client::{Client, Response};
-use crate::ids::TaxIdId;
+use crate::ids::{TaxIdId};
 use crate::params::{Deleted, Expand, Expandable, List, Object, Paginable, Timestamp};
 use crate::resources::{Account, Application, Customer};
 use serde::{Deserialize, Serialize};
@@ -42,7 +42,7 @@ pub struct TaxId {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<TaxIDsOwner>,
 
-    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
+    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
     ///
     /// Note that some legacy tax IDs have type `unknown`.
     #[serde(rename = "type")]
@@ -59,10 +59,12 @@ pub struct TaxId {
 }
 
 impl TaxId {
+
     /// Returns a list of tax IDs.
-    pub fn list(client: &Client, params: &ListTaxIds<'_>) -> Response<List<TaxId>> {
-        client.get_query("/tax_ids", params)
-    }
+pub fn list(client: &Client, params: &ListTaxIds<'_>) -> Response<List<TaxId>> {
+   client.get_query("/tax_ids", params)
+}
+
 
     /// Creates a new account or customer `tax_id` object.
     pub fn create(client: &Client, params: CreateTaxId<'_>) -> Response<TaxId> {
@@ -93,6 +95,7 @@ impl Object for TaxId {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxIDsOwner {
+
     /// The account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<Expandable<Account>>,
@@ -112,6 +115,7 @@ pub struct TaxIDsOwner {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxIdVerification {
+
     /// Verification status, one of `pending`, `verified`, `unverified`, or `unavailable`.
     pub status: TaxIdVerificationStatus,
 
@@ -125,6 +129,7 @@ pub struct TaxIdVerification {
 /// The parameters for `TaxId::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTaxId<'a> {
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -135,7 +140,7 @@ pub struct CreateTaxId<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<CreateTaxIdOwner>,
 
-    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
+    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
     #[serde(rename = "type")]
     pub type_: TaxIdTypeFilter,
 
@@ -145,13 +150,19 @@ pub struct CreateTaxId<'a> {
 
 impl<'a> CreateTaxId<'a> {
     pub fn new(type_: TaxIdTypeFilter, value: &'a str) -> Self {
-        CreateTaxId { expand: Default::default(), owner: Default::default(), type_, value }
+        CreateTaxId {
+            expand: Default::default(),
+            owner: Default::default(),
+            type_,
+            value,
+        }
     }
 }
 
 /// The parameters for `TaxId::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTaxIds<'a> {
+
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
@@ -197,11 +208,11 @@ impl<'a> ListTaxIds<'a> {
 impl Paginable for ListTaxIds<'_> {
     type O = TaxId;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTaxIdOwner {
+
     /// Account the tax ID belongs to.
     ///
     /// Required when `type=account`.
@@ -221,6 +232,7 @@ pub struct CreateTaxIdOwner {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ListTaxIdsOwner {
+
     /// Account the tax ID belongs to.
     ///
     /// Required when `type=account`.
@@ -361,33 +373,54 @@ impl std::default::Default for TaxIDsOwnerType {
 pub enum TaxIdType {
     AdNrt,
     AeTrn,
+    AlTin,
+    AmTin,
+    AoTin,
     ArCuit,
     AuAbn,
     AuArn,
+    AwTin,
+    AzTin,
+    BaTin,
+    BbTin,
+    BdBin,
+    BfIfu,
     BgUic,
+    BhVat,
+    BjIfu,
     BoTin,
     BrCnpj,
     BrCpf,
+    BsTin,
+    ByTin,
     CaBn,
     CaGstHst,
     CaPstBc,
     CaPstMb,
     CaPstSk,
     CaQst,
+    CdNif,
+    ChUid,
     ChVat,
     ClTin,
+    CmNiu,
     CnTin,
     CoNit,
     CrTin,
+    CvNif,
+    DeStn,
     DoRcn,
     EcRuc,
     EgTin,
     EsCif,
+    EtTin,
     EuOssVat,
     EuVat,
     GbVat,
     GeVat,
+    GnNif,
     HkBr,
+    HrOib,
     HuTin,
     IdNpwp,
     IlVat,
@@ -397,14 +430,28 @@ pub enum TaxIdType {
     JpRn,
     JpTrn,
     KePin,
+    KgTin,
+    KhTin,
     KrBrn,
+    KzBin,
+    LaTin,
     LiUid,
+    LiVat,
+    MaVat,
+    MdVat,
+    MePib,
+    MkVat,
+    MrNif,
     MxRfc,
     MyFrp,
     MyItn,
     MySst,
+    NgTin,
     NoVat,
+    NoVoec,
+    NpPan,
     NzGst,
+    OmVat,
     PeRuc,
     PhTin,
     RoTin,
@@ -415,17 +462,26 @@ pub enum TaxIdType {
     SgGst,
     SgUen,
     SiTin,
+    SnNinea,
+    SrFin,
     SvNit,
     ThVat,
+    TjTin,
     TrTin,
     TwVat,
+    TzVat,
     UaVat,
+    UgTin,
     Unknown,
     UsEin,
     UyRuc,
+    UzTin,
+    UzVat,
     VeRif,
     VnTin,
     ZaVat,
+    ZmTin,
+    ZwTin,
 }
 
 impl TaxIdType {
@@ -433,33 +489,54 @@ impl TaxIdType {
         match self {
             TaxIdType::AdNrt => "ad_nrt",
             TaxIdType::AeTrn => "ae_trn",
+            TaxIdType::AlTin => "al_tin",
+            TaxIdType::AmTin => "am_tin",
+            TaxIdType::AoTin => "ao_tin",
             TaxIdType::ArCuit => "ar_cuit",
             TaxIdType::AuAbn => "au_abn",
             TaxIdType::AuArn => "au_arn",
+            TaxIdType::AwTin => "aw_tin",
+            TaxIdType::AzTin => "az_tin",
+            TaxIdType::BaTin => "ba_tin",
+            TaxIdType::BbTin => "bb_tin",
+            TaxIdType::BdBin => "bd_bin",
+            TaxIdType::BfIfu => "bf_ifu",
             TaxIdType::BgUic => "bg_uic",
+            TaxIdType::BhVat => "bh_vat",
+            TaxIdType::BjIfu => "bj_ifu",
             TaxIdType::BoTin => "bo_tin",
             TaxIdType::BrCnpj => "br_cnpj",
             TaxIdType::BrCpf => "br_cpf",
+            TaxIdType::BsTin => "bs_tin",
+            TaxIdType::ByTin => "by_tin",
             TaxIdType::CaBn => "ca_bn",
             TaxIdType::CaGstHst => "ca_gst_hst",
             TaxIdType::CaPstBc => "ca_pst_bc",
             TaxIdType::CaPstMb => "ca_pst_mb",
             TaxIdType::CaPstSk => "ca_pst_sk",
             TaxIdType::CaQst => "ca_qst",
+            TaxIdType::CdNif => "cd_nif",
+            TaxIdType::ChUid => "ch_uid",
             TaxIdType::ChVat => "ch_vat",
             TaxIdType::ClTin => "cl_tin",
+            TaxIdType::CmNiu => "cm_niu",
             TaxIdType::CnTin => "cn_tin",
             TaxIdType::CoNit => "co_nit",
             TaxIdType::CrTin => "cr_tin",
+            TaxIdType::CvNif => "cv_nif",
+            TaxIdType::DeStn => "de_stn",
             TaxIdType::DoRcn => "do_rcn",
             TaxIdType::EcRuc => "ec_ruc",
             TaxIdType::EgTin => "eg_tin",
             TaxIdType::EsCif => "es_cif",
+            TaxIdType::EtTin => "et_tin",
             TaxIdType::EuOssVat => "eu_oss_vat",
             TaxIdType::EuVat => "eu_vat",
             TaxIdType::GbVat => "gb_vat",
             TaxIdType::GeVat => "ge_vat",
+            TaxIdType::GnNif => "gn_nif",
             TaxIdType::HkBr => "hk_br",
+            TaxIdType::HrOib => "hr_oib",
             TaxIdType::HuTin => "hu_tin",
             TaxIdType::IdNpwp => "id_npwp",
             TaxIdType::IlVat => "il_vat",
@@ -469,14 +546,28 @@ impl TaxIdType {
             TaxIdType::JpRn => "jp_rn",
             TaxIdType::JpTrn => "jp_trn",
             TaxIdType::KePin => "ke_pin",
+            TaxIdType::KgTin => "kg_tin",
+            TaxIdType::KhTin => "kh_tin",
             TaxIdType::KrBrn => "kr_brn",
+            TaxIdType::KzBin => "kz_bin",
+            TaxIdType::LaTin => "la_tin",
             TaxIdType::LiUid => "li_uid",
+            TaxIdType::LiVat => "li_vat",
+            TaxIdType::MaVat => "ma_vat",
+            TaxIdType::MdVat => "md_vat",
+            TaxIdType::MePib => "me_pib",
+            TaxIdType::MkVat => "mk_vat",
+            TaxIdType::MrNif => "mr_nif",
             TaxIdType::MxRfc => "mx_rfc",
             TaxIdType::MyFrp => "my_frp",
             TaxIdType::MyItn => "my_itn",
             TaxIdType::MySst => "my_sst",
+            TaxIdType::NgTin => "ng_tin",
             TaxIdType::NoVat => "no_vat",
+            TaxIdType::NoVoec => "no_voec",
+            TaxIdType::NpPan => "np_pan",
             TaxIdType::NzGst => "nz_gst",
+            TaxIdType::OmVat => "om_vat",
             TaxIdType::PeRuc => "pe_ruc",
             TaxIdType::PhTin => "ph_tin",
             TaxIdType::RoTin => "ro_tin",
@@ -487,17 +578,26 @@ impl TaxIdType {
             TaxIdType::SgGst => "sg_gst",
             TaxIdType::SgUen => "sg_uen",
             TaxIdType::SiTin => "si_tin",
+            TaxIdType::SnNinea => "sn_ninea",
+            TaxIdType::SrFin => "sr_fin",
             TaxIdType::SvNit => "sv_nit",
             TaxIdType::ThVat => "th_vat",
+            TaxIdType::TjTin => "tj_tin",
             TaxIdType::TrTin => "tr_tin",
             TaxIdType::TwVat => "tw_vat",
+            TaxIdType::TzVat => "tz_vat",
             TaxIdType::UaVat => "ua_vat",
+            TaxIdType::UgTin => "ug_tin",
             TaxIdType::Unknown => "unknown",
             TaxIdType::UsEin => "us_ein",
             TaxIdType::UyRuc => "uy_ruc",
+            TaxIdType::UzTin => "uz_tin",
+            TaxIdType::UzVat => "uz_vat",
             TaxIdType::VeRif => "ve_rif",
             TaxIdType::VnTin => "vn_tin",
             TaxIdType::ZaVat => "za_vat",
+            TaxIdType::ZmTin => "zm_tin",
+            TaxIdType::ZwTin => "zw_tin",
         }
     }
 }
@@ -525,33 +625,54 @@ impl std::default::Default for TaxIdType {
 pub enum TaxIdTypeFilter {
     AdNrt,
     AeTrn,
+    AlTin,
+    AmTin,
+    AoTin,
     ArCuit,
     AuAbn,
     AuArn,
+    AwTin,
+    AzTin,
+    BaTin,
+    BbTin,
+    BdBin,
+    BfIfu,
     BgUic,
+    BhVat,
+    BjIfu,
     BoTin,
     BrCnpj,
     BrCpf,
+    BsTin,
+    ByTin,
     CaBn,
     CaGstHst,
     CaPstBc,
     CaPstMb,
     CaPstSk,
     CaQst,
+    CdNif,
+    ChUid,
     ChVat,
     ClTin,
+    CmNiu,
     CnTin,
     CoNit,
     CrTin,
+    CvNif,
+    DeStn,
     DoRcn,
     EcRuc,
     EgTin,
     EsCif,
+    EtTin,
     EuOssVat,
     EuVat,
     GbVat,
     GeVat,
+    GnNif,
     HkBr,
+    HrOib,
     HuTin,
     IdNpwp,
     IlVat,
@@ -561,14 +682,28 @@ pub enum TaxIdTypeFilter {
     JpRn,
     JpTrn,
     KePin,
+    KgTin,
+    KhTin,
     KrBrn,
+    KzBin,
+    LaTin,
     LiUid,
+    LiVat,
+    MaVat,
+    MdVat,
+    MePib,
+    MkVat,
+    MrNif,
     MxRfc,
     MyFrp,
     MyItn,
     MySst,
+    NgTin,
     NoVat,
+    NoVoec,
+    NpPan,
     NzGst,
+    OmVat,
     PeRuc,
     PhTin,
     RoTin,
@@ -579,16 +714,25 @@ pub enum TaxIdTypeFilter {
     SgGst,
     SgUen,
     SiTin,
+    SnNinea,
+    SrFin,
     SvNit,
     ThVat,
+    TjTin,
     TrTin,
     TwVat,
+    TzVat,
     UaVat,
+    UgTin,
     UsEin,
     UyRuc,
+    UzTin,
+    UzVat,
     VeRif,
     VnTin,
     ZaVat,
+    ZmTin,
+    ZwTin,
 }
 
 impl TaxIdTypeFilter {
@@ -596,33 +740,54 @@ impl TaxIdTypeFilter {
         match self {
             TaxIdTypeFilter::AdNrt => "ad_nrt",
             TaxIdTypeFilter::AeTrn => "ae_trn",
+            TaxIdTypeFilter::AlTin => "al_tin",
+            TaxIdTypeFilter::AmTin => "am_tin",
+            TaxIdTypeFilter::AoTin => "ao_tin",
             TaxIdTypeFilter::ArCuit => "ar_cuit",
             TaxIdTypeFilter::AuAbn => "au_abn",
             TaxIdTypeFilter::AuArn => "au_arn",
+            TaxIdTypeFilter::AwTin => "aw_tin",
+            TaxIdTypeFilter::AzTin => "az_tin",
+            TaxIdTypeFilter::BaTin => "ba_tin",
+            TaxIdTypeFilter::BbTin => "bb_tin",
+            TaxIdTypeFilter::BdBin => "bd_bin",
+            TaxIdTypeFilter::BfIfu => "bf_ifu",
             TaxIdTypeFilter::BgUic => "bg_uic",
+            TaxIdTypeFilter::BhVat => "bh_vat",
+            TaxIdTypeFilter::BjIfu => "bj_ifu",
             TaxIdTypeFilter::BoTin => "bo_tin",
             TaxIdTypeFilter::BrCnpj => "br_cnpj",
             TaxIdTypeFilter::BrCpf => "br_cpf",
+            TaxIdTypeFilter::BsTin => "bs_tin",
+            TaxIdTypeFilter::ByTin => "by_tin",
             TaxIdTypeFilter::CaBn => "ca_bn",
             TaxIdTypeFilter::CaGstHst => "ca_gst_hst",
             TaxIdTypeFilter::CaPstBc => "ca_pst_bc",
             TaxIdTypeFilter::CaPstMb => "ca_pst_mb",
             TaxIdTypeFilter::CaPstSk => "ca_pst_sk",
             TaxIdTypeFilter::CaQst => "ca_qst",
+            TaxIdTypeFilter::CdNif => "cd_nif",
+            TaxIdTypeFilter::ChUid => "ch_uid",
             TaxIdTypeFilter::ChVat => "ch_vat",
             TaxIdTypeFilter::ClTin => "cl_tin",
+            TaxIdTypeFilter::CmNiu => "cm_niu",
             TaxIdTypeFilter::CnTin => "cn_tin",
             TaxIdTypeFilter::CoNit => "co_nit",
             TaxIdTypeFilter::CrTin => "cr_tin",
+            TaxIdTypeFilter::CvNif => "cv_nif",
+            TaxIdTypeFilter::DeStn => "de_stn",
             TaxIdTypeFilter::DoRcn => "do_rcn",
             TaxIdTypeFilter::EcRuc => "ec_ruc",
             TaxIdTypeFilter::EgTin => "eg_tin",
             TaxIdTypeFilter::EsCif => "es_cif",
+            TaxIdTypeFilter::EtTin => "et_tin",
             TaxIdTypeFilter::EuOssVat => "eu_oss_vat",
             TaxIdTypeFilter::EuVat => "eu_vat",
             TaxIdTypeFilter::GbVat => "gb_vat",
             TaxIdTypeFilter::GeVat => "ge_vat",
+            TaxIdTypeFilter::GnNif => "gn_nif",
             TaxIdTypeFilter::HkBr => "hk_br",
+            TaxIdTypeFilter::HrOib => "hr_oib",
             TaxIdTypeFilter::HuTin => "hu_tin",
             TaxIdTypeFilter::IdNpwp => "id_npwp",
             TaxIdTypeFilter::IlVat => "il_vat",
@@ -632,14 +797,28 @@ impl TaxIdTypeFilter {
             TaxIdTypeFilter::JpRn => "jp_rn",
             TaxIdTypeFilter::JpTrn => "jp_trn",
             TaxIdTypeFilter::KePin => "ke_pin",
+            TaxIdTypeFilter::KgTin => "kg_tin",
+            TaxIdTypeFilter::KhTin => "kh_tin",
             TaxIdTypeFilter::KrBrn => "kr_brn",
+            TaxIdTypeFilter::KzBin => "kz_bin",
+            TaxIdTypeFilter::LaTin => "la_tin",
             TaxIdTypeFilter::LiUid => "li_uid",
+            TaxIdTypeFilter::LiVat => "li_vat",
+            TaxIdTypeFilter::MaVat => "ma_vat",
+            TaxIdTypeFilter::MdVat => "md_vat",
+            TaxIdTypeFilter::MePib => "me_pib",
+            TaxIdTypeFilter::MkVat => "mk_vat",
+            TaxIdTypeFilter::MrNif => "mr_nif",
             TaxIdTypeFilter::MxRfc => "mx_rfc",
             TaxIdTypeFilter::MyFrp => "my_frp",
             TaxIdTypeFilter::MyItn => "my_itn",
             TaxIdTypeFilter::MySst => "my_sst",
+            TaxIdTypeFilter::NgTin => "ng_tin",
             TaxIdTypeFilter::NoVat => "no_vat",
+            TaxIdTypeFilter::NoVoec => "no_voec",
+            TaxIdTypeFilter::NpPan => "np_pan",
             TaxIdTypeFilter::NzGst => "nz_gst",
+            TaxIdTypeFilter::OmVat => "om_vat",
             TaxIdTypeFilter::PeRuc => "pe_ruc",
             TaxIdTypeFilter::PhTin => "ph_tin",
             TaxIdTypeFilter::RoTin => "ro_tin",
@@ -650,16 +829,25 @@ impl TaxIdTypeFilter {
             TaxIdTypeFilter::SgGst => "sg_gst",
             TaxIdTypeFilter::SgUen => "sg_uen",
             TaxIdTypeFilter::SiTin => "si_tin",
+            TaxIdTypeFilter::SnNinea => "sn_ninea",
+            TaxIdTypeFilter::SrFin => "sr_fin",
             TaxIdTypeFilter::SvNit => "sv_nit",
             TaxIdTypeFilter::ThVat => "th_vat",
+            TaxIdTypeFilter::TjTin => "tj_tin",
             TaxIdTypeFilter::TrTin => "tr_tin",
             TaxIdTypeFilter::TwVat => "tw_vat",
+            TaxIdTypeFilter::TzVat => "tz_vat",
             TaxIdTypeFilter::UaVat => "ua_vat",
+            TaxIdTypeFilter::UgTin => "ug_tin",
             TaxIdTypeFilter::UsEin => "us_ein",
             TaxIdTypeFilter::UyRuc => "uy_ruc",
+            TaxIdTypeFilter::UzTin => "uz_tin",
+            TaxIdTypeFilter::UzVat => "uz_vat",
             TaxIdTypeFilter::VeRif => "ve_rif",
             TaxIdTypeFilter::VnTin => "vn_tin",
             TaxIdTypeFilter::ZaVat => "za_vat",
+            TaxIdTypeFilter::ZmTin => "zm_tin",
+            TaxIdTypeFilter::ZwTin => "zw_tin",
         }
     }
 }
