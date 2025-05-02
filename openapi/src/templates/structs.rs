@@ -11,7 +11,7 @@ use crate::templates::utils::{
 };
 use crate::templates::ObjectWriter;
 
-impl<'a> ObjectWriter<'a> {
+impl ObjectWriter<'_> {
     pub fn write_struct_definition(&self, out: &mut String, struct_: &Struct) {
         let mut serde_derive = SerdeDeriveState::default();
         // In theory this could be supported, but it would require not borrowing in request structs
@@ -127,7 +127,7 @@ impl<'a> ObjectWriter<'a> {
             }
         }
         if let Some(renamer) = field.rename_name() {
-            serde_derive.maybe_write_rename(out, &renamer);
+            serde_derive.maybe_write_rename(out, renamer);
         }
 
         if !field.required && field.rust_type.is_option() && self.usage.used_as_request_param {
@@ -136,7 +136,7 @@ impl<'a> ObjectWriter<'a> {
 
         if matches!(
             field.rust_type.with_option_stripped(),
-            RustType::Simple(SimpleType::Ext(ExtType::Value { .. }))
+            RustType::Simple(SimpleType::Ext(ExtType::Value))
         ) {
             let with =
                 if field.rust_type.is_option() { "with_serde_json_opt" } else { "with_serde_json" };

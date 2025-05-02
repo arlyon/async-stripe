@@ -1,3 +1,4 @@
+#[allow(non_camel_case_types)]
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ApiVersion {

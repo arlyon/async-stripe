@@ -175,7 +175,7 @@ mod impl_deserialize {
         url: Option<String>,
     }
 
-    impl<'a, T: Deserialize> Map for ListBuilder<'a, T> {
+    impl<T: Deserialize> Map for ListBuilder<'_, T> {
         fn key(&mut self, k: &str) -> miniserde::Result<&mut dyn Visitor> {
             match k {
                 "url" => Ok(Deserialize::begin(&mut self.url)),
@@ -246,7 +246,7 @@ mod impl_deserialize {
         }
     }
 
-    impl<'a, T: Deserialize> Map for SearchListBuilder<'a, T> {
+    impl<T: Deserialize> Map for SearchListBuilder<'_, T> {
         fn key(&mut self, k: &str) -> miniserde::Result<&mut dyn Visitor> {
             match k {
                 "url" => Ok(Deserialize::begin(&mut self.url)),
