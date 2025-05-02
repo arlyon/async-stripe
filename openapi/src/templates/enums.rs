@@ -8,7 +8,7 @@ use crate::templates::miniserde::gen_enum_of_objects_miniserde;
 use crate::templates::object_writer::{write_derives_line, ObjectWriter};
 use crate::templates::utils::{SerdeDeriveState, ShouldDerive};
 
-impl<'a> ObjectWriter<'a> {
+impl ObjectWriter<'_> {
     /// Fallback case if no more specific structure inferred
     pub fn write_arbitrary_enum_variants(&self, out: &mut String, variants: &[EnumVariant]) {
         if !self.usage.used_as_request_param {
@@ -169,7 +169,7 @@ impl<'a> ObjectWriter<'a> {
                     }}
                 }}
             }}
-            
+
             impl std::str::FromStr for {enum_name} {{
                 type Err = {from_str_err};
                 fn from_str(s: &str) -> Result<Self, Self::Err> {{
@@ -184,7 +184,7 @@ impl<'a> ObjectWriter<'a> {
                     f.write_str(self.as_str())
                 }}
             }}
-            
+
             impl std::fmt::Debug for {enum_name} {{
                 fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {{
                     f.write_str(self.as_str())
