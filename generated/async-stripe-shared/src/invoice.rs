@@ -174,6 +174,10 @@ pub struct Invoice {
     /// If the invoice has not been finalized yet, this will be null.
     pub invoice_pdf: Option<String>,
     pub issuer: stripe_shared::ConnectAccountReference,
+    /// ID of the charge object for this invoice, if any.
+    pub charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
+    /// ID of the payment intent object for this invoice, if any.
+    pub payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
     /// The error encountered during the previous attempt to finalize the invoice.
     /// This field is cleared when the invoice is successfully finalized.
     pub last_finalization_error: Option<Box<stripe_shared::ApiErrors>>,
@@ -303,6 +307,8 @@ pub struct InvoiceBuilder {
     id: Option<Option<stripe_shared::InvoiceId>>,
     invoice_pdf: Option<Option<String>>,
     issuer: Option<stripe_shared::ConnectAccountReference>,
+    charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
+    payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
     last_finalization_error: Option<Option<Box<stripe_shared::ApiErrors>>>,
     latest_revision: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
     lines: Option<stripe_types::List<stripe_shared::InvoiceLineItem>>,
@@ -421,6 +427,8 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "invoice_pdf" => Deserialize::begin(&mut self.invoice_pdf),
                 "issuer" => Deserialize::begin(&mut self.issuer),
+                "charge" => Deserialize::begin(&mut self.charge),
+                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
                 "last_finalization_error" => Deserialize::begin(&mut self.last_finalization_error),
                 "latest_revision" => Deserialize::begin(&mut self.latest_revision),
                 "lines" => Deserialize::begin(&mut self.lines),
@@ -510,6 +518,8 @@ const _: () = {
                 id: Deserialize::default(),
                 invoice_pdf: Deserialize::default(),
                 issuer: Deserialize::default(),
+                charge: Deserialize::default(),
+                payment_intent: Deserialize::default(),
                 last_finalization_error: Deserialize::default(),
                 latest_revision: Deserialize::default(),
                 lines: Deserialize::default(),
@@ -591,6 +601,8 @@ const _: () = {
                 Some(id),
                 Some(invoice_pdf),
                 Some(issuer),
+                Some(charge),
+                Some(payment_intent),
                 Some(last_finalization_error),
                 Some(latest_revision),
                 Some(lines),
@@ -668,6 +680,8 @@ const _: () = {
                 self.id.take(),
                 self.invoice_pdf.take(),
                 self.issuer.take(),
+                self.charge.take(),
+                self.payment_intent.take(),
                 self.last_finalization_error.take(),
                 self.latest_revision.take(),
                 self.lines.take(),
@@ -749,6 +763,8 @@ const _: () = {
                 id,
                 invoice_pdf,
                 issuer,
+                charge,
+                payment_intent,
                 last_finalization_error,
                 latest_revision,
                 lines,
@@ -856,6 +872,8 @@ const _: () = {
                     "id" => b.id = FromValueOpt::from_value(v),
                     "invoice_pdf" => b.invoice_pdf = FromValueOpt::from_value(v),
                     "issuer" => b.issuer = FromValueOpt::from_value(v),
+                    "charge" => b.charge = FromValueOpt::from_value(v),
+                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
                     "last_finalization_error" => {
                         b.last_finalization_error = FromValueOpt::from_value(v)
                     }
@@ -916,7 +934,7 @@ const _: () = {
 impl serde::Serialize for Invoice {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Invoice", 77)?;
+        let mut s = s.serialize_struct("Invoice", 79)?;
         s.serialize_field("account_country", &self.account_country)?;
         s.serialize_field("account_name", &self.account_name)?;
         s.serialize_field("account_tax_ids", &self.account_tax_ids)?;
@@ -959,6 +977,8 @@ impl serde::Serialize for Invoice {
         s.serialize_field("id", &self.id)?;
         s.serialize_field("invoice_pdf", &self.invoice_pdf)?;
         s.serialize_field("issuer", &self.issuer)?;
+        s.serialize_field("charge", &self.charge)?;
+        s.serialize_field("payment_intent", &self.payment_intent)?;
         s.serialize_field("last_finalization_error", &self.last_finalization_error)?;
         s.serialize_field("latest_revision", &self.latest_revision)?;
         s.serialize_field("lines", &self.lines)?;
