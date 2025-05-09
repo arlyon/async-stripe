@@ -4,7 +4,7 @@
 
 use crate::ids::{TaxTransactionId};
 use crate::params::{List, Metadata, Object, Timestamp};
-use crate::resources::{Currency, TaxProductResourceCustomerDetails, TaxTransactionLineItem};
+use crate::resources::{Currency, TaxProductResourceCustomerDetails, TaxProductResourceShipFromDetails, TaxTransactionLineItem};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TaxProductResourceTaxTransaction".
@@ -31,6 +31,7 @@ pub struct TaxTransaction {
     pub customer_details: TaxProductResourceCustomerDetails,
 
     /// The tax collected or refunded, by line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub line_items: Option<List<TaxTransactionLineItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -41,11 +42,17 @@ pub struct TaxTransaction {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<Metadata>,
 
+    /// The Unix timestamp representing when the tax liability is assumed or reduced.
+    pub posted_at: Timestamp,
+
     /// A custom unique identifier, such as 'myOrder_123'.
     pub reference: String,
 
     /// If `type=reversal`, contains information about what was reversed.
     pub reversal: Option<TaxProductResourceTaxTransactionResourceReversal>,
+
+    /// The details of the ship from location, such as the address.
+    pub ship_from_details: Option<TaxProductResourceShipFromDetails>,
 
     /// The shipping cost details for the transaction.
     pub shipping_cost: Option<TaxProductResourceTaxTransactionShippingCost>,
@@ -143,7 +150,7 @@ pub struct TaxProductResourceJurisdiction {
     /// Indicates the level of the jurisdiction imposing the tax.
     pub level: TaxProductResourceJurisdictionLevel,
 
-    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix.
+    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2), without country prefix.
     ///
     /// For example, "NY" for New York, United States.
     pub state: Option<String>,
@@ -313,8 +320,10 @@ pub enum TaxProductResourceLineItemTaxRateDetailsTaxType {
     LeaseTax,
     Pst,
     Qst,
+    RetailDeliveryFee,
     Rst,
     SalesTax,
+    ServiceTax,
     Vat,
 }
 
@@ -330,8 +339,10 @@ impl TaxProductResourceLineItemTaxRateDetailsTaxType {
             TaxProductResourceLineItemTaxRateDetailsTaxType::LeaseTax => "lease_tax",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Pst => "pst",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Qst => "qst",
+            TaxProductResourceLineItemTaxRateDetailsTaxType::RetailDeliveryFee => "retail_delivery_fee",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Rst => "rst",
             TaxProductResourceLineItemTaxRateDetailsTaxType::SalesTax => "sales_tax",
+            TaxProductResourceLineItemTaxRateDetailsTaxType::ServiceTax => "service_tax",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Vat => "vat",
         }
     }

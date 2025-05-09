@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "payment_method_options_customer_balance_eu_bank_account".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsCustomerBalanceEuBankAccount {
+
     /// The desired country code of the bank account information.
     ///
     /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
