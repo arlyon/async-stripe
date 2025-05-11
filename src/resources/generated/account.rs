@@ -2942,6 +2942,8 @@ pub enum AccountBusinessType {
     GovernmentEntity,
     Individual,
     NonProfit,
+    #[serde(other)]
+    Unknown,
 }
 
 impl AccountBusinessType {
@@ -2951,6 +2953,7 @@ impl AccountBusinessType {
             AccountBusinessType::GovernmentEntity => "government_entity",
             AccountBusinessType::Individual => "individual",
             AccountBusinessType::NonProfit => "non_profit",
+            AccountBusinessType::Unknown => "unknown",
         }
     }
 }
