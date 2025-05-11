@@ -1,3 +1,10 @@
+# [0.41.0](https://github.com/arlyon/async-stripe/compare/v0.40.2...v0.41.0) (2025-04-08)
+
+
+### Features
+
+* include refund events in EventType enum ([1a164c8](https://github.com/arlyon/async-stripe/commit/1a164c82de55c55a7f100251332f7a258e62da08))
+
 ## [0.40.2](https://github.com/arlyon/async-stripe/compare/v0.40.1...v0.40.2) (2025-03-21)
 
 
