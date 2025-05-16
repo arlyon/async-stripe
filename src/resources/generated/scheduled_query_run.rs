@@ -2,9 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::ScheduledQueryRunId;
+use crate::ids::{ScheduledQueryRunId};
 use crate::params::{Object, Timestamp};
-use crate::resources::File;
+use crate::resources::{File};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "ScheduledQueryRun".
@@ -57,6 +57,7 @@ impl Object for ScheduledQueryRun {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SigmaScheduledQueryRunError {
+
     /// Information about the run failure.
     pub message: String,
 }

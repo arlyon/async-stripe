@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::client::{Client, Response};
-use crate::ids::WebhookEndpointId;
+use crate::ids::{WebhookEndpointId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{ApiVersion, WebhookEndpointStatus};
 use serde::{Deserialize, Serialize};
@@ -54,7 +54,7 @@ pub struct WebhookEndpoint {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
-    /// The endpoint's secret, used to generate [webhook signatures](https://stripe.com/docs/webhooks/signatures).
+    /// The endpoint's secret, used to generate [webhook signatures](https://docs.stripe.com/webhooks/signatures).
     ///
     /// Only returned at creation.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -72,13 +72,12 @@ pub struct WebhookEndpoint {
 }
 
 impl WebhookEndpoint {
+
     /// Returns a list of your webhook endpoints.
-    pub fn list(
-        client: &Client,
-        params: &ListWebhookEndpoints<'_>,
-    ) -> Response<List<WebhookEndpoint>> {
-        client.get_query("/webhook_endpoints", params)
-    }
+pub fn list(client: &Client, params: &ListWebhookEndpoints<'_>) -> Response<List<WebhookEndpoint>> {
+   client.get_query("/webhook_endpoints", params)
+}
+
 
     /// A webhook endpoint must have a `url` and a list of `enabled_events`.
     ///
@@ -91,22 +90,14 @@ impl WebhookEndpoint {
     }
 
     /// Retrieves the webhook endpoint with the given ID.
-    pub fn retrieve(
-        client: &Client,
-        id: &WebhookEndpointId,
-        expand: &[&str],
-    ) -> Response<WebhookEndpoint> {
+    pub fn retrieve(client: &Client, id: &WebhookEndpointId, expand: &[&str]) -> Response<WebhookEndpoint> {
         client.get_query(&format!("/webhook_endpoints/{}", id), Expand { expand })
     }
 
     /// Updates the webhook endpoint.
     ///
     /// You may edit the `url`, the list of `enabled_events`, and the status of your endpoint.
-    pub fn update(
-        client: &Client,
-        id: &WebhookEndpointId,
-        params: UpdateWebhookEndpoint<'_>,
-    ) -> Response<WebhookEndpoint> {
+    pub fn update(client: &Client, id: &WebhookEndpointId, params: UpdateWebhookEndpoint<'_>) -> Response<WebhookEndpoint> {
         #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/webhook_endpoints/{}", id), &params)
     }
@@ -130,6 +121,7 @@ impl Object for WebhookEndpoint {
 /// The parameters for `WebhookEndpoint::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateWebhookEndpoint<'a> {
+
     /// Events sent to this endpoint will be generated with this Stripe Version instead of your account's default Stripe Version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub api_version: Option<ApiVersion>,
@@ -182,6 +174,7 @@ impl<'a> CreateWebhookEndpoint<'a> {
 /// The parameters for `WebhookEndpoint::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListWebhookEndpoints<'a> {
+
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
@@ -220,12 +213,12 @@ impl<'a> ListWebhookEndpoints<'a> {
 impl Paginable for ListWebhookEndpoints<'_> {
     type O = WebhookEndpoint;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `WebhookEndpoint::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateWebhookEndpoint<'a> {
+
     /// An optional description of what the webhook is used for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -296,6 +289,8 @@ pub enum EventFilter {
     ApplicationFeeRefunded,
     #[serde(rename = "balance.available")]
     BalanceAvailable,
+    #[serde(rename = "billing.alert.triggered")]
+    BillingAlertTriggered,
     #[serde(rename = "billing_portal.configuration.created")]
     BillingPortalConfigurationCreated,
     #[serde(rename = "billing_portal.configuration.updated")]
@@ -410,6 +405,8 @@ pub enum EventFilter {
     CustomerUpdated,
     #[serde(rename = "customer_cash_balance_transaction.created")]
     CustomerCashBalanceTransactionCreated,
+    #[serde(rename = "entitlements.active_entitlement_summary.updated")]
+    EntitlementsActiveEntitlementSummaryUpdated,
     #[serde(rename = "file.created")]
     FileCreated,
     #[serde(rename = "financial_connections.account.created")]
@@ -422,6 +419,8 @@ pub enum EventFilter {
     FinancialConnectionsAccountReactivated,
     #[serde(rename = "financial_connections.account.refreshed_balance")]
     FinancialConnectionsAccountRefreshedBalance,
+    #[serde(rename = "financial_connections.account.refreshed_ownership")]
+    FinancialConnectionsAccountRefreshedOwnership,
     #[serde(rename = "financial_connections.account.refreshed_transactions")]
     FinancialConnectionsAccountRefreshedTransactions,
     #[serde(rename = "identity.verification_session.canceled")]
@@ -446,6 +445,10 @@ pub enum EventFilter {
     InvoiceFinalized,
     #[serde(rename = "invoice.marked_uncollectible")]
     InvoiceMarkedUncollectible,
+    #[serde(rename = "invoice.overdue")]
+    InvoiceOverdue,
+    #[serde(rename = "invoice.overpaid")]
+    InvoiceOverpaid,
     #[serde(rename = "invoice.paid")]
     InvoicePaid,
     #[serde(rename = "invoice.payment_action_required")]
@@ -462,6 +465,8 @@ pub enum EventFilter {
     InvoiceUpdated,
     #[serde(rename = "invoice.voided")]
     InvoiceVoided,
+    #[serde(rename = "invoice.will_be_due")]
+    InvoiceWillBeDue,
     #[serde(rename = "invoiceitem.created")]
     InvoiceitemCreated,
     #[serde(rename = "invoiceitem.deleted")]
@@ -486,16 +491,28 @@ pub enum EventFilter {
     IssuingDisputeCreated,
     #[serde(rename = "issuing_dispute.funds_reinstated")]
     IssuingDisputeFundsReinstated,
+    #[serde(rename = "issuing_dispute.funds_rescinded")]
+    IssuingDisputeFundsRescinded,
     #[serde(rename = "issuing_dispute.submitted")]
     IssuingDisputeSubmitted,
     #[serde(rename = "issuing_dispute.updated")]
     IssuingDisputeUpdated,
+    #[serde(rename = "issuing_personalization_design.activated")]
+    IssuingPersonalizationDesignActivated,
+    #[serde(rename = "issuing_personalization_design.deactivated")]
+    IssuingPersonalizationDesignDeactivated,
+    #[serde(rename = "issuing_personalization_design.rejected")]
+    IssuingPersonalizationDesignRejected,
+    #[serde(rename = "issuing_personalization_design.updated")]
+    IssuingPersonalizationDesignUpdated,
     #[serde(rename = "issuing_token.created")]
     IssuingTokenCreated,
     #[serde(rename = "issuing_token.updated")]
     IssuingTokenUpdated,
     #[serde(rename = "issuing_transaction.created")]
     IssuingTransactionCreated,
+    #[serde(rename = "issuing_transaction.purchase_details_receipt_updated")]
+    IssuingTransactionPurchaseDetailsReceiptUpdated,
     #[serde(rename = "issuing_transaction.updated")]
     IssuingTransactionUpdated,
     #[serde(rename = "mandate.updated")]
@@ -582,6 +599,8 @@ pub enum EventFilter {
     RadarEarlyFraudWarningUpdated,
     #[serde(rename = "refund.created")]
     RefundCreated,
+    #[serde(rename = "refund.failed")]
+    RefundFailed,
     #[serde(rename = "refund.updated")]
     RefundUpdated,
     #[serde(rename = "reporting.report_run.failed")]
@@ -706,6 +725,8 @@ pub enum EventFilter {
     TreasuryOutboundPaymentPosted,
     #[serde(rename = "treasury.outbound_payment.returned")]
     TreasuryOutboundPaymentReturned,
+    #[serde(rename = "treasury.outbound_payment.tracking_details_updated")]
+    TreasuryOutboundPaymentTrackingDetailsUpdated,
     #[serde(rename = "treasury.outbound_transfer.canceled")]
     TreasuryOutboundTransferCanceled,
     #[serde(rename = "treasury.outbound_transfer.created")]
@@ -718,6 +739,8 @@ pub enum EventFilter {
     TreasuryOutboundTransferPosted,
     #[serde(rename = "treasury.outbound_transfer.returned")]
     TreasuryOutboundTransferReturned,
+    #[serde(rename = "treasury.outbound_transfer.tracking_details_updated")]
+    TreasuryOutboundTransferTrackingDetailsUpdated,
     #[serde(rename = "treasury.received_credit.created")]
     TreasuryReceivedCreditCreated,
     #[serde(rename = "treasury.received_credit.failed")]
@@ -742,12 +765,9 @@ impl EventFilter {
             EventFilter::ApplicationFeeRefundUpdated => "application_fee.refund.updated",
             EventFilter::ApplicationFeeRefunded => "application_fee.refunded",
             EventFilter::BalanceAvailable => "balance.available",
-            EventFilter::BillingPortalConfigurationCreated => {
-                "billing_portal.configuration.created"
-            }
-            EventFilter::BillingPortalConfigurationUpdated => {
-                "billing_portal.configuration.updated"
-            }
+            EventFilter::BillingAlertTriggered => "billing.alert.triggered",
+            EventFilter::BillingPortalConfigurationCreated => "billing_portal.configuration.created",
+            EventFilter::BillingPortalConfigurationUpdated => "billing_portal.configuration.updated",
             EventFilter::BillingPortalSessionCreated => "billing_portal.session.created",
             EventFilter::CapabilityUpdated => "capability.updated",
             EventFilter::CashBalanceFundsAvailable => "cash_balance.funds_available",
@@ -764,12 +784,8 @@ impl EventFilter {
             EventFilter::ChargeRefunded => "charge.refunded",
             EventFilter::ChargeSucceeded => "charge.succeeded",
             EventFilter::ChargeUpdated => "charge.updated",
-            EventFilter::CheckoutSessionAsyncPaymentFailed => {
-                "checkout.session.async_payment_failed"
-            }
-            EventFilter::CheckoutSessionAsyncPaymentSucceeded => {
-                "checkout.session.async_payment_succeeded"
-            }
+            EventFilter::CheckoutSessionAsyncPaymentFailed => "checkout.session.async_payment_failed",
+            EventFilter::CheckoutSessionAsyncPaymentSucceeded => "checkout.session.async_payment_succeeded",
             EventFilter::CheckoutSessionCompleted => "checkout.session.completed",
             EventFilter::CheckoutSessionExpired => "checkout.session.expired",
             EventFilter::ClimateOrderCanceled => "climate.order.canceled",
@@ -797,12 +813,8 @@ impl EventFilter {
             EventFilter::CustomerSubscriptionCreated => "customer.subscription.created",
             EventFilter::CustomerSubscriptionDeleted => "customer.subscription.deleted",
             EventFilter::CustomerSubscriptionPaused => "customer.subscription.paused",
-            EventFilter::CustomerSubscriptionPendingUpdateApplied => {
-                "customer.subscription.pending_update_applied"
-            }
-            EventFilter::CustomerSubscriptionPendingUpdateExpired => {
-                "customer.subscription.pending_update_expired"
-            }
+            EventFilter::CustomerSubscriptionPendingUpdateApplied => "customer.subscription.pending_update_applied",
+            EventFilter::CustomerSubscriptionPendingUpdateExpired => "customer.subscription.pending_update_expired",
             EventFilter::CustomerSubscriptionResumed => "customer.subscription.resumed",
             EventFilter::CustomerSubscriptionTrialWillEnd => "customer.subscription.trial_will_end",
             EventFilter::CustomerSubscriptionUpdated => "customer.subscription.updated",
@@ -810,51 +822,29 @@ impl EventFilter {
             EventFilter::CustomerTaxIdDeleted => "customer.tax_id.deleted",
             EventFilter::CustomerTaxIdUpdated => "customer.tax_id.updated",
             EventFilter::CustomerUpdated => "customer.updated",
-            EventFilter::CustomerCashBalanceTransactionCreated => {
-                "customer_cash_balance_transaction.created"
-            }
+            EventFilter::CustomerCashBalanceTransactionCreated => "customer_cash_balance_transaction.created",
+            EventFilter::EntitlementsActiveEntitlementSummaryUpdated => "entitlements.active_entitlement_summary.updated",
             EventFilter::FileCreated => "file.created",
-            EventFilter::FinancialConnectionsAccountCreated => {
-                "financial_connections.account.created"
-            }
-            EventFilter::FinancialConnectionsAccountDeactivated => {
-                "financial_connections.account.deactivated"
-            }
-            EventFilter::FinancialConnectionsAccountDisconnected => {
-                "financial_connections.account.disconnected"
-            }
-            EventFilter::FinancialConnectionsAccountReactivated => {
-                "financial_connections.account.reactivated"
-            }
-            EventFilter::FinancialConnectionsAccountRefreshedBalance => {
-                "financial_connections.account.refreshed_balance"
-            }
-            EventFilter::FinancialConnectionsAccountRefreshedTransactions => {
-                "financial_connections.account.refreshed_transactions"
-            }
-            EventFilter::IdentityVerificationSessionCanceled => {
-                "identity.verification_session.canceled"
-            }
-            EventFilter::IdentityVerificationSessionCreated => {
-                "identity.verification_session.created"
-            }
-            EventFilter::IdentityVerificationSessionProcessing => {
-                "identity.verification_session.processing"
-            }
-            EventFilter::IdentityVerificationSessionRedacted => {
-                "identity.verification_session.redacted"
-            }
-            EventFilter::IdentityVerificationSessionRequiresInput => {
-                "identity.verification_session.requires_input"
-            }
-            EventFilter::IdentityVerificationSessionVerified => {
-                "identity.verification_session.verified"
-            }
+            EventFilter::FinancialConnectionsAccountCreated => "financial_connections.account.created",
+            EventFilter::FinancialConnectionsAccountDeactivated => "financial_connections.account.deactivated",
+            EventFilter::FinancialConnectionsAccountDisconnected => "financial_connections.account.disconnected",
+            EventFilter::FinancialConnectionsAccountReactivated => "financial_connections.account.reactivated",
+            EventFilter::FinancialConnectionsAccountRefreshedBalance => "financial_connections.account.refreshed_balance",
+            EventFilter::FinancialConnectionsAccountRefreshedOwnership => "financial_connections.account.refreshed_ownership",
+            EventFilter::FinancialConnectionsAccountRefreshedTransactions => "financial_connections.account.refreshed_transactions",
+            EventFilter::IdentityVerificationSessionCanceled => "identity.verification_session.canceled",
+            EventFilter::IdentityVerificationSessionCreated => "identity.verification_session.created",
+            EventFilter::IdentityVerificationSessionProcessing => "identity.verification_session.processing",
+            EventFilter::IdentityVerificationSessionRedacted => "identity.verification_session.redacted",
+            EventFilter::IdentityVerificationSessionRequiresInput => "identity.verification_session.requires_input",
+            EventFilter::IdentityVerificationSessionVerified => "identity.verification_session.verified",
             EventFilter::InvoiceCreated => "invoice.created",
             EventFilter::InvoiceDeleted => "invoice.deleted",
             EventFilter::InvoiceFinalizationFailed => "invoice.finalization_failed",
             EventFilter::InvoiceFinalized => "invoice.finalized",
             EventFilter::InvoiceMarkedUncollectible => "invoice.marked_uncollectible",
+            EventFilter::InvoiceOverdue => "invoice.overdue",
+            EventFilter::InvoiceOverpaid => "invoice.overpaid",
             EventFilter::InvoicePaid => "invoice.paid",
             EventFilter::InvoicePaymentActionRequired => "invoice.payment_action_required",
             EventFilter::InvoicePaymentFailed => "invoice.payment_failed",
@@ -863,6 +853,7 @@ impl EventFilter {
             EventFilter::InvoiceUpcoming => "invoice.upcoming",
             EventFilter::InvoiceUpdated => "invoice.updated",
             EventFilter::InvoiceVoided => "invoice.voided",
+            EventFilter::InvoiceWillBeDue => "invoice.will_be_due",
             EventFilter::InvoiceitemCreated => "invoiceitem.created",
             EventFilter::InvoiceitemDeleted => "invoiceitem.deleted",
             EventFilter::IssuingAuthorizationCreated => "issuing_authorization.created",
@@ -875,16 +866,20 @@ impl EventFilter {
             EventFilter::IssuingDisputeClosed => "issuing_dispute.closed",
             EventFilter::IssuingDisputeCreated => "issuing_dispute.created",
             EventFilter::IssuingDisputeFundsReinstated => "issuing_dispute.funds_reinstated",
+            EventFilter::IssuingDisputeFundsRescinded => "issuing_dispute.funds_rescinded",
             EventFilter::IssuingDisputeSubmitted => "issuing_dispute.submitted",
             EventFilter::IssuingDisputeUpdated => "issuing_dispute.updated",
+            EventFilter::IssuingPersonalizationDesignActivated => "issuing_personalization_design.activated",
+            EventFilter::IssuingPersonalizationDesignDeactivated => "issuing_personalization_design.deactivated",
+            EventFilter::IssuingPersonalizationDesignRejected => "issuing_personalization_design.rejected",
+            EventFilter::IssuingPersonalizationDesignUpdated => "issuing_personalization_design.updated",
             EventFilter::IssuingTokenCreated => "issuing_token.created",
             EventFilter::IssuingTokenUpdated => "issuing_token.updated",
             EventFilter::IssuingTransactionCreated => "issuing_transaction.created",
+            EventFilter::IssuingTransactionPurchaseDetailsReceiptUpdated => "issuing_transaction.purchase_details_receipt_updated",
             EventFilter::IssuingTransactionUpdated => "issuing_transaction.updated",
             EventFilter::MandateUpdated => "mandate.updated",
-            EventFilter::PaymentIntentAmountCapturableUpdated => {
-                "payment_intent.amount_capturable_updated"
-            }
+            EventFilter::PaymentIntentAmountCapturableUpdated => "payment_intent.amount_capturable_updated",
             EventFilter::PaymentIntentCanceled => "payment_intent.canceled",
             EventFilter::PaymentIntentCreated => "payment_intent.created",
             EventFilter::PaymentIntentPartiallyFunded => "payment_intent.partially_funded",
@@ -895,9 +890,7 @@ impl EventFilter {
             EventFilter::PaymentLinkCreated => "payment_link.created",
             EventFilter::PaymentLinkUpdated => "payment_link.updated",
             EventFilter::PaymentMethodAttached => "payment_method.attached",
-            EventFilter::PaymentMethodAutomaticallyUpdated => {
-                "payment_method.automatically_updated"
-            }
+            EventFilter::PaymentMethodAutomaticallyUpdated => "payment_method.automatically_updated",
             EventFilter::PaymentMethodDetached => "payment_method.detached",
             EventFilter::PaymentMethodUpdated => "payment_method.updated",
             EventFilter::PayoutCanceled => "payout.canceled",
@@ -927,6 +920,7 @@ impl EventFilter {
             EventFilter::RadarEarlyFraudWarningCreated => "radar.early_fraud_warning.created",
             EventFilter::RadarEarlyFraudWarningUpdated => "radar.early_fraud_warning.updated",
             EventFilter::RefundCreated => "refund.created",
+            EventFilter::RefundFailed => "refund.failed",
             EventFilter::RefundUpdated => "refund.updated",
             EventFilter::ReportingReportRunFailed => "reporting.report_run.failed",
             EventFilter::ReportingReportRunSucceeded => "reporting.report_run.succeeded",
@@ -961,9 +955,7 @@ impl EventFilter {
             EventFilter::TestHelpersTestClockAdvancing => "test_helpers.test_clock.advancing",
             EventFilter::TestHelpersTestClockCreated => "test_helpers.test_clock.created",
             EventFilter::TestHelpersTestClockDeleted => "test_helpers.test_clock.deleted",
-            EventFilter::TestHelpersTestClockInternalFailure => {
-                "test_helpers.test_clock.internal_failure"
-            }
+            EventFilter::TestHelpersTestClockInternalFailure => "test_helpers.test_clock.internal_failure",
             EventFilter::TestHelpersTestClockReady => "test_helpers.test_clock.ready",
             EventFilter::TopupCanceled => "topup.canceled",
             EventFilter::TopupCreated => "topup.created",
@@ -977,34 +969,28 @@ impl EventFilter {
             EventFilter::TreasuryCreditReversalPosted => "treasury.credit_reversal.posted",
             EventFilter::TreasuryDebitReversalCompleted => "treasury.debit_reversal.completed",
             EventFilter::TreasuryDebitReversalCreated => "treasury.debit_reversal.created",
-            EventFilter::TreasuryDebitReversalInitialCreditGranted => {
-                "treasury.debit_reversal.initial_credit_granted"
-            }
+            EventFilter::TreasuryDebitReversalInitialCreditGranted => "treasury.debit_reversal.initial_credit_granted",
             EventFilter::TreasuryFinancialAccountClosed => "treasury.financial_account.closed",
             EventFilter::TreasuryFinancialAccountCreated => "treasury.financial_account.created",
-            EventFilter::TreasuryFinancialAccountFeaturesStatusUpdated => {
-                "treasury.financial_account.features_status_updated"
-            }
+            EventFilter::TreasuryFinancialAccountFeaturesStatusUpdated => "treasury.financial_account.features_status_updated",
             EventFilter::TreasuryInboundTransferCanceled => "treasury.inbound_transfer.canceled",
             EventFilter::TreasuryInboundTransferCreated => "treasury.inbound_transfer.created",
             EventFilter::TreasuryInboundTransferFailed => "treasury.inbound_transfer.failed",
             EventFilter::TreasuryInboundTransferSucceeded => "treasury.inbound_transfer.succeeded",
             EventFilter::TreasuryOutboundPaymentCanceled => "treasury.outbound_payment.canceled",
             EventFilter::TreasuryOutboundPaymentCreated => "treasury.outbound_payment.created",
-            EventFilter::TreasuryOutboundPaymentExpectedArrivalDateUpdated => {
-                "treasury.outbound_payment.expected_arrival_date_updated"
-            }
+            EventFilter::TreasuryOutboundPaymentExpectedArrivalDateUpdated => "treasury.outbound_payment.expected_arrival_date_updated",
             EventFilter::TreasuryOutboundPaymentFailed => "treasury.outbound_payment.failed",
             EventFilter::TreasuryOutboundPaymentPosted => "treasury.outbound_payment.posted",
             EventFilter::TreasuryOutboundPaymentReturned => "treasury.outbound_payment.returned",
+            EventFilter::TreasuryOutboundPaymentTrackingDetailsUpdated => "treasury.outbound_payment.tracking_details_updated",
             EventFilter::TreasuryOutboundTransferCanceled => "treasury.outbound_transfer.canceled",
             EventFilter::TreasuryOutboundTransferCreated => "treasury.outbound_transfer.created",
-            EventFilter::TreasuryOutboundTransferExpectedArrivalDateUpdated => {
-                "treasury.outbound_transfer.expected_arrival_date_updated"
-            }
+            EventFilter::TreasuryOutboundTransferExpectedArrivalDateUpdated => "treasury.outbound_transfer.expected_arrival_date_updated",
             EventFilter::TreasuryOutboundTransferFailed => "treasury.outbound_transfer.failed",
             EventFilter::TreasuryOutboundTransferPosted => "treasury.outbound_transfer.posted",
             EventFilter::TreasuryOutboundTransferReturned => "treasury.outbound_transfer.returned",
+            EventFilter::TreasuryOutboundTransferTrackingDetailsUpdated => "treasury.outbound_transfer.tracking_details_updated",
             EventFilter::TreasuryReceivedCreditCreated => "treasury.received_credit.created",
             EventFilter::TreasuryReceivedCreditFailed => "treasury.received_credit.failed",
             EventFilter::TreasuryReceivedCreditSucceeded => "treasury.received_credit.succeeded",

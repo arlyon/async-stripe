@@ -2,9 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::CustomerBalanceTransactionId;
+use crate::ids::{CustomerBalanceTransactionId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{CreditNote, Currency, Customer, Invoice};
+use crate::resources::{CheckoutSession, CreditNote, Currency, Customer, Invoice};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CustomerBalanceTransaction".
@@ -19,6 +19,9 @@ pub struct CustomerBalanceTransaction {
     ///
     /// A negative value is a credit for the customer's balance, and a positive value is a debit to the customer's `balance`.
     pub amount: i64,
+
+    /// The ID of the checkout session (if any) that created the transaction.
+    pub checkout_session: Option<Expandable<CheckoutSession>>,
 
     /// Time at which the object was created.
     ///
@@ -58,7 +61,7 @@ pub struct CustomerBalanceTransaction {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<Metadata>,
 
-    /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, or `unapplied_from_invoice`.
+    /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, `unapplied_from_invoice`, `checkout_session_subscription_payment`, or `checkout_session_subscription_payment_canceled`.
     ///
     /// See the [Customer Balance page](https://stripe.com/docs/billing/customer/balance#types) to learn more about transaction types.
     #[serde(rename = "type")]
@@ -81,6 +84,8 @@ impl Object for CustomerBalanceTransaction {
 pub enum CustomerBalanceTransactionType {
     Adjustment,
     AppliedToInvoice,
+    CheckoutSessionSubscriptionPayment,
+    CheckoutSessionSubscriptionPaymentCanceled,
     CreditNote,
     Initial,
     InvoiceOverpaid,
@@ -96,6 +101,8 @@ impl CustomerBalanceTransactionType {
         match self {
             CustomerBalanceTransactionType::Adjustment => "adjustment",
             CustomerBalanceTransactionType::AppliedToInvoice => "applied_to_invoice",
+            CustomerBalanceTransactionType::CheckoutSessionSubscriptionPayment => "checkout_session_subscription_payment",
+            CustomerBalanceTransactionType::CheckoutSessionSubscriptionPaymentCanceled => "checkout_session_subscription_payment_canceled",
             CustomerBalanceTransactionType::CreditNote => "credit_note",
             CustomerBalanceTransactionType::Initial => "initial",
             CustomerBalanceTransactionType::InvoiceOverpaid => "invoice_overpaid",
