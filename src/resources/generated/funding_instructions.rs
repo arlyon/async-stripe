@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::params::{Object};
-use crate::resources::{Currency};
+use crate::resources::{Address, Currency};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CustomerBalanceFundingInstructionsCustomerBalanceFundingInstructions".
@@ -79,8 +79,18 @@ pub struct FundingInstructionsBankTransferFinancialAddress {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferAbaRecord {
 
+    pub account_holder_address: Address,
+
+    /// The account holder name.
+    pub account_holder_name: String,
+
     /// The ABA account number.
     pub account_number: String,
+
+    /// The account type.
+    pub account_type: String,
+
+    pub bank_address: Address,
 
     /// The bank name.
     pub bank_name: String,
@@ -92,8 +102,12 @@ pub struct FundingInstructionsBankTransferAbaRecord {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferIbanRecord {
 
+    pub account_holder_address: Address,
+
     /// The name of the person or business that owns the bank account.
     pub account_holder_name: String,
+
+    pub bank_address: Address,
 
     /// The BIC/SWIFT code of the account.
     pub bic: String,
@@ -108,11 +122,15 @@ pub struct FundingInstructionsBankTransferIbanRecord {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferSortCodeRecord {
 
+    pub account_holder_address: Address,
+
     /// The name of the person or business that owns the bank account.
     pub account_holder_name: String,
 
     /// The account number.
     pub account_number: String,
+
+    pub bank_address: Address,
 
     /// The six-digit sort code.
     pub sort_code: String,
@@ -120,6 +138,13 @@ pub struct FundingInstructionsBankTransferSortCodeRecord {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferSpeiRecord {
+
+    pub account_holder_address: Address,
+
+    /// The account holder name.
+    pub account_holder_name: String,
+
+    pub bank_address: Address,
 
     /// The three-digit bank code.
     pub bank_code: String,
@@ -134,8 +159,18 @@ pub struct FundingInstructionsBankTransferSpeiRecord {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferSwiftRecord {
 
+    pub account_holder_address: Address,
+
+    /// The account holder name.
+    pub account_holder_name: String,
+
     /// The account number.
     pub account_number: String,
+
+    /// The account type.
+    pub account_type: String,
+
+    pub bank_address: Address,
 
     /// The bank name.
     pub bank_name: String,
@@ -147,6 +182,8 @@ pub struct FundingInstructionsBankTransferSwiftRecord {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferZenginRecord {
 
+    pub account_holder_address: Address,
+
     /// The account holder name.
     pub account_holder_name: Option<String>,
 
@@ -157,6 +194,8 @@ pub struct FundingInstructionsBankTransferZenginRecord {
     ///
     /// In Japan, this can only be `futsu` or `toza`.
     pub account_type: Option<String>,
+
+    pub bank_address: Address,
 
     /// The bank code of the account.
     pub bank_code: Option<String>,
