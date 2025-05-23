@@ -4,7 +4,7 @@
 
 use crate::ids::{TreasuryReceivedCreditId};
 use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::{Currency, Payout, TreasuryCreditReversal, TreasuryOutboundPayment, TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails, TreasuryTransaction};
+use crate::resources::{Currency, Payout, TreasuryCreditReversal, TreasuryOutboundPayment, TreasuryOutboundTransfer, TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails, TreasuryTransaction};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TreasuryReceivedCreditsResourceReceivedCredit".
@@ -94,6 +94,7 @@ pub struct TreasuryReceivedCreditsResourceLinkedFlows {
     pub source_flow: Option<String>,
 
     /// The expandable object of the source flow.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub source_flow_details: Option<TreasuryReceivedCreditsResourceSourceFlowsDetails>,
 
     /// The type of flow that originated the ReceivedCredit (for example, `outbound_payment`).
@@ -120,6 +121,9 @@ pub struct TreasuryReceivedCreditsResourceSourceFlowsDetails {
     pub outbound_payment: Option<TreasuryOutboundPayment>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub outbound_transfer: Option<TreasuryOutboundTransfer>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub payout: Option<Payout>,
 
     /// The type of the source flow that originated the ReceivedCredit.
@@ -133,6 +137,7 @@ pub struct TreasuryReceivedCreditsResourceSourceFlowsDetails {
 pub enum TreasuryReceivedCreditFailureCode {
     AccountClosed,
     AccountFrozen,
+    InternationalTransaction,
     Other,
 }
 
@@ -141,6 +146,7 @@ impl TreasuryReceivedCreditFailureCode {
         match self {
             TreasuryReceivedCreditFailureCode::AccountClosed => "account_closed",
             TreasuryReceivedCreditFailureCode::AccountFrozen => "account_frozen",
+            TreasuryReceivedCreditFailureCode::InternationalTransaction => "international_transaction",
             TreasuryReceivedCreditFailureCode::Other => "other",
         }
     }
@@ -282,6 +288,7 @@ pub enum TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
     CreditReversal,
     Other,
     OutboundPayment,
+    OutboundTransfer,
     Payout,
 }
 
@@ -291,6 +298,7 @@ impl TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
             TreasuryReceivedCreditsResourceSourceFlowsDetailsType::CreditReversal => "credit_reversal",
             TreasuryReceivedCreditsResourceSourceFlowsDetailsType::Other => "other",
             TreasuryReceivedCreditsResourceSourceFlowsDetailsType::OutboundPayment => "outbound_payment",
+            TreasuryReceivedCreditsResourceSourceFlowsDetailsType::OutboundTransfer => "outbound_transfer",
             TreasuryReceivedCreditsResourceSourceFlowsDetailsType::Payout => "payout",
         }
     }
