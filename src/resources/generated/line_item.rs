@@ -2,11 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::InvoiceLineItemId;
+use crate::ids::{InvoiceLineItemId};
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{
-    Currency, Discount, InvoiceItem, Period, Plan, Price, Subscription, SubscriptionItem, TaxRate,
-};
+use crate::resources::{BillingBillResourceInvoicingLinesCommonProrationDetails, BillingBillResourceInvoicingPricingPricing, BillingCreditBalanceTransaction, Currency, Discount, Period, Subscription};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "InvoiceLineItem".
@@ -17,9 +15,6 @@ pub struct InvoiceLineItem {
 
     /// The amount, in cents (or local equivalent).
     pub amount: i64,
-
-    /// The integer amount in cents (or local equivalent) representing the amount for this line item, excluding all tax and discounts.
-    pub amount_excluding_tax: Option<i64>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -43,11 +38,10 @@ pub struct InvoiceLineItem {
     ///
     /// Line item discounts are applied before invoice discounts.
     /// Use `expand[]=discounts` to expand each discount.
-    pub discounts: Option<Vec<Expandable<Discount>>>,
+    pub discounts: Vec<Expandable<Discount>>,
 
-    /// The ID of the [invoice item](https://stripe.com/docs/api/invoiceitems) associated with this line item if any.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_item: Option<Expandable<InvoiceItem>>,
+    /// The ID of the invoice that contains this line item.
+    pub invoice: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -55,49 +49,27 @@ pub struct InvoiceLineItem {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    /// Note that for line items with `type=subscription` this will reflect the metadata of the subscription that caused the line item to be created.
+    /// Note that for line items with `type=subscription`, `metadata` reflects the current metadata from the subscription associated with the line item, unless the invoice line was directly updated with different metadata after creation.
     pub metadata: Metadata,
+
+    /// The parent that generated this line item.
+    pub parent: Option<BillingBillResourceInvoicingLinesParentsInvoiceLineItemParent>,
 
     pub period: Option<Period>,
 
-    /// The plan of the subscription, if the line item is a subscription or a proration.
-    pub plan: Option<Plan>,
+    /// Contains pretax credit amounts (ex: discount, credit grants, etc) that apply to this line item.
+    pub pretax_credit_amounts: Option<Vec<InvoicesResourcePretaxCreditAmount>>,
 
-    /// The price of the line item.
-    pub price: Option<Price>,
-
-    /// Whether this is a proration.
-    pub proration: bool,
-
-    /// Additional details for proration line items.
-    pub proration_details: Option<InvoicesResourceLineItemsProrationDetails>,
+    /// The pricing information of the line item.
+    pub pricing: Option<BillingBillResourceInvoicingPricingPricing>,
 
     /// The quantity of the subscription, if the line item is a subscription or a proration.
     pub quantity: Option<u64>,
 
-    /// The subscription that the invoice item pertains to, if any.
     pub subscription: Option<Expandable<Subscription>>,
 
-    /// The subscription item that generated this line item.
-    ///
-    /// Left empty if the line item is not an explicit result of a subscription.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_item: Option<Expandable<SubscriptionItem>>,
-
-    /// The amount of tax calculated per tax rate for this line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_amounts: Option<Vec<TaxAmount>>,
-
-    /// The tax rates which apply to the line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Vec<TaxRate>>,
-
-    /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
-    #[serde(rename = "type")]
-    pub type_: InvoiceLineItemType,
-
-    /// The amount in cents (or local equivalent) representing the unit amount for this line item, excluding all tax and discounts.
-    pub unit_amount_excluding_tax: Option<String>,
+    /// The tax information of the line item.
+    pub taxes: Option<Vec<BillingBillResourceInvoicingTaxesTax>>,
 }
 
 impl Object for InvoiceLineItem {
@@ -111,7 +83,90 @@ impl Object for InvoiceLineItem {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct BillingBillResourceInvoicingLinesParentsInvoiceLineItemParent {
+
+    /// Details about the invoice item that generated this line item.
+    pub invoice_item_details: Option<BillingBillResourceInvoicingLinesParentsInvoiceLineItemInvoiceItemParent>,
+
+    /// Details about the subscription item that generated this line item.
+    pub subscription_item_details: Option<BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionItemParent>,
+
+    /// The type of parent that generated this line item.
+    #[serde(rename = "type")]
+    pub type_: BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct BillingBillResourceInvoicingLinesParentsInvoiceLineItemInvoiceItemParent {
+
+    /// The invoice item that generated this line item.
+    pub invoice_item: String,
+
+    /// Whether this is a proration.
+    pub proration: bool,
+
+    /// Additional details for proration line items.
+    pub proration_details: Option<BillingBillResourceInvoicingLinesCommonProrationDetails>,
+
+    /// The subscription that the invoice item belongs to.
+    pub subscription: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionItemParent {
+
+    /// The invoice item that generated this line item.
+    pub invoice_item: Option<String>,
+
+    /// Whether this is a proration.
+    pub proration: bool,
+
+    /// Additional details for proration line items.
+    pub proration_details: Option<BillingBillResourceInvoicingLinesCommonProrationDetails>,
+
+    /// The subscription that the subscription item belongs to.
+    pub subscription: Option<String>,
+
+    /// The subscription item that generated this line item.
+    pub subscription_item: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct BillingBillResourceInvoicingTaxesTax {
+
+    /// The amount of the tax, in cents (or local equivalent).
+    pub amount: i64,
+
+    /// Whether this tax is inclusive or exclusive.
+    pub tax_behavior: BillingBillResourceInvoicingTaxesTaxTaxBehavior,
+
+    /// Additional details about the tax rate.
+    ///
+    /// Only present when `type` is `tax_rate_details`.
+    pub tax_rate_details: Option<BillingBillResourceInvoicingTaxesTaxRateDetails>,
+
+    /// The reasoning behind this tax, for example, if the product is tax exempt.
+    ///
+    /// The possible values for this field may be extended as new tax rules are supported.
+    pub taxability_reason: BillingBillResourceInvoicingTaxesTaxTaxabilityReason,
+
+    /// The amount on which tax is calculated, in cents (or local equivalent).
+    pub taxable_amount: Option<i64>,
+
+    /// The type of tax information.
+    #[serde(rename = "type")]
+    pub type_: BillingBillResourceInvoicingTaxesTaxType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct BillingBillResourceInvoicingTaxesTaxRateDetails {
+
+    pub tax_rate: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
+
     /// The amount, in cents (or local equivalent), of the discount.
     pub amount: i64,
 
@@ -120,80 +175,98 @@ pub struct DiscountsResourceDiscountAmount {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct TaxAmount {
-    /// The amount, in cents (or local equivalent), of the tax.
+pub struct InvoicesResourcePretaxCreditAmount {
+
+    /// The amount, in cents (or local equivalent), of the pretax credit amount.
     pub amount: i64,
 
-    /// Whether this tax amount is inclusive or exclusive.
-    pub inclusive: bool,
+    /// The credit balance transaction that was applied to get this pretax credit amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub credit_balance_transaction: Option<Expandable<BillingCreditBalanceTransaction>>,
 
-    /// The tax rate that was applied to get this tax amount.
-    pub tax_rate: Expandable<TaxRate>,
+    /// The discount that was applied to get this pretax credit amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<Expandable<Discount>>,
 
-    /// The reasoning behind this tax, for example, if the product is tax exempt.
-    ///
-    /// The possible values for this field may be extended as new tax rules are supported.
-    pub taxability_reason: Option<TaxAmountTaxabilityReason>,
-
-    /// The amount on which tax is calculated, in cents (or local equivalent).
-    pub taxable_amount: Option<i64>,
+    /// Type of the pretax credit amount referenced.
+    #[serde(rename = "type")]
+    pub type_: InvoicesResourcePretaxCreditAmountType,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InvoicesResourceLineItemsProrationDetails {
-    /// For a credit proration `line_item`, the original debit line_items to which the credit proration applies.
-    pub credited_items: Option<InvoicesResourceLineItemsCreditedItems>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InvoicesResourceLineItemsCreditedItems {
-    /// Invoice containing the credited invoice line items.
-    pub invoice: String,
-
-    /// Credited invoice line items.
-    pub invoice_line_items: Vec<String>,
-}
-
-/// An enum representing the possible values of an `InvoiceLineItem`'s `type` field.
+/// An enum representing the possible values of an `BillingBillResourceInvoicingLinesParentsInvoiceLineItemParent`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
-pub enum InvoiceLineItemType {
-    #[serde(rename = "invoiceitem")]
-    InvoiceItem,
-    Subscription,
+pub enum BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType {
+    InvoiceItemDetails,
+    SubscriptionItemDetails,
 }
 
-impl InvoiceLineItemType {
+impl BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType {
     pub fn as_str(self) -> &'static str {
         match self {
-            InvoiceLineItemType::InvoiceItem => "invoiceitem",
-            InvoiceLineItemType::Subscription => "subscription",
+            BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType::InvoiceItemDetails => "invoice_item_details",
+            BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType::SubscriptionItemDetails => "subscription_item_details",
         }
     }
 }
 
-impl AsRef<str> for InvoiceLineItemType {
+impl AsRef<str> for BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for InvoiceLineItemType {
+impl std::fmt::Display for BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default for InvoiceLineItemType {
+impl std::default::Default for BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType {
     fn default() -> Self {
-        Self::InvoiceItem
+        Self::InvoiceItemDetails
     }
 }
 
-/// An enum representing the possible values of an `TaxAmount`'s `taxability_reason` field.
+/// An enum representing the possible values of an `BillingBillResourceInvoicingTaxesTax`'s `tax_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
-pub enum TaxAmountTaxabilityReason {
+pub enum BillingBillResourceInvoicingTaxesTaxTaxBehavior {
+    Exclusive,
+    Inclusive,
+}
+
+impl BillingBillResourceInvoicingTaxesTaxTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            BillingBillResourceInvoicingTaxesTaxTaxBehavior::Exclusive => "exclusive",
+            BillingBillResourceInvoicingTaxesTaxTaxBehavior::Inclusive => "inclusive",
+        }
+    }
+}
+
+impl AsRef<str> for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
+    }
+}
+
+/// An enum representing the possible values of an `BillingBillResourceInvoicingTaxesTax`'s `taxability_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum BillingBillResourceInvoicingTaxesTaxTaxabilityReason {
     CustomerExempt,
+    NotAvailable,
     NotCollecting,
     NotSubjectToTax,
     NotSupported,
@@ -210,41 +283,108 @@ pub enum TaxAmountTaxabilityReason {
     ZeroRated,
 }
 
-impl TaxAmountTaxabilityReason {
+impl BillingBillResourceInvoicingTaxesTaxTaxabilityReason {
     pub fn as_str(self) -> &'static str {
         match self {
-            TaxAmountTaxabilityReason::CustomerExempt => "customer_exempt",
-            TaxAmountTaxabilityReason::NotCollecting => "not_collecting",
-            TaxAmountTaxabilityReason::NotSubjectToTax => "not_subject_to_tax",
-            TaxAmountTaxabilityReason::NotSupported => "not_supported",
-            TaxAmountTaxabilityReason::PortionProductExempt => "portion_product_exempt",
-            TaxAmountTaxabilityReason::PortionReducedRated => "portion_reduced_rated",
-            TaxAmountTaxabilityReason::PortionStandardRated => "portion_standard_rated",
-            TaxAmountTaxabilityReason::ProductExempt => "product_exempt",
-            TaxAmountTaxabilityReason::ProductExemptHoliday => "product_exempt_holiday",
-            TaxAmountTaxabilityReason::ProportionallyRated => "proportionally_rated",
-            TaxAmountTaxabilityReason::ReducedRated => "reduced_rated",
-            TaxAmountTaxabilityReason::ReverseCharge => "reverse_charge",
-            TaxAmountTaxabilityReason::StandardRated => "standard_rated",
-            TaxAmountTaxabilityReason::TaxableBasisReduced => "taxable_basis_reduced",
-            TaxAmountTaxabilityReason::ZeroRated => "zero_rated",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::CustomerExempt => "customer_exempt",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::NotAvailable => "not_available",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::NotCollecting => "not_collecting",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::NotSubjectToTax => "not_subject_to_tax",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::NotSupported => "not_supported",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::PortionProductExempt => "portion_product_exempt",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::PortionReducedRated => "portion_reduced_rated",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::PortionStandardRated => "portion_standard_rated",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::ProductExempt => "product_exempt",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::ProductExemptHoliday => "product_exempt_holiday",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::ProportionallyRated => "proportionally_rated",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::ReducedRated => "reduced_rated",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::ReverseCharge => "reverse_charge",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::StandardRated => "standard_rated",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::TaxableBasisReduced => "taxable_basis_reduced",
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::ZeroRated => "zero_rated",
         }
     }
 }
 
-impl AsRef<str> for TaxAmountTaxabilityReason {
+impl AsRef<str> for BillingBillResourceInvoicingTaxesTaxTaxabilityReason {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for TaxAmountTaxabilityReason {
+impl std::fmt::Display for BillingBillResourceInvoicingTaxesTaxTaxabilityReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default for TaxAmountTaxabilityReason {
+impl std::default::Default for BillingBillResourceInvoicingTaxesTaxTaxabilityReason {
     fn default() -> Self {
         Self::CustomerExempt
+    }
+}
+
+/// An enum representing the possible values of an `BillingBillResourceInvoicingTaxesTax`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum BillingBillResourceInvoicingTaxesTaxType {
+    TaxRateDetails,
+}
+
+impl BillingBillResourceInvoicingTaxesTaxType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            BillingBillResourceInvoicingTaxesTaxType::TaxRateDetails => "tax_rate_details",
+        }
+    }
+}
+
+impl AsRef<str> for BillingBillResourceInvoicingTaxesTaxType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for BillingBillResourceInvoicingTaxesTaxType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for BillingBillResourceInvoicingTaxesTaxType {
+    fn default() -> Self {
+        Self::TaxRateDetails
+    }
+}
+
+/// An enum representing the possible values of an `InvoicesResourcePretaxCreditAmount`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum InvoicesResourcePretaxCreditAmountType {
+    CreditBalanceTransaction,
+    Discount,
+}
+
+impl InvoicesResourcePretaxCreditAmountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            InvoicesResourcePretaxCreditAmountType::CreditBalanceTransaction => "credit_balance_transaction",
+            InvoicesResourcePretaxCreditAmountType::Discount => "discount",
+        }
+    }
+}
+
+impl AsRef<str> for InvoicesResourcePretaxCreditAmountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoicesResourcePretaxCreditAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for InvoicesResourcePretaxCreditAmountType {
+    fn default() -> Self {
+        Self::CreditBalanceTransaction
     }
 }
