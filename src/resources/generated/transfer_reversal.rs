@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::TransferReversalId;
+use crate::ids::{TransferReversalId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{BalanceTransaction, Currency, Refund, Transfer};
 use serde::{Deserialize, Serialize};

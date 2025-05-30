@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::client::{Client, Response};
-use crate::ids::TerminalReaderId;
+use crate::ids::{TerminalReaderId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable};
 use crate::resources::{Charge, Currency, PaymentIntent, Refund, SetupIntent, TerminalLocation};
 use serde::{Deserialize, Serialize};
@@ -28,7 +28,7 @@ pub struct TerminalReader {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_sw_version: Option<String>,
 
-    /// Type of reader, one of `bbpos_wisepad3`, `stripe_m2`, `bbpos_chipper2x`, `bbpos_wisepos_e`, `verifone_P400`, or `simulated_wisepos_e`.
+    /// Device type of the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_type: Option<TerminalReaderDeviceType>,
 
@@ -59,18 +59,19 @@ pub struct TerminalReader {
     pub serial_number: Option<String>,
 
     /// The networking status of the reader.
+    ///
+    /// We do not recommend using this field in flows that may block taking payments.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<TerminalReaderStatus>,
 }
 
 impl TerminalReader {
+
     /// Returns a list of `Reader` objects.
-    pub fn list(
-        client: &Client,
-        params: &ListTerminalReaders<'_>,
-    ) -> Response<List<TerminalReader>> {
-        client.get_query("/terminal/readers", params)
-    }
+pub fn list(client: &Client, params: &ListTerminalReaders<'_>) -> Response<List<TerminalReader>> {
+   client.get_query("/terminal/readers", params)
+}
+
 
     /// Creates a new `Reader` object.
     pub fn create(client: &Client, params: CreateTerminalReader<'_>) -> Response<TerminalReader> {
@@ -91,6 +92,10 @@ impl Object for TerminalReader {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceReaderAction {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub collect_inputs: Option<TerminalReaderReaderResourceCollectInputsAction>,
+
     /// Failure code, only set if status is `failed`.
     pub failure_code: Option<String>,
 
@@ -118,7 +123,98 @@ pub struct TerminalReaderReaderResourceReaderAction {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceCollectInputsAction {
+
+    /// List of inputs to be collected.
+    pub inputs: Vec<TerminalReaderReaderResourceInput>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    pub metadata: Option<Metadata>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceInput {
+
+    /// Default text of input being collected.
+    pub custom_text: Option<TerminalReaderReaderResourceCustomText>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<TerminalReaderReaderResourceEmail>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub numeric: Option<TerminalReaderReaderResourceNumeric>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<TerminalReaderReaderResourcePhone>,
+
+    /// Indicate that this input is required, disabling the skip button.
+    pub required: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selection: Option<TerminalReaderReaderResourceSelection>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub signature: Option<TerminalReaderReaderResourceSignature>,
+
+    /// Indicate that this input was skipped by the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub skipped: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<TerminalReaderReaderResourceText>,
+
+    /// List of toggles being collected.
+    ///
+    /// Values are present if collection is complete.
+    pub toggles: Option<Vec<TerminalReaderReaderResourceToggle>>,
+
+    /// Type of input being collected.
+    #[serde(rename = "type")]
+    pub type_: TerminalReaderReaderResourceInputType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceCustomText {
+
+    /// Customize the default description for this input.
+    pub description: Option<String>,
+
+    /// Customize the default label for this input's skip button.
+    pub skip_button: Option<String>,
+
+    /// Customize the default label for this input's submit button.
+    pub submit_button: Option<String>,
+
+    /// Customize the default title for this input.
+    pub title: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceEmail {
+
+    /// The collected email address.
+    pub value: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceNumeric {
+
+    /// The collected number.
+    pub value: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourcePhone {
+
+    /// The collected phone number.
+    pub value: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceProcessPaymentIntentAction {
+
     /// Most recent PaymentIntent processed by the reader.
     pub payment_intent: Expandable<PaymentIntent>,
 
@@ -128,6 +224,15 @@ pub struct TerminalReaderReaderResourceProcessPaymentIntentAction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceProcessConfig {
+
+    /// Enable customer initiated cancellation when processing this payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_customer_cancellation: Option<bool>,
+
+    /// If the customer does not abandon authenticating the payment, they will be redirected to this specified URL after completion.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_url: Option<String>,
+
     /// Override showing a tipping selection screen on this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub skip_tipping: Option<bool>,
@@ -138,6 +243,7 @@ pub struct TerminalReaderReaderResourceProcessConfig {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
+
     /// ID of a card PaymentMethod generated from the card_present PaymentMethod that may be attached to a Customer for future transactions.
     ///
     /// Only present if it was possible to generate a card PaymentMethod.
@@ -152,10 +258,16 @@ pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct TerminalReaderReaderResourceProcessSetupConfig {}
+pub struct TerminalReaderReaderResourceProcessSetupConfig {
+
+    /// Enable customer initiated cancellation when processing this SetupIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_customer_cancellation: Option<bool>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceRefundPaymentAction {
+
     /// The amount being refunded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -190,6 +302,9 @@ pub struct TerminalReaderReaderResourceRefundPaymentAction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_application_fee: Option<bool>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_payment_config: Option<TerminalReaderReaderResourceRefundPaymentConfig>,
+
     /// Boolean indicating whether the transfer should be reversed when refunding this charge.
     ///
     /// The transfer will be reversed proportionally to the amount being refunded (either the entire or partial amount).
@@ -199,7 +314,42 @@ pub struct TerminalReaderReaderResourceRefundPaymentAction {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceRefundPaymentConfig {
+
+    /// Enable customer initiated cancellation when refunding this payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_customer_cancellation: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceSelection {
+
+    /// List of possible choices to be selected.
+    pub choices: Vec<TerminalReaderReaderResourceChoice>,
+
+    /// The id of the selected choice.
+    pub id: Option<String>,
+
+    /// The text of the selected choice.
+    pub text: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceChoice {
+
+    /// The id to be selected.
+    pub id: Option<String>,
+
+    /// The button style for the choice.
+    pub style: Option<TerminalReaderReaderResourceChoiceStyle>,
+
+    /// The text to be selected.
+    pub text: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceSetReaderDisplayAction {
+
     /// Cart object to be displayed by the reader.
     pub cart: Option<TerminalReaderReaderResourceCart>,
 
@@ -210,6 +360,7 @@ pub struct TerminalReaderReaderResourceSetReaderDisplayAction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceCart {
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -231,6 +382,7 @@ pub struct TerminalReaderReaderResourceCart {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceLineItem {
+
     /// The amount of the line item.
     ///
     /// A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
@@ -244,7 +396,22 @@ pub struct TerminalReaderReaderResourceLineItem {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceSignature {
+
+    /// The File ID of a collected signature image.
+    pub value: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceText {
+
+    /// The collected text value.
+    pub value: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceTippingConfig {
+
     /// Amount used to calculate tip suggestions on tipping selection screen for this transaction.
     ///
     /// Must be a positive integer in the smallest currency unit (e.g., 100 cents to represent $1.00 or 100 to represent ¥100, a zero-decimal currency).
@@ -252,9 +419,26 @@ pub struct TerminalReaderReaderResourceTippingConfig {
     pub amount_eligible: Option<i64>,
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceToggle {
+
+    /// The toggle's default value.
+    pub default_value: Option<TerminalReaderReaderResourceToggleDefaultValue>,
+
+    /// The toggle's description text.
+    pub description: Option<String>,
+
+    /// The toggle's title text.
+    pub title: Option<String>,
+
+    /// The toggle's collected value.
+    pub value: Option<TerminalReaderReaderResourceToggleValue>,
+}
+
 /// The parameters for `TerminalReader::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTerminalReader<'a> {
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -296,6 +480,7 @@ impl<'a> CreateTerminalReader<'a> {
 /// The parameters for `TerminalReader::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTerminalReaders<'a> {
+
     /// Filters readers by device type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_type: Option<TerminalReaderDeviceType>,
@@ -354,9 +539,8 @@ impl<'a> ListTerminalReaders<'a> {
 impl Paginable for ListTerminalReaders<'_> {
     type O = TerminalReader;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// An enum representing the possible values of an `TerminalReader`'s `device_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -364,8 +548,11 @@ pub enum TerminalReaderDeviceType {
     BbposChipper2x,
     BbposWisepad3,
     BbposWiseposE,
+    MobilePhoneReader,
+    SimulatedStripeS700,
     SimulatedWiseposE,
     StripeM2,
+    StripeS700,
     #[serde(rename = "verifone_P400")]
     VerifoneP400,
 }
@@ -376,8 +563,11 @@ impl TerminalReaderDeviceType {
             TerminalReaderDeviceType::BbposChipper2x => "bbpos_chipper2x",
             TerminalReaderDeviceType::BbposWisepad3 => "bbpos_wisepad3",
             TerminalReaderDeviceType::BbposWiseposE => "bbpos_wisepos_e",
+            TerminalReaderDeviceType::MobilePhoneReader => "mobile_phone_reader",
+            TerminalReaderDeviceType::SimulatedStripeS700 => "simulated_stripe_s700",
             TerminalReaderDeviceType::SimulatedWiseposE => "simulated_wisepos_e",
             TerminalReaderDeviceType::StripeM2 => "stripe_m2",
+            TerminalReaderDeviceType::StripeS700 => "stripe_s700",
             TerminalReaderDeviceType::VerifoneP400 => "verifone_P400",
         }
     }
@@ -397,6 +587,82 @@ impl std::fmt::Display for TerminalReaderDeviceType {
 impl std::default::Default for TerminalReaderDeviceType {
     fn default() -> Self {
         Self::BbposChipper2x
+    }
+}
+
+/// An enum representing the possible values of an `TerminalReaderReaderResourceChoice`'s `style` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TerminalReaderReaderResourceChoiceStyle {
+    Primary,
+    Secondary,
+}
+
+impl TerminalReaderReaderResourceChoiceStyle {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TerminalReaderReaderResourceChoiceStyle::Primary => "primary",
+            TerminalReaderReaderResourceChoiceStyle::Secondary => "secondary",
+        }
+    }
+}
+
+impl AsRef<str> for TerminalReaderReaderResourceChoiceStyle {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TerminalReaderReaderResourceChoiceStyle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TerminalReaderReaderResourceChoiceStyle {
+    fn default() -> Self {
+        Self::Primary
+    }
+}
+
+/// An enum representing the possible values of an `TerminalReaderReaderResourceInput`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TerminalReaderReaderResourceInputType {
+    Email,
+    Numeric,
+    Phone,
+    Selection,
+    Signature,
+    Text,
+}
+
+impl TerminalReaderReaderResourceInputType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TerminalReaderReaderResourceInputType::Email => "email",
+            TerminalReaderReaderResourceInputType::Numeric => "numeric",
+            TerminalReaderReaderResourceInputType::Phone => "phone",
+            TerminalReaderReaderResourceInputType::Selection => "selection",
+            TerminalReaderReaderResourceInputType::Signature => "signature",
+            TerminalReaderReaderResourceInputType::Text => "text",
+        }
+    }
+}
+
+impl AsRef<str> for TerminalReaderReaderResourceInputType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TerminalReaderReaderResourceInputType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TerminalReaderReaderResourceInputType {
+    fn default() -> Self {
+        Self::Email
     }
 }
 
@@ -440,6 +706,7 @@ impl std::default::Default for TerminalReaderReaderResourceReaderActionStatus {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TerminalReaderReaderResourceReaderActionType {
+    CollectInputs,
     ProcessPaymentIntent,
     ProcessSetupIntent,
     RefundPayment,
@@ -449,12 +716,9 @@ pub enum TerminalReaderReaderResourceReaderActionType {
 impl TerminalReaderReaderResourceReaderActionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            TerminalReaderReaderResourceReaderActionType::ProcessPaymentIntent => {
-                "process_payment_intent"
-            }
-            TerminalReaderReaderResourceReaderActionType::ProcessSetupIntent => {
-                "process_setup_intent"
-            }
+            TerminalReaderReaderResourceReaderActionType::CollectInputs => "collect_inputs",
+            TerminalReaderReaderResourceReaderActionType::ProcessPaymentIntent => "process_payment_intent",
+            TerminalReaderReaderResourceReaderActionType::ProcessSetupIntent => "process_setup_intent",
             TerminalReaderReaderResourceReaderActionType::RefundPayment => "refund_payment",
             TerminalReaderReaderResourceReaderActionType::SetReaderDisplay => "set_reader_display",
         }
@@ -474,7 +738,7 @@ impl std::fmt::Display for TerminalReaderReaderResourceReaderActionType {
 }
 impl std::default::Default for TerminalReaderReaderResourceReaderActionType {
     fn default() -> Self {
-        Self::ProcessPaymentIntent
+        Self::CollectInputs
     }
 }
 
@@ -492,9 +756,7 @@ impl TerminalReaderReaderResourceRefundPaymentActionReason {
         match self {
             TerminalReaderReaderResourceRefundPaymentActionReason::Duplicate => "duplicate",
             TerminalReaderReaderResourceRefundPaymentActionReason::Fraudulent => "fraudulent",
-            TerminalReaderReaderResourceRefundPaymentActionReason::RequestedByCustomer => {
-                "requested_by_customer"
-            }
+            TerminalReaderReaderResourceRefundPaymentActionReason::RequestedByCustomer => "requested_by_customer",
         }
     }
 }
@@ -545,6 +807,74 @@ impl std::fmt::Display for TerminalReaderReaderResourceSetReaderDisplayActionTyp
 impl std::default::Default for TerminalReaderReaderResourceSetReaderDisplayActionType {
     fn default() -> Self {
         Self::Cart
+    }
+}
+
+/// An enum representing the possible values of an `TerminalReaderReaderResourceToggle`'s `default_value` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TerminalReaderReaderResourceToggleDefaultValue {
+    Disabled,
+    Enabled,
+}
+
+impl TerminalReaderReaderResourceToggleDefaultValue {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TerminalReaderReaderResourceToggleDefaultValue::Disabled => "disabled",
+            TerminalReaderReaderResourceToggleDefaultValue::Enabled => "enabled",
+        }
+    }
+}
+
+impl AsRef<str> for TerminalReaderReaderResourceToggleDefaultValue {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TerminalReaderReaderResourceToggleDefaultValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TerminalReaderReaderResourceToggleDefaultValue {
+    fn default() -> Self {
+        Self::Disabled
+    }
+}
+
+/// An enum representing the possible values of an `TerminalReaderReaderResourceToggle`'s `value` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TerminalReaderReaderResourceToggleValue {
+    Disabled,
+    Enabled,
+}
+
+impl TerminalReaderReaderResourceToggleValue {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TerminalReaderReaderResourceToggleValue::Disabled => "disabled",
+            TerminalReaderReaderResourceToggleValue::Enabled => "enabled",
+        }
+    }
+}
+
+impl AsRef<str> for TerminalReaderReaderResourceToggleValue {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TerminalReaderReaderResourceToggleValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TerminalReaderReaderResourceToggleValue {
+    fn default() -> Self {
+        Self::Disabled
     }
 }
 

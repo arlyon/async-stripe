@@ -33,6 +33,9 @@ pub struct TreasuryFinancialAccount {
     /// The set of credentials that resolve to a FinancialAccount.
     pub financial_addresses: Vec<TreasuryFinancialAccountsResourceFinancialAddress>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_default: Option<bool>,
+
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
@@ -40,6 +43,10 @@ pub struct TreasuryFinancialAccount {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<Metadata>,
+
+    /// The nickname for the FinancialAccount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nickname: Option<String>,
 
     /// The array of paths to pending Features in the Features hash.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -53,7 +60,7 @@ pub struct TreasuryFinancialAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub restricted_features: Option<Vec<TreasuryFinancialAccountRestrictedFeatures>>,
 
-    /// The enum specifying what state the account is in.
+    /// Status of this FinancialAccount.
     pub status: TreasuryFinancialAccountStatus,
 
     pub status_details: TreasuryFinancialAccountsResourceStatusDetails,
@@ -109,6 +116,7 @@ pub struct TreasuryFinancialAccountsResourceAbaRecord {
     pub account_holder_name: String,
 
     /// The account number.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_number: Option<String>,
 
     /// The last four characters of the account number.
@@ -153,6 +161,8 @@ pub enum TreasuryFinancialAccountActiveFeatures {
     DepositInsurance,
     #[serde(rename = "financial_addresses.aba")]
     FinancialAddressesAba,
+    #[serde(rename = "financial_addresses.aba.forwarding")]
+    FinancialAddressesAbaForwarding,
     #[serde(rename = "inbound_transfers.ach")]
     InboundTransfersAch,
     IntraStripeFlows,
@@ -173,6 +183,7 @@ impl TreasuryFinancialAccountActiveFeatures {
             TreasuryFinancialAccountActiveFeatures::CardIssuing => "card_issuing",
             TreasuryFinancialAccountActiveFeatures::DepositInsurance => "deposit_insurance",
             TreasuryFinancialAccountActiveFeatures::FinancialAddressesAba => "financial_addresses.aba",
+            TreasuryFinancialAccountActiveFeatures::FinancialAddressesAbaForwarding => "financial_addresses.aba.forwarding",
             TreasuryFinancialAccountActiveFeatures::InboundTransfersAch => "inbound_transfers.ach",
             TreasuryFinancialAccountActiveFeatures::IntraStripeFlows => "intra_stripe_flows",
             TreasuryFinancialAccountActiveFeatures::OutboundPaymentsAch => "outbound_payments.ach",
@@ -209,6 +220,8 @@ pub enum TreasuryFinancialAccountPendingFeatures {
     DepositInsurance,
     #[serde(rename = "financial_addresses.aba")]
     FinancialAddressesAba,
+    #[serde(rename = "financial_addresses.aba.forwarding")]
+    FinancialAddressesAbaForwarding,
     #[serde(rename = "inbound_transfers.ach")]
     InboundTransfersAch,
     IntraStripeFlows,
@@ -229,6 +242,7 @@ impl TreasuryFinancialAccountPendingFeatures {
             TreasuryFinancialAccountPendingFeatures::CardIssuing => "card_issuing",
             TreasuryFinancialAccountPendingFeatures::DepositInsurance => "deposit_insurance",
             TreasuryFinancialAccountPendingFeatures::FinancialAddressesAba => "financial_addresses.aba",
+            TreasuryFinancialAccountPendingFeatures::FinancialAddressesAbaForwarding => "financial_addresses.aba.forwarding",
             TreasuryFinancialAccountPendingFeatures::InboundTransfersAch => "inbound_transfers.ach",
             TreasuryFinancialAccountPendingFeatures::IntraStripeFlows => "intra_stripe_flows",
             TreasuryFinancialAccountPendingFeatures::OutboundPaymentsAch => "outbound_payments.ach",
@@ -265,6 +279,8 @@ pub enum TreasuryFinancialAccountRestrictedFeatures {
     DepositInsurance,
     #[serde(rename = "financial_addresses.aba")]
     FinancialAddressesAba,
+    #[serde(rename = "financial_addresses.aba.forwarding")]
+    FinancialAddressesAbaForwarding,
     #[serde(rename = "inbound_transfers.ach")]
     InboundTransfersAch,
     IntraStripeFlows,
@@ -285,6 +301,7 @@ impl TreasuryFinancialAccountRestrictedFeatures {
             TreasuryFinancialAccountRestrictedFeatures::CardIssuing => "card_issuing",
             TreasuryFinancialAccountRestrictedFeatures::DepositInsurance => "deposit_insurance",
             TreasuryFinancialAccountRestrictedFeatures::FinancialAddressesAba => "financial_addresses.aba",
+            TreasuryFinancialAccountRestrictedFeatures::FinancialAddressesAbaForwarding => "financial_addresses.aba.forwarding",
             TreasuryFinancialAccountRestrictedFeatures::InboundTransfersAch => "inbound_transfers.ach",
             TreasuryFinancialAccountRestrictedFeatures::IntraStripeFlows => "intra_stripe_flows",
             TreasuryFinancialAccountRestrictedFeatures::OutboundPaymentsAch => "outbound_payments.ach",
