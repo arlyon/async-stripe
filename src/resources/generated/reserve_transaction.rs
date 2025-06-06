@@ -2,9 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::ReserveTransactionId;
-use crate::params::Object;
-use crate::resources::Currency;
+use crate::ids::{ReserveTransactionId};
+use crate::params::{Object};
+use crate::resources::{Currency};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "ReserveTransaction".
