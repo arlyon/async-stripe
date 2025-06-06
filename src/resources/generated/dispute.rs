@@ -5,7 +5,7 @@
 use crate::client::{Client, Response};
 use crate::ids::{ChargeId, DisputeId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{BalanceTransaction, Charge, Currency, File, PaymentIntent};
+use crate::resources::{BalanceTransaction, Charge, Currency, DisputeTransactionShippingAddress, File, PaymentIntent};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Dispute".
@@ -37,6 +37,9 @@ pub struct Dispute {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// List of eligibility types that are included in `enhanced_evidence`.
+    pub enhanced_eligibility_types: Vec<DisputeEnhancedEligibilityTypes>,
+
     pub evidence: DisputeEvidence,
 
     pub evidence_details: DisputeEvidenceDetails,
@@ -66,7 +69,7 @@ pub struct Dispute {
 
     /// Reason given by cardholder for dispute.
     ///
-    /// Possible values are `bank_cannot_process`, `check_returned`, `credit_not_processed`, `customer_initiated`, `debit_not_authorized`, `duplicate`, `fraudulent`, `general`, `incorrect_account_details`, `insufficient_funds`, `product_not_received`, `product_unacceptable`, `subscription_canceled`, or `unrecognized`.
+    /// Possible values are `bank_cannot_process`, `check_returned`, `credit_not_processed`, `customer_initiated`, `debit_not_authorized`, `duplicate`, `fraudulent`, `general`, `incorrect_account_details`, `insufficient_funds`, `noncompliant`, `product_not_received`, `product_unacceptable`, `subscription_canceled`, or `unrecognized`.
     /// Learn more about [dispute reasons](https://stripe.com/docs/disputes/categories).
     pub reason: String,
 
@@ -77,10 +80,12 @@ pub struct Dispute {
 }
 
 impl Dispute {
+
     /// Returns a list of your disputes.
-    pub fn list(client: &Client, params: &ListDisputes<'_>) -> Response<List<Dispute>> {
-        client.get_query("/disputes", params)
-    }
+pub fn list(client: &Client, params: &ListDisputes<'_>) -> Response<List<Dispute>> {
+   client.get_query("/disputes", params)
+}
+
 
     /// Retrieves the dispute with the given ID.
     pub fn retrieve(client: &Client, id: &DisputeId, expand: &[&str]) -> Response<Dispute> {
@@ -100,6 +105,7 @@ impl Object for Dispute {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DisputeEvidence {
+
     /// Any server or activity logs showing proof that the customer accessed or downloaded the purchased digital product.
     ///
     /// This information should include IP addresses, corresponding timestamps, and any detailed recorded activity.
@@ -144,6 +150,8 @@ pub struct DisputeEvidence {
 
     /// The Stripe ID for the prior charge which appears to be a duplicate of the disputed charge.
     pub duplicate_charge_id: Option<String>,
+
+    pub enhanced_evidence: DisputeEnhancedEvidence,
 
     /// A description of the product or service that was sold.
     pub product_description: Option<String>,
@@ -200,11 +208,45 @@ pub struct DisputeEvidence {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputeEnhancedEvidence {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visa_compelling_evidence_3: Option<DisputeEnhancedEvidenceVisaCompellingEvidence3>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visa_compliance: Option<DisputeEnhancedEvidenceVisaCompliance>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputeEnhancedEvidenceVisaCompellingEvidence3 {
+
+    /// Disputed transaction details for Visa Compelling Evidence 3.0 evidence submission.
+    pub disputed_transaction: Option<DisputeVisaCompellingEvidence3DisputedTransaction>,
+
+    /// List of exactly two prior undisputed transaction objects for Visa Compelling Evidence 3.0 evidence submission.
+    pub prior_undisputed_transactions: Vec<DisputeVisaCompellingEvidence3PriorUndisputedTransaction>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputeEnhancedEvidenceVisaCompliance {
+
+    /// A field acknowledging the fee incurred when countering a Visa compliance dispute.
+    ///
+    /// If this field is set to true, evidence can be submitted for the compliance dispute.
+    /// Stripe collects a 500 USD (or local equivalent) amount to cover the network costs associated with resolving compliance disputes.
+    /// Stripe refunds the 500 USD network fee if you win the dispute.
+    pub fee_acknowledged: bool,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DisputeEvidenceDetails {
+
     /// Date by which evidence must be submitted in order to successfully challenge dispute.
     ///
     /// Will be 0 if the customer's bank or credit card company doesn't allow a response for this particular dispute.
     pub due_by: Option<Timestamp>,
+
+    pub enhanced_eligibility: DisputeEnhancedEligibility,
 
     /// Whether evidence has been staged for this dispute.
     pub has_evidence: bool,
@@ -222,9 +264,46 @@ pub struct DisputeEvidenceDetails {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputeEnhancedEligibility {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visa_compelling_evidence_3: Option<DisputeEnhancedEligibilityVisaCompellingEvidence3>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visa_compliance: Option<DisputeEnhancedEligibilityVisaCompliance>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputeEnhancedEligibilityVisaCompellingEvidence3 {
+
+    /// List of actions required to qualify dispute for Visa Compelling Evidence 3.0 evidence submission.
+    pub required_actions: Vec<DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions>,
+
+    /// Visa Compelling Evidence 3.0 eligibility status.
+    pub status: DisputeEnhancedEligibilityVisaCompellingEvidence3Status,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputeEnhancedEligibilityVisaCompliance {
+
+    /// Visa compliance eligibility status.
+    pub status: DisputeEnhancedEligibilityVisaComplianceStatus,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DisputePaymentMethodDetails {
-    /// Card specific dispute details.
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amazon_pay: Option<DisputePaymentMethodDetailsAmazonPay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<DisputePaymentMethodDetailsCard>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<DisputePaymentMethodDetailsKlarna>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<DisputePaymentMethodDetailsPaypal>,
 
     /// Payment method type.
     #[serde(rename = "type")]
@@ -232,11 +311,24 @@ pub struct DisputePaymentMethodDetails {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputePaymentMethodDetailsAmazonPay {
+
+    /// The AmazonPay dispute type, chargeback or claim.
+    pub dispute_type: Option<DisputePaymentMethodDetailsAmazonPayDisputeType>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DisputePaymentMethodDetailsCard {
+
     /// Card brand.
     ///
-    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: String,
+
+    /// The type of dispute opened.
+    ///
+    /// Different case types may have varying fees and financial impact.
+    pub case_type: DisputePaymentMethodDetailsCardCaseType,
 
     /// The card network's specific dispute reason code, which maps to one of Stripe's primary dispute categories to simplify response guidance.
     ///
@@ -244,13 +336,104 @@ pub struct DisputePaymentMethodDetailsCard {
     pub network_reason_code: Option<String>,
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputePaymentMethodDetailsKlarna {
+
+    /// The reason for the dispute as defined by Klarna.
+    pub reason_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputePaymentMethodDetailsPaypal {
+
+    /// The ID of the dispute in PayPal.
+    pub case_id: Option<String>,
+
+    /// The reason for the dispute as defined by PayPal.
+    pub reason_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputeVisaCompellingEvidence3DisputedTransaction {
+
+    /// User Account ID used to log into business platform.
+    ///
+    /// Must be recognizable by the user.
+    pub customer_account_id: Option<String>,
+
+    /// Unique identifier of the cardholder’s device derived from a combination of at least two hardware and software attributes.
+    ///
+    /// Must be at least 20 characters.
+    pub customer_device_fingerprint: Option<String>,
+
+    /// Unique identifier of the cardholder’s device such as a device serial number (e.g., International Mobile Equipment Identity [IMEI]).
+    ///
+    /// Must be at least 15 characters.
+    pub customer_device_id: Option<String>,
+
+    /// The email address of the customer.
+    pub customer_email_address: Option<String>,
+
+    /// The IP address that the customer used when making the purchase.
+    pub customer_purchase_ip: Option<String>,
+
+    /// Categorization of disputed payment.
+    pub merchandise_or_services: Option<DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices>,
+
+    /// A description of the product or service that was sold.
+    pub product_description: Option<String>,
+
+    /// The address to which a physical product was shipped.
+    ///
+    /// All fields are required for Visa Compelling Evidence 3.0 evidence submission.
+    pub shipping_address: Option<DisputeTransactionShippingAddress>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputeVisaCompellingEvidence3PriorUndisputedTransaction {
+
+    /// Stripe charge ID for the Visa Compelling Evidence 3.0 eligible prior charge.
+    pub charge: String,
+
+    /// User Account ID used to log into business platform.
+    ///
+    /// Must be recognizable by the user.
+    pub customer_account_id: Option<String>,
+
+    /// Unique identifier of the cardholder’s device derived from a combination of at least two hardware and software attributes.
+    ///
+    /// Must be at least 20 characters.
+    pub customer_device_fingerprint: Option<String>,
+
+    /// Unique identifier of the cardholder’s device such as a device serial number (e.g., International Mobile Equipment Identity [IMEI]).
+    ///
+    /// Must be at least 15 characters.
+    pub customer_device_id: Option<String>,
+
+    /// The email address of the customer.
+    pub customer_email_address: Option<String>,
+
+    /// The IP address that the customer used when making the purchase.
+    pub customer_purchase_ip: Option<String>,
+
+    /// A description of the product or service that was sold.
+    pub product_description: Option<String>,
+
+    /// The address to which a physical product was shipped.
+    ///
+    /// All fields are required for Visa Compelling Evidence 3.0 evidence submission.
+    pub shipping_address: Option<DisputeTransactionShippingAddress>,
+}
+
 /// The parameters for `Dispute::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListDisputes<'a> {
+
     /// Only return disputes associated to the charge specified by this charge ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<ChargeId>,
 
+    /// Only return disputes that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -299,20 +482,236 @@ impl<'a> ListDisputes<'a> {
 impl Paginable for ListDisputes<'_> {
     type O = Dispute;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
+                self.starting_after = Some(item.id());
+            }}
+/// An enum representing the possible values of an `Dispute`'s `enhanced_eligibility_types` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum DisputeEnhancedEligibilityTypes {
+    #[serde(rename = "visa_compelling_evidence_3")]
+    VisaCompellingEvidence3,
+}
+
+impl DisputeEnhancedEligibilityTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            DisputeEnhancedEligibilityTypes::VisaCompellingEvidence3 => "visa_compelling_evidence_3",
+        }
     }
 }
+
+impl AsRef<str> for DisputeEnhancedEligibilityTypes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for DisputeEnhancedEligibilityTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for DisputeEnhancedEligibilityTypes {
+    fn default() -> Self {
+        Self::VisaCompellingEvidence3
+    }
+}
+
+/// An enum representing the possible values of an `DisputeEnhancedEligibilityVisaCompellingEvidence3`'s `required_actions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions {
+    MissingCustomerIdentifiers,
+    MissingDisputedTransactionDescription,
+    MissingMerchandiseOrServices,
+    MissingPriorUndisputedTransactionDescription,
+    MissingPriorUndisputedTransactions,
+}
+
+impl DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions::MissingCustomerIdentifiers => "missing_customer_identifiers",
+            DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions::MissingDisputedTransactionDescription => "missing_disputed_transaction_description",
+            DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions::MissingMerchandiseOrServices => "missing_merchandise_or_services",
+            DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions::MissingPriorUndisputedTransactionDescription => "missing_prior_undisputed_transaction_description",
+            DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions::MissingPriorUndisputedTransactions => "missing_prior_undisputed_transactions",
+        }
+    }
+}
+
+impl AsRef<str> for DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions {
+    fn default() -> Self {
+        Self::MissingCustomerIdentifiers
+    }
+}
+
+/// An enum representing the possible values of an `DisputeEnhancedEligibilityVisaCompellingEvidence3`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum DisputeEnhancedEligibilityVisaCompellingEvidence3Status {
+    NotQualified,
+    Qualified,
+    RequiresAction,
+}
+
+impl DisputeEnhancedEligibilityVisaCompellingEvidence3Status {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            DisputeEnhancedEligibilityVisaCompellingEvidence3Status::NotQualified => "not_qualified",
+            DisputeEnhancedEligibilityVisaCompellingEvidence3Status::Qualified => "qualified",
+            DisputeEnhancedEligibilityVisaCompellingEvidence3Status::RequiresAction => "requires_action",
+        }
+    }
+}
+
+impl AsRef<str> for DisputeEnhancedEligibilityVisaCompellingEvidence3Status {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for DisputeEnhancedEligibilityVisaCompellingEvidence3Status {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for DisputeEnhancedEligibilityVisaCompellingEvidence3Status {
+    fn default() -> Self {
+        Self::NotQualified
+    }
+}
+
+/// An enum representing the possible values of an `DisputeEnhancedEligibilityVisaCompliance`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum DisputeEnhancedEligibilityVisaComplianceStatus {
+    FeeAcknowledged,
+    RequiresFeeAcknowledgement,
+}
+
+impl DisputeEnhancedEligibilityVisaComplianceStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            DisputeEnhancedEligibilityVisaComplianceStatus::FeeAcknowledged => "fee_acknowledged",
+            DisputeEnhancedEligibilityVisaComplianceStatus::RequiresFeeAcknowledgement => "requires_fee_acknowledgement",
+        }
+    }
+}
+
+impl AsRef<str> for DisputeEnhancedEligibilityVisaComplianceStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for DisputeEnhancedEligibilityVisaComplianceStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for DisputeEnhancedEligibilityVisaComplianceStatus {
+    fn default() -> Self {
+        Self::FeeAcknowledged
+    }
+}
+
+/// An enum representing the possible values of an `DisputePaymentMethodDetailsAmazonPay`'s `dispute_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum DisputePaymentMethodDetailsAmazonPayDisputeType {
+    Chargeback,
+    Claim,
+}
+
+impl DisputePaymentMethodDetailsAmazonPayDisputeType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            DisputePaymentMethodDetailsAmazonPayDisputeType::Chargeback => "chargeback",
+            DisputePaymentMethodDetailsAmazonPayDisputeType::Claim => "claim",
+        }
+    }
+}
+
+impl AsRef<str> for DisputePaymentMethodDetailsAmazonPayDisputeType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for DisputePaymentMethodDetailsAmazonPayDisputeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for DisputePaymentMethodDetailsAmazonPayDisputeType {
+    fn default() -> Self {
+        Self::Chargeback
+    }
+}
+
+/// An enum representing the possible values of an `DisputePaymentMethodDetailsCard`'s `case_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum DisputePaymentMethodDetailsCardCaseType {
+    Chargeback,
+    Inquiry,
+}
+
+impl DisputePaymentMethodDetailsCardCaseType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            DisputePaymentMethodDetailsCardCaseType::Chargeback => "chargeback",
+            DisputePaymentMethodDetailsCardCaseType::Inquiry => "inquiry",
+        }
+    }
+}
+
+impl AsRef<str> for DisputePaymentMethodDetailsCardCaseType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for DisputePaymentMethodDetailsCardCaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for DisputePaymentMethodDetailsCardCaseType {
+    fn default() -> Self {
+        Self::Chargeback
+    }
+}
+
 /// An enum representing the possible values of an `DisputePaymentMethodDetails`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum DisputePaymentMethodDetailsType {
+    AmazonPay,
     Card,
+    Klarna,
+    Paypal,
 }
 
 impl DisputePaymentMethodDetailsType {
     pub fn as_str(self) -> &'static str {
         match self {
+            DisputePaymentMethodDetailsType::AmazonPay => "amazon_pay",
             DisputePaymentMethodDetailsType::Card => "card",
+            DisputePaymentMethodDetailsType::Klarna => "klarna",
+            DisputePaymentMethodDetailsType::Paypal => "paypal",
         }
     }
 }
@@ -330,7 +729,7 @@ impl std::fmt::Display for DisputePaymentMethodDetailsType {
 }
 impl std::default::Default for DisputePaymentMethodDetailsType {
     fn default() -> Self {
-        Self::Card
+        Self::AmazonPay
     }
 }
 
@@ -375,5 +774,39 @@ impl std::fmt::Display for DisputeStatus {
 impl std::default::Default for DisputeStatus {
     fn default() -> Self {
         Self::Lost
+    }
+}
+
+/// An enum representing the possible values of an `DisputeVisaCompellingEvidence3DisputedTransaction`'s `merchandise_or_services` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
+    Merchandise,
+    Services,
+}
+
+impl DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::Merchandise => "merchandise",
+            DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::Services => "services",
+        }
+    }
+}
+
+impl AsRef<str> for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
+    fn default() -> Self {
+        Self::Merchandise
     }
 }

@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::ConnectCollectionTransferId;
+use crate::ids::{ConnectCollectionTransferId};
 use crate::params::{Expandable, Object};
 use crate::resources::{Account, Currency};
 use serde::{Deserialize, Serialize};

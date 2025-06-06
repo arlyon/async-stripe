@@ -5,12 +5,7 @@
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, SubscriptionScheduleId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, Application, CollectionMethod, ConnectAccountReference, Coupon, Currency, Customer,
-    PaymentMethod, Plan, Price, Scheduled, Subscription, SubscriptionBillingThresholds,
-    SubscriptionItemBillingThresholds, SubscriptionTransferData, TaxId, TaxRate,
-    TestHelpersTestClock,
-};
+use crate::resources::{Account, Application, CollectionMethod, ConnectAccountReference, Coupon, Currency, Customer, Discount, PaymentMethod, Plan, Price, PromotionCode, Scheduled, Subscription, SubscriptionBillingThresholds, SubscriptionItemBillingThresholds, SubscriptionTransferData, TaxId, TaxRate, TestHelpersTestClock};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SubscriptionSchedule".
@@ -87,21 +82,17 @@ pub struct SubscriptionSchedule {
 }
 
 impl SubscriptionSchedule {
+
     /// Retrieves the list of your subscription schedules.
-    pub fn list(
-        client: &Client,
-        params: &ListSubscriptionSchedules<'_>,
-    ) -> Response<List<SubscriptionSchedule>> {
-        client.get_query("/subscription_schedules", params)
-    }
+pub fn list(client: &Client, params: &ListSubscriptionSchedules<'_>) -> Response<List<SubscriptionSchedule>> {
+   client.get_query("/subscription_schedules", params)
+}
+
 
     /// Creates a new subscription schedule object.
     ///
     /// Each customer can have up to 500 active or scheduled subscriptions.
-    pub fn create(
-        client: &Client,
-        params: CreateSubscriptionSchedule<'_>,
-    ) -> Response<SubscriptionSchedule> {
+    pub fn create(client: &Client, params: CreateSubscriptionSchedule<'_>) -> Response<SubscriptionSchedule> {
         #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form("/subscription_schedules", &params)
     }
@@ -109,20 +100,12 @@ impl SubscriptionSchedule {
     /// Retrieves the details of an existing subscription schedule.
     ///
     /// You only need to supply the unique subscription schedule identifier that was returned upon subscription schedule creation.
-    pub fn retrieve(
-        client: &Client,
-        id: &SubscriptionScheduleId,
-        expand: &[&str],
-    ) -> Response<SubscriptionSchedule> {
+    pub fn retrieve(client: &Client, id: &SubscriptionScheduleId, expand: &[&str]) -> Response<SubscriptionSchedule> {
         client.get_query(&format!("/subscription_schedules/{}", id), Expand { expand })
     }
 
     /// Updates an existing subscription schedule.
-    pub fn update(
-        client: &Client,
-        id: &SubscriptionScheduleId,
-        params: UpdateSubscriptionSchedule<'_>,
-    ) -> Response<SubscriptionSchedule> {
+    pub fn update(client: &Client, id: &SubscriptionScheduleId, params: UpdateSubscriptionSchedule<'_>) -> Response<SubscriptionSchedule> {
         #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/subscription_schedules/{}", id), &params)
     }
@@ -140,6 +123,7 @@ impl Object for SubscriptionSchedule {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleCurrentPhase {
+
     /// The end of this phase of the subscription schedule.
     pub end_date: Timestamp,
 
@@ -149,6 +133,7 @@ pub struct SubscriptionScheduleCurrentPhase {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionSchedulePhaseConfiguration {
+
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
     pub add_invoice_items: Vec<SubscriptionScheduleAddInvoiceItem>,
 
@@ -176,9 +161,6 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     pub collection_method: Option<CollectionMethod>,
 
-    /// ID of the coupon to use during this phase of the subscription schedule.
-    pub coupon: Option<Expandable<Coupon>>,
-
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -198,6 +180,11 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     ///
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
+
+    /// The stackable discounts that will be applied to the subscription on this phase.
+    ///
+    /// Subscription item discounts are applied before subscription discounts.
+    pub discounts: Vec<DiscountsResourceStackableDiscount>,
 
     /// The end of this phase of the subscription schedule.
     pub end_date: Timestamp,
@@ -219,9 +206,9 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// See the Connect documentation for details.
     pub on_behalf_of: Option<Expandable<Account>>,
 
-    /// If the subscription schedule will prorate when transitioning to this phase.
+    /// When transitioning phases, controls how prorations are handled (if any).
     ///
-    /// Possible values are `create_prorations` and `none`.
+    /// Possible values are `create_prorations`, `none`, and `always_invoice`.
     pub proration_behavior: SubscriptionProrationBehavior,
 
     /// The start of this phase of the subscription schedule.
@@ -235,11 +222,24 @@ pub struct SubscriptionSchedulePhaseConfiguration {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DiscountsResourceStackableDiscount {
+
+    /// ID of the coupon to create a new discount for.
+    pub coupon: Option<Expandable<Coupon>>,
+
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    pub discount: Option<Expandable<Discount>>,
+
+    /// ID of the promotion code to create a new discount for.
+    pub promotion_code: Option<Expandable<PromotionCode>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceSettingSubscriptionSchedulePhaseSetting {
+
     /// The account tax IDs associated with this phase of the subscription schedule.
     ///
     /// Will be set on invoices generated by this phase of the subscription schedule.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_tax_ids: Option<Vec<Expandable<TaxId>>>,
 
     /// Number of days within which a customer must pay invoices generated by this subscription schedule.
@@ -255,6 +255,10 @@ pub struct InvoiceSettingSubscriptionSchedulePhaseSetting {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SchedulesPhaseAutomaticTax {
+
+    /// If Stripe disabled automatic tax, this enum describes why.
+    pub disabled_reason: Option<SchedulesPhaseAutomaticTaxDisabledReason>,
+
     /// Whether Stripe automatically computes tax on invoices created during this phase.
     pub enabled: bool,
 
@@ -267,6 +271,10 @@ pub struct SchedulesPhaseAutomaticTax {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleAddInvoiceItem {
+
+    /// The stackable discounts that will be applied to the item.
+    pub discounts: Vec<DiscountsResourceStackableDiscount>,
+
     /// ID of the price used to generate the invoice item.
     pub price: Expandable<Price>,
 
@@ -282,8 +290,15 @@ pub struct SubscriptionScheduleAddInvoiceItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleConfigurationItem {
+
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
     pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
+
+    /// The discounts applied to the subscription item.
+    ///
+    /// Subscription item discounts are applied before subscription discounts.
+    /// Use `expand[]=discounts` to expand each discount.
+    pub discounts: Vec<DiscountsResourceStackableDiscount>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an item.
     ///
@@ -309,6 +324,7 @@ pub struct SubscriptionScheduleConfigurationItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettings {
+
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account during this phase of the schedule.
@@ -356,6 +372,10 @@ pub struct SubscriptionScheduleDefaultSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionSchedulesResourceDefaultSettingsAutomaticTax {
+
+    /// If Stripe disabled automatic tax, this enum describes why.
+    pub disabled_reason: Option<SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason>,
+
     /// Whether Stripe automatically computes tax on invoices created during this phase.
     pub enabled: bool,
 
@@ -369,6 +389,7 @@ pub struct SubscriptionSchedulesResourceDefaultSettingsAutomaticTax {
 /// The parameters for `SubscriptionSchedule::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateSubscriptionSchedule<'a> {
+
     /// The identifier of the customer to create the subscription schedule for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
@@ -438,6 +459,7 @@ impl<'a> CreateSubscriptionSchedule<'a> {
 /// The parameters for `SubscriptionSchedule::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSubscriptionSchedules<'a> {
+
     /// Only return subscription schedules that were created canceled the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<RangeQuery<Timestamp>>,
@@ -506,12 +528,12 @@ impl<'a> ListSubscriptionSchedules<'a> {
 impl Paginable for ListSubscriptionSchedules<'_> {
     type O = SubscriptionSchedule;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `SubscriptionSchedule::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscriptionSchedule<'a> {
+
     /// Object representing the subscription schedule's default settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_settings: Option<SubscriptionScheduleDefaultSettingsParams>,
@@ -544,7 +566,7 @@ pub struct UpdateSubscriptionSchedule<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phases: Option<Vec<UpdateSubscriptionSchedulePhases>>,
 
-    /// If the update changes the current phase, indicates whether the changes should be prorated.
+    /// If the update changes the billing configuration (item price, quantity, etc.) of the current phase, indicates how prorations from this change should be handled.
     ///
     /// The default value is `create_prorations`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -566,6 +588,7 @@ impl<'a> UpdateSubscriptionSchedule<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhases {
+
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
     ///
     /// You may pass up to 20 items.
@@ -605,10 +628,6 @@ pub struct CreateSubscriptionSchedulePhases {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method: Option<CollectionMethod>,
 
-    /// The identifier of the coupon to apply to this phase of the subscription schedule.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<String>,
-
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -633,6 +652,13 @@ pub struct CreateSubscriptionSchedulePhases {
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+
+    /// The coupons to redeem into discounts for the schedule phase.
+    ///
+    /// If not specified, inherits the discount from the subscription's customer.
+    /// Pass an empty string to avoid inheriting any discounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Vec<CreateSubscriptionSchedulePhasesDiscounts>>,
 
     /// The date at which this phase of the subscription schedule ends.
     ///
@@ -666,11 +692,9 @@ pub struct CreateSubscriptionSchedulePhases {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
 
-    /// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
+    /// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
     ///
-    /// The default value is `create_prorations`.
-    /// This setting controls prorations when a phase is started asynchronously and it is persisted as a field on the phase.
-    /// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration of the current phase.
+    /// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<SubscriptionProrationBehavior>,
 
@@ -691,6 +715,7 @@ pub struct CreateSubscriptionSchedulePhases {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParams {
+
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
@@ -752,6 +777,7 @@ pub struct SubscriptionScheduleDefaultSettingsParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhases {
+
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
     ///
     /// You may pass up to 20 items.
@@ -791,10 +817,6 @@ pub struct UpdateSubscriptionSchedulePhases {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method: Option<CollectionMethod>,
 
-    /// The identifier of the coupon to apply to this phase of the subscription schedule.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<String>,
-
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -819,6 +841,13 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+
+    /// The coupons to redeem into discounts for the schedule phase.
+    ///
+    /// If not specified, inherits the discount from the subscription's customer.
+    /// Pass an empty string to avoid inheriting any discounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Vec<UpdateSubscriptionSchedulePhasesDiscounts>>,
 
     /// The date at which this phase of the subscription schedule ends.
     ///
@@ -852,11 +881,9 @@ pub struct UpdateSubscriptionSchedulePhases {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
 
-    /// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
+    /// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
     ///
-    /// The default value is `create_prorations`.
-    /// This setting controls prorations when a phase is started asynchronously and it is persisted as a field on the phase.
-    /// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration of the current phase.
+    /// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<SubscriptionProrationBehavior>,
 
@@ -883,11 +910,20 @@ pub struct UpdateSubscriptionSchedulePhases {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AddInvoiceItems {
+
+    /// The coupons to redeem into discounts for the item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Vec<AddInvoiceItemsDiscounts>>,
+
     /// The ID of the price object.
+    ///
+    /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
 
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    ///
+    /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<InvoiceItemPriceData>,
 
@@ -906,6 +942,7 @@ pub struct AddInvoiceItems {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAutomaticTax {
+
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
 
@@ -918,12 +955,33 @@ pub struct CreateSubscriptionSchedulePhasesAutomaticTax {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSubscriptionSchedulePhasesDiscounts {
+
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItems {
+
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     ///
-    /// When updating, pass an empty string to remove previously-defined thresholds.
+    /// Pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<CreateSubscriptionSchedulePhasesItemsBillingThresholds>,
+
+    /// The coupons to redeem into discounts for the subscription item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Vec<CreateSubscriptionSchedulePhasesItemsDiscounts>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
     ///
@@ -963,6 +1021,7 @@ pub struct CreateSubscriptionSchedulePhasesItems {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesTransferData {
+
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
@@ -976,6 +1035,7 @@ pub struct CreateSubscriptionSchedulePhasesTransferData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleBillingThresholds {
+
     /// Monetary threshold that triggers the subscription to advance to a new billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_gte: Option<i64>,
@@ -989,6 +1049,7 @@ pub struct SubscriptionScheduleBillingThresholds {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParamsAutomaticTax {
+
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
 
@@ -1002,6 +1063,7 @@ pub struct SubscriptionScheduleDefaultSettingsParamsAutomaticTax {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
+
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
@@ -1015,6 +1077,7 @@ pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleInvoiceSettings {
+
     /// The account tax IDs associated with this phase of the subscription schedule.
     ///
     /// Will be set on invoices generated by this phase of the subscription schedule.
@@ -1036,6 +1099,7 @@ pub struct SubscriptionScheduleInvoiceSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAutomaticTax {
+
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
 
@@ -1048,12 +1112,33 @@ pub struct UpdateSubscriptionSchedulePhasesAutomaticTax {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSubscriptionSchedulePhasesDiscounts {
+
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItems {
+
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     ///
-    /// When updating, pass an empty string to remove previously-defined thresholds.
+    /// Pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<UpdateSubscriptionSchedulePhasesItemsBillingThresholds>,
+
+    /// The coupons to redeem into discounts for the subscription item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Vec<UpdateSubscriptionSchedulePhasesItemsDiscounts>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
     ///
@@ -1093,6 +1178,7 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesTransferData {
+
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
@@ -1105,7 +1191,24 @@ pub struct UpdateSubscriptionSchedulePhasesTransferData {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct AddInvoiceItemsDiscounts {
+
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAutomaticTaxLiability {
+
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
@@ -1117,18 +1220,36 @@ pub struct CreateSubscriptionSchedulePhasesAutomaticTaxLiability {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsBillingThresholds {
+
     /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
     pub usage_gte: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSubscriptionSchedulePhasesItemsDiscounts {
+
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
 
     /// The recurring components of a price such as `interval` and `interval_count`.
@@ -1155,12 +1276,13 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceItemPriceData {
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
 
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -1171,7 +1293,7 @@ pub struct InvoiceItemPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<InvoiceItemPriceDataTaxBehavior>,
 
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge or a negative integer representing the amount to credit to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
@@ -1184,6 +1306,7 @@ pub struct InvoiceItemPriceData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiability {
+
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
@@ -1195,6 +1318,7 @@ pub struct SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiability {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleInvoiceSettingsIssuer {
+
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
@@ -1206,6 +1330,7 @@ pub struct SubscriptionScheduleInvoiceSettingsIssuer {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAutomaticTaxLiability {
+
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
@@ -1217,18 +1342,36 @@ pub struct UpdateSubscriptionSchedulePhasesAutomaticTaxLiability {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsBillingThresholds {
+
     /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
     pub usage_gte: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSubscriptionSchedulePhasesItemsDiscounts {
+
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
-    /// The ID of the product that this price will belong to.
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
 
     /// The recurring components of a price such as `interval` and `interval_count`.
@@ -1255,6 +1398,7 @@ pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
+
     /// Specifies billing frequency.
     ///
     /// Either `day`, `week`, `month` or `year`.
@@ -1270,6 +1414,7 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
+
     /// Specifies billing frequency.
     ///
     /// Either `day`, `week`, `month` or `year`.
@@ -1462,6 +1607,38 @@ impl std::default::Default for InvoiceItemPriceDataTaxBehavior {
     }
 }
 
+/// An enum representing the possible values of an `SchedulesPhaseAutomaticTax`'s `disabled_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SchedulesPhaseAutomaticTaxDisabledReason {
+    RequiresLocationInputs,
+}
+
+impl SchedulesPhaseAutomaticTaxDisabledReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SchedulesPhaseAutomaticTaxDisabledReason::RequiresLocationInputs => "requires_location_inputs",
+        }
+    }
+}
+
+impl AsRef<str> for SchedulesPhaseAutomaticTaxDisabledReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SchedulesPhaseAutomaticTaxDisabledReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SchedulesPhaseAutomaticTaxDisabledReason {
+    fn default() -> Self {
+        Self::RequiresLocationInputs
+    }
+}
+
 /// An enum representing the possible values of an `SubscriptionSchedulePhaseConfiguration`'s `proration_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1543,9 +1720,7 @@ pub enum SubscriptionScheduleDefaultSettingsCollectionMethod {
 impl SubscriptionScheduleDefaultSettingsCollectionMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            SubscriptionScheduleDefaultSettingsCollectionMethod::ChargeAutomatically => {
-                "charge_automatically"
-            }
+            SubscriptionScheduleDefaultSettingsCollectionMethod::ChargeAutomatically => "charge_automatically",
             SubscriptionScheduleDefaultSettingsCollectionMethod::SendInvoice => "send_invoice",
         }
     }
@@ -1580,9 +1755,7 @@ pub enum SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType {
 impl SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType {
     pub fn as_str(self) -> &'static str {
         match self {
-            SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType::Account => {
-                "account"
-            }
+            SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType::Account => "account",
             SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType::Self_ => "self",
         }
     }
@@ -1617,9 +1790,7 @@ impl SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor {
     pub fn as_str(self) -> &'static str {
         match self {
             SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor::Automatic => "automatic",
-            SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor::PhaseStart => {
-                "phase_start"
-            }
+            SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor::PhaseStart => "phase_start",
         }
     }
 }
@@ -1785,6 +1956,38 @@ impl std::fmt::Display for SubscriptionScheduleStatus {
 impl std::default::Default for SubscriptionScheduleStatus {
     fn default() -> Self {
         Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `SubscriptionSchedulesResourceDefaultSettingsAutomaticTax`'s `disabled_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason {
+    RequiresLocationInputs,
+}
+
+impl SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason::RequiresLocationInputs => "requires_location_inputs",
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason {
+    fn default() -> Self {
+        Self::RequiresLocationInputs
     }
 }
 
