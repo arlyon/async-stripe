@@ -20,9 +20,7 @@ pub struct TaxSettings {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    /// The `active` status indicates you have all required settings to calculate tax.
-    ///
-    /// A status can transition out of `active` when new required settings are introduced.
+    /// The status of the Tax `Settings`.
     pub status: TaxSettingsStatus,
 
     pub status_details: TaxProductResourceTaxSettingsStatusDetails,

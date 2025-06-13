@@ -43,10 +43,12 @@ pub struct FileLink {
 }
 
 impl FileLink {
+
     /// Returns a list of file links.
-    pub fn list(client: &Client, params: &ListFileLinks<'_>) -> Response<List<FileLink>> {
-        client.get_query("/file_links", params)
-    }
+pub fn list(client: &Client, params: &ListFileLinks<'_>) -> Response<List<FileLink>> {
+   client.get_query("/file_links", params)
+}
+
 
     /// Creates a new file link object.
     pub fn create(client: &Client, params: CreateFileLink<'_>) -> Response<FileLink> {
@@ -62,11 +64,7 @@ impl FileLink {
     /// Updates an existing file link object.
     ///
     /// Expired links can no longer be updated.
-    pub fn update(
-        client: &Client,
-        id: &FileLinkId,
-        params: UpdateFileLink<'_>,
-    ) -> Response<FileLink> {
+    pub fn update(client: &Client, id: &FileLinkId, params: UpdateFileLink<'_>) -> Response<FileLink> {
         #[allow(clippy::needless_borrows_for_generic_args)]
         client.post_form(&format!("/file_links/{}", id), &params)
     }
@@ -85,6 +83,7 @@ impl Object for FileLink {
 /// The parameters for `FileLink::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateFileLink<'a> {
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -95,7 +94,7 @@ pub struct CreateFileLink<'a> {
 
     /// The ID of the file.
     ///
-    /// The file's `purpose` must be one of the following: `business_icon`, `business_logo`, `customer_signature`, `dispute_evidence`, `finance_report_run`, `identity_document_downloadable`, `pci_document`, `selfie`, `sigma_scheduled_query`, `tax_document_user_upload`, or `terminal_reader_splashscreen`.
+    /// The file's `purpose` must be one of the following: `business_icon`, `business_logo`, `customer_signature`, `dispute_evidence`, `finance_report_run`, `financial_account_statement`, `identity_document_downloadable`, `issuing_regulatory_reporting`, `pci_document`, `selfie`, `sigma_scheduled_query`, `tax_document_user_upload`, or `terminal_reader_splashscreen`.
     pub file: FileId,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -121,6 +120,8 @@ impl<'a> CreateFileLink<'a> {
 /// The parameters for `FileLink::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListFileLinks<'a> {
+
+    /// Only return links that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -175,12 +176,12 @@ impl<'a> ListFileLinks<'a> {
 impl Paginable for ListFileLinks<'_> {
     type O = FileLink;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `FileLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateFileLink<'a> {
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],

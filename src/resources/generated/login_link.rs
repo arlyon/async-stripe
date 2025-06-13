@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 /// For more details see <https://stripe.com/docs/api/accounts/login_link/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LoginLink {
+
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
