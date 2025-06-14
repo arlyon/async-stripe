@@ -199,7 +199,7 @@ impl CreateBillingCreditGrantBuilder {
     }
 }
 /// Amount of this credit grant.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateBillingCreditGrantAmount {
     /// The monetary amount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -214,7 +214,7 @@ impl CreateBillingCreditGrantAmount {
     }
 }
 /// The monetary amount.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateBillingCreditGrantAmountMonetary {
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) of the `value` parameter.
     pub currency: stripe_types::Currency,

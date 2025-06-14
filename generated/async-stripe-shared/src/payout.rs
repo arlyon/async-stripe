@@ -241,7 +241,7 @@ const _: () = {
                 self.automatic,
                 self.balance_transaction.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.description.take(),
                 self.destination.take(),
                 self.failure_balance_transaction.take(),

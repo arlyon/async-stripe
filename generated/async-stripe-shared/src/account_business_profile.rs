@@ -144,7 +144,7 @@ const _: () = {
                 self.estimated_worker_count,
                 self.mcc.take(),
                 self.minority_owned_business_designation.take(),
-                self.monthly_estimated_revenue,
+                self.monthly_estimated_revenue.take(),
                 self.name.take(),
                 self.product_description.take(),
                 self.support_address.take(),

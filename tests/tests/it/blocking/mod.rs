@@ -12,7 +12,6 @@ mod price;
 mod product;
 mod promotion_code;
 mod subscription;
-mod subscription_item;
 mod token;
 mod transfer_reversal;
 

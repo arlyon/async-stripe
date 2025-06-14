@@ -1,4 +1,12 @@
-/// The invoice payment object
+/// Invoice Payments represent payments made against invoices. Invoice Payments can
+/// be accessed in two ways:
+/// 1.
+/// By expanding the `payments` field on the [Invoice](https://stripe.com/docs/api#invoice) resource.
+/// 2. By using the Invoice Payment retrieve and list endpoints.
+///
+/// Invoice Payments include the mapping between payment objects, such as Payment Intent, and Invoices.
+/// This resource and its endpoints allows you to easily track if a payment is associated with a specific invoice and.
+/// monitor the allocation details of the payments.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicePayment {
@@ -131,7 +139,7 @@ const _: () = {
                 self.amount_paid,
                 self.amount_requested,
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.id.take(),
                 self.invoice.take(),
                 self.is_default,

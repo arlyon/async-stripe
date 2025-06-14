@@ -2,11 +2,17 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsAffirm {
+    /// ID of the [location](https://stripe.com/docs/api/terminal/locations) that this transaction's reader is assigned to.
+    pub location: Option<String>,
+    /// ID of the [reader](https://stripe.com/docs/api/terminal/readers) this transaction was made on.
+    pub reader: Option<String>,
     /// The Affirm transaction ID associated with this payment.
     pub transaction_id: Option<String>,
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsAffirmBuilder {
+    location: Option<Option<String>>,
+    reader: Option<Option<String>>,
     transaction_id: Option<Option<String>>,
 }
 
@@ -50,6 +56,8 @@ const _: () = {
         type Out = PaymentMethodDetailsAffirm;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "location" => Deserialize::begin(&mut self.location),
+                "reader" => Deserialize::begin(&mut self.reader),
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
 
                 _ => <dyn Visitor>::ignore(),
@@ -57,14 +65,20 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { transaction_id: Deserialize::default() }
+            Self {
+                location: Deserialize::default(),
+                reader: Deserialize::default(),
+                transaction_id: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(transaction_id),) = (self.transaction_id.take(),) else {
+            let (Some(location), Some(reader), Some(transaction_id)) =
+                (self.location.take(), self.reader.take(), self.transaction_id.take())
+            else {
                 return None;
             };
-            Some(Self::Out { transaction_id })
+            Some(Self::Out { location, reader, transaction_id })
         }
     }
 
@@ -91,6 +105,8 @@ const _: () = {
             let mut b = PaymentMethodDetailsAffirmBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "location" => b.location = FromValueOpt::from_value(v),
+                    "reader" => b.reader = FromValueOpt::from_value(v),
                     "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
 
                     _ => {}

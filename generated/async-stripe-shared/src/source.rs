@@ -304,7 +304,7 @@ const _: () = {
                 self.client_secret.take(),
                 self.code_verification.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.customer.take(),
                 self.eps.take(),
                 self.flow.take(),

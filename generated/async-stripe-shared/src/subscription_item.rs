@@ -5,6 +5,8 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionItem {
+    /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
+    pub billing_thresholds: Option<stripe_shared::SubscriptionItemBillingThresholds>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: i64,
     /// The end time of this subscription item's current billing period.
@@ -32,6 +34,7 @@ pub struct SubscriptionItem {
 }
 #[doc(hidden)]
 pub struct SubscriptionItemBuilder {
+    billing_thresholds: Option<Option<stripe_shared::SubscriptionItemBillingThresholds>>,
     created: Option<i64>,
     current_period_end: Option<stripe_types::Timestamp>,
     current_period_start: Option<stripe_types::Timestamp>,
@@ -85,6 +88,7 @@ const _: () = {
         type Out = SubscriptionItem;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
                 "created" => Deserialize::begin(&mut self.created),
                 "current_period_end" => Deserialize::begin(&mut self.current_period_end),
                 "current_period_start" => Deserialize::begin(&mut self.current_period_start),
@@ -103,6 +107,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                billing_thresholds: Deserialize::default(),
                 created: Deserialize::default(),
                 current_period_end: Deserialize::default(),
                 current_period_start: Deserialize::default(),
@@ -119,6 +124,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(billing_thresholds),
                 Some(created),
                 Some(current_period_end),
                 Some(current_period_start),
@@ -131,6 +137,7 @@ const _: () = {
                 Some(subscription),
                 Some(tax_rates),
             ) = (
+                self.billing_thresholds,
                 self.created,
                 self.current_period_end,
                 self.current_period_start,
@@ -147,6 +154,7 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                billing_thresholds,
                 created,
                 current_period_end,
                 current_period_start,
@@ -185,6 +193,7 @@ const _: () = {
             let mut b = SubscriptionItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "current_period_end" => b.current_period_end = FromValueOpt::from_value(v),
                     "current_period_start" => b.current_period_start = FromValueOpt::from_value(v),
@@ -208,7 +217,8 @@ const _: () = {
 impl serde::Serialize for SubscriptionItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("SubscriptionItem", 12)?;
+        let mut s = s.serialize_struct("SubscriptionItem", 13)?;
+        s.serialize_field("billing_thresholds", &self.billing_thresholds)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("current_period_end", &self.current_period_end)?;
         s.serialize_field("current_period_start", &self.current_period_start)?;

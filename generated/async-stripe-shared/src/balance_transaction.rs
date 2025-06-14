@@ -12,6 +12,8 @@ pub struct BalanceTransaction {
     pub amount: i64,
     /// The date that the transaction's net funds become available in the Stripe balance.
     pub available_on: stripe_types::Timestamp,
+    /// The balance that this transaction impacts.
+    pub balance_type: Option<BalanceTransactionBalanceType>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -51,6 +53,7 @@ pub struct BalanceTransaction {
 pub struct BalanceTransactionBuilder {
     amount: Option<i64>,
     available_on: Option<stripe_types::Timestamp>,
+    balance_type: Option<Option<BalanceTransactionBalanceType>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
     description: Option<Option<String>>,
@@ -107,6 +110,7 @@ const _: () = {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "available_on" => Deserialize::begin(&mut self.available_on),
+                "balance_type" => Deserialize::begin(&mut self.balance_type),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "description" => Deserialize::begin(&mut self.description),
@@ -128,6 +132,7 @@ const _: () = {
             Self {
                 amount: Deserialize::default(),
                 available_on: Deserialize::default(),
+                balance_type: Deserialize::default(),
                 created: Deserialize::default(),
                 currency: Deserialize::default(),
                 description: Deserialize::default(),
@@ -147,6 +152,7 @@ const _: () = {
             let (
                 Some(amount),
                 Some(available_on),
+                Some(balance_type),
                 Some(created),
                 Some(currency),
                 Some(description),
@@ -162,8 +168,9 @@ const _: () = {
             ) = (
                 self.amount,
                 self.available_on,
+                self.balance_type,
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.description.take(),
                 self.exchange_rate,
                 self.fee,
@@ -181,6 +188,7 @@ const _: () = {
             Some(Self::Out {
                 amount,
                 available_on,
+                balance_type,
                 created,
                 currency,
                 description,
@@ -222,6 +230,7 @@ const _: () = {
                 match k.as_str() {
                     "amount" => b.amount = FromValueOpt::from_value(v),
                     "available_on" => b.available_on = FromValueOpt::from_value(v),
+                    "balance_type" => b.balance_type = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
@@ -246,9 +255,10 @@ const _: () = {
 impl serde::Serialize for BalanceTransaction {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("BalanceTransaction", 15)?;
+        let mut s = s.serialize_struct("BalanceTransaction", 16)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("available_on", &self.available_on)?;
+        s.serialize_field("balance_type", &self.balance_type)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("description", &self.description)?;
@@ -264,6 +274,81 @@ impl serde::Serialize for BalanceTransaction {
 
         s.serialize_field("object", "balance_transaction")?;
         s.end()
+    }
+}
+/// The balance that this transaction impacts.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum BalanceTransactionBalanceType {
+    Issuing,
+    Payments,
+    RefundAndDisputePrefunding,
+}
+impl BalanceTransactionBalanceType {
+    pub fn as_str(self) -> &'static str {
+        use BalanceTransactionBalanceType::*;
+        match self {
+            Issuing => "issuing",
+            Payments => "payments",
+            RefundAndDisputePrefunding => "refund_and_dispute_prefunding",
+        }
+    }
+}
+
+impl std::str::FromStr for BalanceTransactionBalanceType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use BalanceTransactionBalanceType::*;
+        match s {
+            "issuing" => Ok(Issuing),
+            "payments" => Ok(Payments),
+            "refund_and_dispute_prefunding" => Ok(RefundAndDisputePrefunding),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for BalanceTransactionBalanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for BalanceTransactionBalanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for BalanceTransactionBalanceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for BalanceTransactionBalanceType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<BalanceTransactionBalanceType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(BalanceTransactionBalanceType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(BalanceTransactionBalanceType);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for BalanceTransactionBalanceType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for BalanceTransactionBalanceType")
+        })
     }
 }
 /// Transaction type: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `climate_order_purchase`, `climate_order_refund`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `obligation_outbound`, `obligation_reversal_inbound`, `payment`, `payment_failure_refund`, `payment_network_reserve_hold`, `payment_network_reserve_release`, `payment_refund`, `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`, `payout_failure`, `payout_minimum_balance_hold`, `payout_minimum_balance_release`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `stripe_balance_payment_debit`, `stripe_balance_payment_debit_reversal`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.

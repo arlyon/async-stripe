@@ -12,6 +12,8 @@ pub struct SubscriptionSchedulesResourceDefaultSettings {
     /// If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase.
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
     pub billing_cycle_anchor: SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor,
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    pub billing_thresholds: Option<stripe_shared::SubscriptionBillingThresholds>,
     /// Either `charge_automatically`, or `send_invoice`.
     /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
@@ -35,6 +37,7 @@ pub struct SubscriptionSchedulesResourceDefaultSettingsBuilder {
     automatic_tax:
         Option<Option<stripe_shared::SubscriptionSchedulesResourceDefaultSettingsAutomaticTax>>,
     billing_cycle_anchor: Option<SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor>,
+    billing_thresholds: Option<Option<stripe_shared::SubscriptionBillingThresholds>>,
     collection_method: Option<Option<SubscriptionSchedulesResourceDefaultSettingsCollectionMethod>>,
     default_payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
     description: Option<Option<String>>,
@@ -86,6 +89,7 @@ const _: () = {
                 "application_fee_percent" => Deserialize::begin(&mut self.application_fee_percent),
                 "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
                 "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
+                "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
                 "collection_method" => Deserialize::begin(&mut self.collection_method),
                 "default_payment_method" => Deserialize::begin(&mut self.default_payment_method),
                 "description" => Deserialize::begin(&mut self.description),
@@ -102,6 +106,7 @@ const _: () = {
                 application_fee_percent: Deserialize::default(),
                 automatic_tax: Deserialize::default(),
                 billing_cycle_anchor: Deserialize::default(),
+                billing_thresholds: Deserialize::default(),
                 collection_method: Deserialize::default(),
                 default_payment_method: Deserialize::default(),
                 description: Deserialize::default(),
@@ -116,6 +121,7 @@ const _: () = {
                 Some(application_fee_percent),
                 Some(automatic_tax),
                 Some(billing_cycle_anchor),
+                Some(billing_thresholds),
                 Some(collection_method),
                 Some(default_payment_method),
                 Some(description),
@@ -126,6 +132,7 @@ const _: () = {
                 self.application_fee_percent,
                 self.automatic_tax.take(),
                 self.billing_cycle_anchor,
+                self.billing_thresholds,
                 self.collection_method,
                 self.default_payment_method.take(),
                 self.description.take(),
@@ -140,6 +147,7 @@ const _: () = {
                 application_fee_percent,
                 automatic_tax,
                 billing_cycle_anchor,
+                billing_thresholds,
                 collection_method,
                 default_payment_method,
                 description,
@@ -178,6 +186,7 @@ const _: () = {
                     }
                     "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
                     "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
+                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
                     "collection_method" => b.collection_method = FromValueOpt::from_value(v),
                     "default_payment_method" => {
                         b.default_payment_method = FromValueOpt::from_value(v)

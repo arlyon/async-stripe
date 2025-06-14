@@ -152,7 +152,7 @@ const _: () = {
                 Some(updated),
                 Some(voided_at),
             ) = (
-                self.amount,
+                self.amount.take(),
                 self.applicability_config.take(),
                 self.category,
                 self.created,

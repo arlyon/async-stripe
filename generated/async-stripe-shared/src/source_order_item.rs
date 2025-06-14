@@ -100,7 +100,7 @@ const _: () = {
                 Some(type_),
             ) = (
                 self.amount,
-                self.currency,
+                self.currency.take(),
                 self.description.take(),
                 self.parent.take(),
                 self.quantity,

@@ -156,7 +156,7 @@ pub struct CheckoutSession {
     /// relevant text on the page, such as the submit button. `submit_type` can only be
     /// specified on Checkout Sessions in `payment` mode. If blank or `auto`, `pay` is used.
     pub submit_type: Option<stripe_shared::CheckoutSessionSubmitType>,
-    /// The ID of the subscription for Checkout Sessions in `subscription` mode.
+    /// The ID of the [Subscription](https://stripe.com/docs/api/subscriptions) for Checkout Sessions in `subscription` mode.
     pub subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
     /// The URL the customer will be directed to after the payment or
     /// subscription creation is successful.
@@ -504,7 +504,7 @@ const _: () = {
                 self.consent,
                 self.consent_collection,
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.currency_conversion.take(),
                 self.custom_fields.take(),
                 self.custom_text.take(),
@@ -532,7 +532,7 @@ const _: () = {
                 self.payment_status,
                 self.permissions,
                 self.phone_number_collection,
-                self.presentment_details,
+                self.presentment_details.take(),
                 self.recovered_from.take(),
                 self.redirect_on_completion,
                 self.return_url.take(),

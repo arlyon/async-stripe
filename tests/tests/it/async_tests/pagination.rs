@@ -14,7 +14,7 @@ const PAGINATION_KINDS: [PaginationMockKind; 2] =
 #[test]
 fn is_account_listable() {
     test_with_all_clients(|client| async move {
-        let expected_id: AccountId = "acct_1OPouMJN5vQBdWEx".parse().unwrap();
+        let expected_id: AccountId = "acct_1PgafTB7WZ01zgkW".parse().unwrap();
 
         // Paginating from nothing
         let result =
@@ -37,7 +37,7 @@ fn is_account_listable() {
 #[test]
 fn is_customer_searchable() {
     test_with_all_clients(|client| async move {
-        let expected_id: CustomerId = "cus_PEHTtYpY7elppN".parse().unwrap();
+        let expected_id: CustomerId = "cus_QXg1o8vcGmoR32".parse().unwrap();
 
         // Paginating from nothing
         let result = SearchCustomer::new("unused_query")

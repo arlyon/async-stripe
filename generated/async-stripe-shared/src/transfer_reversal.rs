@@ -136,7 +136,7 @@ const _: () = {
                 self.amount,
                 self.balance_transaction.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.destination_payment_refund.take(),
                 self.id.take(),
                 self.metadata.take(),

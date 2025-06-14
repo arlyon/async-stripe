@@ -283,7 +283,7 @@ const _: () = {
                 self.collection_method,
                 self.computed.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.customer.take(),
                 self.default_tax_rates.take(),
                 self.description.take(),

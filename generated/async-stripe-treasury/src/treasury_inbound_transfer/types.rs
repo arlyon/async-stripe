@@ -194,7 +194,7 @@ const _: () = {
                 self.amount,
                 self.cancelable,
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.description.take(),
                 self.failure_details.take(),
                 self.financial_account.take(),

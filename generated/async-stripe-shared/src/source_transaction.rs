@@ -142,7 +142,7 @@ const _: () = {
                 self.amount,
                 self.chf_credit_transfer.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.gbp_credit_transfer.take(),
                 self.id.take(),
                 self.livemode,

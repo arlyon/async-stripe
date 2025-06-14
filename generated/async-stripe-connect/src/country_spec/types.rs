@@ -118,7 +118,7 @@ const _: () = {
                 Some(supported_transfer_countries),
                 Some(verification_fields),
             ) = (
-                self.default_currency,
+                self.default_currency.take(),
                 self.id.take(),
                 self.supported_bank_account_currencies.take(),
                 self.supported_payment_currencies.take(),

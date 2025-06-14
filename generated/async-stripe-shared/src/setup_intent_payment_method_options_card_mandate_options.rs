@@ -132,7 +132,7 @@ const _: () = {
             ) = (
                 self.amount,
                 self.amount_type,
-                self.currency,
+                self.currency.take(),
                 self.description.take(),
                 self.end_date,
                 self.interval,

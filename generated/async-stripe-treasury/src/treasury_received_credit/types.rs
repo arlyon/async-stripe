@@ -161,7 +161,7 @@ const _: () = {
             ) = (
                 self.amount,
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.description.take(),
                 self.failure_code,
                 self.financial_account.take(),

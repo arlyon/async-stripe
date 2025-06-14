@@ -77,7 +77,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(amount), Some(currency), Some(fiscal_year_end)) =
-                (self.amount, self.currency, self.fiscal_year_end.take())
+                (self.amount, self.currency.take(), self.fiscal_year_end.take())
             else {
                 return None;
             };

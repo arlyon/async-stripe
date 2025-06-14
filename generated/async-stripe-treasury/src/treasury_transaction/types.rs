@@ -150,7 +150,7 @@ const _: () = {
                 self.amount,
                 self.balance_impact,
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.description.take(),
                 self.entries.take(),
                 self.financial_account.take(),

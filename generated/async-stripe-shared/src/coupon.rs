@@ -172,7 +172,7 @@ const _: () = {
                 self.amount_off,
                 self.applies_to.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.currency_options.take(),
                 self.duration,
                 self.duration_in_months,

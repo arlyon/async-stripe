@@ -157,7 +157,7 @@ const _: () = {
                 Some(type_),
             ) = (
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.customer.take(),
                 self.customer_details.take(),
                 self.id.take(),

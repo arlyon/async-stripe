@@ -2432,6 +2432,10 @@ pub mod payment_method_options_revolut_pay;
 #[doc(inline)]
 pub use payment_method_options_revolut_pay::*;
 #[doc(hidden)]
+pub mod payment_method_options_satispay;
+#[doc(inline)]
+pub use payment_method_options_satispay::*;
+#[doc(hidden)]
 pub mod payment_method_options_sofort;
 #[doc(inline)]
 pub use payment_method_options_sofort::*;
@@ -2824,6 +2828,10 @@ pub mod refund_destination_details_p24;
 #[doc(inline)]
 pub use refund_destination_details_p24::*;
 #[doc(hidden)]
+pub mod refund_destination_details_paypal;
+#[doc(inline)]
+pub use refund_destination_details_paypal::*;
+#[doc(hidden)]
 pub mod refund_destination_details_swish;
 #[doc(inline)]
 pub use refund_destination_details_swish::*;
@@ -3200,9 +3208,17 @@ pub mod subscription_automatic_tax;
 #[doc(inline)]
 pub use subscription_automatic_tax::*;
 #[doc(hidden)]
+pub mod subscription_billing_thresholds;
+#[doc(inline)]
+pub use subscription_billing_thresholds::*;
+#[doc(hidden)]
 pub mod subscription_item;
 #[doc(inline)]
 pub use subscription_item::*;
+#[doc(hidden)]
+pub mod subscription_item_billing_thresholds;
+#[doc(inline)]
+pub use subscription_item_billing_thresholds::*;
 #[doc(hidden)]
 pub mod subscription_payment_method_options_card;
 #[doc(inline)]

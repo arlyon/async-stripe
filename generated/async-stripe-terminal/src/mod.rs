@@ -71,9 +71,37 @@ pub mod terminal_reader_reader_resource_cart;
 #[doc(inline)]
 pub use terminal_reader_reader_resource_cart::*;
 #[doc(hidden)]
+pub mod terminal_reader_reader_resource_choice;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_choice::*;
+#[doc(hidden)]
+pub mod terminal_reader_reader_resource_collect_inputs_action;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_collect_inputs_action::*;
+#[doc(hidden)]
+pub mod terminal_reader_reader_resource_custom_text;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_custom_text::*;
+#[doc(hidden)]
+pub mod terminal_reader_reader_resource_email;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_email::*;
+#[doc(hidden)]
+pub mod terminal_reader_reader_resource_input;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_input::*;
+#[doc(hidden)]
 pub mod terminal_reader_reader_resource_line_item;
 #[doc(inline)]
 pub use terminal_reader_reader_resource_line_item::*;
+#[doc(hidden)]
+pub mod terminal_reader_reader_resource_numeric;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_numeric::*;
+#[doc(hidden)]
+pub mod terminal_reader_reader_resource_phone;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_phone::*;
 #[doc(hidden)]
 pub mod terminal_reader_reader_resource_process_config;
 #[doc(inline)]
@@ -103,10 +131,26 @@ pub mod terminal_reader_reader_resource_refund_payment_config;
 #[doc(inline)]
 pub use terminal_reader_reader_resource_refund_payment_config::*;
 #[doc(hidden)]
+pub mod terminal_reader_reader_resource_selection;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_selection::*;
+#[doc(hidden)]
 pub mod terminal_reader_reader_resource_set_reader_display_action;
 #[doc(inline)]
 pub use terminal_reader_reader_resource_set_reader_display_action::*;
 #[doc(hidden)]
+pub mod terminal_reader_reader_resource_signature;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_signature::*;
+#[doc(hidden)]
+pub mod terminal_reader_reader_resource_text;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_text::*;
+#[doc(hidden)]
 pub mod terminal_reader_reader_resource_tipping_config;
 #[doc(inline)]
 pub use terminal_reader_reader_resource_tipping_config::*;
+#[doc(hidden)]
+pub mod terminal_reader_reader_resource_toggle;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_toggle::*;

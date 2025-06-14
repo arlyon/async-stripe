@@ -3,6 +3,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceReaderAction {
+    pub collect_inputs: Option<stripe_terminal::TerminalReaderReaderResourceCollectInputsAction>,
     /// Failure code, only set if status is `failed`.
     pub failure_code: Option<String>,
     /// Detailed failure message, only set if status is `failed`.
@@ -22,6 +23,8 @@ pub struct TerminalReaderReaderResourceReaderAction {
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceReaderActionBuilder {
+    collect_inputs:
+        Option<Option<stripe_terminal::TerminalReaderReaderResourceCollectInputsAction>>,
     failure_code: Option<Option<String>>,
     failure_message: Option<Option<String>>,
     process_payment_intent:
@@ -76,6 +79,7 @@ const _: () = {
         type Out = TerminalReaderReaderResourceReaderAction;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "collect_inputs" => Deserialize::begin(&mut self.collect_inputs),
                 "failure_code" => Deserialize::begin(&mut self.failure_code),
                 "failure_message" => Deserialize::begin(&mut self.failure_message),
                 "process_payment_intent" => Deserialize::begin(&mut self.process_payment_intent),
@@ -91,6 +95,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                collect_inputs: Deserialize::default(),
                 failure_code: Deserialize::default(),
                 failure_message: Deserialize::default(),
                 process_payment_intent: Deserialize::default(),
@@ -104,6 +109,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(collect_inputs),
                 Some(failure_code),
                 Some(failure_message),
                 Some(process_payment_intent),
@@ -113,6 +119,7 @@ const _: () = {
                 Some(status),
                 Some(type_),
             ) = (
+                self.collect_inputs.take(),
                 self.failure_code.take(),
                 self.failure_message.take(),
                 self.process_payment_intent.take(),
@@ -126,6 +133,7 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                collect_inputs,
                 failure_code,
                 failure_message,
                 process_payment_intent,
@@ -161,6 +169,7 @@ const _: () = {
             let mut b = TerminalReaderReaderResourceReaderActionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "collect_inputs" => b.collect_inputs = FromValueOpt::from_value(v),
                     "failure_code" => b.failure_code = FromValueOpt::from_value(v),
                     "failure_message" => b.failure_message = FromValueOpt::from_value(v),
                     "process_payment_intent" => {
@@ -262,6 +271,7 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceReaderActionSt
 /// Type of action performed by the reader.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TerminalReaderReaderResourceReaderActionType {
+    CollectInputs,
     ProcessPaymentIntent,
     ProcessSetupIntent,
     RefundPayment,
@@ -271,6 +281,7 @@ impl TerminalReaderReaderResourceReaderActionType {
     pub fn as_str(self) -> &'static str {
         use TerminalReaderReaderResourceReaderActionType::*;
         match self {
+            CollectInputs => "collect_inputs",
             ProcessPaymentIntent => "process_payment_intent",
             ProcessSetupIntent => "process_setup_intent",
             RefundPayment => "refund_payment",
@@ -284,6 +295,7 @@ impl std::str::FromStr for TerminalReaderReaderResourceReaderActionType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderReaderResourceReaderActionType::*;
         match s {
+            "collect_inputs" => Ok(CollectInputs),
             "process_payment_intent" => Ok(ProcessPaymentIntent),
             "process_setup_intent" => Ok(ProcessSetupIntent),
             "refund_payment" => Ok(RefundPayment),
