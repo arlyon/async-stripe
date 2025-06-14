@@ -86,7 +86,7 @@ fn build_inner(ident: &RustIdent, builder_name: &RustIdent, objects: &EnumOfObje
         }}
     }}
 
-    impl<'a> Map for Builder<'a> {{
+    impl Map for Builder<'_> {{
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {{
             self.builder.key(k)
         }}
@@ -150,7 +150,7 @@ fn build_inner(ident: &RustIdent, builder_name: &RustIdent, objects: &EnumOfObje
     out
 }
 
-impl<'a> ObjectWriter<'a> {
+impl ObjectWriter<'_> {
     pub fn gen_miniserde_struct_deserialize(&self, out: &mut String, fields: &[StructField]) {
         let ident = self.ident;
         let builder_name = RustIdent::joined(ident, "Builder");
@@ -270,7 +270,7 @@ fn miniserde_struct_inner(
         }}
     }}
 
-    impl<'a> Map for Builder<'a> {{
+    impl Map for Builder<'_> {{
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {{
             self.builder.key(k)
         }}

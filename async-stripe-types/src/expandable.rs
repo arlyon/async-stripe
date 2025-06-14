@@ -118,7 +118,7 @@ mod miniserde {
         builder: T::Builder,
     }
 
-    impl<'a, T> Map for ExpandableBuilder<'a, T>
+    impl<T> Map for ExpandableBuilder<'_, T>
     where
         T: ObjectDeser + Object,
     {
