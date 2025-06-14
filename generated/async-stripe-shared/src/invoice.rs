@@ -167,8 +167,7 @@ pub struct Invoice {
     /// If the invoice has not been finalized yet, this will be null.
     pub hosted_invoice_url: Option<String>,
     /// Unique identifier for the object.
-    /// This property is always present unless the invoice is an upcoming invoice.
-    /// See [Retrieve an upcoming invoice](https://stripe.com/docs/api/invoices/upcoming) for more details.
+    /// For preview invoices created using the [create preview](https://stripe.com/docs/api/invoices/create_preview) endpoint, this id will be prefixed with `upcoming_in`.
     pub id: Option<stripe_shared::InvoiceId>,
     /// The link to download the PDF for the invoice.
     /// If the invoice has not been finalized yet, this will be null.
@@ -644,7 +643,7 @@ const _: () = {
                 self.collection_method,
                 self.confirmation_secret.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.custom_fields.take(),
                 self.customer.take(),
                 self.customer_address.take(),

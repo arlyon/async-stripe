@@ -199,7 +199,7 @@ const _: () = {
                 self.certificate.take(),
                 self.confirmed_at,
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.delayed_at,
                 self.delivered_at,
                 self.delivery_details.take(),

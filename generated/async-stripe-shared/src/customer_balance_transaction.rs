@@ -156,7 +156,7 @@ const _: () = {
                 self.checkout_session.take(),
                 self.created,
                 self.credit_note.take(),
-                self.currency,
+                self.currency.take(),
                 self.customer.take(),
                 self.description.take(),
                 self.ending_balance,

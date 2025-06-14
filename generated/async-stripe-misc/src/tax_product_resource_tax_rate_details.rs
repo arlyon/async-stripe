@@ -101,7 +101,7 @@ const _: () = {
                 Some(tax_type),
             ) = (
                 self.country.take(),
-                self.flat_amount,
+                self.flat_amount.take(),
                 self.percentage_decimal.take(),
                 self.rate_type,
                 self.state.take(),

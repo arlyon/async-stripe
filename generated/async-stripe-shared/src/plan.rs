@@ -205,7 +205,7 @@ const _: () = {
                 self.amount_decimal.take(),
                 self.billing_scheme,
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.id.take(),
                 self.interval,
                 self.interval_count,

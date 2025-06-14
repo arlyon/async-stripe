@@ -365,7 +365,7 @@ pub enum SimpleType {
 impl SimpleType {
     /// Does this type implement `Copy`?
     pub const fn is_copy(self) -> bool {
-        !matches!(self, Self::String | Self::Ext(ExtType::Value))
+        !matches!(self, Self::String | Self::Ext(ExtType::Value) | Self::Ext(ExtType::Currency))
     }
 
     /// Is this type a reference?

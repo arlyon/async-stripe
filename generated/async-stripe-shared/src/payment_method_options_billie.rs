@@ -1,9 +1,14 @@
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentMethodOptionsBillie {}
+pub struct PaymentMethodOptionsBillie {
+    /// Controls when the funds will be captured from the customer's account.
+    pub capture_method: Option<PaymentMethodOptionsBillieCaptureMethod>,
+}
 #[doc(hidden)]
-pub struct PaymentMethodOptionsBillieBuilder {}
+pub struct PaymentMethodOptionsBillieBuilder {
+    capture_method: Option<Option<PaymentMethodOptionsBillieCaptureMethod>>,
+}
 
 #[allow(
     unused_variables,
@@ -45,19 +50,21 @@ const _: () = {
         type Out = PaymentMethodOptionsBillie;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "capture_method" => Deserialize::begin(&mut self.capture_method),
+
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { capture_method: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
+            let (Some(capture_method),) = (self.capture_method,) else {
                 return None;
             };
-            Some(Self::Out {})
+            Some(Self::Out { capture_method })
         }
     }
 
@@ -84,6 +91,8 @@ const _: () = {
             let mut b = PaymentMethodOptionsBillieBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
+
                     _ => {}
                 }
             }
@@ -91,3 +100,74 @@ const _: () = {
         }
     }
 };
+/// Controls when the funds will be captured from the customer's account.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum PaymentMethodOptionsBillieCaptureMethod {
+    Manual,
+}
+impl PaymentMethodOptionsBillieCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        use PaymentMethodOptionsBillieCaptureMethod::*;
+        match self {
+            Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentMethodOptionsBillieCaptureMethod {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentMethodOptionsBillieCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for PaymentMethodOptionsBillieCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentMethodOptionsBillieCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentMethodOptionsBillieCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentMethodOptionsBillieCaptureMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsBillieCaptureMethod> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentMethodOptionsBillieCaptureMethod::from_str(s).map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsBillieCaptureMethod);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsBillieCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentMethodOptionsBillieCaptureMethod")
+        })
+    }
+}

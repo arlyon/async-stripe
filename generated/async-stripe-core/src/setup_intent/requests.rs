@@ -3782,7 +3782,7 @@ impl<'de> serde::Deserialize<'de>
 /// If you populate this hash, this SetupIntent generates a `single_use` mandate after successful completion.
 ///
 /// Single-use mandates are only valid for the following payment methods: `acss_debit`, `alipay`, `au_becs_debit`, `bacs_debit`, `bancontact`, `boleto`, `ideal`, `link`, `sepa_debit`, and `us_bank_account`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSetupIntentSingleUse {
     /// Amount the customer is granting permission to collect later.
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).

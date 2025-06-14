@@ -11,6 +11,9 @@ pub struct TaxCalculationLineItem {
     pub id: stripe_misc::TaxCalculationLineItemId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The ID of an existing [Product](https://stripe.com/docs/api/products/object).
     pub product: Option<String>,
     /// The number of units of the item being purchased. For reversals, this is the quantity reversed.
@@ -31,6 +34,7 @@ pub struct TaxCalculationLineItemBuilder {
     amount_tax: Option<i64>,
     id: Option<stripe_misc::TaxCalculationLineItemId>,
     livemode: Option<bool>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
     product: Option<Option<String>>,
     quantity: Option<u64>,
     reference: Option<String>,
@@ -83,6 +87,7 @@ const _: () = {
                 "amount_tax" => Deserialize::begin(&mut self.amount_tax),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
                 "product" => Deserialize::begin(&mut self.product),
                 "quantity" => Deserialize::begin(&mut self.quantity),
                 "reference" => Deserialize::begin(&mut self.reference),
@@ -100,6 +105,7 @@ const _: () = {
                 amount_tax: Deserialize::default(),
                 id: Deserialize::default(),
                 livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
                 product: Deserialize::default(),
                 quantity: Deserialize::default(),
                 reference: Deserialize::default(),
@@ -115,6 +121,7 @@ const _: () = {
                 Some(amount_tax),
                 Some(id),
                 Some(livemode),
+                Some(metadata),
                 Some(product),
                 Some(quantity),
                 Some(reference),
@@ -126,6 +133,7 @@ const _: () = {
                 self.amount_tax,
                 self.id.take(),
                 self.livemode,
+                self.metadata.take(),
                 self.product.take(),
                 self.quantity,
                 self.reference.take(),
@@ -141,6 +149,7 @@ const _: () = {
                 amount_tax,
                 id,
                 livemode,
+                metadata,
                 product,
                 quantity,
                 reference,
@@ -178,6 +187,7 @@ const _: () = {
                     "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "product" => b.product = FromValueOpt::from_value(v),
                     "quantity" => b.quantity = FromValueOpt::from_value(v),
                     "reference" => b.reference = FromValueOpt::from_value(v),
@@ -196,11 +206,12 @@ const _: () = {
 impl serde::Serialize for TaxCalculationLineItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TaxCalculationLineItem", 11)?;
+        let mut s = s.serialize_struct("TaxCalculationLineItem", 12)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_tax", &self.amount_tax)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("product", &self.product)?;
         s.serialize_field("quantity", &self.quantity)?;
         s.serialize_field("reference", &self.reference)?;

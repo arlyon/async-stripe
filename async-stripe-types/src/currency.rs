@@ -1,11 +1,14 @@
 #![allow(missing_docs)]
+
+use std::convert::Infallible;
+use std::str::FromStr;
+
 use serde::Serialize;
 
 /// Currency is the list of supported currencies.
 ///
 /// For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
-#[derive(Copy, Clone, Debug, Eq, Serialize, PartialEq, Hash, Default, miniserde::Deserialize)]
-#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[derive(Clone, Debug, Eq, Serialize, PartialEq, Hash, Default)]
 pub enum Currency {
     #[serde(rename = "byn")]
     BYN, // Belarusian Ruble
@@ -290,6 +293,8 @@ pub enum Currency {
     ZAR, // South African Rand
     #[serde(rename = "zmw")]
     ZMW, // Zambian Kwacha
+    #[serde(untagged)]
+    Unknown(String),
 }
 
 impl std::fmt::Display for Currency {
@@ -298,8 +303,32 @@ impl std::fmt::Display for Currency {
     }
 }
 
+miniserde::make_place!(Place);
+
+impl miniserde::Deserialize for Currency {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for Place<Currency> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        self.out = Some(Currency::from_str(s).unwrap());
+        Ok(())
+    }
+}
+
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for Currency {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap())
+    }
+}
+
 impl std::str::FromStr for Currency {
-    type Err = ParseCurrencyError;
+    type Err = Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "byn" => Ok(Currency::BYN),
@@ -443,24 +472,8 @@ impl std::str::FromStr for Currency {
             "yer" => Ok(Currency::YER),
             "zar" => Ok(Currency::ZAR),
             "zmw" => Ok(Currency::ZMW),
-            _ => Err(ParseCurrencyError(())),
+            _ => Ok(Currency::Unknown(s.to_string())),
         }
-    }
-}
-
-#[derive(Debug)]
-pub struct ParseCurrencyError(/* private */ ());
-
-impl std::fmt::Display for ParseCurrencyError {
-    fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        #[allow(deprecated)]
-        fmt.write_str(::std::error::Error::description(self))
-    }
-}
-
-impl std::error::Error for ParseCurrencyError {
-    fn description(&self) -> &str {
-        "unknown currency code"
     }
 }
 

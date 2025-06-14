@@ -115,7 +115,7 @@ const _: () = {
             ) = (
                 self.columns.take(),
                 self.connected_account.take(),
-                self.currency,
+                self.currency.take(),
                 self.interval_end,
                 self.interval_start,
                 self.payout.take(),

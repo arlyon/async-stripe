@@ -130,7 +130,7 @@ const _: () = {
             ) = (
                 self.account.take(),
                 self.amount,
-                self.currency,
+                self.currency.take(),
                 self.description.take(),
                 self.id.take(),
                 self.livemode,

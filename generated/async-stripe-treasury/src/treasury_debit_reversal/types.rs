@@ -152,7 +152,7 @@ const _: () = {
             ) = (
                 self.amount,
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.financial_account.take(),
                 self.hosted_regulatory_receipt_url.take(),
                 self.id.take(),

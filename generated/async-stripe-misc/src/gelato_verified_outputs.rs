@@ -18,6 +18,12 @@ pub struct GelatoVerifiedOutputs {
     pub last_name: Option<String>,
     /// The user's verified phone number
     pub phone: Option<String>,
+    /// The user's verified sex.
+    pub sex: Option<GelatoVerifiedOutputsSex>,
+    /// The user's verified place of birth as it appears in the document.
+    pub unparsed_place_of_birth: Option<String>,
+    /// The user's verified sex as it appears in the document.
+    pub unparsed_sex: Option<String>,
 }
 #[doc(hidden)]
 pub struct GelatoVerifiedOutputsBuilder {
@@ -29,6 +35,9 @@ pub struct GelatoVerifiedOutputsBuilder {
     id_number_type: Option<Option<GelatoVerifiedOutputsIdNumberType>>,
     last_name: Option<Option<String>>,
     phone: Option<Option<String>>,
+    sex: Option<Option<GelatoVerifiedOutputsSex>>,
+    unparsed_place_of_birth: Option<Option<String>>,
+    unparsed_sex: Option<Option<String>>,
 }
 
 #[allow(
@@ -79,6 +88,9 @@ const _: () = {
                 "id_number_type" => Deserialize::begin(&mut self.id_number_type),
                 "last_name" => Deserialize::begin(&mut self.last_name),
                 "phone" => Deserialize::begin(&mut self.phone),
+                "sex" => Deserialize::begin(&mut self.sex),
+                "unparsed_place_of_birth" => Deserialize::begin(&mut self.unparsed_place_of_birth),
+                "unparsed_sex" => Deserialize::begin(&mut self.unparsed_sex),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -94,6 +106,9 @@ const _: () = {
                 id_number_type: Deserialize::default(),
                 last_name: Deserialize::default(),
                 phone: Deserialize::default(),
+                sex: Deserialize::default(),
+                unparsed_place_of_birth: Deserialize::default(),
+                unparsed_sex: Deserialize::default(),
             }
         }
 
@@ -107,6 +122,9 @@ const _: () = {
                 Some(id_number_type),
                 Some(last_name),
                 Some(phone),
+                Some(sex),
+                Some(unparsed_place_of_birth),
+                Some(unparsed_sex),
             ) = (
                 self.address.take(),
                 self.dob,
@@ -116,6 +134,9 @@ const _: () = {
                 self.id_number_type,
                 self.last_name.take(),
                 self.phone.take(),
+                self.sex,
+                self.unparsed_place_of_birth.take(),
+                self.unparsed_sex.take(),
             )
             else {
                 return None;
@@ -129,6 +150,9 @@ const _: () = {
                 id_number_type,
                 last_name,
                 phone,
+                sex,
+                unparsed_place_of_birth,
+                unparsed_sex,
             })
         }
     }
@@ -164,6 +188,11 @@ const _: () = {
                     "id_number_type" => b.id_number_type = FromValueOpt::from_value(v),
                     "last_name" => b.last_name = FromValueOpt::from_value(v),
                     "phone" => b.phone = FromValueOpt::from_value(v),
+                    "sex" => b.sex = FromValueOpt::from_value(v),
+                    "unparsed_place_of_birth" => {
+                        b.unparsed_place_of_birth = FromValueOpt::from_value(v)
+                    }
+                    "unparsed_sex" => b.unparsed_sex = FromValueOpt::from_value(v),
 
                     _ => {}
                 }
@@ -246,5 +275,82 @@ impl<'de> serde::Deserialize<'de> for GelatoVerifiedOutputsIdNumberType {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for GelatoVerifiedOutputsIdNumberType")
         })
+    }
+}
+/// The user's verified sex.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum GelatoVerifiedOutputsSex {
+    Redacted,
+    Female,
+    Male,
+    Unknown,
+}
+impl GelatoVerifiedOutputsSex {
+    pub fn as_str(self) -> &'static str {
+        use GelatoVerifiedOutputsSex::*;
+        match self {
+            Redacted => "[redacted]",
+            Female => "female",
+            Male => "male",
+            Unknown => "unknown",
+        }
+    }
+}
+
+impl std::str::FromStr for GelatoVerifiedOutputsSex {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use GelatoVerifiedOutputsSex::*;
+        match s {
+            "[redacted]" => Ok(Redacted),
+            "female" => Ok(Female),
+            "male" => Ok(Male),
+            "unknown" => Ok(Unknown),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for GelatoVerifiedOutputsSex {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for GelatoVerifiedOutputsSex {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for GelatoVerifiedOutputsSex {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for GelatoVerifiedOutputsSex {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<GelatoVerifiedOutputsSex> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(GelatoVerifiedOutputsSex::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(GelatoVerifiedOutputsSex);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for GelatoVerifiedOutputsSex {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for GelatoVerifiedOutputsSex"))
     }
 }

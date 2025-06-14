@@ -213,7 +213,7 @@ const _: () = {
                 self.cancellation_reason,
                 self.cardholder.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.cvc.take(),
                 self.exp_month,
                 self.exp_year,

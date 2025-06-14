@@ -133,7 +133,7 @@ const _: () = {
                 self.amount_subtotal,
                 self.amount_tax,
                 self.amount_total,
-                self.currency,
+                self.currency.take(),
                 self.description.take(),
                 self.discounts.take(),
                 self.id.take(),

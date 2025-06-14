@@ -948,6 +948,8 @@ pub enum EventObject {
     InvoiceVoided(stripe_shared::Invoice),
     /// Occurs X number of days before an invoice becomes due&mdash;where X is determined by Automations
     InvoiceWillBeDue(stripe_shared::Invoice),
+    /// Occurs when an InvoicePayment is successfully paid.
+    InvoicePaymentPaid(stripe_shared::InvoicePayment),
     /// Occurs whenever an invoice item is created.
     #[cfg(feature = "async-stripe-billing")]
     InvoiceitemCreated(stripe_billing::InvoiceItem),
@@ -1560,6 +1562,7 @@ impl EventObject {
             "invoice.updated" => Self::InvoiceUpdated(FromValueOpt::from_value(data)?),
             "invoice.voided" => Self::InvoiceVoided(FromValueOpt::from_value(data)?),
             "invoice.will_be_due" => Self::InvoiceWillBeDue(FromValueOpt::from_value(data)?),
+            "invoice_payment.paid" => Self::InvoicePaymentPaid(FromValueOpt::from_value(data)?),
             #[cfg(feature = "async-stripe-billing")]
             "invoiceitem.created" => Self::InvoiceitemCreated(FromValueOpt::from_value(data)?),
             #[cfg(feature = "async-stripe-billing")]

@@ -29,6 +29,10 @@ pub mod balance_detail;
 #[doc(inline)]
 pub use balance_detail::*;
 #[doc(hidden)]
+pub mod balance_detail_ungated;
+#[doc(inline)]
+pub use balance_detail_ungated::*;
+#[doc(hidden)]
 pub mod balance_net_available;
 #[doc(inline)]
 pub use balance_net_available::*;
@@ -169,6 +173,7 @@ pub use stripe_shared::refund_destination_details_jp_bank_transfer::*;
 pub use stripe_shared::refund_destination_details_multibanco::*;
 pub use stripe_shared::refund_destination_details_mx_bank_transfer::*;
 pub use stripe_shared::refund_destination_details_p24::*;
+pub use stripe_shared::refund_destination_details_paypal::*;
 pub use stripe_shared::refund_destination_details_swish::*;
 pub use stripe_shared::refund_destination_details_th_bank_transfer::*;
 pub use stripe_shared::refund_destination_details_us_bank_transfer::*;

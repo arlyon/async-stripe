@@ -14,6 +14,8 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase.
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
     pub billing_cycle_anchor: Option<SubscriptionSchedulePhaseConfigurationBillingCycleAnchor>,
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    pub billing_thresholds: Option<stripe_shared::SubscriptionBillingThresholds>,
     /// Either `charge_automatically`, or `send_invoice`.
     /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
@@ -46,8 +48,8 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// The account (if any) the charge was made on behalf of for charges associated with the schedule's subscription.
     /// See the Connect documentation for details.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
-    /// If the subscription schedule will prorate when transitioning to this phase.
-    /// Possible values are `create_prorations` and `none`.
+    /// When transitioning phases, controls how prorations are handled (if any).
+    /// Possible values are `create_prorations`, `none`, and `always_invoice`.
     pub proration_behavior: SubscriptionSchedulePhaseConfigurationProrationBehavior,
     /// The start of this phase of the subscription schedule.
     pub start_date: stripe_types::Timestamp,
@@ -62,6 +64,7 @@ pub struct SubscriptionSchedulePhaseConfigurationBuilder {
     application_fee_percent: Option<Option<f64>>,
     automatic_tax: Option<Option<stripe_shared::SchedulesPhaseAutomaticTax>>,
     billing_cycle_anchor: Option<Option<SubscriptionSchedulePhaseConfigurationBillingCycleAnchor>>,
+    billing_thresholds: Option<Option<stripe_shared::SubscriptionBillingThresholds>>,
     collection_method: Option<Option<SubscriptionSchedulePhaseConfigurationCollectionMethod>>,
     currency: Option<stripe_types::Currency>,
     default_payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
@@ -123,6 +126,7 @@ const _: () = {
                 "application_fee_percent" => Deserialize::begin(&mut self.application_fee_percent),
                 "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
                 "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
+                "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
                 "collection_method" => Deserialize::begin(&mut self.collection_method),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "default_payment_method" => Deserialize::begin(&mut self.default_payment_method),
@@ -149,6 +153,7 @@ const _: () = {
                 application_fee_percent: Deserialize::default(),
                 automatic_tax: Deserialize::default(),
                 billing_cycle_anchor: Deserialize::default(),
+                billing_thresholds: Deserialize::default(),
                 collection_method: Deserialize::default(),
                 currency: Deserialize::default(),
                 default_payment_method: Deserialize::default(),
@@ -173,6 +178,7 @@ const _: () = {
                 Some(application_fee_percent),
                 Some(automatic_tax),
                 Some(billing_cycle_anchor),
+                Some(billing_thresholds),
                 Some(collection_method),
                 Some(currency),
                 Some(default_payment_method),
@@ -193,8 +199,9 @@ const _: () = {
                 self.application_fee_percent,
                 self.automatic_tax.take(),
                 self.billing_cycle_anchor,
+                self.billing_thresholds,
                 self.collection_method,
-                self.currency,
+                self.currency.take(),
                 self.default_payment_method.take(),
                 self.default_tax_rates.take(),
                 self.description.take(),
@@ -217,6 +224,7 @@ const _: () = {
                 application_fee_percent,
                 automatic_tax,
                 billing_cycle_anchor,
+                billing_thresholds,
                 collection_method,
                 currency,
                 default_payment_method,
@@ -265,6 +273,7 @@ const _: () = {
                     }
                     "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
                     "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
+                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
                     "collection_method" => b.collection_method = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "default_payment_method" => {
@@ -455,8 +464,8 @@ impl<'de> serde::Deserialize<'de> for SubscriptionSchedulePhaseConfigurationColl
         })
     }
 }
-/// If the subscription schedule will prorate when transitioning to this phase.
-/// Possible values are `create_prorations` and `none`.
+/// When transitioning phases, controls how prorations are handled (if any).
+/// Possible values are `create_prorations`, `none`, and `always_invoice`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SubscriptionSchedulePhaseConfigurationProrationBehavior {
     AlwaysInvoice,

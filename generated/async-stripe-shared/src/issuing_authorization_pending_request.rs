@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingAuthorizationPendingRequest {
@@ -108,10 +108,10 @@ const _: () = {
             ) = (
                 self.amount,
                 self.amount_details,
-                self.currency,
+                self.currency.take(),
                 self.is_amount_controllable,
                 self.merchant_amount,
-                self.merchant_currency,
+                self.merchant_currency.take(),
                 self.network_risk_score,
             )
             else {

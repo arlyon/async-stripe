@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CreditBalance {
@@ -67,7 +67,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(available_balance), Some(ledger_balance)) =
-                (self.available_balance, self.ledger_balance)
+                (self.available_balance.take(), self.ledger_balance.take())
             else {
                 return None;
             };

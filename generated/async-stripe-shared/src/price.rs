@@ -210,7 +210,7 @@ const _: () = {
                 self.active,
                 self.billing_scheme,
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.currency_options.take(),
                 self.custom_unit_amount,
                 self.id.take(),

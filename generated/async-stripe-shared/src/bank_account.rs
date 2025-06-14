@@ -201,7 +201,7 @@ const _: () = {
                 self.available_payout_methods.take(),
                 self.bank_name.take(),
                 self.country.take(),
-                self.currency,
+                self.currency.take(),
                 self.customer.take(),
                 self.default_for_currency,
                 self.fingerprint.take(),

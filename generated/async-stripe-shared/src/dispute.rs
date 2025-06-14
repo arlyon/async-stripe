@@ -40,7 +40,7 @@ pub struct Dispute {
     pub payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
     pub payment_method_details: Option<stripe_shared::DisputePaymentMethodDetails>,
     /// Reason given by cardholder for dispute.
-    /// Possible values are `bank_cannot_process`, `check_returned`, `credit_not_processed`, `customer_initiated`, `debit_not_authorized`, `duplicate`, `fraudulent`, `general`, `incorrect_account_details`, `insufficient_funds`, `product_not_received`, `product_unacceptable`, `subscription_canceled`, or `unrecognized`.
+    /// Possible values are `bank_cannot_process`, `check_returned`, `credit_not_processed`, `customer_initiated`, `debit_not_authorized`, `duplicate`, `fraudulent`, `general`, `incorrect_account_details`, `insufficient_funds`, `noncompliant`, `product_not_received`, `product_unacceptable`, `subscription_canceled`, or `unrecognized`.
     /// Learn more about [dispute reasons](https://stripe.com/docs/disputes/categories).
     pub reason: String,
     /// Current status of dispute.
@@ -175,7 +175,7 @@ const _: () = {
                 self.balance_transactions.take(),
                 self.charge.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.enhanced_eligibility_types.take(),
                 self.evidence.take(),
                 self.evidence_details.take(),

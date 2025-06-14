@@ -100,7 +100,7 @@ const _: () = {
                 self.currency_options.take(),
                 self.first_time_transaction,
                 self.minimum_amount,
-                self.minimum_amount_currency,
+                self.minimum_amount_currency.take(),
             )
             else {
                 return None;

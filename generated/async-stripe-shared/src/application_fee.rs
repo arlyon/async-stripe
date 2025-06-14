@@ -155,7 +155,7 @@ const _: () = {
                 self.balance_transaction.take(),
                 self.charge.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.fee_source.take(),
                 self.id.take(),
                 self.livemode,

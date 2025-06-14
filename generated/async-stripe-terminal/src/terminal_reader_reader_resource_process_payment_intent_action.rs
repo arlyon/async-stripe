@@ -67,7 +67,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(payment_intent), Some(process_config)) =
-                (self.payment_intent.take(), self.process_config)
+                (self.payment_intent.take(), self.process_config.take())
             else {
                 return None;
             };

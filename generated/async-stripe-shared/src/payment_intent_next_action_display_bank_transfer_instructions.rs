@@ -103,7 +103,7 @@ const _: () = {
                 Some(type_),
             ) = (
                 self.amount_remaining,
-                self.currency,
+                self.currency.take(),
                 self.financial_addresses.take(),
                 self.hosted_instructions_url.take(),
                 self.reference.take(),

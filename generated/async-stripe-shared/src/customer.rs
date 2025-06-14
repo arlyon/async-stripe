@@ -249,7 +249,7 @@ const _: () = {
                 self.balance,
                 self.cash_balance.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.default_source.take(),
                 self.delinquent,
                 self.description.take(),

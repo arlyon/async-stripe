@@ -175,7 +175,7 @@ const _: () = {
                 self.amount_reversed,
                 self.balance_transaction.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.description.take(),
                 self.destination.take(),
                 self.destination_payment.take(),

@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsPaymentIntentPresentmentDetails {
@@ -69,7 +69,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(presentment_amount), Some(presentment_currency)) =
-                (self.presentment_amount, self.presentment_currency)
+                (self.presentment_amount, self.presentment_currency.take())
             else {
                 return None;
             };

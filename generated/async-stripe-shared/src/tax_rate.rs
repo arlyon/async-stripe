@@ -184,7 +184,7 @@ const _: () = {
                 self.description.take(),
                 self.display_name.take(),
                 self.effective_percentage,
-                self.flat_amount,
+                self.flat_amount.take(),
                 self.id.take(),
                 self.inclusive,
                 self.jurisdiction.take(),

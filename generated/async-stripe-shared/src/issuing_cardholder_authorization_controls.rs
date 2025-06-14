@@ -122,7 +122,7 @@ const _: () = {
                 self.blocked_categories.take(),
                 self.blocked_merchant_countries.take(),
                 self.spending_limits.take(),
-                self.spending_limits_currency,
+                self.spending_limits_currency.take(),
             )
             else {
                 return None;

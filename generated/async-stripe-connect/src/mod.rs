@@ -74,6 +74,14 @@ pub mod connect_embedded_base_features;
 #[doc(inline)]
 pub use connect_embedded_base_features::*;
 #[doc(hidden)]
+pub mod connect_embedded_disputes_list_config;
+#[doc(inline)]
+pub use connect_embedded_disputes_list_config::*;
+#[doc(hidden)]
+pub mod connect_embedded_disputes_list_features;
+#[doc(inline)]
+pub use connect_embedded_disputes_list_features::*;
+#[doc(hidden)]
 pub mod connect_embedded_financial_account_config_claim;
 #[doc(inline)]
 pub use connect_embedded_financial_account_config_claim::*;
@@ -105,6 +113,14 @@ pub use connect_embedded_issuing_cards_list_config_claim::*;
 pub mod connect_embedded_issuing_cards_list_features;
 #[doc(inline)]
 pub use connect_embedded_issuing_cards_list_features::*;
+#[doc(hidden)]
+pub mod connect_embedded_payment_disputes_config;
+#[doc(inline)]
+pub use connect_embedded_payment_disputes_config::*;
+#[doc(hidden)]
+pub mod connect_embedded_payment_disputes_features;
+#[doc(inline)]
+pub use connect_embedded_payment_disputes_features::*;
 #[doc(hidden)]
 pub mod connect_embedded_payments_config_claim;
 #[doc(inline)]

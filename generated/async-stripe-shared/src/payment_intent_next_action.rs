@@ -21,7 +21,9 @@ pub struct PaymentIntentNextAction {
     pub redirect_to_url: Option<stripe_shared::PaymentIntentNextActionRedirectToUrl>,
     pub swish_handle_redirect_or_display_qr_code:
         Option<stripe_shared::PaymentIntentNextActionSwishHandleRedirectOrDisplayQrCode>,
-    /// Type of the next action to perform, one of `redirect_to_url`, `use_stripe_sdk`, `alipay_handle_redirect`, `oxxo_display_details`, or `verify_with_microdeposits`.
+    /// Type of the next action to perform.
+    /// Refer to the other child attributes under `next_action` for available values.
+    /// Examples include: `redirect_to_url`, `use_stripe_sdk`, `alipay_handle_redirect`, `oxxo_display_details`, or `verify_with_microdeposits`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: String,
     /// When confirming a PaymentIntent with Stripe.js, Stripe.js depends on the contents of this dictionary to invoke authentication flows.
