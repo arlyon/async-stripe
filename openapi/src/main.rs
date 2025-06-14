@@ -1,6 +1,7 @@
 use std::fmt::Debug;
 use std::fs;
 use std::fs::File;
+use std::io::{BufRead, BufReader};
 use std::path::Path;
 
 use anyhow::{bail, Context, Result};
@@ -17,9 +18,10 @@ use tracing::info;
 
 #[derive(Debug, Parser)]
 struct Command {
-    /// Version of the library to generate
+    /// Version of the library to generate. If not provided, uses the version found in the root
+    /// workspace.
     #[arg(long)]
-    version: String,
+    version: Option<String>,
     /// Input path for the OpenAPI spec, defaults to `spec3.sdk.json`
     #[arg(default_value = "spec3.sdk.json")]
     spec_path: String,
@@ -69,7 +71,10 @@ fn main() -> Result<()> {
     info!("Finished parsing spec");
 
     let url_finder = UrlFinder::new().context("couldn't initialize url finder")?;
-    let codegen = CodeGen::new(spec, url_finder, args.version)?;
+    let version =
+        if let Some(version) = args.version { version } else { parse_workspace_version()? };
+    info!("Generating with version {version}");
+    let codegen = CodeGen::new(spec, url_finder, version)?;
 
     if args.update_api_docs {
         update_api_doc_data(&args.api_docs_url, &codegen.components)?;
@@ -116,6 +121,20 @@ fn main() -> Result<()> {
     }
     Ok(())
 }
+
+fn parse_workspace_version() -> Result<String> {
+    let reader = BufReader::new(File::open("../Cargo.toml")?);
+    for line in reader.lines() {
+        let line = line?;
+        let line = line.trim_ascii();
+        if line.starts_with("version") {
+            let version = line.split_once('=').unwrap().1.trim_ascii();
+            return Ok(version.replace('"', ""));
+        }
+    }
+    bail!("No version key found");
+}
+
 // --delete-during so that generated files don't stick around when not
 // generated anymore, see https://github.com/arlyon/async-stripe/issues/229
 fn run_rsync(src: &str, dest: &str) -> Result<()> {
