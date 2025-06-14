@@ -46,7 +46,7 @@ impl CodeGen {
         // Write the current API version
         let version_file_content = format!(
             "pub const VERSION: crate::ApiVersion = crate::ApiVersion::V{};",
-            self.spec.version().replace('-', "_").replace('.', "_")
+            self.spec.version().replace(['-', '.'], "_")
         );
         write_to_file(version_file_content, base_path.join("version.rs"))?;
         let _ = writeln!(mod_rs_contents, "pub mod version;");
@@ -114,6 +114,7 @@ impl CodeGen {
             #![allow(clippy::large_enum_variant)]
             #![allow(rustdoc::broken_intra_doc_links)]
             #![allow(rustdoc::invalid_html_tags)]
+            #![allow(non_camel_case_types)]
 
             {doc_comment}
             extern crate self as {lib_name};

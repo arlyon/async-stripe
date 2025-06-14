@@ -36,7 +36,7 @@ pub enum PrintableContainer {
     Map { key: MapKey, value: Box<PrintableType>, is_ref: bool },
 }
 
-impl<'a> Display for PrintableWithLifetime<'a> {
+impl Display for PrintableWithLifetime<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let Some(lifetime) = self.lifetime else {
             if self.impl_into {
@@ -262,7 +262,7 @@ impl<'a> PathWithIdent<'a> {
     }
 }
 
-impl<'a> Display for PathWithIdent<'a> {
+impl Display for PathWithIdent<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         if let Some(path) = self.path {
             write!(f, "{}::", path.krate.lib_name())?;
