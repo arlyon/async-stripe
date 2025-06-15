@@ -3868,7 +3868,7 @@ impl AnnualRevenueSpecs {
         }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct MonthlyEstimatedRevenueSpecs {
     /// A non-negative integer representing how much to charge in the [smallest currency unit](/currencies#zero-decimal).
     pub amount: i64,
@@ -4347,6 +4347,9 @@ pub struct CapabilitiesParam {
     /// The paynow_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow_payments: Option<CapabilityParam>,
+    /// The pix_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix_payments: Option<CapabilityParam>,
     /// The promptpay_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay_payments: Option<CapabilityParam>,
@@ -4440,6 +4443,7 @@ impl CapabilitiesParam {
             pay_by_bank_payments: None,
             payco_payments: None,
             paynow_payments: None,
+            pix_payments: None,
             promptpay_payments: None,
             revolut_pay_payments: None,
             samsung_pay_payments: None,

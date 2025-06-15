@@ -2,6 +2,7 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(rustdoc::broken_intra_doc_links)]
 #![allow(rustdoc::invalid_html_tags)]
+#![allow(non_camel_case_types)]
 
 //! This crate provides Rust bindings to the Stripe HTTP API, specifically
 //! for requests mentioned in the `Connect` section of the [Stripe API docs](https://stripe.com/docs/api)
@@ -73,6 +74,14 @@ pub mod connect_embedded_base_features;
 #[doc(inline)]
 pub use connect_embedded_base_features::*;
 #[doc(hidden)]
+pub mod connect_embedded_disputes_list_config;
+#[doc(inline)]
+pub use connect_embedded_disputes_list_config::*;
+#[doc(hidden)]
+pub mod connect_embedded_disputes_list_features;
+#[doc(inline)]
+pub use connect_embedded_disputes_list_features::*;
+#[doc(hidden)]
 pub mod connect_embedded_financial_account_config_claim;
 #[doc(inline)]
 pub use connect_embedded_financial_account_config_claim::*;
@@ -104,6 +113,14 @@ pub use connect_embedded_issuing_cards_list_config_claim::*;
 pub mod connect_embedded_issuing_cards_list_features;
 #[doc(inline)]
 pub use connect_embedded_issuing_cards_list_features::*;
+#[doc(hidden)]
+pub mod connect_embedded_payment_disputes_config;
+#[doc(inline)]
+pub use connect_embedded_payment_disputes_config::*;
+#[doc(hidden)]
+pub mod connect_embedded_payment_disputes_features;
+#[doc(inline)]
+pub use connect_embedded_payment_disputes_features::*;
 #[doc(hidden)]
 pub mod connect_embedded_payments_config_claim;
 #[doc(inline)]

@@ -199,17 +199,17 @@ pub struct CreateBillingAlertUsageThreshold {
     /// Defines at which value the alert will fire.
     pub gte: i64,
     /// The [Billing Meter](/api/billing/meter) ID whose usage is monitored.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub meter: Option<String>,
+    pub meter: String,
     /// Whether the alert should only fire only once, or once per billing cycle.
     pub recurrence: CreateBillingAlertUsageThresholdRecurrence,
 }
 impl CreateBillingAlertUsageThreshold {
     pub fn new(
         gte: impl Into<i64>,
+        meter: impl Into<String>,
         recurrence: impl Into<CreateBillingAlertUsageThresholdRecurrence>,
     ) -> Self {
-        Self { filters: None, gte: gte.into(), meter: None, recurrence: recurrence.into() }
+        Self { filters: None, gte: gte.into(), meter: meter.into(), recurrence: recurrence.into() }
     }
 }
 /// The filters allows limiting the scope of this usage alert.

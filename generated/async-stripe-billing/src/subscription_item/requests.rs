@@ -285,6 +285,8 @@ impl StripeRequest for RetrieveSubscriptionItem {
 #[derive(Clone, Debug, serde::Serialize)]
 struct CreateSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    billing_thresholds: Option<ItemBillingThresholdsParam>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     discounts: Option<Vec<DiscountsDataParam>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -311,6 +313,7 @@ struct CreateSubscriptionItemBuilder {
 impl CreateSubscriptionItemBuilder {
     fn new(subscription: impl Into<String>) -> Self {
         Self {
+            billing_thresholds: None,
             discounts: None,
             expand: None,
             metadata: None,
@@ -656,6 +659,15 @@ impl CreateSubscriptionItem {
     pub fn new(subscription: impl Into<String>) -> Self {
         Self { inner: CreateSubscriptionItemBuilder::new(subscription.into()) }
     }
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// Pass an empty string to remove previously-defined thresholds.
+    pub fn billing_thresholds(
+        mut self,
+        billing_thresholds: impl Into<ItemBillingThresholdsParam>,
+    ) -> Self {
+        self.inner.billing_thresholds = Some(billing_thresholds.into());
+        self
+    }
     /// The coupons to redeem into discounts for the subscription item.
     pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
         self.inner.discounts = Some(discounts.into());
@@ -772,6 +784,8 @@ impl StripeRequest for CreateSubscriptionItem {
 #[derive(Clone, Debug, serde::Serialize)]
 struct UpdateSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    billing_thresholds: Option<ItemBillingThresholdsParam>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     discounts: Option<Vec<DiscountsDataParam>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -799,6 +813,7 @@ struct UpdateSubscriptionItemBuilder {
 impl UpdateSubscriptionItemBuilder {
     fn new() -> Self {
         Self {
+            billing_thresholds: None,
             discounts: None,
             expand: None,
             metadata: None,
@@ -1146,6 +1161,15 @@ impl UpdateSubscriptionItem {
     pub fn new(item: impl Into<stripe_shared::SubscriptionItemId>) -> Self {
         Self { item: item.into(), inner: UpdateSubscriptionItemBuilder::new() }
     }
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// Pass an empty string to remove previously-defined thresholds.
+    pub fn billing_thresholds(
+        mut self,
+        billing_thresholds: impl Into<ItemBillingThresholdsParam>,
+    ) -> Self {
+        self.inner.billing_thresholds = Some(billing_thresholds.into());
+        self
+    }
     /// The coupons to redeem into discounts for the subscription item.
     pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
         self.inner.discounts = Some(discounts.into());
@@ -1271,6 +1295,16 @@ impl StripeRequest for UpdateSubscriptionItem {
     }
 }
 
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct ItemBillingThresholdsParam {
+    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
+    pub usage_gte: i64,
+}
+impl ItemBillingThresholdsParam {
+    pub fn new(usage_gte: impl Into<i64>) -> Self {
+        Self { usage_gte: usage_gte.into() }
+    }
+}
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct DiscountsDataParam {
     /// ID of the coupon to create a new discount for.

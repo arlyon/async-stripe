@@ -195,7 +195,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -300,6 +300,7 @@ pub enum ApiErrorsCode {
     ForwardingApiRetryableUpstreamError,
     ForwardingApiUpstreamConnectionError,
     ForwardingApiUpstreamConnectionTimeout,
+    ForwardingApiUpstreamError,
     IdempotencyKeyInUse,
     IncorrectAddress,
     IncorrectCvc,
@@ -486,6 +487,7 @@ impl ApiErrorsCode {
             ForwardingApiRetryableUpstreamError => "forwarding_api_retryable_upstream_error",
             ForwardingApiUpstreamConnectionError => "forwarding_api_upstream_connection_error",
             ForwardingApiUpstreamConnectionTimeout => "forwarding_api_upstream_connection_timeout",
+            ForwardingApiUpstreamError => "forwarding_api_upstream_error",
             IdempotencyKeyInUse => "idempotency_key_in_use",
             IncorrectAddress => "incorrect_address",
             IncorrectCvc => "incorrect_cvc",
@@ -699,6 +701,7 @@ impl std::str::FromStr for ApiErrorsCode {
             "forwarding_api_upstream_connection_timeout" => {
                 Ok(ForwardingApiUpstreamConnectionTimeout)
             }
+            "forwarding_api_upstream_error" => Ok(ForwardingApiUpstreamError),
             "idempotency_key_in_use" => Ok(IdempotencyKeyInUse),
             "incorrect_address" => Ok(IncorrectAddress),
             "incorrect_cvc" => Ok(IncorrectCvc),

@@ -11,24 +11,8 @@ fn fixtures() {
     super::generated::check_fixtures(resources);
 }
 
-const SKIP_PATHS: &[&str] = &[
-    // We expect the "plan" field to be required when deserializing the `SubscriptionItem` at the path
-    // `subscription.items.data`, but the field is not included in the provided fixture. See
-    // https://github.com/stripe/openapi/issues/138 and linked issue for some context.
-    "subscription",
-    "subscription_item",
-    "subscription_schedule",
-    // `entitlements` is not marked optional in the spec, but is `null` in the fixture data
-    "entitlements.active_entitlement_summary",
-    // `owners` is not marked optional in the spec, but is `null` in the fixture data
-    "financial_connections.account_ownership",
-];
-
+#[track_caller]
 pub fn check_object<T: miniserde::Deserialize + serde::Serialize>(resources: &Value, key: &str) {
-    if SKIP_PATHS.contains(&key) {
-        return;
-    }
-
     let Some(fixture) = resources.as_object().unwrap().get(key) else {
         println!("skipping component {key} since it was not found in the fixture data");
         return;
@@ -73,6 +57,7 @@ impl Display for JsonKeyPath {
     }
 }
 
+#[track_caller]
 fn assert_json_matches(result: &Value, expected: &Value, key_path: &mut JsonKeyPath) {
     let result = match result {
         Value::Array(arr) => {
@@ -109,7 +94,7 @@ fn assert_json_matches(result: &Value, expected: &Value, key_path: &mut JsonKeyP
     };
 
     let Some(expected) = expected.as_object() else {
-        panic!("Key {key_path}, result was object, but expected was {expected:?}")
+        panic!("Key {key_path}, result was: {result:?}, but expected was {expected:?}")
     };
 
     for (key, val) in result {

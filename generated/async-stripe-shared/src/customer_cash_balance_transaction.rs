@@ -156,7 +156,7 @@ const _: () = {
                 self.adjusted_for_overdraft.take(),
                 self.applied_to_payment.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.customer.take(),
                 self.ending_balance,
                 self.funded.take(),
@@ -190,7 +190,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

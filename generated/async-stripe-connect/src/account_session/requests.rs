@@ -30,6 +30,9 @@ pub struct CreateAccountSessionComponents {
     /// Configuration for the balances embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub balances: Option<PayoutsConfigParam>,
+    /// Configuration for the disputes list embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disputes_list: Option<CreateAccountSessionComponentsDisputesList>,
     /// Configuration for the documents embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub documents: Option<BaseConfigParam>,
@@ -51,10 +54,13 @@ pub struct CreateAccountSessionComponents {
     pub notification_banner: Option<AccountConfigParam>,
     /// Configuration for the payment details embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_details: Option<PaymentsConfigParam>,
+    pub payment_details: Option<CreateAccountSessionComponentsPaymentDetails>,
+    /// Configuration for the payment disputes embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_disputes: Option<CreateAccountSessionComponentsPaymentDisputes>,
     /// Configuration for the payments embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payments: Option<PaymentsConfigParam>,
+    pub payments: Option<CreateAccountSessionComponentsPayments>,
     /// Configuration for the payouts embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts: Option<PayoutsConfigParam>,
@@ -74,6 +80,7 @@ impl CreateAccountSessionComponents {
             account_management: None,
             account_onboarding: None,
             balances: None,
+            disputes_list: None,
             documents: None,
             financial_account: None,
             financial_account_transactions: None,
@@ -81,6 +88,7 @@ impl CreateAccountSessionComponents {
             issuing_cards_list: None,
             notification_banner: None,
             payment_details: None,
+            payment_disputes: None,
             payments: None,
             payouts: None,
             payouts_list: None,
@@ -90,6 +98,53 @@ impl CreateAccountSessionComponents {
     }
 }
 impl Default for CreateAccountSessionComponents {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration for the disputes list embedded component.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountSessionComponentsDisputesList {
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsDisputesListFeatures>,
+}
+impl CreateAccountSessionComponentsDisputesList {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
+    }
+}
+/// The list of features enabled in the embedded component.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountSessionComponentsDisputesListFeatures {
+    /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_payments: Option<bool>,
+    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    /// This is `false` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination_on_behalf_of_charge_management: Option<bool>,
+    /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
+    /// This is `true` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dispute_management: Option<bool>,
+    /// Whether to allow sending refunds. This is `true` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_management: Option<bool>,
+}
+impl CreateAccountSessionComponentsDisputesListFeatures {
+    pub fn new() -> Self {
+        Self {
+            capture_payments: None,
+            destination_on_behalf_of_charge_management: None,
+            dispute_management: None,
+            refund_management: None,
+        }
+    }
+}
+impl Default for CreateAccountSessionComponentsDisputesListFeatures {
     fn default() -> Self {
         Self::new()
     }
@@ -268,6 +323,143 @@ impl Default for CreateAccountSessionComponentsIssuingCardsListFeatures {
         Self::new()
     }
 }
+/// Configuration for the payment details embedded component.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountSessionComponentsPaymentDetails {
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsPaymentDetailsFeatures>,
+}
+impl CreateAccountSessionComponentsPaymentDetails {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
+    }
+}
+/// The list of features enabled in the embedded component.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountSessionComponentsPaymentDetailsFeatures {
+    /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_payments: Option<bool>,
+    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    /// This is `false` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination_on_behalf_of_charge_management: Option<bool>,
+    /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
+    /// This is `true` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dispute_management: Option<bool>,
+    /// Whether to allow sending refunds. This is `true` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_management: Option<bool>,
+}
+impl CreateAccountSessionComponentsPaymentDetailsFeatures {
+    pub fn new() -> Self {
+        Self {
+            capture_payments: None,
+            destination_on_behalf_of_charge_management: None,
+            dispute_management: None,
+            refund_management: None,
+        }
+    }
+}
+impl Default for CreateAccountSessionComponentsPaymentDetailsFeatures {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration for the payment disputes embedded component.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountSessionComponentsPaymentDisputes {
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsPaymentDisputesFeatures>,
+}
+impl CreateAccountSessionComponentsPaymentDisputes {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
+    }
+}
+/// The list of features enabled in the embedded component.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountSessionComponentsPaymentDisputesFeatures {
+    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    /// This is `false` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination_on_behalf_of_charge_management: Option<bool>,
+    /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
+    /// This is `true` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dispute_management: Option<bool>,
+    /// Whether to allow sending refunds. This is `true` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_management: Option<bool>,
+}
+impl CreateAccountSessionComponentsPaymentDisputesFeatures {
+    pub fn new() -> Self {
+        Self {
+            destination_on_behalf_of_charge_management: None,
+            dispute_management: None,
+            refund_management: None,
+        }
+    }
+}
+impl Default for CreateAccountSessionComponentsPaymentDisputesFeatures {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration for the payments embedded component.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountSessionComponentsPayments {
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsPaymentsFeatures>,
+}
+impl CreateAccountSessionComponentsPayments {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
+    }
+}
+/// The list of features enabled in the embedded component.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountSessionComponentsPaymentsFeatures {
+    /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_payments: Option<bool>,
+    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    /// This is `false` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination_on_behalf_of_charge_management: Option<bool>,
+    /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
+    /// This is `true` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dispute_management: Option<bool>,
+    /// Whether to allow sending refunds. This is `true` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_management: Option<bool>,
+}
+impl CreateAccountSessionComponentsPaymentsFeatures {
+    pub fn new() -> Self {
+        Self {
+            capture_payments: None,
+            destination_on_behalf_of_charge_management: None,
+            dispute_management: None,
+            refund_management: None,
+        }
+    }
+}
+impl Default for CreateAccountSessionComponentsPaymentsFeatures {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// Creates a AccountSession object that includes a single-use token that the platform can use on their front-end to grant client-side API access.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSession {
@@ -396,38 +588,6 @@ impl BaseConfigParam {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct PaymentsFeaturesParam {
-    /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_payments: Option<bool>,
-    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
-    /// This is `false` by default.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub destination_on_behalf_of_charge_management: Option<bool>,
-    /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
-    /// This is `true` by default.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub dispute_management: Option<bool>,
-    /// Whether to allow sending refunds. This is `true` by default.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub refund_management: Option<bool>,
-}
-impl PaymentsFeaturesParam {
-    pub fn new() -> Self {
-        Self {
-            capture_payments: None,
-            destination_on_behalf_of_charge_management: None,
-            dispute_management: None,
-            refund_management: None,
-        }
-    }
-}
-impl Default for PaymentsFeaturesParam {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct AccountConfigParam {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -449,19 +609,6 @@ pub struct PayoutsConfigParam {
     pub features: Option<PayoutsFeaturesParam>,
 }
 impl PayoutsConfigParam {
-    pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into(), features: None }
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct PaymentsConfigParam {
-    /// Whether the embedded component is enabled.
-    pub enabled: bool,
-    /// The list of features enabled in the embedded component.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub features: Option<PaymentsFeaturesParam>,
-}
-impl PaymentsConfigParam {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }

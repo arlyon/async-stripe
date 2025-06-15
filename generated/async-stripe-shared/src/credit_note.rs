@@ -47,6 +47,10 @@ pub struct CreditNote {
     pub out_of_band_amount: Option<i64>,
     /// The link to download the PDF of the credit note.
     pub pdf: String,
+    /// The amount of the credit note that was refunded to the customer, credited to the customer's balance, credited outside of Stripe, or any combination thereof.
+    pub post_payment_amount: i64,
+    /// The amount of the credit note by which the invoice's `amount_remaining` and `amount_due` were reduced.
+    pub pre_payment_amount: i64,
     /// The pretax credit amounts (ex: discount, credit grants, etc) for all line items.
     pub pretax_credit_amounts: Vec<stripe_shared::CreditNotesPretaxCreditAmount>,
     /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
@@ -97,6 +101,8 @@ pub struct CreditNoteBuilder {
     number: Option<String>,
     out_of_band_amount: Option<Option<i64>>,
     pdf: Option<String>,
+    post_payment_amount: Option<i64>,
+    pre_payment_amount: Option<i64>,
     pretax_credit_amounts: Option<Vec<stripe_shared::CreditNotesPretaxCreditAmount>>,
     reason: Option<Option<stripe_shared::CreditNoteReason>>,
     refunds: Option<Vec<stripe_shared::CreditNoteRefund>>,
@@ -171,6 +177,8 @@ const _: () = {
                 "number" => Deserialize::begin(&mut self.number),
                 "out_of_band_amount" => Deserialize::begin(&mut self.out_of_band_amount),
                 "pdf" => Deserialize::begin(&mut self.pdf),
+                "post_payment_amount" => Deserialize::begin(&mut self.post_payment_amount),
+                "pre_payment_amount" => Deserialize::begin(&mut self.pre_payment_amount),
                 "pretax_credit_amounts" => Deserialize::begin(&mut self.pretax_credit_amounts),
                 "reason" => Deserialize::begin(&mut self.reason),
                 "refunds" => Deserialize::begin(&mut self.refunds),
@@ -208,6 +216,8 @@ const _: () = {
                 number: Deserialize::default(),
                 out_of_band_amount: Deserialize::default(),
                 pdf: Deserialize::default(),
+                post_payment_amount: Deserialize::default(),
+                pre_payment_amount: Deserialize::default(),
                 pretax_credit_amounts: Deserialize::default(),
                 reason: Deserialize::default(),
                 refunds: Deserialize::default(),
@@ -243,6 +253,8 @@ const _: () = {
                 Some(number),
                 Some(out_of_band_amount),
                 Some(pdf),
+                Some(post_payment_amount),
+                Some(pre_payment_amount),
                 Some(pretax_credit_amounts),
                 Some(reason),
                 Some(refunds),
@@ -259,7 +271,7 @@ const _: () = {
                 self.amount,
                 self.amount_shipping,
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.customer.take(),
                 self.customer_balance_transaction.take(),
                 self.discount_amount,
@@ -274,6 +286,8 @@ const _: () = {
                 self.number.take(),
                 self.out_of_band_amount,
                 self.pdf.take(),
+                self.post_payment_amount,
+                self.pre_payment_amount,
                 self.pretax_credit_amounts.take(),
                 self.reason,
                 self.refunds.take(),
@@ -309,6 +323,8 @@ const _: () = {
                 number,
                 out_of_band_amount,
                 pdf,
+                post_payment_amount,
+                pre_payment_amount,
                 pretax_credit_amounts,
                 reason,
                 refunds,
@@ -325,7 +341,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -368,6 +384,8 @@ const _: () = {
                     "number" => b.number = FromValueOpt::from_value(v),
                     "out_of_band_amount" => b.out_of_band_amount = FromValueOpt::from_value(v),
                     "pdf" => b.pdf = FromValueOpt::from_value(v),
+                    "post_payment_amount" => b.post_payment_amount = FromValueOpt::from_value(v),
+                    "pre_payment_amount" => b.pre_payment_amount = FromValueOpt::from_value(v),
                     "pretax_credit_amounts" => {
                         b.pretax_credit_amounts = FromValueOpt::from_value(v)
                     }
@@ -396,7 +414,7 @@ const _: () = {
 impl serde::Serialize for CreditNote {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CreditNote", 31)?;
+        let mut s = s.serialize_struct("CreditNote", 33)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_shipping", &self.amount_shipping)?;
         s.serialize_field("created", &self.created)?;
@@ -415,6 +433,8 @@ impl serde::Serialize for CreditNote {
         s.serialize_field("number", &self.number)?;
         s.serialize_field("out_of_band_amount", &self.out_of_band_amount)?;
         s.serialize_field("pdf", &self.pdf)?;
+        s.serialize_field("post_payment_amount", &self.post_payment_amount)?;
+        s.serialize_field("pre_payment_amount", &self.pre_payment_amount)?;
         s.serialize_field("pretax_credit_amounts", &self.pretax_credit_amounts)?;
         s.serialize_field("reason", &self.reason)?;
         s.serialize_field("refunds", &self.refunds)?;
@@ -509,6 +529,7 @@ impl<'de> serde::Deserialize<'de> for CreditNoteStatus {
 /// A `post_payment` credit note means it was issued when the invoice was paid.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreditNoteType {
+    Mixed,
     PostPayment,
     PrePayment,
 }
@@ -516,6 +537,7 @@ impl CreditNoteType {
     pub fn as_str(self) -> &'static str {
         use CreditNoteType::*;
         match self {
+            Mixed => "mixed",
             PostPayment => "post_payment",
             PrePayment => "pre_payment",
         }
@@ -527,6 +549,7 @@ impl std::str::FromStr for CreditNoteType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreditNoteType::*;
         match s {
+            "mixed" => Ok(Mixed),
             "post_payment" => Ok(PostPayment),
             "pre_payment" => Ok(PrePayment),
             _ => Err(stripe_types::StripeParseError),

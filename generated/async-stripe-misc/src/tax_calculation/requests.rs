@@ -787,6 +787,10 @@ pub struct CreateTaxCalculationLineItems {
     /// If `tax_behavior=inclusive`, then this amount includes taxes.
     /// Otherwise, taxes are calculated on top of this amount.
     pub amount: i64,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// If provided, the product's `tax_code` will be used as the line item's `tax_code`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product: Option<String>,
@@ -812,6 +816,7 @@ impl CreateTaxCalculationLineItems {
     pub fn new(amount: impl Into<i64>) -> Self {
         Self {
             amount: amount.into(),
+            metadata: None,
             product: None,
             quantity: None,
             reference: None,

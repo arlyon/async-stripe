@@ -38,6 +38,7 @@ pub struct Event {
     /// The Stripe API version used to render `data`.
     /// This property is populated only for events on or after October 31, 2014.
     pub api_version: Option<String>,
+    /// Authentication context needed to fetch the event or related object.
     pub context: Option<String>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
@@ -177,7 +178,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -341,6 +342,7 @@ pub enum EventType {
     InvoiceUpdated,
     InvoiceVoided,
     InvoiceWillBeDue,
+    InvoicePaymentPaid,
     InvoiceitemCreated,
     InvoiceitemDeleted,
     IssuingAuthorizationCreated,
@@ -602,6 +604,7 @@ impl EventType {
             InvoiceUpdated => "invoice.updated",
             InvoiceVoided => "invoice.voided",
             InvoiceWillBeDue => "invoice.will_be_due",
+            InvoicePaymentPaid => "invoice_payment.paid",
             InvoiceitemCreated => "invoiceitem.created",
             InvoiceitemDeleted => "invoiceitem.deleted",
             IssuingAuthorizationCreated => "issuing_authorization.created",
@@ -888,6 +891,7 @@ impl std::str::FromStr for EventType {
             "invoice.updated" => Ok(InvoiceUpdated),
             "invoice.voided" => Ok(InvoiceVoided),
             "invoice.will_be_due" => Ok(InvoiceWillBeDue),
+            "invoice_payment.paid" => Ok(InvoicePaymentPaid),
             "invoiceitem.created" => Ok(InvoiceitemCreated),
             "invoiceitem.deleted" => Ok(InvoiceitemDeleted),
             "issuing_authorization.created" => Ok(IssuingAuthorizationCreated),

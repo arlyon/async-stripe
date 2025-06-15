@@ -174,6 +174,15 @@
             "standard_payouts": false
           }
         },
+        "disputes_list": {
+          "enabled": true,
+          "features": {
+            "capture_payments": true,
+            "destination_on_behalf_of_charge_management": true,
+            "dispute_management": true,
+            "refund_management": true
+          }
+        },
         "documents": {
           "enabled": false,
           "features": {}
@@ -224,6 +233,14 @@
           "features": {
             "capture_payments": true,
             "destination_on_behalf_of_charge_management": false,
+            "dispute_management": true,
+            "refund_management": true
+          }
+        },
+        "payment_disputes": {
+          "enabled": true,
+          "features": {
+            "destination_on_behalf_of_charge_management": true,
             "dispute_management": true,
             "refund_management": true
           }
@@ -343,6 +360,7 @@
     "balance_transaction": {
       "amount": 100,
       "available_on": 1234567890,
+      "balance_type": "payments",
       "created": 1234567890,
       "currency": "usd",
       "description": "My First Test Charge (created for API docs)",
@@ -1677,6 +1695,8 @@
       "object": "credit_note",
       "out_of_band_amount": null,
       "pdf": "https://sangeekp-15t6ai--manage-mydev.dev.stripe.me/credit_notes/acct_1PgafTB7WZ01zgkW/cnst_123456789/pdf?s=ap",
+      "post_payment_amount": 1355257296,
+      "pre_payment_amount": 251024947,
       "pretax_credit_amounts": [
         {
           "amount": 1413853096,
@@ -4739,6 +4759,18 @@
       "tax_code": null,
       "type": "fixed_amount"
     },
+    "sigma.sigma_api_query": {
+      "created": 1508284799,
+      "created_via": "sigma_report_run_from_api",
+      "error": [],
+      "id": "qry_abc123",
+      "livemode": false,
+      "name": "balance transactions",
+      "object": "sigma.sigma_api_query",
+      "result": {},
+      "sql": "SELECT * FROM balance_transactions",
+      "status": "pending"
+    },
     "source": {
       "ach_credit_transfer": {
         "account_number": "test_52796e3294dc",
@@ -4894,6 +4926,10 @@
         "month": null,
         "second": null
       },
+      "billing_thresholds": {
+        "amount_gte": null,
+        "reset_billing_cycle_anchor": null
+      },
       "cancel_at": 1234567890,
       "cancel_at_period_end": true,
       "canceled_at": 1234567890,
@@ -4923,6 +4959,9 @@
       "items": {
         "data": [
           {
+            "billing_thresholds": {
+              "usage_gte": null
+            },
             "created": 1721954054,
             "current_period_end": 976287773,
             "current_period_start": 1896570518,
@@ -5059,6 +5098,9 @@
       "trial_start": 1234567890
     },
     "subscription_item": {
+      "billing_thresholds": {
+        "usage_gte": null
+      },
       "created": 1721954060,
       "current_period_end": 976287773,
       "current_period_start": 1896570518,
@@ -5148,6 +5190,10 @@
           }
         },
         "billing_cycle_anchor": "automatic",
+        "billing_thresholds": {
+          "amount_gte": null,
+          "reset_billing_cycle_anchor": null
+        },
         "collection_method": "charge_automatically",
         "default_payment_method": null,
         "description": null,
@@ -5177,6 +5223,10 @@
           "add_invoice_items": [],
           "application_fee_percent": null,
           "billing_cycle_anchor": null,
+          "billing_thresholds": {
+            "amount_gte": null,
+            "reset_billing_cycle_anchor": null
+          },
           "collection_method": null,
           "currency": "usd",
           "default_payment_method": null,
@@ -5193,6 +5243,9 @@
           },
           "items": [
             {
+              "billing_thresholds": {
+                "usage_gte": null
+              },
               "discounts": [],
               "metadata": {},
               "plan": {
@@ -5327,6 +5380,7 @@
       "amount_tax": 148,
       "id": "tax_li_QXhWXb3MbhgP1Q",
       "livemode": false,
+      "metadata": null,
       "object": "tax.calculation_line_item",
       "product": null,
       "quantity": 1,
@@ -6202,5 +6256,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v1715"
+  "version": "v1797"
 }

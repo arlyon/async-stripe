@@ -29,7 +29,7 @@ pub struct InvoiceLineItem {
     /// This can be useful for storing additional information about the object in a structured format.
     /// Note that for line items with `type=subscription`, `metadata` reflects the current metadata from the subscription associated with the line item, unless the invoice line was directly updated with different metadata after creation.
     pub metadata: std::collections::HashMap<String, String>,
-    /// The parent that generated this invoice
+    /// The parent that generated this line item.
     pub parent:
         Option<stripe_shared::BillingBillResourceInvoicingLinesParentsInvoiceLineItemParent>,
     pub period: stripe_shared::InvoiceLineItemPeriod,
@@ -171,7 +171,7 @@ const _: () = {
                 Some(taxes),
             ) = (
                 self.amount,
-                self.currency,
+                self.currency.take(),
                 self.description.take(),
                 self.discount_amounts.take(),
                 self.discountable,
@@ -213,7 +213,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

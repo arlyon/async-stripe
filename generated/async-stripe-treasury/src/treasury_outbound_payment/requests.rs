@@ -739,14 +739,10 @@ pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetai
     /// Billing phone number (including extension).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
-    /// Taxpayer identification number.
-    /// Used only for transactions between LATAM buyers and non-LATAM sellers.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_id: Option<String>,
 }
 impl CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetails {
     pub fn new() -> Self {
-        Self { address: None, email: None, name: None, phone: None, tax_id: None }
+        Self { address: None, email: None, name: None, phone: None }
     }
 }
 impl Default for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetails {
