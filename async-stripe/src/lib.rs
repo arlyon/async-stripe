@@ -39,16 +39,15 @@
 //! This is currently implemented as an enum with the following variants:
 //!
 //! - [`RequestStrategy::Once`]: This is the default strategy. It will make a request to the Stripe API and,
-//!                              whether the request fails or not, will simply return the response.
+//!   whether the request fails or not, will simply return the response.
 //! - [`RequestStrategy::Idempotent`]: This strategy will make a request to stripe api, passing the provided
-//!                                    key to Stripe as the `Idempotency-Key` header, ensuring that the request
-//!                                    is idempotent. If the request fails, you may retry it.
+//!   key to Stripe as the `Idempotency-Key` header, ensuring that the request is idempotent. If the request fails, you may retry it.
+//!
 //! - [`RequestStrategy::Retry`]: Make a request to the Stripe API and, if the request fails, retry it up to n
-//!                               times with a timeout. The idempotency key is generated  automatically and is
-//!                               stable across retries.
+//!   times with a timeout. The idempotency key is generated  automatically and is stable across retries.
+//!
 //! - [`RequestStrategy::ExponentialBackoff`]: Make a request to the Stripe API and, if the request fails, retry
-//!                                            it up to n times with exponential backoff. The idempotency key is
-//!                                            generated automatically and is stable across retries.
+//!   it up to n times with exponential backoff. The idempotency key is generated automatically and is stable across retries.
 //!
 //! > Want to implement your own? If it is a common strategy, please consider opening a PR to add it to the library.
 //! > Otherwise, we are open to turning this into an open trait so that you can implement your own strategy.

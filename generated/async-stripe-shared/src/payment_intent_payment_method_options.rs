@@ -46,6 +46,7 @@ pub struct PaymentIntentPaymentMethodOptions {
     pub revolut_pay: Option<stripe_shared::PaymentMethodOptionsRevolutPay>,
     pub samsung_pay:
         Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsSamsungPayPaymentMethodOptions>,
+    pub satispay: Option<stripe_shared::PaymentMethodOptionsSatispay>,
     pub sepa_debit: Option<stripe_shared::PaymentIntentPaymentMethodOptionsSepaDebit>,
     pub sofort: Option<stripe_shared::PaymentMethodOptionsSofort>,
     pub swish: Option<stripe_shared::PaymentIntentPaymentMethodOptionsSwish>,
@@ -104,6 +105,7 @@ pub struct PaymentIntentPaymentMethodOptionsBuilder {
     samsung_pay: Option<
         Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsSamsungPayPaymentMethodOptions>,
     >,
+    satispay: Option<Option<stripe_shared::PaymentMethodOptionsSatispay>>,
     sepa_debit: Option<Option<stripe_shared::PaymentIntentPaymentMethodOptionsSepaDebit>>,
     sofort: Option<Option<stripe_shared::PaymentMethodOptionsSofort>>,
     swish: Option<Option<stripe_shared::PaymentIntentPaymentMethodOptionsSwish>>,
@@ -194,6 +196,7 @@ const _: () = {
                 "promptpay" => Deserialize::begin(&mut self.promptpay),
                 "revolut_pay" => Deserialize::begin(&mut self.revolut_pay),
                 "samsung_pay" => Deserialize::begin(&mut self.samsung_pay),
+                "satispay" => Deserialize::begin(&mut self.satispay),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "sofort" => Deserialize::begin(&mut self.sofort),
                 "swish" => Deserialize::begin(&mut self.swish),
@@ -249,6 +252,7 @@ const _: () = {
                 promptpay: Deserialize::default(),
                 revolut_pay: Deserialize::default(),
                 samsung_pay: Deserialize::default(),
+                satispay: Deserialize::default(),
                 sepa_debit: Deserialize::default(),
                 sofort: Deserialize::default(),
                 swish: Deserialize::default(),
@@ -302,6 +306,7 @@ const _: () = {
                 Some(promptpay),
                 Some(revolut_pay),
                 Some(samsung_pay),
+                Some(satispay),
                 Some(sepa_debit),
                 Some(sofort),
                 Some(swish),
@@ -351,6 +356,7 @@ const _: () = {
                 self.promptpay,
                 self.revolut_pay,
                 self.samsung_pay,
+                self.satispay,
                 self.sepa_debit.take(),
                 self.sofort,
                 self.swish.take(),
@@ -404,6 +410,7 @@ const _: () = {
                 promptpay,
                 revolut_pay,
                 samsung_pay,
+                satispay,
                 sepa_debit,
                 sofort,
                 swish,
@@ -415,7 +422,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -479,6 +486,7 @@ const _: () = {
                     "promptpay" => b.promptpay = FromValueOpt::from_value(v),
                     "revolut_pay" => b.revolut_pay = FromValueOpt::from_value(v),
                     "samsung_pay" => b.samsung_pay = FromValueOpt::from_value(v),
+                    "satispay" => b.satispay = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
                     "sofort" => b.sofort = FromValueOpt::from_value(v),
                     "swish" => b.swish = FromValueOpt::from_value(v),

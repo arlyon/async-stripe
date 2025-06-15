@@ -2,6 +2,7 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(rustdoc::broken_intra_doc_links)]
 #![allow(rustdoc::invalid_html_tags)]
+#![allow(non_camel_case_types)]
 
 //! This crate provides Rust bindings to the Stripe HTTP API, specifically
 //! for requests mentioned in the `Billing` section of the [Stripe API docs](https://stripe.com/docs/api)
@@ -261,8 +262,10 @@ pub use stripe_shared::schedules_phase_automatic_tax::*;
 pub mod subscription;
 pub use stripe_shared::subscription::*;
 pub use stripe_shared::subscription_automatic_tax::*;
+pub use stripe_shared::subscription_billing_thresholds::*;
 pub mod subscription_item;
 pub use stripe_shared::subscription_item::*;
+pub use stripe_shared::subscription_item_billing_thresholds::*;
 pub use stripe_shared::subscription_payment_method_options_card::*;
 pub use stripe_shared::subscription_pending_invoice_item_interval::*;
 pub mod subscription_schedule;

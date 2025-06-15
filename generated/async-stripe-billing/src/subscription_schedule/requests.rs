@@ -249,6 +249,10 @@ pub struct CreateSubscriptionScheduleDefaultSettings {
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor>,
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// Pass an empty string to remove previously-defined thresholds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<BillingThresholdsParam>,
     /// Either `charge_automatically`, or `send_invoice`.
     /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
@@ -280,6 +284,7 @@ impl CreateSubscriptionScheduleDefaultSettings {
             application_fee_percent: None,
             automatic_tax: None,
             billing_cycle_anchor: None,
+            billing_thresholds: None,
             collection_method: None,
             default_payment_method: None,
             description: None,
@@ -629,6 +634,10 @@ pub struct CreateSubscriptionSchedulePhases {
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<CreateSubscriptionSchedulePhasesBillingCycleAnchor>,
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// Pass an empty string to remove previously-defined thresholds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<BillingThresholdsParam>,
     /// Either `charge_automatically`, or `send_invoice`.
     /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
@@ -680,10 +689,8 @@ pub struct CreateSubscriptionSchedulePhases {
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
-    /// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
-    /// The default value is `create_prorations`.
-    /// This setting controls prorations when a phase is started asynchronously and it is persisted as a field on the phase.
-    /// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration of the current phase.
+    /// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+    /// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<CreateSubscriptionSchedulePhasesProrationBehavior>,
     /// The data with which to automatically create a Transfer for each of the associated subscription's invoices.
@@ -704,6 +711,7 @@ impl CreateSubscriptionSchedulePhases {
             application_fee_percent: None,
             automatic_tax: None,
             billing_cycle_anchor: None,
+            billing_thresholds: None,
             collection_method: None,
             currency: None,
             default_payment_method: None,
@@ -1169,6 +1177,10 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesInvoiceSet
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItems {
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// Pass an empty string to remove previously-defined thresholds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
@@ -1200,6 +1212,7 @@ pub struct CreateSubscriptionSchedulePhasesItems {
 impl CreateSubscriptionSchedulePhasesItems {
     pub fn new() -> Self {
         Self {
+            billing_thresholds: None,
             discounts: None,
             metadata: None,
             plan: None,
@@ -1403,10 +1416,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesItemsPrice
         })
     }
 }
-/// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
-/// The default value is `create_prorations`.
-/// This setting controls prorations when a phase is started asynchronously and it is persisted as a field on the phase.
-/// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration of the current phase.
+/// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+/// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSubscriptionSchedulePhasesProrationBehavior {
     AlwaysInvoice,
@@ -1628,6 +1639,10 @@ pub struct UpdateSubscriptionScheduleDefaultSettings {
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor>,
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// Pass an empty string to remove previously-defined thresholds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<BillingThresholdsParam>,
     /// Either `charge_automatically`, or `send_invoice`.
     /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
@@ -1659,6 +1674,7 @@ impl UpdateSubscriptionScheduleDefaultSettings {
             application_fee_percent: None,
             automatic_tax: None,
             billing_cycle_anchor: None,
+            billing_thresholds: None,
             collection_method: None,
             default_payment_method: None,
             description: None,
@@ -2009,6 +2025,10 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<UpdateSubscriptionSchedulePhasesBillingCycleAnchor>,
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// Pass an empty string to remove previously-defined thresholds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<BillingThresholdsParam>,
     /// Either `charge_automatically`, or `send_invoice`.
     /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
@@ -2060,10 +2080,8 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
-    /// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
-    /// The default value is `create_prorations`.
-    /// This setting controls prorations when a phase is started asynchronously and it is persisted as a field on the phase.
-    /// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration of the current phase.
+    /// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+    /// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<UpdateSubscriptionSchedulePhasesProrationBehavior>,
     /// The date at which this phase of the subscription schedule starts or `now`.
@@ -2088,6 +2106,7 @@ impl UpdateSubscriptionSchedulePhases {
             application_fee_percent: None,
             automatic_tax: None,
             billing_cycle_anchor: None,
+            billing_thresholds: None,
             collection_method: None,
             currency: None,
             default_payment_method: None,
@@ -2563,6 +2582,10 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesInvoiceSet
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItems {
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// Pass an empty string to remove previously-defined thresholds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
@@ -2594,6 +2617,7 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
 impl UpdateSubscriptionSchedulePhasesItems {
     pub fn new() -> Self {
         Self {
+            billing_thresholds: None,
             discounts: None,
             metadata: None,
             plan: None,
@@ -2797,10 +2821,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesItemsPrice
         })
     }
 }
-/// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
-/// The default value is `create_prorations`.
-/// This setting controls prorations when a phase is started asynchronously and it is persisted as a field on the phase.
-/// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration of the current phase.
+/// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+/// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSubscriptionSchedulePhasesProrationBehavior {
     AlwaysInvoice,
@@ -2879,7 +2901,7 @@ pub enum UpdateSubscriptionSchedulePhasesTrialEnd {
     #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
-/// If the update changes the current phase, indicates whether the changes should be prorated.
+/// If the update changes the billing configuration (item price, quantity, etc.) of the current phase, indicates how prorations from this change should be handled.
 /// The default value is `create_prorations`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSubscriptionScheduleProrationBehavior {
@@ -2995,7 +3017,7 @@ impl UpdateSubscriptionSchedule {
         self.inner.phases = Some(phases.into());
         self
     }
-    /// If the update changes the current phase, indicates whether the changes should be prorated.
+    /// If the update changes the billing configuration (item price, quantity, etc.) of the current phase, indicates how prorations from this change should be handled.
     /// The default value is `create_prorations`.
     pub fn proration_behavior(
         mut self,
@@ -3173,6 +3195,26 @@ impl StripeRequest for ReleaseSubscriptionSchedule {
     }
 }
 
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct BillingThresholdsParam {
+    /// Monetary threshold that triggers the subscription to advance to a new billing period
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_gte: Option<i64>,
+    /// Indicates if the `billing_cycle_anchor` should be reset when a threshold is reached.
+    /// If true, `billing_cycle_anchor` will be updated to the date/time the threshold was last reached; otherwise, the value will remain unchanged.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reset_billing_cycle_anchor: Option<bool>,
+}
+impl BillingThresholdsParam {
+    pub fn new() -> Self {
+        Self { amount_gte: None, reset_billing_cycle_anchor: None }
+    }
+}
+impl Default for BillingThresholdsParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct TransferDataSpecs {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
@@ -3208,5 +3250,15 @@ impl DiscountsDataParam {
 impl Default for DiscountsDataParam {
     fn default() -> Self {
         Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct ItemBillingThresholdsParam {
+    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
+    pub usage_gte: i64,
+}
+impl ItemBillingThresholdsParam {
+    pub fn new(usage_gte: impl Into<i64>) -> Self {
+        Self { usage_gte: usage_gte.into() }
     }
 }

@@ -56,8 +56,10 @@ pub struct PaymentMethodConfiguration {
     /// The default configuration is used whenever a payment method configuration is not specified.
     pub is_default: bool,
     pub jcb: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub kakao_pay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub klarna: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub konbini: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub kr_card: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub link: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -65,17 +67,20 @@ pub struct PaymentMethodConfiguration {
     pub multibanco: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     /// The configuration's name.
     pub name: String,
+    pub naver_pay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub nz_bank_account: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub oxxo: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub p24: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     /// For child configs, the configuration's parent configuration.
     pub parent: Option<String>,
     pub pay_by_bank: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub payco: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub paynow: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub paypal: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub pix: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub promptpay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub revolut_pay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub samsung_pay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub satispay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub sepa_debit: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub sofort: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
@@ -119,24 +124,29 @@ pub struct PaymentMethodConfigurationBuilder {
     ideal: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     is_default: Option<bool>,
     jcb: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    kakao_pay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     klarna: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     konbini: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    kr_card: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     link: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     livemode: Option<bool>,
     mobilepay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     multibanco: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     name: Option<String>,
+    naver_pay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     nz_bank_account:
         Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     oxxo: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     p24: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     parent: Option<Option<String>>,
     pay_by_bank: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    payco: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     paynow: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     paypal: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     pix: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     promptpay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     revolut_pay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    samsung_pay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     satispay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     sepa_debit: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     sofort: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
@@ -216,23 +226,28 @@ const _: () = {
                 "ideal" => Deserialize::begin(&mut self.ideal),
                 "is_default" => Deserialize::begin(&mut self.is_default),
                 "jcb" => Deserialize::begin(&mut self.jcb),
+                "kakao_pay" => Deserialize::begin(&mut self.kakao_pay),
                 "klarna" => Deserialize::begin(&mut self.klarna),
                 "konbini" => Deserialize::begin(&mut self.konbini),
+                "kr_card" => Deserialize::begin(&mut self.kr_card),
                 "link" => Deserialize::begin(&mut self.link),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "mobilepay" => Deserialize::begin(&mut self.mobilepay),
                 "multibanco" => Deserialize::begin(&mut self.multibanco),
                 "name" => Deserialize::begin(&mut self.name),
+                "naver_pay" => Deserialize::begin(&mut self.naver_pay),
                 "nz_bank_account" => Deserialize::begin(&mut self.nz_bank_account),
                 "oxxo" => Deserialize::begin(&mut self.oxxo),
                 "p24" => Deserialize::begin(&mut self.p24),
                 "parent" => Deserialize::begin(&mut self.parent),
                 "pay_by_bank" => Deserialize::begin(&mut self.pay_by_bank),
+                "payco" => Deserialize::begin(&mut self.payco),
                 "paynow" => Deserialize::begin(&mut self.paynow),
                 "paypal" => Deserialize::begin(&mut self.paypal),
                 "pix" => Deserialize::begin(&mut self.pix),
                 "promptpay" => Deserialize::begin(&mut self.promptpay),
                 "revolut_pay" => Deserialize::begin(&mut self.revolut_pay),
+                "samsung_pay" => Deserialize::begin(&mut self.samsung_pay),
                 "satispay" => Deserialize::begin(&mut self.satispay),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "sofort" => Deserialize::begin(&mut self.sofort),
@@ -276,23 +291,28 @@ const _: () = {
                 ideal: Deserialize::default(),
                 is_default: Deserialize::default(),
                 jcb: Deserialize::default(),
+                kakao_pay: Deserialize::default(),
                 klarna: Deserialize::default(),
                 konbini: Deserialize::default(),
+                kr_card: Deserialize::default(),
                 link: Deserialize::default(),
                 livemode: Deserialize::default(),
                 mobilepay: Deserialize::default(),
                 multibanco: Deserialize::default(),
                 name: Deserialize::default(),
+                naver_pay: Deserialize::default(),
                 nz_bank_account: Deserialize::default(),
                 oxxo: Deserialize::default(),
                 p24: Deserialize::default(),
                 parent: Deserialize::default(),
                 pay_by_bank: Deserialize::default(),
+                payco: Deserialize::default(),
                 paynow: Deserialize::default(),
                 paypal: Deserialize::default(),
                 pix: Deserialize::default(),
                 promptpay: Deserialize::default(),
                 revolut_pay: Deserialize::default(),
+                samsung_pay: Deserialize::default(),
                 satispay: Deserialize::default(),
                 sepa_debit: Deserialize::default(),
                 sofort: Deserialize::default(),
@@ -334,23 +354,28 @@ const _: () = {
                 Some(ideal),
                 Some(is_default),
                 Some(jcb),
+                Some(kakao_pay),
                 Some(klarna),
                 Some(konbini),
+                Some(kr_card),
                 Some(link),
                 Some(livemode),
                 Some(mobilepay),
                 Some(multibanco),
                 Some(name),
+                Some(naver_pay),
                 Some(nz_bank_account),
                 Some(oxxo),
                 Some(p24),
                 Some(parent),
                 Some(pay_by_bank),
+                Some(payco),
                 Some(paynow),
                 Some(paypal),
                 Some(pix),
                 Some(promptpay),
                 Some(revolut_pay),
+                Some(samsung_pay),
                 Some(satispay),
                 Some(sepa_debit),
                 Some(sofort),
@@ -388,23 +413,28 @@ const _: () = {
                 self.ideal,
                 self.is_default,
                 self.jcb,
+                self.kakao_pay,
                 self.klarna,
                 self.konbini,
+                self.kr_card,
                 self.link,
                 self.livemode,
                 self.mobilepay,
                 self.multibanco,
                 self.name.take(),
+                self.naver_pay,
                 self.nz_bank_account,
                 self.oxxo,
                 self.p24,
                 self.parent.take(),
                 self.pay_by_bank,
+                self.payco,
                 self.paynow,
                 self.paypal,
                 self.pix,
                 self.promptpay,
                 self.revolut_pay,
+                self.samsung_pay,
                 self.satispay,
                 self.sepa_debit,
                 self.sofort,
@@ -446,23 +476,28 @@ const _: () = {
                 ideal,
                 is_default,
                 jcb,
+                kakao_pay,
                 klarna,
                 konbini,
+                kr_card,
                 link,
                 livemode,
                 mobilepay,
                 multibanco,
                 name,
+                naver_pay,
                 nz_bank_account,
                 oxxo,
                 p24,
                 parent,
                 pay_by_bank,
+                payco,
                 paynow,
                 paypal,
                 pix,
                 promptpay,
                 revolut_pay,
+                samsung_pay,
                 satispay,
                 sepa_debit,
                 sofort,
@@ -475,7 +510,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -526,23 +561,28 @@ const _: () = {
                     "ideal" => b.ideal = FromValueOpt::from_value(v),
                     "is_default" => b.is_default = FromValueOpt::from_value(v),
                     "jcb" => b.jcb = FromValueOpt::from_value(v),
+                    "kakao_pay" => b.kakao_pay = FromValueOpt::from_value(v),
                     "klarna" => b.klarna = FromValueOpt::from_value(v),
                     "konbini" => b.konbini = FromValueOpt::from_value(v),
+                    "kr_card" => b.kr_card = FromValueOpt::from_value(v),
                     "link" => b.link = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "mobilepay" => b.mobilepay = FromValueOpt::from_value(v),
                     "multibanco" => b.multibanco = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
+                    "naver_pay" => b.naver_pay = FromValueOpt::from_value(v),
                     "nz_bank_account" => b.nz_bank_account = FromValueOpt::from_value(v),
                     "oxxo" => b.oxxo = FromValueOpt::from_value(v),
                     "p24" => b.p24 = FromValueOpt::from_value(v),
                     "parent" => b.parent = FromValueOpt::from_value(v),
                     "pay_by_bank" => b.pay_by_bank = FromValueOpt::from_value(v),
+                    "payco" => b.payco = FromValueOpt::from_value(v),
                     "paynow" => b.paynow = FromValueOpt::from_value(v),
                     "paypal" => b.paypal = FromValueOpt::from_value(v),
                     "pix" => b.pix = FromValueOpt::from_value(v),
                     "promptpay" => b.promptpay = FromValueOpt::from_value(v),
                     "revolut_pay" => b.revolut_pay = FromValueOpt::from_value(v),
+                    "samsung_pay" => b.samsung_pay = FromValueOpt::from_value(v),
                     "satispay" => b.satispay = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
                     "sofort" => b.sofort = FromValueOpt::from_value(v),
@@ -563,7 +603,7 @@ const _: () = {
 impl serde::Serialize for PaymentMethodConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethodConfiguration", 54)?;
+        let mut s = s.serialize_struct("PaymentMethodConfiguration", 59)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("affirm", &self.affirm)?;
@@ -592,23 +632,28 @@ impl serde::Serialize for PaymentMethodConfiguration {
         s.serialize_field("ideal", &self.ideal)?;
         s.serialize_field("is_default", &self.is_default)?;
         s.serialize_field("jcb", &self.jcb)?;
+        s.serialize_field("kakao_pay", &self.kakao_pay)?;
         s.serialize_field("klarna", &self.klarna)?;
         s.serialize_field("konbini", &self.konbini)?;
+        s.serialize_field("kr_card", &self.kr_card)?;
         s.serialize_field("link", &self.link)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("mobilepay", &self.mobilepay)?;
         s.serialize_field("multibanco", &self.multibanco)?;
         s.serialize_field("name", &self.name)?;
+        s.serialize_field("naver_pay", &self.naver_pay)?;
         s.serialize_field("nz_bank_account", &self.nz_bank_account)?;
         s.serialize_field("oxxo", &self.oxxo)?;
         s.serialize_field("p24", &self.p24)?;
         s.serialize_field("parent", &self.parent)?;
         s.serialize_field("pay_by_bank", &self.pay_by_bank)?;
+        s.serialize_field("payco", &self.payco)?;
         s.serialize_field("paynow", &self.paynow)?;
         s.serialize_field("paypal", &self.paypal)?;
         s.serialize_field("pix", &self.pix)?;
         s.serialize_field("promptpay", &self.promptpay)?;
         s.serialize_field("revolut_pay", &self.revolut_pay)?;
+        s.serialize_field("samsung_pay", &self.samsung_pay)?;
         s.serialize_field("satispay", &self.satispay)?;
         s.serialize_field("sepa_debit", &self.sepa_debit)?;
         s.serialize_field("sofort", &self.sofort)?;

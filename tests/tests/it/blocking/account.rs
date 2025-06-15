@@ -5,7 +5,7 @@ use stripe_connect::AccountCapabilitiesStatus;
 #[test]
 fn is_account_listable() {
     let client = super::get_client();
-    let expected_id: AccountId = "acct_1OPouMJN5vQBdWEx".parse().unwrap();
+    let expected_id: AccountId = "acct_1PgafTB7WZ01zgkW".parse().unwrap();
     let result = ListAccount::new().send_blocking(&client).unwrap();
 
     // Check to ensure we are deserializing _something_ and this test

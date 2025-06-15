@@ -5,6 +5,7 @@ pub struct ConnectEmbeddedAccountSessionCreateComponents {
     pub account_management: stripe_connect::ConnectEmbeddedAccountConfigClaim,
     pub account_onboarding: stripe_connect::ConnectEmbeddedAccountConfigClaim,
     pub balances: stripe_connect::ConnectEmbeddedPayoutsConfig,
+    pub disputes_list: stripe_connect::ConnectEmbeddedDisputesListConfig,
     pub documents: stripe_connect::ConnectEmbeddedBaseConfigClaim,
     pub financial_account: stripe_connect::ConnectEmbeddedFinancialAccountConfigClaim,
     pub financial_account_transactions:
@@ -13,6 +14,7 @@ pub struct ConnectEmbeddedAccountSessionCreateComponents {
     pub issuing_cards_list: stripe_connect::ConnectEmbeddedIssuingCardsListConfigClaim,
     pub notification_banner: stripe_connect::ConnectEmbeddedAccountConfigClaim,
     pub payment_details: stripe_connect::ConnectEmbeddedPaymentsConfigClaim,
+    pub payment_disputes: stripe_connect::ConnectEmbeddedPaymentDisputesConfig,
     pub payments: stripe_connect::ConnectEmbeddedPaymentsConfigClaim,
     pub payouts: stripe_connect::ConnectEmbeddedPayoutsConfig,
     pub payouts_list: stripe_connect::ConnectEmbeddedBaseConfigClaim,
@@ -24,6 +26,7 @@ pub struct ConnectEmbeddedAccountSessionCreateComponentsBuilder {
     account_management: Option<stripe_connect::ConnectEmbeddedAccountConfigClaim>,
     account_onboarding: Option<stripe_connect::ConnectEmbeddedAccountConfigClaim>,
     balances: Option<stripe_connect::ConnectEmbeddedPayoutsConfig>,
+    disputes_list: Option<stripe_connect::ConnectEmbeddedDisputesListConfig>,
     documents: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
     financial_account: Option<stripe_connect::ConnectEmbeddedFinancialAccountConfigClaim>,
     financial_account_transactions:
@@ -32,6 +35,7 @@ pub struct ConnectEmbeddedAccountSessionCreateComponentsBuilder {
     issuing_cards_list: Option<stripe_connect::ConnectEmbeddedIssuingCardsListConfigClaim>,
     notification_banner: Option<stripe_connect::ConnectEmbeddedAccountConfigClaim>,
     payment_details: Option<stripe_connect::ConnectEmbeddedPaymentsConfigClaim>,
+    payment_disputes: Option<stripe_connect::ConnectEmbeddedPaymentDisputesConfig>,
     payments: Option<stripe_connect::ConnectEmbeddedPaymentsConfigClaim>,
     payouts: Option<stripe_connect::ConnectEmbeddedPayoutsConfig>,
     payouts_list: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
@@ -82,6 +86,7 @@ const _: () = {
                 "account_management" => Deserialize::begin(&mut self.account_management),
                 "account_onboarding" => Deserialize::begin(&mut self.account_onboarding),
                 "balances" => Deserialize::begin(&mut self.balances),
+                "disputes_list" => Deserialize::begin(&mut self.disputes_list),
                 "documents" => Deserialize::begin(&mut self.documents),
                 "financial_account" => Deserialize::begin(&mut self.financial_account),
                 "financial_account_transactions" => {
@@ -91,6 +96,7 @@ const _: () = {
                 "issuing_cards_list" => Deserialize::begin(&mut self.issuing_cards_list),
                 "notification_banner" => Deserialize::begin(&mut self.notification_banner),
                 "payment_details" => Deserialize::begin(&mut self.payment_details),
+                "payment_disputes" => Deserialize::begin(&mut self.payment_disputes),
                 "payments" => Deserialize::begin(&mut self.payments),
                 "payouts" => Deserialize::begin(&mut self.payouts),
                 "payouts_list" => Deserialize::begin(&mut self.payouts_list),
@@ -106,6 +112,7 @@ const _: () = {
                 account_management: Deserialize::default(),
                 account_onboarding: Deserialize::default(),
                 balances: Deserialize::default(),
+                disputes_list: Deserialize::default(),
                 documents: Deserialize::default(),
                 financial_account: Deserialize::default(),
                 financial_account_transactions: Deserialize::default(),
@@ -113,6 +120,7 @@ const _: () = {
                 issuing_cards_list: Deserialize::default(),
                 notification_banner: Deserialize::default(),
                 payment_details: Deserialize::default(),
+                payment_disputes: Deserialize::default(),
                 payments: Deserialize::default(),
                 payouts: Deserialize::default(),
                 payouts_list: Deserialize::default(),
@@ -126,6 +134,7 @@ const _: () = {
                 Some(account_management),
                 Some(account_onboarding),
                 Some(balances),
+                Some(disputes_list),
                 Some(documents),
                 Some(financial_account),
                 Some(financial_account_transactions),
@@ -133,6 +142,7 @@ const _: () = {
                 Some(issuing_cards_list),
                 Some(notification_banner),
                 Some(payment_details),
+                Some(payment_disputes),
                 Some(payments),
                 Some(payouts),
                 Some(payouts_list),
@@ -142,6 +152,7 @@ const _: () = {
                 self.account_management,
                 self.account_onboarding,
                 self.balances,
+                self.disputes_list,
                 self.documents,
                 self.financial_account,
                 self.financial_account_transactions,
@@ -149,6 +160,7 @@ const _: () = {
                 self.issuing_cards_list,
                 self.notification_banner,
                 self.payment_details,
+                self.payment_disputes,
                 self.payments,
                 self.payouts,
                 self.payouts_list,
@@ -162,6 +174,7 @@ const _: () = {
                 account_management,
                 account_onboarding,
                 balances,
+                disputes_list,
                 documents,
                 financial_account,
                 financial_account_transactions,
@@ -169,6 +182,7 @@ const _: () = {
                 issuing_cards_list,
                 notification_banner,
                 payment_details,
+                payment_disputes,
                 payments,
                 payouts,
                 payouts_list,
@@ -178,7 +192,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -204,6 +218,7 @@ const _: () = {
                     "account_management" => b.account_management = FromValueOpt::from_value(v),
                     "account_onboarding" => b.account_onboarding = FromValueOpt::from_value(v),
                     "balances" => b.balances = FromValueOpt::from_value(v),
+                    "disputes_list" => b.disputes_list = FromValueOpt::from_value(v),
                     "documents" => b.documents = FromValueOpt::from_value(v),
                     "financial_account" => b.financial_account = FromValueOpt::from_value(v),
                     "financial_account_transactions" => {
@@ -213,6 +228,7 @@ const _: () = {
                     "issuing_cards_list" => b.issuing_cards_list = FromValueOpt::from_value(v),
                     "notification_banner" => b.notification_banner = FromValueOpt::from_value(v),
                     "payment_details" => b.payment_details = FromValueOpt::from_value(v),
+                    "payment_disputes" => b.payment_disputes = FromValueOpt::from_value(v),
                     "payments" => b.payments = FromValueOpt::from_value(v),
                     "payouts" => b.payouts = FromValueOpt::from_value(v),
                     "payouts_list" => b.payouts_list = FromValueOpt::from_value(v),

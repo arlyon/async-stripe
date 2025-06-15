@@ -285,7 +285,7 @@ const _: () = {
                 self.automatic_tax.take(),
                 self.billing_address_collection,
                 self.consent_collection,
-                self.currency,
+                self.currency.take(),
                 self.custom_fields.take(),
                 self.custom_text.take(),
                 self.customer_creation,
@@ -351,7 +351,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

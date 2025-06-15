@@ -36,7 +36,7 @@ fn retrieve_customer() {
     match ret {
         RetrieveCustomerReturned::Customer(cust) => {
             assert_eq!(cust.id, id);
-            assert_eq!(cust.invoice_prefix, Some("B4749BD".into()));
+            assert_eq!(cust.invoice_prefix, Some("7FE1103".into()));
             assert_eq!(cust.created, 1234567890);
         }
         RetrieveCustomerReturned::DeletedCustomer(_) => panic!("expected non-deleted response"),

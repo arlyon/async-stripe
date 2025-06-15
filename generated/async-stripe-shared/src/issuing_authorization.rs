@@ -262,18 +262,18 @@ const _: () = {
                 self.card.take(),
                 self.cardholder.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.fleet.take(),
                 self.fraud_challenges.take(),
                 self.fuel.take(),
                 self.id.take(),
                 self.livemode,
                 self.merchant_amount,
-                self.merchant_currency,
+                self.merchant_currency.take(),
                 self.merchant_data.take(),
                 self.metadata.take(),
                 self.network_data.take(),
-                self.pending_request,
+                self.pending_request.take(),
                 self.request_history.take(),
                 self.status,
                 self.token.take(),
@@ -319,7 +319,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

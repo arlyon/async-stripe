@@ -100,7 +100,7 @@ const _: () = {
                 self.currency_options.take(),
                 self.first_time_transaction,
                 self.minimum_amount,
-                self.minimum_amount_currency,
+                self.minimum_amount_currency.take(),
             )
             else {
                 return None;
@@ -114,7 +114,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

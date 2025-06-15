@@ -671,6 +671,8 @@ struct CreateSubscriptionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_cycle_anchor_config: Option<CreateSubscriptionBillingCycleAnchorConfig>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    billing_thresholds: Option<BillingThresholdsParam>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     cancel_at: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cancel_at_period_end: Option<bool>,
@@ -731,6 +733,7 @@ impl CreateSubscriptionBuilder {
             backdate_start_date: None,
             billing_cycle_anchor: None,
             billing_cycle_anchor_config: None,
+            billing_thresholds: None,
             cancel_at: None,
             cancel_at_period_end: None,
             collection_method: None,
@@ -1110,6 +1113,10 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionInvoiceSettingsIssuerTyp
 /// A list of up to 20 subscription items, each with an attached price.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionItems {
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// Pass an empty string to remove previously-defined thresholds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
@@ -1140,6 +1147,7 @@ pub struct CreateSubscriptionItems {
 impl CreateSubscriptionItems {
     pub fn new() -> Self {
         Self {
+            billing_thresholds: None,
             discounts: None,
             metadata: None,
             plan: None,
@@ -2895,6 +2903,15 @@ impl CreateSubscription {
         self.inner.billing_cycle_anchor_config = Some(billing_cycle_anchor_config.into());
         self
     }
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// When updating, pass an empty string to remove previously-defined thresholds.
+    pub fn billing_thresholds(
+        mut self,
+        billing_thresholds: impl Into<BillingThresholdsParam>,
+    ) -> Self {
+        self.inner.billing_thresholds = Some(billing_thresholds.into());
+        self
+    }
     /// A timestamp at which the subscription should cancel.
     /// If set to a date before the current period ends, this will cause a proration if prorations have been enabled using `proration_behavior`.
     /// If set during a future period, this will always cause a proration for that period.
@@ -2904,6 +2921,8 @@ impl CreateSubscription {
     }
     /// Indicate whether this subscription should cancel at the end of the current period (`current_period_end`).
     /// Defaults to `false`.
+    /// This param will be removed in a future API version.
+    /// Please use `cancel_at` instead.
     pub fn cancel_at_period_end(mut self, cancel_at_period_end: impl Into<bool>) -> Self {
         self.inner.cancel_at_period_end = Some(cancel_at_period_end.into());
         self
@@ -3202,8 +3221,9 @@ impl<'de> serde::Deserialize<'de> for ResumeSubscriptionBillingCycleAnchor {
         })
     }
 }
-/// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
-/// The default value is `create_prorations`.
+/// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor` being `unchanged`.
+/// When the `billing_cycle_anchor` is set to `now` (default value), no prorations are generated.
+/// If no value is passed, the default is `create_prorations`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ResumeSubscriptionProrationBehavior {
     AlwaysInvoice,
@@ -3292,8 +3312,9 @@ impl ResumeSubscription {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
-    /// The default value is `create_prorations`.
+    /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor` being `unchanged`.
+    /// When the `billing_cycle_anchor` is set to `now` (default value), no prorations are generated.
+    /// If no value is passed, the default is `create_prorations`.
     pub fn proration_behavior(
         mut self,
         proration_behavior: impl Into<ResumeSubscriptionProrationBehavior>,
@@ -3301,8 +3322,8 @@ impl ResumeSubscription {
         self.inner.proration_behavior = Some(proration_behavior.into());
         self
     }
-    /// If set, the proration will be calculated as though the subscription was resumed at the given time.
-    /// This can be used to apply exactly the same proration that was previewed with [upcoming invoice](https://stripe.com/docs/api#retrieve_customer_invoice) endpoint.
+    /// If set, prorations will be calculated as though the subscription was resumed at the given time.
+    /// This can be used to apply exactly the same prorations that were previewed with the [create preview](https://stripe.com/docs/api/invoices/create_preview) endpoint.
     pub fn proration_date(mut self, proration_date: impl Into<stripe_types::Timestamp>) -> Self {
         self.inner.proration_date = Some(proration_date.into());
         self
@@ -3345,6 +3366,8 @@ struct UpdateSubscriptionBuilder {
     automatic_tax: Option<UpdateSubscriptionAutomaticTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_cycle_anchor: Option<UpdateSubscriptionBillingCycleAnchor>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    billing_thresholds: Option<BillingThresholdsParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cancel_at: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3405,6 +3428,7 @@ impl UpdateSubscriptionBuilder {
             application_fee_percent: None,
             automatic_tax: None,
             billing_cycle_anchor: None,
+            billing_thresholds: None,
             cancel_at: None,
             cancel_at_period_end: None,
             cancellation_details: None,
@@ -3908,6 +3932,10 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionInvoiceSettingsIssuerTyp
 /// A list of up to 20 subscription items, each with an attached price.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionItems {
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// Pass an empty string to remove previously-defined thresholds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// Delete all usage for a given subscription item.
     /// You must pass this when deleting a usage records subscription item.
     /// `clear_usage` has no effect if the plan has a billing meter attached.
@@ -3952,6 +3980,7 @@ pub struct UpdateSubscriptionItems {
 impl UpdateSubscriptionItems {
     pub fn new() -> Self {
         Self {
+            billing_thresholds: None,
             clear_usage: None,
             deleted: None,
             discounts: None,
@@ -5613,7 +5642,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionProrationBehavior {
 }
 /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
 /// This will always overwrite any trials that might apply via a subscribed plan.
-/// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
+/// If set, `trial_end` will override the default trial period of the plan the customer is being subscribed to.
+/// The `billing_cycle_anchor` will be updated to the `trial_end` value.
 /// The special value `now` can be provided to end the customer's trial immediately.
 /// Can be at most two years from `billing_cycle_anchor`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -5793,6 +5823,15 @@ impl UpdateSubscription {
         self.inner.billing_cycle_anchor = Some(billing_cycle_anchor.into());
         self
     }
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// When updating, pass an empty string to remove previously-defined thresholds.
+    pub fn billing_thresholds(
+        mut self,
+        billing_thresholds: impl Into<BillingThresholdsParam>,
+    ) -> Self {
+        self.inner.billing_thresholds = Some(billing_thresholds.into());
+        self
+    }
     /// A timestamp at which the subscription should cancel.
     /// If set to a date before the current period ends, this will cause a proration if prorations have been enabled using `proration_behavior`.
     /// If set during a future period, this will always cause a proration for that period.
@@ -5802,6 +5841,8 @@ impl UpdateSubscription {
     }
     /// Indicate whether this subscription should cancel at the end of the current period (`current_period_end`).
     /// Defaults to `false`.
+    /// This param will be removed in a future API version.
+    /// Please use `cancel_at` instead.
     pub fn cancel_at_period_end(mut self, cancel_at_period_end: impl Into<bool>) -> Self {
         self.inner.cancel_at_period_end = Some(cancel_at_period_end.into());
         self
@@ -5966,9 +6007,9 @@ impl UpdateSubscription {
         self.inner.proration_behavior = Some(proration_behavior.into());
         self
     }
-    /// If set, the proration will be calculated as though the subscription was updated at the given time.
-    /// This can be used to apply exactly the same proration that was previewed with [upcoming invoice](https://stripe.com/docs/api#upcoming_invoice) endpoint.
-    /// It can also be used to implement custom proration logic, such as prorating by day instead of by second, by providing the time that you wish to use for proration calculations.
+    /// If set, prorations will be calculated as though the subscription was updated at the given time.
+    /// This can be used to apply exactly the same prorations that were previewed with the [create preview](https://stripe.com/docs/api/invoices/create_preview) endpoint.
+    /// `proration_date` can also be used to implement custom proration logic, such as prorating by day instead of by second, by providing the time that you wish to use for proration calculations.
     pub fn proration_date(mut self, proration_date: impl Into<stripe_types::Timestamp>) -> Self {
         self.inner.proration_date = Some(proration_date.into());
         self
@@ -5981,7 +6022,8 @@ impl UpdateSubscription {
     }
     /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
     /// This will always overwrite any trials that might apply via a subscribed plan.
-    /// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
+    /// If set, `trial_end` will override the default trial period of the plan the customer is being subscribed to.
+    /// The `billing_cycle_anchor` will be updated to the `trial_end` value.
     /// The special value `now` can be provided to end the customer's trial immediately.
     /// Can be at most two years from `billing_cycle_anchor`.
     pub fn trial_end(mut self, trial_end: impl Into<UpdateSubscriptionTrialEnd>) -> Self {
@@ -6053,6 +6095,36 @@ impl DiscountsDataParam {
 impl Default for DiscountsDataParam {
     fn default() -> Self {
         Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct BillingThresholdsParam {
+    /// Monetary threshold that triggers the subscription to advance to a new billing period
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_gte: Option<i64>,
+    /// Indicates if the `billing_cycle_anchor` should be reset when a threshold is reached.
+    /// If true, `billing_cycle_anchor` will be updated to the date/time the threshold was last reached; otherwise, the value will remain unchanged.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reset_billing_cycle_anchor: Option<bool>,
+}
+impl BillingThresholdsParam {
+    pub fn new() -> Self {
+        Self { amount_gte: None, reset_billing_cycle_anchor: None }
+    }
+}
+impl Default for BillingThresholdsParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct ItemBillingThresholdsParam {
+    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
+    pub usage_gte: i64,
+}
+impl ItemBillingThresholdsParam {
+    pub fn new(usage_gte: impl Into<i64>) -> Self {
+        Self { usage_gte: usage_gte.into() }
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]

@@ -7927,6 +7927,10 @@ pub struct CreateCheckoutSessionSavedPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_redisplay_filters:
         Option<Vec<CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters>>,
+    /// Enable customers to choose if they wish to remove their saved payment methods. Disabled by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_remove:
+        Option<CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove>,
     /// Enable customers to choose if they wish to save their payment method for future use.
     /// Disabled by default.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7935,7 +7939,11 @@ pub struct CreateCheckoutSessionSavedPaymentMethodOptions {
 }
 impl CreateCheckoutSessionSavedPaymentMethodOptions {
     pub fn new() -> Self {
-        Self { allow_redisplay_filters: None, payment_method_save: None }
+        Self {
+            allow_redisplay_filters: None,
+            payment_method_remove: None,
+            payment_method_save: None,
+        }
     }
 }
 impl Default for CreateCheckoutSessionSavedPaymentMethodOptions {
@@ -8001,6 +8009,62 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters"))
+    }
+}
+/// Enable customers to choose if they wish to remove their saved payment methods. Disabled by default.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
+    Disabled,
+    Enabled,
+}
+impl CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
+    pub fn as_str(self) -> &'static str {
+        use CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove::*;
+        match self {
+            Disabled => "disabled",
+            Enabled => "enabled",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove::*;
+        match s {
+            "disabled" => Ok(Disabled),
+            "enabled" => Ok(Enabled),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove"))
     }
 }
 /// Enable customers to choose if they wish to save their payment method for future use.
@@ -10893,6 +10957,8 @@ impl<'de> serde::Deserialize<'de> for UpdateCheckoutSessionShippingOptionsShippi
     }
 }
 /// Updates a Checkout Session object.
+///
+/// Related guide: <a href="/payments/checkout/dynamic-updates">Dynamically update Checkout</a>
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateCheckoutSession {
     inner: UpdateCheckoutSessionBuilder,

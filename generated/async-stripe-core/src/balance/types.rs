@@ -28,6 +28,7 @@ pub struct Balance {
     /// Funds that aren't available in the balance yet.
     /// You can find the pending balance for each currency and each payment type in the `source_types` property.
     pub pending: Vec<stripe_core::BalanceAmount>,
+    pub refund_and_dispute_prefunding: Option<stripe_core::BalanceDetailUngated>,
 }
 #[doc(hidden)]
 pub struct BalanceBuilder {
@@ -37,6 +38,7 @@ pub struct BalanceBuilder {
     issuing: Option<Option<stripe_core::BalanceDetail>>,
     livemode: Option<bool>,
     pending: Option<Vec<stripe_core::BalanceAmount>>,
+    refund_and_dispute_prefunding: Option<Option<stripe_core::BalanceDetailUngated>>,
 }
 
 #[allow(
@@ -82,6 +84,9 @@ const _: () = {
                 "issuing" => Deserialize::begin(&mut self.issuing),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "pending" => Deserialize::begin(&mut self.pending),
+                "refund_and_dispute_prefunding" => {
+                    Deserialize::begin(&mut self.refund_and_dispute_prefunding)
+                }
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -95,6 +100,7 @@ const _: () = {
                 issuing: Deserialize::default(),
                 livemode: Deserialize::default(),
                 pending: Deserialize::default(),
+                refund_and_dispute_prefunding: Deserialize::default(),
             }
         }
 
@@ -106,6 +112,7 @@ const _: () = {
                 Some(issuing),
                 Some(livemode),
                 Some(pending),
+                Some(refund_and_dispute_prefunding),
             ) = (
                 self.available.take(),
                 self.connect_reserved.take(),
@@ -113,6 +120,7 @@ const _: () = {
                 self.issuing.take(),
                 self.livemode,
                 self.pending.take(),
+                self.refund_and_dispute_prefunding.take(),
             )
             else {
                 return None;
@@ -124,11 +132,12 @@ const _: () = {
                 issuing,
                 livemode,
                 pending,
+                refund_and_dispute_prefunding,
             })
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -157,6 +166,9 @@ const _: () = {
                     "issuing" => b.issuing = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "pending" => b.pending = FromValueOpt::from_value(v),
+                    "refund_and_dispute_prefunding" => {
+                        b.refund_and_dispute_prefunding = FromValueOpt::from_value(v)
+                    }
 
                     _ => {}
                 }
@@ -169,13 +181,14 @@ const _: () = {
 impl serde::Serialize for Balance {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Balance", 7)?;
+        let mut s = s.serialize_struct("Balance", 8)?;
         s.serialize_field("available", &self.available)?;
         s.serialize_field("connect_reserved", &self.connect_reserved)?;
         s.serialize_field("instant_available", &self.instant_available)?;
         s.serialize_field("issuing", &self.issuing)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("pending", &self.pending)?;
+        s.serialize_field("refund_and_dispute_prefunding", &self.refund_and_dispute_prefunding)?;
 
         s.serialize_field("object", "balance")?;
         s.end()

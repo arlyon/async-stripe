@@ -101,7 +101,7 @@ const _: () = {
                 Some(tax_type),
             ) = (
                 self.country.take(),
-                self.flat_amount,
+                self.flat_amount.take(),
                 self.percentage_decimal.take(),
                 self.rate_type,
                 self.state.take(),
@@ -114,7 +114,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

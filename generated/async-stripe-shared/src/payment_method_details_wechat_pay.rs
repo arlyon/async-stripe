@@ -5,12 +5,18 @@ pub struct PaymentMethodDetailsWechatPay {
     /// Uniquely identifies this particular WeChat Pay account.
     /// You can use this attribute to check whether two WeChat accounts are the same.
     pub fingerprint: Option<String>,
+    /// ID of the [location](https://stripe.com/docs/api/terminal/locations) that this transaction's reader is assigned to.
+    pub location: Option<String>,
+    /// ID of the [reader](https://stripe.com/docs/api/terminal/readers) this transaction was made on.
+    pub reader: Option<String>,
     /// Transaction ID of this particular WeChat Pay transaction.
     pub transaction_id: Option<String>,
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsWechatPayBuilder {
     fingerprint: Option<Option<String>>,
+    location: Option<Option<String>>,
+    reader: Option<Option<String>>,
     transaction_id: Option<Option<String>>,
 }
 
@@ -55,6 +61,8 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
+                "location" => Deserialize::begin(&mut self.location),
+                "reader" => Deserialize::begin(&mut self.reader),
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
 
                 _ => <dyn Visitor>::ignore(),
@@ -62,20 +70,28 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { fingerprint: Deserialize::default(), transaction_id: Deserialize::default() }
+            Self {
+                fingerprint: Deserialize::default(),
+                location: Deserialize::default(),
+                reader: Deserialize::default(),
+                transaction_id: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(fingerprint), Some(transaction_id)) =
-                (self.fingerprint.take(), self.transaction_id.take())
-            else {
+            let (Some(fingerprint), Some(location), Some(reader), Some(transaction_id)) = (
+                self.fingerprint.take(),
+                self.location.take(),
+                self.reader.take(),
+                self.transaction_id.take(),
+            ) else {
                 return None;
             };
-            Some(Self::Out { fingerprint, transaction_id })
+            Some(Self::Out { fingerprint, location, reader, transaction_id })
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -99,6 +115,8 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "location" => b.location = FromValueOpt::from_value(v),
+                    "reader" => b.reader = FromValueOpt::from_value(v),
                     "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
 
                     _ => {}
