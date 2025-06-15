@@ -72,8 +72,6 @@ pub struct List<T> {
     pub data: Vec<T>,
     /// If true, making another request with our new url will yield more data.
     pub has_more: bool,
-    /// The total number of results.
-    pub total_count: Option<u64>,
     /// The base endpoint we're targeting.
     pub url: String,
 }
@@ -91,7 +89,6 @@ impl<T: Serialize> Serialize for List<T> {
         let mut ser = serializer.serialize_struct("List", 5)?;
         ser.serialize_field("data", &self.data)?;
         ser.serialize_field("has_more", &self.has_more)?;
-        ser.serialize_field("total_count", &self.total_count)?;
         ser.serialize_field("url", &self.url)?;
         ser.serialize_field("object", "list")?;
         ser.end()
@@ -103,7 +100,6 @@ impl<T: Clone> Clone for List<T> {
         List {
             data: self.data.clone(),
             has_more: self.has_more,
-            total_count: self.total_count,
             url: self.url.clone(),
         }
     }
@@ -161,7 +157,6 @@ mod impl_deserialize {
                 out: &mut self.out,
                 data: Deserialize::default(),
                 has_more: Deserialize::default(),
-                total_count: Deserialize::default(),
                 url: Deserialize::default(),
             }))
         }
@@ -171,7 +166,6 @@ mod impl_deserialize {
         out: &'a mut Option<List<T>>,
         data: Option<Vec<T>>,
         has_more: Option<bool>,
-        total_count: Option<Option<u64>>,
         url: Option<String>,
     }
 
@@ -181,7 +175,6 @@ mod impl_deserialize {
                 "url" => Ok(Deserialize::begin(&mut self.url)),
                 "data" => Ok(Deserialize::begin(&mut self.data)),
                 "has_more" => Ok(Deserialize::begin(&mut self.has_more)),
-                "total_count" => Ok(Deserialize::begin(&mut self.total_count)),
                 _ => Ok(<dyn Visitor>::ignore()),
             }
         }
@@ -190,8 +183,7 @@ mod impl_deserialize {
             let url = self.url.take().ok_or(Error)?;
             let data = self.data.take().ok_or(Error)?;
             let has_more = self.has_more.ok_or(Error)?;
-            let total_count = self.total_count.ok_or(Error)?;
-            *self.out = Some(List { data, has_more, total_count, url });
+            *self.out = Some(List { data, has_more, url });
             Ok(())
         }
     }
@@ -200,7 +192,6 @@ mod impl_deserialize {
         fn from_value(v: Value) -> Option<Self> {
             let mut data: Option<Vec<T>> = None;
             let mut has_more: Option<bool> = None;
-            let mut total_count: Option<Option<u64>> = Some(None);
             let mut url: Option<String> = None;
             let Value::Object(obj) = v else {
                 return None;
@@ -210,11 +201,10 @@ mod impl_deserialize {
                     "has_more" => has_more = Some(bool::from_value(v)?),
                     "data" => data = Some(FromValueOpt::from_value(v)?),
                     "url" => url = Some(FromValueOpt::from_value(v)?),
-                    "total_count" => total_count = Some(FromValueOpt::from_value(v)?),
                     _ => {}
                 }
             }
-            Some(Self { data: data?, has_more: has_more?, total_count: total_count?, url: url? })
+            Some(Self { data: data?, has_more: has_more?, url: url? })
         }
     }
 
