@@ -97,11 +97,7 @@ impl<T: Serialize> Serialize for List<T> {
 
 impl<T: Clone> Clone for List<T> {
     fn clone(&self) -> Self {
-        List {
-            data: self.data.clone(),
-            has_more: self.has_more,
-            url: self.url.clone(),
-        }
+        List { data: self.data.clone(), has_more: self.has_more, url: self.url.clone() }
     }
 }
 

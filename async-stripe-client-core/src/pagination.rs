@@ -63,11 +63,7 @@ where
     }
 
     fn from_parts(parts: ListParts<Self::Data>) -> Self {
-        Self {
-            data: parts.data,
-            has_more: parts.has_more,
-            url: parts.url,
-        }
+        Self { data: parts.data, has_more: parts.has_more, url: parts.url }
     }
 
     fn update_params(&mut self, params: &mut Value) {
