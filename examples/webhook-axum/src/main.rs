@@ -13,7 +13,6 @@
 //! ```
 
 use axum::{
-    async_trait,
     body::Body,
     extract::FromRequest,
     http::{Request, StatusCode},
@@ -39,7 +38,6 @@ async fn main() {
 
 struct StripeEvent(Event);
 
-#[async_trait]
 impl<S> FromRequest<S> for StripeEvent
 where
     String: FromRequest<S>,
