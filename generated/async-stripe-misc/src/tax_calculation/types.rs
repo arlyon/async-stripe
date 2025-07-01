@@ -149,7 +149,7 @@ const _: () = {
                 Some(tax_date),
             ) = (
                 self.amount_total,
-                self.currency,
+                self.currency.take(),
                 self.customer.take(),
                 self.customer_details.take(),
                 self.expires_at,
@@ -185,7 +185,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

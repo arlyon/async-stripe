@@ -355,7 +355,7 @@ struct DependencyCollector<'a> {
     deps: IndexSet<&'a ComponentPath>,
 }
 
-impl<'a> DependencyCollector<'a> {
+impl DependencyCollector<'_> {
     fn new() -> Self {
         Self::default()
     }

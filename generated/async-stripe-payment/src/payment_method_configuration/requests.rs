@@ -220,9 +220,13 @@ struct CreatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     jcb: Option<CreatePaymentMethodConfigurationJcb>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    kakao_pay: Option<CreatePaymentMethodConfigurationKakaoPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     klarna: Option<CreatePaymentMethodConfigurationKlarna>,
     #[serde(skip_serializing_if = "Option::is_none")]
     konbini: Option<CreatePaymentMethodConfigurationKonbini>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    kr_card: Option<CreatePaymentMethodConfigurationKrCard>,
     #[serde(skip_serializing_if = "Option::is_none")]
     link: Option<CreatePaymentMethodConfigurationLink>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -231,6 +235,8 @@ struct CreatePaymentMethodConfigurationBuilder {
     multibanco: Option<CreatePaymentMethodConfigurationMultibanco>,
     #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    naver_pay: Option<CreatePaymentMethodConfigurationNaverPay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     nz_bank_account: Option<CreatePaymentMethodConfigurationNzBankAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -242,6 +248,8 @@ struct CreatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     pay_by_bank: Option<CreatePaymentMethodConfigurationPayByBank>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    payco: Option<CreatePaymentMethodConfigurationPayco>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     paynow: Option<CreatePaymentMethodConfigurationPaynow>,
     #[serde(skip_serializing_if = "Option::is_none")]
     paypal: Option<CreatePaymentMethodConfigurationPaypal>,
@@ -251,6 +259,8 @@ struct CreatePaymentMethodConfigurationBuilder {
     promptpay: Option<CreatePaymentMethodConfigurationPromptpay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     revolut_pay: Option<CreatePaymentMethodConfigurationRevolutPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    samsung_pay: Option<CreatePaymentMethodConfigurationSamsungPay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     satispay: Option<CreatePaymentMethodConfigurationSatispay>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -297,22 +307,27 @@ impl CreatePaymentMethodConfigurationBuilder {
             grabpay: None,
             ideal: None,
             jcb: None,
+            kakao_pay: None,
             klarna: None,
             konbini: None,
+            kr_card: None,
             link: None,
             mobilepay: None,
             multibanco: None,
             name: None,
+            naver_pay: None,
             nz_bank_account: None,
             oxxo: None,
             p24: None,
             parent: None,
             pay_by_bank: None,
+            payco: None,
             paynow: None,
             paypal: None,
             pix: None,
             promptpay: None,
             revolut_pay: None,
+            samsung_pay: None,
             satispay: None,
             sepa_debit: None,
             sofort: None,
@@ -902,8 +917,8 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference"))
     }
 }
-/// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
-/// There are no additional fees to process Apple Pay payments, and the [pricing](/pricing) is the same as other card transactions.
+/// Stripe users can accept [Apple Pay](https://stripe.com/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
+/// There are no additional fees to process Apple Pay payments, and the [pricing](https://stripe.com/pricing) is the same as other card transactions.
 /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationApplePay {
@@ -2747,6 +2762,99 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
+/// Kakao Pay is a popular local wallet available in South Korea.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationKakaoPay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationKakaoPayDisplayPreference>,
+}
+impl CreatePaymentMethodConfigurationKakaoPay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationKakaoPay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationKakaoPayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference>,
+}
+impl CreatePaymentMethodConfigurationKakaoPayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationKakaoPayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference"))
+    }
+}
 /// Klarna gives customers a range of [payment options](https://stripe.com/docs/payments/klarna#payment-options) during checkout.
 /// Available payment options vary depending on the customer's billing address and the transaction amount.
 /// These payment options make it convenient for customers to purchase items in all price ranges.
@@ -2935,6 +3043,99 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference"))
+    }
+}
+/// Korean cards let users pay using locally issued cards from South Korea.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationKrCard {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationKrCardDisplayPreference>,
+}
+impl CreatePaymentMethodConfigurationKrCard {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationKrCard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationKrCardDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference>,
+}
+impl CreatePaymentMethodConfigurationKrCardDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationKrCardDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference"))
     }
 }
 /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
@@ -3221,6 +3422,99 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference"))
+    }
+}
+/// Naver Pay is a popular local wallet available in South Korea.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationNaverPay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationNaverPayDisplayPreference>,
+}
+impl CreatePaymentMethodConfigurationNaverPay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationNaverPay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationNaverPayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference>,
+}
+impl CreatePaymentMethodConfigurationNaverPayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationNaverPayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference"))
     }
 }
 /// Stripe users in New Zealand can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with a New Zeland bank account.
@@ -3613,6 +3907,99 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference"))
+    }
+}
+/// PAYCO is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationPayco {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationPaycoDisplayPreference>,
+}
+impl CreatePaymentMethodConfigurationPayco {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationPayco {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationPaycoDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference>,
+}
+impl CreatePaymentMethodConfigurationPaycoDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationPaycoDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference"))
     }
 }
 /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
@@ -4088,6 +4475,99 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference"))
+    }
+}
+/// Samsung Pay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationSamsungPay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationSamsungPayDisplayPreference>,
+}
+impl CreatePaymentMethodConfigurationSamsungPay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationSamsungPay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationSamsungPayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference>,
+}
+impl CreatePaymentMethodConfigurationSamsungPayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationSamsungPayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference"))
     }
 }
 /// Satispay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
@@ -4911,8 +5391,8 @@ impl CreatePaymentMethodConfiguration {
         self.inner.amazon_pay = Some(amazon_pay.into());
         self
     }
-    /// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
-    /// There are no additional fees to process Apple Pay payments, and the [pricing](/pricing) is the same as other card transactions.
+    /// Stripe users can accept [Apple Pay](https://stripe.com/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
+    /// There are no additional fees to process Apple Pay payments, and the [pricing](https://stripe.com/pricing) is the same as other card transactions.
     /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
     pub fn apple_pay(
         mut self,
@@ -5068,6 +5548,14 @@ impl CreatePaymentMethodConfiguration {
         self.inner.jcb = Some(jcb.into());
         self
     }
+    /// Kakao Pay is a popular local wallet available in South Korea.
+    pub fn kakao_pay(
+        mut self,
+        kakao_pay: impl Into<CreatePaymentMethodConfigurationKakaoPay>,
+    ) -> Self {
+        self.inner.kakao_pay = Some(kakao_pay.into());
+        self
+    }
     /// Klarna gives customers a range of [payment options](https://stripe.com/docs/payments/klarna#payment-options) during checkout.
     /// Available payment options vary depending on the customer's billing address and the transaction amount.
     /// These payment options make it convenient for customers to purchase items in all price ranges.
@@ -5080,6 +5568,11 @@ impl CreatePaymentMethodConfiguration {
     /// Check this [page](https://stripe.com/docs/payments/konbini) for more details.
     pub fn konbini(mut self, konbini: impl Into<CreatePaymentMethodConfigurationKonbini>) -> Self {
         self.inner.konbini = Some(konbini.into());
+        self
+    }
+    /// Korean cards let users pay using locally issued cards from South Korea.
+    pub fn kr_card(mut self, kr_card: impl Into<CreatePaymentMethodConfigurationKrCard>) -> Self {
+        self.inner.kr_card = Some(kr_card.into());
         self
     }
     /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
@@ -5109,6 +5602,14 @@ impl CreatePaymentMethodConfiguration {
     /// Configuration name.
     pub fn name(mut self, name: impl Into<String>) -> Self {
         self.inner.name = Some(name.into());
+        self
+    }
+    /// Naver Pay is a popular local wallet available in South Korea.
+    pub fn naver_pay(
+        mut self,
+        naver_pay: impl Into<CreatePaymentMethodConfigurationNaverPay>,
+    ) -> Self {
+        self.inner.naver_pay = Some(naver_pay.into());
         self
     }
     /// Stripe users in New Zealand can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with a New Zeland bank account.
@@ -5149,6 +5650,11 @@ impl CreatePaymentMethodConfiguration {
         self.inner.pay_by_bank = Some(pay_by_bank.into());
         self
     }
+    /// PAYCO is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
+    pub fn payco(mut self, payco: impl Into<CreatePaymentMethodConfigurationPayco>) -> Self {
+        self.inner.payco = Some(payco.into());
+        self
+    }
     /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
     /// Check this [page](https://stripe.com/docs/payments/paynow) for more details.
     pub fn paynow(mut self, paynow: impl Into<CreatePaymentMethodConfigurationPaynow>) -> Self {
@@ -5184,6 +5690,14 @@ impl CreatePaymentMethodConfiguration {
         revolut_pay: impl Into<CreatePaymentMethodConfigurationRevolutPay>,
     ) -> Self {
         self.inner.revolut_pay = Some(revolut_pay.into());
+        self
+    }
+    /// Samsung Pay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
+    pub fn samsung_pay(
+        mut self,
+        samsung_pay: impl Into<CreatePaymentMethodConfigurationSamsungPay>,
+    ) -> Self {
+        self.inner.samsung_pay = Some(samsung_pay.into());
         self
     }
     /// Satispay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
@@ -5339,9 +5853,13 @@ struct UpdatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     jcb: Option<UpdatePaymentMethodConfigurationJcb>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    kakao_pay: Option<UpdatePaymentMethodConfigurationKakaoPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     klarna: Option<UpdatePaymentMethodConfigurationKlarna>,
     #[serde(skip_serializing_if = "Option::is_none")]
     konbini: Option<UpdatePaymentMethodConfigurationKonbini>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    kr_card: Option<UpdatePaymentMethodConfigurationKrCard>,
     #[serde(skip_serializing_if = "Option::is_none")]
     link: Option<UpdatePaymentMethodConfigurationLink>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5351,6 +5869,8 @@ struct UpdatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    naver_pay: Option<UpdatePaymentMethodConfigurationNaverPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     nz_bank_account: Option<UpdatePaymentMethodConfigurationNzBankAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
     oxxo: Option<UpdatePaymentMethodConfigurationOxxo>,
@@ -5358,6 +5878,8 @@ struct UpdatePaymentMethodConfigurationBuilder {
     p24: Option<UpdatePaymentMethodConfigurationP24>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pay_by_bank: Option<UpdatePaymentMethodConfigurationPayByBank>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payco: Option<UpdatePaymentMethodConfigurationPayco>,
     #[serde(skip_serializing_if = "Option::is_none")]
     paynow: Option<UpdatePaymentMethodConfigurationPaynow>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5368,6 +5890,8 @@ struct UpdatePaymentMethodConfigurationBuilder {
     promptpay: Option<UpdatePaymentMethodConfigurationPromptpay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     revolut_pay: Option<UpdatePaymentMethodConfigurationRevolutPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    samsung_pay: Option<UpdatePaymentMethodConfigurationSamsungPay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     satispay: Option<UpdatePaymentMethodConfigurationSatispay>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5415,21 +5939,26 @@ impl UpdatePaymentMethodConfigurationBuilder {
             grabpay: None,
             ideal: None,
             jcb: None,
+            kakao_pay: None,
             klarna: None,
             konbini: None,
+            kr_card: None,
             link: None,
             mobilepay: None,
             multibanco: None,
             name: None,
+            naver_pay: None,
             nz_bank_account: None,
             oxxo: None,
             p24: None,
             pay_by_bank: None,
+            payco: None,
             paynow: None,
             paypal: None,
             pix: None,
             promptpay: None,
             revolut_pay: None,
+            samsung_pay: None,
             satispay: None,
             sepa_debit: None,
             sofort: None,
@@ -6019,8 +6548,8 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference"))
     }
 }
-/// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
-/// There are no additional fees to process Apple Pay payments, and the [pricing](/pricing) is the same as other card transactions.
+/// Stripe users can accept [Apple Pay](https://stripe.com/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
+/// There are no additional fees to process Apple Pay payments, and the [pricing](https://stripe.com/pricing) is the same as other card transactions.
 /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationApplePay {
@@ -7864,6 +8393,99 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
+/// Kakao Pay is a popular local wallet available in South Korea.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationKakaoPay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationKakaoPayDisplayPreference>,
+}
+impl UpdatePaymentMethodConfigurationKakaoPay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationKakaoPay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationKakaoPayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference>,
+}
+impl UpdatePaymentMethodConfigurationKakaoPayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationKakaoPayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference"))
+    }
+}
 /// Klarna gives customers a range of [payment options](https://stripe.com/docs/payments/klarna#payment-options) during checkout.
 /// Available payment options vary depending on the customer's billing address and the transaction amount.
 /// These payment options make it convenient for customers to purchase items in all price ranges.
@@ -8052,6 +8674,99 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference"))
+    }
+}
+/// Korean cards let users pay using locally issued cards from South Korea.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationKrCard {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationKrCardDisplayPreference>,
+}
+impl UpdatePaymentMethodConfigurationKrCard {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationKrCard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationKrCardDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference>,
+}
+impl UpdatePaymentMethodConfigurationKrCardDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationKrCardDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference"))
     }
 }
 /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
@@ -8338,6 +9053,99 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference"))
+    }
+}
+/// Naver Pay is a popular local wallet available in South Korea.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationNaverPay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationNaverPayDisplayPreference>,
+}
+impl UpdatePaymentMethodConfigurationNaverPay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationNaverPay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationNaverPayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference>,
+}
+impl UpdatePaymentMethodConfigurationNaverPayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationNaverPayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference"))
     }
 }
 /// Stripe users in New Zealand can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with a New Zeland bank account.
@@ -8730,6 +9538,99 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference"))
+    }
+}
+/// PAYCO is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationPayco {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationPaycoDisplayPreference>,
+}
+impl UpdatePaymentMethodConfigurationPayco {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationPayco {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationPaycoDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference>,
+}
+impl UpdatePaymentMethodConfigurationPaycoDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationPaycoDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference"))
     }
 }
 /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
@@ -9205,6 +10106,99 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference"))
+    }
+}
+/// Samsung Pay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationSamsungPay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationSamsungPayDisplayPreference>,
+}
+impl UpdatePaymentMethodConfigurationSamsungPay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationSamsungPay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationSamsungPayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference>,
+}
+impl UpdatePaymentMethodConfigurationSamsungPayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationSamsungPayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference"))
     }
 }
 /// Satispay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
@@ -10037,8 +11031,8 @@ impl UpdatePaymentMethodConfiguration {
         self.inner.amazon_pay = Some(amazon_pay.into());
         self
     }
-    /// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
-    /// There are no additional fees to process Apple Pay payments, and the [pricing](/pricing) is the same as other card transactions.
+    /// Stripe users can accept [Apple Pay](https://stripe.com/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
+    /// There are no additional fees to process Apple Pay payments, and the [pricing](https://stripe.com/pricing) is the same as other card transactions.
     /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
     pub fn apple_pay(
         mut self,
@@ -10194,6 +11188,14 @@ impl UpdatePaymentMethodConfiguration {
         self.inner.jcb = Some(jcb.into());
         self
     }
+    /// Kakao Pay is a popular local wallet available in South Korea.
+    pub fn kakao_pay(
+        mut self,
+        kakao_pay: impl Into<UpdatePaymentMethodConfigurationKakaoPay>,
+    ) -> Self {
+        self.inner.kakao_pay = Some(kakao_pay.into());
+        self
+    }
     /// Klarna gives customers a range of [payment options](https://stripe.com/docs/payments/klarna#payment-options) during checkout.
     /// Available payment options vary depending on the customer's billing address and the transaction amount.
     /// These payment options make it convenient for customers to purchase items in all price ranges.
@@ -10206,6 +11208,11 @@ impl UpdatePaymentMethodConfiguration {
     /// Check this [page](https://stripe.com/docs/payments/konbini) for more details.
     pub fn konbini(mut self, konbini: impl Into<UpdatePaymentMethodConfigurationKonbini>) -> Self {
         self.inner.konbini = Some(konbini.into());
+        self
+    }
+    /// Korean cards let users pay using locally issued cards from South Korea.
+    pub fn kr_card(mut self, kr_card: impl Into<UpdatePaymentMethodConfigurationKrCard>) -> Self {
+        self.inner.kr_card = Some(kr_card.into());
         self
     }
     /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
@@ -10235,6 +11242,14 @@ impl UpdatePaymentMethodConfiguration {
     /// Configuration name.
     pub fn name(mut self, name: impl Into<String>) -> Self {
         self.inner.name = Some(name.into());
+        self
+    }
+    /// Naver Pay is a popular local wallet available in South Korea.
+    pub fn naver_pay(
+        mut self,
+        naver_pay: impl Into<UpdatePaymentMethodConfigurationNaverPay>,
+    ) -> Self {
+        self.inner.naver_pay = Some(naver_pay.into());
         self
     }
     /// Stripe users in New Zealand can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with a New Zeland bank account.
@@ -10268,6 +11283,11 @@ impl UpdatePaymentMethodConfiguration {
         pay_by_bank: impl Into<UpdatePaymentMethodConfigurationPayByBank>,
     ) -> Self {
         self.inner.pay_by_bank = Some(pay_by_bank.into());
+        self
+    }
+    /// PAYCO is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
+    pub fn payco(mut self, payco: impl Into<UpdatePaymentMethodConfigurationPayco>) -> Self {
+        self.inner.payco = Some(payco.into());
         self
     }
     /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
@@ -10305,6 +11325,14 @@ impl UpdatePaymentMethodConfiguration {
         revolut_pay: impl Into<UpdatePaymentMethodConfigurationRevolutPay>,
     ) -> Self {
         self.inner.revolut_pay = Some(revolut_pay.into());
+        self
+    }
+    /// Samsung Pay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
+    pub fn samsung_pay(
+        mut self,
+        samsung_pay: impl Into<UpdatePaymentMethodConfigurationSamsungPay>,
+    ) -> Self {
+        self.inner.samsung_pay = Some(samsung_pay.into());
         self
     }
     /// Satispay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.

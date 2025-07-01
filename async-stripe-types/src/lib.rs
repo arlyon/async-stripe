@@ -10,7 +10,7 @@ mod ids;
 mod pagination;
 mod params;
 
-pub use currency::{Currency, ParseCurrencyError};
+pub use currency::Currency;
 pub use error::StripeParseError;
 pub use expandable::*;
 pub use pagination::*;

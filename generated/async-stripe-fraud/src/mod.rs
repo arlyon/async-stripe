@@ -2,6 +2,7 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(rustdoc::broken_intra_doc_links)]
 #![allow(rustdoc::invalid_html_tags)]
+#![allow(non_camel_case_types)]
 
 //! This crate provides Rust bindings to the Stripe HTTP API, specifically
 //! for requests mentioned in the `Fraud` section of the [Stripe API docs](https://stripe.com/docs/api)

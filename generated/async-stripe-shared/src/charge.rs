@@ -388,7 +388,7 @@ const _: () = {
                 self.calculated_statement_descriptor.take(),
                 self.captured,
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.customer.take(),
                 self.description.take(),
                 self.disputed,
@@ -406,7 +406,7 @@ const _: () = {
                 self.payment_intent.take(),
                 self.payment_method.take(),
                 self.payment_method_details.take(),
-                self.presentment_details,
+                self.presentment_details.take(),
                 self.radar_options.take(),
                 self.receipt_email.take(),
                 self.receipt_number.take(),
@@ -479,7 +479,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

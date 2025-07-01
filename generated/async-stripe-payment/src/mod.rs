@@ -2,6 +2,7 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(rustdoc::broken_intra_doc_links)]
 #![allow(rustdoc::invalid_html_tags)]
+#![allow(non_camel_case_types)]
 
 //! This crate provides Rust bindings to the Stripe HTTP API, specifically
 //! for requests mentioned in the `Payment Methods` and `Payment Links` sections
@@ -250,6 +251,7 @@ pub use stripe_shared::payment_method_options_paypal::*;
 pub use stripe_shared::payment_method_options_pix::*;
 pub use stripe_shared::payment_method_options_promptpay::*;
 pub use stripe_shared::payment_method_options_revolut_pay::*;
+pub use stripe_shared::payment_method_options_satispay::*;
 pub use stripe_shared::payment_method_options_sofort::*;
 pub use stripe_shared::payment_method_options_twint::*;
 pub use stripe_shared::payment_method_options_us_bank_account_mandate_options::*;

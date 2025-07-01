@@ -84,6 +84,8 @@ pub struct AccountCapabilities {
     pub payco_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the paynow payments capability of the account, or whether the account can directly process paynow charges.
     pub paynow_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the pix payments capability of the account, or whether the account can directly process pix charges.
+    pub pix_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the promptpay payments capability of the account, or whether the account can directly process promptpay charges.
     pub promptpay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the RevolutPay capability of the account, or whether the account can directly process RevolutPay payments.
@@ -160,6 +162,7 @@ pub struct AccountCapabilitiesBuilder {
     pay_by_bank_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     payco_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     paynow_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    pix_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     promptpay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     revolut_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     samsung_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
@@ -273,6 +276,7 @@ const _: () = {
                 "pay_by_bank_payments" => Deserialize::begin(&mut self.pay_by_bank_payments),
                 "payco_payments" => Deserialize::begin(&mut self.payco_payments),
                 "paynow_payments" => Deserialize::begin(&mut self.paynow_payments),
+                "pix_payments" => Deserialize::begin(&mut self.pix_payments),
                 "promptpay_payments" => Deserialize::begin(&mut self.promptpay_payments),
                 "revolut_pay_payments" => Deserialize::begin(&mut self.revolut_pay_payments),
                 "samsung_pay_payments" => Deserialize::begin(&mut self.samsung_pay_payments),
@@ -345,6 +349,7 @@ const _: () = {
                 pay_by_bank_payments: Deserialize::default(),
                 payco_payments: Deserialize::default(),
                 paynow_payments: Deserialize::default(),
+                pix_payments: Deserialize::default(),
                 promptpay_payments: Deserialize::default(),
                 revolut_pay_payments: Deserialize::default(),
                 samsung_pay_payments: Deserialize::default(),
@@ -407,6 +412,7 @@ const _: () = {
                 Some(pay_by_bank_payments),
                 Some(payco_payments),
                 Some(paynow_payments),
+                Some(pix_payments),
                 Some(promptpay_payments),
                 Some(revolut_pay_payments),
                 Some(samsung_pay_payments),
@@ -465,6 +471,7 @@ const _: () = {
                 self.pay_by_bank_payments,
                 self.payco_payments,
                 self.paynow_payments,
+                self.pix_payments,
                 self.promptpay_payments,
                 self.revolut_pay_payments,
                 self.samsung_pay_payments,
@@ -527,6 +534,7 @@ const _: () = {
                 pay_by_bank_payments,
                 payco_payments,
                 paynow_payments,
+                pix_payments,
                 promptpay_payments,
                 revolut_pay_payments,
                 samsung_pay_payments,
@@ -547,7 +555,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -629,6 +637,7 @@ const _: () = {
                     "pay_by_bank_payments" => b.pay_by_bank_payments = FromValueOpt::from_value(v),
                     "payco_payments" => b.payco_payments = FromValueOpt::from_value(v),
                     "paynow_payments" => b.paynow_payments = FromValueOpt::from_value(v),
+                    "pix_payments" => b.pix_payments = FromValueOpt::from_value(v),
                     "promptpay_payments" => b.promptpay_payments = FromValueOpt::from_value(v),
                     "revolut_pay_payments" => b.revolut_pay_payments = FromValueOpt::from_value(v),
                     "samsung_pay_payments" => b.samsung_pay_payments = FromValueOpt::from_value(v),

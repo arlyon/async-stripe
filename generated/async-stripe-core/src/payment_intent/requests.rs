@@ -2281,6 +2281,9 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     /// If this is a `samsung_pay` PaymentMethod, this sub-hash contains details about the Samsung Pay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub samsung_pay: Option<CreatePaymentIntentPaymentMethodOptionsSamsungPay>,
+    /// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub satispay: Option<CreatePaymentIntentPaymentMethodOptionsSatispay>,
     /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreatePaymentIntentPaymentMethodOptionsSepaDebit>,
@@ -2347,6 +2350,7 @@ impl CreatePaymentIntentPaymentMethodOptions {
             promptpay: None,
             revolut_pay: None,
             samsung_pay: None,
+            satispay: None,
             sepa_debit: None,
             sofort: None,
             swish: None,
@@ -9043,6 +9047,86 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
+/// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsSatispay {
+    /// Controls when the funds are captured from the customer's account.
+    ///
+    /// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod>,
+}
+impl CreatePaymentIntentPaymentMethodOptionsSatispay {
+    pub fn new() -> Self {
+        Self { capture_method: None }
+    }
+}
+impl Default for CreatePaymentIntentPaymentMethodOptionsSatispay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls when the funds are captured from the customer's account.
+///
+/// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+///
+/// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    Manual,
+}
+impl CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod::*;
+        match self {
+            Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod",
+            )
+        })
+    }
+}
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebit {
@@ -10636,6 +10720,8 @@ impl CreatePaymentIntent {
     ///
     /// If you don't provide the `payment_method` parameter or the `source` parameter with `confirm=true`, `source` automatically populates with `customer.default_source` to improve migration for users of the Charges API.
     /// We recommend that you explicitly provide the `payment_method` moving forward.
+    /// If the payment method is attached to a Customer, you must also provide the ID of that Customer as the [customer](https://stripe.com/docs/api#create_payment_intent-customer) parameter of this PaymentIntent.
+    /// end
     pub fn payment_method(mut self, payment_method: impl Into<String>) -> Self {
         self.inner.payment_method = Some(payment_method.into());
         self
@@ -12580,6 +12666,9 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     /// If this is a `samsung_pay` PaymentMethod, this sub-hash contains details about the Samsung Pay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub samsung_pay: Option<UpdatePaymentIntentPaymentMethodOptionsSamsungPay>,
+    /// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub satispay: Option<UpdatePaymentIntentPaymentMethodOptionsSatispay>,
     /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<UpdatePaymentIntentPaymentMethodOptionsSepaDebit>,
@@ -12646,6 +12735,7 @@ impl UpdatePaymentIntentPaymentMethodOptions {
             promptpay: None,
             revolut_pay: None,
             samsung_pay: None,
+            satispay: None,
             sepa_debit: None,
             sofort: None,
             swish: None,
@@ -19342,6 +19432,86 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
+/// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsSatispay {
+    /// Controls when the funds are captured from the customer's account.
+    ///
+    /// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod>,
+}
+impl UpdatePaymentIntentPaymentMethodOptionsSatispay {
+    pub fn new() -> Self {
+        Self { capture_method: None }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentMethodOptionsSatispay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls when the funds are captured from the customer's account.
+///
+/// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+///
+/// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    Manual,
+}
+impl UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod::*;
+        match self {
+            Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod",
+            )
+        })
+    }
+}
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebit {
@@ -23388,6 +23558,9 @@ pub struct ConfirmPaymentIntentPaymentMethodOptions {
     /// If this is a `samsung_pay` PaymentMethod, this sub-hash contains details about the Samsung Pay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub samsung_pay: Option<ConfirmPaymentIntentPaymentMethodOptionsSamsungPay>,
+    /// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub satispay: Option<ConfirmPaymentIntentPaymentMethodOptionsSatispay>,
     /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<ConfirmPaymentIntentPaymentMethodOptionsSepaDebit>,
@@ -23454,6 +23627,7 @@ impl ConfirmPaymentIntentPaymentMethodOptions {
             promptpay: None,
             revolut_pay: None,
             samsung_pay: None,
+            satispay: None,
             sepa_debit: None,
             sofort: None,
             swish: None,
@@ -30149,6 +30323,88 @@ impl<'de> serde::Deserialize<'de>
         })
     }
 }
+/// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentMethodOptionsSatispay {
+    /// Controls when the funds are captured from the customer's account.
+    ///
+    /// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod>,
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsSatispay {
+    pub fn new() -> Self {
+        Self { capture_method: None }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentMethodOptionsSatispay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls when the funds are captured from the customer's account.
+///
+/// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+///
+/// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    Manual,
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        use ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod::*;
+        match self {
+            Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod",
+            )
+        })
+    }
+}
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsSepaDebit {
@@ -31672,6 +31928,7 @@ impl ConfirmPaymentIntent {
         self
     }
     /// ID of the payment method (a PaymentMethod, Card, or [compatible Source](https://stripe.com/docs/payments/payment-methods/transitioning#compatibility) object) to attach to this PaymentIntent.
+    /// If the payment method is attached to a Customer, it must match the [customer](https://stripe.com/docs/api#create_payment_intent-customer) that is set on this PaymentIntent.
     pub fn payment_method(mut self, payment_method: impl Into<String>) -> Self {
         self.inner.payment_method = Some(payment_method.into());
         self

@@ -45,7 +45,7 @@ pub struct InvoiceItem {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// The parent that generated this invoice
+    /// The parent that generated this invoice item.
     pub parent: Option<stripe_billing::BillingBillResourceInvoiceItemParentsInvoiceItemParent>,
     pub period: stripe_shared::InvoiceLineItemPeriod,
     /// The pricing information of the invoice item.
@@ -191,7 +191,7 @@ const _: () = {
                 Some(test_clock),
             ) = (
                 self.amount,
-                self.currency,
+                self.currency.take(),
                 self.customer.take(),
                 self.date,
                 self.description.take(),
@@ -235,7 +235,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

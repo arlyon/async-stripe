@@ -201,7 +201,7 @@ const _: () = {
                 self.available_payout_methods.take(),
                 self.bank_name.take(),
                 self.country.take(),
-                self.currency,
+                self.currency.take(),
                 self.customer.take(),
                 self.default_for_currency,
                 self.fingerprint.take(),
@@ -239,7 +239,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

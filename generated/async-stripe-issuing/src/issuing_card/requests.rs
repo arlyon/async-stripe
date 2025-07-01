@@ -3805,6 +3805,8 @@ impl CreateIssuingCard {
         self.inner.expand = Some(expand.into());
         self
     }
+    /// The new financial account ID the card will be associated with.
+    /// This field allows a card to be reassigned to a different financial account.
     pub fn financial_account(mut self, financial_account: impl Into<String>) -> Self {
         self.inner.financial_account = Some(financial_account.into());
         self

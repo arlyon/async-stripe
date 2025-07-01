@@ -264,7 +264,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -507,7 +507,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -602,6 +602,369 @@ impl StripeRequest for CancelActionTerminalReader {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+struct CollectInputsTerminalReaderBuilder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+    inputs: Vec<CollectInputsTerminalReaderInputs>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<std::collections::HashMap<String, String>>,
+}
+impl CollectInputsTerminalReaderBuilder {
+    fn new(inputs: impl Into<Vec<CollectInputsTerminalReaderInputs>>) -> Self {
+        Self { expand: None, inputs: inputs.into(), metadata: None }
+    }
+}
+/// List of inputs to be collected using the Reader
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CollectInputsTerminalReaderInputs {
+    /// Customize the text which will be displayed while collecting this input
+    pub custom_text: CollectInputsTerminalReaderInputsCustomText,
+    /// Indicate that this input is required, disabling the skip button
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub required: Option<bool>,
+    /// Options for the `selection` input
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selection: Option<CollectInputsTerminalReaderInputsSelection>,
+    /// List of toggles to be displayed and customization for the toggles
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub toggles: Option<Vec<CollectInputsTerminalReaderInputsToggles>>,
+    /// The type of input to collect
+    #[serde(rename = "type")]
+    pub type_: CollectInputsTerminalReaderInputsType,
+}
+impl CollectInputsTerminalReaderInputs {
+    pub fn new(
+        custom_text: impl Into<CollectInputsTerminalReaderInputsCustomText>,
+        type_: impl Into<CollectInputsTerminalReaderInputsType>,
+    ) -> Self {
+        Self {
+            custom_text: custom_text.into(),
+            required: None,
+            selection: None,
+            toggles: None,
+            type_: type_.into(),
+        }
+    }
+}
+/// Customize the text which will be displayed while collecting this input
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CollectInputsTerminalReaderInputsCustomText {
+    /// The description which will be displayed when collecting this input
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// The skip button text
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub skip_button: Option<String>,
+    /// The submit button text
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub submit_button: Option<String>,
+    /// The title which will be displayed when collecting this input
+    pub title: String,
+}
+impl CollectInputsTerminalReaderInputsCustomText {
+    pub fn new(title: impl Into<String>) -> Self {
+        Self { description: None, skip_button: None, submit_button: None, title: title.into() }
+    }
+}
+/// Options for the `selection` input
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CollectInputsTerminalReaderInputsSelection {
+    /// List of choices for the `selection` input
+    pub choices: Vec<CollectInputsTerminalReaderInputsSelectionChoices>,
+}
+impl CollectInputsTerminalReaderInputsSelection {
+    pub fn new(choices: impl Into<Vec<CollectInputsTerminalReaderInputsSelectionChoices>>) -> Self {
+        Self { choices: choices.into() }
+    }
+}
+/// List of choices for the `selection` input
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CollectInputsTerminalReaderInputsSelectionChoices {
+    /// The unique identifier for this choice
+    pub id: String,
+    /// The style of the button which will be shown for this choice
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub style: Option<CollectInputsTerminalReaderInputsSelectionChoicesStyle>,
+    /// The text which will be shown on the button for this choice
+    pub text: String,
+}
+impl CollectInputsTerminalReaderInputsSelectionChoices {
+    pub fn new(id: impl Into<String>, text: impl Into<String>) -> Self {
+        Self { id: id.into(), style: None, text: text.into() }
+    }
+}
+/// The style of the button which will be shown for this choice
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CollectInputsTerminalReaderInputsSelectionChoicesStyle {
+    Primary,
+    Secondary,
+}
+impl CollectInputsTerminalReaderInputsSelectionChoicesStyle {
+    pub fn as_str(self) -> &'static str {
+        use CollectInputsTerminalReaderInputsSelectionChoicesStyle::*;
+        match self {
+            Primary => "primary",
+            Secondary => "secondary",
+        }
+    }
+}
+
+impl std::str::FromStr for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CollectInputsTerminalReaderInputsSelectionChoicesStyle::*;
+        match s {
+            "primary" => Ok(Primary),
+            "secondary" => Ok(Secondary),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CollectInputsTerminalReaderInputsSelectionChoicesStyle",
+            )
+        })
+    }
+}
+/// List of toggles to be displayed and customization for the toggles
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CollectInputsTerminalReaderInputsToggles {
+    /// The default value of the toggle
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_value: Option<CollectInputsTerminalReaderInputsTogglesDefaultValue>,
+    /// The description which will be displayed for the toggle
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// The title which will be displayed for the toggle
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title: Option<String>,
+}
+impl CollectInputsTerminalReaderInputsToggles {
+    pub fn new() -> Self {
+        Self { default_value: None, description: None, title: None }
+    }
+}
+impl Default for CollectInputsTerminalReaderInputsToggles {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The default value of the toggle
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CollectInputsTerminalReaderInputsTogglesDefaultValue {
+    Disabled,
+    Enabled,
+}
+impl CollectInputsTerminalReaderInputsTogglesDefaultValue {
+    pub fn as_str(self) -> &'static str {
+        use CollectInputsTerminalReaderInputsTogglesDefaultValue::*;
+        match self {
+            Disabled => "disabled",
+            Enabled => "enabled",
+        }
+    }
+}
+
+impl std::str::FromStr for CollectInputsTerminalReaderInputsTogglesDefaultValue {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CollectInputsTerminalReaderInputsTogglesDefaultValue::*;
+        match s {
+            "disabled" => Ok(Disabled),
+            "enabled" => Ok(Enabled),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CollectInputsTerminalReaderInputsTogglesDefaultValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CollectInputsTerminalReaderInputsTogglesDefaultValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CollectInputsTerminalReaderInputsTogglesDefaultValue {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsTogglesDefaultValue {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CollectInputsTerminalReaderInputsTogglesDefaultValue",
+            )
+        })
+    }
+}
+/// The type of input to collect
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CollectInputsTerminalReaderInputsType {
+    Email,
+    Numeric,
+    Phone,
+    Selection,
+    Signature,
+    Text,
+}
+impl CollectInputsTerminalReaderInputsType {
+    pub fn as_str(self) -> &'static str {
+        use CollectInputsTerminalReaderInputsType::*;
+        match self {
+            Email => "email",
+            Numeric => "numeric",
+            Phone => "phone",
+            Selection => "selection",
+            Signature => "signature",
+            Text => "text",
+        }
+    }
+}
+
+impl std::str::FromStr for CollectInputsTerminalReaderInputsType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CollectInputsTerminalReaderInputsType::*;
+        match s {
+            "email" => Ok(Email),
+            "numeric" => Ok(Numeric),
+            "phone" => Ok(Phone),
+            "selection" => Ok(Selection),
+            "signature" => Ok(Signature),
+            "text" => Ok(Text),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CollectInputsTerminalReaderInputsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CollectInputsTerminalReaderInputsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CollectInputsTerminalReaderInputsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CollectInputsTerminalReaderInputsType")
+        })
+    }
+}
+/// Initiates an input collection flow on a Reader.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CollectInputsTerminalReader {
+    inner: CollectInputsTerminalReaderBuilder,
+    reader: stripe_terminal::TerminalReaderId,
+}
+impl CollectInputsTerminalReader {
+    /// Construct a new `CollectInputsTerminalReader`.
+    pub fn new(
+        reader: impl Into<stripe_terminal::TerminalReaderId>,
+        inputs: impl Into<Vec<CollectInputsTerminalReaderInputs>>,
+    ) -> Self {
+        Self {
+            reader: reader.into(),
+            inner: CollectInputsTerminalReaderBuilder::new(inputs.into()),
+        }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    pub fn metadata(
+        mut self,
+        metadata: impl Into<std::collections::HashMap<String, String>>,
+    ) -> Self {
+        self.inner.metadata = Some(metadata.into());
+        self
+    }
+}
+impl CollectInputsTerminalReader {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CollectInputsTerminalReader {
+    type Output = stripe_terminal::TerminalReader;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = &self.reader;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/terminal/readers/{reader}/collect_inputs"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
 struct ProcessPaymentIntentTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -615,7 +978,7 @@ impl ProcessPaymentIntentTerminalReaderBuilder {
     }
 }
 /// Configuration overrides
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ProcessPaymentIntentTerminalReaderProcessConfig {
     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
     /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
@@ -624,6 +987,10 @@ pub struct ProcessPaymentIntentTerminalReaderProcessConfig {
     /// Enables cancel button on transaction screens.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enable_customer_cancellation: Option<bool>,
+    /// The URL to redirect your customer back to after they authenticate or cancel their payment on the payment method's app or site.
+    /// If you'd prefer to redirect to a mobile application, you can alternatively supply an application URI scheme.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_url: Option<String>,
     /// Override showing a tipping selection screen on this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub skip_tipping: Option<bool>,
@@ -636,6 +1003,7 @@ impl ProcessPaymentIntentTerminalReaderProcessConfig {
         Self {
             allow_redisplay: None,
             enable_customer_cancellation: None,
+            return_url: None,
             skip_tipping: None,
             tipping: None,
         }
@@ -1458,6 +1826,188 @@ impl StripeRequest for PresentPaymentMethodTerminalReader {
         RequestBuilder::new(
             StripeMethod::Post,
             format!("/test_helpers/terminal/readers/{reader}/present_payment_method"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+struct SucceedInputCollectionTerminalReaderBuilder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    skip_non_required_inputs: Option<SucceedInputCollectionTerminalReaderSkipNonRequiredInputs>,
+}
+impl SucceedInputCollectionTerminalReaderBuilder {
+    fn new() -> Self {
+        Self { expand: None, skip_non_required_inputs: None }
+    }
+}
+/// This parameter defines the skip behavior for input collection.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum SucceedInputCollectionTerminalReaderSkipNonRequiredInputs {
+    All,
+    None,
+}
+impl SucceedInputCollectionTerminalReaderSkipNonRequiredInputs {
+    pub fn as_str(self) -> &'static str {
+        use SucceedInputCollectionTerminalReaderSkipNonRequiredInputs::*;
+        match self {
+            All => "all",
+            None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for SucceedInputCollectionTerminalReaderSkipNonRequiredInputs {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SucceedInputCollectionTerminalReaderSkipNonRequiredInputs::*;
+        match s {
+            "all" => Ok(All),
+            "none" => Ok(None),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for SucceedInputCollectionTerminalReaderSkipNonRequiredInputs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SucceedInputCollectionTerminalReaderSkipNonRequiredInputs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for SucceedInputCollectionTerminalReaderSkipNonRequiredInputs {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for SucceedInputCollectionTerminalReaderSkipNonRequiredInputs {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SucceedInputCollectionTerminalReaderSkipNonRequiredInputs",
+            )
+        })
+    }
+}
+/// Use this endpoint to trigger a successful input collection on a simulated reader.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct SucceedInputCollectionTerminalReader {
+    inner: SucceedInputCollectionTerminalReaderBuilder,
+    reader: String,
+}
+impl SucceedInputCollectionTerminalReader {
+    /// Construct a new `SucceedInputCollectionTerminalReader`.
+    pub fn new(reader: impl Into<String>) -> Self {
+        Self { reader: reader.into(), inner: SucceedInputCollectionTerminalReaderBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+    /// This parameter defines the skip behavior for input collection.
+    pub fn skip_non_required_inputs(
+        mut self,
+        skip_non_required_inputs: impl Into<SucceedInputCollectionTerminalReaderSkipNonRequiredInputs>,
+    ) -> Self {
+        self.inner.skip_non_required_inputs = Some(skip_non_required_inputs.into());
+        self
+    }
+}
+impl SucceedInputCollectionTerminalReader {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for SucceedInputCollectionTerminalReader {
+    type Output = stripe_terminal::TerminalReader;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = &self.reader;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/terminal/readers/{reader}/succeed_input_collection"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+struct TimeoutInputCollectionTerminalReaderBuilder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+}
+impl TimeoutInputCollectionTerminalReaderBuilder {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// Use this endpoint to complete an input collection with a timeout error on a simulated reader.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct TimeoutInputCollectionTerminalReader {
+    inner: TimeoutInputCollectionTerminalReaderBuilder,
+    reader: String,
+}
+impl TimeoutInputCollectionTerminalReader {
+    /// Construct a new `TimeoutInputCollectionTerminalReader`.
+    pub fn new(reader: impl Into<String>) -> Self {
+        Self { reader: reader.into(), inner: TimeoutInputCollectionTerminalReaderBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+}
+impl TimeoutInputCollectionTerminalReader {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for TimeoutInputCollectionTerminalReader {
+    type Output = stripe_terminal::TerminalReader;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = &self.reader;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/test_helpers/terminal/readers/{reader}/timeout_input_collection"),
         )
         .form(&self.inner)
     }

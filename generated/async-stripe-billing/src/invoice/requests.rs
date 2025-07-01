@@ -5513,6 +5513,76 @@ impl StripeRequest for AddLinesInvoice {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+struct AttachPaymentInvoiceBuilder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_intent: Option<String>,
+}
+impl AttachPaymentInvoiceBuilder {
+    fn new() -> Self {
+        Self { expand: None, payment_intent: None }
+    }
+}
+/// Attaches a PaymentIntent or an Out of Band Payment to the invoice, adding it to the list of `payments`.
+///
+/// For the PaymentIntent, when the PaymentIntent’s status changes to `succeeded`, the payment is credited.
+/// to the invoice, increasing its `amount_paid`. When the invoice is fully paid, the
+/// invoice’s status becomes `paid`.
+///
+/// If the PaymentIntent’s status is already `succeeded` when it’s attached, it’s
+/// credited to the invoice immediately.
+///
+/// See: [Partial payments](https://stripe.com/docs/invoicing/partial-payments) to learn more.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct AttachPaymentInvoice {
+    inner: AttachPaymentInvoiceBuilder,
+    invoice: stripe_shared::InvoiceId,
+}
+impl AttachPaymentInvoice {
+    /// Construct a new `AttachPaymentInvoice`.
+    pub fn new(invoice: impl Into<stripe_shared::InvoiceId>) -> Self {
+        Self { invoice: invoice.into(), inner: AttachPaymentInvoiceBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+    /// The ID of the PaymentIntent to attach to the invoice.
+    pub fn payment_intent(mut self, payment_intent: impl Into<String>) -> Self {
+        self.inner.payment_intent = Some(payment_intent.into());
+        self
+    }
+}
+impl AttachPaymentInvoice {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for AttachPaymentInvoice {
+    type Output = stripe_shared::Invoice;
+
+    fn build(&self) -> RequestBuilder {
+        let invoice = &self.invoice;
+        RequestBuilder::new(StripeMethod::Post, format!("/invoices/{invoice}/attach_payment"))
+            .form(&self.inner)
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
 struct FinalizeInvoiceInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     auto_advance: Option<bool>,
@@ -7824,6 +7894,10 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<CreatePreviewInvoiceScheduleDetailsPhasesBillingCycleAnchor>,
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// Pass an empty string to remove previously-defined thresholds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<CreatePreviewInvoiceScheduleDetailsPhasesBillingThresholds>,
     /// Either `charge_automatically`, or `send_invoice`.
     /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
@@ -7875,10 +7949,8 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
-    /// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
-    /// The default value is `create_prorations`.
-    /// This setting controls prorations when a phase is started asynchronously and it is persisted as a field on the phase.
-    /// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration of the current phase.
+    /// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+    /// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<CreatePreviewInvoiceScheduleDetailsPhasesProrationBehavior>,
     /// The date at which this phase of the subscription schedule starts or `now`.
@@ -7903,6 +7975,7 @@ impl CreatePreviewInvoiceScheduleDetailsPhases {
             application_fee_percent: None,
             automatic_tax: None,
             billing_cycle_anchor: None,
+            billing_thresholds: None,
             collection_method: None,
             currency: None,
             default_payment_method: None,
@@ -8210,6 +8283,28 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceScheduleDetailsPhasesB
         })
     }
 }
+/// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+/// Pass an empty string to remove previously-defined thresholds.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesBillingThresholds {
+    /// Monetary threshold that triggers the subscription to advance to a new billing period
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_gte: Option<i64>,
+    /// Indicates if the `billing_cycle_anchor` should be reset when a threshold is reached.
+    /// If true, `billing_cycle_anchor` will be updated to the date/time the threshold was last reached; otherwise, the value will remain unchanged.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reset_billing_cycle_anchor: Option<bool>,
+}
+impl CreatePreviewInvoiceScheduleDetailsPhasesBillingThresholds {
+    pub fn new() -> Self {
+        Self { amount_gte: None, reset_billing_cycle_anchor: None }
+    }
+}
+impl Default for CreatePreviewInvoiceScheduleDetailsPhasesBillingThresholds {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// The date at which this phase of the subscription schedule ends.
 /// If set, `iterations` must not be set.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -8322,6 +8417,10 @@ impl<'de> serde::Deserialize<'de>
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceScheduleDetailsPhasesItems {
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// Pass an empty string to remove previously-defined thresholds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
@@ -8353,6 +8452,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesItems {
 impl CreatePreviewInvoiceScheduleDetailsPhasesItems {
     pub fn new() -> Self {
         Self {
+            billing_thresholds: None,
             discounts: None,
             metadata: None,
             plan: None,
@@ -8554,10 +8654,8 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceDataTaxBehavior"))
     }
 }
-/// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
-/// The default value is `create_prorations`.
-/// This setting controls prorations when a phase is started asynchronously and it is persisted as a field on the phase.
-/// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration of the current phase.
+/// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+/// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePreviewInvoiceScheduleDetailsPhasesProrationBehavior {
     AlwaysInvoice,
@@ -8729,6 +8827,8 @@ pub struct CreatePreviewInvoiceSubscriptionDetails {
     pub cancel_at: Option<stripe_types::Timestamp>,
     /// Indicate whether this subscription should cancel at the end of the current period (`current_period_end`).
     /// Defaults to `false`.
+    /// This param will be removed in a future API version.
+    /// Please use `cancel_at` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cancel_at_period_end: Option<bool>,
     /// This simulates the subscription being canceled or expired immediately.
@@ -8798,6 +8898,10 @@ pub enum CreatePreviewInvoiceSubscriptionDetailsBillingCycleAnchor {
 /// A list of up to 20 subscription items, each with an attached price.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceSubscriptionDetailsItems {
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    /// Pass an empty string to remove previously-defined thresholds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// Delete all usage for a given subscription item.
     /// You must pass this when deleting a usage records subscription item.
     /// `clear_usage` has no effect if the plan has a billing meter attached.
@@ -8842,6 +8946,7 @@ pub struct CreatePreviewInvoiceSubscriptionDetailsItems {
 impl CreatePreviewInvoiceSubscriptionDetailsItems {
     pub fn new() -> Self {
         Self {
+            billing_thresholds: None,
             clear_usage: None,
             deleted: None,
             discounts: None,
@@ -9173,14 +9278,14 @@ pub enum CreatePreviewInvoiceSubscriptionDetailsTrialEnd {
 /// This will show you all the charges that are pending, including subscription renewal charges, invoice item charges, etc.
 /// It will also show you any discounts that are applicable to the invoice.
 ///
+/// You can also preview the effects of creating or updating a subscription or subscription schedule, including a preview of any prorations that will take place.
+/// To ensure that the actual proration is calculated exactly the same as the previewed proration, you should pass the `subscription_details.proration_date` parameter when doing the actual subscription update.
+///
+/// The recommended way to get only the prorations being previewed on the invoice is to consider line items where `parent.subscription_item_details.proration` is `true`.
+///
 /// Note that when you are viewing an upcoming invoice, you are simply viewing a preview – the invoice has not yet been created.
 /// As such, the upcoming invoice will not show up in invoice listing calls, and you cannot use the API to pay or edit the invoice.
 /// If you want to change the amount that your customer will be billed, you can add, remove, or update pending invoice items, or update the customer’s discount.
-///
-/// You can preview the effects of updating a subscription, including a preview of what proration will take place.
-/// To ensure that the actual proration is calculated exactly the same as the previewed proration, you should pass the `subscription_details.proration_date` parameter when doing the actual subscription update.
-/// The recommended way to get only the prorations being previewed is to consider only proration line items where `period[start]` is equal to the `subscription_details.proration_date` value passed in the request.
-///
 ///
 /// Note: Currency conversion calculations use the latest exchange rates.
 /// Exchange rates may vary between the time of the preview and the time of the actual invoice creation.
@@ -9473,6 +9578,16 @@ impl PricingParam {
 impl Default for PricingParam {
     fn default() -> Self {
         Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct ItemBillingThresholdsParam {
+    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
+    pub usage_gte: i64,
+}
+impl ItemBillingThresholdsParam {
+    pub fn new(usage_gte: impl Into<i64>) -> Self {
+        Self { usage_gte: usage_gte.into() }
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]

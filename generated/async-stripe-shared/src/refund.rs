@@ -207,7 +207,7 @@ const _: () = {
                 self.balance_transaction.take(),
                 self.charge.take(),
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.description.take(),
                 self.destination_details.take(),
                 self.failure_balance_transaction.take(),
@@ -218,7 +218,7 @@ const _: () = {
                 self.next_action.take(),
                 self.payment_intent.take(),
                 self.pending_reason,
-                self.presentment_details,
+                self.presentment_details.take(),
                 self.reason,
                 self.receipt_number.take(),
                 self.source_transfer_reversal.take(),
@@ -254,7 +254,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

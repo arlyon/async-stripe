@@ -78,16 +78,19 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_subtotal), Some(amount_total), Some(fx_rate), Some(source_currency)) =
-                (self.amount_subtotal, self.amount_total, self.fx_rate.take(), self.source_currency)
-            else {
+            let (Some(amount_subtotal), Some(amount_total), Some(fx_rate), Some(source_currency)) = (
+                self.amount_subtotal,
+                self.amount_total,
+                self.fx_rate.take(),
+                self.source_currency.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { amount_subtotal, amount_total, fx_rate, source_currency })
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

@@ -85,7 +85,7 @@ const _: () = {
             let (Some(amount), Some(application), Some(currency), Some(description), Some(type_)) = (
                 self.amount,
                 self.application.take(),
-                self.currency,
+                self.currency.take(),
                 self.description.take(),
                 self.type_.take(),
             ) else {
@@ -95,7 +95,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

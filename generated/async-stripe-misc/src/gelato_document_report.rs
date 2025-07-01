@@ -23,11 +23,17 @@ pub struct GelatoDocumentReport {
     pub last_name: Option<String>,
     /// Document ID number.
     pub number: Option<String>,
+    /// Sex of the person in the document.
+    pub sex: Option<GelatoDocumentReportSex>,
     /// Status of this `document` check.
     pub status: GelatoDocumentReportStatus,
     /// Type of the document.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: Option<GelatoDocumentReportType>,
+    /// Place of birth as it appears in the document.
+    pub unparsed_place_of_birth: Option<String>,
+    /// Sex as it appears in the document.
+    pub unparsed_sex: Option<String>,
 }
 #[doc(hidden)]
 pub struct GelatoDocumentReportBuilder {
@@ -41,8 +47,11 @@ pub struct GelatoDocumentReportBuilder {
     issuing_country: Option<Option<String>>,
     last_name: Option<Option<String>>,
     number: Option<Option<String>>,
+    sex: Option<Option<GelatoDocumentReportSex>>,
     status: Option<GelatoDocumentReportStatus>,
     type_: Option<Option<GelatoDocumentReportType>>,
+    unparsed_place_of_birth: Option<Option<String>>,
+    unparsed_sex: Option<Option<String>>,
 }
 
 #[allow(
@@ -95,8 +104,11 @@ const _: () = {
                 "issuing_country" => Deserialize::begin(&mut self.issuing_country),
                 "last_name" => Deserialize::begin(&mut self.last_name),
                 "number" => Deserialize::begin(&mut self.number),
+                "sex" => Deserialize::begin(&mut self.sex),
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
+                "unparsed_place_of_birth" => Deserialize::begin(&mut self.unparsed_place_of_birth),
+                "unparsed_sex" => Deserialize::begin(&mut self.unparsed_sex),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -114,8 +126,11 @@ const _: () = {
                 issuing_country: Deserialize::default(),
                 last_name: Deserialize::default(),
                 number: Deserialize::default(),
+                sex: Deserialize::default(),
                 status: Deserialize::default(),
                 type_: Deserialize::default(),
+                unparsed_place_of_birth: Deserialize::default(),
+                unparsed_sex: Deserialize::default(),
             }
         }
 
@@ -131,8 +146,11 @@ const _: () = {
                 Some(issuing_country),
                 Some(last_name),
                 Some(number),
+                Some(sex),
                 Some(status),
                 Some(type_),
+                Some(unparsed_place_of_birth),
+                Some(unparsed_sex),
             ) = (
                 self.address.take(),
                 self.dob,
@@ -144,8 +162,11 @@ const _: () = {
                 self.issuing_country.take(),
                 self.last_name.take(),
                 self.number.take(),
+                self.sex,
                 self.status,
                 self.type_,
+                self.unparsed_place_of_birth.take(),
+                self.unparsed_sex.take(),
             )
             else {
                 return None;
@@ -161,13 +182,16 @@ const _: () = {
                 issuing_country,
                 last_name,
                 number,
+                sex,
                 status,
                 type_,
+                unparsed_place_of_birth,
+                unparsed_sex,
             })
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -200,8 +224,13 @@ const _: () = {
                     "issuing_country" => b.issuing_country = FromValueOpt::from_value(v),
                     "last_name" => b.last_name = FromValueOpt::from_value(v),
                     "number" => b.number = FromValueOpt::from_value(v),
+                    "sex" => b.sex = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
+                    "unparsed_place_of_birth" => {
+                        b.unparsed_place_of_birth = FromValueOpt::from_value(v)
+                    }
+                    "unparsed_sex" => b.unparsed_sex = FromValueOpt::from_value(v),
 
                     _ => {}
                 }
@@ -210,6 +239,83 @@ const _: () = {
         }
     }
 };
+/// Sex of the person in the document.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum GelatoDocumentReportSex {
+    Redacted,
+    Female,
+    Male,
+    Unknown,
+}
+impl GelatoDocumentReportSex {
+    pub fn as_str(self) -> &'static str {
+        use GelatoDocumentReportSex::*;
+        match self {
+            Redacted => "[redacted]",
+            Female => "female",
+            Male => "male",
+            Unknown => "unknown",
+        }
+    }
+}
+
+impl std::str::FromStr for GelatoDocumentReportSex {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use GelatoDocumentReportSex::*;
+        match s {
+            "[redacted]" => Ok(Redacted),
+            "female" => Ok(Female),
+            "male" => Ok(Male),
+            "unknown" => Ok(Unknown),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for GelatoDocumentReportSex {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for GelatoDocumentReportSex {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for GelatoDocumentReportSex {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for GelatoDocumentReportSex {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<GelatoDocumentReportSex> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(GelatoDocumentReportSex::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(GelatoDocumentReportSex);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for GelatoDocumentReportSex {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for GelatoDocumentReportSex"))
+    }
+}
 /// Status of this `document` check.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum GelatoDocumentReportStatus {

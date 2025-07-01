@@ -115,7 +115,7 @@ const _: () = {
             ) = (
                 self.columns.take(),
                 self.connected_account.take(),
-                self.currency,
+                self.currency.take(),
                 self.interval_end,
                 self.interval_start,
                 self.payout.take(),
@@ -138,7 +138,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

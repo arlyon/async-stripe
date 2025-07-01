@@ -122,7 +122,7 @@ const _: () = {
                 self.blocked_categories.take(),
                 self.blocked_merchant_countries.take(),
                 self.spending_limits.take(),
-                self.spending_limits_currency,
+                self.spending_limits_currency.take(),
             )
             else {
                 return None;
@@ -138,7 +138,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

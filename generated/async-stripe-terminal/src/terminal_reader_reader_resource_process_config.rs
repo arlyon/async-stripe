@@ -1,10 +1,12 @@
 /// Represents a per-transaction override of a reader configuration
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceProcessConfig {
     /// Enable customer initiated cancellation when processing this payment.
     pub enable_customer_cancellation: Option<bool>,
+    /// If the customer does not abandon authenticating the payment, they will be redirected to this specified URL after completion.
+    pub return_url: Option<String>,
     /// Override showing a tipping selection screen on this transaction.
     pub skip_tipping: Option<bool>,
     pub tipping: Option<stripe_terminal::TerminalReaderReaderResourceTippingConfig>,
@@ -12,6 +14,7 @@ pub struct TerminalReaderReaderResourceProcessConfig {
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceProcessConfigBuilder {
     enable_customer_cancellation: Option<Option<bool>>,
+    return_url: Option<Option<String>>,
     skip_tipping: Option<Option<bool>>,
     tipping: Option<Option<stripe_terminal::TerminalReaderReaderResourceTippingConfig>>,
 }
@@ -59,6 +62,7 @@ const _: () = {
                 "enable_customer_cancellation" => {
                     Deserialize::begin(&mut self.enable_customer_cancellation)
                 }
+                "return_url" => Deserialize::begin(&mut self.return_url),
                 "skip_tipping" => Deserialize::begin(&mut self.skip_tipping),
                 "tipping" => Deserialize::begin(&mut self.tipping),
 
@@ -69,22 +73,32 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 enable_customer_cancellation: Deserialize::default(),
+                return_url: Deserialize::default(),
                 skip_tipping: Deserialize::default(),
                 tipping: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enable_customer_cancellation), Some(skip_tipping), Some(tipping)) =
-                (self.enable_customer_cancellation, self.skip_tipping, self.tipping)
+            let (
+                Some(enable_customer_cancellation),
+                Some(return_url),
+                Some(skip_tipping),
+                Some(tipping),
+            ) = (
+                self.enable_customer_cancellation,
+                self.return_url.take(),
+                self.skip_tipping,
+                self.tipping,
+            )
             else {
                 return None;
             };
-            Some(Self::Out { enable_customer_cancellation, skip_tipping, tipping })
+            Some(Self::Out { enable_customer_cancellation, return_url, skip_tipping, tipping })
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -110,6 +124,7 @@ const _: () = {
                     "enable_customer_cancellation" => {
                         b.enable_customer_cancellation = FromValueOpt::from_value(v)
                     }
+                    "return_url" => b.return_url = FromValueOpt::from_value(v),
                     "skip_tipping" => b.skip_tipping = FromValueOpt::from_value(v),
                     "tipping" => b.tipping = FromValueOpt::from_value(v),
 

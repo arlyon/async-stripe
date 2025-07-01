@@ -224,7 +224,7 @@ const _: () = {
                 self.amount,
                 self.cancelable,
                 self.created,
-                self.currency,
+                self.currency.take(),
                 self.customer.take(),
                 self.description.take(),
                 self.destination_payment_method.take(),
@@ -272,7 +272,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

@@ -10,7 +10,7 @@ pub struct TerminalReader {
     pub action: Option<stripe_terminal::TerminalReaderReaderResourceReaderAction>,
     /// The current software version of the reader.
     pub device_sw_version: Option<String>,
-    /// Type of reader, one of `bbpos_wisepad3`, `stripe_m2`, `stripe_s700`, `bbpos_chipper2x`, `bbpos_wisepos_e`, `verifone_P400`, `simulated_wisepos_e`, or `mobile_phone_reader`.
+    /// Device type of the reader.
     pub device_type: stripe_terminal::TerminalReaderDeviceType,
     /// Unique identifier for the object.
     pub id: stripe_terminal::TerminalReaderId,
@@ -163,7 +163,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -243,6 +243,7 @@ pub enum TerminalReaderDeviceType {
     BbposWisepad3,
     BbposWiseposE,
     MobilePhoneReader,
+    SimulatedStripeS700,
     SimulatedWiseposE,
     StripeM2,
     StripeS700,
@@ -256,6 +257,7 @@ impl TerminalReaderDeviceType {
             BbposWisepad3 => "bbpos_wisepad3",
             BbposWiseposE => "bbpos_wisepos_e",
             MobilePhoneReader => "mobile_phone_reader",
+            SimulatedStripeS700 => "simulated_stripe_s700",
             SimulatedWiseposE => "simulated_wisepos_e",
             StripeM2 => "stripe_m2",
             StripeS700 => "stripe_s700",
@@ -273,6 +275,7 @@ impl std::str::FromStr for TerminalReaderDeviceType {
             "bbpos_wisepad3" => Ok(BbposWisepad3),
             "bbpos_wisepos_e" => Ok(BbposWiseposE),
             "mobile_phone_reader" => Ok(MobilePhoneReader),
+            "simulated_stripe_s700" => Ok(SimulatedStripeS700),
             "simulated_wisepos_e" => Ok(SimulatedWiseposE),
             "stripe_m2" => Ok(StripeM2),
             "stripe_s700" => Ok(StripeS700),

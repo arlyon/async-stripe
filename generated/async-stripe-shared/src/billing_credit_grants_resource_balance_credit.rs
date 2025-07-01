@@ -80,7 +80,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(amount), Some(credits_application_invoice_voided), Some(type_)) =
-                (self.amount, self.credits_application_invoice_voided.take(), self.type_)
+                (self.amount.take(), self.credits_application_invoice_voided.take(), self.type_)
             else {
                 return None;
             };
@@ -88,7 +88,7 @@ const _: () = {
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }

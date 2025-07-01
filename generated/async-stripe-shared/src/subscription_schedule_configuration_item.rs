@@ -3,6 +3,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionScheduleConfigurationItem {
+    /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
+    pub billing_thresholds: Option<stripe_shared::SubscriptionItemBillingThresholds>,
     /// The discounts applied to the subscription item.
     /// Subscription item discounts are applied before subscription discounts.
     /// Use `expand[]=discounts` to expand each discount.
@@ -22,6 +24,7 @@ pub struct SubscriptionScheduleConfigurationItem {
 }
 #[doc(hidden)]
 pub struct SubscriptionScheduleConfigurationItemBuilder {
+    billing_thresholds: Option<Option<stripe_shared::SubscriptionItemBillingThresholds>>,
     discounts: Option<Vec<stripe_shared::DiscountsResourceStackableDiscount>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     plan: Option<stripe_types::Expandable<stripe_shared::Plan>>,
@@ -70,6 +73,7 @@ const _: () = {
         type Out = SubscriptionScheduleConfigurationItem;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
                 "discounts" => Deserialize::begin(&mut self.discounts),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "plan" => Deserialize::begin(&mut self.plan),
@@ -83,6 +87,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                billing_thresholds: Deserialize::default(),
                 discounts: Deserialize::default(),
                 metadata: Deserialize::default(),
                 plan: Deserialize::default(),
@@ -94,6 +99,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(billing_thresholds),
                 Some(discounts),
                 Some(metadata),
                 Some(plan),
@@ -101,6 +107,7 @@ const _: () = {
                 Some(quantity),
                 Some(tax_rates),
             ) = (
+                self.billing_thresholds,
                 self.discounts.take(),
                 self.metadata.take(),
                 self.plan.take(),
@@ -111,11 +118,19 @@ const _: () = {
             else {
                 return None;
             };
-            Some(Self::Out { discounts, metadata, plan, price, quantity, tax_rates })
+            Some(Self::Out {
+                billing_thresholds,
+                discounts,
+                metadata,
+                plan,
+                price,
+                quantity,
+                tax_rates,
+            })
         }
     }
 
-    impl<'a> Map for Builder<'a> {
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             self.builder.key(k)
         }
@@ -138,6 +153,7 @@ const _: () = {
             let mut b = SubscriptionScheduleConfigurationItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
                     "discounts" => b.discounts = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "plan" => b.plan = FromValueOpt::from_value(v),
