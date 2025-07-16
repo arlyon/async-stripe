@@ -11,7 +11,7 @@ Want to see a changelog of the Stripe API? [Look no further](https://stripe.com/
 
 > **Note**
 >
-> We are currently working on a major rewrite of the library in the `next` branch. This rewrite aims to make the library more efficient and easier to use. Some lovely numbers from the rewrite:
+> We are currently working on a major rewrite of the library in the [`next` branch](https://github.com/arlyon/async-stripe/tree/next). This rewrite aims to make the library more efficient and easier to use. Some lovely numbers from the rewrite:
 >
 > - A clean release build of `examples/endpoints` goes from ~4m to 50s with `min-ser` enabled.
 > - The actual time to build just the binary goes from 75s to 7s, making incremental builds for code depending on async-stripe much faster.
