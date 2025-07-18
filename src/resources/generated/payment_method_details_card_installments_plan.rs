@@ -15,7 +15,7 @@ pub struct PaymentMethodDetailsCardInstallmentsPlan {
     /// One of `month`.
     pub interval: Option<PaymentMethodDetailsCardInstallmentsPlanInterval>,
 
-    /// Type of installment plan, one of `fixed_count`.
+    /// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
     #[serde(rename = "type")]
     pub type_: PaymentMethodDetailsCardInstallmentsPlanType,
 }
@@ -56,13 +56,17 @@ impl std::default::Default for PaymentMethodDetailsCardInstallmentsPlanInterval 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodDetailsCardInstallmentsPlanType {
+    Bonus,
     FixedCount,
+    Revolving,
 }
 
 impl PaymentMethodDetailsCardInstallmentsPlanType {
     pub fn as_str(self) -> &'static str {
         match self {
+            PaymentMethodDetailsCardInstallmentsPlanType::Bonus => "bonus",
             PaymentMethodDetailsCardInstallmentsPlanType::FixedCount => "fixed_count",
+            PaymentMethodDetailsCardInstallmentsPlanType::Revolving => "revolving",
         }
     }
 }
@@ -80,6 +84,6 @@ impl std::fmt::Display for PaymentMethodDetailsCardInstallmentsPlanType {
 }
 impl std::default::Default for PaymentMethodDetailsCardInstallmentsPlanType {
     fn default() -> Self {
-        Self::FixedCount
+        Self::Bonus
     }
 }
