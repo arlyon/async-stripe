@@ -143,6 +143,14 @@ impl TryFrom<String> for IdempotencyKey {
     }
 }
 
+#[cfg(feature = "uuid")]
+impl From<uuid::Uuid> for IdempotencyKey {
+    #[inline]
+    fn from(value: uuid::Uuid) -> Self {
+        Self(value.to_string())
+    }
+}
+
 fn calculate_backoff(retry_count: u32) -> Duration {
     Duration::from_secs(2_u64.pow(retry_count))
 }
