@@ -53,7 +53,9 @@ where
 
     fn into_parts(self) -> ListParts<Self::Data> {
         ListParts {
-            total_count: self.total_count,
+            // total_count is not present in `List`, but still present in `ListParts` because the stripe API
+            // claims search pagination can still include `total_count` if requested
+            total_count: None,
             url: self.url,
             data: self.data,
             has_more: self.has_more,
@@ -61,12 +63,7 @@ where
     }
 
     fn from_parts(parts: ListParts<Self::Data>) -> Self {
-        Self {
-            data: parts.data,
-            has_more: parts.has_more,
-            total_count: parts.total_count,
-            url: parts.url,
-        }
+        Self { data: parts.data, has_more: parts.has_more, url: parts.url }
     }
 
     fn update_params(&mut self, params: &mut Value) {
@@ -186,7 +183,7 @@ impl<T> ListPaginator<List<T>> {
     /// to implement `PaginationExt`. Not part of the public API.
     #[doc(hidden)]
     pub fn new_list(url: impl Into<String>, params: impl Serialize) -> Self {
-        let page = List { data: vec![], has_more: true, total_count: None, url: url.into() };
+        let page = List { data: vec![], has_more: true, url: url.into() };
         Self {
             page,
             params: serde_json::to_value(params)
