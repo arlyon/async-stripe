@@ -202,6 +202,8 @@ impl StripeRequest for RetrieveSubscriptionSchedule {
 #[derive(Clone, Debug, serde::Serialize)]
 struct CreateSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    billing_mode: Option<CreateSubscriptionScheduleBillingMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     default_settings: Option<CreateSubscriptionScheduleDefaultSettings>,
@@ -221,6 +223,7 @@ struct CreateSubscriptionScheduleBuilder {
 impl CreateSubscriptionScheduleBuilder {
     fn new() -> Self {
         Self {
+            billing_mode: None,
             customer: None,
             default_settings: None,
             end_behavior: None,
@@ -230,6 +233,74 @@ impl CreateSubscriptionScheduleBuilder {
             phases: None,
             start_date: None,
         }
+    }
+}
+/// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionScheduleBillingMode {
+    /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+    #[serde(rename = "type")]
+    pub type_: CreateSubscriptionScheduleBillingModeType,
+}
+impl CreateSubscriptionScheduleBillingMode {
+    pub fn new(type_: impl Into<CreateSubscriptionScheduleBillingModeType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSubscriptionScheduleBillingModeType {
+    Classic,
+    Flexible,
+}
+impl CreateSubscriptionScheduleBillingModeType {
+    pub fn as_str(self) -> &'static str {
+        use CreateSubscriptionScheduleBillingModeType::*;
+        match self {
+            Classic => "classic",
+            Flexible => "flexible",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionScheduleBillingModeType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionScheduleBillingModeType::*;
+        match s {
+            "classic" => Ok(Classic),
+            "flexible" => Ok(Flexible),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionScheduleBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSubscriptionScheduleBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSubscriptionScheduleBillingModeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionScheduleBillingModeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateSubscriptionScheduleBillingModeType")
+        })
     }
 }
 /// Object representing the subscription schedule's default settings.
@@ -666,6 +737,9 @@ pub struct CreateSubscriptionSchedulePhases {
     /// Pass an empty string to avoid inheriting any discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
+    /// The number of intervals the phase should last. If set, `end_date` must not be set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<CreateSubscriptionSchedulePhasesDuration>,
     /// The date at which this phase of the subscription schedule ends.
     /// If set, `iterations` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -678,6 +752,8 @@ pub struct CreateSubscriptionSchedulePhases {
     /// Integer representing the multiplier applied to the price interval.
     /// For example, `iterations=2` applied to a price with `interval=month` and `interval_count=3` results in a phase of duration `2 * 3 months = 6 months`.
     /// If set, `end_date` must not be set.
+    /// This parameter is deprecated and will be removed in a future version.
+    /// Use `duration` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub iterations: Option<i64>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a phase.
@@ -718,6 +794,7 @@ impl CreateSubscriptionSchedulePhases {
             default_tax_rates: None,
             description: None,
             discounts: None,
+            duration: None,
             end_date: None,
             invoice_settings: None,
             items: items.into(),
@@ -738,6 +815,16 @@ pub struct CreateSubscriptionSchedulePhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The period associated with this invoice item.
+    /// Defaults to the period of the underlying subscription that surrounds the start of the phase.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub period: Option<CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod>,
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
@@ -754,12 +841,197 @@ pub struct CreateSubscriptionSchedulePhasesAddInvoiceItems {
 }
 impl CreateSubscriptionSchedulePhasesAddInvoiceItems {
     pub fn new() -> Self {
-        Self { discounts: None, price: None, price_data: None, quantity: None, tax_rates: None }
+        Self {
+            discounts: None,
+            metadata: None,
+            period: None,
+            price: None,
+            price_data: None,
+            quantity: None,
+            tax_rates: None,
+        }
     }
 }
 impl Default for CreateSubscriptionSchedulePhasesAddInvoiceItems {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// The period associated with this invoice item.
+/// Defaults to the period of the underlying subscription that surrounds the start of the phase.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
+    /// End of the invoice item period.
+    pub end: CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd,
+    /// Start of the invoice item period.
+    pub start: CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart,
+}
+impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
+    pub fn new(
+        end: impl Into<CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd>,
+        start: impl Into<CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart>,
+    ) -> Self {
+        Self { end: end.into(), start: start.into() }
+    }
+}
+/// End of the invoice item period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
+    /// A precise Unix timestamp for the end of the invoice item period.
+    /// Must be greater than or equal to `period.start`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// Select how to calculate the end of the invoice item period.
+    #[serde(rename = "type")]
+    pub type_: CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType,
+}
+impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
+    pub fn new(
+        type_: impl Into<CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType>,
+    ) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+/// Select how to calculate the end of the invoice item period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    MinItemPeriodEnd,
+    PhaseEnd,
+    Timestamp,
+}
+impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    pub fn as_str(self) -> &'static str {
+        use CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType::*;
+        match self {
+            MinItemPeriodEnd => "min_item_period_end",
+            PhaseEnd => "phase_end",
+            Timestamp => "timestamp",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType::*;
+        match s {
+            "min_item_period_end" => Ok(MinItemPeriodEnd),
+            "phase_end" => Ok(PhaseEnd),
+            "timestamp" => Ok(Timestamp),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType",
+            )
+        })
+    }
+}
+/// Start of the invoice item period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
+    /// A precise Unix timestamp for the start of the invoice item period.
+    /// Must be less than or equal to `period.end`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// Select how to calculate the start of the invoice item period.
+    #[serde(rename = "type")]
+    pub type_: CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType,
+}
+impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
+    pub fn new(
+        type_: impl Into<CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType>,
+    ) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+/// Select how to calculate the start of the invoice item period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    MaxItemPeriodStart,
+    PhaseStart,
+    Timestamp,
+}
+impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    pub fn as_str(self) -> &'static str {
+        use CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType::*;
+        match self {
+            MaxItemPeriodStart => "max_item_period_start",
+            PhaseStart => "phase_start",
+            Timestamp => "timestamp",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType::*;
+        match s {
+            "max_item_period_start" => Ok(MaxItemPeriodStart),
+            "phase_start" => Ok(PhaseStart),
+            "timestamp" => Ok(Timestamp),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType",
+            )
+        })
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
@@ -1068,6 +1340,84 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesCollection
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for CreateSubscriptionSchedulePhasesCollectionMethod",
+            )
+        })
+    }
+}
+/// The number of intervals the phase should last. If set, `end_date` must not be set.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionSchedulePhasesDuration {
+    /// Specifies phase duration. Either `day`, `week`, `month` or `year`.
+    pub interval: CreateSubscriptionSchedulePhasesDurationInterval,
+    /// The multiplier applied to the interval.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+impl CreateSubscriptionSchedulePhasesDuration {
+    pub fn new(interval: impl Into<CreateSubscriptionSchedulePhasesDurationInterval>) -> Self {
+        Self { interval: interval.into(), interval_count: None }
+    }
+}
+/// Specifies phase duration. Either `day`, `week`, `month` or `year`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSubscriptionSchedulePhasesDurationInterval {
+    Day,
+    Month,
+    Week,
+    Year,
+}
+impl CreateSubscriptionSchedulePhasesDurationInterval {
+    pub fn as_str(self) -> &'static str {
+        use CreateSubscriptionSchedulePhasesDurationInterval::*;
+        match self {
+            Day => "day",
+            Month => "month",
+            Week => "week",
+            Year => "year",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionSchedulePhasesDurationInterval {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionSchedulePhasesDurationInterval::*;
+        match s {
+            "day" => Ok(Day),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            "year" => Ok(Year),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionSchedulePhasesDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePhasesDurationInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesDurationInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionSchedulePhasesDurationInterval",
             )
         })
     }
@@ -1498,6 +1848,14 @@ impl CreateSubscriptionSchedule {
     /// Construct a new `CreateSubscriptionSchedule`.
     pub fn new() -> Self {
         Self { inner: CreateSubscriptionScheduleBuilder::new() }
+    }
+    /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
+    pub fn billing_mode(
+        mut self,
+        billing_mode: impl Into<CreateSubscriptionScheduleBillingMode>,
+    ) -> Self {
+        self.inner.billing_mode = Some(billing_mode.into());
+        self
     }
     /// The identifier of the customer to create the subscription schedule for.
     pub fn customer(mut self, customer: impl Into<String>) -> Self {
@@ -2057,6 +2415,9 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// Pass an empty string to avoid inheriting any discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
+    /// The number of intervals the phase should last. If set, `end_date` must not be set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<UpdateSubscriptionSchedulePhasesDuration>,
     /// The date at which this phase of the subscription schedule ends.
     /// If set, `iterations` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2069,6 +2430,8 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// Integer representing the multiplier applied to the price interval.
     /// For example, `iterations=2` applied to a price with `interval=month` and `interval_count=3` results in a phase of duration `2 * 3 months = 6 months`.
     /// If set, `end_date` must not be set.
+    /// This parameter is deprecated and will be removed in a future version.
+    /// Use `duration` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub iterations: Option<i64>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a phase.
@@ -2113,6 +2476,7 @@ impl UpdateSubscriptionSchedulePhases {
             default_tax_rates: None,
             description: None,
             discounts: None,
+            duration: None,
             end_date: None,
             invoice_settings: None,
             items: items.into(),
@@ -2134,6 +2498,16 @@ pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The period associated with this invoice item.
+    /// Defaults to the period of the underlying subscription that surrounds the start of the phase.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub period: Option<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod>,
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
@@ -2150,12 +2524,197 @@ pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItems {
 }
 impl UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     pub fn new() -> Self {
-        Self { discounts: None, price: None, price_data: None, quantity: None, tax_rates: None }
+        Self {
+            discounts: None,
+            metadata: None,
+            period: None,
+            price: None,
+            price_data: None,
+            quantity: None,
+            tax_rates: None,
+        }
     }
 }
 impl Default for UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// The period associated with this invoice item.
+/// Defaults to the period of the underlying subscription that surrounds the start of the phase.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
+    /// End of the invoice item period.
+    pub end: UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd,
+    /// Start of the invoice item period.
+    pub start: UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart,
+}
+impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
+    pub fn new(
+        end: impl Into<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd>,
+        start: impl Into<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart>,
+    ) -> Self {
+        Self { end: end.into(), start: start.into() }
+    }
+}
+/// End of the invoice item period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
+    /// A precise Unix timestamp for the end of the invoice item period.
+    /// Must be greater than or equal to `period.start`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// Select how to calculate the end of the invoice item period.
+    #[serde(rename = "type")]
+    pub type_: UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType,
+}
+impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
+    pub fn new(
+        type_: impl Into<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType>,
+    ) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+/// Select how to calculate the end of the invoice item period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    MinItemPeriodEnd,
+    PhaseEnd,
+    Timestamp,
+}
+impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    pub fn as_str(self) -> &'static str {
+        use UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType::*;
+        match self {
+            MinItemPeriodEnd => "min_item_period_end",
+            PhaseEnd => "phase_end",
+            Timestamp => "timestamp",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType::*;
+        match s {
+            "min_item_period_end" => Ok(MinItemPeriodEnd),
+            "phase_end" => Ok(PhaseEnd),
+            "timestamp" => Ok(Timestamp),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType",
+            )
+        })
+    }
+}
+/// Start of the invoice item period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
+    /// A precise Unix timestamp for the start of the invoice item period.
+    /// Must be less than or equal to `period.end`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// Select how to calculate the start of the invoice item period.
+    #[serde(rename = "type")]
+    pub type_: UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType,
+}
+impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
+    pub fn new(
+        type_: impl Into<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType>,
+    ) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+/// Select how to calculate the start of the invoice item period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    MaxItemPeriodStart,
+    PhaseStart,
+    Timestamp,
+}
+impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    pub fn as_str(self) -> &'static str {
+        use UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType::*;
+        match self {
+            MaxItemPeriodStart => "max_item_period_start",
+            PhaseStart => "phase_start",
+            Timestamp => "timestamp",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType::*;
+        match s {
+            "max_item_period_start" => Ok(MaxItemPeriodStart),
+            "phase_start" => Ok(PhaseStart),
+            "timestamp" => Ok(Timestamp),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType",
+            )
+        })
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
@@ -2464,6 +3023,84 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesCollection
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for UpdateSubscriptionSchedulePhasesCollectionMethod",
+            )
+        })
+    }
+}
+/// The number of intervals the phase should last. If set, `end_date` must not be set.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePhasesDuration {
+    /// Specifies phase duration. Either `day`, `week`, `month` or `year`.
+    pub interval: UpdateSubscriptionSchedulePhasesDurationInterval,
+    /// The multiplier applied to the interval.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+impl UpdateSubscriptionSchedulePhasesDuration {
+    pub fn new(interval: impl Into<UpdateSubscriptionSchedulePhasesDurationInterval>) -> Self {
+        Self { interval: interval.into(), interval_count: None }
+    }
+}
+/// Specifies phase duration. Either `day`, `week`, `month` or `year`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateSubscriptionSchedulePhasesDurationInterval {
+    Day,
+    Month,
+    Week,
+    Year,
+}
+impl UpdateSubscriptionSchedulePhasesDurationInterval {
+    pub fn as_str(self) -> &'static str {
+        use UpdateSubscriptionSchedulePhasesDurationInterval::*;
+        match self {
+            Day => "day",
+            Month => "month",
+            Week => "week",
+            Year => "year",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionSchedulePhasesDurationInterval {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionSchedulePhasesDurationInterval::*;
+        match s {
+            "day" => Ok(Day),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            "year" => Ok(Year),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionSchedulePhasesDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePhasesDurationInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesDurationInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionSchedulePhasesDurationInterval",
             )
         })
     }

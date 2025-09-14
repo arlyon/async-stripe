@@ -2,6 +2,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodOptionsPix {
+    /// Determines if the amount includes the IOF tax.
+    pub amount_includes_iof: Option<PaymentMethodOptionsPixAmountIncludesIof>,
     /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
     pub expires_after_seconds: Option<i64>,
     /// The timestamp at which the Pix expires.
@@ -18,6 +20,7 @@ pub struct PaymentMethodOptionsPix {
 }
 #[doc(hidden)]
 pub struct PaymentMethodOptionsPixBuilder {
+    amount_includes_iof: Option<Option<PaymentMethodOptionsPixAmountIncludesIof>>,
     expires_after_seconds: Option<Option<i64>>,
     expires_at: Option<Option<i64>>,
     setup_future_usage: Option<Option<PaymentMethodOptionsPixSetupFutureUsage>>,
@@ -63,6 +66,7 @@ const _: () = {
         type Out = PaymentMethodOptionsPix;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "amount_includes_iof" => Deserialize::begin(&mut self.amount_includes_iof),
                 "expires_after_seconds" => Deserialize::begin(&mut self.expires_after_seconds),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
@@ -73,6 +77,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                amount_includes_iof: Deserialize::default(),
                 expires_after_seconds: Deserialize::default(),
                 expires_at: Deserialize::default(),
                 setup_future_usage: Deserialize::default(),
@@ -80,12 +85,26 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(expires_after_seconds), Some(expires_at), Some(setup_future_usage)) =
-                (self.expires_after_seconds, self.expires_at, self.setup_future_usage)
+            let (
+                Some(amount_includes_iof),
+                Some(expires_after_seconds),
+                Some(expires_at),
+                Some(setup_future_usage),
+            ) = (
+                self.amount_includes_iof,
+                self.expires_after_seconds,
+                self.expires_at,
+                self.setup_future_usage,
+            )
             else {
                 return None;
             };
-            Some(Self::Out { expires_after_seconds, expires_at, setup_future_usage })
+            Some(Self::Out {
+                amount_includes_iof,
+                expires_after_seconds,
+                expires_at,
+                setup_future_usage,
+            })
         }
     }
 
@@ -112,6 +131,7 @@ const _: () = {
             let mut b = PaymentMethodOptionsPixBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "amount_includes_iof" => b.amount_includes_iof = FromValueOpt::from_value(v),
                     "expires_after_seconds" => {
                         b.expires_after_seconds = FromValueOpt::from_value(v)
                     }
@@ -125,6 +145,80 @@ const _: () = {
         }
     }
 };
+/// Determines if the amount includes the IOF tax.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum PaymentMethodOptionsPixAmountIncludesIof {
+    Always,
+    Never,
+}
+impl PaymentMethodOptionsPixAmountIncludesIof {
+    pub fn as_str(self) -> &'static str {
+        use PaymentMethodOptionsPixAmountIncludesIof::*;
+        match self {
+            Always => "always",
+            Never => "never",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentMethodOptionsPixAmountIncludesIof {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentMethodOptionsPixAmountIncludesIof::*;
+        match s {
+            "always" => Ok(Always),
+            "never" => Ok(Never),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for PaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentMethodOptionsPixAmountIncludesIof {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentMethodOptionsPixAmountIncludesIof {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsPixAmountIncludesIof> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentMethodOptionsPixAmountIncludesIof::from_str(s).map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsPixAmountIncludesIof);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsPixAmountIncludesIof {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentMethodOptionsPixAmountIncludesIof")
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.

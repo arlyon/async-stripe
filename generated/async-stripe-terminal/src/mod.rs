@@ -75,9 +75,25 @@ pub mod terminal_reader_reader_resource_choice;
 #[doc(inline)]
 pub use terminal_reader_reader_resource_choice::*;
 #[doc(hidden)]
+pub mod terminal_reader_reader_resource_collect_config;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_collect_config::*;
+#[doc(hidden)]
 pub mod terminal_reader_reader_resource_collect_inputs_action;
 #[doc(inline)]
 pub use terminal_reader_reader_resource_collect_inputs_action::*;
+#[doc(hidden)]
+pub mod terminal_reader_reader_resource_collect_payment_method_action;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_collect_payment_method_action::*;
+#[doc(hidden)]
+pub mod terminal_reader_reader_resource_confirm_config;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_confirm_config::*;
+#[doc(hidden)]
+pub mod terminal_reader_reader_resource_confirm_payment_intent_action;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_confirm_payment_intent_action::*;
 #[doc(hidden)]
 pub mod terminal_reader_reader_resource_custom_text;
 #[doc(inline)]

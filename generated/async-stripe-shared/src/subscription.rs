@@ -19,13 +19,12 @@ pub struct Subscription {
     /// The fixed values used to calculate the `billing_cycle_anchor`.
     pub billing_cycle_anchor_config:
         Option<stripe_shared::SubscriptionsResourceBillingCycleAnchorConfig>,
+    pub billing_mode: stripe_shared::SubscriptionsResourceBillingMode,
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     pub billing_thresholds: Option<stripe_shared::SubscriptionBillingThresholds>,
     /// A date in the future at which the subscription will automatically get canceled
     pub cancel_at: Option<stripe_types::Timestamp>,
     /// Whether this subscription will (if `status=active`) or did (if `status=canceled`) cancel at the end of the current billing period.
-    /// This field will be removed in a future API version.
-    /// Please use `cancel_at` instead.
     pub cancel_at_period_end: bool,
     /// If the subscription has been canceled, the date of that cancellation.
     /// If the subscription was canceled with `cancel_at_period_end`, `canceled_at` will reflect the time of the most recent update request, not the end of the subscription period when the subscription is automatically moved to a canceled state.
@@ -140,7 +139,6 @@ pub struct Subscription {
     /// Settings related to subscription trials.
     pub trial_settings: Option<stripe_shared::SubscriptionsTrialsResourceTrialSettings>,
     /// If the subscription has a trial, the beginning of that trial.
-    /// For subsequent trials, this date remains as the start of the first ever trial on the subscription.
     pub trial_start: Option<stripe_types::Timestamp>,
 }
 #[doc(hidden)]
@@ -151,6 +149,7 @@ pub struct SubscriptionBuilder {
     billing_cycle_anchor: Option<stripe_types::Timestamp>,
     billing_cycle_anchor_config:
         Option<Option<stripe_shared::SubscriptionsResourceBillingCycleAnchorConfig>>,
+    billing_mode: Option<stripe_shared::SubscriptionsResourceBillingMode>,
     billing_thresholds: Option<Option<stripe_shared::SubscriptionBillingThresholds>>,
     cancel_at: Option<Option<stripe_types::Timestamp>>,
     cancel_at_period_end: Option<bool>,
@@ -238,6 +237,7 @@ const _: () = {
                 "billing_cycle_anchor_config" => {
                     Deserialize::begin(&mut self.billing_cycle_anchor_config)
                 }
+                "billing_mode" => Deserialize::begin(&mut self.billing_mode),
                 "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
                 "cancel_at" => Deserialize::begin(&mut self.cancel_at),
                 "cancel_at_period_end" => Deserialize::begin(&mut self.cancel_at_period_end),
@@ -291,6 +291,7 @@ const _: () = {
                 automatic_tax: Deserialize::default(),
                 billing_cycle_anchor: Deserialize::default(),
                 billing_cycle_anchor_config: Deserialize::default(),
+                billing_mode: Deserialize::default(),
                 billing_thresholds: Deserialize::default(),
                 cancel_at: Deserialize::default(),
                 cancel_at_period_end: Deserialize::default(),
@@ -338,6 +339,7 @@ const _: () = {
                 Some(automatic_tax),
                 Some(billing_cycle_anchor),
                 Some(billing_cycle_anchor_config),
+                Some(billing_mode),
                 Some(billing_thresholds),
                 Some(cancel_at),
                 Some(cancel_at_period_end),
@@ -381,6 +383,7 @@ const _: () = {
                 self.automatic_tax.take(),
                 self.billing_cycle_anchor,
                 self.billing_cycle_anchor_config,
+                self.billing_mode,
                 self.billing_thresholds,
                 self.cancel_at,
                 self.cancel_at_period_end,
@@ -428,6 +431,7 @@ const _: () = {
                 automatic_tax,
                 billing_cycle_anchor,
                 billing_cycle_anchor_config,
+                billing_mode,
                 billing_thresholds,
                 cancel_at,
                 cancel_at_period_end,
@@ -501,6 +505,7 @@ const _: () = {
                     "billing_cycle_anchor_config" => {
                         b.billing_cycle_anchor_config = FromValueOpt::from_value(v)
                     }
+                    "billing_mode" => b.billing_mode = FromValueOpt::from_value(v),
                     "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
                     "cancel_at" => b.cancel_at = FromValueOpt::from_value(v),
                     "cancel_at_period_end" => b.cancel_at_period_end = FromValueOpt::from_value(v),
@@ -556,12 +561,13 @@ const _: () = {
 impl serde::Serialize for Subscription {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Subscription", 43)?;
+        let mut s = s.serialize_struct("Subscription", 44)?;
         s.serialize_field("application", &self.application)?;
         s.serialize_field("application_fee_percent", &self.application_fee_percent)?;
         s.serialize_field("automatic_tax", &self.automatic_tax)?;
         s.serialize_field("billing_cycle_anchor", &self.billing_cycle_anchor)?;
         s.serialize_field("billing_cycle_anchor_config", &self.billing_cycle_anchor_config)?;
+        s.serialize_field("billing_mode", &self.billing_mode)?;
         s.serialize_field("billing_thresholds", &self.billing_thresholds)?;
         s.serialize_field("cancel_at", &self.cancel_at)?;
         s.serialize_field("cancel_at_period_end", &self.cancel_at_period_end)?;

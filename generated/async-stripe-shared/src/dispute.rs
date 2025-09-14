@@ -43,8 +43,8 @@ pub struct Dispute {
     /// Possible values are `bank_cannot_process`, `check_returned`, `credit_not_processed`, `customer_initiated`, `debit_not_authorized`, `duplicate`, `fraudulent`, `general`, `incorrect_account_details`, `insufficient_funds`, `noncompliant`, `product_not_received`, `product_unacceptable`, `subscription_canceled`, or `unrecognized`.
     /// Learn more about [dispute reasons](https://stripe.com/docs/disputes/categories).
     pub reason: String,
-    /// Current status of dispute.
-    /// Possible values are `warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `won`, or `lost`.
+    /// The current status of a dispute.
+    /// Possible values include:`warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `won`, `lost`, or `prevented`.
     pub status: DisputeStatus,
 }
 #[doc(hidden)]
@@ -297,12 +297,14 @@ impl serde::Serialize for Dispute {
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum DisputeEnhancedEligibilityTypes {
     VisaCompellingEvidence3,
+    VisaCompliance,
 }
 impl DisputeEnhancedEligibilityTypes {
     pub fn as_str(self) -> &'static str {
         use DisputeEnhancedEligibilityTypes::*;
         match self {
             VisaCompellingEvidence3 => "visa_compelling_evidence_3",
+            VisaCompliance => "visa_compliance",
         }
     }
 }
@@ -313,6 +315,7 @@ impl std::str::FromStr for DisputeEnhancedEligibilityTypes {
         use DisputeEnhancedEligibilityTypes::*;
         match s {
             "visa_compelling_evidence_3" => Ok(VisaCompellingEvidence3),
+            "visa_compliance" => Ok(VisaCompliance),
             _ => Err(stripe_types::StripeParseError),
         }
     }
@@ -363,8 +366,8 @@ impl<'de> serde::Deserialize<'de> for DisputeEnhancedEligibilityTypes {
         })
     }
 }
-/// Current status of dispute.
-/// Possible values are `warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `won`, or `lost`.
+/// The current status of a dispute.
+/// Possible values include:`warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `won`, `lost`, or `prevented`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum DisputeStatus {
     Lost,

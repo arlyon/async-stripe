@@ -283,7 +283,6 @@ impl CreateBillingPortalSessionFlowDataSubscriptionUpdate {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm {
     /// The coupon or promotion code to apply to this subscription update.
-    /// Currently, only up to one may be specified.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts:
         Option<Vec<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts>>,
@@ -302,7 +301,6 @@ impl CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm {
     }
 }
 /// The coupon or promotion code to apply to this subscription update.
-/// Currently, only up to one may be specified.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts {
     /// The ID of the coupon to apply to this subscription update.

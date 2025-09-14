@@ -3,6 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct LegalEntityCompanyVerificationDocument {
     /// The back of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `additional_verification`.
+    /// Note that `additional_verification` files are [not downloadable](/file-upload#uploading-a-file).
     pub back: Option<stripe_types::Expandable<stripe_shared::File>>,
     /// A user-displayable string describing the verification state of this document.
     pub details: Option<String>,
@@ -10,6 +11,7 @@ pub struct LegalEntityCompanyVerificationDocument {
     /// A machine-readable code specifying the verification state for this document.
     pub details_code: Option<String>,
     /// The front of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `additional_verification`.
+    /// Note that `additional_verification` files are [not downloadable](/file-upload#uploading-a-file).
     pub front: Option<stripe_types::Expandable<stripe_shared::File>>,
 }
 #[doc(hidden)]

@@ -24,6 +24,8 @@ pub struct BillingPortalConfiguration {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The name of the configuration.
+    pub name: Option<String>,
     /// Time at which the object was last updated. Measured in seconds since the Unix epoch.
     pub updated: stripe_types::Timestamp,
 }
@@ -40,6 +42,7 @@ pub struct BillingPortalConfigurationBuilder {
     livemode: Option<bool>,
     login_page: Option<stripe_billing::PortalLoginPage>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    name: Option<Option<String>>,
     updated: Option<stripe_types::Timestamp>,
 }
 
@@ -94,6 +97,7 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "login_page" => Deserialize::begin(&mut self.login_page),
                 "metadata" => Deserialize::begin(&mut self.metadata),
+                "name" => Deserialize::begin(&mut self.name),
                 "updated" => Deserialize::begin(&mut self.updated),
 
                 _ => <dyn Visitor>::ignore(),
@@ -113,6 +117,7 @@ const _: () = {
                 livemode: Deserialize::default(),
                 login_page: Deserialize::default(),
                 metadata: Deserialize::default(),
+                name: Deserialize::default(),
                 updated: Deserialize::default(),
             }
         }
@@ -130,6 +135,7 @@ const _: () = {
                 Some(livemode),
                 Some(login_page),
                 Some(metadata),
+                Some(name),
                 Some(updated),
             ) = (
                 self.active,
@@ -143,6 +149,7 @@ const _: () = {
                 self.livemode,
                 self.login_page.take(),
                 self.metadata.take(),
+                self.name.take(),
                 self.updated,
             )
             else {
@@ -160,6 +167,7 @@ const _: () = {
                 livemode,
                 login_page,
                 metadata,
+                name,
                 updated,
             })
         }
@@ -199,6 +207,7 @@ const _: () = {
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "login_page" => b.login_page = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "name" => b.name = FromValueOpt::from_value(v),
                     "updated" => b.updated = FromValueOpt::from_value(v),
 
                     _ => {}
@@ -212,7 +221,7 @@ const _: () = {
 impl serde::Serialize for BillingPortalConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("BillingPortalConfiguration", 13)?;
+        let mut s = s.serialize_struct("BillingPortalConfiguration", 14)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("application", &self.application)?;
         s.serialize_field("business_profile", &self.business_profile)?;
@@ -224,6 +233,7 @@ impl serde::Serialize for BillingPortalConfiguration {
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("login_page", &self.login_page)?;
         s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("name", &self.name)?;
         s.serialize_field("updated", &self.updated)?;
 
         s.serialize_field("object", "billing_portal.configuration")?;

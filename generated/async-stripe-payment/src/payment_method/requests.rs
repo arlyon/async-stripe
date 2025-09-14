@@ -50,6 +50,7 @@ pub enum ListPaymentMethodType {
     Boleto,
     Card,
     Cashapp,
+    Crypto,
     CustomerBalance,
     Eps,
     Fpx,
@@ -104,6 +105,7 @@ impl ListPaymentMethodType {
             Boleto => "boleto",
             Card => "card",
             Cashapp => "cashapp",
+            Crypto => "crypto",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -161,6 +163,7 @@ impl std::str::FromStr for ListPaymentMethodType {
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
+            "crypto" => Ok(Crypto),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),
@@ -409,6 +412,9 @@ struct CreatePaymentMethodBuilder {
     #[serde(with = "stripe_types::with_serde_json_opt")]
     cashapp: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    crypto: Option<miniserde::json::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -533,6 +539,7 @@ impl CreatePaymentMethodBuilder {
             boleto: None,
             card: None,
             cashapp: None,
+            crypto: None,
             customer: None,
             customer_balance: None,
             eps: None,
@@ -1154,6 +1161,7 @@ pub enum CreatePaymentMethodIdealBank {
     AbnAmro,
     AsnBank,
     Bunq,
+    Buut,
     Handelsbanken,
     Ing,
     Knab,
@@ -1177,6 +1185,7 @@ impl CreatePaymentMethodIdealBank {
             AbnAmro => "abn_amro",
             AsnBank => "asn_bank",
             Bunq => "bunq",
+            Buut => "buut",
             Handelsbanken => "handelsbanken",
             Ing => "ing",
             Knab => "knab",
@@ -1203,6 +1212,7 @@ impl std::str::FromStr for CreatePaymentMethodIdealBank {
             "abn_amro" => Ok(AbnAmro),
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
+            "buut" => Ok(Buut),
             "handelsbanken" => Ok(Handelsbanken),
             "ing" => Ok(Ing),
             "knab" => Ok(Knab),
@@ -1664,6 +1674,7 @@ pub enum CreatePaymentMethodType {
     Boleto,
     Card,
     Cashapp,
+    Crypto,
     CustomerBalance,
     Eps,
     Fpx,
@@ -1718,6 +1729,7 @@ impl CreatePaymentMethodType {
             Boleto => "boleto",
             Card => "card",
             Cashapp => "cashapp",
+            Crypto => "crypto",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -1775,6 +1787,7 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
+            "crypto" => Ok(Crypto),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),
@@ -2098,6 +2111,11 @@ impl CreatePaymentMethod {
     /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
     pub fn cashapp(mut self, cashapp: impl Into<miniserde::json::Value>) -> Self {
         self.inner.cashapp = Some(cashapp.into());
+        self
+    }
+    /// If this is a Crypto PaymentMethod, this hash contains details about the Crypto payment method.
+    pub fn crypto(mut self, crypto: impl Into<miniserde::json::Value>) -> Self {
+        self.inner.crypto = Some(crypto.into());
         self
     }
     /// The `Customer` to whom the original PaymentMethod is attached.
@@ -2623,7 +2641,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentMethodUsBankAccountAccountTyp
         })
     }
 }
-/// Updates a PaymentMethod object. A PaymentMethod must be attached a customer to be updated.
+/// Updates a PaymentMethod object. A PaymentMethod must be attached to a customer to be updated.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethod {
     inner: UpdatePaymentMethodBuilder,

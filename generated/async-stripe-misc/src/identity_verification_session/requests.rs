@@ -205,6 +205,8 @@ struct CreateIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     related_customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    related_person: Option<CreateIdentityVerificationSessionRelatedPerson>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     return_url: Option<String>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -221,6 +223,7 @@ impl CreateIdentityVerificationSessionBuilder {
             options: None,
             provided_details: None,
             related_customer: None,
+            related_person: None,
             return_url: None,
             type_: None,
             verification_flow: None,
@@ -339,6 +342,20 @@ impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionOptionsDo
         })
     }
 }
+/// Tokens referencing a Person resource and it's associated account.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateIdentityVerificationSessionRelatedPerson {
+    /// A token representing a connected account.
+    /// If provided, the person parameter is also required and must be associated with the account.
+    pub account: String,
+    /// A token referencing a Person resource that this verification is being used to verify.
+    pub person: String,
+}
+impl CreateIdentityVerificationSessionRelatedPerson {
+    pub fn new(account: impl Into<String>, person: impl Into<String>) -> Self {
+        Self { account: account.into(), person: person.into() }
+    }
+}
 /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
 /// You must provide a `type` if not passing `verification_flow`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -447,6 +464,14 @@ impl CreateIdentityVerificationSession {
     /// Customer ID
     pub fn related_customer(mut self, related_customer: impl Into<String>) -> Self {
         self.inner.related_customer = Some(related_customer.into());
+        self
+    }
+    /// Tokens referencing a Person resource and it's associated account.
+    pub fn related_person(
+        mut self,
+        related_person: impl Into<CreateIdentityVerificationSessionRelatedPerson>,
+    ) -> Self {
+        self.inner.related_person = Some(related_person.into());
         self
     }
     /// The URL that the user will be redirected to upon completing the verification flow.

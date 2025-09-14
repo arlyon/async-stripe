@@ -114,7 +114,8 @@
           "timezone": "Etc/UTC"
         },
         "invoices": {
-          "default_account_tax_ids": null
+          "default_account_tax_ids": null,
+          "hosted_payment_method_save": null
         },
         "payments": {
           "statement_descriptor": null,
@@ -164,6 +165,10 @@
             "external_account_collection": true
           }
         },
+        "balance_report": {
+          "enabled": true,
+          "features": {}
+        },
         "balances": {
           "enabled": false,
           "features": {
@@ -200,6 +205,14 @@
           "enabled": true,
           "features": {
             "card_spend_dispute_management": true
+          }
+        },
+        "instant_payouts_promotion": {
+          "enabled": true,
+          "features": {
+            "disable_stripe_user_authentication": true,
+            "external_account_collection": true,
+            "instant_payouts": true
           }
         },
         "issuing_card": {
@@ -253,6 +266,14 @@
             "dispute_management": true,
             "refund_management": true
           }
+        },
+        "payout_details": {
+          "enabled": true,
+          "features": {}
+        },
+        "payout_reconciliation_report": {
+          "enabled": true,
+          "features": {}
         },
         "payouts": {
           "enabled": false,
@@ -631,7 +652,7 @@
       "end_time": 1234567890,
       "id": "mtrusg_123",
       "livemode": false,
-      "meter": "mtr_123",
+      "meter": "mtr_test_61Q8nQMqIFK9fRQmr41CMAXJrFdZ5MnA",
       "object": "billing.meter_event_summary",
       "start_time": 1234567890
     },
@@ -689,6 +710,7 @@
         "url": null
       },
       "metadata": null,
+      "name": null,
       "object": "billing_portal.configuration",
       "updated": 1234567890
     },
@@ -1086,7 +1108,8 @@
           },
           "metadata": null,
           "rendering_options": {
-            "amount_tax_display": null
+            "amount_tax_display": null,
+            "template": null
           }
         }
       },
@@ -1095,6 +1118,7 @@
       "metadata": {},
       "mode": "payment",
       "object": "checkout.session",
+      "origin_context": null,
       "payment_intent": "pi_1PgafyB7WZ01zgkWSjxsAJo3",
       "payment_link": null,
       "payment_method_collection": null,
@@ -3564,6 +3588,7 @@
       "currency": "usd",
       "customer": null,
       "description": null,
+      "excluded_payment_method_types": null,
       "id": "pi_1PgafyB7WZ01zgkWSjxsAJo3",
       "last_payment_error": {
         "type": "idempotency_error"
@@ -3661,7 +3686,8 @@
           },
           "metadata": null,
           "rendering_options": {
-            "amount_tax_display": null
+            "amount_tax_display": null,
+            "template": null
           }
         }
       },
@@ -4148,7 +4174,8 @@
           "timezone": "Etc/UTC"
         },
         "invoices": {
-          "default_account_tax_ids": null
+          "default_account_tax_ids": null,
+          "hosted_payment_method_save": null
         },
         "payments": {
           "statement_descriptor": null,
@@ -4194,6 +4221,7 @@
       "method": "standard",
       "object": "payout",
       "original_payout": null,
+      "payout_method": null,
       "reconciliation_status": "completed",
       "reversed_by": null,
       "source_type": "card",
@@ -4475,6 +4503,9 @@
       },
       "subscription": null,
       "subscription_data": {
+        "billing_mode": {
+          "type": "classic"
+        },
         "description": null,
         "effective_date": null,
         "metadata": null,
@@ -4613,7 +4644,7 @@
       "object": "review",
       "open": true,
       "opened_reason": "rule",
-      "reason": "rule",
+      "reason": "reason",
       "session": {
         "browser": null,
         "device": null,
@@ -4926,6 +4957,9 @@
         "month": null,
         "second": null
       },
+      "billing_mode": {
+        "type": "classic"
+      },
       "billing_thresholds": {
         "amount_gte": null,
         "reset_billing_cycle_anchor": null
@@ -5172,6 +5206,9 @@
     },
     "subscription_schedule": {
       "application": null,
+      "billing_mode": {
+        "type": "classic"
+      },
       "canceled_at": 1234567890,
       "completed_at": 1234567890,
       "created": 1234567890,
@@ -6256,5 +6293,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v1797"
+  "version": "v1965"
 }

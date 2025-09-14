@@ -250,7 +250,7 @@ impl CreateRadarValueList {
         self
     }
     /// Type of the items in the value list.
-    /// One of `card_fingerprint`, `us_bank_account_fingerprint`, `sepa_debit_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
+    /// One of `card_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, `customer_id`, `sepa_debit_fingerprint`, or `us_bank_account_fingerprint`.
     /// Use `string` if the item type is unknown or mixed.
     pub fn item_type(mut self, item_type: impl Into<stripe_fraud::RadarValueListItemType>) -> Self {
         self.inner.item_type = Some(item_type.into());

@@ -8,6 +8,7 @@
 pub struct SubscriptionSchedule {
     /// ID of the Connect Application that created the schedule.
     pub application: Option<stripe_types::Expandable<stripe_shared::Application>>,
+    pub billing_mode: stripe_shared::SubscriptionsResourceBillingMode,
     /// Time at which the subscription schedule was canceled. Measured in seconds since the Unix epoch.
     pub canceled_at: Option<stripe_types::Timestamp>,
     /// Time at which the subscription schedule was completed. Measured in seconds since the Unix epoch.
@@ -49,6 +50,7 @@ pub struct SubscriptionSchedule {
 #[doc(hidden)]
 pub struct SubscriptionScheduleBuilder {
     application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
+    billing_mode: Option<stripe_shared::SubscriptionsResourceBillingMode>,
     canceled_at: Option<Option<stripe_types::Timestamp>>,
     completed_at: Option<Option<stripe_types::Timestamp>>,
     created: Option<stripe_types::Timestamp>,
@@ -108,6 +110,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "application" => Deserialize::begin(&mut self.application),
+                "billing_mode" => Deserialize::begin(&mut self.billing_mode),
                 "canceled_at" => Deserialize::begin(&mut self.canceled_at),
                 "completed_at" => Deserialize::begin(&mut self.completed_at),
                 "created" => Deserialize::begin(&mut self.created),
@@ -132,6 +135,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 application: Deserialize::default(),
+                billing_mode: Deserialize::default(),
                 canceled_at: Deserialize::default(),
                 completed_at: Deserialize::default(),
                 created: Deserialize::default(),
@@ -154,6 +158,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(application),
+                Some(billing_mode),
                 Some(canceled_at),
                 Some(completed_at),
                 Some(created),
@@ -172,6 +177,7 @@ const _: () = {
                 Some(test_clock),
             ) = (
                 self.application.take(),
+                self.billing_mode,
                 self.canceled_at,
                 self.completed_at,
                 self.created,
@@ -194,6 +200,7 @@ const _: () = {
             };
             Some(Self::Out {
                 application,
+                billing_mode,
                 canceled_at,
                 completed_at,
                 created,
@@ -238,6 +245,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "application" => b.application = FromValueOpt::from_value(v),
+                    "billing_mode" => b.billing_mode = FromValueOpt::from_value(v),
                     "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
                     "completed_at" => b.completed_at = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
@@ -268,8 +276,9 @@ const _: () = {
 impl serde::Serialize for SubscriptionSchedule {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("SubscriptionSchedule", 18)?;
+        let mut s = s.serialize_struct("SubscriptionSchedule", 19)?;
         s.serialize_field("application", &self.application)?;
+        s.serialize_field("billing_mode", &self.billing_mode)?;
         s.serialize_field("canceled_at", &self.canceled_at)?;
         s.serialize_field("completed_at", &self.completed_at)?;
         s.serialize_field("created", &self.created)?;

@@ -2,6 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PortalSubscriptionUpdateProduct {
+    pub adjustable_quantity: stripe_billing::PortalSubscriptionUpdateProductAdjustableQuantity,
     /// The list of price IDs which, when subscribed to, a subscription can be updated.
     pub prices: Vec<String>,
     /// The product ID.
@@ -9,6 +10,7 @@ pub struct PortalSubscriptionUpdateProduct {
 }
 #[doc(hidden)]
 pub struct PortalSubscriptionUpdateProductBuilder {
+    adjustable_quantity: Option<stripe_billing::PortalSubscriptionUpdateProductAdjustableQuantity>,
     prices: Option<Vec<String>>,
     product: Option<String>,
 }
@@ -53,6 +55,7 @@ const _: () = {
         type Out = PortalSubscriptionUpdateProduct;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "adjustable_quantity" => Deserialize::begin(&mut self.adjustable_quantity),
                 "prices" => Deserialize::begin(&mut self.prices),
                 "product" => Deserialize::begin(&mut self.product),
 
@@ -61,14 +64,20 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { prices: Deserialize::default(), product: Deserialize::default() }
+            Self {
+                adjustable_quantity: Deserialize::default(),
+                prices: Deserialize::default(),
+                product: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(prices), Some(product)) = (self.prices.take(), self.product.take()) else {
+            let (Some(adjustable_quantity), Some(prices), Some(product)) =
+                (self.adjustable_quantity, self.prices.take(), self.product.take())
+            else {
                 return None;
             };
-            Some(Self::Out { prices, product })
+            Some(Self::Out { adjustable_quantity, prices, product })
         }
     }
 
@@ -95,6 +104,7 @@ const _: () = {
             let mut b = PortalSubscriptionUpdateProductBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "adjustable_quantity" => b.adjustable_quantity = FromValueOpt::from_value(v),
                     "prices" => b.prices = FromValueOpt::from_value(v),
                     "product" => b.product = FromValueOpt::from_value(v),
 

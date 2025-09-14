@@ -6,8 +6,8 @@ use stripe_client_core::{
 ///
 /// Test-mode accounts can be deleted at any time.
 ///
-/// Live-mode accounts where Stripe is responsible for negative account balances cannot be deleted, which includes Standard accounts.
-/// Live-mode accounts where your platform is liable for negative account balances, which includes Custom and Express accounts, can be deleted when all <a href="/api/balance/balance_object">balances</a> are zero.
+/// Live-mode accounts that have access to the standard dashboard and Stripe is responsible for negative account balances cannot be deleted, which includes Standard accounts.
+/// All other Live-mode accounts, can be deleted when all <a href="/api/balance/balance_object">balances</a> are zero.
 ///
 /// If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/settings/account) instead.
 #[derive(Clone, Debug, serde::Serialize)]
@@ -539,7 +539,7 @@ pub struct CreateAccountBusinessProfile {
     /// MCCs are used to classify businesses based on the goods or services they provide.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mcc: Option<String>,
-    /// Whether the business is a minority-owned, women-owned, and/or LGBTQI+-owned business.
+    /// Whether the business is a minority-owned, women-owned, and/or LGBTQI+ -owned business.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minority_owned_business_designation:
         Option<Vec<CreateAccountBusinessProfileMinorityOwnedBusinessDesignation>>,
@@ -592,7 +592,7 @@ impl Default for CreateAccountBusinessProfile {
         Self::new()
     }
 }
-/// Whether the business is a minority-owned, women-owned, and/or LGBTQI+-owned business.
+/// Whether the business is a minority-owned, women-owned, and/or LGBTQI+ -owned business.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateAccountBusinessProfileMinorityOwnedBusinessDesignation {
     LgbtqiOwnedBusiness,
@@ -746,6 +746,7 @@ pub struct CreateAccountCompany {
     /// The company's phone number (used for verification).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+    /// When the business was incorporated or registered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registration_date: Option<RegistrationDateSpecs>,
     /// The identification number given to a company when it is registered or incorporated, if distinct from the identification number used for filing taxes.
@@ -1900,7 +1901,7 @@ impl Default for CreateAccountSettingsPayouts {
 }
 /// Details on when funds from charges are available, and when they are paid out to an external account.
 /// For details, see our [Setting Bank and Debit Card Payouts](/connect/bank-transfers#payout-information) documentation.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSettingsPayoutsSchedule {
     /// The number of days charge funds are held before being paid out.
     /// May also be set to `minimum`, representing the lowest available value for the account country.
@@ -1919,14 +1920,30 @@ pub struct CreateAccountSettingsPayoutsSchedule {
     /// Required and applicable only if `interval` is `monthly`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub monthly_anchor: Option<u8>,
+    /// The days of the month when available funds are paid out, specified as an array of numbers between 1--31.
+    /// Payouts nominally scheduled between the 29th and 31st of the month are instead sent on the last day of a shorter month.
+    /// Required and applicable only if `interval` is `monthly` and `monthly_anchor` is not set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub monthly_payout_days: Option<Vec<u32>>,
     /// The day of the week when available funds are paid out, specified as `monday`, `tuesday`, etc.
     /// (required and applicable only if `interval` is `weekly`.).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub weekly_anchor: Option<CreateAccountSettingsPayoutsScheduleWeeklyAnchor>,
+    /// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
+    /// (required and applicable only if `interval` is `weekly` and `weekly_anchor` is not set.).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub weekly_payout_days: Option<Vec<CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays>>,
 }
 impl CreateAccountSettingsPayoutsSchedule {
     pub fn new() -> Self {
-        Self { delay_days: None, interval: None, monthly_anchor: None, weekly_anchor: None }
+        Self {
+            delay_days: None,
+            interval: None,
+            monthly_anchor: None,
+            monthly_payout_days: None,
+            weekly_anchor: None,
+            weekly_payout_days: None,
+        }
     }
 }
 impl Default for CreateAccountSettingsPayoutsSchedule {
@@ -2082,6 +2099,80 @@ impl<'de> serde::Deserialize<'de> for CreateAccountSettingsPayoutsScheduleWeekly
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for CreateAccountSettingsPayoutsScheduleWeeklyAnchor",
+            )
+        })
+    }
+}
+/// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
+/// (required and applicable only if `interval` is `weekly` and `weekly_anchor` is not set.).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    Friday,
+    Monday,
+    Saturday,
+    Sunday,
+    Thursday,
+    Tuesday,
+    Wednesday,
+}
+impl CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    pub fn as_str(self) -> &'static str {
+        use CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays::*;
+        match self {
+            Friday => "friday",
+            Monday => "monday",
+            Saturday => "saturday",
+            Sunday => "sunday",
+            Thursday => "thursday",
+            Tuesday => "tuesday",
+            Wednesday => "wednesday",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays::*;
+        match s {
+            "friday" => Ok(Friday),
+            "monday" => Ok(Monday),
+            "saturday" => Ok(Saturday),
+            "sunday" => Ok(Sunday),
+            "thursday" => Ok(Thursday),
+            "tuesday" => Ok(Tuesday),
+            "wednesday" => Ok(Wednesday),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays",
             )
         })
     }
@@ -2387,7 +2478,7 @@ pub struct UpdateAccountBusinessProfile {
     /// MCCs are used to classify businesses based on the goods or services they provide.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mcc: Option<String>,
-    /// Whether the business is a minority-owned, women-owned, and/or LGBTQI+-owned business.
+    /// Whether the business is a minority-owned, women-owned, and/or LGBTQI+ -owned business.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minority_owned_business_designation:
         Option<Vec<UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation>>,
@@ -2440,7 +2531,7 @@ impl Default for UpdateAccountBusinessProfile {
         Self::new()
     }
 }
-/// Whether the business is a minority-owned, women-owned, and/or LGBTQI+-owned business.
+/// Whether the business is a minority-owned, women-owned, and/or LGBTQI+ -owned business.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation {
     LgbtqiOwnedBusiness,
@@ -3435,7 +3526,7 @@ impl Default for UpdateAccountSettingsPayouts {
 }
 /// Details on when funds from charges are available, and when they are paid out to an external account.
 /// For details, see our [Setting Bank and Debit Card Payouts](/connect/bank-transfers#payout-information) documentation.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateAccountSettingsPayoutsSchedule {
     /// The number of days charge funds are held before being paid out.
     /// May also be set to `minimum`, representing the lowest available value for the account country.
@@ -3454,14 +3545,30 @@ pub struct UpdateAccountSettingsPayoutsSchedule {
     /// Required and applicable only if `interval` is `monthly`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub monthly_anchor: Option<u8>,
+    /// The days of the month when available funds are paid out, specified as an array of numbers between 1--31.
+    /// Payouts nominally scheduled between the 29th and 31st of the month are instead sent on the last day of a shorter month.
+    /// Required and applicable only if `interval` is `monthly` and `monthly_anchor` is not set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub monthly_payout_days: Option<Vec<u32>>,
     /// The day of the week when available funds are paid out, specified as `monday`, `tuesday`, etc.
     /// (required and applicable only if `interval` is `weekly`.).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub weekly_anchor: Option<UpdateAccountSettingsPayoutsScheduleWeeklyAnchor>,
+    /// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
+    /// (required and applicable only if `interval` is `weekly` and `weekly_anchor` is not set.).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub weekly_payout_days: Option<Vec<UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays>>,
 }
 impl UpdateAccountSettingsPayoutsSchedule {
     pub fn new() -> Self {
-        Self { delay_days: None, interval: None, monthly_anchor: None, weekly_anchor: None }
+        Self {
+            delay_days: None,
+            interval: None,
+            monthly_anchor: None,
+            monthly_payout_days: None,
+            weekly_anchor: None,
+            weekly_payout_days: None,
+        }
     }
 }
 impl Default for UpdateAccountSettingsPayoutsSchedule {
@@ -3617,6 +3724,80 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountSettingsPayoutsScheduleWeekly
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor",
+            )
+        })
+    }
+}
+/// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
+/// (required and applicable only if `interval` is `weekly` and `weekly_anchor` is not set.).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    Friday,
+    Monday,
+    Saturday,
+    Sunday,
+    Thursday,
+    Tuesday,
+    Wednesday,
+}
+impl UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    pub fn as_str(self) -> &'static str {
+        use UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays::*;
+        match self {
+            Friday => "friday",
+            Monday => "monday",
+            Saturday => "saturday",
+            Sunday => "sunday",
+            Thursday => "thursday",
+            Tuesday => "tuesday",
+            Wednesday => "wednesday",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays::*;
+        match s {
+            "friday" => Ok(Friday),
+            "monday" => Ok(Monday),
+            "saturday" => Ok(Saturday),
+            "sunday" => Ok(Sunday),
+            "thursday" => Ok(Thursday),
+            "tuesday" => Ok(Tuesday),
+            "wednesday" => Ok(Wednesday),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays",
             )
         })
     }
@@ -4272,6 +4453,9 @@ pub struct CapabilitiesParam {
     /// The cashapp_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cashapp_payments: Option<CapabilityParam>,
+    /// The crypto_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub crypto_payments: Option<CapabilityParam>,
     /// The eps_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps_payments: Option<CapabilityParam>,
@@ -4418,6 +4602,7 @@ impl CapabilitiesParam {
             card_payments: None,
             cartes_bancaires_payments: None,
             cashapp_payments: None,
+            crypto_payments: None,
             eps_payments: None,
             fpx_payments: None,
             gb_bank_transfer_payments: None,
@@ -4505,6 +4690,9 @@ pub struct DocumentsSpecs {
     /// One or more documents that demonstrate proof of a company's tax ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company_tax_id_verification: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proof_of_address: Option<DocumentsParam>,
     /// One or more documents showing the company’s proof of registration with the national business registry.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proof_of_registration: Option<DocumentsParam>,
@@ -4521,6 +4709,7 @@ impl DocumentsSpecs {
             company_ministerial_decree: None,
             company_registration_verification: None,
             company_tax_id_verification: None,
+            proof_of_address: None,
             proof_of_registration: None,
             proof_of_ultimate_beneficial_ownership: None,
         }

@@ -1167,6 +1167,9 @@ pub enum EventObject {
     /// Occurs whenever an action sent to a Terminal reader was successful.
     #[cfg(feature = "async-stripe-terminal")]
     TerminalReaderActionSucceeded(stripe_terminal::TerminalReader),
+    /// Occurs whenever an action sent to a Terminal reader is updated.
+    #[cfg(feature = "async-stripe-terminal")]
+    TerminalReaderActionUpdated(stripe_terminal::TerminalReader),
     /// Occurs whenever a test clock starts advancing.
     TestHelpersTestClockAdvancing(stripe_shared::TestHelpersTestClock),
     /// Occurs whenever a test clock is created.
@@ -1776,6 +1779,10 @@ impl EventObject {
             #[cfg(feature = "async-stripe-terminal")]
             "terminal.reader.action_succeeded" => {
                 Self::TerminalReaderActionSucceeded(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "async-stripe-terminal")]
+            "terminal.reader.action_updated" => {
+                Self::TerminalReaderActionUpdated(FromValueOpt::from_value(data)?)
             }
             "test_helpers.test_clock.advancing" => {
                 Self::TestHelpersTestClockAdvancing(FromValueOpt::from_value(data)?)

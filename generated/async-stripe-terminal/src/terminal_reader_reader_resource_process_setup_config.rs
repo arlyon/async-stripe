@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceProcessSetupConfig {
-    /// Enable customer initiated cancellation when processing this SetupIntent.
+    /// Enable customer-initiated cancellation when processing this SetupIntent.
     pub enable_customer_cancellation: Option<bool>,
 }
 #[doc(hidden)]

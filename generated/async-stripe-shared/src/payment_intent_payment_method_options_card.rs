@@ -4,7 +4,7 @@
 pub struct PaymentIntentPaymentMethodOptionsCard {
     /// Controls when the funds will be captured from the customer's account.
     pub capture_method: Option<PaymentIntentPaymentMethodOptionsCardCaptureMethod>,
-    /// Installment details for this payment (Mexico only).
+    /// Installment details for this payment.
     ///
     /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
     pub installments: Option<stripe_shared::PaymentMethodOptionsCardInstallments>,

@@ -4,6 +4,10 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceReaderAction {
     pub collect_inputs: Option<stripe_terminal::TerminalReaderReaderResourceCollectInputsAction>,
+    pub collect_payment_method:
+        Option<stripe_terminal::TerminalReaderReaderResourceCollectPaymentMethodAction>,
+    pub confirm_payment_intent:
+        Option<stripe_terminal::TerminalReaderReaderResourceConfirmPaymentIntentAction>,
     /// Failure code, only set if status is `failed`.
     pub failure_code: Option<String>,
     /// Detailed failure message, only set if status is `failed`.
@@ -25,6 +29,10 @@ pub struct TerminalReaderReaderResourceReaderAction {
 pub struct TerminalReaderReaderResourceReaderActionBuilder {
     collect_inputs:
         Option<Option<stripe_terminal::TerminalReaderReaderResourceCollectInputsAction>>,
+    collect_payment_method:
+        Option<Option<stripe_terminal::TerminalReaderReaderResourceCollectPaymentMethodAction>>,
+    confirm_payment_intent:
+        Option<Option<stripe_terminal::TerminalReaderReaderResourceConfirmPaymentIntentAction>>,
     failure_code: Option<Option<String>>,
     failure_message: Option<Option<String>>,
     process_payment_intent:
@@ -80,6 +88,8 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "collect_inputs" => Deserialize::begin(&mut self.collect_inputs),
+                "collect_payment_method" => Deserialize::begin(&mut self.collect_payment_method),
+                "confirm_payment_intent" => Deserialize::begin(&mut self.confirm_payment_intent),
                 "failure_code" => Deserialize::begin(&mut self.failure_code),
                 "failure_message" => Deserialize::begin(&mut self.failure_message),
                 "process_payment_intent" => Deserialize::begin(&mut self.process_payment_intent),
@@ -96,6 +106,8 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 collect_inputs: Deserialize::default(),
+                collect_payment_method: Deserialize::default(),
+                confirm_payment_intent: Deserialize::default(),
                 failure_code: Deserialize::default(),
                 failure_message: Deserialize::default(),
                 process_payment_intent: Deserialize::default(),
@@ -110,6 +122,8 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(collect_inputs),
+                Some(collect_payment_method),
+                Some(confirm_payment_intent),
                 Some(failure_code),
                 Some(failure_message),
                 Some(process_payment_intent),
@@ -120,6 +134,8 @@ const _: () = {
                 Some(type_),
             ) = (
                 self.collect_inputs.take(),
+                self.collect_payment_method.take(),
+                self.confirm_payment_intent.take(),
                 self.failure_code.take(),
                 self.failure_message.take(),
                 self.process_payment_intent.take(),
@@ -134,6 +150,8 @@ const _: () = {
             };
             Some(Self::Out {
                 collect_inputs,
+                collect_payment_method,
+                confirm_payment_intent,
                 failure_code,
                 failure_message,
                 process_payment_intent,
@@ -170,6 +188,12 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "collect_inputs" => b.collect_inputs = FromValueOpt::from_value(v),
+                    "collect_payment_method" => {
+                        b.collect_payment_method = FromValueOpt::from_value(v)
+                    }
+                    "confirm_payment_intent" => {
+                        b.confirm_payment_intent = FromValueOpt::from_value(v)
+                    }
                     "failure_code" => b.failure_code = FromValueOpt::from_value(v),
                     "failure_message" => b.failure_message = FromValueOpt::from_value(v),
                     "process_payment_intent" => {
@@ -272,6 +296,8 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceReaderActionSt
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TerminalReaderReaderResourceReaderActionType {
     CollectInputs,
+    CollectPaymentMethod,
+    ConfirmPaymentIntent,
     ProcessPaymentIntent,
     ProcessSetupIntent,
     RefundPayment,
@@ -282,6 +308,8 @@ impl TerminalReaderReaderResourceReaderActionType {
         use TerminalReaderReaderResourceReaderActionType::*;
         match self {
             CollectInputs => "collect_inputs",
+            CollectPaymentMethod => "collect_payment_method",
+            ConfirmPaymentIntent => "confirm_payment_intent",
             ProcessPaymentIntent => "process_payment_intent",
             ProcessSetupIntent => "process_setup_intent",
             RefundPayment => "refund_payment",
@@ -296,6 +324,8 @@ impl std::str::FromStr for TerminalReaderReaderResourceReaderActionType {
         use TerminalReaderReaderResourceReaderActionType::*;
         match s {
             "collect_inputs" => Ok(CollectInputs),
+            "collect_payment_method" => Ok(CollectPaymentMethod),
+            "confirm_payment_intent" => Ok(ConfirmPaymentIntent),
             "process_payment_intent" => Ok(ProcessPaymentIntent),
             "process_setup_intent" => Ok(ProcessSetupIntent),
             "refund_payment" => Ok(RefundPayment),

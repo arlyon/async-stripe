@@ -47,7 +47,8 @@ pub struct PaymentMethodDetailsInteracPresent {
     /// Visa calls this the Transaction ID, Mastercard calls this the Trace ID, and American Express calls this the Acquirer Reference Data.
     /// This value will be present if it is returned by the financial network in the authorization response, and null otherwise.
     pub network_transaction_id: Option<String>,
-    /// EMV tag 5F2D. Preferred languages specified by the integrated circuit chip.
+    /// The languages that the issuing bank recommends using for localizing any customer-facing text, as read from the card.
+    /// Referenced from EMV tag 5F2D, data encoded on the card's chip.
     pub preferred_locales: Option<Vec<String>>,
     /// How card details were read in this transaction.
     pub read_method: Option<PaymentMethodDetailsInteracPresentReadMethod>,

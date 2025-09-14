@@ -186,7 +186,6 @@ impl serde::Serialize for Capability {
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CapabilityStatus {
     Active,
-    Disabled,
     Inactive,
     Pending,
     Unrequested,
@@ -196,7 +195,6 @@ impl CapabilityStatus {
         use CapabilityStatus::*;
         match self {
             Active => "active",
-            Disabled => "disabled",
             Inactive => "inactive",
             Pending => "pending",
             Unrequested => "unrequested",
@@ -210,7 +208,6 @@ impl std::str::FromStr for CapabilityStatus {
         use CapabilityStatus::*;
         match s {
             "active" => Ok(Active),
-            "disabled" => Ok(Disabled),
             "inactive" => Ok(Inactive),
             "pending" => Ok(Pending),
             "unrequested" => Ok(Unrequested),

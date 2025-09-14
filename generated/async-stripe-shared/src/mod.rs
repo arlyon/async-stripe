@@ -136,6 +136,10 @@ pub mod address;
 #[doc(inline)]
 pub use address::*;
 #[doc(hidden)]
+pub mod alma_installments;
+#[doc(inline)]
+pub use alma_installments::*;
+#[doc(hidden)]
 pub mod amazon_pay_underlying_payment_method_funding_details;
 #[doc(inline)]
 pub use amazon_pay_underlying_payment_method_funding_details::*;
@@ -1408,6 +1412,10 @@ pub mod mandate_kakao_pay;
 #[doc(inline)]
 pub use mandate_kakao_pay::*;
 #[doc(hidden)]
+pub mod mandate_klarna;
+#[doc(inline)]
+pub use mandate_klarna::*;
+#[doc(hidden)]
 pub mod mandate_kr_card;
 #[doc(inline)]
 pub use mandate_kr_card::*;
@@ -1952,6 +1960,10 @@ pub mod payment_method_config_biz_payment_method_configuration_details;
 #[doc(inline)]
 pub use payment_method_config_biz_payment_method_configuration_details::*;
 #[doc(hidden)]
+pub mod payment_method_crypto;
+#[doc(inline)]
+pub use payment_method_crypto::*;
+#[doc(hidden)]
 pub mod payment_method_customer_balance;
 #[doc(inline)]
 pub use payment_method_customer_balance::*;
@@ -2079,6 +2091,10 @@ pub use payment_method_details_card_wallet_visa_checkout::*;
 pub mod payment_method_details_cashapp;
 #[doc(inline)]
 pub use payment_method_details_cashapp::*;
+#[doc(hidden)]
+pub mod payment_method_details_crypto;
+#[doc(inline)]
+pub use payment_method_details_crypto::*;
 #[doc(hidden)]
 pub mod payment_method_details_customer_balance;
 #[doc(inline)]
@@ -2351,6 +2367,10 @@ pub use payment_method_options_card_present_routing::*;
 pub mod payment_method_options_cashapp;
 #[doc(inline)]
 pub use payment_method_options_cashapp::*;
+#[doc(hidden)]
+pub mod payment_method_options_crypto;
+#[doc(inline)]
+pub use payment_method_options_crypto::*;
 #[doc(hidden)]
 pub mod payment_method_options_customer_balance;
 #[doc(inline)]
@@ -3020,6 +3040,10 @@ pub mod setup_intent_payment_method_options_card_present;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_card_present::*;
 #[doc(hidden)]
+pub mod setup_intent_payment_method_options_klarna;
+#[doc(inline)]
+pub use setup_intent_payment_method_options_klarna::*;
+#[doc(hidden)]
 pub mod setup_intent_payment_method_options_link;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_link::*;
@@ -3236,6 +3260,10 @@ pub mod subscription_schedule_add_invoice_item;
 #[doc(inline)]
 pub use subscription_schedule_add_invoice_item::*;
 #[doc(hidden)]
+pub mod subscription_schedule_add_invoice_item_period;
+#[doc(inline)]
+pub use subscription_schedule_add_invoice_item_period::*;
+#[doc(hidden)]
 pub mod subscription_schedule_configuration_item;
 #[doc(inline)]
 pub use subscription_schedule_configuration_item::*;
@@ -3256,6 +3284,14 @@ pub mod subscription_schedules_resource_default_settings_automatic_tax;
 #[doc(inline)]
 pub use subscription_schedules_resource_default_settings_automatic_tax::*;
 #[doc(hidden)]
+pub mod subscription_schedules_resource_invoice_item_period_resource_period_end;
+#[doc(inline)]
+pub use subscription_schedules_resource_invoice_item_period_resource_period_end::*;
+#[doc(hidden)]
+pub mod subscription_schedules_resource_invoice_item_period_resource_period_start;
+#[doc(inline)]
+pub use subscription_schedules_resource_invoice_item_period_resource_period_start::*;
+#[doc(hidden)]
 pub mod subscription_transfer_data;
 #[doc(inline)]
 pub use subscription_transfer_data::*;
@@ -3263,6 +3299,10 @@ pub use subscription_transfer_data::*;
 pub mod subscriptions_resource_billing_cycle_anchor_config;
 #[doc(inline)]
 pub use subscriptions_resource_billing_cycle_anchor_config::*;
+#[doc(hidden)]
+pub mod subscriptions_resource_billing_mode;
+#[doc(inline)]
+pub use subscriptions_resource_billing_mode::*;
 #[doc(hidden)]
 pub mod subscriptions_resource_pause_collection;
 #[doc(inline)]

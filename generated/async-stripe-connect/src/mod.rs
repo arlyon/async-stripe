@@ -98,6 +98,14 @@ pub mod connect_embedded_financial_account_transactions_features;
 #[doc(inline)]
 pub use connect_embedded_financial_account_transactions_features::*;
 #[doc(hidden)]
+pub mod connect_embedded_instant_payouts_promotion_config;
+#[doc(inline)]
+pub use connect_embedded_instant_payouts_promotion_config::*;
+#[doc(hidden)]
+pub mod connect_embedded_instant_payouts_promotion_features;
+#[doc(inline)]
+pub use connect_embedded_instant_payouts_promotion_features::*;
+#[doc(hidden)]
 pub mod connect_embedded_issuing_card_config_claim;
 #[doc(inline)]
 pub use connect_embedded_issuing_card_config_claim::*;

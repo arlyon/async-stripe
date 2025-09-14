@@ -278,6 +278,7 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteEmailType {
     }
 }
 /// Line items that make up the credit note.
+/// One of `amount`, `lines`, or `shipping_cost` must be provided.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct PreviewCreditNoteLines {
     /// The line item amount to credit.
@@ -395,6 +396,7 @@ impl PreviewCreditNote {
         Self { inner: PreviewCreditNoteBuilder::new(invoice.into()) }
     }
     /// The integer amount in cents (or local equivalent) representing the total amount of the credit note.
+    /// One of `amount`, `lines`, or `shipping_cost` must be provided.
     pub fn amount(mut self, amount: impl Into<i64>) -> Self {
         self.inner.amount = Some(amount.into());
         self
@@ -422,6 +424,7 @@ impl PreviewCreditNote {
         self
     }
     /// Line items that make up the credit note.
+    /// One of `amount`, `lines`, or `shipping_cost` must be provided.
     pub fn lines(mut self, lines: impl Into<Vec<PreviewCreditNoteLines>>) -> Self {
         self.inner.lines = Some(lines.into());
         self
@@ -464,6 +467,7 @@ impl PreviewCreditNote {
         self
     }
     /// When shipping_cost contains the shipping_rate from the invoice, the shipping_cost is included in the credit note.
+    /// One of `amount`, `lines`, or `shipping_cost` must be provided.
     pub fn shipping_cost(mut self, shipping_cost: impl Into<CreditNoteShippingCost>) -> Self {
         self.inner.shipping_cost = Some(shipping_cost.into());
         self
@@ -610,6 +614,7 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteEmailType {
     }
 }
 /// Line items that make up the credit note.
+/// One of `amount`, `lines`, or `shipping_cost` must be provided.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct PreviewLinesCreditNoteLines {
     /// The line item amount to credit.
@@ -729,6 +734,7 @@ impl PreviewLinesCreditNote {
         Self { inner: PreviewLinesCreditNoteBuilder::new(invoice.into()) }
     }
     /// The integer amount in cents (or local equivalent) representing the total amount of the credit note.
+    /// One of `amount`, `lines`, or `shipping_cost` must be provided.
     pub fn amount(mut self, amount: impl Into<i64>) -> Self {
         self.inner.amount = Some(amount.into());
         self
@@ -769,6 +775,7 @@ impl PreviewLinesCreditNote {
         self
     }
     /// Line items that make up the credit note.
+    /// One of `amount`, `lines`, or `shipping_cost` must be provided.
     pub fn lines(mut self, lines: impl Into<Vec<PreviewLinesCreditNoteLines>>) -> Self {
         self.inner.lines = Some(lines.into());
         self
@@ -811,6 +818,7 @@ impl PreviewLinesCreditNote {
         self
     }
     /// When shipping_cost contains the shipping_rate from the invoice, the shipping_cost is included in the credit note.
+    /// One of `amount`, `lines`, or `shipping_cost` must be provided.
     pub fn shipping_cost(mut self, shipping_cost: impl Into<CreditNoteShippingCost>) -> Self {
         self.inner.shipping_cost = Some(shipping_cost.into());
         self
@@ -961,6 +969,7 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteEmailType {
     }
 }
 /// Line items that make up the credit note.
+/// One of `amount`, `lines`, or `shipping_cost` must be provided.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCreditNoteLines {
     /// The line item amount to credit.
@@ -1093,6 +1102,7 @@ impl CreateCreditNote {
         Self { inner: CreateCreditNoteBuilder::new(invoice.into()) }
     }
     /// The integer amount in cents (or local equivalent) representing the total amount of the credit note.
+    /// One of `amount`, `lines`, or `shipping_cost` must be provided.
     pub fn amount(mut self, amount: impl Into<i64>) -> Self {
         self.inner.amount = Some(amount.into());
         self
@@ -1120,6 +1130,7 @@ impl CreateCreditNote {
         self
     }
     /// Line items that make up the credit note.
+    /// One of `amount`, `lines`, or `shipping_cost` must be provided.
     pub fn lines(mut self, lines: impl Into<Vec<CreateCreditNoteLines>>) -> Self {
         self.inner.lines = Some(lines.into());
         self
@@ -1162,6 +1173,7 @@ impl CreateCreditNote {
         self
     }
     /// When shipping_cost contains the shipping_rate from the invoice, the shipping_cost is included in the credit note.
+    /// One of `amount`, `lines`, or `shipping_cost` must be provided.
     pub fn shipping_cost(mut self, shipping_cost: impl Into<CreditNoteShippingCost>) -> Self {
         self.inner.shipping_cost = Some(shipping_cost.into());
         self
@@ -1350,7 +1362,7 @@ pub struct CreditNoteRefundParams {
     /// Defaults to the entire refund amount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_refunded: Option<i64>,
-    /// ID of an existing refund to link this credit note to.
+    /// ID of an existing refund to link this credit note to. Required when `type` is `refund`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund: Option<String>,
 }
