@@ -3,10 +3,13 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsRevolutPay {
     pub funding: Option<stripe_shared::RevolutPayUnderlyingPaymentMethodFundingDetails>,
+    /// The Revolut Pay transaction ID associated with this payment.
+    pub transaction_id: Option<String>,
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsRevolutPayBuilder {
     funding: Option<Option<stripe_shared::RevolutPayUnderlyingPaymentMethodFundingDetails>>,
+    transaction_id: Option<Option<String>>,
 }
 
 #[allow(
@@ -50,20 +53,23 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "funding" => Deserialize::begin(&mut self.funding),
+                "transaction_id" => Deserialize::begin(&mut self.transaction_id),
 
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { funding: Deserialize::default() }
+            Self { funding: Deserialize::default(), transaction_id: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(funding),) = (self.funding.take(),) else {
+            let (Some(funding), Some(transaction_id)) =
+                (self.funding.take(), self.transaction_id.take())
+            else {
                 return None;
             };
-            Some(Self::Out { funding })
+            Some(Self::Out { funding, transaction_id })
         }
     }
 
@@ -91,6 +97,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "funding" => b.funding = FromValueOpt::from_value(v),
+                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

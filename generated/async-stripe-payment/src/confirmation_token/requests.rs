@@ -148,6 +148,10 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub cashapp: Option<miniserde::json::Value>,
+    /// If this is a Crypto PaymentMethod, this hash contains details about the Crypto payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub crypto: Option<miniserde::json::Value>,
     /// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -308,6 +312,7 @@ impl CreateConfirmationTokenPaymentMethodData {
             blik: None,
             boleto: None,
             cashapp: None,
+            crypto: None,
             customer_balance: None,
             eps: None,
             fpx: None,
@@ -911,6 +916,7 @@ pub enum CreateConfirmationTokenPaymentMethodDataIdealBank {
     AbnAmro,
     AsnBank,
     Bunq,
+    Buut,
     Handelsbanken,
     Ing,
     Knab,
@@ -934,6 +940,7 @@ impl CreateConfirmationTokenPaymentMethodDataIdealBank {
             AbnAmro => "abn_amro",
             AsnBank => "asn_bank",
             Bunq => "bunq",
+            Buut => "buut",
             Handelsbanken => "handelsbanken",
             Ing => "ing",
             Knab => "knab",
@@ -960,6 +967,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataIdealBank {
             "abn_amro" => Ok(AbnAmro),
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
+            "buut" => Ok(Buut),
             "handelsbanken" => Ok(Handelsbanken),
             "ing" => Ok(Ing),
             "knab" => Ok(Knab),
@@ -1424,6 +1432,7 @@ pub enum CreateConfirmationTokenPaymentMethodDataType {
     Blik,
     Boleto,
     Cashapp,
+    Crypto,
     CustomerBalance,
     Eps,
     Fpx,
@@ -1477,6 +1486,7 @@ impl CreateConfirmationTokenPaymentMethodDataType {
             Blik => "blik",
             Boleto => "boleto",
             Cashapp => "cashapp",
+            Crypto => "crypto",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -1533,6 +1543,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataType {
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "cashapp" => Ok(Cashapp),
+            "crypto" => Ok(Crypto),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),
@@ -1806,7 +1817,7 @@ pub struct CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlan {
     /// One of `month`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval: Option<CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval>,
-    /// Type of installment plan, one of `fixed_count`.
+    /// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
     #[serde(rename = "type")]
     pub type_: CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType,
 }
@@ -1872,16 +1883,20 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval"))
     }
 }
-/// Type of installment plan, one of `fixed_count`.
+/// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType {
+    Bonus,
     FixedCount,
+    Revolving,
 }
 impl CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType {
     pub fn as_str(self) -> &'static str {
         use CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType::*;
         match self {
+            Bonus => "bonus",
             FixedCount => "fixed_count",
+            Revolving => "revolving",
         }
     }
 }
@@ -1891,7 +1906,9 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodOptionsCardInstal
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType::*;
         match s {
+            "bonus" => Ok(Bonus),
             "fixed_count" => Ok(FixedCount),
+            "revolving" => Ok(Revolving),
             _ => Err(stripe_types::StripeParseError),
         }
     }

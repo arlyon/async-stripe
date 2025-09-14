@@ -996,9 +996,15 @@ impl PersonalPskConfig {
 }
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct Tipping {
+    /// Tipping configuration for AED
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub aed: Option<CurrencySpecificConfig>,
     /// Tipping configuration for AUD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aud: Option<CurrencySpecificConfig>,
+    /// Tipping configuration for BGN
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bgn: Option<CurrencySpecificConfig>,
     /// Tipping configuration for CAD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cad: Option<CurrencySpecificConfig>,
@@ -1020,9 +1026,15 @@ pub struct Tipping {
     /// Tipping configuration for HKD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hkd: Option<CurrencySpecificConfig>,
+    /// Tipping configuration for HUF
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub huf: Option<CurrencySpecificConfig>,
     /// Tipping configuration for JPY
     #[serde(skip_serializing_if = "Option::is_none")]
     pub jpy: Option<CurrencySpecificConfig>,
+    /// Tipping configuration for MXN
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mxn: Option<CurrencySpecificConfig>,
     /// Tipping configuration for MYR
     #[serde(skip_serializing_if = "Option::is_none")]
     pub myr: Option<CurrencySpecificConfig>,
@@ -1035,6 +1047,9 @@ pub struct Tipping {
     /// Tipping configuration for PLN
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pln: Option<CurrencySpecificConfig>,
+    /// Tipping configuration for RON
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ron: Option<CurrencySpecificConfig>,
     /// Tipping configuration for SEK
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sek: Option<CurrencySpecificConfig>,
@@ -1048,7 +1063,9 @@ pub struct Tipping {
 impl Tipping {
     pub fn new() -> Self {
         Self {
+            aed: None,
             aud: None,
+            bgn: None,
             cad: None,
             chf: None,
             czk: None,
@@ -1056,11 +1073,14 @@ impl Tipping {
             eur: None,
             gbp: None,
             hkd: None,
+            huf: None,
             jpy: None,
+            mxn: None,
             myr: None,
             nok: None,
             nzd: None,
             pln: None,
+            ron: None,
             sek: None,
             sgd: None,
             usd: None,

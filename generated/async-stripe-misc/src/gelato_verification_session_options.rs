@@ -5,6 +5,7 @@ pub struct GelatoVerificationSessionOptions {
     pub document: Option<stripe_misc::GelatoSessionDocumentOptions>,
     pub email: Option<stripe_misc::GelatoSessionEmailOptions>,
     pub id_number: Option<stripe_misc::GelatoSessionIdNumberOptions>,
+    pub matching: Option<stripe_misc::GelatoSessionMatchingOptions>,
     pub phone: Option<stripe_misc::GelatoSessionPhoneOptions>,
 }
 #[doc(hidden)]
@@ -12,6 +13,7 @@ pub struct GelatoVerificationSessionOptionsBuilder {
     document: Option<Option<stripe_misc::GelatoSessionDocumentOptions>>,
     email: Option<Option<stripe_misc::GelatoSessionEmailOptions>>,
     id_number: Option<Option<stripe_misc::GelatoSessionIdNumberOptions>>,
+    matching: Option<Option<stripe_misc::GelatoSessionMatchingOptions>>,
     phone: Option<Option<stripe_misc::GelatoSessionPhoneOptions>>,
 }
 
@@ -58,6 +60,7 @@ const _: () = {
                 "document" => Deserialize::begin(&mut self.document),
                 "email" => Deserialize::begin(&mut self.email),
                 "id_number" => Deserialize::begin(&mut self.id_number),
+                "matching" => Deserialize::begin(&mut self.matching),
                 "phone" => Deserialize::begin(&mut self.phone),
 
                 _ => <dyn Visitor>::ignore(),
@@ -69,17 +72,18 @@ const _: () = {
                 document: Deserialize::default(),
                 email: Deserialize::default(),
                 id_number: Deserialize::default(),
+                matching: Deserialize::default(),
                 phone: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(document), Some(email), Some(id_number), Some(phone)) =
-                (self.document.take(), self.email, self.id_number, self.phone)
+            let (Some(document), Some(email), Some(id_number), Some(matching), Some(phone)) =
+                (self.document.take(), self.email, self.id_number, self.matching, self.phone)
             else {
                 return None;
             };
-            Some(Self::Out { document, email, id_number, phone })
+            Some(Self::Out { document, email, id_number, matching, phone })
         }
     }
 
@@ -109,6 +113,7 @@ const _: () = {
                     "document" => b.document = FromValueOpt::from_value(v),
                     "email" => b.email = FromValueOpt::from_value(v),
                     "id_number" => b.id_number = FromValueOpt::from_value(v),
+                    "matching" => b.matching = FromValueOpt::from_value(v),
                     "phone" => b.phone = FromValueOpt::from_value(v),
 
                     _ => {}

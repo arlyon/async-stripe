@@ -410,7 +410,7 @@ impl ListSubscription {
         self.inner.created = Some(created.into());
         self
     }
-    /// Only return subscriptions whose current_period_end falls within the given date interval.
+    /// Only return subscriptions whose minimum item current_period_end falls within the given date interval.
     pub fn current_period_end(
         mut self,
         current_period_end: impl Into<stripe_types::RangeQueryTs>,
@@ -418,7 +418,7 @@ impl ListSubscription {
         self.inner.current_period_end = Some(current_period_end.into());
         self
     }
-    /// Only return subscriptions whose current_period_start falls within the given date interval.
+    /// Only return subscriptions whose maximum item current_period_start falls within the given date interval.
     pub fn current_period_start(
         mut self,
         current_period_start: impl Into<stripe_types::RangeQueryTs>,
@@ -671,9 +671,11 @@ struct CreateSubscriptionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_cycle_anchor_config: Option<CreateSubscriptionBillingCycleAnchorConfig>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    billing_mode: Option<CreateSubscriptionBillingMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     billing_thresholds: Option<BillingThresholdsParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    cancel_at: Option<stripe_types::Timestamp>,
+    cancel_at: Option<CreateSubscriptionCancelAt>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cancel_at_period_end: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -733,6 +735,7 @@ impl CreateSubscriptionBuilder {
             backdate_start_date: None,
             billing_cycle_anchor: None,
             billing_cycle_anchor_config: None,
+            billing_mode: None,
             billing_thresholds: None,
             cancel_at: None,
             cancel_at_period_end: None,
@@ -770,6 +773,15 @@ pub struct CreateSubscriptionAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The period associated with this invoice item. Defaults to the current period of the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub period: Option<CreateSubscriptionAddInvoiceItemsPeriod>,
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
@@ -786,12 +798,187 @@ pub struct CreateSubscriptionAddInvoiceItems {
 }
 impl CreateSubscriptionAddInvoiceItems {
     pub fn new() -> Self {
-        Self { discounts: None, price: None, price_data: None, quantity: None, tax_rates: None }
+        Self {
+            discounts: None,
+            metadata: None,
+            period: None,
+            price: None,
+            price_data: None,
+            quantity: None,
+            tax_rates: None,
+        }
     }
 }
 impl Default for CreateSubscriptionAddInvoiceItems {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// The period associated with this invoice item. Defaults to the current period of the subscription.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionAddInvoiceItemsPeriod {
+    /// End of the invoice item period.
+    pub end: CreateSubscriptionAddInvoiceItemsPeriodEnd,
+    /// Start of the invoice item period.
+    pub start: CreateSubscriptionAddInvoiceItemsPeriodStart,
+}
+impl CreateSubscriptionAddInvoiceItemsPeriod {
+    pub fn new(
+        end: impl Into<CreateSubscriptionAddInvoiceItemsPeriodEnd>,
+        start: impl Into<CreateSubscriptionAddInvoiceItemsPeriodStart>,
+    ) -> Self {
+        Self { end: end.into(), start: start.into() }
+    }
+}
+/// End of the invoice item period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionAddInvoiceItemsPeriodEnd {
+    /// A precise Unix timestamp for the end of the invoice item period.
+    /// Must be greater than or equal to `period.start`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// Select how to calculate the end of the invoice item period.
+    #[serde(rename = "type")]
+    pub type_: CreateSubscriptionAddInvoiceItemsPeriodEndType,
+}
+impl CreateSubscriptionAddInvoiceItemsPeriodEnd {
+    pub fn new(type_: impl Into<CreateSubscriptionAddInvoiceItemsPeriodEndType>) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+/// Select how to calculate the end of the invoice item period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSubscriptionAddInvoiceItemsPeriodEndType {
+    MinItemPeriodEnd,
+    Timestamp,
+}
+impl CreateSubscriptionAddInvoiceItemsPeriodEndType {
+    pub fn as_str(self) -> &'static str {
+        use CreateSubscriptionAddInvoiceItemsPeriodEndType::*;
+        match self {
+            MinItemPeriodEnd => "min_item_period_end",
+            Timestamp => "timestamp",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionAddInvoiceItemsPeriodEndType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionAddInvoiceItemsPeriodEndType::*;
+        match s {
+            "min_item_period_end" => Ok(MinItemPeriodEnd),
+            "timestamp" => Ok(Timestamp),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionAddInvoiceItemsPeriodEndType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSubscriptionAddInvoiceItemsPeriodEndType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSubscriptionAddInvoiceItemsPeriodEndType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionAddInvoiceItemsPeriodEndType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionAddInvoiceItemsPeriodEndType",
+            )
+        })
+    }
+}
+/// Start of the invoice item period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionAddInvoiceItemsPeriodStart {
+    /// A precise Unix timestamp for the start of the invoice item period.
+    /// Must be less than or equal to `period.end`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// Select how to calculate the start of the invoice item period.
+    #[serde(rename = "type")]
+    pub type_: CreateSubscriptionAddInvoiceItemsPeriodStartType,
+}
+impl CreateSubscriptionAddInvoiceItemsPeriodStart {
+    pub fn new(type_: impl Into<CreateSubscriptionAddInvoiceItemsPeriodStartType>) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+/// Select how to calculate the start of the invoice item period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSubscriptionAddInvoiceItemsPeriodStartType {
+    MaxItemPeriodStart,
+    Now,
+    Timestamp,
+}
+impl CreateSubscriptionAddInvoiceItemsPeriodStartType {
+    pub fn as_str(self) -> &'static str {
+        use CreateSubscriptionAddInvoiceItemsPeriodStartType::*;
+        match self {
+            MaxItemPeriodStart => "max_item_period_start",
+            Now => "now",
+            Timestamp => "timestamp",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionAddInvoiceItemsPeriodStartType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionAddInvoiceItemsPeriodStartType::*;
+        match s {
+            "max_item_period_start" => Ok(MaxItemPeriodStart),
+            "now" => Ok(Now),
+            "timestamp" => Ok(Timestamp),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionAddInvoiceItemsPeriodStartType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSubscriptionAddInvoiceItemsPeriodStartType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSubscriptionAddInvoiceItemsPeriodStartType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionAddInvoiceItemsPeriodStartType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionAddInvoiceItemsPeriodStartType",
+            )
+        })
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
@@ -893,7 +1080,6 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionAddInvoiceItemsPriceData
     }
 }
 /// Automatic tax settings for this subscription.
-/// We recommend you only include this parameter when the existing value is being changed.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionAutomaticTax {
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
@@ -988,18 +1174,18 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionAutomaticTaxLiabilityTyp
 /// When provided, the billing_cycle_anchor is set to the next occurence of the day_of_month at the hour, minute, and second UTC.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionBillingCycleAnchorConfig {
-    /// The day of the month the billing_cycle_anchor should be. Ranges from 1 to 31.
+    /// The day of the month the anchor should be. Ranges from 1 to 31.
     pub day_of_month: i64,
-    /// The hour of the day the billing_cycle_anchor should be. Ranges from 0 to 23.
+    /// The hour of the day the anchor should be. Ranges from 0 to 23.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hour: Option<i64>,
-    /// The minute of the hour the billing_cycle_anchor should be. Ranges from 0 to 59.
+    /// The minute of the hour the anchor should be. Ranges from 0 to 59.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minute: Option<i64>,
-    /// The month to start full cycle billing periods. Ranges from 1 to 12.
+    /// The month to start full cycle periods. Ranges from 1 to 12.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub month: Option<i64>,
-    /// The second of the minute the billing_cycle_anchor should be. Ranges from 0 to 59.
+    /// The second of the minute the anchor should be. Ranges from 0 to 59.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub second: Option<i64>,
 }
@@ -1013,6 +1199,85 @@ impl CreateSubscriptionBillingCycleAnchorConfig {
             second: None,
         }
     }
+}
+/// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionBillingMode {
+    /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+    #[serde(rename = "type")]
+    pub type_: CreateSubscriptionBillingModeType,
+}
+impl CreateSubscriptionBillingMode {
+    pub fn new(type_: impl Into<CreateSubscriptionBillingModeType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSubscriptionBillingModeType {
+    Classic,
+    Flexible,
+}
+impl CreateSubscriptionBillingModeType {
+    pub fn as_str(self) -> &'static str {
+        use CreateSubscriptionBillingModeType::*;
+        match self {
+            Classic => "classic",
+            Flexible => "flexible",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionBillingModeType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionBillingModeType::*;
+        match s {
+            "classic" => Ok(Classic),
+            "flexible" => Ok(Flexible),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSubscriptionBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSubscriptionBillingModeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionBillingModeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateSubscriptionBillingModeType")
+        })
+    }
+}
+/// A timestamp at which the subscription should cancel.
+/// If set to a date before the current period ends, this will cause a proration if prorations have been enabled using `proration_behavior`.
+/// If set during a future period, this will always cause a proration for that period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSubscriptionCancelAt {
+    MaxPeriodEnd,
+    MinPeriodEnd,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// All invoices will be billed using the specified settings.
 #[derive(Clone, Debug, serde::Serialize)]
@@ -2379,6 +2644,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     Boleto,
     Card,
     Cashapp,
+    Crypto,
     CustomerBalance,
     Eps,
     Fpx,
@@ -2424,6 +2690,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             Boleto => "boleto",
             Card => "card",
             Cashapp => "cashapp",
+            Crypto => "crypto",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -2472,6 +2739,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
+            "crypto" => Ok(Crypto),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),
@@ -2866,7 +3134,6 @@ impl CreateSubscription {
         self
     }
     /// Automatic tax settings for this subscription.
-    /// We recommend you only include this parameter when the existing value is being changed.
     pub fn automatic_tax(
         mut self,
         automatic_tax: impl Into<CreateSubscriptionAutomaticTax>,
@@ -2874,8 +3141,8 @@ impl CreateSubscription {
         self.inner.automatic_tax = Some(automatic_tax.into());
         self
     }
-    /// For new subscriptions, a past timestamp to backdate the subscription's start date to.
-    /// If set, the first invoice will contain a proration for the timespan between the start date and the current time.
+    /// A past timestamp to backdate the subscription's start date to.
+    /// If set, the first invoice will contain line items for the timespan between the start date and the current time.
     /// Can be combined with trials and the billing cycle anchor.
     pub fn backdate_start_date(
         mut self,
@@ -2903,6 +3170,11 @@ impl CreateSubscription {
         self.inner.billing_cycle_anchor_config = Some(billing_cycle_anchor_config.into());
         self
     }
+    /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
+    pub fn billing_mode(mut self, billing_mode: impl Into<CreateSubscriptionBillingMode>) -> Self {
+        self.inner.billing_mode = Some(billing_mode.into());
+        self
+    }
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// When updating, pass an empty string to remove previously-defined thresholds.
     pub fn billing_thresholds(
@@ -2915,14 +3187,12 @@ impl CreateSubscription {
     /// A timestamp at which the subscription should cancel.
     /// If set to a date before the current period ends, this will cause a proration if prorations have been enabled using `proration_behavior`.
     /// If set during a future period, this will always cause a proration for that period.
-    pub fn cancel_at(mut self, cancel_at: impl Into<stripe_types::Timestamp>) -> Self {
+    pub fn cancel_at(mut self, cancel_at: impl Into<CreateSubscriptionCancelAt>) -> Self {
         self.inner.cancel_at = Some(cancel_at.into());
         self
     }
     /// Indicate whether this subscription should cancel at the end of the current period (`current_period_end`).
     /// Defaults to `false`.
-    /// This param will be removed in a future API version.
-    /// Please use `cancel_at` instead.
     pub fn cancel_at_period_end(mut self, cancel_at_period_end: impl Into<bool>) -> Self {
         self.inner.cancel_at_period_end = Some(cancel_at_period_end.into());
         self
@@ -3139,6 +3409,130 @@ impl StripeRequest for CreateSubscription {
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/subscriptions").form(&self.inner)
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+struct MigrateSubscriptionBuilder {
+    billing_mode: MigrateSubscriptionBillingMode,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+}
+impl MigrateSubscriptionBuilder {
+    fn new(billing_mode: impl Into<MigrateSubscriptionBillingMode>) -> Self {
+        Self { billing_mode: billing_mode.into(), expand: None }
+    }
+}
+/// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct MigrateSubscriptionBillingMode {
+    #[serde(rename = "type")]
+    pub type_: MigrateSubscriptionBillingModeType,
+}
+impl MigrateSubscriptionBillingMode {
+    pub fn new(type_: impl Into<MigrateSubscriptionBillingModeType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum MigrateSubscriptionBillingModeType {
+    Flexible,
+}
+impl MigrateSubscriptionBillingModeType {
+    pub fn as_str(self) -> &'static str {
+        use MigrateSubscriptionBillingModeType::*;
+        match self {
+            Flexible => "flexible",
+        }
+    }
+}
+
+impl std::str::FromStr for MigrateSubscriptionBillingModeType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use MigrateSubscriptionBillingModeType::*;
+        match s {
+            "flexible" => Ok(Flexible),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for MigrateSubscriptionBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for MigrateSubscriptionBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for MigrateSubscriptionBillingModeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for MigrateSubscriptionBillingModeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for MigrateSubscriptionBillingModeType")
+        })
+    }
+}
+/// Upgrade the billing_mode of an existing subscription.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct MigrateSubscription {
+    inner: MigrateSubscriptionBuilder,
+    subscription: stripe_shared::SubscriptionId,
+}
+impl MigrateSubscription {
+    /// Construct a new `MigrateSubscription`.
+    pub fn new(
+        subscription: impl Into<stripe_shared::SubscriptionId>,
+        billing_mode: impl Into<MigrateSubscriptionBillingMode>,
+    ) -> Self {
+        Self {
+            subscription: subscription.into(),
+            inner: MigrateSubscriptionBuilder::new(billing_mode.into()),
+        }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+}
+impl MigrateSubscription {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for MigrateSubscription {
+    type Output = stripe_shared::Subscription;
+
+    fn build(&self) -> RequestBuilder {
+        let subscription = &self.subscription;
+        RequestBuilder::new(StripeMethod::Post, format!("/subscriptions/{subscription}/migrate"))
+            .form(&self.inner)
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -3369,7 +3763,7 @@ struct UpdateSubscriptionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_thresholds: Option<BillingThresholdsParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    cancel_at: Option<stripe_types::Timestamp>,
+    cancel_at: Option<UpdateSubscriptionCancelAt>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cancel_at_period_end: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3465,6 +3859,15 @@ pub struct UpdateSubscriptionAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The period associated with this invoice item. Defaults to the current period of the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub period: Option<UpdateSubscriptionAddInvoiceItemsPeriod>,
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
@@ -3481,12 +3884,187 @@ pub struct UpdateSubscriptionAddInvoiceItems {
 }
 impl UpdateSubscriptionAddInvoiceItems {
     pub fn new() -> Self {
-        Self { discounts: None, price: None, price_data: None, quantity: None, tax_rates: None }
+        Self {
+            discounts: None,
+            metadata: None,
+            period: None,
+            price: None,
+            price_data: None,
+            quantity: None,
+            tax_rates: None,
+        }
     }
 }
 impl Default for UpdateSubscriptionAddInvoiceItems {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// The period associated with this invoice item. Defaults to the current period of the subscription.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionAddInvoiceItemsPeriod {
+    /// End of the invoice item period.
+    pub end: UpdateSubscriptionAddInvoiceItemsPeriodEnd,
+    /// Start of the invoice item period.
+    pub start: UpdateSubscriptionAddInvoiceItemsPeriodStart,
+}
+impl UpdateSubscriptionAddInvoiceItemsPeriod {
+    pub fn new(
+        end: impl Into<UpdateSubscriptionAddInvoiceItemsPeriodEnd>,
+        start: impl Into<UpdateSubscriptionAddInvoiceItemsPeriodStart>,
+    ) -> Self {
+        Self { end: end.into(), start: start.into() }
+    }
+}
+/// End of the invoice item period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionAddInvoiceItemsPeriodEnd {
+    /// A precise Unix timestamp for the end of the invoice item period.
+    /// Must be greater than or equal to `period.start`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// Select how to calculate the end of the invoice item period.
+    #[serde(rename = "type")]
+    pub type_: UpdateSubscriptionAddInvoiceItemsPeriodEndType,
+}
+impl UpdateSubscriptionAddInvoiceItemsPeriodEnd {
+    pub fn new(type_: impl Into<UpdateSubscriptionAddInvoiceItemsPeriodEndType>) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+/// Select how to calculate the end of the invoice item period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateSubscriptionAddInvoiceItemsPeriodEndType {
+    MinItemPeriodEnd,
+    Timestamp,
+}
+impl UpdateSubscriptionAddInvoiceItemsPeriodEndType {
+    pub fn as_str(self) -> &'static str {
+        use UpdateSubscriptionAddInvoiceItemsPeriodEndType::*;
+        match self {
+            MinItemPeriodEnd => "min_item_period_end",
+            Timestamp => "timestamp",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionAddInvoiceItemsPeriodEndType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionAddInvoiceItemsPeriodEndType::*;
+        match s {
+            "min_item_period_end" => Ok(MinItemPeriodEnd),
+            "timestamp" => Ok(Timestamp),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionAddInvoiceItemsPeriodEndType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSubscriptionAddInvoiceItemsPeriodEndType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateSubscriptionAddInvoiceItemsPeriodEndType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAddInvoiceItemsPeriodEndType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionAddInvoiceItemsPeriodEndType",
+            )
+        })
+    }
+}
+/// Start of the invoice item period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionAddInvoiceItemsPeriodStart {
+    /// A precise Unix timestamp for the start of the invoice item period.
+    /// Must be less than or equal to `period.end`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// Select how to calculate the start of the invoice item period.
+    #[serde(rename = "type")]
+    pub type_: UpdateSubscriptionAddInvoiceItemsPeriodStartType,
+}
+impl UpdateSubscriptionAddInvoiceItemsPeriodStart {
+    pub fn new(type_: impl Into<UpdateSubscriptionAddInvoiceItemsPeriodStartType>) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+/// Select how to calculate the start of the invoice item period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateSubscriptionAddInvoiceItemsPeriodStartType {
+    MaxItemPeriodStart,
+    Now,
+    Timestamp,
+}
+impl UpdateSubscriptionAddInvoiceItemsPeriodStartType {
+    pub fn as_str(self) -> &'static str {
+        use UpdateSubscriptionAddInvoiceItemsPeriodStartType::*;
+        match self {
+            MaxItemPeriodStart => "max_item_period_start",
+            Now => "now",
+            Timestamp => "timestamp",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionAddInvoiceItemsPeriodStartType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionAddInvoiceItemsPeriodStartType::*;
+        match s {
+            "max_item_period_start" => Ok(MaxItemPeriodStart),
+            "now" => Ok(Now),
+            "timestamp" => Ok(Timestamp),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionAddInvoiceItemsPeriodStartType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSubscriptionAddInvoiceItemsPeriodStartType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateSubscriptionAddInvoiceItemsPeriodStartType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAddInvoiceItemsPeriodStartType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionAddInvoiceItemsPeriodStartType",
+            )
+        })
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
@@ -3736,6 +4314,17 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionBillingCycleAnchor {
             serde::de::Error::custom("Unknown value for UpdateSubscriptionBillingCycleAnchor")
         })
     }
+}
+/// A timestamp at which the subscription should cancel.
+/// If set to a date before the current period ends, this will cause a proration if prorations have been enabled using `proration_behavior`.
+/// If set during a future period, this will always cause a proration for that period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSubscriptionCancelAt {
+    MaxPeriodEnd,
+    MinPeriodEnd,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
 }
 /// Details about why this subscription was cancelled
 #[derive(Clone, Debug, serde::Serialize)]
@@ -4277,7 +4866,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPauseCollectionBehavior 
 /// Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
 /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
 /// This was the default behavior for API versions prior to 2019-03-14.
-/// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
+/// See the [changelog](https://docs.stripe.com/changelog/2019-03-14) to learn more.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSubscriptionPaymentBehavior {
     AllowIncomplete,
@@ -5289,6 +5878,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     Boleto,
     Card,
     Cashapp,
+    Crypto,
     CustomerBalance,
     Eps,
     Fpx,
@@ -5334,6 +5924,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             Boleto => "boleto",
             Card => "card",
             Cashapp => "cashapp",
+            Crypto => "crypto",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -5382,6 +5973,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
+            "crypto" => Ok(Crypto),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),
@@ -5835,14 +6427,12 @@ impl UpdateSubscription {
     /// A timestamp at which the subscription should cancel.
     /// If set to a date before the current period ends, this will cause a proration if prorations have been enabled using `proration_behavior`.
     /// If set during a future period, this will always cause a proration for that period.
-    pub fn cancel_at(mut self, cancel_at: impl Into<stripe_types::Timestamp>) -> Self {
+    pub fn cancel_at(mut self, cancel_at: impl Into<UpdateSubscriptionCancelAt>) -> Self {
         self.inner.cancel_at = Some(cancel_at.into());
         self
     }
     /// Indicate whether this subscription should cancel at the end of the current period (`current_period_end`).
     /// Defaults to `false`.
-    /// This param will be removed in a future API version.
-    /// Please use `cancel_at` instead.
     pub fn cancel_at_period_end(mut self, cancel_at_period_end: impl Into<bool>) -> Self {
         self.inner.cancel_at_period_end = Some(cancel_at_period_end.into());
         self
@@ -5973,7 +6563,7 @@ impl UpdateSubscription {
     /// Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
     /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
     /// This was the default behavior for API versions prior to 2019-03-14.
-    /// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
+    /// See the [changelog](https://docs.stripe.com/changelog/2019-03-14) to learn more.
     pub fn payment_behavior(
         mut self,
         payment_behavior: impl Into<UpdateSubscriptionPaymentBehavior>,

@@ -4,10 +4,13 @@
 pub struct InvoiceSettingCheckoutRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     pub amount_tax_display: Option<String>,
+    /// ID of the invoice rendering template to be used for the generated invoice.
+    pub template: Option<String>,
 }
 #[doc(hidden)]
 pub struct InvoiceSettingCheckoutRenderingOptionsBuilder {
     amount_tax_display: Option<Option<String>>,
+    template: Option<Option<String>>,
 }
 
 #[allow(
@@ -51,20 +54,23 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount_tax_display" => Deserialize::begin(&mut self.amount_tax_display),
+                "template" => Deserialize::begin(&mut self.template),
 
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { amount_tax_display: Deserialize::default() }
+            Self { amount_tax_display: Deserialize::default(), template: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_tax_display),) = (self.amount_tax_display.take(),) else {
+            let (Some(amount_tax_display), Some(template)) =
+                (self.amount_tax_display.take(), self.template.take())
+            else {
                 return None;
             };
-            Some(Self::Out { amount_tax_display })
+            Some(Self::Out { amount_tax_display, template })
         }
     }
 
@@ -92,6 +98,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "amount_tax_display" => b.amount_tax_display = FromValueOpt::from_value(v),
+                    "template" => b.template = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

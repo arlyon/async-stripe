@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsPaymentIntentPresentmentDetails {
-    /// Amount intended to be collected by this payment, denominated in presentment_currency.
+    /// Amount intended to be collected by this payment, denominated in `presentment_currency`.
     pub presentment_amount: i64,
     /// Currency presented to the customer during payment.
     pub presentment_currency: stripe_types::Currency,

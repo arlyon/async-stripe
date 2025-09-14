@@ -233,6 +233,7 @@ pub struct CreateTokenAccountCompany {
     /// The company's phone number (used for verification).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+    /// When the business was incorporated or registered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registration_date: Option<CreateTokenAccountCompanyRegistrationDate>,
     /// The identification number given to a company when it is registered or incorporated, if distinct from the identification number used for filing taxes.
@@ -519,6 +520,7 @@ impl<'de> serde::Deserialize<'de> for CreateTokenAccountCompanyOwnershipExemptio
         })
     }
 }
+/// When the business was incorporated or registered.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTokenAccountCompanyRegistrationDate {
     /// The day of registration, between 1 and 31.

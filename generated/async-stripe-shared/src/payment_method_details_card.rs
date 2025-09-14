@@ -7,7 +7,7 @@ pub amount_authorized: Option<i64>,
     /// Authorization code on the charge.
 pub authorization_code: Option<String>,
         /// Card brand.
-    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa` or `unknown`.
 pub brand: Option<String>,
         /// When using manual capture, a future timestamp at which the charge will be automatically refunded if uncaptured.
 pub capture_before: Option<stripe_types::Timestamp>,
@@ -36,7 +36,7 @@ pub funding: Option<String>,
     /// (For internal use only and not typically available in standard API requests.).
 pub iin: Option<String>,
 pub incremental_authorization: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorization>,
-    /// Installment details for this payment (Mexico only).
+    /// Installment details for this payment.
     ///
         /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
 pub installments: Option<stripe_shared::PaymentMethodDetailsCardInstallments>,

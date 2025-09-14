@@ -37,7 +37,8 @@ pub struct PaymentMethodInteracPresent {
     pub last4: Option<String>,
     /// Contains information about card networks that can be used to process the payment.
     pub networks: Option<stripe_shared::PaymentMethodCardPresentNetworks>,
-    /// EMV tag 5F2D. Preferred languages specified by the integrated circuit chip.
+    /// The languages that the issuing bank recommends using for localizing any customer-facing text, as read from the card.
+    /// Referenced from EMV tag 5F2D, data encoded on the card's chip.
     pub preferred_locales: Option<Vec<String>>,
     /// How card details were read in this transaction.
     pub read_method: Option<PaymentMethodInteracPresentReadMethod>,

@@ -17,7 +17,7 @@ pub struct ApiErrors {
     pub message: Option<String>,
     /// For card errors resulting from a card issuer decline, a 2 digit code which indicates the advice given to merchant by the card network on how to proceed with an error.
     pub network_advice_code: Option<String>,
-    /// For card errors resulting from a card issuer decline, a brand specific 2, 3, or 4 digit code which indicates the reason the authorization failed.
+    /// For payments declined by the network, an alphanumeric code which indicates the reason the payment failed.
     pub network_decline_code: Option<String>,
     /// If the error is parameter-specific, the parameter related to the error.
     /// For example, you can use this to display a message near the correct form field.
@@ -289,6 +289,7 @@ pub enum ApiErrorsCode {
     CouponExpired,
     CustomerMaxPaymentMethods,
     CustomerMaxSubscriptions,
+    CustomerSessionExpired,
     CustomerTaxLocationInvalid,
     DebitNotAuthorized,
     EmailInvalid,
@@ -306,6 +307,7 @@ pub enum ApiErrorsCode {
     IncorrectCvc,
     IncorrectNumber,
     IncorrectZip,
+    IndiaRecurringPaymentMandateCanceled,
     InstantPayoutsConfigDisabled,
     InstantPayoutsCurrencyDisabled,
     InstantPayoutsLimitExceeded,
@@ -474,6 +476,7 @@ impl ApiErrorsCode {
             CouponExpired => "coupon_expired",
             CustomerMaxPaymentMethods => "customer_max_payment_methods",
             CustomerMaxSubscriptions => "customer_max_subscriptions",
+            CustomerSessionExpired => "customer_session_expired",
             CustomerTaxLocationInvalid => "customer_tax_location_invalid",
             DebitNotAuthorized => "debit_not_authorized",
             EmailInvalid => "email_invalid",
@@ -493,6 +496,7 @@ impl ApiErrorsCode {
             IncorrectCvc => "incorrect_cvc",
             IncorrectNumber => "incorrect_number",
             IncorrectZip => "incorrect_zip",
+            IndiaRecurringPaymentMandateCanceled => "india_recurring_payment_mandate_canceled",
             InstantPayoutsConfigDisabled => "instant_payouts_config_disabled",
             InstantPayoutsCurrencyDisabled => "instant_payouts_currency_disabled",
             InstantPayoutsLimitExceeded => "instant_payouts_limit_exceeded",
@@ -686,6 +690,7 @@ impl std::str::FromStr for ApiErrorsCode {
             "coupon_expired" => Ok(CouponExpired),
             "customer_max_payment_methods" => Ok(CustomerMaxPaymentMethods),
             "customer_max_subscriptions" => Ok(CustomerMaxSubscriptions),
+            "customer_session_expired" => Ok(CustomerSessionExpired),
             "customer_tax_location_invalid" => Ok(CustomerTaxLocationInvalid),
             "debit_not_authorized" => Ok(DebitNotAuthorized),
             "email_invalid" => Ok(EmailInvalid),
@@ -707,6 +712,7 @@ impl std::str::FromStr for ApiErrorsCode {
             "incorrect_cvc" => Ok(IncorrectCvc),
             "incorrect_number" => Ok(IncorrectNumber),
             "incorrect_zip" => Ok(IncorrectZip),
+            "india_recurring_payment_mandate_canceled" => Ok(IndiaRecurringPaymentMandateCanceled),
             "instant_payouts_config_disabled" => Ok(InstantPayoutsConfigDisabled),
             "instant_payouts_currency_disabled" => Ok(InstantPayoutsCurrencyDisabled),
             "instant_payouts_limit_exceeded" => Ok(InstantPayoutsLimitExceeded),

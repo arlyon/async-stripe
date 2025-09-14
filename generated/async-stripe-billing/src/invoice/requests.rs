@@ -993,7 +993,7 @@ impl<'de> serde::Deserialize<'de>
 /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
-    /// Installment configuration for payments attempted on this invoice (Mexico Only).
+    /// Installment configuration for payments attempted on this invoice.
     ///
     /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1015,7 +1015,7 @@ impl Default for CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
         Self::new()
     }
 }
-/// Installment configuration for payments attempted on this invoice (Mexico Only).
+/// Installment configuration for payments attempted on this invoice.
 ///
 /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -1051,7 +1051,7 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval:
         Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval>,
-    /// Type of installment plan, one of `fixed_count`.
+    /// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
     #[serde(rename = "type")]
     pub type_: CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType,
 }
@@ -1125,16 +1125,20 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval"))
     }
 }
-/// Type of installment plan, one of `fixed_count`.
+/// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
+    Bonus,
     FixedCount,
+    Revolving,
 }
 impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
     pub fn as_str(self) -> &'static str {
         use CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType::*;
         match self {
+            Bonus => "bonus",
             FixedCount => "fixed_count",
+            Revolving => "revolving",
         }
     }
 }
@@ -1146,7 +1150,9 @@ impl std::str::FromStr
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType::*;
         match s {
+            "bonus" => Ok(Bonus),
             "fixed_count" => Ok(FixedCount),
+            "revolving" => Ok(Revolving),
             _ => Err(stripe_types::StripeParseError),
         }
     }
@@ -1592,6 +1598,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     Boleto,
     Card,
     Cashapp,
+    Crypto,
     CustomerBalance,
     Eps,
     Fpx,
@@ -1637,6 +1644,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             Boleto => "boleto",
             Card => "card",
             Cashapp => "cashapp",
+            Crypto => "crypto",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -1685,6 +1693,7 @@ impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodTypes {
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
+            "crypto" => Ok(Crypto),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),
@@ -2466,6 +2475,7 @@ impl CreateInvoice {
     }
     /// Controls whether Stripe performs [automatic collection](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection) of the invoice.
     /// If `false`, the invoice's state doesn't automatically advance without an explicit action.
+    /// Defaults to false.
     pub fn auto_advance(mut self, auto_advance: impl Into<bool>) -> Self {
         self.inner.auto_advance = Some(auto_advance.into());
         self
@@ -2475,8 +2485,8 @@ impl CreateInvoice {
         self.inner.automatic_tax = Some(automatic_tax.into());
         self
     }
-    /// The time when this invoice should be scheduled to finalize.
-    /// The invoice will be finalized at this time if it is still in draft state.
+    /// The time when this invoice should be scheduled to finalize (up to 5 years in the future).
+    /// The invoice is finalized at this time if it's still in draft state.
     pub fn automatically_finalizes_at(
         mut self,
         automatically_finalizes_at: impl Into<stripe_types::Timestamp>,
@@ -3284,7 +3294,7 @@ impl<'de> serde::Deserialize<'de>
 /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsCard {
-    /// Installment configuration for payments attempted on this invoice (Mexico Only).
+    /// Installment configuration for payments attempted on this invoice.
     ///
     /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3306,7 +3316,7 @@ impl Default for UpdateInvoicePaymentSettingsPaymentMethodOptionsCard {
         Self::new()
     }
 }
-/// Installment configuration for payments attempted on this invoice (Mexico Only).
+/// Installment configuration for payments attempted on this invoice.
 ///
 /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -3342,7 +3352,7 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval:
         Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval>,
-    /// Type of installment plan, one of `fixed_count`.
+    /// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
     #[serde(rename = "type")]
     pub type_: UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType,
 }
@@ -3416,16 +3426,20 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval"))
     }
 }
-/// Type of installment plan, one of `fixed_count`.
+/// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
+    Bonus,
     FixedCount,
+    Revolving,
 }
 impl UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
     pub fn as_str(self) -> &'static str {
         use UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType::*;
         match self {
+            Bonus => "bonus",
             FixedCount => "fixed_count",
+            Revolving => "revolving",
         }
     }
 }
@@ -3437,7 +3451,9 @@ impl std::str::FromStr
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType::*;
         match s {
+            "bonus" => Ok(Bonus),
             "fixed_count" => Ok(FixedCount),
+            "revolving" => Ok(Revolving),
             _ => Err(stripe_types::StripeParseError),
         }
     }
@@ -3883,6 +3899,7 @@ pub enum UpdateInvoicePaymentSettingsPaymentMethodTypes {
     Boleto,
     Card,
     Cashapp,
+    Crypto,
     CustomerBalance,
     Eps,
     Fpx,
@@ -3928,6 +3945,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodTypes {
             Boleto => "boleto",
             Card => "card",
             Cashapp => "cashapp",
+            Crypto => "crypto",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -3976,6 +3994,7 @@ impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodTypes {
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
+            "crypto" => Ok(Crypto),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),
@@ -4714,8 +4733,8 @@ impl UpdateInvoice {
         self.inner.automatic_tax = Some(automatic_tax.into());
         self
     }
-    /// The time when this invoice should be scheduled to finalize.
-    /// The invoice will be finalized at this time if it is still in draft state.
+    /// The time when this invoice should be scheduled to finalize (up to 5 years in the future).
+    /// The invoice is finalized at this time if it's still in draft state.
     /// To turn off automatic finalization, set `auto_advance` to false.
     pub fn automatically_finalizes_at(
         mut self,
@@ -7785,6 +7804,9 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoicePreviewMode {
 /// Cannot be used with `subscription` or `subscription_` prefixed fields.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceScheduleDetails {
+    /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_mode: Option<CreatePreviewInvoiceScheduleDetailsBillingMode>,
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     /// Possible values are `release` or `cancel` with the default being `release`.
     /// `release` will end the subscription schedule and keep the underlying subscription running.
@@ -7802,12 +7824,82 @@ pub struct CreatePreviewInvoiceScheduleDetails {
 }
 impl CreatePreviewInvoiceScheduleDetails {
     pub fn new() -> Self {
-        Self { end_behavior: None, phases: None, proration_behavior: None }
+        Self { billing_mode: None, end_behavior: None, phases: None, proration_behavior: None }
     }
 }
 impl Default for CreatePreviewInvoiceScheduleDetails {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsBillingMode {
+    /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+    #[serde(rename = "type")]
+    pub type_: CreatePreviewInvoiceScheduleDetailsBillingModeType,
+}
+impl CreatePreviewInvoiceScheduleDetailsBillingMode {
+    pub fn new(type_: impl Into<CreatePreviewInvoiceScheduleDetailsBillingModeType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePreviewInvoiceScheduleDetailsBillingModeType {
+    Classic,
+    Flexible,
+}
+impl CreatePreviewInvoiceScheduleDetailsBillingModeType {
+    pub fn as_str(self) -> &'static str {
+        use CreatePreviewInvoiceScheduleDetailsBillingModeType::*;
+        match self {
+            Classic => "classic",
+            Flexible => "flexible",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePreviewInvoiceScheduleDetailsBillingModeType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsBillingModeType::*;
+        match s {
+            "classic" => Ok(Classic),
+            "flexible" => Ok(Flexible),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePreviewInvoiceScheduleDetailsBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePreviewInvoiceScheduleDetailsBillingModeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceScheduleDetailsBillingModeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePreviewInvoiceScheduleDetailsBillingModeType",
+            )
+        })
     }
 }
 /// Behavior of the subscription schedule and underlying subscription when it ends.
@@ -7926,6 +8018,9 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     /// Pass an empty string to avoid inheriting any discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
+    /// The number of intervals the phase should last. If set, `end_date` must not be set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<CreatePreviewInvoiceScheduleDetailsPhasesDuration>,
     /// The date at which this phase of the subscription schedule ends.
     /// If set, `iterations` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7938,6 +8033,8 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     /// Integer representing the multiplier applied to the price interval.
     /// For example, `iterations=2` applied to a price with `interval=month` and `interval_count=3` results in a phase of duration `2 * 3 months = 6 months`.
     /// If set, `end_date` must not be set.
+    /// This parameter is deprecated and will be removed in a future version.
+    /// Use `duration` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub iterations: Option<i64>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a phase.
@@ -7982,6 +8079,7 @@ impl CreatePreviewInvoiceScheduleDetailsPhases {
             default_tax_rates: None,
             description: None,
             discounts: None,
+            duration: None,
             end_date: None,
             invoice_settings: None,
             items: items.into(),
@@ -8003,6 +8101,16 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The period associated with this invoice item.
+    /// Defaults to the period of the underlying subscription that surrounds the start of the phase.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub period: Option<CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriod>,
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
@@ -8019,12 +8127,191 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
 }
 impl CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
     pub fn new() -> Self {
-        Self { discounts: None, price: None, price_data: None, quantity: None, tax_rates: None }
+        Self {
+            discounts: None,
+            metadata: None,
+            period: None,
+            price: None,
+            price_data: None,
+            quantity: None,
+            tax_rates: None,
+        }
     }
 }
 impl Default for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// The period associated with this invoice item.
+/// Defaults to the period of the underlying subscription that surrounds the start of the phase.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriod {
+    /// End of the invoice item period.
+    pub end: CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEnd,
+    /// Start of the invoice item period.
+    pub start: CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStart,
+}
+impl CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriod {
+    pub fn new(
+        end: impl Into<CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEnd>,
+        start: impl Into<CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStart>,
+    ) -> Self {
+        Self { end: end.into(), start: start.into() }
+    }
+}
+/// End of the invoice item period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEnd {
+    /// A precise Unix timestamp for the end of the invoice item period.
+    /// Must be greater than or equal to `period.start`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// Select how to calculate the end of the invoice item period.
+    #[serde(rename = "type")]
+    pub type_: CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEndType,
+}
+impl CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEnd {
+    pub fn new(
+        type_: impl Into<CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEndType>,
+    ) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+/// Select how to calculate the end of the invoice item period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEndType {
+    MinItemPeriodEnd,
+    PhaseEnd,
+    Timestamp,
+}
+impl CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEndType {
+    pub fn as_str(self) -> &'static str {
+        use CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEndType::*;
+        match self {
+            MinItemPeriodEnd => "min_item_period_end",
+            PhaseEnd => "phase_end",
+            Timestamp => "timestamp",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEndType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEndType::*;
+        match s {
+            "min_item_period_end" => Ok(MinItemPeriodEnd),
+            "phase_end" => Ok(PhaseEnd),
+            "timestamp" => Ok(Timestamp),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEndType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEndType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEndType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEndType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodEndType"))
+    }
+}
+/// Start of the invoice item period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStart {
+    /// A precise Unix timestamp for the start of the invoice item period.
+    /// Must be less than or equal to `period.end`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// Select how to calculate the start of the invoice item period.
+    #[serde(rename = "type")]
+    pub type_: CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStartType,
+}
+impl CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStart {
+    pub fn new(
+        type_: impl Into<CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStartType>,
+    ) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+/// Select how to calculate the start of the invoice item period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStartType {
+    MaxItemPeriodStart,
+    PhaseStart,
+    Timestamp,
+}
+impl CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStartType {
+    pub fn as_str(self) -> &'static str {
+        use CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStartType::*;
+        match self {
+            MaxItemPeriodStart => "max_item_period_start",
+            PhaseStart => "phase_start",
+            Timestamp => "timestamp",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStartType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStartType::*;
+        match s {
+            "max_item_period_start" => Ok(MaxItemPeriodStart),
+            "phase_start" => Ok(PhaseStart),
+            "timestamp" => Ok(Timestamp),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStartType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStartType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStartType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStartType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriodStartType"))
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
@@ -8303,6 +8590,86 @@ impl CreatePreviewInvoiceScheduleDetailsPhasesBillingThresholds {
 impl Default for CreatePreviewInvoiceScheduleDetailsPhasesBillingThresholds {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// The number of intervals the phase should last. If set, `end_date` must not be set.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesDuration {
+    /// Specifies phase duration. Either `day`, `week`, `month` or `year`.
+    pub interval: CreatePreviewInvoiceScheduleDetailsPhasesDurationInterval,
+    /// The multiplier applied to the interval.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+impl CreatePreviewInvoiceScheduleDetailsPhasesDuration {
+    pub fn new(
+        interval: impl Into<CreatePreviewInvoiceScheduleDetailsPhasesDurationInterval>,
+    ) -> Self {
+        Self { interval: interval.into(), interval_count: None }
+    }
+}
+/// Specifies phase duration. Either `day`, `week`, `month` or `year`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePreviewInvoiceScheduleDetailsPhasesDurationInterval {
+    Day,
+    Month,
+    Week,
+    Year,
+}
+impl CreatePreviewInvoiceScheduleDetailsPhasesDurationInterval {
+    pub fn as_str(self) -> &'static str {
+        use CreatePreviewInvoiceScheduleDetailsPhasesDurationInterval::*;
+        match self {
+            Day => "day",
+            Month => "month",
+            Week => "week",
+            Year => "year",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePreviewInvoiceScheduleDetailsPhasesDurationInterval {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsPhasesDurationInterval::*;
+        match s {
+            "day" => Ok(Day),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            "year" => Ok(Year),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePreviewInvoiceScheduleDetailsPhasesDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPhasesDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePreviewInvoiceScheduleDetailsPhasesDurationInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceScheduleDetailsPhasesDurationInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePreviewInvoiceScheduleDetailsPhasesDurationInterval",
+            )
+        })
     }
 }
 /// The date at which this phase of the subscription schedule ends.
@@ -8820,15 +9187,16 @@ pub struct CreatePreviewInvoiceSubscriptionDetails {
     /// For existing subscriptions, the value can only be set to `now` or `unchanged`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<CreatePreviewInvoiceSubscriptionDetailsBillingCycleAnchor>,
+    /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_mode: Option<CreatePreviewInvoiceSubscriptionDetailsBillingMode>,
     /// A timestamp at which the subscription should cancel.
     /// If set to a date before the current period ends, this will cause a proration if prorations have been enabled using `proration_behavior`.
     /// If set during a future period, this will always cause a proration for that period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancel_at: Option<stripe_types::Timestamp>,
+    pub cancel_at: Option<CreatePreviewInvoiceSubscriptionDetailsCancelAt>,
     /// Indicate whether this subscription should cancel at the end of the current period (`current_period_end`).
     /// Defaults to `false`.
-    /// This param will be removed in a future API version.
-    /// Please use `cancel_at` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cancel_at_period_end: Option<bool>,
     /// This simulates the subscription being canceled or expired immediately.
@@ -8866,6 +9234,7 @@ impl CreatePreviewInvoiceSubscriptionDetails {
     pub fn new() -> Self {
         Self {
             billing_cycle_anchor: None,
+            billing_mode: None,
             cancel_at: None,
             cancel_at_period_end: None,
             cancel_now: None,
@@ -8892,6 +9261,87 @@ impl Default for CreatePreviewInvoiceSubscriptionDetails {
 pub enum CreatePreviewInvoiceSubscriptionDetailsBillingCycleAnchor {
     Now,
     Unchanged,
+    #[serde(untagged)]
+    Timestamp(stripe_types::Timestamp),
+}
+/// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceSubscriptionDetailsBillingMode {
+    /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+    #[serde(rename = "type")]
+    pub type_: CreatePreviewInvoiceSubscriptionDetailsBillingModeType,
+}
+impl CreatePreviewInvoiceSubscriptionDetailsBillingMode {
+    pub fn new(type_: impl Into<CreatePreviewInvoiceSubscriptionDetailsBillingModeType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePreviewInvoiceSubscriptionDetailsBillingModeType {
+    Classic,
+    Flexible,
+}
+impl CreatePreviewInvoiceSubscriptionDetailsBillingModeType {
+    pub fn as_str(self) -> &'static str {
+        use CreatePreviewInvoiceSubscriptionDetailsBillingModeType::*;
+        match self {
+            Classic => "classic",
+            Flexible => "flexible",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePreviewInvoiceSubscriptionDetailsBillingModeType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceSubscriptionDetailsBillingModeType::*;
+        match s {
+            "classic" => Ok(Classic),
+            "flexible" => Ok(Flexible),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePreviewInvoiceSubscriptionDetailsBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePreviewInvoiceSubscriptionDetailsBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePreviewInvoiceSubscriptionDetailsBillingModeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceSubscriptionDetailsBillingModeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePreviewInvoiceSubscriptionDetailsBillingModeType",
+            )
+        })
+    }
+}
+/// A timestamp at which the subscription should cancel.
+/// If set to a date before the current period ends, this will cause a proration if prorations have been enabled using `proration_behavior`.
+/// If set during a future period, this will always cause a proration for that period.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePreviewInvoiceSubscriptionDetailsCancelAt {
+    MaxPeriodEnd,
+    MinPeriodEnd,
     #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }

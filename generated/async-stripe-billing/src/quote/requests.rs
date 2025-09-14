@@ -847,13 +847,14 @@ impl<'de> serde::Deserialize<'de> for CreateQuoteLineItemsPriceDataTaxBehavior {
 /// A subscription schedule is created if `subscription_data[effective_date]` is present and in the future, otherwise a subscription is created.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateQuoteSubscriptionData {
+    /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_mode: Option<CreateQuoteSubscriptionDataBillingMode>,
     /// The subscription's description, meant to be displayable to the customer.
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// When creating a new subscription, the date of which the subscription schedule will start after the quote is accepted.
-    /// When updating a subscription, the date of which the subscription will be updated using a subscription schedule.
-    /// The special value `current_period_end` can be provided to update a subscription at the end of its current period.
     /// The `effective_date` is ignored if it is in the past when the quote is accepted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub effective_date: Option<CreateQuoteSubscriptionDataEffectiveDate>,
@@ -870,7 +871,13 @@ pub struct CreateQuoteSubscriptionData {
 }
 impl CreateQuoteSubscriptionData {
     pub fn new() -> Self {
-        Self { description: None, effective_date: None, metadata: None, trial_period_days: None }
+        Self {
+            billing_mode: None,
+            description: None,
+            effective_date: None,
+            metadata: None,
+            trial_period_days: None,
+        }
     }
 }
 impl Default for CreateQuoteSubscriptionData {
@@ -878,9 +885,75 @@ impl Default for CreateQuoteSubscriptionData {
         Self::new()
     }
 }
+/// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateQuoteSubscriptionDataBillingMode {
+    /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+    #[serde(rename = "type")]
+    pub type_: CreateQuoteSubscriptionDataBillingModeType,
+}
+impl CreateQuoteSubscriptionDataBillingMode {
+    pub fn new(type_: impl Into<CreateQuoteSubscriptionDataBillingModeType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateQuoteSubscriptionDataBillingModeType {
+    Classic,
+    Flexible,
+}
+impl CreateQuoteSubscriptionDataBillingModeType {
+    pub fn as_str(self) -> &'static str {
+        use CreateQuoteSubscriptionDataBillingModeType::*;
+        match self {
+            Classic => "classic",
+            Flexible => "flexible",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateQuoteSubscriptionDataBillingModeType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateQuoteSubscriptionDataBillingModeType::*;
+        match s {
+            "classic" => Ok(Classic),
+            "flexible" => Ok(Flexible),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateQuoteSubscriptionDataBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateQuoteSubscriptionDataBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateQuoteSubscriptionDataBillingModeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateQuoteSubscriptionDataBillingModeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateQuoteSubscriptionDataBillingModeType")
+        })
+    }
+}
 /// When creating a new subscription, the date of which the subscription schedule will start after the quote is accepted.
-/// When updating a subscription, the date of which the subscription will be updated using a subscription schedule.
-/// The special value `current_period_end` can be provided to update a subscription at the end of its current period.
 /// The `effective_date` is ignored if it is in the past when the quote is accepted.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -1542,8 +1615,6 @@ pub struct UpdateQuoteSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// When creating a new subscription, the date of which the subscription schedule will start after the quote is accepted.
-    /// When updating a subscription, the date of which the subscription will be updated using a subscription schedule.
-    /// The special value `current_period_end` can be provided to update a subscription at the end of its current period.
     /// The `effective_date` is ignored if it is in the past when the quote is accepted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub effective_date: Option<UpdateQuoteSubscriptionDataEffectiveDate>,
@@ -1569,8 +1640,6 @@ impl Default for UpdateQuoteSubscriptionData {
     }
 }
 /// When creating a new subscription, the date of which the subscription schedule will start after the quote is accepted.
-/// When updating a subscription, the date of which the subscription will be updated using a subscription schedule.
-/// The special value `current_period_end` can be provided to update a subscription at the end of its current period.
 /// The `effective_date` is ignored if it is in the past when the quote is accepted.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 #[serde(rename_all = "snake_case")]

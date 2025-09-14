@@ -219,6 +219,10 @@ struct CreateIssuingCardBuilder {
     cardholder: Option<String>,
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
+    exp_month: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    exp_year: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     financial_account: Option<String>,
@@ -251,6 +255,8 @@ impl CreateIssuingCardBuilder {
         Self {
             cardholder: None,
             currency: currency.into(),
+            exp_month: None,
+            exp_year: None,
             expand: None,
             financial_account: None,
             metadata: None,
@@ -3798,6 +3804,16 @@ impl CreateIssuingCard {
     /// The [Cardholder](https://stripe.com/docs/api#issuing_cardholder_object) object with which the card will be associated.
     pub fn cardholder(mut self, cardholder: impl Into<String>) -> Self {
         self.inner.cardholder = Some(cardholder.into());
+        self
+    }
+    /// The desired expiration month (1-12) for this card if [specifying a custom expiration date](/issuing/cards/virtual/issue-cards?testing-method=with-code#exp-dates).
+    pub fn exp_month(mut self, exp_month: impl Into<i64>) -> Self {
+        self.inner.exp_month = Some(exp_month.into());
+        self
+    }
+    /// The desired 4-digit expiration year for this card if [specifying a custom expiration date](/issuing/cards/virtual/issue-cards?testing-method=with-code#exp-dates).
+    pub fn exp_year(mut self, exp_year: impl Into<i64>) -> Self {
+        self.inner.exp_year = Some(exp_year.into());
         self
     }
     /// Specifies which fields in the response should be expanded.

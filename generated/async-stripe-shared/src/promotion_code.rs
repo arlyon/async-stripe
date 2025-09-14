@@ -1,6 +1,8 @@
 /// A Promotion Code represents a customer-redeemable code for a [coupon](https://stripe.com/docs/api#coupons).
-/// It can be used to.
-/// create multiple codes for a single coupon.
+/// You can create multiple codes for a single coupon.
+///
+/// If you enable promotion codes in your [customer portal configuration](https://stripe.com/docs/customer-management/configure-portal), then customers can redeem a code themselves when updating a subscription in the portal.
+/// Customers can also view the currently active promotion codes and coupons on each of their subscriptions in the portal.
 ///
 /// For more details see <<https://stripe.com/docs/api/promotion_codes/object>>.
 #[derive(Clone, Debug)]

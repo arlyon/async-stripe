@@ -100,6 +100,8 @@ pub struct CheckoutSession {
     pub mode: stripe_shared::CheckoutSessionMode,
     /// The optional items presented to the customer at checkout.
     pub optional_items: Option<Vec<stripe_shared::PaymentPagesCheckoutSessionOptionalItem>>,
+    /// Where the user is coming from. This informs the optimizations that are applied to the session.
+    pub origin_context: Option<stripe_shared::CheckoutSessionOriginContext>,
     /// The ID of the PaymentIntent for Checkout Sessions in `payment` mode.
     /// You can't confirm or cancel the PaymentIntent for a Checkout Session.
     /// To cancel, [expire the Checkout Session](https://stripe.com/docs/api/checkout/sessions/expire) instead.
@@ -214,6 +216,7 @@ pub struct CheckoutSessionBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     mode: Option<stripe_shared::CheckoutSessionMode>,
     optional_items: Option<Option<Vec<stripe_shared::PaymentPagesCheckoutSessionOptionalItem>>>,
+    origin_context: Option<Option<stripe_shared::CheckoutSessionOriginContext>>,
     payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
     payment_link: Option<Option<stripe_types::Expandable<stripe_shared::PaymentLink>>>,
     payment_method_collection: Option<Option<CheckoutSessionPaymentMethodCollection>>,
@@ -322,6 +325,7 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "mode" => Deserialize::begin(&mut self.mode),
                 "optional_items" => Deserialize::begin(&mut self.optional_items),
+                "origin_context" => Deserialize::begin(&mut self.origin_context),
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
                 "payment_link" => Deserialize::begin(&mut self.payment_link),
                 "payment_method_collection" => {
@@ -397,6 +401,7 @@ const _: () = {
                 metadata: Deserialize::default(),
                 mode: Deserialize::default(),
                 optional_items: Deserialize::default(),
+                origin_context: Deserialize::default(),
                 payment_intent: Deserialize::default(),
                 payment_link: Deserialize::default(),
                 payment_method_collection: Deserialize::default(),
@@ -462,6 +467,7 @@ const _: () = {
                 Some(metadata),
                 Some(mode),
                 Some(optional_items),
+                Some(origin_context),
                 Some(payment_intent),
                 Some(payment_link),
                 Some(payment_method_collection),
@@ -523,6 +529,7 @@ const _: () = {
                 self.metadata.take(),
                 self.mode,
                 self.optional_items.take(),
+                self.origin_context,
                 self.payment_intent.take(),
                 self.payment_link.take(),
                 self.payment_method_collection,
@@ -588,6 +595,7 @@ const _: () = {
                 metadata,
                 mode,
                 optional_items,
+                origin_context,
                 payment_intent,
                 payment_link,
                 payment_method_collection,
@@ -681,6 +689,7 @@ const _: () = {
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "mode" => b.mode = FromValueOpt::from_value(v),
                     "optional_items" => b.optional_items = FromValueOpt::from_value(v),
+                    "origin_context" => b.origin_context = FromValueOpt::from_value(v),
                     "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
                     "payment_link" => b.payment_link = FromValueOpt::from_value(v),
                     "payment_method_collection" => {
@@ -734,7 +743,7 @@ const _: () = {
 impl serde::Serialize for CheckoutSession {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CheckoutSession", 61)?;
+        let mut s = s.serialize_struct("CheckoutSession", 62)?;
         s.serialize_field("adaptive_pricing", &self.adaptive_pricing)?;
         s.serialize_field("after_expiration", &self.after_expiration)?;
         s.serialize_field("allow_promotion_codes", &self.allow_promotion_codes)?;
@@ -768,6 +777,7 @@ impl serde::Serialize for CheckoutSession {
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("mode", &self.mode)?;
         s.serialize_field("optional_items", &self.optional_items)?;
+        s.serialize_field("origin_context", &self.origin_context)?;
         s.serialize_field("payment_intent", &self.payment_intent)?;
         s.serialize_field("payment_link", &self.payment_link)?;
         s.serialize_field("payment_method_collection", &self.payment_method_collection)?;
@@ -1367,6 +1377,75 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionMode {
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CheckoutSessionMode"))
+    }
+}
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CheckoutSessionOriginContext {
+    MobileApp,
+    Web,
+}
+impl CheckoutSessionOriginContext {
+    pub fn as_str(self) -> &'static str {
+        use CheckoutSessionOriginContext::*;
+        match self {
+            MobileApp => "mobile_app",
+            Web => "web",
+        }
+    }
+}
+
+impl std::str::FromStr for CheckoutSessionOriginContext {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CheckoutSessionOriginContext::*;
+        match s {
+            "mobile_app" => Ok(MobileApp),
+            "web" => Ok(Web),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CheckoutSessionOriginContext {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CheckoutSessionOriginContext {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CheckoutSessionOriginContext {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for CheckoutSessionOriginContext {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CheckoutSessionOriginContext> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CheckoutSessionOriginContext::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CheckoutSessionOriginContext);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CheckoutSessionOriginContext {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CheckoutSessionOriginContext"))
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

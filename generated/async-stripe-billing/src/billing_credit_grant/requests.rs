@@ -204,7 +204,7 @@ pub struct CreateBillingCreditGrantAmount {
     /// The monetary amount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub monetary: Option<CreateBillingCreditGrantAmountMonetary>,
-    /// Specify the type of this amount. We currently only support `monetary` billing credits.
+    /// The type of this amount. We currently only support `monetary` billing credits.
     #[serde(rename = "type")]
     pub type_: CreateBillingCreditGrantAmountType,
 }
@@ -226,7 +226,7 @@ impl CreateBillingCreditGrantAmountMonetary {
         Self { currency: currency.into(), value: value.into() }
     }
 }
-/// Specify the type of this amount. We currently only support `monetary` billing credits.
+/// The type of this amount. We currently only support `monetary` billing credits.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateBillingCreditGrantAmountType {
     Monetary,

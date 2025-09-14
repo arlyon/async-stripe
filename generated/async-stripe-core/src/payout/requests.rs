@@ -198,6 +198,8 @@ struct CreatePayoutBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     method: Option<CreatePayoutMethod>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    payout_method: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     source_type: Option<CreatePayoutSourceType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     statement_descriptor: Option<String>,
@@ -212,6 +214,7 @@ impl CreatePayoutBuilder {
             expand: None,
             metadata: None,
             method: None,
+            payout_method: None,
             source_type: None,
             statement_descriptor: None,
         }
@@ -384,6 +387,11 @@ impl CreatePayout {
     /// Learn more about [bank support for Instant Payouts](https://stripe.com/docs/payouts/instant-payouts-banks).
     pub fn method(mut self, method: impl Into<CreatePayoutMethod>) -> Self {
         self.inner.method = Some(method.into());
+        self
+    }
+    /// The ID of a v2 FinancialAccount to send funds to.
+    pub fn payout_method(mut self, payout_method: impl Into<String>) -> Self {
+        self.inner.payout_method = Some(payout_method.into());
         self
     }
     /// The balance type of your Stripe balance to draw this payout from.

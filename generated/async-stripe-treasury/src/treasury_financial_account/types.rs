@@ -32,7 +32,7 @@ pub struct TreasuryFinancialAccount {
     /// The array of paths to restricted Features in the Features hash.
     pub restricted_features: Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>,
     /// Status of this FinancialAccount.
-    pub status: TreasuryFinancialAccountStatus,
+    pub status: stripe_treasury::TreasuryFinancialAccountStatus,
     pub status_details: stripe_treasury::TreasuryFinancialAccountsResourceStatusDetails,
     /// The currencies the FinancialAccount can hold a balance in.
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -56,7 +56,7 @@ pub struct TreasuryFinancialAccountBuilder {
     platform_restrictions:
         Option<Option<stripe_treasury::TreasuryFinancialAccountsResourcePlatformRestrictions>>,
     restricted_features: Option<Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>>,
-    status: Option<TreasuryFinancialAccountStatus>,
+    status: Option<stripe_treasury::TreasuryFinancialAccountStatus>,
     status_details: Option<stripe_treasury::TreasuryFinancialAccountsResourceStatusDetails>,
     supported_currencies: Option<Vec<String>>,
 }
@@ -285,78 +285,6 @@ impl serde::Serialize for TreasuryFinancialAccount {
         s.end()
     }
 }
-/// Status of this FinancialAccount.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum TreasuryFinancialAccountStatus {
-    Closed,
-    Open,
-}
-impl TreasuryFinancialAccountStatus {
-    pub fn as_str(self) -> &'static str {
-        use TreasuryFinancialAccountStatus::*;
-        match self {
-            Closed => "closed",
-            Open => "open",
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryFinancialAccountStatus {
-    type Err = stripe_types::StripeParseError;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryFinancialAccountStatus::*;
-        match s {
-            "closed" => Ok(Closed),
-            "open" => Ok(Open),
-            _ => Err(stripe_types::StripeParseError),
-        }
-    }
-}
-impl std::fmt::Display for TreasuryFinancialAccountStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for TreasuryFinancialAccountStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TreasuryFinancialAccountStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryFinancialAccountStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TreasuryFinancialAccountStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TreasuryFinancialAccountStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TreasuryFinancialAccountStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TreasuryFinancialAccountStatus")
-        })
-    }
-}
 impl stripe_types::Object for TreasuryFinancialAccount {
     type Id = stripe_treasury::TreasuryFinancialAccountId;
     fn id(&self) -> &Self::Id {
@@ -463,6 +391,76 @@ impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountArray {
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for TreasuryFinancialAccountArray")
+        })
+    }
+}
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum TreasuryFinancialAccountStatus {
+    Closed,
+    Open,
+}
+impl TreasuryFinancialAccountStatus {
+    pub fn as_str(self) -> &'static str {
+        use TreasuryFinancialAccountStatus::*;
+        match self {
+            Closed => "closed",
+            Open => "open",
+        }
+    }
+}
+
+impl std::str::FromStr for TreasuryFinancialAccountStatus {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TreasuryFinancialAccountStatus::*;
+        match s {
+            "closed" => Ok(Closed),
+            "open" => Ok(Open),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for TreasuryFinancialAccountStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TreasuryFinancialAccountStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for TreasuryFinancialAccountStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for TreasuryFinancialAccountStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<TreasuryFinancialAccountStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TreasuryFinancialAccountStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(TreasuryFinancialAccountStatus);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for TreasuryFinancialAccountStatus")
         })
     }
 }

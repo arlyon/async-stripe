@@ -363,6 +363,8 @@ struct CreateCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     optional_items: Option<Vec<CreateCheckoutSessionOptionalItems>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    origin_context: Option<stripe_shared::CheckoutSessionOriginContext>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     payment_intent_data: Option<CreateCheckoutSessionPaymentIntentData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_collection: Option<CreateCheckoutSessionPaymentMethodCollection>,
@@ -430,6 +432,7 @@ impl CreateCheckoutSessionBuilder {
             metadata: None,
             mode: None,
             optional_items: None,
+            origin_context: None,
             payment_intent_data: None,
             payment_method_collection: None,
             payment_method_configuration: None,
@@ -456,7 +459,7 @@ impl CreateCheckoutSessionBuilder {
 /// Settings for price localization with [Adaptive Pricing](https://docs.stripe.com/payments/checkout/adaptive-pricing).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionAdaptivePricing {
-    /// Set to `true` to enable [Adaptive Pricing](https://docs.stripe.com/payments/checkout/adaptive-pricing).
+    /// If set to `true`, Adaptive Pricing is available on [eligible sessions](https://docs.stripe.com/payments/currencies/localize-prices/adaptive-pricing?payment-ui=stripe-hosted#restrictions).
     /// Defaults to your [dashboard setting](https://dashboard.stripe.com/settings/adaptive-pricing).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -1539,7 +1542,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionInvoiceCreationInvoic
     }
 }
 /// Default options for invoice PDF rendering for this customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -1548,10 +1551,13 @@ pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_tax_display:
         Option<CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
+    /// ID of the invoice rendering template to use for this invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
 }
 impl CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
     pub fn new() -> Self {
-        Self { amount_tax_display: None }
+        Self { amount_tax_display: None, template: None }
     }
 }
 impl Default for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
@@ -1628,6 +1634,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// A list of items the customer is purchasing.
 /// Use this parameter to pass one-time or recurring [Prices](https://stripe.com/docs/api/prices).
+/// The parameter is required for `payment` and `subscription` mode.
 ///
 /// For `payment` mode, there is a maximum of 100 line items, however it is recommended to consolidate line items if there are more than a few dozen.
 ///
@@ -5366,7 +5373,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Klarna payment method options.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKlarna {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -5378,10 +5385,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsKlarna {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupFutureUsage>,
+    /// Subscription details if the Checkout Session sets up a future subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscriptions: Option<Vec<CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptions>>,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsKlarna {
     pub fn new() -> Self {
-        Self { setup_future_usage: None }
+        Self { setup_future_usage: None, subscriptions: None }
     }
 }
 impl Default for CreateCheckoutSessionPaymentMethodOptionsKlarna {
@@ -5451,6 +5461,114 @@ impl<'de> serde::Deserialize<'de>
                 "Unknown value for CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupFutureUsage",
             )
         })
+    }
+}
+/// Subscription details if the Checkout Session sets up a future subscription.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptions {
+    /// Unit of time between subscription charges.
+    pub interval: CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval,
+    /// The number of intervals (specified in the `interval` attribute) between subscription charges.
+    /// For example, `interval=month` and `interval_count=3` charges every 3 months.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+    /// Name for subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Describes the upcoming charge for this subscription.
+    pub next_billing: CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsNextBilling,
+    /// A non-customer-facing reference to correlate subscription charges in the Klarna app.
+    /// Use a value that persists across subscription charges.
+    pub reference: String,
+}
+impl CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptions {
+    pub fn new(
+        interval: impl Into<CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval>,
+        next_billing: impl Into<CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsNextBilling>,
+        reference: impl Into<String>,
+    ) -> Self {
+        Self {
+            interval: interval.into(),
+            interval_count: None,
+            name: None,
+            next_billing: next_billing.into(),
+            reference: reference.into(),
+        }
+    }
+}
+/// Unit of time between subscription charges.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval {
+    Day,
+    Month,
+    Week,
+    Year,
+}
+impl CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval {
+    pub fn as_str(self) -> &'static str {
+        use CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval::*;
+        match self {
+            Day => "day",
+            Month => "month",
+            Week => "week",
+            Year => "year",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval::*;
+        match s {
+            "day" => Ok(Day),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            "year" => Ok(Year),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval"))
+    }
+}
+/// Describes the upcoming charge for this subscription.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsNextBilling {
+    /// The amount of the next charge for the subscription.
+    pub amount: i64,
+    /// The date of the next charge for the subscription in YYYY-MM-DD format.
+    pub date: String,
+}
+impl CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsNextBilling {
+    pub fn new(amount: impl Into<i64>, date: impl Into<String>) -> Self {
+        Self { amount: amount.into(), date: date.into() }
     }
 }
 /// contains details about the Konbini payment method options.
@@ -6731,19 +6849,154 @@ impl<'de> serde::Deserialize<'de>
 /// contains details about the Pix payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPix {
+    /// Determines if the amount includes the IOF tax. Defaults to `never`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_includes_iof: Option<CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof>,
     /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
     /// Defaults to 86400 seconds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_seconds: Option<i64>,
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+    ///
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage>,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsPix {
     pub fn new() -> Self {
-        Self { expires_after_seconds: None }
+        Self { amount_includes_iof: None, expires_after_seconds: None, setup_future_usage: None }
     }
 }
 impl Default for CreateCheckoutSessionPaymentMethodOptionsPix {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Determines if the amount includes the IOF tax. Defaults to `never`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof {
+    Always,
+    Never,
+}
+impl CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof {
+    pub fn as_str(self) -> &'static str {
+        use CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof::*;
+        match self {
+            Always => "always",
+            Never => "never",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof::*;
+        match s {
+            "always" => Ok(Always),
+            "never" => Ok(Never),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof",
+            )
+        })
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+///
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage {
+    None,
+}
+impl CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        use CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage::*;
+        match self {
+            None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage",
+            )
+        })
     }
 }
 /// contains details about the RevolutPay payment method options.
@@ -7639,6 +7892,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     Boleto,
     Card,
     Cashapp,
+    Crypto,
     CustomerBalance,
     Eps,
     Fpx,
@@ -7653,6 +7907,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     Mobilepay,
     Multibanco,
     NaverPay,
+    NzBankAccount,
     Oxxo,
     P24,
     PayByBank,
@@ -7692,6 +7947,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             Boleto => "boleto",
             Card => "card",
             Cashapp => "cashapp",
+            Crypto => "crypto",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -7706,6 +7962,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
+            NzBankAccount => "nz_bank_account",
             Oxxo => "oxxo",
             P24 => "p24",
             PayByBank => "pay_by_bank",
@@ -7748,6 +8005,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodTypes {
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
+            "crypto" => Ok(Crypto),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),
@@ -7762,6 +8020,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodTypes {
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
+            "nz_bank_account" => Ok(NzBankAccount),
             "oxxo" => Ok(Oxxo),
             "p24" => Ok(P24),
             "pay_by_bank" => Ok(PayByBank),
@@ -9446,6 +9705,9 @@ pub struct CreateCheckoutSessionSubscriptionData {
     /// A future timestamp to anchor the subscription's billing cycle for new subscriptions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<stripe_types::Timestamp>,
+    /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_mode: Option<CreateCheckoutSessionSubscriptionDataBillingMode>,
     /// The tax rates that will apply to any subscription item that does not have
     /// `tax_rates` set. Invoices created will have their `default_tax_rates` populated
     /// from the subscription.
@@ -9475,13 +9737,12 @@ pub struct CreateCheckoutSessionSubscriptionData {
     /// If specified, the funds from the subscription's invoices will be transferred to the destination and the ID of the resulting transfers will be found on the resulting charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<CreateCheckoutSessionSubscriptionDataTransferData>,
-    /// Unix timestamp representing the end of the trial period the customer
-    /// will get before being charged for the first time. Has to be at least
-    /// 48 hours in the future.
+    /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
+    /// Has to be at least 48 hours in the future.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<stripe_types::Timestamp>,
-    /// Integer representing the number of trial period days before the
-    /// customer is charged for the first time. Has to be at least 1.
+    /// Integer representing the number of trial period days before the customer is charged for the first time.
+    /// Has to be at least 1.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
     /// Settings related to subscription trials.
@@ -9493,6 +9754,7 @@ impl CreateCheckoutSessionSubscriptionData {
         Self {
             application_fee_percent: None,
             billing_cycle_anchor: None,
+            billing_mode: None,
             default_tax_rates: None,
             description: None,
             invoice_settings: None,
@@ -9509,6 +9771,76 @@ impl CreateCheckoutSessionSubscriptionData {
 impl Default for CreateCheckoutSessionSubscriptionData {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateCheckoutSessionSubscriptionDataBillingMode {
+    /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+    #[serde(rename = "type")]
+    pub type_: CreateCheckoutSessionSubscriptionDataBillingModeType,
+}
+impl CreateCheckoutSessionSubscriptionDataBillingMode {
+    pub fn new(type_: impl Into<CreateCheckoutSessionSubscriptionDataBillingModeType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCheckoutSessionSubscriptionDataBillingModeType {
+    Classic,
+    Flexible,
+}
+impl CreateCheckoutSessionSubscriptionDataBillingModeType {
+    pub fn as_str(self) -> &'static str {
+        use CreateCheckoutSessionSubscriptionDataBillingModeType::*;
+        match self {
+            Classic => "classic",
+            Flexible => "flexible",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionSubscriptionDataBillingModeType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionSubscriptionDataBillingModeType::*;
+        match s {
+            "classic" => Ok(Classic),
+            "flexible" => Ok(Flexible),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionSubscriptionDataBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionSubscriptionDataBillingModeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionSubscriptionDataBillingModeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionSubscriptionDataBillingModeType",
+            )
+        })
     }
 }
 /// All invoices will be billed using the specified settings.
@@ -10115,6 +10447,7 @@ impl CreateCheckoutSession {
     }
     /// A list of items the customer is purchasing.
     /// Use this parameter to pass one-time or recurring [Prices](https://stripe.com/docs/api/prices).
+    /// The parameter is required for `payment` and `subscription` mode.
     ///
     /// For `payment` mode, there is a maximum of 100 line items, however it is recommended to consolidate line items if there are more than a few dozen.
     ///
@@ -10163,6 +10496,14 @@ impl CreateCheckoutSession {
         optional_items: impl Into<Vec<CreateCheckoutSessionOptionalItems>>,
     ) -> Self {
         self.inner.optional_items = Some(optional_items.into());
+        self
+    }
+    /// Where the user is coming from. This informs the optimizations that are applied to the session.
+    pub fn origin_context(
+        mut self,
+        origin_context: impl Into<stripe_shared::CheckoutSessionOriginContext>,
+    ) -> Self {
+        self.inner.origin_context = Some(origin_context.into());
         self
     }
     /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.

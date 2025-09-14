@@ -2,12 +2,15 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoods {
+    pub standard: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsDefaultStandard>,
     /// Type of registration in `country`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType,
 }
 #[doc(hidden)]
 pub struct TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsBuilder {
+    standard:
+        Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsDefaultStandard>>,
     type_: Option<TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType>,
 }
 
@@ -51,6 +54,7 @@ const _: () = {
         type Out = TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoods;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "standard" => Deserialize::begin(&mut self.standard),
                 "type" => Deserialize::begin(&mut self.type_),
 
                 _ => <dyn Visitor>::ignore(),
@@ -58,14 +62,14 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { type_: Deserialize::default() }
+            Self { standard: Deserialize::default(), type_: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(type_),) = (self.type_,) else {
+            let (Some(standard), Some(type_)) = (self.standard, self.type_) else {
                 return None;
             };
-            Some(Self::Out { type_ })
+            Some(Self::Out { standard, type_ })
         }
     }
 
@@ -92,6 +96,7 @@ const _: () = {
             let mut b = TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "standard" => b.standard = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}

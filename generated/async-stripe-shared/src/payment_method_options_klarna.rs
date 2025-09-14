@@ -205,12 +205,16 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsKlarnaCaptureMethod {
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentMethodOptionsKlarnaSetupFutureUsage {
     None,
+    OffSession,
+    OnSession,
 }
 impl PaymentMethodOptionsKlarnaSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         use PaymentMethodOptionsKlarnaSetupFutureUsage::*;
         match self {
             None => "none",
+            OffSession => "off_session",
+            OnSession => "on_session",
         }
     }
 }
@@ -221,6 +225,8 @@ impl std::str::FromStr for PaymentMethodOptionsKlarnaSetupFutureUsage {
         use PaymentMethodOptionsKlarnaSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
+            "off_session" => Ok(OffSession),
+            "on_session" => Ok(OnSession),
             _ => Err(stripe_types::StripeParseError),
         }
     }

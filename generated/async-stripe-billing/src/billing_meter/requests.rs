@@ -365,7 +365,7 @@ impl CreateBillingMeter {
         self.inner.customer_mapping = Some(customer_mapping.into());
         self
     }
-    /// The time window to pre-aggregate meter events for, if any.
+    /// The time window which meter events have been pre-aggregated for, if any.
     pub fn event_time_window(
         mut self,
         event_time_window: impl Into<stripe_billing::BillingMeterEventTimeWindow>,

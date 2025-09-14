@@ -10,7 +10,7 @@ pub struct AccountBusinessProfile {
     /// [The merchant category code for the account](/connect/setting-mcc).
     /// MCCs are used to classify businesses based on the goods or services they provide.
     pub mcc: Option<String>,
-    /// Whether the business is a minority-owned, women-owned, and/or LGBTQI+-owned business.
+    /// Whether the business is a minority-owned, women-owned, and/or LGBTQI+ -owned business.
     pub minority_owned_business_designation:
         Option<Vec<AccountBusinessProfileMinorityOwnedBusinessDesignation>>,
     pub monthly_estimated_revenue: Option<stripe_shared::AccountMonthlyEstimatedRevenue>,
@@ -222,7 +222,7 @@ const _: () = {
         }
     }
 };
-/// Whether the business is a minority-owned, women-owned, and/or LGBTQI+-owned business.
+/// Whether the business is a minority-owned, women-owned, and/or LGBTQI+ -owned business.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AccountBusinessProfileMinorityOwnedBusinessDesignation {
     LgbtqiOwnedBusiness,
