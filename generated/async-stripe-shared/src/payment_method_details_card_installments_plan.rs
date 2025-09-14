@@ -7,7 +7,7 @@ pub struct PaymentMethodDetailsCardInstallmentsPlan {
     /// For `fixed_count` installment plans, this is the interval between installment payments your customer will make to their credit card.
     /// One of `month`.
     pub interval: Option<PaymentMethodDetailsCardInstallmentsPlanInterval>,
-    /// Type of installment plan, one of `fixed_count`.
+    /// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: PaymentMethodDetailsCardInstallmentsPlanType,
 }
@@ -193,16 +193,20 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardInstallmentsPlanIn
         })
     }
 }
-/// Type of installment plan, one of `fixed_count`.
+/// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentMethodDetailsCardInstallmentsPlanType {
+    Bonus,
     FixedCount,
+    Revolving,
 }
 impl PaymentMethodDetailsCardInstallmentsPlanType {
     pub fn as_str(self) -> &'static str {
         use PaymentMethodDetailsCardInstallmentsPlanType::*;
         match self {
+            Bonus => "bonus",
             FixedCount => "fixed_count",
+            Revolving => "revolving",
         }
     }
 }
@@ -212,7 +216,9 @@ impl std::str::FromStr for PaymentMethodDetailsCardInstallmentsPlanType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsCardInstallmentsPlanType::*;
         match s {
+            "bonus" => Ok(Bonus),
             "fixed_count" => Ok(FixedCount),
+            "revolving" => Ok(Revolving),
             _ => Err(stripe_types::StripeParseError),
         }
     }

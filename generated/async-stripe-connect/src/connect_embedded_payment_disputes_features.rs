@@ -2,13 +2,13 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ConnectEmbeddedPaymentDisputesFeatures {
-    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    /// Whether connected accounts can manage destination charges that are created on behalf of them.
     /// This is `false` by default.
     pub destination_on_behalf_of_charge_management: bool,
-    /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
+    /// Whether responding to disputes is enabled, including submitting evidence and accepting disputes.
     /// This is `true` by default.
     pub dispute_management: bool,
-    /// Whether to allow sending refunds. This is `true` by default.
+    /// Whether sending refunds is enabled. This is `true` by default.
     pub refund_management: bool,
 }
 #[doc(hidden)]

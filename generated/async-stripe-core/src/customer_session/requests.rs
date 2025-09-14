@@ -85,6 +85,7 @@ pub struct CreateCustomerSessionComponentsPaymentElementFeatures {
         Option<CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodRedisplay>,
     /// Determines the max number of saved payment methods for the Payment Element to display.
     /// This parameter defaults to `3`.
+    /// The maximum redisplay limit is `10`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_redisplay_limit: Option<i64>,
     /// Controls whether the Payment Element displays the option to remove a saved payment method.

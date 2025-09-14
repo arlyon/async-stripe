@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionAdaptivePricing {
-    /// Whether Adaptive Pricing is enabled.
+    /// If enabled, Adaptive Pricing is available on [eligible sessions](https://docs.stripe.com/payments/currencies/localize-prices/adaptive-pricing?payment-ui=stripe-hosted#restrictions).
     pub enabled: bool,
 }
 #[doc(hidden)]

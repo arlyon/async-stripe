@@ -13,6 +13,7 @@ pub payment_method_allow_redisplay_filters: Vec<CustomerSessionResourceComponent
 pub payment_method_redisplay: CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay,
         /// Determines the max number of saved payment methods for the Payment Element to display.
     /// This parameter defaults to `3`.
+    /// The maximum redisplay limit is `10`.
 pub payment_method_redisplay_limit: Option<i64>,
         /// Controls whether the Payment Element displays the option to remove a saved payment method.
     /// This parameter defaults to `disabled`.

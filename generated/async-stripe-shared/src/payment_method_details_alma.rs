@@ -1,9 +1,16 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentMethodDetailsAlma {}
+pub struct PaymentMethodDetailsAlma {
+    pub installments: Option<stripe_shared::AlmaInstallments>,
+    /// The Alma transaction ID associated with this payment.
+    pub transaction_id: Option<String>,
+}
 #[doc(hidden)]
-pub struct PaymentMethodDetailsAlmaBuilder {}
+pub struct PaymentMethodDetailsAlmaBuilder {
+    installments: Option<Option<stripe_shared::AlmaInstallments>>,
+    transaction_id: Option<Option<String>>,
+}
 
 #[allow(
     unused_variables,
@@ -45,19 +52,24 @@ const _: () = {
         type Out = PaymentMethodDetailsAlma;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "installments" => Deserialize::begin(&mut self.installments),
+                "transaction_id" => Deserialize::begin(&mut self.transaction_id),
+
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { installments: Deserialize::default(), transaction_id: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
+            let (Some(installments), Some(transaction_id)) =
+                (self.installments, self.transaction_id.take())
+            else {
                 return None;
             };
-            Some(Self::Out {})
+            Some(Self::Out { installments, transaction_id })
         }
     }
 
@@ -84,6 +96,9 @@ const _: () = {
             let mut b = PaymentMethodDetailsAlmaBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "installments" => b.installments = FromValueOpt::from_value(v),
+                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
+
                     _ => {}
                 }
             }

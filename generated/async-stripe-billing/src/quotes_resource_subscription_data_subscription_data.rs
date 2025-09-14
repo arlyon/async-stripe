@@ -2,6 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct QuotesResourceSubscriptionDataSubscriptionData {
+    pub billing_mode: stripe_billing::QuotesResourceSubscriptionDataBillingMode,
     /// The subscription's description, meant to be displayable to the customer.
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
@@ -20,6 +21,7 @@ pub struct QuotesResourceSubscriptionDataSubscriptionData {
 }
 #[doc(hidden)]
 pub struct QuotesResourceSubscriptionDataSubscriptionDataBuilder {
+    billing_mode: Option<stripe_billing::QuotesResourceSubscriptionDataBillingMode>,
     description: Option<Option<String>>,
     effective_date: Option<Option<stripe_types::Timestamp>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
@@ -66,6 +68,7 @@ const _: () = {
         type Out = QuotesResourceSubscriptionDataSubscriptionData;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "billing_mode" => Deserialize::begin(&mut self.billing_mode),
                 "description" => Deserialize::begin(&mut self.description),
                 "effective_date" => Deserialize::begin(&mut self.effective_date),
                 "metadata" => Deserialize::begin(&mut self.metadata),
@@ -77,6 +80,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                billing_mode: Deserialize::default(),
                 description: Deserialize::default(),
                 effective_date: Deserialize::default(),
                 metadata: Deserialize::default(),
@@ -85,15 +89,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(description), Some(effective_date), Some(metadata), Some(trial_period_days)) = (
+            let (
+                Some(billing_mode),
+                Some(description),
+                Some(effective_date),
+                Some(metadata),
+                Some(trial_period_days),
+            ) = (
+                self.billing_mode,
                 self.description.take(),
                 self.effective_date,
                 self.metadata.take(),
                 self.trial_period_days,
-            ) else {
+            )
+            else {
                 return None;
             };
-            Some(Self::Out { description, effective_date, metadata, trial_period_days })
+            Some(Self::Out {
+                billing_mode,
+                description,
+                effective_date,
+                metadata,
+                trial_period_days,
+            })
         }
     }
 
@@ -120,6 +138,7 @@ const _: () = {
             let mut b = QuotesResourceSubscriptionDataSubscriptionDataBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "billing_mode" => b.billing_mode = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
                     "effective_date" => b.effective_date = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),

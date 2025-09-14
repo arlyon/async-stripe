@@ -2,11 +2,17 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsPaynow {
+    /// ID of the [location](https://stripe.com/docs/api/terminal/locations) that this transaction's reader is assigned to.
+    pub location: Option<String>,
+    /// ID of the [reader](https://stripe.com/docs/api/terminal/readers) this transaction was made on.
+    pub reader: Option<String>,
     /// Reference number associated with this PayNow payment
     pub reference: Option<String>,
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsPaynowBuilder {
+    location: Option<Option<String>>,
+    reader: Option<Option<String>>,
     reference: Option<Option<String>>,
 }
 
@@ -50,6 +56,8 @@ const _: () = {
         type Out = PaymentMethodDetailsPaynow;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "location" => Deserialize::begin(&mut self.location),
+                "reader" => Deserialize::begin(&mut self.reader),
                 "reference" => Deserialize::begin(&mut self.reference),
 
                 _ => <dyn Visitor>::ignore(),
@@ -57,14 +65,20 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { reference: Deserialize::default() }
+            Self {
+                location: Deserialize::default(),
+                reader: Deserialize::default(),
+                reference: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(reference),) = (self.reference.take(),) else {
+            let (Some(location), Some(reader), Some(reference)) =
+                (self.location.take(), self.reader.take(), self.reference.take())
+            else {
                 return None;
             };
-            Some(Self::Out { reference })
+            Some(Self::Out { location, reader, reference })
         }
     }
 
@@ -91,6 +105,8 @@ const _: () = {
             let mut b = PaymentMethodDetailsPaynowBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "location" => b.location = FromValueOpt::from_value(v),
+                    "reader" => b.reader = FromValueOpt::from_value(v),
                     "reference" => b.reference = FromValueOpt::from_value(v),
 
                     _ => {}

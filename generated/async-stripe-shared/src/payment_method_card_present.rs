@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodCardPresent {
     /// Card brand.
-    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa` or `unknown`.
     pub brand: Option<String>,
     /// The [product code](https://stripe.com/docs/card-product-codes) that identifies the specific program or product associated with a card.
     pub brand_product: Option<String>,
@@ -42,7 +42,8 @@ pub struct PaymentMethodCardPresent {
     pub networks: Option<stripe_shared::PaymentMethodCardPresentNetworks>,
     /// Details about payment methods collected offline.
     pub offline: Option<stripe_shared::PaymentMethodDetailsCardPresentOffline>,
-    /// EMV tag 5F2D. Preferred languages specified by the integrated circuit chip.
+    /// The languages that the issuing bank recommends using for localizing any customer-facing text, as read from the card.
+    /// Referenced from EMV tag 5F2D, data encoded on the card's chip.
     pub preferred_locales: Option<Vec<String>>,
     /// How card details were read in this transaction.
     pub read_method: Option<PaymentMethodCardPresentReadMethod>,

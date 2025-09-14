@@ -15,7 +15,7 @@ pub struct BillingMeter {
     /// The name of the meter event to record usage for.
     /// Corresponds with the `event_name` field on meter events.
     pub event_name: String,
-    /// The time window to pre-aggregate meter events for, if any.
+    /// The time window which meter events have been pre-aggregated for, if any.
     pub event_time_window: Option<stripe_billing::BillingMeterEventTimeWindow>,
     /// Unique identifier for the object.
     pub id: stripe_billing::BillingMeterId,

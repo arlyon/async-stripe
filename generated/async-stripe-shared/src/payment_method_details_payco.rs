@@ -4,10 +4,13 @@
 pub struct PaymentMethodDetailsPayco {
     /// A unique identifier for the buyer as determined by the local payment processor.
     pub buyer_id: Option<String>,
+    /// The Payco transaction ID associated with this payment.
+    pub transaction_id: Option<String>,
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsPaycoBuilder {
     buyer_id: Option<Option<String>>,
+    transaction_id: Option<Option<String>>,
 }
 
 #[allow(
@@ -51,20 +54,23 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "buyer_id" => Deserialize::begin(&mut self.buyer_id),
+                "transaction_id" => Deserialize::begin(&mut self.transaction_id),
 
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { buyer_id: Deserialize::default() }
+            Self { buyer_id: Deserialize::default(), transaction_id: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(buyer_id),) = (self.buyer_id.take(),) else {
+            let (Some(buyer_id), Some(transaction_id)) =
+                (self.buyer_id.take(), self.transaction_id.take())
+            else {
                 return None;
             };
-            Some(Self::Out { buyer_id })
+            Some(Self::Out { buyer_id, transaction_id })
         }
     }
 
@@ -92,6 +98,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),
+                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

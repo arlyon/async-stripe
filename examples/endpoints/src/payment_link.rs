@@ -39,7 +39,8 @@ pub async fn run_payment_link_example(client: &Client) -> Result<(), StripeError
     let payment_link = CreatePaymentLink::new(&[CreatePaymentLinkLineItems {
         adjustable_quantity: None,
         quantity: 3,
-        price: price.id.to_string(),
+        price: Some(price.id.to_string()),
+        price_data: None,
     }])
     .send(client)
     .await?;

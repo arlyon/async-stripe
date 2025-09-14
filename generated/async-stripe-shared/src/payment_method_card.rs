@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodCard {
     /// Card brand.
-    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa` or `unknown`.
     pub brand: String,
     /// Checks on Card address and CVC if provided.
     pub checks: Option<stripe_shared::PaymentMethodCardChecks>,

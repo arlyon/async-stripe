@@ -6,11 +6,14 @@ pub struct PaymentMethodDetailsCashapp {
     pub buyer_id: Option<String>,
     /// A public identifier for buyers using Cash App.
     pub cashtag: Option<String>,
+    /// A unique and immutable identifier of payments assigned by Cash App
+    pub transaction_id: Option<String>,
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsCashappBuilder {
     buyer_id: Option<Option<String>>,
     cashtag: Option<Option<String>>,
+    transaction_id: Option<Option<String>>,
 }
 
 #[allow(
@@ -55,21 +58,27 @@ const _: () = {
             Ok(match k {
                 "buyer_id" => Deserialize::begin(&mut self.buyer_id),
                 "cashtag" => Deserialize::begin(&mut self.cashtag),
+                "transaction_id" => Deserialize::begin(&mut self.transaction_id),
 
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { buyer_id: Deserialize::default(), cashtag: Deserialize::default() }
+            Self {
+                buyer_id: Deserialize::default(),
+                cashtag: Deserialize::default(),
+                transaction_id: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(buyer_id), Some(cashtag)) = (self.buyer_id.take(), self.cashtag.take())
+            let (Some(buyer_id), Some(cashtag), Some(transaction_id)) =
+                (self.buyer_id.take(), self.cashtag.take(), self.transaction_id.take())
             else {
                 return None;
             };
-            Some(Self::Out { buyer_id, cashtag })
+            Some(Self::Out { buyer_id, cashtag, transaction_id })
         }
     }
 
@@ -98,6 +107,7 @@ const _: () = {
                 match k.as_str() {
                     "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),
                     "cashtag" => b.cashtag = FromValueOpt::from_value(v),
+                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

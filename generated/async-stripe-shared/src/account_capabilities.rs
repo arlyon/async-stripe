@@ -34,6 +34,8 @@ pub struct AccountCapabilities {
     pub cartes_bancaires_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the Cash App Pay capability of the account, or whether the account can directly process Cash App Pay payments.
     pub cashapp_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the Crypto capability of the account, or whether the account can directly process Crypto payments.
+    pub crypto_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the EPS payments capability of the account, or whether the account can directly process EPS charges.
     pub eps_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the FPX payments capability of the account, or whether the account can directly process FPX charges.
@@ -137,6 +139,7 @@ pub struct AccountCapabilitiesBuilder {
     card_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     cartes_bancaires_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     cashapp_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    crypto_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     eps_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     fpx_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     gb_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
@@ -241,6 +244,7 @@ const _: () = {
                     Deserialize::begin(&mut self.cartes_bancaires_payments)
                 }
                 "cashapp_payments" => Deserialize::begin(&mut self.cashapp_payments),
+                "crypto_payments" => Deserialize::begin(&mut self.crypto_payments),
                 "eps_payments" => Deserialize::begin(&mut self.eps_payments),
                 "fpx_payments" => Deserialize::begin(&mut self.fpx_payments),
                 "gb_bank_transfer_payments" => {
@@ -324,6 +328,7 @@ const _: () = {
                 card_payments: Deserialize::default(),
                 cartes_bancaires_payments: Deserialize::default(),
                 cashapp_payments: Deserialize::default(),
+                crypto_payments: Deserialize::default(),
                 eps_payments: Deserialize::default(),
                 fpx_payments: Deserialize::default(),
                 gb_bank_transfer_payments: Deserialize::default(),
@@ -387,6 +392,7 @@ const _: () = {
                 Some(card_payments),
                 Some(cartes_bancaires_payments),
                 Some(cashapp_payments),
+                Some(crypto_payments),
                 Some(eps_payments),
                 Some(fpx_payments),
                 Some(gb_bank_transfer_payments),
@@ -446,6 +452,7 @@ const _: () = {
                 self.card_payments,
                 self.cartes_bancaires_payments,
                 self.cashapp_payments,
+                self.crypto_payments,
                 self.eps_payments,
                 self.fpx_payments,
                 self.gb_bank_transfer_payments,
@@ -509,6 +516,7 @@ const _: () = {
                 card_payments,
                 cartes_bancaires_payments,
                 cashapp_payments,
+                crypto_payments,
                 eps_payments,
                 fpx_payments,
                 gb_bank_transfer_payments,
@@ -602,6 +610,7 @@ const _: () = {
                         b.cartes_bancaires_payments = FromValueOpt::from_value(v)
                     }
                     "cashapp_payments" => b.cashapp_payments = FromValueOpt::from_value(v),
+                    "crypto_payments" => b.crypto_payments = FromValueOpt::from_value(v),
                     "eps_payments" => b.eps_payments = FromValueOpt::from_value(v),
                     "fpx_payments" => b.fpx_payments = FromValueOpt::from_value(v),
                     "gb_bank_transfer_payments" => {

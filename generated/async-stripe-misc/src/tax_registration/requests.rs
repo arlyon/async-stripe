@@ -520,6 +520,9 @@ pub struct CreateTaxRegistrationCountryOptions {
     /// Options for the registration in TZ.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tz: Option<CreateTaxRegistrationCountryOptionsTz>,
+    /// Options for the registration in UA.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ua: Option<CreateTaxRegistrationCountryOptionsUa>,
     /// Options for the registration in UG.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ug: Option<CreateTaxRegistrationCountryOptionsUg>,
@@ -638,6 +641,7 @@ impl CreateTaxRegistrationCountryOptions {
             tj: None,
             tr: None,
             tz: None,
+            ua: None,
             ug: None,
             us: None,
             uy: None,
@@ -657,13 +661,90 @@ impl Default for CreateTaxRegistrationCountryOptions {
 /// Options for the registration in AE.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAe {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsAeStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsAeType,
 }
 impl CreateTaxRegistrationCountryOptionsAe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAeType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsAeStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsAeStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsAeStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -722,13 +803,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAeType 
 /// Options for the registration in AL.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAl {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsAlStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsAlType,
 }
 impl CreateTaxRegistrationCountryOptionsAl {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAlType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsAlStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsAlStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsAlStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -852,13 +1010,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAmType 
 /// Options for the registration in AO.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAo {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsAoStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsAoType,
 }
 impl CreateTaxRegistrationCountryOptionsAo {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAoType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsAoStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsAoStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsAoStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -947,6 +1182,7 @@ impl CreateTaxRegistrationCountryOptionsAtStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -954,6 +1190,7 @@ impl CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -965,6 +1202,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -1065,13 +1303,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAtType 
 /// Options for the registration in AU.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAu {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsAuStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsAuType,
 }
 impl CreateTaxRegistrationCountryOptionsAu {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAuType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsAuStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsAuStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsAuStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -1130,13 +1445,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAuType 
 /// Options for the registration in AW.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAw {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsAwStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsAwType,
 }
 impl CreateTaxRegistrationCountryOptionsAw {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAwType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsAwStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsAwStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsAwStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -1260,13 +1652,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAzType 
 /// Options for the registration in BA.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBa {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsBaStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBaType,
 }
 impl CreateTaxRegistrationCountryOptionsBa {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBaType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBaStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsBaStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsBaStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -1325,13 +1794,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBaType 
 /// Options for the registration in BB.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBb {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsBbStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBbType,
 }
 impl CreateTaxRegistrationCountryOptionsBb {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBbType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBbStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsBbStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsBbStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -1390,13 +1936,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBbType 
 /// Options for the registration in BD.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBd {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsBdStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBdType,
 }
 impl CreateTaxRegistrationCountryOptionsBd {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBdType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBdStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsBdStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsBdStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -1485,6 +2108,7 @@ impl CreateTaxRegistrationCountryOptionsBeStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -1492,6 +2116,7 @@ impl CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -1503,6 +2128,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -1603,13 +2229,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBeType 
 /// Options for the registration in BF.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBf {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsBfStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBfType,
 }
 impl CreateTaxRegistrationCountryOptionsBf {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBfType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBfStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsBfStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsBfStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -1698,6 +2401,7 @@ impl CreateTaxRegistrationCountryOptionsBgStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -1705,6 +2409,7 @@ impl CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -1716,6 +2421,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -1816,13 +2522,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBgType 
 /// Options for the registration in BH.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBh {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsBhStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBhType,
 }
 impl CreateTaxRegistrationCountryOptionsBh {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBhType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBhStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsBhStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsBhStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -1946,13 +2729,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBjType 
 /// Options for the registration in BS.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBs {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsBsStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBsType,
 }
 impl CreateTaxRegistrationCountryOptionsBs {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBsType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBsStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsBsStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsBsStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -2161,13 +3021,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCaType 
 /// Options for the registration in CD.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCd {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsCdStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsCdType,
 }
 impl CreateTaxRegistrationCountryOptionsCd {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCdType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsCdStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsCdStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsCdStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -2226,13 +3163,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCdType 
 /// Options for the registration in CH.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCh {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsChStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsChType,
 }
 impl CreateTaxRegistrationCountryOptionsCh {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsChType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsChStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsChStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsChStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -2646,6 +3660,7 @@ impl CreateTaxRegistrationCountryOptionsCyStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -2653,6 +3668,7 @@ impl CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -2664,6 +3680,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -2794,6 +3811,7 @@ impl CreateTaxRegistrationCountryOptionsCzStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -2801,6 +3819,7 @@ impl CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -2812,6 +3831,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -2942,6 +3962,7 @@ impl CreateTaxRegistrationCountryOptionsDeStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -2949,6 +3970,7 @@ impl CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -2960,6 +3982,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -3090,6 +4113,7 @@ impl CreateTaxRegistrationCountryOptionsDkStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -3097,6 +4121,7 @@ impl CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -3108,6 +4133,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -3303,6 +4329,7 @@ impl CreateTaxRegistrationCountryOptionsEeStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -3310,6 +4337,7 @@ impl CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -3321,6 +4349,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -3516,6 +4545,7 @@ impl CreateTaxRegistrationCountryOptionsEsStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -3523,6 +4553,7 @@ impl CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -3534,6 +4565,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -3634,13 +4666,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEsType 
 /// Options for the registration in ET.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEt {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsEtStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsEtType,
 }
 impl CreateTaxRegistrationCountryOptionsEt {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsEtType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsEtStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsEtStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsEtStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -3729,6 +4838,7 @@ impl CreateTaxRegistrationCountryOptionsFiStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -3736,6 +4846,7 @@ impl CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -3747,6 +4858,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -3877,6 +4989,7 @@ impl CreateTaxRegistrationCountryOptionsFrStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -3884,6 +4997,7 @@ impl CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -3895,6 +5009,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -3995,13 +5110,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFrType 
 /// Options for the registration in GB.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGb {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsGbStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsGbType,
 }
 impl CreateTaxRegistrationCountryOptionsGb {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsGbType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsGbStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsGbStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsGbStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -4125,13 +5317,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGeType 
 /// Options for the registration in GN.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGn {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsGnStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsGnType,
 }
 impl CreateTaxRegistrationCountryOptionsGn {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsGnType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsGnStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsGnStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsGnStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -4220,6 +5489,7 @@ impl CreateTaxRegistrationCountryOptionsGrStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -4227,6 +5497,7 @@ impl CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -4238,6 +5509,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -4368,6 +5640,7 @@ impl CreateTaxRegistrationCountryOptionsHrStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -4375,6 +5648,7 @@ impl CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -4386,6 +5660,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -4516,6 +5791,7 @@ impl CreateTaxRegistrationCountryOptionsHuStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -4523,6 +5799,7 @@ impl CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -4534,6 +5811,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -4729,6 +6007,7 @@ impl CreateTaxRegistrationCountryOptionsIeStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -4736,6 +6015,7 @@ impl CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -4747,6 +6027,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -4912,13 +6193,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsInType 
 /// Options for the registration in IS.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIs {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsIsStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsIsType,
 }
 impl CreateTaxRegistrationCountryOptionsIs {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsIsType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsIsStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsIsStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsIsStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -5007,6 +6365,7 @@ impl CreateTaxRegistrationCountryOptionsItStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -5014,6 +6373,7 @@ impl CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -5025,6 +6385,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -5125,13 +6486,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsItType 
 /// Options for the registration in JP.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsJp {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsJpStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsJpType,
 }
 impl CreateTaxRegistrationCountryOptionsJp {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsJpType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsJpStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsJpStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsJpStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -5610,6 +7048,7 @@ impl CreateTaxRegistrationCountryOptionsLtStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -5617,6 +7056,7 @@ impl CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -5628,6 +7068,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -5758,6 +7199,7 @@ impl CreateTaxRegistrationCountryOptionsLuStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -5765,6 +7207,7 @@ impl CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -5776,6 +7219,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -5906,6 +7350,7 @@ impl CreateTaxRegistrationCountryOptionsLvStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -5913,6 +7358,7 @@ impl CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -5924,6 +7370,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -6154,13 +7601,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMdType 
 /// Options for the registration in ME.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMe {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsMeStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsMeType,
 }
 impl CreateTaxRegistrationCountryOptionsMe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMeType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsMeStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsMeStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsMeStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -6219,13 +7743,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMeType 
 /// Options for the registration in MK.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMk {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsMkStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsMkType,
 }
 impl CreateTaxRegistrationCountryOptionsMk {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMkType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsMkStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsMkStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsMkStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -6284,13 +7885,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMkType 
 /// Options for the registration in MR.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMr {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsMrStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsMrType,
 }
 impl CreateTaxRegistrationCountryOptionsMr {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMrType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsMrStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsMrStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsMrStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -6379,6 +8057,7 @@ impl CreateTaxRegistrationCountryOptionsMtStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -6386,6 +8065,7 @@ impl CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -6397,6 +8077,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -6722,6 +8403,7 @@ impl CreateTaxRegistrationCountryOptionsNlStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -6729,6 +8411,7 @@ impl CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -6740,6 +8423,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -6840,13 +8524,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNlType 
 /// Options for the registration in NO.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNo {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsNoStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsNoType,
 }
 impl CreateTaxRegistrationCountryOptionsNo {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsNoType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsNoStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsNoStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsNoStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -6970,13 +8731,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNpType 
 /// Options for the registration in NZ.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNz {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsNzStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsNzType,
 }
 impl CreateTaxRegistrationCountryOptionsNz {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsNzType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsNzStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsNzStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsNzStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -7035,13 +8873,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNzType 
 /// Options for the registration in OM.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsOm {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsOmStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsOmType,
 }
 impl CreateTaxRegistrationCountryOptionsOm {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsOmType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsOmStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsOmStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsOmStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -7260,6 +9175,7 @@ impl CreateTaxRegistrationCountryOptionsPlStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -7267,6 +9183,7 @@ impl CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -7278,6 +9195,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -7408,6 +9326,7 @@ impl CreateTaxRegistrationCountryOptionsPtStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -7415,6 +9334,7 @@ impl CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -7426,6 +9346,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -7556,6 +9477,7 @@ impl CreateTaxRegistrationCountryOptionsRoStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -7563,6 +9485,7 @@ impl CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -7574,6 +9497,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -7674,13 +9598,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRoType 
 /// Options for the registration in RS.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsRs {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsRsStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsRsType,
 }
 impl CreateTaxRegistrationCountryOptionsRs {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsRsType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsRsStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsRsStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsRsStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -7899,6 +9900,7 @@ impl CreateTaxRegistrationCountryOptionsSeStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -7906,6 +9908,7 @@ impl CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -7917,6 +9920,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -8017,13 +10021,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSeType 
 /// Options for the registration in SG.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSg {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsSgStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsSgType,
 }
 impl CreateTaxRegistrationCountryOptionsSg {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSgType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsSgStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsSgStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsSgStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -8112,6 +10193,7 @@ impl CreateTaxRegistrationCountryOptionsSiStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -8119,6 +10201,7 @@ impl CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -8130,6 +10213,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -8260,6 +10344,7 @@ impl CreateTaxRegistrationCountryOptionsSkStandard {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -8267,6 +10352,7 @@ impl CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme {
     pub fn as_str(self) -> &'static str {
         use CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -8278,6 +10364,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkStandardPlaceOfS
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),
@@ -8443,13 +10530,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSnType 
 /// Options for the registration in SR.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSr {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsSrStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsSrType,
 }
 impl CreateTaxRegistrationCountryOptionsSr {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSrType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsSrStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsSrStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsSrStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -8765,6 +10929,71 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTzType 
         })
     }
 }
+/// Options for the registration in UA.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsUa {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsUaType,
+}
+impl CreateTaxRegistrationCountryOptionsUa {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsUaType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsUaType {
+    Simplified,
+}
+impl CreateTaxRegistrationCountryOptionsUaType {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsUaType::*;
+        match self {
+            Simplified => "simplified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUaType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsUaType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsUaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsUaType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUaType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsUaType")
+        })
+    }
+}
 /// Options for the registration in UG.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUg {
@@ -9048,13 +11277,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUsType 
 /// Options for the registration in UY.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUy {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsUyStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsUyType,
 }
 impl CreateTaxRegistrationCountryOptionsUy {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsUyType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsUyStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsUyStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsUyStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -9243,13 +11549,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsVnType 
 /// Options for the registration in ZA.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZa {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsZaStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsZaType,
 }
 impl CreateTaxRegistrationCountryOptionsZa {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsZaType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsZaStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsZaStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsZaStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.
@@ -9373,13 +11756,90 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZmType 
 /// Options for the registration in ZW.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZw {
+    /// Options for the standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<CreateTaxRegistrationCountryOptionsZwStandard>,
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsZwType,
 }
 impl CreateTaxRegistrationCountryOptionsZw {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsZwType>) -> Self {
-        Self { type_: type_.into() }
+        Self { standard: None, type_: type_.into() }
+    }
+}
+/// Options for the standard registration.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsZwStandard {
+    /// Place of supply scheme used in an standard registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_of_supply_scheme:
+        Option<CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme>,
+}
+impl CreateTaxRegistrationCountryOptionsZwStandard {
+    pub fn new() -> Self {
+        Self { place_of_supply_scheme: None }
+    }
+}
+impl Default for CreateTaxRegistrationCountryOptionsZwStandard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Place of supply scheme used in an standard registration.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+}
+impl CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme"))
     }
 }
 /// Type of registration to be created in `country`.

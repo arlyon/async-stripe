@@ -64,6 +64,9 @@ pub struct PaymentIntent {
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub description: Option<String>,
+    /// The list of payment method types to exclude from use with this payment.
+    pub excluded_payment_method_types:
+        Option<Vec<stripe_shared::PaymentIntentExcludedPaymentMethodTypes>>,
     /// Unique identifier for the object.
     pub id: stripe_shared::PaymentIntentId,
     /// The payment error encountered in the previous PaymentIntent confirmation.
@@ -155,6 +158,8 @@ pub struct PaymentIntentBuilder {
     currency: Option<stripe_types::Currency>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
     description: Option<Option<String>>,
+    excluded_payment_method_types:
+        Option<Option<Vec<stripe_shared::PaymentIntentExcludedPaymentMethodTypes>>>,
     id: Option<stripe_shared::PaymentIntentId>,
     last_payment_error: Option<Option<Box<stripe_shared::ApiErrors>>>,
     latest_charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
@@ -239,6 +244,9 @@ const _: () = {
                 "currency" => Deserialize::begin(&mut self.currency),
                 "customer" => Deserialize::begin(&mut self.customer),
                 "description" => Deserialize::begin(&mut self.description),
+                "excluded_payment_method_types" => {
+                    Deserialize::begin(&mut self.excluded_payment_method_types)
+                }
                 "id" => Deserialize::begin(&mut self.id),
                 "last_payment_error" => Deserialize::begin(&mut self.last_payment_error),
                 "latest_charge" => Deserialize::begin(&mut self.latest_charge),
@@ -289,6 +297,7 @@ const _: () = {
                 currency: Deserialize::default(),
                 customer: Deserialize::default(),
                 description: Deserialize::default(),
+                excluded_payment_method_types: Deserialize::default(),
                 id: Deserialize::default(),
                 last_payment_error: Deserialize::default(),
                 latest_charge: Deserialize::default(),
@@ -333,6 +342,7 @@ const _: () = {
                 Some(currency),
                 Some(customer),
                 Some(description),
+                Some(excluded_payment_method_types),
                 Some(id),
                 Some(last_payment_error),
                 Some(latest_charge),
@@ -373,6 +383,7 @@ const _: () = {
                 self.currency.take(),
                 self.customer.take(),
                 self.description.take(),
+                self.excluded_payment_method_types.take(),
                 self.id.take(),
                 self.last_payment_error.take(),
                 self.latest_charge.take(),
@@ -417,6 +428,7 @@ const _: () = {
                 currency,
                 customer,
                 description,
+                excluded_payment_method_types,
                 id,
                 last_payment_error,
                 latest_charge,
@@ -487,6 +499,9 @@ const _: () = {
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
+                    "excluded_payment_method_types" => {
+                        b.excluded_payment_method_types = FromValueOpt::from_value(v)
+                    }
                     "id" => b.id = FromValueOpt::from_value(v),
                     "last_payment_error" => b.last_payment_error = FromValueOpt::from_value(v),
                     "latest_charge" => b.latest_charge = FromValueOpt::from_value(v),
@@ -528,7 +543,7 @@ const _: () = {
 impl serde::Serialize for PaymentIntent {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentIntent", 40)?;
+        let mut s = s.serialize_struct("PaymentIntent", 41)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_capturable", &self.amount_capturable)?;
         s.serialize_field("amount_details", &self.amount_details)?;
@@ -545,6 +560,7 @@ impl serde::Serialize for PaymentIntent {
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
         s.serialize_field("description", &self.description)?;
+        s.serialize_field("excluded_payment_method_types", &self.excluded_payment_method_types)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("last_payment_error", &self.last_payment_error)?;
         s.serialize_field("latest_charge", &self.latest_charge)?;
@@ -906,6 +922,213 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentConfirmationMethod {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentIntentConfirmationMethod")
         })
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PaymentIntentExcludedPaymentMethodTypes {
+    AcssDebit,
+    Affirm,
+    AfterpayClearpay,
+    Alipay,
+    Alma,
+    AmazonPay,
+    AuBecsDebit,
+    BacsDebit,
+    Bancontact,
+    Billie,
+    Blik,
+    Boleto,
+    Card,
+    Cashapp,
+    Crypto,
+    CustomerBalance,
+    Eps,
+    Fpx,
+    Giropay,
+    Grabpay,
+    Ideal,
+    KakaoPay,
+    Klarna,
+    Konbini,
+    KrCard,
+    Mobilepay,
+    Multibanco,
+    NaverPay,
+    NzBankAccount,
+    Oxxo,
+    P24,
+    PayByBank,
+    Payco,
+    Paynow,
+    Paypal,
+    Pix,
+    Promptpay,
+    RevolutPay,
+    SamsungPay,
+    Satispay,
+    SepaDebit,
+    Sofort,
+    Swish,
+    Twint,
+    UsBankAccount,
+    WechatPay,
+    Zip,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PaymentIntentExcludedPaymentMethodTypes {
+    pub fn as_str(&self) -> &str {
+        use PaymentIntentExcludedPaymentMethodTypes::*;
+        match self {
+            AcssDebit => "acss_debit",
+            Affirm => "affirm",
+            AfterpayClearpay => "afterpay_clearpay",
+            Alipay => "alipay",
+            Alma => "alma",
+            AmazonPay => "amazon_pay",
+            AuBecsDebit => "au_becs_debit",
+            BacsDebit => "bacs_debit",
+            Bancontact => "bancontact",
+            Billie => "billie",
+            Blik => "blik",
+            Boleto => "boleto",
+            Card => "card",
+            Cashapp => "cashapp",
+            Crypto => "crypto",
+            CustomerBalance => "customer_balance",
+            Eps => "eps",
+            Fpx => "fpx",
+            Giropay => "giropay",
+            Grabpay => "grabpay",
+            Ideal => "ideal",
+            KakaoPay => "kakao_pay",
+            Klarna => "klarna",
+            Konbini => "konbini",
+            KrCard => "kr_card",
+            Mobilepay => "mobilepay",
+            Multibanco => "multibanco",
+            NaverPay => "naver_pay",
+            NzBankAccount => "nz_bank_account",
+            Oxxo => "oxxo",
+            P24 => "p24",
+            PayByBank => "pay_by_bank",
+            Payco => "payco",
+            Paynow => "paynow",
+            Paypal => "paypal",
+            Pix => "pix",
+            Promptpay => "promptpay",
+            RevolutPay => "revolut_pay",
+            SamsungPay => "samsung_pay",
+            Satispay => "satispay",
+            SepaDebit => "sepa_debit",
+            Sofort => "sofort",
+            Swish => "swish",
+            Twint => "twint",
+            UsBankAccount => "us_bank_account",
+            WechatPay => "wechat_pay",
+            Zip => "zip",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentIntentExcludedPaymentMethodTypes {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentExcludedPaymentMethodTypes::*;
+        match s {
+            "acss_debit" => Ok(AcssDebit),
+            "affirm" => Ok(Affirm),
+            "afterpay_clearpay" => Ok(AfterpayClearpay),
+            "alipay" => Ok(Alipay),
+            "alma" => Ok(Alma),
+            "amazon_pay" => Ok(AmazonPay),
+            "au_becs_debit" => Ok(AuBecsDebit),
+            "bacs_debit" => Ok(BacsDebit),
+            "bancontact" => Ok(Bancontact),
+            "billie" => Ok(Billie),
+            "blik" => Ok(Blik),
+            "boleto" => Ok(Boleto),
+            "card" => Ok(Card),
+            "cashapp" => Ok(Cashapp),
+            "crypto" => Ok(Crypto),
+            "customer_balance" => Ok(CustomerBalance),
+            "eps" => Ok(Eps),
+            "fpx" => Ok(Fpx),
+            "giropay" => Ok(Giropay),
+            "grabpay" => Ok(Grabpay),
+            "ideal" => Ok(Ideal),
+            "kakao_pay" => Ok(KakaoPay),
+            "klarna" => Ok(Klarna),
+            "konbini" => Ok(Konbini),
+            "kr_card" => Ok(KrCard),
+            "mobilepay" => Ok(Mobilepay),
+            "multibanco" => Ok(Multibanco),
+            "naver_pay" => Ok(NaverPay),
+            "nz_bank_account" => Ok(NzBankAccount),
+            "oxxo" => Ok(Oxxo),
+            "p24" => Ok(P24),
+            "pay_by_bank" => Ok(PayByBank),
+            "payco" => Ok(Payco),
+            "paynow" => Ok(Paynow),
+            "paypal" => Ok(Paypal),
+            "pix" => Ok(Pix),
+            "promptpay" => Ok(Promptpay),
+            "revolut_pay" => Ok(RevolutPay),
+            "samsung_pay" => Ok(SamsungPay),
+            "satispay" => Ok(Satispay),
+            "sepa_debit" => Ok(SepaDebit),
+            "sofort" => Ok(Sofort),
+            "swish" => Ok(Swish),
+            "twint" => Ok(Twint),
+            "us_bank_account" => Ok(UsBankAccount),
+            "wechat_pay" => Ok(WechatPay),
+            "zip" => Ok(Zip),
+            v => Ok(Unknown(v.to_owned())),
+        }
+    }
+}
+impl std::fmt::Display for PaymentIntentExcludedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentIntentExcludedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for PaymentIntentExcludedPaymentMethodTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentIntentExcludedPaymentMethodTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentIntentExcludedPaymentMethodTypes> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentIntentExcludedPaymentMethodTypes::from_str(s).unwrap());
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentIntentExcludedPaymentMethodTypes);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PaymentIntentExcludedPaymentMethodTypes {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

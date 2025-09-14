@@ -8,12 +8,13 @@
 pub struct Customer {
     /// The customer's address.
     pub address: Option<stripe_shared::Address>,
-    /// The current balance, if any, that's stored on the customer.
+    /// The current balance, if any, that's stored on the customer in their default currency.
     /// If negative, the customer has credit to apply to their next invoice.
     /// If positive, the customer has an amount owed that's added to their next invoice.
     /// The balance only considers amounts that Stripe hasn't successfully applied to any invoice.
     /// It doesn't reflect unpaid invoices.
     /// This balance is only taken into account after invoices finalize.
+    /// For multi-currency balances, see [invoice_credit_balance](https://stripe.com/docs/api/customers/object#customer_object-invoice_credit_balance).
     pub balance: Option<i64>,
     /// The current funds being held by Stripe on behalf of the customer.
     /// You can apply these funds towards payment intents when the source is "cash_balance".

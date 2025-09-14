@@ -965,6 +965,268 @@ impl StripeRequest for CollectInputsTerminalReader {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+struct CollectPaymentMethodTerminalReaderBuilder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    collect_config: Option<CollectPaymentMethodTerminalReaderCollectConfig>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+    payment_intent: String,
+}
+impl CollectPaymentMethodTerminalReaderBuilder {
+    fn new(payment_intent: impl Into<String>) -> Self {
+        Self { collect_config: None, expand: None, payment_intent: payment_intent.into() }
+    }
+}
+/// Configuration overrides.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CollectPaymentMethodTerminalReaderCollectConfig {
+    /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+    /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_redisplay: Option<CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay>,
+    /// Enables cancel button on transaction screens.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_customer_cancellation: Option<bool>,
+    /// Override showing a tipping selection screen on this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub skip_tipping: Option<bool>,
+    /// Tipping configuration for this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tipping: Option<TippingConfig>,
+}
+impl CollectPaymentMethodTerminalReaderCollectConfig {
+    pub fn new() -> Self {
+        Self {
+            allow_redisplay: None,
+            enable_customer_cancellation: None,
+            skip_tipping: None,
+            tipping: None,
+        }
+    }
+}
+impl Default for CollectPaymentMethodTerminalReaderCollectConfig {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
+    Always,
+    Limited,
+    Unspecified,
+}
+impl CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
+    pub fn as_str(self) -> &'static str {
+        use CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay::*;
+        match self {
+            Always => "always",
+            Limited => "limited",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay::*;
+        match s {
+            "always" => Ok(Always),
+            "limited" => Ok(Limited),
+            "unspecified" => Ok(Unspecified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay",
+            )
+        })
+    }
+}
+/// Initiates a payment flow on a Reader and updates the PaymentIntent with card details before manual confirmation.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CollectPaymentMethodTerminalReader {
+    inner: CollectPaymentMethodTerminalReaderBuilder,
+    reader: stripe_terminal::TerminalReaderId,
+}
+impl CollectPaymentMethodTerminalReader {
+    /// Construct a new `CollectPaymentMethodTerminalReader`.
+    pub fn new(
+        reader: impl Into<stripe_terminal::TerminalReaderId>,
+        payment_intent: impl Into<String>,
+    ) -> Self {
+        Self {
+            reader: reader.into(),
+            inner: CollectPaymentMethodTerminalReaderBuilder::new(payment_intent.into()),
+        }
+    }
+    /// Configuration overrides.
+    pub fn collect_config(
+        mut self,
+        collect_config: impl Into<CollectPaymentMethodTerminalReaderCollectConfig>,
+    ) -> Self {
+        self.inner.collect_config = Some(collect_config.into());
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+}
+impl CollectPaymentMethodTerminalReader {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for CollectPaymentMethodTerminalReader {
+    type Output = stripe_terminal::TerminalReader;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = &self.reader;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/terminal/readers/{reader}/collect_payment_method"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+struct ConfirmPaymentIntentTerminalReaderBuilder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    confirm_config: Option<ConfirmPaymentIntentTerminalReaderConfirmConfig>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+    payment_intent: String,
+}
+impl ConfirmPaymentIntentTerminalReaderBuilder {
+    fn new(payment_intent: impl Into<String>) -> Self {
+        Self { confirm_config: None, expand: None, payment_intent: payment_intent.into() }
+    }
+}
+/// Configuration overrides.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmPaymentIntentTerminalReaderConfirmConfig {
+    /// The URL to redirect your customer back to after they authenticate or cancel their payment on the payment method's app or site.
+    /// If you'd prefer to redirect to a mobile application, you can alternatively supply an application URI scheme.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_url: Option<String>,
+}
+impl ConfirmPaymentIntentTerminalReaderConfirmConfig {
+    pub fn new() -> Self {
+        Self { return_url: None }
+    }
+}
+impl Default for ConfirmPaymentIntentTerminalReaderConfirmConfig {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Finalizes a payment on a Reader.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmPaymentIntentTerminalReader {
+    inner: ConfirmPaymentIntentTerminalReaderBuilder,
+    reader: stripe_terminal::TerminalReaderId,
+}
+impl ConfirmPaymentIntentTerminalReader {
+    /// Construct a new `ConfirmPaymentIntentTerminalReader`.
+    pub fn new(
+        reader: impl Into<stripe_terminal::TerminalReaderId>,
+        payment_intent: impl Into<String>,
+    ) -> Self {
+        Self {
+            reader: reader.into(),
+            inner: ConfirmPaymentIntentTerminalReaderBuilder::new(payment_intent.into()),
+        }
+    }
+    /// Configuration overrides.
+    pub fn confirm_config(
+        mut self,
+        confirm_config: impl Into<ConfirmPaymentIntentTerminalReaderConfirmConfig>,
+    ) -> Self {
+        self.inner.confirm_config = Some(confirm_config.into());
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+}
+impl ConfirmPaymentIntentTerminalReader {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for ConfirmPaymentIntentTerminalReader {
+    type Output = stripe_terminal::TerminalReader;
+
+    fn build(&self) -> RequestBuilder {
+        let reader = &self.reader;
+        RequestBuilder::new(
+            StripeMethod::Post,
+            format!("/terminal/readers/{reader}/confirm_payment_intent"),
+        )
+        .form(&self.inner)
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
 struct ProcessPaymentIntentTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -996,7 +1258,7 @@ pub struct ProcessPaymentIntentTerminalReaderProcessConfig {
     pub skip_tipping: Option<bool>,
     /// Tipping configuration for this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tipping: Option<ProcessPaymentIntentTerminalReaderProcessConfigTipping>,
+    pub tipping: Option<TippingConfig>,
 }
 impl ProcessPaymentIntentTerminalReaderProcessConfig {
     pub fn new() -> Self {
@@ -1076,24 +1338,6 @@ impl<'de> serde::Deserialize<'de>
                 "Unknown value for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay",
             )
         })
-    }
-}
-/// Tipping configuration for this transaction.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ProcessPaymentIntentTerminalReaderProcessConfigTipping {
-    /// Amount used to calculate tip suggestions on tipping selection screen for this transaction.
-    /// Must be a positive integer in the smallest currency unit (e.g., 100 cents to represent $1.00 or 100 to represent ¥100, a zero-decimal currency).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_eligible: Option<i64>,
-}
-impl ProcessPaymentIntentTerminalReaderProcessConfigTipping {
-    pub fn new() -> Self {
-        Self { amount_eligible: None }
-    }
-}
-impl Default for ProcessPaymentIntentTerminalReaderProcessConfigTipping {
-    fn default() -> Self {
-        Self::new()
     }
 }
 /// Initiates a payment flow on a Reader.
@@ -1646,6 +1890,8 @@ struct PresentPaymentMethodTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount_tip: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    card: Option<PresentPaymentMethodTerminalReaderCard>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     card_present: Option<PresentPaymentMethodTerminalReaderCardPresent>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -1659,10 +1905,38 @@ impl PresentPaymentMethodTerminalReaderBuilder {
     fn new() -> Self {
         Self {
             amount_tip: None,
+            card: None,
             card_present: None,
             expand: None,
             interac_present: None,
             type_: None,
+        }
+    }
+}
+/// Simulated data for the card payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct PresentPaymentMethodTerminalReaderCard {
+    /// Card security code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cvc: Option<String>,
+    /// Two-digit number representing the card's expiration month.
+    pub exp_month: i64,
+    /// Two- or four-digit number representing the card's expiration year.
+    pub exp_year: i64,
+    /// The card number, as a string without any separators.
+    pub number: String,
+}
+impl PresentPaymentMethodTerminalReaderCard {
+    pub fn new(
+        exp_month: impl Into<i64>,
+        exp_year: impl Into<i64>,
+        number: impl Into<String>,
+    ) -> Self {
+        Self {
+            cvc: None,
+            exp_month: exp_month.into(),
+            exp_year: exp_year.into(),
+            number: number.into(),
         }
     }
 }
@@ -1703,6 +1977,7 @@ impl Default for PresentPaymentMethodTerminalReaderInteracPresent {
 /// Simulated payment type.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PresentPaymentMethodTerminalReaderType {
+    Card,
     CardPresent,
     InteracPresent,
 }
@@ -1710,6 +1985,7 @@ impl PresentPaymentMethodTerminalReaderType {
     pub fn as_str(self) -> &'static str {
         use PresentPaymentMethodTerminalReaderType::*;
         match self {
+            Card => "card",
             CardPresent => "card_present",
             InteracPresent => "interac_present",
         }
@@ -1721,6 +1997,7 @@ impl std::str::FromStr for PresentPaymentMethodTerminalReaderType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PresentPaymentMethodTerminalReaderType::*;
         match s {
+            "card" => Ok(Card),
             "card_present" => Ok(CardPresent),
             "interac_present" => Ok(InteracPresent),
             _ => Err(stripe_types::StripeParseError),
@@ -1771,6 +2048,11 @@ impl PresentPaymentMethodTerminalReader {
     /// Simulated on-reader tip amount.
     pub fn amount_tip(mut self, amount_tip: impl Into<i64>) -> Self {
         self.inner.amount_tip = Some(amount_tip.into());
+        self
+    }
+    /// Simulated data for the card payment method.
+    pub fn card(mut self, card: impl Into<PresentPaymentMethodTerminalReaderCard>) -> Self {
+        self.inner.card = Some(card.into());
         self
     }
     /// Simulated data for the card_present payment method.
@@ -2010,5 +2292,23 @@ impl StripeRequest for TimeoutInputCollectionTerminalReader {
             format!("/test_helpers/terminal/readers/{reader}/timeout_input_collection"),
         )
         .form(&self.inner)
+    }
+}
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct TippingConfig {
+    /// Amount used to calculate tip suggestions on tipping selection screen for this transaction.
+    /// Must be a positive integer in the smallest currency unit (e.g., 100 cents to represent $1.00 or 100 to represent ¥100, a zero-decimal currency).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_eligible: Option<i64>,
+}
+impl TippingConfig {
+    pub fn new() -> Self {
+        Self { amount_eligible: None }
+    }
+}
+impl Default for TippingConfig {
+    fn default() -> Self {
+        Self::new()
     }
 }

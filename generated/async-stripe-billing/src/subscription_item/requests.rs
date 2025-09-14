@@ -345,7 +345,7 @@ impl CreateSubscriptionItemBuilder {
 /// Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
 /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
 /// This was the default behavior for API versions prior to 2019-03-14.
-/// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
+/// See the [changelog](https://docs.stripe.com/changelog/2019-03-14) to learn more.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSubscriptionItemPaymentBehavior {
     AllowIncomplete,
@@ -705,7 +705,7 @@ impl CreateSubscriptionItem {
     /// Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
     /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
     /// This was the default behavior for API versions prior to 2019-03-14.
-    /// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
+    /// See the [changelog](https://docs.stripe.com/changelog/2019-03-14) to learn more.
     pub fn payment_behavior(
         mut self,
         payment_behavior: impl Into<CreateSubscriptionItemPaymentBehavior>,
@@ -845,7 +845,7 @@ impl UpdateSubscriptionItemBuilder {
 /// Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
 /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
 /// This was the default behavior for API versions prior to 2019-03-14.
-/// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
+/// See the [changelog](https://docs.stripe.com/changelog/2019-03-14) to learn more.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSubscriptionItemPaymentBehavior {
     AllowIncomplete,
@@ -1213,7 +1213,7 @@ impl UpdateSubscriptionItem {
     /// Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
     /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
     /// This was the default behavior for API versions prior to 2019-03-14.
-    /// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
+    /// See the [changelog](https://docs.stripe.com/changelog/2019-03-14) to learn more.
     pub fn payment_behavior(
         mut self,
         payment_behavior: impl Into<UpdateSubscriptionItemPaymentBehavior>,

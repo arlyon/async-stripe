@@ -56,6 +56,8 @@ pub struct Payout {
     pub method: String,
     /// If the payout reverses another, this is the ID of the original payout.
     pub original_payout: Option<stripe_types::Expandable<stripe_shared::Payout>>,
+    /// ID of the v2 FinancialAccount the funds are sent to.
+    pub payout_method: Option<String>,
     /// If `completed`, you can use the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) to list all balance transactions that are paid out in this payout.
     pub reconciliation_status: PayoutReconciliationStatus,
     /// If the payout reverses, this is the ID of the payout that reverses this payout.
@@ -98,6 +100,7 @@ pub struct PayoutBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     method: Option<String>,
     original_payout: Option<Option<stripe_types::Expandable<stripe_shared::Payout>>>,
+    payout_method: Option<Option<String>>,
     reconciliation_status: Option<PayoutReconciliationStatus>,
     reversed_by: Option<Option<stripe_types::Expandable<stripe_shared::Payout>>>,
     source_type: Option<String>,
@@ -164,6 +167,7 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "method" => Deserialize::begin(&mut self.method),
                 "original_payout" => Deserialize::begin(&mut self.original_payout),
+                "payout_method" => Deserialize::begin(&mut self.payout_method),
                 "reconciliation_status" => Deserialize::begin(&mut self.reconciliation_status),
                 "reversed_by" => Deserialize::begin(&mut self.reversed_by),
                 "source_type" => Deserialize::begin(&mut self.source_type),
@@ -196,6 +200,7 @@ const _: () = {
                 metadata: Deserialize::default(),
                 method: Deserialize::default(),
                 original_payout: Deserialize::default(),
+                payout_method: Deserialize::default(),
                 reconciliation_status: Deserialize::default(),
                 reversed_by: Deserialize::default(),
                 source_type: Deserialize::default(),
@@ -226,6 +231,7 @@ const _: () = {
                 Some(metadata),
                 Some(method),
                 Some(original_payout),
+                Some(payout_method),
                 Some(reconciliation_status),
                 Some(reversed_by),
                 Some(source_type),
@@ -252,6 +258,7 @@ const _: () = {
                 self.metadata.take(),
                 self.method.take(),
                 self.original_payout.take(),
+                self.payout_method.take(),
                 self.reconciliation_status,
                 self.reversed_by.take(),
                 self.source_type.take(),
@@ -282,6 +289,7 @@ const _: () = {
                 metadata,
                 method,
                 original_payout,
+                payout_method,
                 reconciliation_status,
                 reversed_by,
                 source_type,
@@ -338,6 +346,7 @@ const _: () = {
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "method" => b.method = FromValueOpt::from_value(v),
                     "original_payout" => b.original_payout = FromValueOpt::from_value(v),
+                    "payout_method" => b.payout_method = FromValueOpt::from_value(v),
                     "reconciliation_status" => {
                         b.reconciliation_status = FromValueOpt::from_value(v)
                     }
@@ -359,7 +368,7 @@ const _: () = {
 impl serde::Serialize for Payout {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Payout", 26)?;
+        let mut s = s.serialize_struct("Payout", 27)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("application_fee", &self.application_fee)?;
         s.serialize_field("application_fee_amount", &self.application_fee_amount)?;
@@ -378,6 +387,7 @@ impl serde::Serialize for Payout {
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("method", &self.method)?;
         s.serialize_field("original_payout", &self.original_payout)?;
+        s.serialize_field("payout_method", &self.payout_method)?;
         s.serialize_field("reconciliation_status", &self.reconciliation_status)?;
         s.serialize_field("reversed_by", &self.reversed_by)?;
         s.serialize_field("source_type", &self.source_type)?;

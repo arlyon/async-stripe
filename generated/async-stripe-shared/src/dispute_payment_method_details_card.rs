@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputePaymentMethodDetailsCard {
     /// Card brand.
-    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa` or `unknown`.
     pub brand: String,
     /// The type of dispute opened. Different case types may have varying fees and financial impact.
     pub case_type: DisputePaymentMethodDetailsCardCaseType,
@@ -121,15 +121,21 @@ const _: () = {
 /// The type of dispute opened. Different case types may have varying fees and financial impact.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum DisputePaymentMethodDetailsCardCaseType {
+    Block,
     Chargeback,
+    Compliance,
     Inquiry,
+    Resolution,
 }
 impl DisputePaymentMethodDetailsCardCaseType {
     pub fn as_str(self) -> &'static str {
         use DisputePaymentMethodDetailsCardCaseType::*;
         match self {
+            Block => "block",
             Chargeback => "chargeback",
+            Compliance => "compliance",
             Inquiry => "inquiry",
+            Resolution => "resolution",
         }
     }
 }
@@ -139,8 +145,11 @@ impl std::str::FromStr for DisputePaymentMethodDetailsCardCaseType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputePaymentMethodDetailsCardCaseType::*;
         match s {
+            "block" => Ok(Block),
             "chargeback" => Ok(Chargeback),
+            "compliance" => Ok(Compliance),
             "inquiry" => Ok(Inquiry),
+            "resolution" => Ok(Resolution),
             _ => Err(stripe_types::StripeParseError),
         }
     }

@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceRefundPaymentConfig {
-    /// Enable customer initiated cancellation when refunding this payment.
+    /// Enable customer-initiated cancellation when refunding this payment.
     pub enable_customer_cancellation: Option<bool>,
 }
 #[doc(hidden)]

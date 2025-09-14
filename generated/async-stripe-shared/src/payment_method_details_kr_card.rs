@@ -8,12 +8,15 @@ pub struct PaymentMethodDetailsKrCard {
     pub buyer_id: Option<String>,
     /// The last four digits of the card. This may not be present for American Express cards.
     pub last4: Option<String>,
+    /// The Korean Card transaction ID associated with this payment.
+    pub transaction_id: Option<String>,
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsKrCardBuilder {
     brand: Option<Option<PaymentMethodDetailsKrCardBrand>>,
     buyer_id: Option<Option<String>>,
     last4: Option<Option<String>>,
+    transaction_id: Option<Option<String>>,
 }
 
 #[allow(
@@ -59,6 +62,7 @@ const _: () = {
                 "brand" => Deserialize::begin(&mut self.brand),
                 "buyer_id" => Deserialize::begin(&mut self.buyer_id),
                 "last4" => Deserialize::begin(&mut self.last4),
+                "transaction_id" => Deserialize::begin(&mut self.transaction_id),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -69,16 +73,20 @@ const _: () = {
                 brand: Deserialize::default(),
                 buyer_id: Deserialize::default(),
                 last4: Deserialize::default(),
+                transaction_id: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(brand), Some(buyer_id), Some(last4)) =
-                (self.brand.take(), self.buyer_id.take(), self.last4.take())
-            else {
+            let (Some(brand), Some(buyer_id), Some(last4), Some(transaction_id)) = (
+                self.brand.take(),
+                self.buyer_id.take(),
+                self.last4.take(),
+                self.transaction_id.take(),
+            ) else {
                 return None;
             };
-            Some(Self::Out { brand, buyer_id, last4 })
+            Some(Self::Out { brand, buyer_id, last4, transaction_id })
         }
     }
 
@@ -108,6 +116,7 @@ const _: () = {
                     "brand" => b.brand = FromValueOpt::from_value(v),
                     "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
 
                     _ => {}
                 }

@@ -14,10 +14,19 @@ struct ListTreasuryFinancialAccountBuilder {
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    status: Option<stripe_treasury::TreasuryFinancialAccountStatus>,
 }
 impl ListTreasuryFinancialAccountBuilder {
     fn new() -> Self {
-        Self { created: None, ending_before: None, expand: None, limit: None, starting_after: None }
+        Self {
+            created: None,
+            ending_before: None,
+            expand: None,
+            limit: None,
+            starting_after: None,
+            status: None,
+        }
     }
 }
 /// Returns a list of FinancialAccounts.
@@ -53,6 +62,14 @@ impl ListTreasuryFinancialAccount {
     /// An object ID cursor for use in pagination.
     pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
         self.inner.starting_after = Some(starting_after.into());
+        self
+    }
+    /// Only return FinancialAccounts that have the given status: `open` or `closed`
+    pub fn status(
+        mut self,
+        status: impl Into<stripe_treasury::TreasuryFinancialAccountStatus>,
+    ) -> Self {
+        self.inner.status = Some(status.into());
         self
     }
 }

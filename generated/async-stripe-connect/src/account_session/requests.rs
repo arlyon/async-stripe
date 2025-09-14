@@ -21,56 +21,68 @@ impl CreateAccountSessionBuilder {
 /// whether it has been enabled or not).
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSessionComponents {
-    /// Configuration for the account management embedded component.
+    /// Configuration for the [account management](/connect/supported-embedded-components/account-management/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_management: Option<AccountConfigParam>,
-    /// Configuration for the account onboarding embedded component.
+    /// Configuration for the [account onboarding](/connect/supported-embedded-components/account-onboarding/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_onboarding: Option<AccountConfigParam>,
-    /// Configuration for the balances embedded component.
+    /// Configuration for the [balance report](/connect/supported-embedded-components/financial-reports#balance-report) embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance_report: Option<BaseConfigParam>,
+    /// Configuration for the [balances](/connect/supported-embedded-components/balances/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub balances: Option<PayoutsConfigParam>,
-    /// Configuration for the disputes list embedded component.
+    /// Configuration for the [disputes list](/connect/supported-embedded-components/disputes-list/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disputes_list: Option<CreateAccountSessionComponentsDisputesList>,
-    /// Configuration for the documents embedded component.
+    /// Configuration for the [documents](/connect/supported-embedded-components/documents/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub documents: Option<BaseConfigParam>,
-    /// Configuration for the financial account embedded component.
+    /// Configuration for the [financial account](/connect/supported-embedded-components/financial-account/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_account: Option<CreateAccountSessionComponentsFinancialAccount>,
-    /// Configuration for the financial account transactions embedded component.
+    /// Configuration for the [financial account transactions](/connect/supported-embedded-components/financial-account-transactions/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_account_transactions:
         Option<CreateAccountSessionComponentsFinancialAccountTransactions>,
-    /// Configuration for the issuing card embedded component.
+    /// Configuration for the [instant payouts promotion](/connect/supported-embedded-components/instant-payouts-promotion/) embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instant_payouts_promotion: Option<CreateAccountSessionComponentsInstantPayoutsPromotion>,
+    /// Configuration for the [issuing card](/connect/supported-embedded-components/issuing-card/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_card: Option<CreateAccountSessionComponentsIssuingCard>,
-    /// Configuration for the issuing cards list embedded component.
+    /// Configuration for the [issuing cards list](/connect/supported-embedded-components/issuing-cards-list/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_cards_list: Option<CreateAccountSessionComponentsIssuingCardsList>,
-    /// Configuration for the notification banner embedded component.
+    /// Configuration for the [notification banner](/connect/supported-embedded-components/notification-banner/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub notification_banner: Option<AccountConfigParam>,
-    /// Configuration for the payment details embedded component.
+    /// Configuration for the [payment details](/connect/supported-embedded-components/payment-details/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_details: Option<CreateAccountSessionComponentsPaymentDetails>,
-    /// Configuration for the payment disputes embedded component.
+    /// Configuration for the [payment disputes](/connect/supported-embedded-components/payment-disputes/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_disputes: Option<CreateAccountSessionComponentsPaymentDisputes>,
-    /// Configuration for the payments embedded component.
+    /// Configuration for the [payments](/connect/supported-embedded-components/payments/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payments: Option<CreateAccountSessionComponentsPayments>,
-    /// Configuration for the payouts embedded component.
+    /// Configuration for the [payout details](/connect/supported-embedded-components/payout-details/) embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payout_details: Option<BaseConfigParam>,
+    /// Configuration for the [payout reconciliation report](/connect/supported-embedded-components/financial-reports#payout-reconciliation-report) embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payout_reconciliation_report: Option<BaseConfigParam>,
+    /// Configuration for the [payouts](/connect/supported-embedded-components/payouts/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts: Option<PayoutsConfigParam>,
-    /// Configuration for the payouts list embedded component.
+    /// Configuration for the [payouts list](/connect/supported-embedded-components/payouts-list/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts_list: Option<BaseConfigParam>,
-    /// Configuration for the tax registrations embedded component.
+    /// Configuration for the [tax registrations](/connect/supported-embedded-components/tax-registrations/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_registrations: Option<BaseConfigParam>,
-    /// Configuration for the tax settings embedded component.
+    /// Configuration for the [tax settings](/connect/supported-embedded-components/tax-settings/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_settings: Option<BaseConfigParam>,
 }
@@ -79,17 +91,21 @@ impl CreateAccountSessionComponents {
         Self {
             account_management: None,
             account_onboarding: None,
+            balance_report: None,
             balances: None,
             disputes_list: None,
             documents: None,
             financial_account: None,
             financial_account_transactions: None,
+            instant_payouts_promotion: None,
             issuing_card: None,
             issuing_cards_list: None,
             notification_banner: None,
             payment_details: None,
             payment_disputes: None,
             payments: None,
+            payout_details: None,
+            payout_reconciliation_report: None,
             payouts: None,
             payouts_list: None,
             tax_registrations: None,
@@ -102,7 +118,7 @@ impl Default for CreateAccountSessionComponents {
         Self::new()
     }
 }
-/// Configuration for the disputes list embedded component.
+/// Configuration for the [disputes list](/connect/supported-embedded-components/disputes-list/) embedded component.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSessionComponentsDisputesList {
     /// Whether the embedded component is enabled.
@@ -122,15 +138,15 @@ pub struct CreateAccountSessionComponentsDisputesListFeatures {
     /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_payments: Option<bool>,
-    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    /// Whether connected accounts can manage destination charges that are created on behalf of them.
     /// This is `false` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub destination_on_behalf_of_charge_management: Option<bool>,
-    /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
+    /// Whether responding to disputes is enabled, including submitting evidence and accepting disputes.
     /// This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dispute_management: Option<bool>,
-    /// Whether to allow sending refunds. This is `true` by default.
+    /// Whether sending refunds is enabled. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_management: Option<bool>,
 }
@@ -149,7 +165,7 @@ impl Default for CreateAccountSessionComponentsDisputesListFeatures {
         Self::new()
     }
 }
-/// Configuration for the financial account embedded component.
+/// Configuration for the [financial account](/connect/supported-embedded-components/financial-account/) embedded component.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSessionComponentsFinancialAccount {
     /// Whether the embedded component is enabled.
@@ -166,13 +182,15 @@ impl CreateAccountSessionComponentsFinancialAccount {
 /// The list of features enabled in the embedded component.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSessionComponentsFinancialAccountFeatures {
-    /// Disables Stripe user authentication for this embedded component.
-    /// This value can only be true for accounts where `controller.requirement_collection` is `application`.
+    /// Whether Stripe user authentication is disabled.
+    /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
     /// The default value is the opposite of the `external_account_collection` value.
-    /// For example, if you don’t set `external_account_collection`, it defaults to true and `disable_stripe_user_authentication` defaults to false.
+    /// For example, if you don't set `external_account_collection`, it defaults to `true` and `disable_stripe_user_authentication` defaults to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_stripe_user_authentication: Option<bool>,
-    /// Whether to allow external accounts to be linked for money transfer.
+    /// Whether external account collection is enabled.
+    /// This feature can only be `false` for accounts where you’re responsible for collecting updated information when requirements are due or change, like Custom accounts.
+    /// The default value for this feature is `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_account_collection: Option<bool>,
     /// Whether to allow sending money.
@@ -197,7 +215,7 @@ impl Default for CreateAccountSessionComponentsFinancialAccountFeatures {
         Self::new()
     }
 }
-/// Configuration for the financial account transactions embedded component.
+/// Configuration for the [financial account transactions](/connect/supported-embedded-components/financial-account-transactions/) embedded component.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSessionComponentsFinancialAccountTransactions {
     /// Whether the embedded component is enabled.
@@ -228,7 +246,54 @@ impl Default for CreateAccountSessionComponentsFinancialAccountTransactionsFeatu
         Self::new()
     }
 }
-/// Configuration for the issuing card embedded component.
+/// Configuration for the [instant payouts promotion](/connect/supported-embedded-components/instant-payouts-promotion/) embedded component.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountSessionComponentsInstantPayoutsPromotion {
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsInstantPayoutsPromotionFeatures>,
+}
+impl CreateAccountSessionComponentsInstantPayoutsPromotion {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
+    }
+}
+/// The list of features enabled in the embedded component.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateAccountSessionComponentsInstantPayoutsPromotionFeatures {
+    /// Whether Stripe user authentication is disabled.
+    /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
+    /// The default value is the opposite of the `external_account_collection` value.
+    /// For example, if you don't set `external_account_collection`, it defaults to `true` and `disable_stripe_user_authentication` defaults to `false`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_stripe_user_authentication: Option<bool>,
+    /// Whether external account collection is enabled.
+    /// This feature can only be `false` for accounts where you’re responsible for collecting updated information when requirements are due or change, like Custom accounts.
+    /// The default value for this feature is `true`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_account_collection: Option<bool>,
+    /// Whether to allow creation of instant payouts.
+    /// Defaults to `true` when `controller.losses.payments` is set to `stripe` for the account, otherwise `false`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instant_payouts: Option<bool>,
+}
+impl CreateAccountSessionComponentsInstantPayoutsPromotionFeatures {
+    pub fn new() -> Self {
+        Self {
+            disable_stripe_user_authentication: None,
+            external_account_collection: None,
+            instant_payouts: None,
+        }
+    }
+}
+impl Default for CreateAccountSessionComponentsInstantPayoutsPromotionFeatures {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration for the [issuing card](/connect/supported-embedded-components/issuing-card/) embedded component.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSessionComponentsIssuingCard {
     /// Whether the embedded component is enabled.
@@ -273,7 +338,7 @@ impl Default for CreateAccountSessionComponentsIssuingCardFeatures {
         Self::new()
     }
 }
-/// Configuration for the issuing cards list embedded component.
+/// Configuration for the [issuing cards list](/connect/supported-embedded-components/issuing-cards-list/) embedded component.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSessionComponentsIssuingCardsList {
     /// Whether the embedded component is enabled.
@@ -299,8 +364,10 @@ pub struct CreateAccountSessionComponentsIssuingCardsListFeatures {
     /// Whether to allow cardholder management features.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cardholder_management: Option<bool>,
-    /// Disables Stripe user authentication for this embedded component.
-    /// This feature can only be false for accounts where you’re responsible for collecting updated information when requirements are due or change, like custom accounts.
+    /// Whether Stripe user authentication is disabled.
+    /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
+    /// The default value is the opposite of the `external_account_collection` value.
+    /// For example, if you don't set `external_account_collection`, it defaults to `true` and `disable_stripe_user_authentication` defaults to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_stripe_user_authentication: Option<bool>,
     /// Whether to allow spend control management features.
@@ -323,7 +390,7 @@ impl Default for CreateAccountSessionComponentsIssuingCardsListFeatures {
         Self::new()
     }
 }
-/// Configuration for the payment details embedded component.
+/// Configuration for the [payment details](/connect/supported-embedded-components/payment-details/) embedded component.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSessionComponentsPaymentDetails {
     /// Whether the embedded component is enabled.
@@ -343,15 +410,15 @@ pub struct CreateAccountSessionComponentsPaymentDetailsFeatures {
     /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_payments: Option<bool>,
-    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    /// Whether connected accounts can manage destination charges that are created on behalf of them.
     /// This is `false` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub destination_on_behalf_of_charge_management: Option<bool>,
-    /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
+    /// Whether responding to disputes is enabled, including submitting evidence and accepting disputes.
     /// This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dispute_management: Option<bool>,
-    /// Whether to allow sending refunds. This is `true` by default.
+    /// Whether sending refunds is enabled. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_management: Option<bool>,
 }
@@ -370,7 +437,7 @@ impl Default for CreateAccountSessionComponentsPaymentDetailsFeatures {
         Self::new()
     }
 }
-/// Configuration for the payment disputes embedded component.
+/// Configuration for the [payment disputes](/connect/supported-embedded-components/payment-disputes/) embedded component.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSessionComponentsPaymentDisputes {
     /// Whether the embedded component is enabled.
@@ -387,15 +454,15 @@ impl CreateAccountSessionComponentsPaymentDisputes {
 /// The list of features enabled in the embedded component.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSessionComponentsPaymentDisputesFeatures {
-    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    /// Whether connected accounts can manage destination charges that are created on behalf of them.
     /// This is `false` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub destination_on_behalf_of_charge_management: Option<bool>,
-    /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
+    /// Whether responding to disputes is enabled, including submitting evidence and accepting disputes.
     /// This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dispute_management: Option<bool>,
-    /// Whether to allow sending refunds. This is `true` by default.
+    /// Whether sending refunds is enabled. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_management: Option<bool>,
 }
@@ -413,7 +480,7 @@ impl Default for CreateAccountSessionComponentsPaymentDisputesFeatures {
         Self::new()
     }
 }
-/// Configuration for the payments embedded component.
+/// Configuration for the [payments](/connect/supported-embedded-components/payments/) embedded component.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSessionComponentsPayments {
     /// Whether the embedded component is enabled.
@@ -433,15 +500,15 @@ pub struct CreateAccountSessionComponentsPaymentsFeatures {
     /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_payments: Option<bool>,
-    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    /// Whether connected accounts can manage destination charges that are created on behalf of them.
     /// This is `false` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub destination_on_behalf_of_charge_management: Option<bool>,
-    /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
+    /// Whether responding to disputes is enabled, including submitting evidence and accepting disputes.
     /// This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dispute_management: Option<bool>,
-    /// Whether to allow sending refunds. This is `true` by default.
+    /// Whether sending refunds is enabled. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_management: Option<bool>,
 }
@@ -507,15 +574,14 @@ impl StripeRequest for CreateAccountSession {
 
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct AccountFeaturesParam {
-    /// Disables Stripe user authentication for this embedded component.
-    /// This value can only be true for accounts where `controller.requirement_collection` is `application`.
+    /// Whether Stripe user authentication is disabled.
+    /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
     /// The default value is the opposite of the `external_account_collection` value.
-    /// For example, if you don’t set `external_account_collection`, it defaults to true and `disable_stripe_user_authentication` defaults to false.
+    /// For example, if you don't set `external_account_collection`, it defaults to `true` and `disable_stripe_user_authentication` defaults to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_stripe_user_authentication: Option<bool>,
-    /// Whether to allow platforms to control bank account collection for their connected accounts.
-    /// This feature can only be false for accounts where you’re responsible for collecting updated information when requirements are due or change, like custom accounts.
-    /// Otherwise, bank account collection is determined by compliance requirements.
+    /// Whether external account collection is enabled.
+    /// This feature can only be `false` for accounts where you’re responsible for collecting updated information when requirements are due or change, like Custom accounts.
     /// The default value for this feature is `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_account_collection: Option<bool>,
@@ -530,30 +596,43 @@ impl Default for AccountFeaturesParam {
         Self::new()
     }
 }
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct BaseConfigParam {
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+    /// An empty list, because this embedded component has no features.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub features: Option<miniserde::json::Value>,
+}
+impl BaseConfigParam {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct PayoutsFeaturesParam {
-    /// Disables Stripe user authentication for this embedded component.
-    /// This value can only be true for accounts where `controller.requirement_collection` is `application`.
+    /// Whether Stripe user authentication is disabled.
+    /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
     /// The default value is the opposite of the `external_account_collection` value.
-    /// For example, if you don’t set `external_account_collection`, it defaults to true and `disable_stripe_user_authentication` defaults to false.
+    /// For example, if you don't set `external_account_collection`, it defaults to `true` and `disable_stripe_user_authentication` defaults to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_stripe_user_authentication: Option<bool>,
     /// Whether to allow payout schedule to be changed.
-    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    /// Defaults to `true` when `controller.losses.payments` is set to `stripe` for the account, otherwise `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub edit_payout_schedule: Option<bool>,
-    /// Whether to allow platforms to control bank account collection for their connected accounts.
-    /// This feature can only be false for accounts where you’re responsible for collecting updated information when requirements are due or change, like custom accounts.
-    /// Otherwise, bank account collection is determined by compliance requirements.
+    /// Whether external account collection is enabled.
+    /// This feature can only be `false` for accounts where you’re responsible for collecting updated information when requirements are due or change, like Custom accounts.
     /// The default value for this feature is `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_account_collection: Option<bool>,
     /// Whether to allow creation of instant payouts.
-    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    /// Defaults to `true` when `controller.losses.payments` is set to `stripe` for the account, otherwise `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub instant_payouts: Option<bool>,
     /// Whether to allow creation of standard payouts.
-    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    /// Defaults to `true` when `controller.losses.payments` is set to `stripe` for the account, otherwise `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard_payouts: Option<bool>,
 }
@@ -571,20 +650,6 @@ impl PayoutsFeaturesParam {
 impl Default for PayoutsFeaturesParam {
     fn default() -> Self {
         Self::new()
-    }
-}
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct BaseConfigParam {
-    /// Whether the embedded component is enabled.
-    pub enabled: bool,
-    /// The list of features enabled in the embedded component.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub features: Option<miniserde::json::Value>,
-}
-impl BaseConfigParam {
-    pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into(), features: None }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

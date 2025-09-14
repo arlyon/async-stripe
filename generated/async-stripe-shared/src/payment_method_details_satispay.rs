@@ -1,9 +1,14 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentMethodDetailsSatispay {}
+pub struct PaymentMethodDetailsSatispay {
+    /// The Satispay transaction ID associated with this payment.
+    pub transaction_id: Option<String>,
+}
 #[doc(hidden)]
-pub struct PaymentMethodDetailsSatispayBuilder {}
+pub struct PaymentMethodDetailsSatispayBuilder {
+    transaction_id: Option<Option<String>>,
+}
 
 #[allow(
     unused_variables,
@@ -45,19 +50,21 @@ const _: () = {
         type Out = PaymentMethodDetailsSatispay;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "transaction_id" => Deserialize::begin(&mut self.transaction_id),
+
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { transaction_id: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
+            let (Some(transaction_id),) = (self.transaction_id.take(),) else {
                 return None;
             };
-            Some(Self::Out {})
+            Some(Self::Out { transaction_id })
         }
     }
 
@@ -84,6 +91,8 @@ const _: () = {
             let mut b = PaymentMethodDetailsSatispayBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
+
                     _ => {}
                 }
             }

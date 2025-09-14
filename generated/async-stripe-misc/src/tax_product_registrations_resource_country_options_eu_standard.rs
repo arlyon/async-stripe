@@ -109,6 +109,7 @@ const _: () = {
 /// Place of supply scheme used in an EU standard registration.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxProductRegistrationsResourceCountryOptionsEuStandardPlaceOfSupplyScheme {
+    InboundGoods,
     SmallSeller,
     Standard,
 }
@@ -116,6 +117,7 @@ impl TaxProductRegistrationsResourceCountryOptionsEuStandardPlaceOfSupplyScheme 
     pub fn as_str(self) -> &'static str {
         use TaxProductRegistrationsResourceCountryOptionsEuStandardPlaceOfSupplyScheme::*;
         match self {
+            InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
         }
@@ -129,6 +131,7 @@ impl std::str::FromStr
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductRegistrationsResourceCountryOptionsEuStandardPlaceOfSupplyScheme::*;
         match s {
+            "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             _ => Err(stripe_types::StripeParseError),

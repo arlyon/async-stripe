@@ -186,6 +186,8 @@ struct CreateBillingPortalConfigurationBuilder {
     login_page: Option<CreateBillingPortalConfigurationLoginPage>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<String>,
 }
 impl CreateBillingPortalConfigurationBuilder {
     fn new(features: impl Into<CreateBillingPortalConfigurationFeatures>) -> Self {
@@ -196,6 +198,7 @@ impl CreateBillingPortalConfigurationBuilder {
             features: features.into(),
             login_page: None,
             metadata: None,
+            name: None,
         }
     }
 }
@@ -958,6 +961,11 @@ impl CreateBillingPortalConfiguration {
         self.inner.metadata = Some(metadata.into());
         self
     }
+    /// The name of the configuration.
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
+        self
+    }
 }
 impl CreateBillingPortalConfiguration {
     /// Send the request and return the deserialized response.
@@ -1000,6 +1008,8 @@ struct UpdateBillingPortalConfigurationBuilder {
     login_page: Option<UpdateBillingPortalConfigurationLoginPage>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<String>,
 }
 impl UpdateBillingPortalConfigurationBuilder {
     fn new() -> Self {
@@ -1011,6 +1021,7 @@ impl UpdateBillingPortalConfigurationBuilder {
             features: None,
             login_page: None,
             metadata: None,
+            name: None,
         }
     }
 }
@@ -1800,6 +1811,11 @@ impl UpdateBillingPortalConfiguration {
         self.inner.metadata = Some(metadata.into());
         self
     }
+    /// The name of the configuration.
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.inner.name = Some(name.into());
+        self
+    }
 }
 impl UpdateBillingPortalConfiguration {
     /// Send the request and return the deserialized response.
@@ -1832,8 +1848,27 @@ impl StripeRequest for UpdateBillingPortalConfiguration {
     }
 }
 
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct SubscriptionUpdateProductAdjustableQuantityParam {
+    /// Set to true if the quantity can be adjusted to any non-negative integer.
+    pub enabled: bool,
+    /// The maximum quantity that can be set for the product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<i64>,
+    /// The minimum quantity that can be set for the product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<i64>,
+}
+impl SubscriptionUpdateProductAdjustableQuantityParam {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), maximum: None, minimum: None }
+    }
+}
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct SubscriptionUpdateProductParam {
+    /// Control whether the quantity of the product can be adjusted.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub adjustable_quantity: Option<SubscriptionUpdateProductAdjustableQuantityParam>,
     /// The list of price IDs for the product that a subscription can be updated to.
     pub prices: Vec<String>,
     /// The product id.
@@ -1841,6 +1876,6 @@ pub struct SubscriptionUpdateProductParam {
 }
 impl SubscriptionUpdateProductParam {
     pub fn new(prices: impl Into<Vec<String>>, product: impl Into<String>) -> Self {
-        Self { prices: prices.into(), product: product.into() }
+        Self { adjustable_quantity: None, prices: prices.into(), product: product.into() }
     }
 }

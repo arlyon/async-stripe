@@ -2,24 +2,23 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ConnectEmbeddedPayoutsFeatures {
-    /// Disables Stripe user authentication for this embedded component.
-    /// This value can only be true for accounts where `controller.requirement_collection` is `application`.
+    /// Whether Stripe user authentication is disabled.
+    /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
     /// The default value is the opposite of the `external_account_collection` value.
-    /// For example, if you don’t set `external_account_collection`, it defaults to true and `disable_stripe_user_authentication` defaults to false.
+    /// For example, if you don't set `external_account_collection`, it defaults to `true` and `disable_stripe_user_authentication` defaults to `false`.
     pub disable_stripe_user_authentication: bool,
     /// Whether to allow payout schedule to be changed.
-    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    /// Defaults to `true` when `controller.losses.payments` is set to `stripe` for the account, otherwise `false`.
     pub edit_payout_schedule: bool,
-    /// Whether to allow platforms to control bank account collection for their connected accounts.
-    /// This feature can only be false for accounts where you’re responsible for collecting updated information when requirements are due or change, like custom accounts.
-    /// Otherwise, bank account collection is determined by compliance requirements.
+    /// Whether external account collection is enabled.
+    /// This feature can only be `false` for accounts where you’re responsible for collecting updated information when requirements are due or change, like Custom accounts.
     /// The default value for this feature is `true`.
     pub external_account_collection: bool,
     /// Whether to allow creation of instant payouts.
-    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    /// Defaults to `true` when `controller.losses.payments` is set to `stripe` for the account, otherwise `false`.
     pub instant_payouts: bool,
     /// Whether to allow creation of standard payouts.
-    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    /// Defaults to `true` when `controller.losses.payments` is set to `stripe` for the account, otherwise `false`.
     pub standard_payouts: bool,
 }
 #[doc(hidden)]

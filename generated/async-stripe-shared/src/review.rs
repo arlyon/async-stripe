@@ -12,7 +12,7 @@ pub struct Review {
     /// The charge associated with this review.
     pub charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     /// The reason the review was closed, or null if it has not yet been closed.
-    /// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, `redacted`, or `canceled`.
+    /// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, `redacted`, `canceled`, `payment_never_settled`, or `acknowledged`.
     pub closed_reason: Option<ReviewClosedReason>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
@@ -32,7 +32,7 @@ pub struct Review {
     /// The PaymentIntent ID associated with this review, if one exists.
     pub payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
     /// The reason the review is currently open or closed.
-    /// One of `rule`, `manual`, `approved`, `refunded`, `refunded_as_fraud`, `disputed`, `redacted`, or `canceled`.
+    /// One of `rule`, `manual`, `approved`, `refunded`, `refunded_as_fraud`, `disputed`, `redacted`, `canceled`, `payment_never_settled`, or `acknowledged`.
     pub reason: String,
     /// Information related to the browsing session of the user who initiated the payment.
     pub session: Option<stripe_shared::RadarReviewResourceSession>,
@@ -246,7 +246,7 @@ impl serde::Serialize for Review {
     }
 }
 /// The reason the review was closed, or null if it has not yet been closed.
-/// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, `redacted`, or `canceled`.
+/// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, `redacted`, `canceled`, `payment_never_settled`, or `acknowledged`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ReviewClosedReason {
     Approved,

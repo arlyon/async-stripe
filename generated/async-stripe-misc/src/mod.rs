@@ -184,6 +184,10 @@ pub mod gelato_provided_details;
 #[doc(inline)]
 pub use gelato_provided_details::*;
 #[doc(hidden)]
+pub mod gelato_related_person;
+#[doc(inline)]
+pub use gelato_related_person::*;
+#[doc(hidden)]
 pub mod gelato_report_document_options;
 #[doc(inline)]
 pub use gelato_report_document_options::*;
@@ -215,6 +219,10 @@ pub use gelato_session_id_number_options::*;
 pub mod gelato_session_last_error;
 #[doc(inline)]
 pub use gelato_session_last_error::*;
+#[doc(hidden)]
+pub mod gelato_session_matching_options;
+#[doc(inline)]
+pub use gelato_session_matching_options::*;
 #[doc(hidden)]
 pub mod gelato_session_phone_options;
 #[doc(inline)]
@@ -281,6 +289,10 @@ pub use tax_product_registrations_resource_country_options_default::*;
 pub mod tax_product_registrations_resource_country_options_default_inbound_goods;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_default_inbound_goods::*;
+#[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_default_standard;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_default_standard::*;
 #[doc(hidden)]
 pub mod tax_product_registrations_resource_country_options_eu_standard;
 #[doc(inline)]

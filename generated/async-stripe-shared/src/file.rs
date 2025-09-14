@@ -246,6 +246,7 @@ pub enum FilePurpose {
     Selfie,
     SigmaScheduledQuery,
     TaxDocumentUserUpload,
+    TerminalAndroidApk,
     TerminalReaderSplashscreen,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
@@ -270,6 +271,7 @@ impl FilePurpose {
             Selfie => "selfie",
             SigmaScheduledQuery => "sigma_scheduled_query",
             TaxDocumentUserUpload => "tax_document_user_upload",
+            TerminalAndroidApk => "terminal_android_apk",
             TerminalReaderSplashscreen => "terminal_reader_splashscreen",
             Unknown(v) => v,
         }
@@ -297,6 +299,7 @@ impl std::str::FromStr for FilePurpose {
             "selfie" => Ok(Selfie),
             "sigma_scheduled_query" => Ok(SigmaScheduledQuery),
             "tax_document_user_upload" => Ok(TaxDocumentUserUpload),
+            "terminal_android_apk" => Ok(TerminalAndroidApk),
             "terminal_reader_splashscreen" => Ok(TerminalReaderSplashscreen),
             v => Ok(Unknown(v.to_owned())),
         }

@@ -1139,7 +1139,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkInvoiceCreationInvoiceDat
     }
 }
 /// Default options for invoice PDF rendering for this customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -1148,10 +1148,13 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_tax_display:
         Option<CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
+    /// ID of the invoice rendering template to use for this invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
 }
 impl CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     pub fn new() -> Self {
-        Self { amount_tax_display: None }
+        Self { amount_tax_display: None, template: None }
     }
 }
 impl Default for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
@@ -1235,13 +1238,237 @@ pub struct CreatePaymentLinkLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adjustable_quantity: Option<AdjustableQuantityParams>,
     /// The ID of the [Price](https://stripe.com/docs/api/prices) or [Plan](https://stripe.com/docs/api/plans) object.
-    pub price: String,
+    /// One of `price` or `price_data` is required.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<String>,
+    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// One of `price` or `price_data` is required.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price_data: Option<CreatePaymentLinkLineItemsPriceData>,
     /// The quantity of the line item being purchased.
     pub quantity: u64,
 }
 impl CreatePaymentLinkLineItems {
-    pub fn new(price: impl Into<String>, quantity: impl Into<u64>) -> Self {
-        Self { adjustable_quantity: None, price: price.into(), quantity: quantity.into() }
+    pub fn new(quantity: impl Into<u64>) -> Self {
+        Self { adjustable_quantity: None, price: None, price_data: None, quantity: quantity.into() }
+    }
+}
+/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// One of `price` or `price_data` is required.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentLinkLineItemsPriceData {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: stripe_types::Currency,
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
+    /// One of `product` or `product_data` is required.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product: Option<String>,
+    /// Data used to generate a new [Product](https://docs.stripe.com/api/products) object inline.
+    /// One of `product` or `product_data` is required.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_data: Option<CreatePaymentLinkLineItemsPriceDataProductData>,
+    /// The recurring components of a price such as `interval` and `interval_count`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub recurring: Option<CreatePaymentLinkLineItemsPriceDataRecurring>,
+    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<CreatePaymentLinkLineItemsPriceDataTaxBehavior>,
+    /// A non-negative integer in cents (or local equivalent) representing how much to charge.
+    /// One of `unit_amount` or `unit_amount_decimal` is required.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
+}
+impl CreatePaymentLinkLineItemsPriceData {
+    pub fn new(currency: impl Into<stripe_types::Currency>) -> Self {
+        Self {
+            currency: currency.into(),
+            product: None,
+            product_data: None,
+            recurring: None,
+            tax_behavior: None,
+            unit_amount: None,
+            unit_amount_decimal: None,
+        }
+    }
+}
+/// Data used to generate a new [Product](https://docs.stripe.com/api/products) object inline.
+/// One of `product` or `product_data` is required.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentLinkLineItemsPriceDataProductData {
+    /// The product's description, meant to be displayable to the customer.
+    /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub images: Option<Vec<String>>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The product's name, meant to be displayable to the customer.
+    pub name: String,
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
+}
+impl CreatePaymentLinkLineItemsPriceDataProductData {
+    pub fn new(name: impl Into<String>) -> Self {
+        Self { description: None, images: None, metadata: None, name: name.into(), tax_code: None }
+    }
+}
+/// The recurring components of a price such as `interval` and `interval_count`.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentLinkLineItemsPriceDataRecurring {
+    /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
+    pub interval: CreatePaymentLinkLineItemsPriceDataRecurringInterval,
+    /// The number of intervals between subscription billings.
+    /// For example, `interval=month` and `interval_count=3` bills every 3 months.
+    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+impl CreatePaymentLinkLineItemsPriceDataRecurring {
+    pub fn new(interval: impl Into<CreatePaymentLinkLineItemsPriceDataRecurringInterval>) -> Self {
+        Self { interval: interval.into(), interval_count: None }
+    }
+}
+/// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentLinkLineItemsPriceDataRecurringInterval {
+    Day,
+    Month,
+    Week,
+    Year,
+}
+impl CreatePaymentLinkLineItemsPriceDataRecurringInterval {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentLinkLineItemsPriceDataRecurringInterval::*;
+        match self {
+            Day => "day",
+            Month => "month",
+            Week => "week",
+            Year => "year",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentLinkLineItemsPriceDataRecurringInterval::*;
+        match s {
+            "day" => Ok(Day),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            "year" => Ok(Year),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentLinkLineItemsPriceDataRecurringInterval",
+            )
+        })
+    }
+}
+/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentLinkLineItemsPriceDataTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+impl CreatePaymentLinkLineItemsPriceDataTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentLinkLineItemsPriceDataTaxBehavior::*;
+        match self {
+            Exclusive => "exclusive",
+            Inclusive => "inclusive",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentLinkLineItemsPriceDataTaxBehavior::*;
+        match s {
+            "exclusive" => Ok(Exclusive),
+            "inclusive" => Ok(Inclusive),
+            "unspecified" => Ok(Unspecified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentLinkLineItemsPriceDataTaxBehavior",
+            )
+        })
     }
 }
 /// A list of optional items the customer can add to their order at checkout.
@@ -3556,7 +3783,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkInvoiceCreationInvoiceDat
     }
 }
 /// Default options for invoice PDF rendering for this customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -3565,10 +3792,13 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_tax_display:
         Option<UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
+    /// ID of the invoice rendering template to use for this invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
 }
 impl UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     pub fn new() -> Self {
-        Self { amount_tax_display: None }
+        Self { amount_tax_display: None, template: None }
     }
 }
 impl Default for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
@@ -5124,7 +5354,7 @@ pub struct AdjustableQuantityParams {
     pub enabled: bool,
     /// The maximum quantity the customer can purchase.
     /// By default this value is 99.
-    /// You can specify a value up to 999.
+    /// You can specify a value up to 999999.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
     /// The minimum quantity the customer can purchase.

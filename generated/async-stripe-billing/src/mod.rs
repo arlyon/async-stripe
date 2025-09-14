@@ -216,6 +216,10 @@ pub use portal_subscription_update::*;
 pub mod portal_subscription_update_product;
 #[doc(inline)]
 pub use portal_subscription_update_product::*;
+#[doc(hidden)]
+pub mod portal_subscription_update_product_adjustable_quantity;
+#[doc(inline)]
+pub use portal_subscription_update_product_adjustable_quantity::*;
 pub use quote::types::*;
 pub mod quote;
 #[doc(hidden)]
@@ -238,6 +242,10 @@ pub use quotes_resource_recurring::*;
 pub mod quotes_resource_status_transitions;
 #[doc(inline)]
 pub use quotes_resource_status_transitions::*;
+#[doc(hidden)]
+pub mod quotes_resource_subscription_data_billing_mode;
+#[doc(inline)]
+pub use quotes_resource_subscription_data_billing_mode::*;
 #[doc(hidden)]
 pub mod quotes_resource_subscription_data_subscription_data;
 #[doc(inline)]
@@ -271,13 +279,17 @@ pub use stripe_shared::subscription_pending_invoice_item_interval::*;
 pub mod subscription_schedule;
 pub use stripe_shared::subscription_schedule::*;
 pub use stripe_shared::subscription_schedule_add_invoice_item::*;
+pub use stripe_shared::subscription_schedule_add_invoice_item_period::*;
 pub use stripe_shared::subscription_schedule_configuration_item::*;
 pub use stripe_shared::subscription_schedule_current_phase::*;
 pub use stripe_shared::subscription_schedule_phase_configuration::*;
 pub use stripe_shared::subscription_schedules_resource_default_settings::*;
 pub use stripe_shared::subscription_schedules_resource_default_settings_automatic_tax::*;
+pub use stripe_shared::subscription_schedules_resource_invoice_item_period_resource_period_end::*;
+pub use stripe_shared::subscription_schedules_resource_invoice_item_period_resource_period_start::*;
 pub use stripe_shared::subscription_transfer_data::*;
 pub use stripe_shared::subscriptions_resource_billing_cycle_anchor_config::*;
+pub use stripe_shared::subscriptions_resource_billing_mode::*;
 pub use stripe_shared::subscriptions_resource_pause_collection::*;
 pub use stripe_shared::subscriptions_resource_payment_method_options::*;
 pub use stripe_shared::subscriptions_resource_payment_settings::*;

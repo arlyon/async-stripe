@@ -113,6 +113,9 @@ pub enum ApiVersion {
     V2025_03_31_basil,
     V2025_04_30_basil,
     V2025_05_28_basil,
+    V2025_06_30_basil,
+    V2025_07_30_basil,
+    V2025_08_27_basil,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -232,6 +235,9 @@ impl ApiVersion {
             V2025_03_31_basil => "2025-03-31.basil",
             V2025_04_30_basil => "2025-04-30.basil",
             V2025_05_28_basil => "2025-05-28.basil",
+            V2025_06_30_basil => "2025-06-30.basil",
+            V2025_07_30_basil => "2025-07-30.basil",
+            V2025_08_27_basil => "2025-08-27.basil",
             Unknown(v) => v,
         }
     }
@@ -354,6 +360,9 @@ impl std::str::FromStr for ApiVersion {
             "2025-03-31.basil" => Ok(V2025_03_31_basil),
             "2025-04-30.basil" => Ok(V2025_04_30_basil),
             "2025-05-28.basil" => Ok(V2025_05_28_basil),
+            "2025-06-30.basil" => Ok(V2025_06_30_basil),
+            "2025-07-30.basil" => Ok(V2025_07_30_basil),
+            "2025-08-27.basil" => Ok(V2025_08_27_basil),
             v => Ok(Unknown(v.to_owned())),
         }
     }
