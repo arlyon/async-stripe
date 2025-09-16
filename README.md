@@ -4,175 +4,229 @@
 [![async-stripe on crates.io](https://img.shields.io/crates/v/async-stripe.svg)](https://crates.io/crates/async-stripe)
 [![async-stripe  on docs.rs](https://docs.rs/async-stripe/badge.svg)](https://docs.rs/async-stripe)
 
-Convenient rust bindings and types for the Stripe HTTP API aiming to support
-the entire API surface. Not the case? Please open an issue. We update our
-definitions [every week](https://github.com/arlyon/async-stripe/actions/workflows/openapi.yml)
-to ensure that we are up to date.
-Want to see a changelog of the Stripe
-API? [Look no further](https://stripe.com/docs/changelog).
+A convenient, performant, and strongly-typed Rust library for the Stripe
+HTTP API.
 
-> **Note**
->
-> We are currently working on a major rewrite of the library in the `next` branch. This rewrite aims to make the library more efficient and easier to use. Some lovely numbers from the rewrite:
->
-> - A clean release build of `examples/endpoints` goes from ~4m to 50s with `min-ser` enabled.
-> - The actual time to build just the binary goes from 75s to 7s, making incremental builds for code depending on async-stripe much faster.
-> - Stripped binary size of the `examples/endpoints` binary went from ~70MB to ~20MB, with further reduction to ~13MB using a fat LTO build.
->
-> We are actively seeking testers to help us ensure the new version is stable and performant. If you are interested in trying out the new version, you can add the following to your `Cargo.toml`:
->
-> ```toml
-> [dependencies]
-> async-stripe = { git = "https://github.com/arlyon/async-stripe", branch = "next" }
-> ```
->
-> Your feedback is invaluable to us, so please report any issues or suggestions you may have. We are still expecting a few breaking changes before RC. We recommend
-> using the in-progress [Migration Guide](https://github.com/arlyon/async-stripe/blob/next/CHANGELOG.md) when upgrading.
+This library provides asynchronous bindings for the entire Stripe API
+surface. It's generated directly from Stripe's official OpenAPI
+specification and is **updated weekly via CI** to ensure it's always
+up-to-date with the latest API changes.
 
-## Documentation
+## ✨ Key Features
 
-See the [Rust API docs](https://docs.rs/async-stripe), the [examples](/examples),
-or [payments.rs](https://payments.rs).
+- **Complete & Current API Coverage**: Generated from the official
+  Stripe OpenAPI spec for maximum coverage and correctness. Our CI runs
+  weekly to pull in the latest API definitions.
 
-## Example
+- **Asynchronous & Performant**: Built with async Rust for high
+  performance. Uses `miniserde` for blazing-fast deserialization,
+  keeping your binary sizes small and compile times fast.
 
-This asynchronous example uses `Tokio` to create
-a [Stripe Customer](https://stripe.com/docs/api/customers/object). Your `Cargo.toml` could
-look like this:
+- **Modular by Design**: The API is split into multiple crates
+  (`stripe-core`, `stripe-billing`, etc.), so you only compile what you
+  need, further reducing bloat.
 
-```toml
-tokio = { version = "1", features = ["full"] }
-async-stripe = { version = "0.28", features = ["runtime-tokio-hyper"] }
-stripe_core = { version = "0.28", features = ["customer"] }
-```
+- **Ergonomic API**: A fluent, builder-style API for constructing
+  requests that is easy to use and discover.
 
-And then the code:
+- **Flexible HTTP Clients**: Supports `tokio` and `async-std` runtimes
+  with `native-tls` and `rustls` backends.
 
-```rust
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let secret_key = "very-secret-key-for-testing";
-    let client = stripe::Client::new(secret_key);
-    let customer = stripe_core::customer::CreateCustomer {
-        name: Some("Test User"),
-        email: Some("test@async-stripe.com"),
-        description: Some(
-            "A fake customer that is used to illustrate the examples in async-stripe.",
-        ),
-        ..Default::default()
+## 🚀 Quick Start
+
+Here’s a quick example of how to create a new Stripe Customer.
+
+**1. Add dependencies to your `Cargo.toml`:**
+
+You'll need the main `async-stripe` crate for the client and a resource
+crate for the APIs you want to use (e.g., `stripe-core` for customers).
+
+    [dependencies]
+    async-stripe = "1.0.0-alpha.2"
+    stripe-core = { version = "1.0.0-alpha.2", features = ["customer"] }
+    tokio = { version = "1", features = ["full"] }
+
+**2. Create a Customer:**
+
+The new API uses a builder pattern that flows naturally from request
+creation to sending.
+
+    use stripe::Client;
+    use stripe_core::customer::CreateCustomer;
+
+    #[tokio::main]
+    async fn main() -> Result<(), Box<dyn std::error::Error>> {
+        // 1. Initialize the client
+        let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
+        let client = Client::new(secret_key);
+
+        // 2. Create a customer using the builder pattern
+        let customer = CreateCustomer::new()
+            .name("Alexander Lyon")
+            .email("test@async-stripe.com")
+            .description("A fake customer that is used to illustrate the examples in async-stripe.")
+            .metadata([(String::from("async-stripe"), String::from("true"))])
+            .send(&client)
+            .await?;
+
+        println!("Successfully created customer: {} ({})", customer.name.unwrap_or_default(), customer.id);
+
+        Ok(())
     }
-        .send(&client)
-        .await?;
 
-    println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
-    Ok(())
-}
-```
+## How It Works
 
-A full list of examples can be found in the [examples](/examples).
+### Code Generation
 
-## Relevant Crates
+`async-stripe` achieves its vast API coverage and stays current by
+generating Rust code directly from the [official Stripe OpenAPI
+specification](https://github.com/stripe/openapi "null"). A CI job runs
+weekly to fetch the latest spec, regenerate the code, and open a pull
+request. This ensures that new Stripe features and updates are available
+in the library almost immediately.
 
-### Stripe Client
+### Performance: `serde` and `miniserde`
 
-The main entry point is the `async-stripe` crate which provides a client for making Stripe
-API requests.
-`async-stripe` is compatible with the [`async-std`](https://github.com/async-rs/async-std)
-and [`tokio`](https://github.com/tokio-rs/tokio) runtimes and the `native-tls`
-and `rustls` backends. When adding the dependency, you must select a runtime feature.
+The Stripe API has a massive surface area, and the code generation
+process creates a very large number of types. Using `serde` for both
+serialization and deserialization in previous versions resulted in
+excessive codegen size and long compile times. To solve this,
+`async-stripe` now uses a hybrid approach:
 
-#### Installation
+- **`serde`** is used for **serializing** request parameters you send to
+  Stripe. Its flexibility and rich feature set make it ideal for
+  building complex requests.
 
-```toml
-[dependencies]
-async-stripe = { version = "0.31", features = ["runtime-tokio-hyper"] }
-```
+- **`miniserde`** is used for **deserializing** API responses from
+  Stripe. It's a minimal, high-performance JSON library that
+  significantly reduces compile times and final binary size compared to
+  a full `serde` dependency.
 
-#### Feature Flags
+If you need to use `serde::Deserialize` on the Stripe response types
+within your own application, you can enable the `deserialize` feature on
+any of the `stripe-*` crates.
 
-`async-stripe` supports the following features combining runtime and TLS choices:
+### Modular Crate Structure
 
-- `runtime-tokio-hyper`
-- `runtime-tokio-hyper-rustls`
-- `runtime-tokio-hyper-rustls-webpki`
-- `runtime-blocking`
-- `runtime-blocking-rustls`
-- `runtime-blocking-rustls-webpki`
-- `runtime-async-std-surf`
+The Stripe API is extensive. To avoid long compile times and large
+dependencies, `async-stripe` is split into several crates. You only need
+to include the ones corresponding to the API sections you use.
 
-### Stripe Request Crates
+| API Area | Crate Name | Description |
+|----|----|----|
+| **Client** | `async-stripe` | The core client for making requests. **Always required.** |
+| **Core Resources** | `stripe-core` | Customers, Charges, Payment Intents, Refunds, etc. |
+| **Payments** | `stripe-payment` | Payment Methods, Payment Links, Sources. |
+| **Billing & Subscriptions** | `stripe-billing` | Invoices, Subscriptions, Plans, Quotes. |
+| **Stripe Connect** | `stripe-connect` | Accounts, Account Links, Transfers. |
+| **Fraud Detection** | `stripe-fraud` | Radar, Reviews. |
+| **Checkout** | `stripe-checkout` | Checkout Sessions. |
+| **Webhooks** | `stripe-webhook` | Securely receive and deserialize webhook events. |
+| **Products & Pricing** | `stripe-product` | Products, Prices, Coupons, Tax Rates. |
+| **Issuing** | `stripe-issuing` | Card creation and management for Stripe Issuing. |
+| **Terminal** | `stripe-terminal` | In-person payments with Stripe Terminal. |
+| **Treasury** | `stripe-treasury` | Financial accounts and money movement. |
+| **Miscellaneous** | `stripe-misc` | Tax, Identity, Reporting, Sigma, etc. |
 
-To actually make requests with the client, you will have to use crates like `stripe-*`,
-which define requests for a subset of the `Stripe` API. For example,
-`stripe_connect` includes all requests under the `Connect` part of the sidebar in
-the [Stripe API docs](https://stripe.com/docs/api)
+> For a complete, up-to-date mapping of every API object to its crate
+> and feature flag, see the
+> [`crate_info.md`](https://www.google.com/search?q=crate_info.md "null")
+> file in the repository. We are actively working on improving API
+> surface exploration. For now, you can explore the `generated/`
+> directory in the repository to see all available API crates and their
+> respective modules.
 
-The organization of the Stripe API chunks into crates is currently:
+## Usage Guide
 
-- `stripe_billing`: `Billing`
-- `stripe_checkout`: `Checkout`
-- `stripe_connect`: `Connect`
-- `stripe_core`: `Core Resources`
-- `stripe_fraud`: `Fraud`
-- `stripe_issuing`: `Issuing`
-- `stripe_payment`: `Payment Methods` and `Payment Links`
-- `stripe_product`: `Products`
-- `stripe_terminal`: `Terminal`
-- `stripe_treasury`: `Treasury`
-- `stripe_misc`: `Tax`, `Identity`, `Reporting`, `Sigma`, `Financial Connections`
-  and `Webhooks`
+### 1. Choose Your HTTP Client
 
-To help minimize compile times, within each of these crates, API requests are gated by
-features. For example,
-making requests related to [Accounts](https://stripe.com/docs/api/accounts) requires
-enabling the `account`
-feature flag in `stripe_connect`.
+The core `async-stripe` crate provides the client. You must enable a
+feature flag to select your desired async runtime and TLS backend.
 
-For a full, up-to-date list of where each Stripe API request lives, please
-see [this table](crate_info.md)
+| Feature Flag | Async Runtime | HTTP Client | TLS Backend |
+|----|----|----|----|
+| `default-tls` (Default) | `tokio` | `hyper` | `native-tls` |
+| `rustls-tls-webpki-roots` | `tokio` | `hyper` | `rustls` (from `webpki-roots`) |
+| `rustls-tls-native` | `tokio` | `hyper` | `rustls` (from native cert store) |
+| `async-std-surf` | `async-std` | `surf` | `native-tls` |
+| `blocking` | Sync (uses `tokio` internally) | `hyper` | Depends on active TLS feature |
 
-### Stripe Webhooks
+### 2. Add Resource Crates and Features
 
-The `stripe_webhook` crate includes functionality for receiving and
-validating [Stripe Webhook Events](https://stripe.com/docs/webhooks).
-The [examples](/examples) directory includes examples for listening to webhooks
-with `axum`, `actix-web`, and `rocket`.
+For each Stripe resource you want to interact with, add its crate and
+enable the corresponding feature flag. For example, to use `Customer`
+and `Charge` objects:
 
-## API Versions
+    # Cargo.toml
+    [dependencies]
+    # ...
+    stripe-core = { version = "...", features = ["customer", "charge"] }
 
-This library always tracks the latest version of the stripe API.
+### 3. Pagination
 
-https://github.com/arlyon/async-stripe/blob/f0fd7115aa3b7500134da10f848c8e93ba8eca2e/src/resources/generated/version.rs#L1-L3
+Listing resources is now more ergonomic. You can call `.paginate()`
+directly on a `List*` request struct to get a stream of results.
 
-If you want to find a version
-that matches the API you are on, you can easily navigate back through the git blame in
-that file.
-Set the corresponding crate version depending on which version of the Stripe API you are
-pinned to.
-If you don't see the specific version you are on, prefer the next available version.
+    use stripe_core::customer::ListCustomer;
+    use futures_util::TryStreamExt;
 
-## MSRV
+    # async fn run(client: &stripe::Client) -> Result<(), stripe::StripeError> {
+    let mut stream = ListCustomer::new().paginate().stream(client);
+    while let Some(customer) = stream.try_next().await? {
+        println!("Got customer: {}", customer.id);
+    }
+    # Ok(())
+    # }
 
-We currently have `1.86.0` pinned in CI, so any version of rustc newer than that should
-work.
-If this is not the case, please open an issue. As a policy, we permit MSRV increases in
-non-breaking releases.
-If you have a compelling usecase for bumping it, we are usually open to do so, as long as
-the rust version is not too new (generally 3 releases).
+### 4. Handling Webhooks
+
+Webhook handling is now isolated in the `stripe-webhook` crate and the
+API is much simpler. You can now match directly on the event object
+type.
+
+    use stripe_webhook::{Event, EventObject, Webhook};
+
+    fn handle_webhook(payload: &str, sig: &str, secret: &str) {
+        let event = Webhook::construct_event(payload, sig, secret).unwrap();
+        match event.data.object {
+            EventObject::CheckoutSessionCompleted(session) => {
+                println!("Received checkout session completed webhook with id: {:?}", session.id);
+            }
+            EventObject::AccountUpdated(account) => {
+                println!("Received account updated webhook for account: {:?}", account.id);
+            }
+            _ => println!("Unknown event encountered in webhook: {:?}", event.type_),
+        }
+    }
+
+## Project Status
+
+This library is actively maintained. The code is regenerated weekly to
+ensure it never falls behind the official Stripe API.
+
+We are working on setting up fully automated releases to `crates.io` to
+coincide with the weekly updates. This will ensure you can depend on the
+latest Stripe features as soon as they are available.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for information on contributing to async-stripe.
+Contributions are welcome! Please see
+[CONTRIBUTING.md](https://www.google.com/search?q=CONTRIBUTING.md "null")
+for details on how to get started, run tests, and contribute to the code
+generation process.
 
 ## License
 
-This project started as a fork of [stripe-rs](https://github.com/wyyerd/stripe-rs).
-We would not be here without them! :)
+This project is licensed under either of:
 
-Licensed under either of
+- Apache License, Version 2.0
+  ([LICENSE-APACHE](https://www.google.com/search?q=LICENSE-APACHE "null")
+  or http://www.apache.org/licenses/LICENSE-2.0)
 
-- Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE)
-  or <https://www.apache.org/licenses/LICENSE-2.0>)
-- MIT license ([LICENSE-MIT](LICENSE-MIT) or <https://opensource.org/licenses/MIT>)
+- MIT license
+  ([LICENSE-MIT](https://www.google.com/search?q=LICENSE-MIT "null") or
+  http://opensource.org/licenses/MIT)
 
-at your option.
+This project began as a fork of
+[stripe-rs](https://github.com/wyyerd/stripe-rs "null"), and we are
+incredibly grateful for their foundational work.
