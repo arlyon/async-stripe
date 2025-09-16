@@ -91,10 +91,10 @@ pub fn gen_obj(
             RustObject::Struct(_) => write_object_trait(&mut out, ident, &id_type),
             RustObject::Enum(variants) => {
                 let Some(object_names) = as_enum_of_objects(components, variants) else {
-                    panic!("Object {} is an enum that is not a union of stripe objects", ident);
+                    panic!("Object {ident} is an enum that is not a union of stripe objects");
                 };
                 let ObjectUnion(objects) = object_names else {
-                    panic!("Object {} is an enum that is not a union of stripe objects", ident);
+                    panic!("Object {ident} is an enum that is not a union of stripe objects");
                 };
                 write_object_trait_for_enum(&mut out, ident, &objects)
             }
@@ -125,7 +125,7 @@ pub fn gen_requests(specs: &[RequestSpec], components: &Components) -> String {
         }
 
         let req_body = req.gen(components);
-        let _ = write!(out, "{}", req_body);
+        let _ = write!(out, "{req_body}");
 
         components.write_rust_type_objs(&req.returned, &mut out, ObjectUsage::return_type());
     }
