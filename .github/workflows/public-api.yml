@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: 'Download artifact'
         id: da
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             if (context.payload.workflow_run === undefined) {
@@ -47,7 +47,7 @@ jobs:
 
       - name: 'Read artifact'
         id: ra
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
