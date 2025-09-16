@@ -9,7 +9,7 @@ pub type ComponentGraph<'a> = DiGraphMap<&'a ComponentPath, ()>;
 
 impl Components {
     /// Generate a dependency graph with an edge from A to B implying that A depends on B
-    pub fn gen_component_dep_graph(&self) -> ComponentGraph {
+    pub fn gen_component_dep_graph(&self) -> ComponentGraph<'_> {
         let mut graph = DiGraphMap::new();
         for path in self.components.keys() {
             graph.add_node(path);

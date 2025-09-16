@@ -66,7 +66,7 @@ impl StripeObject {
     #[track_caller]
     pub fn krate_unwrapped(&self) -> CrateInfo {
         let Some(krate) = self.krate() else {
-            panic!("Has no crate assigned: \n{:?}", self);
+            panic!("Has no crate assigned: \n{self:?}");
         };
         krate
     }
@@ -199,7 +199,7 @@ pub fn parse_stripe_schema_as_rust_object(
     let infer_ctx = Inference::new(ident).id_path(&not_deleted_path).required(true);
     let typ = infer_ctx.infer_schema_type(schema);
     let Some((mut rust_obj, _)) = typ.into_object() else {
-        panic!("Unexpected top level schema type for {}", path);
+        panic!("Unexpected top level schema type for {path}");
     };
     match &mut rust_obj {
         RustObject::Struct(struct_) => {

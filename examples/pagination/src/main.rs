@@ -11,7 +11,7 @@ async fn main() -> Result<(), stripe::StripeError> {
 
     // take a value out from the stream
     if let Some(val) = stream.try_next().await? {
-        println!("GOT = {:?}", val);
+        println!("GOT = {val:?}");
     }
 
     // alternatively, you can use stream combinators

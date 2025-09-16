@@ -281,7 +281,7 @@ impl StructField {
         let name = self.field_name.as_str();
         let keywords = ["type", "as", "use", "struct", "enum", "const", "async", "await", "in"];
         if keywords.contains(&name) {
-            Cow::Owned(format!("{}_", name))
+            Cow::Owned(format!("{name}_"))
         } else {
             Cow::Borrowed(name)
         }

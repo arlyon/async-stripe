@@ -25,7 +25,7 @@ impl UrlFinder {
 
     pub fn url_for_object(&self, object: &str) -> Option<String> {
         let unprefixed_link = self.doc_links.get(object)?;
-        Some(format!("https://stripe.com/docs/api{}", unprefixed_link))
+        Some(format!("https://stripe.com/docs/api{unprefixed_link}"))
     }
 }
 
@@ -34,7 +34,7 @@ fn url_for_object(
     raw_data: &serde_json::Map<String, serde_json::Value>,
 ) -> Option<String> {
     let object_name = object.replace('.', "_").to_snake_case();
-    let object_names = [format!("{}_object", object_name), object_name];
+    let object_names = [format!("{object_name}_object"), object_name];
     for name in object_names {
         if let Some(path) = raw_data
             .get(&name)
