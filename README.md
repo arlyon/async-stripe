@@ -32,9 +32,11 @@ up-to-date with the latest API changes.
 - **Flexible HTTP Clients**: Supports `tokio` and `async-std` runtimes
   with `native-tls` and `rustls` backends.
 
+> ⏰ **1.0 Alpha Notice**: We are still expecting a few breaking changes before RC. We recommend using the [Migration Guide](MIGRATION.md) when upgrading from 0.x versions.
+
 ## 🚀 Quick Start
 
-Here’s a quick example of how to create a new Stripe Customer.
+Here's a quick example of how to create a new Stripe Customer.
 
 **1. Add dependencies to your `Cargo.toml`:**
 
