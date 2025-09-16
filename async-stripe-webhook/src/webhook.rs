@@ -263,6 +263,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "async-stripe-billing")]
     fn test_webhook_construct_event() {
         let object = json!({
             "id": "ii_123",
