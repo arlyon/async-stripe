@@ -3,44 +3,68 @@ on:
   push:
     branches:
       - master
+      - next
   pull_request:
     branches:
       - master
+      - next
+
+env:
+  RUSTFLAGS: -Dwarnings
+  rust_min: 1.86
 jobs:
   format:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.82.0
-        with:
-          components: rustfmt
-      - uses: davidB/rust-cargo-make@v1
-      - name: regenerate openapi
-        uses: clechasseur/rs-cargo@v2
-        with:
-          command: make
-          args: check
+      - name: Checkout sources
+        uses: actions/checkout@v4
 
-  verify-codegen:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.82.0
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@nightly
         with:
           components: rustfmt
-      - uses: davidB/rust-cargo-make@v1
-      - name: regenerate openapi
-        uses: clechasseur/rs-cargo@v2
+
+      - name: Check formatting for workspace
+        run: cargo fmt --all -- --check
+
+  verify-codegen-crate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: openapi
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install nightly toolchain
+        uses: dtolnay/rust-toolchain@nightly
         with:
-          command: make
-          args: openapi-install
-      - name: ensure generated files unchanged
-        uses: tj-actions/verify-changed-files@v19
+          components: rustfmt
+
+      - name: Check formatting
+        run: cargo +nightly fmt -- --check
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.rust_min }}
+          components: clippy
+
+      - name: Run clippy
+        run: cargo clippy
+
+      - name: Run codegen
+        run: cargo run --release -- --fetch current
+
+      - name: Ensure generated files unchanged
+        uses: tj-actions/verify-changed-files@v11.1
         id: verify-changed-files
         with:
           files: |
             **/*.rs
-      - name: report changed files
+
+      - name: Report changed files
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         env:
           CHANGED_FILES: ${{ steps.verify-changed-files.outputs.changed_files }}
@@ -48,126 +72,99 @@ jobs:
           echo "Some files changed after code generation: $CHANGED_FILES"
           exit 1
 
-  clippy-codegen:
-    runs-on: ubuntu-20.04
-    env:
-      RUSTFLAGS: -D warnings
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.82.0
-        with:
-          components: clippy
-      - run: cargo clippy -p stripe-openapi-codegen --tests
-
   clippy:
-    runs-on: ubuntu-20.04
-    env:
-      RUSTFLAGS: -D warnings
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        runtime:
+        features:
           [
+            default-tls,
+            rustls-tls-webpki-roots,
+            rustls-tls-native,
             async-std-surf,
-            tokio-hyper,
-            tokio-hyper-rustls,
-            tokio-hyper-rustls-webpki,
-            blocking,
-            blocking-rustls,
-            blocking-rustls-webpki,
           ]
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.82.0
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
         with:
+          toolchain: ${{ env.rust_min }}
           components: clippy
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-clippy-${{ matrix.runtime }}-${{ hashFiles('**/Cargo.lock') }}
-      - uses: clechasseur/rs-cargo@v2
-        with:
-          command: clippy
-          args: >
-            --no-default-features
-            --features runtime-${{ matrix.runtime }}
-  test:
-    runs-on: ubuntu-20.04
-    env:
-      RUSTFLAGS: -D warnings
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Run clippy
+        run: cargo clippy --no-default-features --features "full serialize deserialize ${{ matrix.features }}"
+
+  test-clients:
+    name: Test Clients
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        runtime:
+        features:
           [
+            default-tls,
+            rustls-tls-webpki-roots,
+            rustls-tls-native,
             async-std-surf,
-            tokio-hyper,
-            tokio-hyper-rustls,
-            tokio-hyper-rustls-webpki,
-            blocking,
-            blocking-rustls,
-            blocking-rustls-webpki,
           ]
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.rust_min }}
+          components: clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Run tests
+        run: cargo test --no-default-features --features "full serialize deserialize ${{ matrix.features }}"
+
+  stripe-mock-tests:
+    name: Stripe Mock Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        features: [default-tls, rustls-tls-webpki-roots, rustls-tls-native]
     services:
       stripe-mock:
-        image: stripe/stripe-mock
+        image: stripe/stripe-mock:v0.195.0
         ports:
           - 12111:12111
           - 12112:12112
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.82.0
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-test-${{ matrix.runtime }}-${{ hashFiles('**/Cargo.lock') }}
-      - name: Test
-        run: cargo test --features runtime-${{ matrix.runtime }}
-      # - uses: taiki-e/install-action@cargo-llvm-cov
-      # - name: Test and gather coverage
-      #   run: cargo llvm-cov --lcov --output-path lcov.info --features runtime-${{ matrix.runtime }}
-      # - name: Upload to codecov.io
-      #   uses: codecov/codecov-action@v2.1.0
-      #   with:
-      #     token: ${{secrets.CODECOV_TOKEN}}
-      #     files: lcov.info
-      # - name: Archive code coverage results
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: code-coverage-report
-      #     path: lcov.info
 
-  generate-public-api:
-    continue-on-error: true
-    runs-on: ubuntu-20.04
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.rust_min }}
+
+      - uses: Swatinem/rust-cache@v2
+      - name: Run stripe mock tests
+        run: cargo test -p async-stripe-tests --no-default-features --features ${{ matrix.features }}
+
+  # Examples tested separately so that we can use crates which don't match our MSRV
+  examples:
+    name: Check Examples
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@master
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: "nightly-2025-01-25"
-      - name: Install cargo-public-api
-        uses: baptiste0928/cargo-install@v3
-        with:
-          crate: cargo-public-api
-      - name: Save PR number
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const util = require('util');
-            fs.mkdirSync("./public-api", { recursive: true });
-            const payload = context.payload;
-            const number = (payload.issue || payload.pull_request || payload).number;
-            const text = number === undefined ? "" : String(number);
-            core.info("Pr number is " + number + ", writing \"" + text + "\"");
-            fs.writeFileSync("./public-api/pr_number", text);
-      - name: Compare with latest version published on crates.io
-        run: cargo public-api diff latest --features runtime-tokio-hyper >> "public-api/diff"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: public-api
-          path: public-api/
+          toolchain: ${{ env.rust_min }}
+          components: clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Check examples
+        run: cargo clippy --workspace

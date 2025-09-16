@@ -1,0 +1,80 @@
+[package]
+name = "async-stripe-webhook"
+version.workspace = true
+description.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[lib]
+name = "stripe_webhook"
+
+[dependencies]
+async-stripe-types = { path = "../async-stripe-types", version = "1.0.0-alpha.2" }
+async-stripe-shared = { path = "../generated/async-stripe-shared", version = "1.0.0-alpha.2" }
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+thiserror = "1.0.24"
+miniserde.workspace = true
+serde.workspace = true
+serde_json = { workspace = true, optional = true }
+
+async-stripe-billing = { path = "../generated/async-stripe-billing", optional = true, version = "1.0.0-alpha.2" }
+async-stripe-checkout = { path = "../generated/async-stripe-checkout", optional = true, version = "1.0.0-alpha.2" }
+async-stripe-core = { path = "../generated/async-stripe-core", optional = true, version = "1.0.0-alpha.2" }
+async-stripe-fraud = { path = "../generated/async-stripe-fraud", optional = true, version = "1.0.0-alpha.2" }
+async-stripe-misc = { path = "../generated/async-stripe-misc", optional = true, version = "1.0.0-alpha.2" }
+async-stripe-payment = { path = "../generated/async-stripe-payment", optional = true, version = "1.0.0-alpha.2" }
+async-stripe-terminal = { path = "../generated/async-stripe-terminal", optional = true, version = "1.0.0-alpha.2" }
+async-stripe-treasury = { path = "../generated/async-stripe-treasury", optional = true, version = "1.0.0-alpha.2" }
+
+[dev-dependencies]
+serde_json.workspace = true
+
+[features]
+serialize = [
+       "async-stripe-types/serialize",
+       "async-stripe-shared/serialize",
+       "async-stripe-billing?/serialize",
+       "async-stripe-checkout?/serialize",
+       "async-stripe-core?/serialize",
+       "async-stripe-fraud?/serialize",
+       "async-stripe-misc?/serialize",
+       "async-stripe-payment?/serialize",
+       "async-stripe-terminal?/serialize",
+       "async-stripe-treasury?/serialize",
+]
+deserialize = [
+       "async-stripe-types/deserialize",
+       "async-stripe-shared/deserialize",
+       "dep:serde_json",
+       "async-stripe-billing?/deserialize",
+       "async-stripe-checkout?/deserialize",
+       "async-stripe-core?/deserialize",
+       "async-stripe-fraud?/deserialize",
+       "async-stripe-misc?/deserialize",
+       "async-stripe-payment?/deserialize",
+       "async-stripe-terminal?/deserialize",
+       "async-stripe-treasury?/deserialize",
+]
+
+full = [
+    "async-stripe-billing",
+    "async-stripe-checkout",
+    "async-stripe-core",
+    "async-stripe-fraud",
+    "async-stripe-misc",
+    "async-stripe-payment",
+    "async-stripe-terminal",
+    "async-stripe-treasury",
+]
+
+[package.metadata.docs.rs]
+features = ["full"]

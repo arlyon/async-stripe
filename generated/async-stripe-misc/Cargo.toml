@@ -1,0 +1,81 @@
+[package]
+name = "async-stripe-misc"
+version.workspace = true
+description.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[lib]
+path = "src/mod.rs"
+name = "stripe_misc"
+
+[dependencies]
+serde.workspace = true
+serde_json = { workspace = true, optional = true }
+smol_str.workspace = true
+miniserde.workspace = true
+async-stripe-types = {path = "../../async-stripe-types", version = "1.0.0-alpha.2"}
+async-stripe-client-core = {path = "../../async-stripe-client-core", version = "1.0.0-alpha.2"}
+
+async-stripe-shared = {path = "../../generated/async-stripe-shared", version = "1.0.0-alpha.2"}
+
+
+[features]
+serialize = ["async-stripe-types/serialize","async-stripe-shared/serialize"]
+deserialize = ["async-stripe-types/deserialize","async-stripe-shared/deserialize", "dep:serde_json"]
+apple_pay_domain = []
+climate_order = []
+climate_product = []
+climate_supplier = []
+entitlements_active_entitlement = []
+entitlements_feature = []
+ephemeral_key = []
+exchange_rate = []
+financial_connections_account = []
+financial_connections_session = []
+financial_connections_transaction = []
+forwarding_request = []
+identity_verification_report = []
+identity_verification_session = []
+reporting_report_run = []
+reporting_report_type = []
+scheduled_query_run = []
+tax_calculation = []
+tax_registration = []
+tax_settings = []
+tax_transaction = []
+webhook_endpoint = []
+
+full = ["apple_pay_domain",
+"climate_order",
+"climate_product",
+"climate_supplier",
+"entitlements_active_entitlement",
+"entitlements_feature",
+"ephemeral_key",
+"exchange_rate",
+"financial_connections_account",
+"financial_connections_session",
+"financial_connections_transaction",
+"forwarding_request",
+"identity_verification_report",
+"identity_verification_session",
+"reporting_report_run",
+"reporting_report_type",
+"scheduled_query_run",
+"tax_calculation",
+"tax_registration",
+"tax_settings",
+"tax_transaction",
+"webhook_endpoint"]
+
+
+[package.metadata.docs.rs]
+features = ["full"]
+

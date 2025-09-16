@@ -48,21 +48,26 @@ It is expected that code is uniformly formatted. Before submitting code, make su
 to run `cargo fmt` to make sure it conforms to the standard.
 
 ## Code Generation
-
 This library is (mostly) authored via code generation by parsing the OpenAPI specification for Stripe.
-To automatically update the generated code, copy it into the `generated` folder, and format, use the `cargo make` target
-`openapi-install`. This will also fetch the spec matching the OpenAPI release used for the generated
-code on `master`.
+It consists of 3 main pieces:
+- `async-stripe`: The definition of the `Stripe` client
+- `async-stripe-types`: Core type definitions, used a ton in generated code
+- `generated/*`: Generated crates which implement `Stripe` API requests and related types.
+- `async-stripe-webhook`: Glue code for parsing and validating `Stripe` webhook events and generated
+code for deserializing the events themselves.
 
+No changes should be made to code in a `generated/*` folder. If you'd like to change that
+code, please see the `README` in the `openapi` crate which explains the code generation process
+in more detail.
+
+If you'd like to update the version of the OpenAPI specification being used to generated code, you
+can run (in the `openapi` directory)
 ```sh
-cargo make openapi-install
+cargo run --release -- --fetch latest
 ```
 
-To instead update the generated code using the latest OpenAPI specification release, use
-
-```sh
-cargo make openapi-install-latest
-```
+This will automatically pull the latest OpenAPI spec, generate new code, format it, and copy it into
+library.
 
 ## Testing
 
@@ -70,7 +75,7 @@ To run the tests, you will need
 to run a [`stripe-mock`](https://github.com/stripe/stripe-mock) server and select a runtime. CI runs tests against all runtimes, but it is encouraged you test your changes locally against a few runtimes first.
 
 ```sh
-docker run --rm -d -it -p 12111-12112:12111-12112 stripe/stripe-mock:latest
+docker run --rm -d -it -p 12111-12112:12111-12112 stripe/stripe-mock:v0.185.0
 cargo test --features runtime-blocking
 ```
 
@@ -89,3 +94,14 @@ In some cases, it is helpful to have additional logic associated with a datatype
 capture a create `Charge` object. This additional impl goes in the `charge_ext.rs` file in the
 `resources` folder, to provide a clean seperation between generated and hand maintained files.
 If you notice that logic is missing, please add it to (or create) the appropriate `ext` file.
+
+## Versioning
+
+Due to the nature of the generated crates, all crates are versioned together. To bump the versions, will need to
+do the following steps:
+
+1. Bump the version in `Cargo.toml`
+2. Run the code generation with the new version `cd openapi && cargo run -- <version>`
+3. Update any version requirements in the manually managed packages
+4. Commit the changes
+5. Publish the changes `cargo workspaces publish --from-git --allow-branch next`

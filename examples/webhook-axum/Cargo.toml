@@ -1,0 +1,12 @@
+[package]
+name = "webhook-axum"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+tokio = { version = "1.24.1", features = ["rt-multi-thread", "macros"] }
+axum = { version = "0.8.4", features = ["macros"] }
+async-stripe-webhook = { path = "../../async-stripe-webhook", features = [
+    "async-stripe-checkout",
+] }

@@ -1,0 +1,11 @@
+[package]
+name = "webhook-actix"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+actix-web = "4.2.1"
+async-stripe-webhook = { path = "../../async-stripe-webhook", features = ["async-stripe-checkout"] }
+async-stripe-checkout = { path = "../../generated/async-stripe-checkout" }
+async-stripe-connect = { path = "../../generated/async-stripe-connect" }

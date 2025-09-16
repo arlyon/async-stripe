@@ -1,0 +1,508 @@
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+pub struct InvoicesResourceInvoiceTaxId {
+    /// The type of the tax ID, one of `ad_nrt`, `ar_cuit`, `eu_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eu_oss_vat`, `hr_oib`, `pe_ruc`, `ro_tin`, `rs_pib`, `sv_nit`, `uy_ruc`, `ve_rif`, `vn_tin`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `no_voec`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `li_vat`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, `al_tin`, `bh_vat`, `kz_bin`, `ng_tin`, `om_vat`, `de_stn`, `ch_uid`, `tz_vat`, `uz_vat`, `uz_tin`, `md_vat`, `ma_vat`, `by_tin`, `ao_tin`, `bs_tin`, `bb_tin`, `cd_nif`, `mr_nif`, `me_pib`, `zw_tin`, `ba_tin`, `gn_nif`, `mk_vat`, `sr_fin`, `sn_ninea`, `am_tin`, `np_pan`, `tj_tin`, `ug_tin`, `zm_tin`, `kh_tin`, `aw_tin`, `az_tin`, `bd_bin`, `bj_ifu`, `et_tin`, `kg_tin`, `la_tin`, `cm_niu`, `cv_nif`, `bf_ifu`, or `unknown`.
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
+    pub type_: InvoicesResourceInvoiceTaxIdType,
+    /// The value of the tax ID.
+    pub value: Option<String>,
+}
+#[doc(hidden)]
+pub struct InvoicesResourceInvoiceTaxIdBuilder {
+    type_: Option<InvoicesResourceInvoiceTaxIdType>,
+    value: Option<Option<String>>,
+}
+
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for InvoicesResourceInvoiceTaxId {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<InvoicesResourceInvoiceTaxId>,
+        builder: InvoicesResourceInvoiceTaxIdBuilder,
+    }
+
+    impl Visitor for Place<InvoicesResourceInvoiceTaxId> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: InvoicesResourceInvoiceTaxIdBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for InvoicesResourceInvoiceTaxIdBuilder {
+        type Out = InvoicesResourceInvoiceTaxId;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "type" => Deserialize::begin(&mut self.type_),
+                "value" => Deserialize::begin(&mut self.value),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { type_: Deserialize::default(), value: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (Some(type_), Some(value)) = (self.type_, self.value.take()) else {
+                return None;
+            };
+            Some(Self::Out { type_, value })
+        }
+    }
+
+    impl Map for Builder<'_> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for InvoicesResourceInvoiceTaxId {
+        type Builder = InvoicesResourceInvoiceTaxIdBuilder;
+    }
+
+    impl FromValueOpt for InvoicesResourceInvoiceTaxId {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = InvoicesResourceInvoiceTaxIdBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "type" => b.type_ = FromValueOpt::from_value(v),
+                    "value" => b.value = FromValueOpt::from_value(v),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+/// The type of the tax ID, one of `ad_nrt`, `ar_cuit`, `eu_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eu_oss_vat`, `hr_oib`, `pe_ruc`, `ro_tin`, `rs_pib`, `sv_nit`, `uy_ruc`, `ve_rif`, `vn_tin`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `no_voec`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `li_vat`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, `al_tin`, `bh_vat`, `kz_bin`, `ng_tin`, `om_vat`, `de_stn`, `ch_uid`, `tz_vat`, `uz_vat`, `uz_tin`, `md_vat`, `ma_vat`, `by_tin`, `ao_tin`, `bs_tin`, `bb_tin`, `cd_nif`, `mr_nif`, `me_pib`, `zw_tin`, `ba_tin`, `gn_nif`, `mk_vat`, `sr_fin`, `sn_ninea`, `am_tin`, `np_pan`, `tj_tin`, `ug_tin`, `zm_tin`, `kh_tin`, `aw_tin`, `az_tin`, `bd_bin`, `bj_ifu`, `et_tin`, `kg_tin`, `la_tin`, `cm_niu`, `cv_nif`, `bf_ifu`, or `unknown`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum InvoicesResourceInvoiceTaxIdType {
+    AdNrt,
+    AeTrn,
+    AlTin,
+    AmTin,
+    AoTin,
+    ArCuit,
+    AuAbn,
+    AuArn,
+    AwTin,
+    AzTin,
+    BaTin,
+    BbTin,
+    BdBin,
+    BfIfu,
+    BgUic,
+    BhVat,
+    BjIfu,
+    BoTin,
+    BrCnpj,
+    BrCpf,
+    BsTin,
+    ByTin,
+    CaBn,
+    CaGstHst,
+    CaPstBc,
+    CaPstMb,
+    CaPstSk,
+    CaQst,
+    CdNif,
+    ChUid,
+    ChVat,
+    ClTin,
+    CmNiu,
+    CnTin,
+    CoNit,
+    CrTin,
+    CvNif,
+    DeStn,
+    DoRcn,
+    EcRuc,
+    EgTin,
+    EsCif,
+    EtTin,
+    EuOssVat,
+    EuVat,
+    GbVat,
+    GeVat,
+    GnNif,
+    HkBr,
+    HrOib,
+    HuTin,
+    IdNpwp,
+    IlVat,
+    InGst,
+    IsVat,
+    JpCn,
+    JpRn,
+    JpTrn,
+    KePin,
+    KgTin,
+    KhTin,
+    KrBrn,
+    KzBin,
+    LaTin,
+    LiUid,
+    LiVat,
+    MaVat,
+    MdVat,
+    MePib,
+    MkVat,
+    MrNif,
+    MxRfc,
+    MyFrp,
+    MyItn,
+    MySst,
+    NgTin,
+    NoVat,
+    NoVoec,
+    NpPan,
+    NzGst,
+    OmVat,
+    PeRuc,
+    PhTin,
+    RoTin,
+    RsPib,
+    RuInn,
+    RuKpp,
+    SaVat,
+    SgGst,
+    SgUen,
+    SiTin,
+    SnNinea,
+    SrFin,
+    SvNit,
+    ThVat,
+    TjTin,
+    TrTin,
+    TwVat,
+    TzVat,
+    UaVat,
+    UgTin,
+    Unknown,
+    UsEin,
+    UyRuc,
+    UzTin,
+    UzVat,
+    VeRif,
+    VnTin,
+    ZaVat,
+    ZmTin,
+    ZwTin,
+}
+impl InvoicesResourceInvoiceTaxIdType {
+    pub fn as_str(self) -> &'static str {
+        use InvoicesResourceInvoiceTaxIdType::*;
+        match self {
+            AdNrt => "ad_nrt",
+            AeTrn => "ae_trn",
+            AlTin => "al_tin",
+            AmTin => "am_tin",
+            AoTin => "ao_tin",
+            ArCuit => "ar_cuit",
+            AuAbn => "au_abn",
+            AuArn => "au_arn",
+            AwTin => "aw_tin",
+            AzTin => "az_tin",
+            BaTin => "ba_tin",
+            BbTin => "bb_tin",
+            BdBin => "bd_bin",
+            BfIfu => "bf_ifu",
+            BgUic => "bg_uic",
+            BhVat => "bh_vat",
+            BjIfu => "bj_ifu",
+            BoTin => "bo_tin",
+            BrCnpj => "br_cnpj",
+            BrCpf => "br_cpf",
+            BsTin => "bs_tin",
+            ByTin => "by_tin",
+            CaBn => "ca_bn",
+            CaGstHst => "ca_gst_hst",
+            CaPstBc => "ca_pst_bc",
+            CaPstMb => "ca_pst_mb",
+            CaPstSk => "ca_pst_sk",
+            CaQst => "ca_qst",
+            CdNif => "cd_nif",
+            ChUid => "ch_uid",
+            ChVat => "ch_vat",
+            ClTin => "cl_tin",
+            CmNiu => "cm_niu",
+            CnTin => "cn_tin",
+            CoNit => "co_nit",
+            CrTin => "cr_tin",
+            CvNif => "cv_nif",
+            DeStn => "de_stn",
+            DoRcn => "do_rcn",
+            EcRuc => "ec_ruc",
+            EgTin => "eg_tin",
+            EsCif => "es_cif",
+            EtTin => "et_tin",
+            EuOssVat => "eu_oss_vat",
+            EuVat => "eu_vat",
+            GbVat => "gb_vat",
+            GeVat => "ge_vat",
+            GnNif => "gn_nif",
+            HkBr => "hk_br",
+            HrOib => "hr_oib",
+            HuTin => "hu_tin",
+            IdNpwp => "id_npwp",
+            IlVat => "il_vat",
+            InGst => "in_gst",
+            IsVat => "is_vat",
+            JpCn => "jp_cn",
+            JpRn => "jp_rn",
+            JpTrn => "jp_trn",
+            KePin => "ke_pin",
+            KgTin => "kg_tin",
+            KhTin => "kh_tin",
+            KrBrn => "kr_brn",
+            KzBin => "kz_bin",
+            LaTin => "la_tin",
+            LiUid => "li_uid",
+            LiVat => "li_vat",
+            MaVat => "ma_vat",
+            MdVat => "md_vat",
+            MePib => "me_pib",
+            MkVat => "mk_vat",
+            MrNif => "mr_nif",
+            MxRfc => "mx_rfc",
+            MyFrp => "my_frp",
+            MyItn => "my_itn",
+            MySst => "my_sst",
+            NgTin => "ng_tin",
+            NoVat => "no_vat",
+            NoVoec => "no_voec",
+            NpPan => "np_pan",
+            NzGst => "nz_gst",
+            OmVat => "om_vat",
+            PeRuc => "pe_ruc",
+            PhTin => "ph_tin",
+            RoTin => "ro_tin",
+            RsPib => "rs_pib",
+            RuInn => "ru_inn",
+            RuKpp => "ru_kpp",
+            SaVat => "sa_vat",
+            SgGst => "sg_gst",
+            SgUen => "sg_uen",
+            SiTin => "si_tin",
+            SnNinea => "sn_ninea",
+            SrFin => "sr_fin",
+            SvNit => "sv_nit",
+            ThVat => "th_vat",
+            TjTin => "tj_tin",
+            TrTin => "tr_tin",
+            TwVat => "tw_vat",
+            TzVat => "tz_vat",
+            UaVat => "ua_vat",
+            UgTin => "ug_tin",
+            Unknown => "unknown",
+            UsEin => "us_ein",
+            UyRuc => "uy_ruc",
+            UzTin => "uz_tin",
+            UzVat => "uz_vat",
+            VeRif => "ve_rif",
+            VnTin => "vn_tin",
+            ZaVat => "za_vat",
+            ZmTin => "zm_tin",
+            ZwTin => "zw_tin",
+        }
+    }
+}
+
+impl std::str::FromStr for InvoicesResourceInvoiceTaxIdType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use InvoicesResourceInvoiceTaxIdType::*;
+        match s {
+            "ad_nrt" => Ok(AdNrt),
+            "ae_trn" => Ok(AeTrn),
+            "al_tin" => Ok(AlTin),
+            "am_tin" => Ok(AmTin),
+            "ao_tin" => Ok(AoTin),
+            "ar_cuit" => Ok(ArCuit),
+            "au_abn" => Ok(AuAbn),
+            "au_arn" => Ok(AuArn),
+            "aw_tin" => Ok(AwTin),
+            "az_tin" => Ok(AzTin),
+            "ba_tin" => Ok(BaTin),
+            "bb_tin" => Ok(BbTin),
+            "bd_bin" => Ok(BdBin),
+            "bf_ifu" => Ok(BfIfu),
+            "bg_uic" => Ok(BgUic),
+            "bh_vat" => Ok(BhVat),
+            "bj_ifu" => Ok(BjIfu),
+            "bo_tin" => Ok(BoTin),
+            "br_cnpj" => Ok(BrCnpj),
+            "br_cpf" => Ok(BrCpf),
+            "bs_tin" => Ok(BsTin),
+            "by_tin" => Ok(ByTin),
+            "ca_bn" => Ok(CaBn),
+            "ca_gst_hst" => Ok(CaGstHst),
+            "ca_pst_bc" => Ok(CaPstBc),
+            "ca_pst_mb" => Ok(CaPstMb),
+            "ca_pst_sk" => Ok(CaPstSk),
+            "ca_qst" => Ok(CaQst),
+            "cd_nif" => Ok(CdNif),
+            "ch_uid" => Ok(ChUid),
+            "ch_vat" => Ok(ChVat),
+            "cl_tin" => Ok(ClTin),
+            "cm_niu" => Ok(CmNiu),
+            "cn_tin" => Ok(CnTin),
+            "co_nit" => Ok(CoNit),
+            "cr_tin" => Ok(CrTin),
+            "cv_nif" => Ok(CvNif),
+            "de_stn" => Ok(DeStn),
+            "do_rcn" => Ok(DoRcn),
+            "ec_ruc" => Ok(EcRuc),
+            "eg_tin" => Ok(EgTin),
+            "es_cif" => Ok(EsCif),
+            "et_tin" => Ok(EtTin),
+            "eu_oss_vat" => Ok(EuOssVat),
+            "eu_vat" => Ok(EuVat),
+            "gb_vat" => Ok(GbVat),
+            "ge_vat" => Ok(GeVat),
+            "gn_nif" => Ok(GnNif),
+            "hk_br" => Ok(HkBr),
+            "hr_oib" => Ok(HrOib),
+            "hu_tin" => Ok(HuTin),
+            "id_npwp" => Ok(IdNpwp),
+            "il_vat" => Ok(IlVat),
+            "in_gst" => Ok(InGst),
+            "is_vat" => Ok(IsVat),
+            "jp_cn" => Ok(JpCn),
+            "jp_rn" => Ok(JpRn),
+            "jp_trn" => Ok(JpTrn),
+            "ke_pin" => Ok(KePin),
+            "kg_tin" => Ok(KgTin),
+            "kh_tin" => Ok(KhTin),
+            "kr_brn" => Ok(KrBrn),
+            "kz_bin" => Ok(KzBin),
+            "la_tin" => Ok(LaTin),
+            "li_uid" => Ok(LiUid),
+            "li_vat" => Ok(LiVat),
+            "ma_vat" => Ok(MaVat),
+            "md_vat" => Ok(MdVat),
+            "me_pib" => Ok(MePib),
+            "mk_vat" => Ok(MkVat),
+            "mr_nif" => Ok(MrNif),
+            "mx_rfc" => Ok(MxRfc),
+            "my_frp" => Ok(MyFrp),
+            "my_itn" => Ok(MyItn),
+            "my_sst" => Ok(MySst),
+            "ng_tin" => Ok(NgTin),
+            "no_vat" => Ok(NoVat),
+            "no_voec" => Ok(NoVoec),
+            "np_pan" => Ok(NpPan),
+            "nz_gst" => Ok(NzGst),
+            "om_vat" => Ok(OmVat),
+            "pe_ruc" => Ok(PeRuc),
+            "ph_tin" => Ok(PhTin),
+            "ro_tin" => Ok(RoTin),
+            "rs_pib" => Ok(RsPib),
+            "ru_inn" => Ok(RuInn),
+            "ru_kpp" => Ok(RuKpp),
+            "sa_vat" => Ok(SaVat),
+            "sg_gst" => Ok(SgGst),
+            "sg_uen" => Ok(SgUen),
+            "si_tin" => Ok(SiTin),
+            "sn_ninea" => Ok(SnNinea),
+            "sr_fin" => Ok(SrFin),
+            "sv_nit" => Ok(SvNit),
+            "th_vat" => Ok(ThVat),
+            "tj_tin" => Ok(TjTin),
+            "tr_tin" => Ok(TrTin),
+            "tw_vat" => Ok(TwVat),
+            "tz_vat" => Ok(TzVat),
+            "ua_vat" => Ok(UaVat),
+            "ug_tin" => Ok(UgTin),
+            "unknown" => Ok(Unknown),
+            "us_ein" => Ok(UsEin),
+            "uy_ruc" => Ok(UyRuc),
+            "uz_tin" => Ok(UzTin),
+            "uz_vat" => Ok(UzVat),
+            "ve_rif" => Ok(VeRif),
+            "vn_tin" => Ok(VnTin),
+            "za_vat" => Ok(ZaVat),
+            "zm_tin" => Ok(ZmTin),
+            "zw_tin" => Ok(ZwTin),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for InvoicesResourceInvoiceTaxIdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for InvoicesResourceInvoiceTaxIdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for InvoicesResourceInvoiceTaxIdType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for InvoicesResourceInvoiceTaxIdType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<InvoicesResourceInvoiceTaxIdType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(InvoicesResourceInvoiceTaxIdType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(InvoicesResourceInvoiceTaxIdType);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for InvoicesResourceInvoiceTaxIdType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for InvoicesResourceInvoiceTaxIdType")
+        })
+    }
+}

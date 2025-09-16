@@ -1,0 +1,30 @@
+[package]
+name = "async-stripe-types"
+version.workspace = true
+description.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[lib]
+name = "stripe_types"
+
+[dependencies]
+serde.workspace = true
+smol_str.workspace = true
+miniserde.workspace = true
+serde_json = { workspace = true, optional = true }
+
+
+[features]
+serialize = []
+deserialize = ["dep:serde_json"]
+
+[dev-dependencies]
+serde_qs.workspace = true
+serde_json.workspace = true

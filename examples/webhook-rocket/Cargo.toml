@@ -1,0 +1,10 @@
+[package]
+name = "webhook-rocket"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+rocket = "0.5.0"
+async-stripe-webhook = { path = "../../async-stripe-webhook", features = ["async-stripe-checkout"] }
+async-stripe-checkout = { path = "../../generated/async-stripe-checkout" }

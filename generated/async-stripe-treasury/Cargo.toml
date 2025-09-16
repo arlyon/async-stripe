@@ -1,0 +1,57 @@
+[package]
+name = "async-stripe-treasury"
+version.workspace = true
+description.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[lib]
+path = "src/mod.rs"
+name = "stripe_treasury"
+
+[dependencies]
+serde.workspace = true
+serde_json = { workspace = true, optional = true }
+smol_str.workspace = true
+miniserde.workspace = true
+async-stripe-types = {path = "../../async-stripe-types", version = "1.0.0-alpha.2"}
+async-stripe-client-core = {path = "../../async-stripe-client-core", version = "1.0.0-alpha.2"}
+
+async-stripe-shared = {path = "../../generated/async-stripe-shared", version = "1.0.0-alpha.2"}
+
+
+[features]
+serialize = ["async-stripe-types/serialize","async-stripe-shared/serialize"]
+deserialize = ["async-stripe-types/deserialize","async-stripe-shared/deserialize", "dep:serde_json"]
+treasury_credit_reversal = []
+treasury_debit_reversal = []
+treasury_financial_account = []
+treasury_inbound_transfer = []
+treasury_outbound_payment = []
+treasury_outbound_transfer = []
+treasury_received_credit = []
+treasury_received_debit = []
+treasury_transaction = []
+treasury_transaction_entry = []
+
+full = ["treasury_credit_reversal",
+"treasury_debit_reversal",
+"treasury_financial_account",
+"treasury_inbound_transfer",
+"treasury_outbound_payment",
+"treasury_outbound_transfer",
+"treasury_received_credit",
+"treasury_received_debit",
+"treasury_transaction",
+"treasury_transaction_entry"]
+
+
+[package.metadata.docs.rs]
+features = ["full"]
+
