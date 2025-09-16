@@ -16,6 +16,7 @@ jobs:
 
       - name: Run Codegen
         run: cargo run --release -- --fetch latest
+        working-directory: openapi
 
       - name: create pull request
         uses: peter-evans/create-pull-request@v3
