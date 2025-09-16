@@ -5,6 +5,9 @@ on:
     branches: [master]
   workflow_dispatch:
 
+env:
+  rust_min: 1.88
+
 jobs:
   # Release unpublished packages
   release-plz-release:
@@ -21,7 +24,9 @@ jobs:
           token: ${{ secrets.REPO_SCOPED_TOKEN }}
 
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@1.100.0
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.rust_min }}
 
       - name: Cache dependencies
         uses: Swatinem/rust-cache@v2
@@ -53,7 +58,9 @@ jobs:
           token: ${{ secrets.REPO_SCOPED_TOKEN }}
 
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@1.100.0
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.rust_min }}
 
       - name: Cache dependencies
         uses: Swatinem/rust-cache@v2
