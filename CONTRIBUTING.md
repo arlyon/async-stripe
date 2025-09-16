@@ -97,11 +97,30 @@ If you notice that logic is missing, please add it to (or create) the appropriat
 
 ## Versioning
 
-Due to the nature of the generated crates, all crates are versioned together. To bump the versions, will need to
-do the following steps:
+The project uses automated versioning via [release-plz](https://release-plz.ieme.me/) which provides independent crate versioning based on actual changes. **Manual version bumping is no longer required.**
 
-1. Bump the version in `Cargo.toml`
-2. Run the code generation with the new version `cd openapi && cargo run -- <version>`
-3. Update any version requirements in the manually managed packages
-4. Commit the changes
-5. Publish the changes `cargo workspaces publish --from-git --allow-branch next`
+### How It Works
+
+1. **Automatic Detection**: Release-plz analyzes commits and code changes to determine which crates need version updates
+2. **Independent Versioning**: Each crate versions independently - only crates with actual changes get bumped
+3. **Dependency Updates**: When a crate is updated, dependent crates automatically get updated to use the new version
+4. **Release PR**: All version changes are proposed via a "Release PR" for review before publishing
+
+### Developer Workflow
+
+1. **Make Changes**: Work on features/fixes using conventional commit messages
+2. **Merge PR**: Standard PR review and merge process
+3. **Release PR Created**: Release-plz automatically creates/updates a Release PR with version bumps
+4. **Review & Merge**: Team reviews the Release PR and merges when ready
+5. **Automatic Publishing**: Merging triggers publishing to crates.io in dependency order
+
+### Code Generation with Versioning
+
+When updating generated code:
+
+1. Run code generation: `cd openapi && cargo run --release -- --fetch latest`
+2. Commit with conventional message: `feat(codegen): update to latest Stripe OpenAPI spec`
+3. Create PR and merge normally
+4. Release-plz will handle version updates automatically
+
+**No manual version coordination needed** - the tool handles all internal dependency version updates automatically.

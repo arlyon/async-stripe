@@ -1,0 +1,34 @@
+[workspace]
+# Enable cargo-semver-checks for breaking change detection
+semver_check = true
+# Single workspace-level changelog
+changelog_update = true
+# Automatic dependency updates
+dependencies_update = true
+
+# Configure git-cliff for changelog generation
+[changelog]
+header = """
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+"""
+
+# Package-specific configurations
+[[package]]
+name = "async-stripe"
+# Main library with hyper runtime features
+publish_features = ["runtime-tokio-hyper"]
+
+# Skip test and example packages
+[[package]]
+name = "tests"
+publish = false
+
+# Skip openapi package
+[[package]]
+name = "openapi"
+publish = false
