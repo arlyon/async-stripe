@@ -21,7 +21,7 @@ hmac = "0.12"
 sha2 = "0.10"
 hex = "0.4"
 chrono = { version = "0.4", default-features = false, features = ["clock"] }
-thiserror = "1.0.24"
+thiserror = "2.0.16"
 miniserde.workspace = true
 serde.workspace = true
 serde_json = { workspace = true, optional = true }
