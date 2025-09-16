@@ -491,7 +491,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-std",
  "async-stripe-client-core",
@@ -514,7 +514,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-billing"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-client-core",
  "async-stripe-shared",
@@ -527,7 +527,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-checkout"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-client-core",
  "async-stripe-shared",
@@ -540,7 +540,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-client-core"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-shared",
  "async-stripe-types",
@@ -557,7 +557,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-connect"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-client-core",
  "async-stripe-shared",
@@ -570,7 +570,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-core"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-client-core",
  "async-stripe-shared",
@@ -583,7 +583,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-fraud"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-client-core",
  "async-stripe-shared",
@@ -596,7 +596,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-issuing"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-client-core",
  "async-stripe-shared",
@@ -609,7 +609,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-misc"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-client-core",
  "async-stripe-shared",
@@ -622,7 +622,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-payment"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-client-core",
  "async-stripe-shared",
@@ -635,7 +635,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-product"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-client-core",
  "async-stripe-shared",
@@ -648,7 +648,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-shared"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-types",
  "miniserde",
@@ -659,7 +659,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-terminal"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-client-core",
  "async-stripe-shared",
@@ -702,7 +702,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-treasury"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-client-core",
  "async-stripe-shared",
@@ -715,7 +715,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-types"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "miniserde",
  "serde",
@@ -726,7 +726,7 @@ dependencies = [
 
 [[package]]
 name = "async-stripe-webhook"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 dependencies = [
  "async-stripe-billing",
  "async-stripe-checkout",
