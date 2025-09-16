@@ -1,0 +1,38 @@
+version: 2
+updates:
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    
+  # Rust/Cargo dependencies  
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Group minor and patch updates to reduce PR noise
+    groups:
+      production-dependencies:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "dev-dependencies"
+      dev-dependencies:
+        dependency-type: "development"
+        patterns:
+          - "*"
+    # Limit open pull requests
+    open-pull-requests-limit: 10
+    
+  # Dependencies in the openapi crate
+  - package-ecosystem: "cargo"
+    directory: "/openapi"
+    schedule:
+      interval: "weekly"
+    # Group updates for codegen dependencies
+    groups:
+      openapi-dependencies:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 5
