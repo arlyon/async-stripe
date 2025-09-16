@@ -14,7 +14,7 @@ use stripe_product::product::CreateProduct;
 use stripe_types::Currency;
 
 pub async fn run_payment_link_example(client: &Client) -> Result<(), StripeError> {
-    // create a new example project
+    // create a new example product
     let product = CreateProduct::new("T-Shirt")
         .metadata([(String::from("async-stripe"), String::from("true"))])
         .send(client)
