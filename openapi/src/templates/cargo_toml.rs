@@ -25,7 +25,8 @@ pub fn gen_crate_toml(
         let dep_path = format!("../../generated/{dep_name}");
         let _ = writeln!(
             crate_dep_section,
-            r#"{dep_name} = {{path = "{dep_path}", version = "{version}"}}"#
+            // release-plz adds an extra space. let's add it here also to prevent churn
+            r#"{dep_name} = {{path = "{dep_path}", version = "{version}" }}"#
         );
     }
 
@@ -34,10 +35,11 @@ pub fn gen_crate_toml(
         None
     } else {
         Some(format!(
-            r#"async-stripe-client-core = {{path = "../../async-stripe-client-core", version = "{version}"}}"#,
+            // release-plz adds an extra space. let's add it here also to prevent churn
+            r#"async-stripe-client-core = {{path = "../../async-stripe-client-core", version = "{version}" }}"#,
         ))
     };
-    let request_deps = request_deps.as_deref().unwrap_or("");
+    let request_deps = request_deps.as_deref().unwrap_or_default();
 
     let ser_features = get_serialization_feature(&crate_deps, "serialize");
     let deser_features = get_serialization_feature(&crate_deps, "deserialize");
@@ -71,7 +73,7 @@ pub fn gen_crate_toml(
         serde_json = {{ workspace = true, optional = true }}
         smol_str.workspace = true
         miniserde.workspace = true
-        async-stripe-types = {{path = "../../async-stripe-types", version = "{version}"}}
+        async-stripe-types = {{path = "../../async-stripe-types", version = "{version}" }}
         {request_deps}
 
         {crate_dep_section}
