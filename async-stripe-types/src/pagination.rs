@@ -135,7 +135,7 @@ impl<T: Clone> Clone for SearchList<T> {
 mod impl_deserialize {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
-    use miniserde::{make_place, Deserialize, Error};
+    use miniserde::{Deserialize, Error, make_place};
 
     use crate::miniserde_helpers::FromValueOpt;
     use crate::{List, SearchList};

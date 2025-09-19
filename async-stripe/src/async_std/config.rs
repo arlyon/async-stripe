@@ -5,8 +5,8 @@ use http_types::Url;
 use stripe_client_core::{RequestStrategy, SharedConfigBuilder};
 use stripe_shared::{AccountId, ApiVersion, ApplicationId};
 
-use crate::async_std::Client;
 use crate::StripeError;
+use crate::async_std::Client;
 
 static DEFAULT_USER_AGENT: &str = concat!("Stripe/v1 RustBindings/", env!("CARGO_PKG_VERSION"));
 const DEFAULT_API_BASE: &str = "https://api.stripe.com/";

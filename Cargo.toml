@@ -34,7 +34,7 @@ repository = "https://github.com/arlyon/async-stripe"
 documentation = "https://docs.rs/async-stripe"
 keywords = ["stripe", "v1", "api", "async"]
 categories = ["api-bindings"]
-edition = "2021"
+edition = "2024"
 
 [workspace.dependencies]
 serde = { version = ">=1.0.79", features = ["derive"] } # we use `serde(other)` which was introduced in 1.0.79

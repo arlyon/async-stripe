@@ -6,8 +6,8 @@ use miniserde::json::from_str;
 use serde::Serialize;
 use stripe_shared::AccountId;
 
-use crate::request_strategy::RequestStrategy;
 use crate::ConfigOverride;
+use crate::request_strategy::RequestStrategy;
 
 /// REST API methods used by Stripe.
 #[derive(Debug, Copy, Clone)]

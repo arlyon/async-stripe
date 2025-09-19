@@ -1,6 +1,6 @@
 use stripe::AccountId;
-use stripe_connect::account::{CapabilitiesParam, CapabilityParam, CreateAccount, ListAccount};
 use stripe_connect::AccountCapabilitiesStatus;
+use stripe_connect::account::{CapabilitiesParam, CapabilityParam, CreateAccount, ListAccount};
 
 #[test]
 fn is_account_listable() {

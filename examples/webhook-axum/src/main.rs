@@ -13,12 +13,12 @@
 //! ```
 
 use axum::{
+    Error, Router,
     body::Body,
     extract::FromRequest,
     http::{Request, StatusCode},
     response::{IntoResponse, Response},
     routing::post,
-    Error, Router,
 };
 use stripe_webhook::{Event, EventObject, Webhook};
 

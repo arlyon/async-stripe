@@ -10,8 +10,8 @@
 //! If you'd rather avoid this, you can use a [stripe_types::PaymentLink].
 
 use stripe::StripeError;
-use stripe_checkout::checkout_session::{CreateCheckoutSession, CreateCheckoutSessionLineItems};
 use stripe_checkout::CheckoutSessionMode;
+use stripe_checkout::checkout_session::{CreateCheckoutSession, CreateCheckoutSessionLineItems};
 use stripe_core::customer::CreateCustomer;
 use stripe_product::price::CreatePrice;
 use stripe_product::product::CreateProduct;

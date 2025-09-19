@@ -1,6 +1,6 @@
 use stripe_core::{
-    customer::{CreateCustomer, DeleteCustomer, RetrieveCustomer, RetrieveCustomerReturned},
     CustomerId,
+    customer::{CreateCustomer, DeleteCustomer, RetrieveCustomer, RetrieveCustomerReturned},
 };
 
 use super::{get_base_test_config, get_client};

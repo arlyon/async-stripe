@@ -1,7 +1,7 @@
 //! Utilities defined to help test different pagination scenarios more easily.
 use std::cmp::min;
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, MockServer, Request, ResponseTemplate};
 

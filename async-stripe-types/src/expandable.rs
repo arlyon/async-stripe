@@ -74,7 +74,7 @@ impl<T: Object> Expandable<T> {
 mod miniserde {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
-    use miniserde::{make_place, Deserialize};
+    use miniserde::{Deserialize, make_place};
 
     use crate::miniserde_helpers::FromValueOpt;
     use crate::{Expandable, FromCursor, Object};

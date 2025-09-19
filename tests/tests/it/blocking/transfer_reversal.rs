@@ -1,4 +1,4 @@
-use stripe_connect::{transfer_reversal::CreateIdTransferReversal, TransferId};
+use stripe_connect::{TransferId, transfer_reversal::CreateIdTransferReversal};
 
 use super::get_client;
 

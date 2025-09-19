@@ -121,9 +121,9 @@ pub struct DeleteCustomerBankAccountReturnedBuilder {
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
-    use miniserde::{make_place, Deserialize, Result};
-    use stripe_types::miniserde_helpers::FromValueOpt;
+    use miniserde::{Deserialize, Result, make_place};
     use stripe_types::MapBuilder;
+    use stripe_types::miniserde_helpers::FromValueOpt;
 
     use super::*;
 
@@ -843,10 +843,7 @@ impl StripeRequest for UpdateCustomerBankAccount {
 pub enum UpdateCustomerBankAccountReturned {
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "card"))]
     Card(stripe_shared::Card),
-    #[cfg_attr(
-        any(feature = "deserialize", feature = "serialize"),
-        serde(rename = "bank_account")
-    )]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "bank_account"))]
     BankAccount(stripe_shared::BankAccount),
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "source"))]
     Source(stripe_shared::Source),
@@ -860,9 +857,9 @@ pub struct UpdateCustomerBankAccountReturnedBuilder {
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
-    use miniserde::{make_place, Deserialize, Result};
-    use stripe_types::miniserde_helpers::FromValueOpt;
+    use miniserde::{Deserialize, Result, make_place};
     use stripe_types::MapBuilder;
+    use stripe_types::miniserde_helpers::FromValueOpt;
 
     use super::*;
 

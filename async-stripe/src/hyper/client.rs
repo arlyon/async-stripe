@@ -13,8 +13,8 @@ use stripe_client_core::{CustomizedStripeRequest, RequestBuilder, StripeMethod};
 use stripe_client_core::{Outcome, RequestStrategy};
 use stripe_shared::AccountId;
 
-use crate::hyper::client_builder::{ClientBuilder, ClientConfig};
 use crate::StripeError;
+use crate::hyper::client_builder::{ClientBuilder, ClientConfig};
 
 /// A client for making Stripe API requests.
 #[derive(Clone, Debug)]
