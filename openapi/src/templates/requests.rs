@@ -7,8 +7,8 @@ use crate::printable::{Lifetime, PrintableType, PrintableWithLifetime};
 use crate::rust_object::{ObjectUsage, Struct, StructField, Visibility};
 use crate::rust_type::{Container, RustType};
 use crate::stripe_object::{OperationType, RequestSpec};
-use crate::templates::utils::{write_default_impl, write_doc_comment};
 use crate::templates::ObjectWriter;
+use crate::templates::utils::{write_default_impl, write_doc_comment};
 
 impl RequestSpec {
     fn gen_path_arg(&self) -> String {
@@ -23,7 +23,7 @@ impl RequestSpec {
         }
     }
 
-    pub fn gen(&self, components: &Components) -> String {
+    pub fn generate(&self, components: &Components) -> String {
         let build_inner = self.write_build_inner();
 
         let lifetime_str = if self.has_reference(components) { "<'_>" } else { "" };

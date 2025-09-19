@@ -5,7 +5,7 @@ use indoc::writedoc;
 use crate::printable::PrintableWithLifetime;
 use crate::rust_object::{EnumOfObjects, EnumVariant, FieldlessVariant};
 use crate::templates::miniserde::gen_enum_of_objects_miniserde;
-use crate::templates::object_writer::{write_derives_line, ObjectWriter};
+use crate::templates::object_writer::{ObjectWriter, write_derives_line};
 use crate::templates::utils::{SerdeDeriveState, ShouldDerive};
 
 impl ObjectWriter<'_> {

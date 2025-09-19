@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 
-use anyhow::{bail, Context};
+use anyhow::{Context, bail};
 use heck::ToSnakeCase;
 use openapiv3::{Parameter, ParameterData, ParameterSchemaOrContent, ReferenceOr, Schema};
 use tracing::debug;
 
 use crate::rust_object::{ObjectMetadata, RustObject, Struct, Visibility};
 use crate::rust_type::{RustType, SimpleType};
-use crate::spec::{get_ok_response_schema, get_request_form_parameters, Spec};
+use crate::spec::{Spec, get_ok_response_schema, get_request_form_parameters};
 use crate::spec_inference::Inference;
 use crate::stripe_object::{OperationType, PathParam, RequestParam, RequestSpec, StripeOperation};
 use crate::types::{ComponentPath, RustIdent};

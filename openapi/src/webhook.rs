@@ -1,19 +1,19 @@
 use std::fmt::Write;
 use std::path::Path;
 
-use anyhow::{bail, ensure, Context};
+use anyhow::{Context, bail, ensure};
 use indoc::writedoc;
 use openapiv3::Schema;
 
 use crate::components::Components;
 use crate::crates::Crate;
 use crate::printable::PrintableType;
-use crate::rust_object::{as_enum_of_objects, ObjectUsage, RustObject};
+use crate::rust_object::{ObjectUsage, RustObject, as_enum_of_objects};
 use crate::rust_type::RustType;
 use crate::spec_inference::Inference;
+use crate::templates::ObjectWriter;
 use crate::templates::object_writer::write_derives_line;
 use crate::templates::utils::write_doc_comment;
-use crate::templates::ObjectWriter;
 use crate::types::RustIdent;
 use crate::utils::append_to_file;
 

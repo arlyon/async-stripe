@@ -1,15 +1,15 @@
 use std::fmt::Write;
 
+use crate::STRIPE_TYPES;
 use crate::components::Components;
 use crate::printable::Lifetime;
 use crate::rust_object::EnumOfObjects::ObjectUnion;
-use crate::rust_object::{as_enum_of_objects, ObjectMetadata, ObjectUsage, RustObject};
+use crate::rust_object::{ObjectMetadata, ObjectUsage, RustObject, as_enum_of_objects};
 use crate::rust_type::RustType;
 use crate::stripe_object::{RequestSpec, StripeObject};
+use crate::templates::ObjectWriter;
 use crate::templates::object_trait::{write_object_trait, write_object_trait_for_enum};
 use crate::templates::utils::write_doc_comment;
-use crate::templates::ObjectWriter;
-use crate::STRIPE_TYPES;
 
 impl Components {
     fn write_rust_type_objs(&self, typ: &RustType, out: &mut String, usage: ObjectUsage) {
@@ -124,7 +124,7 @@ pub fn gen_requests(specs: &[RequestSpec], components: &Components) -> String {
             components.write_rust_type_objs(&params.typ, &mut out, ObjectUsage::request_param());
         }
 
-        let req_body = req.gen(components);
+        let req_body = req.generate(components);
         let _ = write!(out, "{req_body}");
 
         components.write_rust_type_objs(&req.returned, &mut out, ObjectUsage::return_type());

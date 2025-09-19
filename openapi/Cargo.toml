@@ -2,7 +2,7 @@
 name = "stripe-openapi-codegen"
 version = "0.1.0"
 authors = ["Kevin Stenerson <kstenerson@developers.wyyerd.com>"]
-edition = "2021"
+edition = "2024"
 
 # workaround for semantic-release-cargo
 publish = ["do-not-publish"]

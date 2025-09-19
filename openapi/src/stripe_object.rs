@@ -36,11 +36,7 @@ impl CrateInfo {
     }
 
     pub fn for_types(&self) -> Crate {
-        if self.type_defs_are_shared {
-            Crate::SHARED
-        } else {
-            self.krate
-        }
+        if self.type_defs_are_shared { Crate::SHARED } else { self.krate }
     }
 
     pub fn base(&self) -> Crate {

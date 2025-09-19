@@ -1,11 +1,11 @@
 use anyhow::bail;
 use indexmap::{IndexMap, IndexSet};
-use petgraph::algo::is_cyclic_directed;
 use petgraph::Direction;
+use petgraph::algo::is_cyclic_directed;
 use tracing::{debug, error, trace};
 
 use crate::components::Components;
-use crate::crates::{Crate, CRATE_INFO};
+use crate::crates::{CRATE_INFO, Crate};
 use crate::graph::ComponentGraph;
 use crate::types::ComponentPath;
 
@@ -89,7 +89,9 @@ impl Components {
                     graph.neighbors_directed(missing, Direction::Incoming).collect::<Vec<_>>();
                 let depended_crates =
                     depended_on.iter().map(|m| self.get(m).krate()).collect::<IndexSet<_>>();
-                error!("Could not infer crate for component {missing}. Depended on by components {depended_on:?}, crates {depended_crates:?}. Perhaps add a path entry for it?")
+                error!(
+                    "Could not infer crate for component {missing}. Depended on by components {depended_on:?}, crates {depended_crates:?}. Perhaps add a path entry for it?"
+                )
             }
             bail!(
                 "Some components could not have their crate inferred: {components_without_crates:#?}",
@@ -177,11 +179,7 @@ impl Components {
             .collect::<Option<Vec<_>>>()?;
 
         let first = depended_on_by.first()?;
-        if depended_on_by.iter().all(|d| d == first) {
-            Some(*first)
-        } else {
-            None
-        }
+        if depended_on_by.iter().all(|d| d == first) { Some(*first) } else { None }
     }
 
     fn maybe_infer_crate_by_deps(
@@ -195,11 +193,7 @@ impl Components {
             .collect::<Option<IndexSet<_>>>()?;
 
         let first = known_dependents.first()?;
-        if known_dependents.iter().all(|d| d == first) {
-            Some(*first)
-        } else {
-            None
-        }
+        if known_dependents.iter().all(|d| d == first) { Some(*first) } else { None }
     }
 }
 

@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use clap::Parser;
 use petgraph::dot::{Config, Dot};
 use stripe_openapi_codegen::codegen::CodeGen;
@@ -12,7 +12,7 @@ use stripe_openapi_codegen::crates::ALL_CRATES;
 use stripe_openapi_codegen::spec::Spec;
 use stripe_openapi_codegen::spec_fetch;
 use stripe_openapi_codegen::spec_fetch::fetch_spec;
-use stripe_openapi_codegen::url_finder::{update_api_doc_data, UrlFinder};
+use stripe_openapi_codegen::url_finder::{UrlFinder, update_api_doc_data};
 use stripe_openapi_codegen::utils::write_to_file;
 use tracing::info;
 

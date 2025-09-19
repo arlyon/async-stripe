@@ -1,5 +1,5 @@
-use indexmap::map::Entry;
 use indexmap::IndexMap;
+use indexmap::map::Entry;
 use tracing::debug;
 
 use crate::rust_object::{ObjectKind, ObjectMetadata, ObjectUsage, RustObject};
