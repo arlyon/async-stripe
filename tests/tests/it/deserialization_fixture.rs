@@ -65,7 +65,9 @@ fn assert_json_matches(result: &Value, expected: &Value, key_path: &mut JsonKeyP
                 panic!("Key {key_path}, result was array, but expected was {expected:?}")
             };
             if arr.len() != expected_arr.len() {
-                panic!("Key {key_path}, mismatched array lengths, result was {result:?}, but expected was {expected:?}")
+                panic!(
+                    "Key {key_path}, mismatched array lengths, result was {result:?}, but expected was {expected:?}"
+                )
             }
             for (i, item) in arr.iter().enumerate() {
                 key_path.add_key(i);

@@ -280,11 +280,7 @@ impl StructField {
     pub fn variable_name(&self) -> Cow<'_, str> {
         let name = self.field_name.as_str();
         let keywords = ["type", "as", "use", "struct", "enum", "const", "async", "await", "in"];
-        if keywords.contains(&name) {
-            Cow::Owned(format!("{name}_"))
-        } else {
-            Cow::Borrowed(name)
-        }
+        if keywords.contains(&name) { Cow::Owned(format!("{name}_")) } else { Cow::Borrowed(name) }
     }
 
     /// Returns Some(wire_name) when the:

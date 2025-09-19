@@ -2,8 +2,8 @@ use hyper::http::{HeaderValue, Uri};
 use stripe_client_core::{RequestStrategy, SharedConfigBuilder};
 use stripe_shared::{AccountId, ApplicationId};
 
-use crate::hyper::client::Client;
 use crate::StripeError;
+use crate::hyper::client::Client;
 
 static DEFAULT_USER_AGENT: &str = concat!("Stripe/v1 RustBindings/", env!("CARGO_PKG_VERSION"));
 const DEFAULT_API_BASE: &str = "https://api.stripe.com/";

@@ -1,6 +1,6 @@
 use stripe_billing::{
-    invoice::{FinalizeInvoiceInvoice, PayInvoice, RetrieveInvoice},
     InvoiceId,
+    invoice::{FinalizeInvoiceInvoice, PayInvoice, RetrieveInvoice},
 };
 
 use super::get_client;

@@ -5,11 +5,11 @@ use indoc::{formatdoc, writedoc};
 use crate::printable::PrintableWithLifetime;
 use crate::rust_object::{ObjectKind, Struct, StructField};
 use crate::rust_type::{ExtType, RustType, SimpleType};
+use crate::templates::ObjectWriter;
 use crate::templates::object_writer::write_derives_line;
 use crate::templates::utils::{
-    write_default_impl, write_doc_comment, SerdeDeriveState, ShouldDerive,
+    SerdeDeriveState, ShouldDerive, write_default_impl, write_doc_comment,
 };
-use crate::templates::ObjectWriter;
 
 impl ObjectWriter<'_> {
     pub fn write_struct_definition(&self, out: &mut String, struct_: &Struct) {

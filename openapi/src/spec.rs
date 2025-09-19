@@ -67,11 +67,7 @@ pub fn as_enum_strings(schema: &Schema) -> Option<Vec<String>> {
     match &schema.schema_kind {
         SchemaKind::Type(Type::String(typ)) => {
             let variants = typ.enumeration.clone().into_iter().flatten().collect::<Vec<_>>();
-            if variants.is_empty() {
-                None
-            } else {
-                Some(variants)
-            }
+            if variants.is_empty() { None } else { Some(variants) }
         }
         _ => None,
     }

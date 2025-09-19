@@ -1,7 +1,7 @@
 use http_types::convert::{Deserialize, Serialize};
 use httpmock::prelude::*;
-use stripe::async_std::{Client, ClientBuilder};
 use stripe::StripeError;
+use stripe::async_std::{Client, ClientBuilder};
 use stripe_client_core::{
     CustomizableStripeRequest, RequestBuilder, RequestStrategy, StripeMethod,
 };

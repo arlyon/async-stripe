@@ -7,8 +7,8 @@ use petgraph::Direction;
 use tracing::{debug, info};
 
 use crate::crate_inference::validate_crate_info;
-use crate::crates::{get_crate_for_package, maybe_use_hardcoded_crate_assignment, Crate};
-use crate::deduplication::{deduplicate_types, DeduppedObject};
+use crate::crates::{Crate, get_crate_for_package, maybe_use_hardcoded_crate_assignment};
+use crate::deduplication::{DeduppedObject, deduplicate_types};
 use crate::overrides::Overrides;
 use crate::printable::{PrintableContainer, PrintableType};
 use crate::requests::parse_requests;
@@ -16,8 +16,8 @@ use crate::rust_object::{ObjectKind, ObjectUsage, RustObject};
 use crate::rust_type::{Container, PathToType, RustType};
 use crate::spec::Spec;
 use crate::stripe_object::{
-    parse_stripe_schema_as_rust_object, CrateInfo, OperationType, RequestSpec, StripeObject,
-    StripeOperation, StripeResource,
+    CrateInfo, OperationType, RequestSpec, StripeObject, StripeOperation, StripeResource,
+    parse_stripe_schema_as_rust_object,
 };
 use crate::types::{ComponentPath, RustIdent};
 use crate::visitor::Visit;

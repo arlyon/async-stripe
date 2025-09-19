@@ -1,8 +1,8 @@
 use stripe_billing::{
+    SubscriptionId,
     subscription::{
         CancelSubscription, CancelSubscriptionCancellationDetails, RetrieveSubscription,
     },
-    SubscriptionId,
 };
 
 use super::get_client;

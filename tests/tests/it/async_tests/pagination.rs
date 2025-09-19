@@ -6,7 +6,7 @@ use stripe_core::customer::{ListCustomer, SearchCustomer};
 use stripe_core::{Customer, CustomerId};
 
 use super::test_with_all_clients;
-use crate::pagination_utils::{cons_cus_id, parse_cus_id, PaginationMock, PaginationMockKind};
+use crate::pagination_utils::{PaginationMock, PaginationMockKind, cons_cus_id, parse_cus_id};
 
 const PAGINATION_KINDS: [PaginationMockKind; 2] =
     [PaginationMockKind::List, PaginationMockKind::Search];

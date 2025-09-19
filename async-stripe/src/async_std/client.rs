@@ -6,9 +6,9 @@ use stripe_client_core::{
 };
 use stripe_shared::AccountId;
 
-use crate::async_std::config::ClientConfig;
-use crate::async_std::ClientBuilder;
 use crate::StripeError;
+use crate::async_std::ClientBuilder;
+use crate::async_std::config::ClientConfig;
 
 /// A client for making Stripe API requests.
 #[derive(Clone, Debug)]

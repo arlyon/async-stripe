@@ -40,7 +40,7 @@ us_bank_account: Option<Option<stripe_treasury::TreasurySharedResourceInitiating
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
-    use miniserde::{make_place, Deserialize, Result};
+    use miniserde::{Deserialize, Result, make_place};
     use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 

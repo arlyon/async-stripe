@@ -1,4 +1,4 @@
-use stripe_core::{charge::RetrieveCharge, ChargeId};
+use stripe_core::{ChargeId, charge::RetrieveCharge};
 
 #[test]
 fn is_charge_retrievable() {

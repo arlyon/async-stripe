@@ -4,10 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
 pub enum ExternalAccount {
-    #[cfg_attr(
-        any(feature = "deserialize", feature = "serialize"),
-        serde(rename = "bank_account")
-    )]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "bank_account"))]
     BankAccount(stripe_shared::BankAccount),
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "card"))]
     Card(stripe_shared::Card),
@@ -21,9 +18,9 @@ pub struct ExternalAccountBuilder {
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
-    use miniserde::{make_place, Deserialize, Result};
-    use stripe_types::miniserde_helpers::FromValueOpt;
+    use miniserde::{Deserialize, Result, make_place};
     use stripe_types::MapBuilder;
+    use stripe_types::miniserde_helpers::FromValueOpt;
 
     use super::*;
 

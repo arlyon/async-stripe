@@ -1,5 +1,5 @@
 use miniserde::json::from_str;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use stripe_connect::Account;
 use stripe_core::customer::RetrieveCustomerReturned;
 use stripe_core::{

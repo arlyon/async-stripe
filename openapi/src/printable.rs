@@ -1,9 +1,9 @@
 use std::fmt::{Display, Formatter, Write};
 
+use crate::STRIPE_TYPES;
 use crate::components::PathInfo;
 use crate::rust_type::{MapKey, SimpleType};
 use crate::types::RustIdent;
-use crate::STRIPE_TYPES;
 
 /// A `RustType` we can implement `Display` for. This requires converting the portions of `RustType`
 /// we do not know how to print into other variants. For example, `RustType::Object` must be converted

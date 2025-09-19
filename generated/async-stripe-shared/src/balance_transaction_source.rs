@@ -73,9 +73,9 @@ pub struct BalanceTransactionSourceBuilder {
 const _: () = {
     use miniserde::de::{Map, Visitor};
     use miniserde::json::Value;
-    use miniserde::{make_place, Deserialize, Result};
-    use stripe_types::miniserde_helpers::FromValueOpt;
+    use miniserde::{Deserialize, Result, make_place};
     use stripe_types::MapBuilder;
+    use stripe_types::miniserde_helpers::FromValueOpt;
 
     use super::*;
 

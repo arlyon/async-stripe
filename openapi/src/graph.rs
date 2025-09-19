@@ -2,7 +2,7 @@ use indexmap::IndexSet;
 use petgraph::prelude::DiGraphMap;
 
 use crate::components::Components;
-use crate::crates::{Crate, ALL_CRATES};
+use crate::crates::{ALL_CRATES, Crate};
 use crate::types::ComponentPath;
 
 pub type ComponentGraph<'a> = DiGraphMap<&'a ComponentPath, ()>;

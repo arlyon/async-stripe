@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fs::File;
 
-use anyhow::{anyhow, bail, Result};
+use anyhow::{Result, anyhow, bail};
 use heck::ToSnakeCase;
 use reqwest::blocking::Client;
 use tracing::{info, warn};

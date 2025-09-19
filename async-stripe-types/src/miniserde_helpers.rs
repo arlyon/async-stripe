@@ -3,9 +3,9 @@ use std::collections::HashMap;
 use std::mem;
 use std::str::FromStr;
 
+use miniserde::Deserialize;
 use miniserde::de::Visitor;
 use miniserde::json::{Number, Object, Value};
-use miniserde::Deserialize;
 
 use crate::Currency;
 

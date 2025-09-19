@@ -3,10 +3,10 @@ use std::fmt::Write;
 use indexmap::IndexMap;
 use indoc::writedoc;
 
+use crate::STRIPE_TYPES;
 use crate::printable::PrintableType;
 use crate::rust_object::ObjectRef;
 use crate::types::RustIdent;
-use crate::STRIPE_TYPES;
 
 pub fn write_object_trait(out: &mut String, ident: &RustIdent, id_type: &PrintableType) {
     let _ = writedoc!(

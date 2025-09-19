@@ -1,4 +1,4 @@
-use stripe_checkout::{checkout_session::RetrieveCheckoutSession, CheckoutSessionId};
+use stripe_checkout::{CheckoutSessionId, checkout_session::RetrieveCheckoutSession};
 
 use super::get_client;
 

@@ -4,9 +4,9 @@ use std::path::PathBuf;
 use anyhow::Context;
 use indoc::formatdoc;
 
-use crate::components::{get_components, Components};
+use crate::components::{Components, get_components};
 use crate::crate_table::write_crate_table;
-use crate::crates::{get_crate_doc_comment, Crate, ALL_CRATES};
+use crate::crates::{ALL_CRATES, Crate, get_crate_doc_comment};
 use crate::object_writing::{gen_obj, gen_requests};
 use crate::rust_object::{ObjectKind, ObjectMetadata};
 use crate::spec::Spec;

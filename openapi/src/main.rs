@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use clap::Parser;
 use petgraph::dot::{Config, Dot};
 use stripe_openapi_codegen::codegen::CodeGen;
@@ -12,7 +12,7 @@ use stripe_openapi_codegen::crates::ALL_CRATES;
 use stripe_openapi_codegen::spec::Spec;
 use stripe_openapi_codegen::spec_fetch;
 use stripe_openapi_codegen::spec_fetch::fetch_spec;
-use stripe_openapi_codegen::url_finder::{update_api_doc_data, UrlFinder};
+use stripe_openapi_codegen::url_finder::{UrlFinder, update_api_doc_data};
 use stripe_openapi_codegen::utils::write_to_file;
 use tracing::info;
 
@@ -110,9 +110,35 @@ fn main() -> Result<()> {
         }
 
         info!("Copying generated files");
-        run_rsync("out/crates/", "../generated/")?;
-        run_rsync("out/async-stripe-webhook/", "../async-stripe-webhook/src/generated/")?;
-        run_rsync("out/tests/", "../tests/tests/it/generated/")?;
+
+        let crate_paths = std::fs::read_dir("out/crates")?
+            .map(|dir| dir.map(|dir| dir.path()))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        let crate_paths = crate_paths
+            .iter()
+            .map(|e| {
+                (
+                    e.as_path(),
+                    Path::new("../generated/")
+                        .join(format!("{}/", e.file_name().unwrap().to_str().unwrap())),
+                )
+            })
+            .chain([
+                (
+                    Path::new("out/async-stripe-webhook/"),
+                    Path::new("../async-stripe-webhook/src/generated/").to_owned(),
+                ),
+                (Path::new("out/tests/"), Path::new("../tests/tests/it/generated/").to_owned()),
+            ]);
+
+        // here, we need to copy over everything we generate, deleting previous versions
+        for (folder, dest) in crate_paths {
+            for path in std::fs::read_dir(folder)? {
+                let path = path?;
+                run_rsync(path.path().as_path(), &dest)?;
+            }
+        }
 
         std::process::Command::new("cp")
             .arg("out/crate_info.md")
@@ -137,7 +163,8 @@ fn parse_workspace_version() -> Result<String> {
 
 // --delete-during so that generated files don't stick around when not
 // generated anymore, see https://github.com/arlyon/async-stripe/issues/229
-fn run_rsync(src: &str, dest: &str) -> Result<()> {
+fn run_rsync(src: &Path, dest: &Path) -> Result<()> {
+    tracing::debug!("sending {} to {}", src.display(), dest.display());
     let out = std::process::Command::new("rsync")
         .arg("-a")
         .arg("--delete-during")

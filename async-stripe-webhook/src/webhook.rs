@@ -3,8 +3,8 @@ use std::str::FromStr;
 use chrono::Utc;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
-use stripe_shared::event::EventType;
 use stripe_shared::ApiVersion;
+use stripe_shared::event::EventType;
 
 use crate::{EventObject, WebhookError};
 
@@ -192,7 +192,7 @@ impl<'r> Signature<'r> {
 
 #[cfg(test)]
 mod tests {
-    use serde_json::{json, Value};
+    use serde_json::{Value, json};
 
     use super::*;
     use crate::{AccountExternalAccountCreated, EventType};
@@ -286,7 +286,9 @@ mod tests {
         });
         let payload = mock_webhook_event(&EventType::InvoiceitemCreated, object);
         let event_timestamp = 1533204620;
-        let signature = format!("t={event_timestamp},v1=5a81ebe328da1df19581cbc6c7377920947ffd30b56eebcc7ba9a6938a090965,v0=63f3a72374a733066c4be69ed7f8e5ac85c22c9f0a6a612ab9a025a9e4ee7eef");
+        let signature = format!(
+            "t={event_timestamp},v1=5a81ebe328da1df19581cbc6c7377920947ffd30b56eebcc7ba9a6938a090965,v0=63f3a72374a733066c4be69ed7f8e5ac85c22c9f0a6a612ab9a025a9e4ee7eef"
+        );
 
         let webhook = Webhook { current_timestamp: event_timestamp };
 

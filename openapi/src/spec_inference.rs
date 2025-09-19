@@ -13,7 +13,7 @@ use crate::rust_object::{
 };
 use crate::rust_type::{ExtType, IntType, RustType, SimpleType};
 use crate::spec::{
-    as_data_array_item, as_object_enum_name, is_enum_with_just_empty_string, ExpansionResources,
+    ExpansionResources, as_data_array_item, as_object_enum_name, is_enum_with_just_empty_string,
 };
 use crate::types::{ComponentPath, RustIdent};
 
@@ -101,11 +101,7 @@ impl<'a> Inference<'a> {
     pub fn infer_schema_type(&self, schema: &Schema) -> RustType {
         let base_type = self.title(schema.schema_data.title.as_deref()).infer_base_type(schema);
         let is_nullable = schema.schema_data.nullable;
-        if !self.required || is_nullable {
-            base_type.into_nullable()
-        } else {
-            base_type
-        }
+        if !self.required || is_nullable { base_type.into_nullable() } else { base_type }
     }
 
     fn should_infer_as_id_type(&self) -> bool {
@@ -184,11 +180,7 @@ impl<'a> Inference<'a> {
             }
         }
 
-        if self.can_borrow {
-            RustType::Simple(SimpleType::Str)
-        } else {
-            RustType::string()
-        }
+        if self.can_borrow { RustType::Simple(SimpleType::Str) } else { RustType::string() }
     }
 
     fn infer_object_typ(&self, typ: &ObjectType, field: &Schema) -> RustType {
