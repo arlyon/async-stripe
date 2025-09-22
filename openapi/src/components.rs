@@ -282,7 +282,7 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
                 // worse can happen
                 if let Some(orig) = id_map.insert(obj_name.clone(), id_typ.clone()) {
                     if &orig != id_typ {
-                        bail!("Mismatched object name and id type for {}", obj_name);
+                        bail!("Mismatched object name and id type for {obj_name}");
                     }
                 }
             }

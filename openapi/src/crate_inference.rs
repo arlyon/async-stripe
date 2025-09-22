@@ -106,8 +106,7 @@ impl Components {
         let deps_for_shared_crate = graph.neighbors(Crate::SHARED).collect::<Vec<_>>();
         if !deps_for_shared_crate.is_empty() {
             bail!(
-                "Shared types crate should not have dependencies, but has dependencies {:#?}!",
-                deps_for_shared_crate
+                "Shared types crate should not have dependencies, but has dependencies {deps_for_shared_crate:#?}!",
             );
         }
         if is_cyclic_directed(&graph) {
