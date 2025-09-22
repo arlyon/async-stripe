@@ -106,7 +106,7 @@ fn main() -> Result<()> {
         info!("Formatting generated files");
         let out = fmt_cmd.output()?;
         if !out.status.success() {
-            bail!("Rustfmt failed with outputs {:?}", out);
+            bail!("Rustfmt failed with outputs {out:?}");
         }
 
         info!("Copying generated files");
@@ -173,7 +173,7 @@ fn run_rsync(src: &Path, dest: &Path) -> Result<()> {
         .output()?;
 
     if !out.status.success() {
-        bail!("rsync failed with outputs {:?}", out);
+        bail!("rsync failed with outputs {out:?}");
     }
     Ok(())
 }

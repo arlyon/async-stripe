@@ -337,8 +337,7 @@ impl<'a> Inference<'a> {
                             RustIdent::create(typ.display_name())
                         } else {
                             bail!(
-                                "Could not infer a variant name for {item:?} and type {:?}",
-                                rust_type
+                                "Could not infer a variant name for {item:?} and type {rust_type:?}"
                             );
                         };
                         variants.push(EnumVariant::new(variant_ident, rust_type));
