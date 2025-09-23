@@ -58,7 +58,7 @@ jobs:
         run: cargo run --release -- --fetch current
 
       - name: Ensure generated files unchanged
-        uses: tj-actions/verify-changed-files@v13.1
+        uses: tj-actions/verify-changed-files@v20
         id: verify-changed-files
         with:
           files: |
