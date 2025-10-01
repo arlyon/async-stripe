@@ -24,6 +24,7 @@ pub mod deleted_product_feature;
 #[doc(inline)]
 pub use deleted_product_feature::*;
 pub use stripe_shared::discount::*;
+pub use stripe_shared::discount_source::*;
 pub use stripe_shared::line_items_discount_amount::*;
 pub use stripe_shared::line_items_tax_amount::*;
 pub use stripe_shared::package_dimensions::*;
@@ -38,6 +39,7 @@ pub use stripe_shared::product_marketing_feature::*;
 pub mod promotion_code;
 pub use stripe_shared::promotion_code::*;
 pub use stripe_shared::promotion_code_currency_option::*;
+pub use stripe_shared::promotion_codes_resource_promotion::*;
 pub use stripe_shared::promotion_codes_resource_restrictions::*;
 pub use stripe_shared::recurring::*;
 pub mod shipping_rate;

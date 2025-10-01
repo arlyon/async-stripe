@@ -888,16 +888,95 @@ impl Default for CreateQuoteSubscriptionData {
 /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateQuoteSubscriptionDataBillingMode {
+    /// Configure behavior for flexible billing mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flexible: Option<CreateQuoteSubscriptionDataBillingModeFlexible>,
     /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+    /// If no value is passed, the default is `flexible`.
     #[serde(rename = "type")]
     pub type_: CreateQuoteSubscriptionDataBillingModeType,
 }
 impl CreateQuoteSubscriptionDataBillingMode {
     pub fn new(type_: impl Into<CreateQuoteSubscriptionDataBillingModeType>) -> Self {
-        Self { type_: type_.into() }
+        Self { flexible: None, type_: type_.into() }
+    }
+}
+/// Configure behavior for flexible billing mode.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateQuoteSubscriptionDataBillingModeFlexible {
+    /// Controls how invoices and invoice items display proration amounts and discount amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_discounts:
+        Option<CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts>,
+}
+impl CreateQuoteSubscriptionDataBillingModeFlexible {
+    pub fn new() -> Self {
+        Self { proration_discounts: None }
+    }
+}
+impl Default for CreateQuoteSubscriptionDataBillingModeFlexible {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls how invoices and invoice items display proration amounts and discount amounts.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts {
+    Included,
+    Itemized,
+}
+impl CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts {
+    pub fn as_str(self) -> &'static str {
+        use CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts::*;
+        match self {
+            Included => "included",
+            Itemized => "itemized",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts::*;
+        match s {
+            "included" => Ok(Included),
+            "itemized" => Ok(Itemized),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts"))
     }
 }
 /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+/// If no value is passed, the default is `flexible`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateQuoteSubscriptionDataBillingModeType {
     Classic,

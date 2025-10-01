@@ -372,6 +372,7 @@ impl<'de> serde::Deserialize<'de> for DisputeEnhancedEligibilityTypes {
 pub enum DisputeStatus {
     Lost,
     NeedsResponse,
+    Prevented,
     UnderReview,
     WarningClosed,
     WarningNeedsResponse,
@@ -384,6 +385,7 @@ impl DisputeStatus {
         match self {
             Lost => "lost",
             NeedsResponse => "needs_response",
+            Prevented => "prevented",
             UnderReview => "under_review",
             WarningClosed => "warning_closed",
             WarningNeedsResponse => "warning_needs_response",
@@ -400,6 +402,7 @@ impl std::str::FromStr for DisputeStatus {
         match s {
             "lost" => Ok(Lost),
             "needs_response" => Ok(NeedsResponse),
+            "prevented" => Ok(Prevented),
             "under_review" => Ok(UnderReview),
             "warning_closed" => Ok(WarningClosed),
             "warning_needs_response" => Ok(WarningNeedsResponse),

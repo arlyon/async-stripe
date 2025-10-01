@@ -167,8 +167,6 @@ const _: () = {
 pub enum TransferScheduleWeeklyPayoutDays {
     Friday,
     Monday,
-    Saturday,
-    Sunday,
     Thursday,
     Tuesday,
     Wednesday,
@@ -179,8 +177,6 @@ impl TransferScheduleWeeklyPayoutDays {
         match self {
             Friday => "friday",
             Monday => "monday",
-            Saturday => "saturday",
-            Sunday => "sunday",
             Thursday => "thursday",
             Tuesday => "tuesday",
             Wednesday => "wednesday",
@@ -195,8 +191,6 @@ impl std::str::FromStr for TransferScheduleWeeklyPayoutDays {
         match s {
             "friday" => Ok(Friday),
             "monday" => Ok(Monday),
-            "saturday" => Ok(Saturday),
-            "sunday" => Ok(Sunday),
             "thursday" => Ok(Thursday),
             "tuesday" => Ok(Tuesday),
             "wednesday" => Ok(Wednesday),

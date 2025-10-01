@@ -2,11 +2,17 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionCollectedInformation {
+    /// Customer’s business name for this Checkout Session
+    pub business_name: Option<String>,
+    /// Customer’s individual name for this Checkout Session
+    pub individual_name: Option<String>,
     /// Shipping information for this Checkout Session.
     pub shipping_details: Option<stripe_shared::PaymentPagesCheckoutSessionCheckoutAddressDetails>,
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionCollectedInformationBuilder {
+    business_name: Option<Option<String>>,
+    individual_name: Option<Option<String>>,
     shipping_details:
         Option<Option<stripe_shared::PaymentPagesCheckoutSessionCheckoutAddressDetails>>,
 }
@@ -51,6 +57,8 @@ const _: () = {
         type Out = PaymentPagesCheckoutSessionCollectedInformation;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "business_name" => Deserialize::begin(&mut self.business_name),
+                "individual_name" => Deserialize::begin(&mut self.individual_name),
                 "shipping_details" => Deserialize::begin(&mut self.shipping_details),
 
                 _ => <dyn Visitor>::ignore(),
@@ -58,14 +66,22 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { shipping_details: Deserialize::default() }
+            Self {
+                business_name: Deserialize::default(),
+                individual_name: Deserialize::default(),
+                shipping_details: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(shipping_details),) = (self.shipping_details.take(),) else {
+            let (Some(business_name), Some(individual_name), Some(shipping_details)) = (
+                self.business_name.take(),
+                self.individual_name.take(),
+                self.shipping_details.take(),
+            ) else {
                 return None;
             };
-            Some(Self::Out { shipping_details })
+            Some(Self::Out { business_name, individual_name, shipping_details })
         }
     }
 
@@ -92,6 +108,8 @@ const _: () = {
             let mut b = PaymentPagesCheckoutSessionCollectedInformationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "business_name" => b.business_name = FromValueOpt::from_value(v),
+                    "individual_name" => b.individual_name = FromValueOpt::from_value(v),
                     "shipping_details" => b.shipping_details = FromValueOpt::from_value(v),
 
                     _ => {}

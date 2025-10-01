@@ -220,6 +220,10 @@ pub use portal_subscription_update_product::*;
 pub mod portal_subscription_update_product_adjustable_quantity;
 #[doc(inline)]
 pub use portal_subscription_update_product_adjustable_quantity::*;
+#[doc(hidden)]
+pub mod proration_details;
+#[doc(inline)]
+pub use proration_details::*;
 pub use quote::types::*;
 pub mod quote;
 #[doc(hidden)]
@@ -290,6 +294,7 @@ pub use stripe_shared::subscription_schedules_resource_invoice_item_period_resou
 pub use stripe_shared::subscription_transfer_data::*;
 pub use stripe_shared::subscriptions_resource_billing_cycle_anchor_config::*;
 pub use stripe_shared::subscriptions_resource_billing_mode::*;
+pub use stripe_shared::subscriptions_resource_billing_mode_flexible::*;
 pub use stripe_shared::subscriptions_resource_pause_collection::*;
 pub use stripe_shared::subscriptions_resource_payment_method_options::*;
 pub use stripe_shared::subscriptions_resource_payment_settings::*;

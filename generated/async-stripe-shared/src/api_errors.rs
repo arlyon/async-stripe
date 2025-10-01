@@ -295,6 +295,8 @@ pub enum ApiErrorsCode {
     EmailInvalid,
     ExpiredCard,
     FinancialConnectionsAccountInactive,
+    FinancialConnectionsAccountPendingAccountNumbers,
+    FinancialConnectionsAccountUnavailableAccountNumbers,
     FinancialConnectionsNoSuccessfulTransactionRefresh,
     ForwardingApiInactive,
     ForwardingApiInvalidParameter,
@@ -482,6 +484,12 @@ impl ApiErrorsCode {
             EmailInvalid => "email_invalid",
             ExpiredCard => "expired_card",
             FinancialConnectionsAccountInactive => "financial_connections_account_inactive",
+            FinancialConnectionsAccountPendingAccountNumbers => {
+                "financial_connections_account_pending_account_numbers"
+            }
+            FinancialConnectionsAccountUnavailableAccountNumbers => {
+                "financial_connections_account_unavailable_account_numbers"
+            }
             FinancialConnectionsNoSuccessfulTransactionRefresh => {
                 "financial_connections_no_successful_transaction_refresh"
             }
@@ -696,6 +704,12 @@ impl std::str::FromStr for ApiErrorsCode {
             "email_invalid" => Ok(EmailInvalid),
             "expired_card" => Ok(ExpiredCard),
             "financial_connections_account_inactive" => Ok(FinancialConnectionsAccountInactive),
+            "financial_connections_account_pending_account_numbers" => {
+                Ok(FinancialConnectionsAccountPendingAccountNumbers)
+            }
+            "financial_connections_account_unavailable_account_numbers" => {
+                Ok(FinancialConnectionsAccountUnavailableAccountNumbers)
+            }
             "financial_connections_no_successful_transaction_refresh" => {
                 Ok(FinancialConnectionsNoSuccessfulTransactionRefresh)
             }

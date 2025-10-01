@@ -246,10 +246,21 @@ pub struct UpdateInvoiceLineItemPriceDataProductData {
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
+    /// A label that represents units of this product.
+    /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_label: Option<String>,
 }
 impl UpdateInvoiceLineItemPriceDataProductData {
     pub fn new(name: impl Into<String>) -> Self {
-        Self { description: None, images: None, metadata: None, name: name.into(), tax_code: None }
+        Self {
+            description: None,
+            images: None,
+            metadata: None,
+            name: name.into(),
+            tax_code: None,
+            unit_label: None,
+        }
     }
 }
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.

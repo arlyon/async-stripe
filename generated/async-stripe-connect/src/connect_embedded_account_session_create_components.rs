@@ -4,7 +4,6 @@
 pub struct ConnectEmbeddedAccountSessionCreateComponents {
     pub account_management: stripe_connect::ConnectEmbeddedAccountConfigClaim,
     pub account_onboarding: stripe_connect::ConnectEmbeddedAccountConfigClaim,
-    pub balance_report: stripe_connect::ConnectEmbeddedBaseConfigClaim,
     pub balances: stripe_connect::ConnectEmbeddedPayoutsConfig,
     pub disputes_list: stripe_connect::ConnectEmbeddedDisputesListConfig,
     pub documents: stripe_connect::ConnectEmbeddedBaseConfigClaim,
@@ -19,7 +18,6 @@ pub struct ConnectEmbeddedAccountSessionCreateComponents {
     pub payment_disputes: stripe_connect::ConnectEmbeddedPaymentDisputesConfig,
     pub payments: stripe_connect::ConnectEmbeddedPaymentsConfigClaim,
     pub payout_details: stripe_connect::ConnectEmbeddedBaseConfigClaim,
-    pub payout_reconciliation_report: stripe_connect::ConnectEmbeddedBaseConfigClaim,
     pub payouts: stripe_connect::ConnectEmbeddedPayoutsConfig,
     pub payouts_list: stripe_connect::ConnectEmbeddedBaseConfigClaim,
     pub tax_registrations: stripe_connect::ConnectEmbeddedBaseConfigClaim,
@@ -29,7 +27,6 @@ pub struct ConnectEmbeddedAccountSessionCreateComponents {
 pub struct ConnectEmbeddedAccountSessionCreateComponentsBuilder {
     account_management: Option<stripe_connect::ConnectEmbeddedAccountConfigClaim>,
     account_onboarding: Option<stripe_connect::ConnectEmbeddedAccountConfigClaim>,
-    balance_report: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
     balances: Option<stripe_connect::ConnectEmbeddedPayoutsConfig>,
     disputes_list: Option<stripe_connect::ConnectEmbeddedDisputesListConfig>,
     documents: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
@@ -44,7 +41,6 @@ pub struct ConnectEmbeddedAccountSessionCreateComponentsBuilder {
     payment_disputes: Option<stripe_connect::ConnectEmbeddedPaymentDisputesConfig>,
     payments: Option<stripe_connect::ConnectEmbeddedPaymentsConfigClaim>,
     payout_details: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
-    payout_reconciliation_report: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
     payouts: Option<stripe_connect::ConnectEmbeddedPayoutsConfig>,
     payouts_list: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
     tax_registrations: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
@@ -93,7 +89,6 @@ const _: () = {
             Ok(match k {
                 "account_management" => Deserialize::begin(&mut self.account_management),
                 "account_onboarding" => Deserialize::begin(&mut self.account_onboarding),
-                "balance_report" => Deserialize::begin(&mut self.balance_report),
                 "balances" => Deserialize::begin(&mut self.balances),
                 "disputes_list" => Deserialize::begin(&mut self.disputes_list),
                 "documents" => Deserialize::begin(&mut self.documents),
@@ -111,9 +106,6 @@ const _: () = {
                 "payment_disputes" => Deserialize::begin(&mut self.payment_disputes),
                 "payments" => Deserialize::begin(&mut self.payments),
                 "payout_details" => Deserialize::begin(&mut self.payout_details),
-                "payout_reconciliation_report" => {
-                    Deserialize::begin(&mut self.payout_reconciliation_report)
-                }
                 "payouts" => Deserialize::begin(&mut self.payouts),
                 "payouts_list" => Deserialize::begin(&mut self.payouts_list),
                 "tax_registrations" => Deserialize::begin(&mut self.tax_registrations),
@@ -127,7 +119,6 @@ const _: () = {
             Self {
                 account_management: Deserialize::default(),
                 account_onboarding: Deserialize::default(),
-                balance_report: Deserialize::default(),
                 balances: Deserialize::default(),
                 disputes_list: Deserialize::default(),
                 documents: Deserialize::default(),
@@ -141,7 +132,6 @@ const _: () = {
                 payment_disputes: Deserialize::default(),
                 payments: Deserialize::default(),
                 payout_details: Deserialize::default(),
-                payout_reconciliation_report: Deserialize::default(),
                 payouts: Deserialize::default(),
                 payouts_list: Deserialize::default(),
                 tax_registrations: Deserialize::default(),
@@ -153,7 +143,6 @@ const _: () = {
             let (
                 Some(account_management),
                 Some(account_onboarding),
-                Some(balance_report),
                 Some(balances),
                 Some(disputes_list),
                 Some(documents),
@@ -167,7 +156,6 @@ const _: () = {
                 Some(payment_disputes),
                 Some(payments),
                 Some(payout_details),
-                Some(payout_reconciliation_report),
                 Some(payouts),
                 Some(payouts_list),
                 Some(tax_registrations),
@@ -175,7 +163,6 @@ const _: () = {
             ) = (
                 self.account_management,
                 self.account_onboarding,
-                self.balance_report,
                 self.balances,
                 self.disputes_list,
                 self.documents,
@@ -189,7 +176,6 @@ const _: () = {
                 self.payment_disputes,
                 self.payments,
                 self.payout_details,
-                self.payout_reconciliation_report,
                 self.payouts,
                 self.payouts_list,
                 self.tax_registrations,
@@ -201,7 +187,6 @@ const _: () = {
             Some(Self::Out {
                 account_management,
                 account_onboarding,
-                balance_report,
                 balances,
                 disputes_list,
                 documents,
@@ -215,7 +200,6 @@ const _: () = {
                 payment_disputes,
                 payments,
                 payout_details,
-                payout_reconciliation_report,
                 payouts,
                 payouts_list,
                 tax_registrations,
@@ -249,7 +233,6 @@ const _: () = {
                 match k.as_str() {
                     "account_management" => b.account_management = FromValueOpt::from_value(v),
                     "account_onboarding" => b.account_onboarding = FromValueOpt::from_value(v),
-                    "balance_report" => b.balance_report = FromValueOpt::from_value(v),
                     "balances" => b.balances = FromValueOpt::from_value(v),
                     "disputes_list" => b.disputes_list = FromValueOpt::from_value(v),
                     "documents" => b.documents = FromValueOpt::from_value(v),
@@ -267,9 +250,6 @@ const _: () = {
                     "payment_disputes" => b.payment_disputes = FromValueOpt::from_value(v),
                     "payments" => b.payments = FromValueOpt::from_value(v),
                     "payout_details" => b.payout_details = FromValueOpt::from_value(v),
-                    "payout_reconciliation_report" => {
-                        b.payout_reconciliation_report = FromValueOpt::from_value(v)
-                    }
                     "payouts" => b.payouts = FromValueOpt::from_value(v),
                     "payouts_list" => b.payouts_list = FromValueOpt::from_value(v),
                     "tax_registrations" => b.tax_registrations = FromValueOpt::from_value(v),

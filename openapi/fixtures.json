@@ -165,10 +165,6 @@
             "external_account_collection": true
           }
         },
-        "balance_report": {
-          "enabled": true,
-          "features": {}
-        },
         "balances": {
           "enabled": false,
           "features": {
@@ -268,10 +264,6 @@
           }
         },
         "payout_details": {
-          "enabled": true,
-          "features": {}
-        },
-        "payout_reconciliation_report": {
           "enabled": true,
           "features": {}
         },
@@ -377,6 +369,23 @@
           }
         }
       ]
+    },
+    "balance_settings": {
+      "object": "balance_settings",
+      "payments": {
+        "debit_negative_balances": null,
+        "payouts": {
+          "minimum_balance_by_currency": null,
+          "schedule": {
+            "interval": null
+          },
+          "statement_descriptor": null,
+          "status": "disabled"
+        },
+        "settlement_timing": {
+          "delay_days": 1647351405
+        }
+      }
     },
     "balance_transaction": {
       "amount": 100,
@@ -699,7 +708,8 @@
                 "type": "decreasing_item_amount"
               }
             ]
-          }
+          },
+          "trial_update_behavior": "end_trial"
         }
       },
       "id": "bpc_1Pgc70B7WZ01zgkWSnFO04Vt",
@@ -803,7 +813,7 @@
       "cvc_check": "pass",
       "dynamic_last4": null,
       "exp_month": 8,
-      "exp_year": 2025,
+      "exp_year": 2030,
       "fingerprint": "AOB934RVNwzk6xtn",
       "funding": "credit",
       "id": "card_1PgaftB7WZ01zgkWm3waTcFp",
@@ -888,7 +898,7 @@
           },
           "country": "US",
           "exp_month": 8,
-          "exp_year": 2025,
+          "exp_year": 2030,
           "extended_authorization": {
             "status": "disabled"
           },
@@ -1028,6 +1038,8 @@
       "client_reference_id": null,
       "client_secret": null,
       "collected_information": {
+        "business_name": null,
+        "individual_name": null,
         "shipping_details": {
           "address": {
             "city": null,
@@ -1057,7 +1069,7 @@
         "amount_subtotal": 1555417355,
         "amount_total": 1117121693,
         "fx_rate": "291452898",
-        "source_currency": "source_currency"
+        "source_currency": "usd"
       },
       "custom_fields": [],
       "custom_text": {
@@ -1085,7 +1097,9 @@
           "postal_code": null,
           "state": null
         },
+        "business_name": null,
         "email": "example@example.com",
+        "individual_name": null,
         "name": null,
         "phone": null,
         "tax_exempt": "none",
@@ -1803,23 +1817,6 @@
       "description": null,
       "discount": {
         "checkout_session": null,
-        "coupon": {
-          "amount_off": null,
-          "created": 1028554472,
-          "currency": null,
-          "duration": "forever",
-          "duration_in_months": null,
-          "id": "obj_123",
-          "livemode": true,
-          "max_redemptions": null,
-          "metadata": null,
-          "name": null,
-          "object": "coupon",
-          "percent_off": null,
-          "redeem_by": null,
-          "times_redeemed": 990066668,
-          "valid": true
-        },
         "customer": null,
         "end": null,
         "id": "obj_123",
@@ -1827,6 +1824,10 @@
         "invoice_item": null,
         "object": "discount",
         "promotion_code": null,
+        "source": {
+          "coupon": null,
+          "type": "coupon"
+        },
         "start": 109757538,
         "subscription": null,
         "subscription_item": null
@@ -1959,27 +1960,6 @@
     },
     "deleted_discount": {
       "checkout_session": null,
-      "coupon": {
-        "amount_off": null,
-        "applies_to": {
-          "products": []
-        },
-        "created": 0,
-        "currency": null,
-        "currency_options": {},
-        "duration": "forever",
-        "duration_in_months": null,
-        "id": "",
-        "livemode": false,
-        "max_redemptions": null,
-        "metadata": null,
-        "name": null,
-        "object": "coupon",
-        "percent_off": null,
-        "redeem_by": null,
-        "times_redeemed": 0,
-        "valid": false
-      },
       "customer": null,
       "deleted": true,
       "id": "",
@@ -1987,6 +1967,10 @@
       "invoice_item": null,
       "object": "discount",
       "promotion_code": null,
+      "source": {
+        "coupon": null,
+        "type": "coupon"
+      },
       "start": 1234567890,
       "subscription": null,
       "subscription_item": null
@@ -2083,23 +2067,6 @@
     },
     "discount": {
       "checkout_session": null,
-      "coupon": {
-        "amount_off": null,
-        "created": 1721954050,
-        "currency": "usd",
-        "duration": "forever",
-        "duration_in_months": 3,
-        "id": "Z4OV52SU",
-        "livemode": false,
-        "max_redemptions": null,
-        "metadata": {},
-        "name": "25.5% off",
-        "object": "coupon",
-        "percent_off": 25.5,
-        "redeem_by": null,
-        "times_redeemed": 0,
-        "valid": true
-      },
       "customer": "cus_QXg1o8vcGmoR32",
       "end": 1234567890,
       "id": "di_1Pgc6rB7WZ01zgkW7Al8Fal9",
@@ -2107,6 +2074,10 @@
       "invoice_item": null,
       "object": "discount",
       "promotion_code": null,
+      "source": {
+        "coupon": null,
+        "type": "coupon"
+      },
       "start": 1234567890,
       "subscription": null,
       "subscription_item": null
@@ -2580,7 +2551,7 @@
         "expiration_date": {
           "day": 1,
           "month": 12,
-          "year": 2025
+          "year": 2030
         },
         "files": [
           "file_QXhWG300bR0L1WbLXBqG1wQc",
@@ -2877,6 +2848,7 @@
       "invoice": null,
       "livemode": false,
       "metadata": {},
+      "net_amount": 708769478,
       "object": "invoiceitem",
       "parent": {
         "subscription_details": {
@@ -2967,7 +2939,7 @@
         "created": 1721948549,
         "currency": "usd",
         "exp_month": 8,
-        "exp_year": 2025,
+        "exp_year": 2030,
         "id": "ic_1Pgag5B7WZ01zgkWephORn8N",
         "last4": "4242",
         "livemode": false,
@@ -2977,6 +2949,7 @@
         "replaced_by": null,
         "replacement_for": null,
         "replacement_reason": null,
+        "second_line": null,
         "shipping": {
           "address": {
             "city": null,
@@ -3186,7 +3159,7 @@
       "created": 1234567890,
       "currency": "usd",
       "exp_month": 8,
-      "exp_year": 2025,
+      "exp_year": 2030,
       "id": "ic_1Pgag5B7WZ01zgkWephORn8N",
       "last4": "4242",
       "livemode": false,
@@ -3196,6 +3169,7 @@
       "replaced_by": null,
       "replacement_for": null,
       "replacement_reason": null,
+      "second_line": null,
       "shipping": {
         "address": {
           "city": null,
@@ -3780,7 +3754,7 @@
         "country": "US",
         "display_brand": "visa",
         "exp_month": 8,
-        "exp_year": 2025,
+        "exp_year": 2030,
         "fingerprint": "AOB934RVNwzk6xtn",
         "funding": "credit",
         "generated_from": {
@@ -4400,23 +4374,6 @@
     "promotion_code": {
       "active": false,
       "code": "FALL20",
-      "coupon": {
-        "amount_off": null,
-        "created": 1721954050,
-        "currency": "usd",
-        "duration": "forever",
-        "duration_in_months": 3,
-        "id": "Z4OV52SU",
-        "livemode": false,
-        "max_redemptions": null,
-        "metadata": {},
-        "name": "25.5% off",
-        "object": "coupon",
-        "percent_off": 25.5,
-        "redeem_by": null,
-        "times_redeemed": 0,
-        "valid": true
-      },
       "created": 1234567890,
       "customer": null,
       "expires_at": 1234567890,
@@ -4425,6 +4382,10 @@
       "max_redemptions": null,
       "metadata": {},
       "object": "promotion_code",
+      "promotion": {
+        "coupon": null,
+        "type": "coupon"
+      },
       "restrictions": {
         "first_time_transaction": false,
         "minimum_amount": null,
@@ -4958,6 +4919,7 @@
         "second": null
       },
       "billing_mode": {
+        "flexible": {},
         "type": "classic"
       },
       "billing_thresholds": {
@@ -5207,6 +5169,7 @@
     "subscription_schedule": {
       "application": null,
       "billing_mode": {
+        "flexible": {},
         "type": "classic"
       },
       "canceled_at": 1234567890,
@@ -5443,6 +5406,7 @@
     },
     "tax.settings": {
       "defaults": {
+        "provider": "stripe",
         "tax_behavior": null,
         "tax_code": "txcd_10000000"
       },
@@ -5672,7 +5636,7 @@
         "cvc_check": "pass",
         "dynamic_last4": null,
         "exp_month": 8,
-        "exp_year": 2025,
+        "exp_year": 2030,
         "fingerprint": "AOB934RVNwzk6xtn",
         "funding": "credit",
         "id": "card_1Pgc7BB7WZ01zgkWeZoy4YdD",
@@ -6293,5 +6257,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2000"
+  "version": "v2028"
 }

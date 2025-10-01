@@ -306,6 +306,10 @@ pub mod tax_product_registrations_resource_country_options_simplified;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_simplified::*;
 #[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_thailand;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_thailand::*;
+#[doc(hidden)]
 pub mod tax_product_registrations_resource_country_options_united_states;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_united_states::*;

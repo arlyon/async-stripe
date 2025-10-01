@@ -249,9 +249,11 @@ impl serde::Serialize for Review {
 /// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, `redacted`, `canceled`, `payment_never_settled`, or `acknowledged`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ReviewClosedReason {
+    Acknowledged,
     Approved,
     Canceled,
     Disputed,
+    PaymentNeverSettled,
     Redacted,
     Refunded,
     RefundedAsFraud,
@@ -260,9 +262,11 @@ impl ReviewClosedReason {
     pub fn as_str(self) -> &'static str {
         use ReviewClosedReason::*;
         match self {
+            Acknowledged => "acknowledged",
             Approved => "approved",
             Canceled => "canceled",
             Disputed => "disputed",
+            PaymentNeverSettled => "payment_never_settled",
             Redacted => "redacted",
             Refunded => "refunded",
             RefundedAsFraud => "refunded_as_fraud",
@@ -275,9 +279,11 @@ impl std::str::FromStr for ReviewClosedReason {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ReviewClosedReason::*;
         match s {
+            "acknowledged" => Ok(Acknowledged),
             "approved" => Ok(Approved),
             "canceled" => Ok(Canceled),
             "disputed" => Ok(Disputed),
+            "payment_never_settled" => Ok(PaymentNeverSettled),
             "redacted" => Ok(Redacted),
             "refunded" => Ok(Refunded),
             "refunded_as_fraud" => Ok(RefundedAsFraud),

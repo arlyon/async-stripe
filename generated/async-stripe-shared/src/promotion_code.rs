@@ -1,5 +1,5 @@
-/// A Promotion Code represents a customer-redeemable code for a [coupon](https://stripe.com/docs/api#coupons).
-/// You can create multiple codes for a single coupon.
+/// A Promotion Code represents a customer-redeemable code for an underlying promotion.
+/// You can create multiple codes for a single promotion.
 ///
 /// If you enable promotion codes in your [customer portal configuration](https://stripe.com/docs/customer-management/configure-portal), then customers can redeem a code themselves when updating a subscription in the portal.
 /// Customers can also view the currently active promotion codes and coupons on each of their subscriptions in the portal.
@@ -15,7 +15,6 @@ pub struct PromotionCode {
     /// Regardless of case, this code must be unique across all active promotion codes for each customer.
     /// Valid characters are lower case letters (a-z), upper case letters (A-Z), and digits (0-9).
     pub code: String,
-    pub coupon: stripe_shared::Coupon,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// The customer that this promotion code can be used by.
@@ -31,6 +30,7 @@ pub struct PromotionCode {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
+    pub promotion: stripe_shared::PromotionCodesResourcePromotion,
     pub restrictions: stripe_shared::PromotionCodesResourceRestrictions,
     /// Number of times this promotion code has been used.
     pub times_redeemed: i64,
@@ -39,7 +39,6 @@ pub struct PromotionCode {
 pub struct PromotionCodeBuilder {
     active: Option<bool>,
     code: Option<String>,
-    coupon: Option<stripe_shared::Coupon>,
     created: Option<stripe_types::Timestamp>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
     expires_at: Option<Option<stripe_types::Timestamp>>,
@@ -47,6 +46,7 @@ pub struct PromotionCodeBuilder {
     livemode: Option<bool>,
     max_redemptions: Option<Option<i64>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    promotion: Option<stripe_shared::PromotionCodesResourcePromotion>,
     restrictions: Option<stripe_shared::PromotionCodesResourceRestrictions>,
     times_redeemed: Option<i64>,
 }
@@ -93,7 +93,6 @@ const _: () = {
             Ok(match k {
                 "active" => Deserialize::begin(&mut self.active),
                 "code" => Deserialize::begin(&mut self.code),
-                "coupon" => Deserialize::begin(&mut self.coupon),
                 "created" => Deserialize::begin(&mut self.created),
                 "customer" => Deserialize::begin(&mut self.customer),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
@@ -101,6 +100,7 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "max_redemptions" => Deserialize::begin(&mut self.max_redemptions),
                 "metadata" => Deserialize::begin(&mut self.metadata),
+                "promotion" => Deserialize::begin(&mut self.promotion),
                 "restrictions" => Deserialize::begin(&mut self.restrictions),
                 "times_redeemed" => Deserialize::begin(&mut self.times_redeemed),
 
@@ -112,7 +112,6 @@ const _: () = {
             Self {
                 active: Deserialize::default(),
                 code: Deserialize::default(),
-                coupon: Deserialize::default(),
                 created: Deserialize::default(),
                 customer: Deserialize::default(),
                 expires_at: Deserialize::default(),
@@ -120,6 +119,7 @@ const _: () = {
                 livemode: Deserialize::default(),
                 max_redemptions: Deserialize::default(),
                 metadata: Deserialize::default(),
+                promotion: Deserialize::default(),
                 restrictions: Deserialize::default(),
                 times_redeemed: Deserialize::default(),
             }
@@ -129,7 +129,6 @@ const _: () = {
             let (
                 Some(active),
                 Some(code),
-                Some(coupon),
                 Some(created),
                 Some(customer),
                 Some(expires_at),
@@ -137,12 +136,12 @@ const _: () = {
                 Some(livemode),
                 Some(max_redemptions),
                 Some(metadata),
+                Some(promotion),
                 Some(restrictions),
                 Some(times_redeemed),
             ) = (
                 self.active,
                 self.code.take(),
-                self.coupon.take(),
                 self.created,
                 self.customer.take(),
                 self.expires_at,
@@ -150,6 +149,7 @@ const _: () = {
                 self.livemode,
                 self.max_redemptions,
                 self.metadata.take(),
+                self.promotion.take(),
                 self.restrictions.take(),
                 self.times_redeemed,
             )
@@ -159,7 +159,6 @@ const _: () = {
             Some(Self::Out {
                 active,
                 code,
-                coupon,
                 created,
                 customer,
                 expires_at,
@@ -167,6 +166,7 @@ const _: () = {
                 livemode,
                 max_redemptions,
                 metadata,
+                promotion,
                 restrictions,
                 times_redeemed,
             })
@@ -198,7 +198,6 @@ const _: () = {
                 match k.as_str() {
                     "active" => b.active = FromValueOpt::from_value(v),
                     "code" => b.code = FromValueOpt::from_value(v),
-                    "coupon" => b.coupon = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
@@ -206,6 +205,7 @@ const _: () = {
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "max_redemptions" => b.max_redemptions = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "promotion" => b.promotion = FromValueOpt::from_value(v),
                     "restrictions" => b.restrictions = FromValueOpt::from_value(v),
                     "times_redeemed" => b.times_redeemed = FromValueOpt::from_value(v),
 
@@ -223,7 +223,6 @@ impl serde::Serialize for PromotionCode {
         let mut s = s.serialize_struct("PromotionCode", 13)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("code", &self.code)?;
-        s.serialize_field("coupon", &self.coupon)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("customer", &self.customer)?;
         s.serialize_field("expires_at", &self.expires_at)?;
@@ -231,6 +230,7 @@ impl serde::Serialize for PromotionCode {
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("max_redemptions", &self.max_redemptions)?;
         s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("promotion", &self.promotion)?;
         s.serialize_field("restrictions", &self.restrictions)?;
         s.serialize_field("times_redeemed", &self.times_redeemed)?;
 

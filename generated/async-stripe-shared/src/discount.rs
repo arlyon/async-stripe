@@ -10,7 +10,6 @@ pub struct Discount {
     /// The Checkout session that this coupon is applied to, if it is applied to a particular session in payment mode.
     /// Will not be present for subscription mode.
     pub checkout_session: Option<String>,
-    pub coupon: stripe_shared::Coupon,
     /// The ID of the customer associated with this discount.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     /// If the coupon has a duration of `repeating`, the date that this discount will end.
@@ -26,6 +25,7 @@ pub struct Discount {
     pub invoice_item: Option<String>,
     /// The promotion code applied to create this discount.
     pub promotion_code: Option<stripe_types::Expandable<stripe_shared::PromotionCode>>,
+    pub source: stripe_shared::DiscountSource,
     /// Date that the coupon was applied.
     pub start: stripe_types::Timestamp,
     /// The subscription that this coupon is applied to, if it is applied to a particular subscription.
@@ -36,13 +36,13 @@ pub struct Discount {
 #[doc(hidden)]
 pub struct DiscountBuilder {
     checkout_session: Option<Option<String>>,
-    coupon: Option<stripe_shared::Coupon>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
     end: Option<Option<stripe_types::Timestamp>>,
     id: Option<stripe_shared::DiscountId>,
     invoice: Option<Option<String>>,
     invoice_item: Option<Option<String>>,
     promotion_code: Option<Option<stripe_types::Expandable<stripe_shared::PromotionCode>>>,
+    source: Option<stripe_shared::DiscountSource>,
     start: Option<stripe_types::Timestamp>,
     subscription: Option<Option<String>>,
     subscription_item: Option<Option<String>>,
@@ -86,13 +86,13 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "checkout_session" => Deserialize::begin(&mut self.checkout_session),
-                "coupon" => Deserialize::begin(&mut self.coupon),
                 "customer" => Deserialize::begin(&mut self.customer),
                 "end" => Deserialize::begin(&mut self.end),
                 "id" => Deserialize::begin(&mut self.id),
                 "invoice" => Deserialize::begin(&mut self.invoice),
                 "invoice_item" => Deserialize::begin(&mut self.invoice_item),
                 "promotion_code" => Deserialize::begin(&mut self.promotion_code),
+                "source" => Deserialize::begin(&mut self.source),
                 "start" => Deserialize::begin(&mut self.start),
                 "subscription" => Deserialize::begin(&mut self.subscription),
                 "subscription_item" => Deserialize::begin(&mut self.subscription_item),
@@ -104,13 +104,13 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 checkout_session: Deserialize::default(),
-                coupon: Deserialize::default(),
                 customer: Deserialize::default(),
                 end: Deserialize::default(),
                 id: Deserialize::default(),
                 invoice: Deserialize::default(),
                 invoice_item: Deserialize::default(),
                 promotion_code: Deserialize::default(),
+                source: Deserialize::default(),
                 start: Deserialize::default(),
                 subscription: Deserialize::default(),
                 subscription_item: Deserialize::default(),
@@ -120,25 +120,25 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(checkout_session),
-                Some(coupon),
                 Some(customer),
                 Some(end),
                 Some(id),
                 Some(invoice),
                 Some(invoice_item),
                 Some(promotion_code),
+                Some(source),
                 Some(start),
                 Some(subscription),
                 Some(subscription_item),
             ) = (
                 self.checkout_session.take(),
-                self.coupon.take(),
                 self.customer.take(),
                 self.end,
                 self.id.take(),
                 self.invoice.take(),
                 self.invoice_item.take(),
                 self.promotion_code.take(),
+                self.source.take(),
                 self.start,
                 self.subscription.take(),
                 self.subscription_item.take(),
@@ -148,13 +148,13 @@ const _: () = {
             };
             Some(Self::Out {
                 checkout_session,
-                coupon,
                 customer,
                 end,
                 id,
                 invoice,
                 invoice_item,
                 promotion_code,
+                source,
                 start,
                 subscription,
                 subscription_item,
@@ -186,13 +186,13 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "checkout_session" => b.checkout_session = FromValueOpt::from_value(v),
-                    "coupon" => b.coupon = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
                     "end" => b.end = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "invoice" => b.invoice = FromValueOpt::from_value(v),
                     "invoice_item" => b.invoice_item = FromValueOpt::from_value(v),
                     "promotion_code" => b.promotion_code = FromValueOpt::from_value(v),
+                    "source" => b.source = FromValueOpt::from_value(v),
                     "start" => b.start = FromValueOpt::from_value(v),
                     "subscription" => b.subscription = FromValueOpt::from_value(v),
                     "subscription_item" => b.subscription_item = FromValueOpt::from_value(v),
@@ -210,13 +210,13 @@ impl serde::Serialize for Discount {
         use serde::ser::SerializeStruct;
         let mut s = s.serialize_struct("Discount", 12)?;
         s.serialize_field("checkout_session", &self.checkout_session)?;
-        s.serialize_field("coupon", &self.coupon)?;
         s.serialize_field("customer", &self.customer)?;
         s.serialize_field("end", &self.end)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("invoice", &self.invoice)?;
         s.serialize_field("invoice_item", &self.invoice_item)?;
         s.serialize_field("promotion_code", &self.promotion_code)?;
+        s.serialize_field("source", &self.source)?;
         s.serialize_field("start", &self.start)?;
         s.serialize_field("subscription", &self.subscription)?;
         s.serialize_field("subscription_item", &self.subscription_item)?;

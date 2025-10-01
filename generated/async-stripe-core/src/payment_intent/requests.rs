@@ -662,6 +662,10 @@ pub struct CreatePaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub link: Option<miniserde::json::Value>,
+    /// If this is a MB WAY PaymentMethod, this hash contains details about the MB WAY payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub mb_way: Option<miniserde::json::Value>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -791,6 +795,7 @@ impl CreatePaymentIntentPaymentMethodData {
             konbini: None,
             kr_card: None,
             link: None,
+            mb_way: None,
             metadata: None,
             mobilepay: None,
             multibanco: None,
@@ -954,10 +959,10 @@ pub struct CreatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
+    /// Address line 1, such as the street, PO Box, or company name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    /// Address line 2, such as the apartment, suite, unit, or building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
     /// ZIP or postal code.
@@ -1854,6 +1859,7 @@ pub enum CreatePaymentIntentPaymentMethodDataType {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Mobilepay,
     Multibanco,
     NaverPay,
@@ -1908,6 +1914,7 @@ impl CreatePaymentIntentPaymentMethodDataType {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
@@ -1965,6 +1972,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataType {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
@@ -2256,6 +2264,9 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<CreatePaymentIntentPaymentMethodOptionsLink>,
+    /// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mb_way: Option<CreatePaymentIntentPaymentMethodOptionsMbWay>,
     /// If this is a `MobilePay` PaymentMethod, this sub-hash contains details about the MobilePay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mobilepay: Option<CreatePaymentIntentPaymentMethodOptionsMobilepay>,
@@ -2355,6 +2366,7 @@ impl CreatePaymentIntentPaymentMethodOptions {
             konbini: None,
             kr_card: None,
             link: None,
+            mb_way: None,
             mobilepay: None,
             multibanco: None,
             naver_pay: None,
@@ -7807,6 +7819,96 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsLin
         })
     }
 }
+/// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsMbWay {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+    ///
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+    ///
+    /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage>,
+}
+impl CreatePaymentIntentPaymentMethodOptionsMbWay {
+    pub fn new() -> Self {
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreatePaymentIntentPaymentMethodOptionsMbWay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+///
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+///
+/// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    None,
+}
+impl CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage::*;
+        match self {
+            None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `MobilePay` PaymentMethod, this sub-hash contains details about the MobilePay payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsMobilepay {
@@ -10939,10 +11041,10 @@ pub struct CreatePaymentIntentShippingAddress {
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
+    /// Address line 1, such as the street, PO Box, or company name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    /// Address line 2, such as the apartment, suite, unit, or building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
     /// ZIP or postal code.
@@ -11288,6 +11390,9 @@ struct UpdatePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    excluded_payment_method_types:
+        Option<Vec<stripe_shared::PaymentIntentExcludedPaymentMethodTypes>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
@@ -11325,6 +11430,7 @@ impl UpdatePaymentIntentBuilder {
             currency: None,
             customer: None,
             description: None,
+            excluded_payment_method_types: None,
             expand: None,
             metadata: None,
             payment_method: None,
@@ -11451,6 +11557,10 @@ pub struct UpdatePaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub link: Option<miniserde::json::Value>,
+    /// If this is a MB WAY PaymentMethod, this hash contains details about the MB WAY payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub mb_way: Option<miniserde::json::Value>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -11580,6 +11690,7 @@ impl UpdatePaymentIntentPaymentMethodData {
             konbini: None,
             kr_card: None,
             link: None,
+            mb_way: None,
             metadata: None,
             mobilepay: None,
             multibanco: None,
@@ -11743,10 +11854,10 @@ pub struct UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
+    /// Address line 1, such as the street, PO Box, or company name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    /// Address line 2, such as the apartment, suite, unit, or building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
     /// ZIP or postal code.
@@ -12643,6 +12754,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataType {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Mobilepay,
     Multibanco,
     NaverPay,
@@ -12697,6 +12809,7 @@ impl UpdatePaymentIntentPaymentMethodDataType {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
@@ -12754,6 +12867,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataType {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
@@ -13045,6 +13159,9 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<UpdatePaymentIntentPaymentMethodOptionsLink>,
+    /// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mb_way: Option<UpdatePaymentIntentPaymentMethodOptionsMbWay>,
     /// If this is a `MobilePay` PaymentMethod, this sub-hash contains details about the MobilePay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mobilepay: Option<UpdatePaymentIntentPaymentMethodOptionsMobilepay>,
@@ -13144,6 +13261,7 @@ impl UpdatePaymentIntentPaymentMethodOptions {
             konbini: None,
             kr_card: None,
             link: None,
+            mb_way: None,
             mobilepay: None,
             multibanco: None,
             naver_pay: None,
@@ -18596,6 +18714,96 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsLin
         })
     }
 }
+/// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsMbWay {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+    ///
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+    ///
+    /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage>,
+}
+impl UpdatePaymentIntentPaymentMethodOptionsMbWay {
+    pub fn new() -> Self {
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentMethodOptionsMbWay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+///
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+///
+/// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    None,
+}
+impl UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage::*;
+        match self {
+            None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `MobilePay` PaymentMethod, this sub-hash contains details about the MobilePay payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsMobilepay {
@@ -21728,10 +21936,10 @@ pub struct UpdatePaymentIntentShippingAddress {
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
+    /// Address line 1, such as the street, PO Box, or company name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    /// Address line 2, such as the apartment, suite, unit, or building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
     /// ZIP or postal code.
@@ -21828,6 +22036,16 @@ impl UpdatePaymentIntent {
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub fn description(mut self, description: impl Into<String>) -> Self {
         self.inner.description = Some(description.into());
+        self
+    }
+    /// The list of payment method types to exclude from use with this payment.
+    pub fn excluded_payment_method_types(
+        mut self,
+        excluded_payment_method_types: impl Into<
+            Vec<stripe_shared::PaymentIntentExcludedPaymentMethodTypes>,
+        >,
+    ) -> Self {
+        self.inner.excluded_payment_method_types = Some(excluded_payment_method_types.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
@@ -22359,6 +22577,9 @@ struct ConfirmPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     error_on_requires_action: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    excluded_payment_method_types:
+        Option<Vec<stripe_shared::PaymentIntentExcludedPaymentMethodTypes>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     mandate: Option<String>,
@@ -22393,6 +22614,7 @@ impl ConfirmPaymentIntentBuilder {
             capture_method: None,
             confirmation_token: None,
             error_on_requires_action: None,
+            excluded_payment_method_types: None,
             expand: None,
             mandate: None,
             mandate_data: None,
@@ -22735,6 +22957,10 @@ pub struct ConfirmPaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub link: Option<miniserde::json::Value>,
+    /// If this is a MB WAY PaymentMethod, this hash contains details about the MB WAY payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub mb_way: Option<miniserde::json::Value>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -22864,6 +23090,7 @@ impl ConfirmPaymentIntentPaymentMethodData {
             konbini: None,
             kr_card: None,
             link: None,
+            mb_way: None,
             metadata: None,
             mobilepay: None,
             multibanco: None,
@@ -23027,10 +23254,10 @@ pub struct ConfirmPaymentIntentPaymentMethodDataBillingDetailsAddress {
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
+    /// Address line 1, such as the street, PO Box, or company name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    /// Address line 2, such as the apartment, suite, unit, or building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
     /// ZIP or postal code.
@@ -23927,6 +24154,7 @@ pub enum ConfirmPaymentIntentPaymentMethodDataType {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Mobilepay,
     Multibanco,
     NaverPay,
@@ -23981,6 +24209,7 @@ impl ConfirmPaymentIntentPaymentMethodDataType {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
@@ -24038,6 +24267,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataType {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
@@ -24331,6 +24561,9 @@ pub struct ConfirmPaymentIntentPaymentMethodOptions {
     /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<ConfirmPaymentIntentPaymentMethodOptionsLink>,
+    /// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mb_way: Option<ConfirmPaymentIntentPaymentMethodOptionsMbWay>,
     /// If this is a `MobilePay` PaymentMethod, this sub-hash contains details about the MobilePay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mobilepay: Option<ConfirmPaymentIntentPaymentMethodOptionsMobilepay>,
@@ -24430,6 +24663,7 @@ impl ConfirmPaymentIntentPaymentMethodOptions {
             konbini: None,
             kr_card: None,
             link: None,
+            mb_way: None,
             mobilepay: None,
             multibanco: None,
             naver_pay: None,
@@ -29880,6 +30114,98 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsLi
         })
     }
 }
+/// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentMethodOptionsMbWay {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+    ///
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+    ///
+    /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage>,
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsMbWay {
+    pub fn new() -> Self {
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentMethodOptionsMbWay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+///
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+///
+/// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    None,
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        use ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage::*;
+        match self {
+            None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `MobilePay` PaymentMethod, this sub-hash contains details about the MobilePay payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsMobilepay {
@@ -33020,10 +33346,10 @@ pub struct ConfirmPaymentIntentShippingAddress {
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
+    /// Address line 1, such as the street, PO Box, or company name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    /// Address line 2, such as the apartment, suite, unit, or building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
     /// ZIP or postal code.
@@ -33102,6 +33428,16 @@ impl ConfirmPaymentIntent {
     /// This parameter is intended for simpler integrations that do not handle customer actions, like [saving cards without authentication](https://stripe.com/docs/payments/save-card-without-authentication).
     pub fn error_on_requires_action(mut self, error_on_requires_action: impl Into<bool>) -> Self {
         self.inner.error_on_requires_action = Some(error_on_requires_action.into());
+        self
+    }
+    /// The list of payment method types to exclude from use with this payment.
+    pub fn excluded_payment_method_types(
+        mut self,
+        excluded_payment_method_types: impl Into<
+            Vec<stripe_shared::PaymentIntentExcludedPaymentMethodTypes>,
+        >,
+    ) -> Self {
+        self.inner.excluded_payment_method_types = Some(excluded_payment_method_types.into());
         self
     }
     /// Specifies which fields in the response should be expanded.

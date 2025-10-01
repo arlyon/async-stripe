@@ -14,6 +14,10 @@ pub struct PortalSubscriptionUpdate {
     /// Defaults to a value of `none` if you don't set it during creation.
     pub proration_behavior: PortalSubscriptionUpdateProrationBehavior,
     pub schedule_at_period_end: stripe_billing::PortalResourceScheduleUpdateAtPeriodEnd,
+    /// Determines how handle updates to trialing subscriptions.
+    /// Valid values are `end_trial` and `continue_trial`.
+    /// Defaults to a value of `end_trial` if you don't set it during creation.
+    pub trial_update_behavior: PortalSubscriptionUpdateTrialUpdateBehavior,
 }
 #[doc(hidden)]
 pub struct PortalSubscriptionUpdateBuilder {
@@ -22,6 +26,7 @@ pub struct PortalSubscriptionUpdateBuilder {
     products: Option<Option<Vec<stripe_billing::PortalSubscriptionUpdateProduct>>>,
     proration_behavior: Option<PortalSubscriptionUpdateProrationBehavior>,
     schedule_at_period_end: Option<stripe_billing::PortalResourceScheduleUpdateAtPeriodEnd>,
+    trial_update_behavior: Option<PortalSubscriptionUpdateTrialUpdateBehavior>,
 }
 
 #[allow(
@@ -69,6 +74,7 @@ const _: () = {
                 "products" => Deserialize::begin(&mut self.products),
                 "proration_behavior" => Deserialize::begin(&mut self.proration_behavior),
                 "schedule_at_period_end" => Deserialize::begin(&mut self.schedule_at_period_end),
+                "trial_update_behavior" => Deserialize::begin(&mut self.trial_update_behavior),
 
                 _ => <dyn Visitor>::ignore(),
             })
@@ -81,6 +87,7 @@ const _: () = {
                 products: Deserialize::default(),
                 proration_behavior: Deserialize::default(),
                 schedule_at_period_end: Deserialize::default(),
+                trial_update_behavior: Deserialize::default(),
             }
         }
 
@@ -91,12 +98,14 @@ const _: () = {
                 Some(products),
                 Some(proration_behavior),
                 Some(schedule_at_period_end),
+                Some(trial_update_behavior),
             ) = (
                 self.default_allowed_updates.take(),
                 self.enabled,
                 self.products.take(),
                 self.proration_behavior,
                 self.schedule_at_period_end.take(),
+                self.trial_update_behavior,
             )
             else {
                 return None;
@@ -107,6 +116,7 @@ const _: () = {
                 products,
                 proration_behavior,
                 schedule_at_period_end,
+                trial_update_behavior,
             })
         }
     }
@@ -142,6 +152,9 @@ const _: () = {
                     "proration_behavior" => b.proration_behavior = FromValueOpt::from_value(v),
                     "schedule_at_period_end" => {
                         b.schedule_at_period_end = FromValueOpt::from_value(v)
+                    }
+                    "trial_update_behavior" => {
+                        b.trial_update_behavior = FromValueOpt::from_value(v)
                     }
 
                     _ => {}
@@ -308,6 +321,85 @@ impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateProrationBehavior 
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PortalSubscriptionUpdateProrationBehavior")
+        })
+    }
+}
+/// Determines how handle updates to trialing subscriptions.
+/// Valid values are `end_trial` and `continue_trial`.
+/// Defaults to a value of `end_trial` if you don't set it during creation.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum PortalSubscriptionUpdateTrialUpdateBehavior {
+    ContinueTrial,
+    EndTrial,
+}
+impl PortalSubscriptionUpdateTrialUpdateBehavior {
+    pub fn as_str(self) -> &'static str {
+        use PortalSubscriptionUpdateTrialUpdateBehavior::*;
+        match self {
+            ContinueTrial => "continue_trial",
+            EndTrial => "end_trial",
+        }
+    }
+}
+
+impl std::str::FromStr for PortalSubscriptionUpdateTrialUpdateBehavior {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PortalSubscriptionUpdateTrialUpdateBehavior::*;
+        match s {
+            "continue_trial" => Ok(ContinueTrial),
+            "end_trial" => Ok(EndTrial),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for PortalSubscriptionUpdateTrialUpdateBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PortalSubscriptionUpdateTrialUpdateBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PortalSubscriptionUpdateTrialUpdateBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PortalSubscriptionUpdateTrialUpdateBehavior {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateTrialUpdateBehavior> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PortalSubscriptionUpdateTrialUpdateBehavior::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateTrialUpdateBehavior);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateTrialUpdateBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PortalSubscriptionUpdateTrialUpdateBehavior",
+            )
         })
     }
 }

@@ -66,6 +66,8 @@ pub struct AccountCapabilities {
     pub legacy_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the link_payments capability of the account, or whether the account can directly process Link charges.
     pub link_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the MB WAY payments capability of the account, or whether the account can directly process MB WAY charges.
+    pub mb_way_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the MobilePay capability of the account, or whether the account can directly process MobilePay charges.
     pub mobilepay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the Multibanco payments capability of the account, or whether the account can directly process Multibanco charges.
@@ -155,6 +157,7 @@ pub struct AccountCapabilitiesBuilder {
     kr_card_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     legacy_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     link_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    mb_way_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     mobilepay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     multibanco_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     mx_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
@@ -266,6 +269,7 @@ const _: () = {
                 "kr_card_payments" => Deserialize::begin(&mut self.kr_card_payments),
                 "legacy_payments" => Deserialize::begin(&mut self.legacy_payments),
                 "link_payments" => Deserialize::begin(&mut self.link_payments),
+                "mb_way_payments" => Deserialize::begin(&mut self.mb_way_payments),
                 "mobilepay_payments" => Deserialize::begin(&mut self.mobilepay_payments),
                 "multibanco_payments" => Deserialize::begin(&mut self.multibanco_payments),
                 "mx_bank_transfer_payments" => {
@@ -344,6 +348,7 @@ const _: () = {
                 kr_card_payments: Deserialize::default(),
                 legacy_payments: Deserialize::default(),
                 link_payments: Deserialize::default(),
+                mb_way_payments: Deserialize::default(),
                 mobilepay_payments: Deserialize::default(),
                 multibanco_payments: Deserialize::default(),
                 mx_bank_transfer_payments: Deserialize::default(),
@@ -408,6 +413,7 @@ const _: () = {
                 Some(kr_card_payments),
                 Some(legacy_payments),
                 Some(link_payments),
+                Some(mb_way_payments),
                 Some(mobilepay_payments),
                 Some(multibanco_payments),
                 Some(mx_bank_transfer_payments),
@@ -468,6 +474,7 @@ const _: () = {
                 self.kr_card_payments,
                 self.legacy_payments,
                 self.link_payments,
+                self.mb_way_payments,
                 self.mobilepay_payments,
                 self.multibanco_payments,
                 self.mx_bank_transfer_payments,
@@ -532,6 +539,7 @@ const _: () = {
                 kr_card_payments,
                 legacy_payments,
                 link_payments,
+                mb_way_payments,
                 mobilepay_payments,
                 multibanco_payments,
                 mx_bank_transfer_payments,
@@ -632,6 +640,7 @@ const _: () = {
                     "kr_card_payments" => b.kr_card_payments = FromValueOpt::from_value(v),
                     "legacy_payments" => b.legacy_payments = FromValueOpt::from_value(v),
                     "link_payments" => b.link_payments = FromValueOpt::from_value(v),
+                    "mb_way_payments" => b.mb_way_payments = FromValueOpt::from_value(v),
                     "mobilepay_payments" => b.mobilepay_payments = FromValueOpt::from_value(v),
                     "multibanco_payments" => b.multibanco_payments = FromValueOpt::from_value(v),
                     "mx_bank_transfer_payments" => {

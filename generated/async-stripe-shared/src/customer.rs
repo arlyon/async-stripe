@@ -16,6 +16,8 @@ pub struct Customer {
     /// This balance is only taken into account after invoices finalize.
     /// For multi-currency balances, see [invoice_credit_balance](https://stripe.com/docs/api/customers/object#customer_object-invoice_credit_balance).
     pub balance: Option<i64>,
+    /// The customer's business name.
+    pub business_name: Option<String>,
     /// The current funds being held by Stripe on behalf of the customer.
     /// You can apply these funds towards payment intents when the source is "cash_balance".
     /// The `settings[reconciliation_mode]` field describes if these funds apply to these payment intents manually or automatically.
@@ -45,6 +47,8 @@ pub struct Customer {
     pub email: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_shared::CustomerId,
+    /// The customer's individual name.
+    pub individual_name: Option<String>,
     /// The current multi-currency balances, if any, that's stored on the customer.
     /// If positive in a currency, the customer has a credit to apply to their next invoice denominated in that currency.
     /// If negative, the customer has an amount owed that's added to their next invoice denominated in that currency.
@@ -88,6 +92,7 @@ pub struct Customer {
 pub struct CustomerBuilder {
     address: Option<Option<stripe_shared::Address>>,
     balance: Option<Option<i64>>,
+    business_name: Option<Option<String>>,
     cash_balance: Option<Option<stripe_shared::CashBalance>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<Option<stripe_types::Currency>>,
@@ -97,6 +102,7 @@ pub struct CustomerBuilder {
     discount: Option<Option<stripe_shared::Discount>>,
     email: Option<Option<String>>,
     id: Option<stripe_shared::CustomerId>,
+    individual_name: Option<Option<String>>,
     invoice_credit_balance: Option<Option<std::collections::HashMap<String, i64>>>,
     invoice_prefix: Option<Option<String>>,
     invoice_settings: Option<Option<stripe_shared::InvoiceSettingCustomerSetting>>,
@@ -154,6 +160,7 @@ const _: () = {
             Ok(match k {
                 "address" => Deserialize::begin(&mut self.address),
                 "balance" => Deserialize::begin(&mut self.balance),
+                "business_name" => Deserialize::begin(&mut self.business_name),
                 "cash_balance" => Deserialize::begin(&mut self.cash_balance),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
@@ -163,6 +170,7 @@ const _: () = {
                 "discount" => Deserialize::begin(&mut self.discount),
                 "email" => Deserialize::begin(&mut self.email),
                 "id" => Deserialize::begin(&mut self.id),
+                "individual_name" => Deserialize::begin(&mut self.individual_name),
                 "invoice_credit_balance" => Deserialize::begin(&mut self.invoice_credit_balance),
                 "invoice_prefix" => Deserialize::begin(&mut self.invoice_prefix),
                 "invoice_settings" => Deserialize::begin(&mut self.invoice_settings),
@@ -188,6 +196,7 @@ const _: () = {
             Self {
                 address: Deserialize::default(),
                 balance: Deserialize::default(),
+                business_name: Deserialize::default(),
                 cash_balance: Deserialize::default(),
                 created: Deserialize::default(),
                 currency: Deserialize::default(),
@@ -197,6 +206,7 @@ const _: () = {
                 discount: Deserialize::default(),
                 email: Deserialize::default(),
                 id: Deserialize::default(),
+                individual_name: Deserialize::default(),
                 invoice_credit_balance: Deserialize::default(),
                 invoice_prefix: Deserialize::default(),
                 invoice_settings: Deserialize::default(),
@@ -220,6 +230,7 @@ const _: () = {
             let (
                 Some(address),
                 Some(balance),
+                Some(business_name),
                 Some(cash_balance),
                 Some(created),
                 Some(currency),
@@ -229,6 +240,7 @@ const _: () = {
                 Some(discount),
                 Some(email),
                 Some(id),
+                Some(individual_name),
                 Some(invoice_credit_balance),
                 Some(invoice_prefix),
                 Some(invoice_settings),
@@ -248,6 +260,7 @@ const _: () = {
             ) = (
                 self.address.take(),
                 self.balance,
+                self.business_name.take(),
                 self.cash_balance.take(),
                 self.created,
                 self.currency.take(),
@@ -257,6 +270,7 @@ const _: () = {
                 self.discount.take(),
                 self.email.take(),
                 self.id.take(),
+                self.individual_name.take(),
                 self.invoice_credit_balance.take(),
                 self.invoice_prefix.take(),
                 self.invoice_settings.take(),
@@ -280,6 +294,7 @@ const _: () = {
             Some(Self::Out {
                 address,
                 balance,
+                business_name,
                 cash_balance,
                 created,
                 currency,
@@ -289,6 +304,7 @@ const _: () = {
                 discount,
                 email,
                 id,
+                individual_name,
                 invoice_credit_balance,
                 invoice_prefix,
                 invoice_settings,
@@ -334,6 +350,7 @@ const _: () = {
                 match k.as_str() {
                     "address" => b.address = FromValueOpt::from_value(v),
                     "balance" => b.balance = FromValueOpt::from_value(v),
+                    "business_name" => b.business_name = FromValueOpt::from_value(v),
                     "cash_balance" => b.cash_balance = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
@@ -343,6 +360,7 @@ const _: () = {
                     "discount" => b.discount = FromValueOpt::from_value(v),
                     "email" => b.email = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
+                    "individual_name" => b.individual_name = FromValueOpt::from_value(v),
                     "invoice_credit_balance" => {
                         b.invoice_credit_balance = FromValueOpt::from_value(v)
                     }
@@ -375,9 +393,10 @@ const _: () = {
 impl serde::Serialize for Customer {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Customer", 28)?;
+        let mut s = s.serialize_struct("Customer", 30)?;
         s.serialize_field("address", &self.address)?;
         s.serialize_field("balance", &self.balance)?;
+        s.serialize_field("business_name", &self.business_name)?;
         s.serialize_field("cash_balance", &self.cash_balance)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
@@ -387,6 +406,7 @@ impl serde::Serialize for Customer {
         s.serialize_field("discount", &self.discount)?;
         s.serialize_field("email", &self.email)?;
         s.serialize_field("id", &self.id)?;
+        s.serialize_field("individual_name", &self.individual_name)?;
         s.serialize_field("invoice_credit_balance", &self.invoice_credit_balance)?;
         s.serialize_field("invoice_prefix", &self.invoice_prefix)?;
         s.serialize_field("invoice_settings", &self.invoice_settings)?;

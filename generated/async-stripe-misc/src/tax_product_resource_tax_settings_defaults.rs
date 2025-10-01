@@ -2,6 +2,9 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductResourceTaxSettingsDefaults {
+    /// The tax calculation provider this account uses.
+    /// Defaults to `stripe` when not using a [third-party provider](/tax/third-party-apps).
+    pub provider: TaxProductResourceTaxSettingsDefaultsProvider,
     /// Default [tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#tax-behavior) used to specify whether the price is considered inclusive of taxes or exclusive of taxes.
     /// If the item's price has a tax behavior set, it will take precedence over the default tax behavior.
     pub tax_behavior: Option<TaxProductResourceTaxSettingsDefaultsTaxBehavior>,
@@ -10,6 +13,7 @@ pub struct TaxProductResourceTaxSettingsDefaults {
 }
 #[doc(hidden)]
 pub struct TaxProductResourceTaxSettingsDefaultsBuilder {
+    provider: Option<TaxProductResourceTaxSettingsDefaultsProvider>,
     tax_behavior: Option<Option<TaxProductResourceTaxSettingsDefaultsTaxBehavior>>,
     tax_code: Option<Option<String>>,
 }
@@ -54,6 +58,7 @@ const _: () = {
         type Out = TaxProductResourceTaxSettingsDefaults;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "provider" => Deserialize::begin(&mut self.provider),
                 "tax_behavior" => Deserialize::begin(&mut self.tax_behavior),
                 "tax_code" => Deserialize::begin(&mut self.tax_code),
 
@@ -62,15 +67,20 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { tax_behavior: Deserialize::default(), tax_code: Deserialize::default() }
+            Self {
+                provider: Deserialize::default(),
+                tax_behavior: Deserialize::default(),
+                tax_code: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(tax_behavior), Some(tax_code)) = (self.tax_behavior, self.tax_code.take())
+            let (Some(provider), Some(tax_behavior), Some(tax_code)) =
+                (self.provider, self.tax_behavior, self.tax_code.take())
             else {
                 return None;
             };
-            Some(Self::Out { tax_behavior, tax_code })
+            Some(Self::Out { provider, tax_behavior, tax_code })
         }
     }
 
@@ -97,6 +107,7 @@ const _: () = {
             let mut b = TaxProductResourceTaxSettingsDefaultsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "provider" => b.provider = FromValueOpt::from_value(v),
                     "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
                     "tax_code" => b.tax_code = FromValueOpt::from_value(v),
 
@@ -107,6 +118,90 @@ const _: () = {
         }
     }
 };
+/// The tax calculation provider this account uses.
+/// Defaults to `stripe` when not using a [third-party provider](/tax/third-party-apps).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum TaxProductResourceTaxSettingsDefaultsProvider {
+    Anrok,
+    Avalara,
+    Sphere,
+    Stripe,
+}
+impl TaxProductResourceTaxSettingsDefaultsProvider {
+    pub fn as_str(self) -> &'static str {
+        use TaxProductResourceTaxSettingsDefaultsProvider::*;
+        match self {
+            Anrok => "anrok",
+            Avalara => "avalara",
+            Sphere => "sphere",
+            Stripe => "stripe",
+        }
+    }
+}
+
+impl std::str::FromStr for TaxProductResourceTaxSettingsDefaultsProvider {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TaxProductResourceTaxSettingsDefaultsProvider::*;
+        match s {
+            "anrok" => Ok(Anrok),
+            "avalara" => Ok(Avalara),
+            "sphere" => Ok(Sphere),
+            "stripe" => Ok(Stripe),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for TaxProductResourceTaxSettingsDefaultsProvider {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxProductResourceTaxSettingsDefaultsProvider {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for TaxProductResourceTaxSettingsDefaultsProvider {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for TaxProductResourceTaxSettingsDefaultsProvider {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<TaxProductResourceTaxSettingsDefaultsProvider> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            TaxProductResourceTaxSettingsDefaultsProvider::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(TaxProductResourceTaxSettingsDefaultsProvider);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxSettingsDefaultsProvider {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for TaxProductResourceTaxSettingsDefaultsProvider",
+            )
+        })
+    }
+}
 /// Default [tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#tax-behavior) used to specify whether the price is considered inclusive of taxes or exclusive of taxes.
 /// If the item's price has a tax behavior set, it will take precedence over the default tax behavior.
 #[derive(Copy, Clone, Eq, PartialEq)]

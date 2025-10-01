@@ -50,6 +50,7 @@ pub struct PaymentMethod {
     pub link: Option<stripe_shared::PaymentMethodLink>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+    pub mb_way: Option<stripe_shared::PaymentMethodMbWay>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
@@ -118,6 +119,7 @@ pub struct PaymentMethodBuilder {
     kr_card: Option<Option<stripe_shared::PaymentMethodKrCard>>,
     link: Option<Option<stripe_shared::PaymentMethodLink>>,
     livemode: Option<bool>,
+    mb_way: Option<Option<stripe_shared::PaymentMethodMbWay>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     mobilepay: Option<Option<stripe_shared::PaymentMethodMobilepay>>,
     multibanco: Option<Option<stripe_shared::PaymentMethodMultibanco>>,
@@ -219,6 +221,7 @@ const _: () = {
                 "kr_card" => Deserialize::begin(&mut self.kr_card),
                 "link" => Deserialize::begin(&mut self.link),
                 "livemode" => Deserialize::begin(&mut self.livemode),
+                "mb_way" => Deserialize::begin(&mut self.mb_way),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "mobilepay" => Deserialize::begin(&mut self.mobilepay),
                 "multibanco" => Deserialize::begin(&mut self.multibanco),
@@ -285,6 +288,7 @@ const _: () = {
                 kr_card: Deserialize::default(),
                 link: Deserialize::default(),
                 livemode: Deserialize::default(),
+                mb_way: Deserialize::default(),
                 metadata: Deserialize::default(),
                 mobilepay: Deserialize::default(),
                 multibanco: Deserialize::default(),
@@ -349,6 +353,7 @@ const _: () = {
                 Some(kr_card),
                 Some(link),
                 Some(livemode),
+                Some(mb_way),
                 Some(metadata),
                 Some(mobilepay),
                 Some(multibanco),
@@ -409,6 +414,7 @@ const _: () = {
                 self.kr_card.take(),
                 self.link.take(),
                 self.livemode,
+                self.mb_way,
                 self.metadata.take(),
                 self.mobilepay,
                 self.multibanco,
@@ -473,6 +479,7 @@ const _: () = {
                 kr_card,
                 link,
                 livemode,
+                mb_way,
                 metadata,
                 mobilepay,
                 multibanco,
@@ -559,6 +566,7 @@ const _: () = {
                     "kr_card" => b.kr_card = FromValueOpt::from_value(v),
                     "link" => b.link = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "mb_way" => b.mb_way = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "mobilepay" => b.mobilepay = FromValueOpt::from_value(v),
                     "multibanco" => b.multibanco = FromValueOpt::from_value(v),
@@ -596,7 +604,7 @@ const _: () = {
 impl serde::Serialize for PaymentMethod {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethod", 60)?;
+        let mut s = s.serialize_struct("PaymentMethod", 61)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("affirm", &self.affirm)?;
         s.serialize_field("afterpay_clearpay", &self.afterpay_clearpay)?;
@@ -631,6 +639,7 @@ impl serde::Serialize for PaymentMethod {
         s.serialize_field("kr_card", &self.kr_card)?;
         s.serialize_field("link", &self.link)?;
         s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("mb_way", &self.mb_way)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("mobilepay", &self.mobilepay)?;
         s.serialize_field("multibanco", &self.multibanco)?;
@@ -695,6 +704,7 @@ pub enum PaymentMethodType {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Mobilepay,
     Multibanco,
     NaverPay,
@@ -752,6 +762,7 @@ impl PaymentMethodType {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
@@ -812,6 +823,7 @@ impl std::str::FromStr for PaymentMethodType {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),

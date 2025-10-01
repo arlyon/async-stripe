@@ -120,6 +120,7 @@ const _: () = {
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum AccountRequirementsErrorCode {
+    ExternalRequest,
     InformationMissing,
     InvalidAddressCityStatePostalCode,
     InvalidAddressHighwayContractBox,
@@ -162,6 +163,7 @@ pub enum AccountRequirementsErrorCode {
     InvalidUrlWebsiteIncompleteUnderConstruction,
     InvalidUrlWebsiteOther,
     InvalidValueOther,
+    UnsupportedBusinessType,
     VerificationDirectorsMismatch,
     VerificationDocumentAddressMismatch,
     VerificationDocumentAddressMissing,
@@ -222,6 +224,7 @@ impl AccountRequirementsErrorCode {
     pub fn as_str(&self) -> &str {
         use AccountRequirementsErrorCode::*;
         match self {
+            ExternalRequest => "external_request",
             InformationMissing => "information_missing",
             InvalidAddressCityStatePostalCode => "invalid_address_city_state_postal_code",
             InvalidAddressHighwayContractBox => "invalid_address_highway_contract_box",
@@ -290,6 +293,7 @@ impl AccountRequirementsErrorCode {
             }
             InvalidUrlWebsiteOther => "invalid_url_website_other",
             InvalidValueOther => "invalid_value_other",
+            UnsupportedBusinessType => "unsupported_business_type",
             VerificationDirectorsMismatch => "verification_directors_mismatch",
             VerificationDocumentAddressMismatch => "verification_document_address_mismatch",
             VerificationDocumentAddressMissing => "verification_document_address_missing",
@@ -367,6 +371,7 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountRequirementsErrorCode::*;
         match s {
+            "external_request" => Ok(ExternalRequest),
             "information_missing" => Ok(InformationMissing),
             "invalid_address_city_state_postal_code" => Ok(InvalidAddressCityStatePostalCode),
             "invalid_address_highway_contract_box" => Ok(InvalidAddressHighwayContractBox),
@@ -435,6 +440,7 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
             }
             "invalid_url_website_other" => Ok(InvalidUrlWebsiteOther),
             "invalid_value_other" => Ok(InvalidValueOther),
+            "unsupported_business_type" => Ok(UnsupportedBusinessType),
             "verification_directors_mismatch" => Ok(VerificationDirectorsMismatch),
             "verification_document_address_mismatch" => Ok(VerificationDocumentAddressMismatch),
             "verification_document_address_missing" => Ok(VerificationDocumentAddressMissing),

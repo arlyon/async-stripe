@@ -18,6 +18,9 @@ impl ListExchangeRateBuilder {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
+/// \[Deprecated\] The `ExchangeRate` APIs are deprecated.
+/// Please use the [FX Quotes API](https://docs.stripe.com/payments/currencies/localize-prices/fx-quotes-api) instead.
+///
 /// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
 /// Only shows the currencies for which Stripe supports.
 #[derive(Clone, Debug, serde::Serialize)]
@@ -101,6 +104,9 @@ impl RetrieveExchangeRateBuilder {
         Self { expand: None }
     }
 }
+/// \[Deprecated\] The `ExchangeRate` APIs are deprecated.
+/// Please use the [FX Quotes API](https://docs.stripe.com/payments/currencies/localize-prices/fx-quotes-api) instead.
+///
 /// Retrieves the exchange rates from the given currency to every supported currency.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct RetrieveExchangeRate {

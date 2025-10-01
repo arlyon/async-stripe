@@ -167,7 +167,6 @@ pub use stripe_shared::legal_entity_company_verification::*;
 pub use stripe_shared::legal_entity_company_verification_document::*;
 pub use stripe_shared::legal_entity_directorship_declaration::*;
 pub use stripe_shared::legal_entity_dob::*;
-pub use stripe_shared::legal_entity_japan_address::*;
 pub use stripe_shared::legal_entity_person_verification::*;
 pub use stripe_shared::legal_entity_person_verification_document::*;
 pub use stripe_shared::legal_entity_registration_date::*;

@@ -33,7 +33,7 @@ pub struct Card {
     /// Only values from this set should be passed as the `method` when creating a payout.
     pub available_payout_methods: Option<Vec<CardAvailablePayoutMethods>>,
     /// Card brand.
-    /// Can be `American Express`, `Diners Club`, `Discover`, `Eftpos Australia`, `Girocard`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
+    /// Can be `American Express`, `Cartes Bancaires`, `Diners Club`, `Discover`, `Eftpos Australia`, `Girocard`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
     pub brand: String,
     /// Two-letter ISO code representing the country of the card.
     /// You could use this attribute to get a sense of the international breakdown of cards you've collected.

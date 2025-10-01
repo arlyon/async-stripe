@@ -30,6 +30,7 @@ pub struct CheckoutSession {
     pub automatic_tax: stripe_shared::PaymentPagesCheckoutSessionAutomaticTax,
     /// Describes whether Checkout should collect the customer's billing address. Defaults to `auto`.
     pub billing_address_collection: Option<stripe_shared::CheckoutSessionBillingAddressCollection>,
+    pub branding_settings: Option<stripe_shared::PaymentPagesCheckoutSessionBrandingSettings>,
     /// If set, Checkout displays a back button and customers will be directed to this URL if they decide to cancel payment and return to your website.
     pub cancel_url: Option<String>,
     /// A unique string to reference the Checkout Session. This can be a
@@ -78,6 +79,9 @@ pub struct CheckoutSession {
     pub customer_email: Option<String>,
     /// List of coupons and promotion codes attached to the Checkout Session.
     pub discounts: Option<Vec<stripe_shared::PaymentPagesCheckoutSessionDiscount>>,
+    /// A list of the types of payment methods (e.g., `card`) that should be excluded from this Checkout Session.
+    /// This should only be used when payment methods for this Checkout Session are managed through the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
+    pub excluded_payment_method_types: Option<Vec<String>>,
     /// The timestamp at which the Checkout Session will expire.
     pub expires_at: stripe_types::Timestamp,
     /// Unique identifier for the object.
@@ -98,6 +102,7 @@ pub struct CheckoutSession {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The mode of the Checkout Session.
     pub mode: stripe_shared::CheckoutSessionMode,
+    pub name_collection: Option<stripe_shared::PaymentPagesCheckoutSessionNameCollection>,
     /// The optional items presented to the customer at checkout.
     pub optional_items: Option<Vec<stripe_shared::PaymentPagesCheckoutSessionOptionalItem>>,
     /// Where the user is coming from. This informs the optimizations that are applied to the session.
@@ -188,6 +193,7 @@ pub struct CheckoutSessionBuilder {
     automatic_tax: Option<stripe_shared::PaymentPagesCheckoutSessionAutomaticTax>,
     billing_address_collection:
         Option<Option<stripe_shared::CheckoutSessionBillingAddressCollection>>,
+    branding_settings: Option<Option<stripe_shared::PaymentPagesCheckoutSessionBrandingSettings>>,
     cancel_url: Option<Option<String>>,
     client_reference_id: Option<Option<String>>,
     client_secret: Option<Option<String>>,
@@ -206,6 +212,7 @@ pub struct CheckoutSessionBuilder {
     customer_details: Option<Option<stripe_shared::PaymentPagesCheckoutSessionCustomerDetails>>,
     customer_email: Option<Option<String>>,
     discounts: Option<Option<Vec<stripe_shared::PaymentPagesCheckoutSessionDiscount>>>,
+    excluded_payment_method_types: Option<Option<Vec<String>>>,
     expires_at: Option<stripe_types::Timestamp>,
     id: Option<stripe_shared::CheckoutSessionId>,
     invoice: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
@@ -215,6 +222,7 @@ pub struct CheckoutSessionBuilder {
     locale: Option<Option<stripe_shared::CheckoutSessionLocale>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     mode: Option<stripe_shared::CheckoutSessionMode>,
+    name_collection: Option<Option<stripe_shared::PaymentPagesCheckoutSessionNameCollection>>,
     optional_items: Option<Option<Vec<stripe_shared::PaymentPagesCheckoutSessionOptionalItem>>>,
     origin_context: Option<Option<stripe_shared::CheckoutSessionOriginContext>>,
     payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
@@ -299,6 +307,7 @@ const _: () = {
                 "billing_address_collection" => {
                     Deserialize::begin(&mut self.billing_address_collection)
                 }
+                "branding_settings" => Deserialize::begin(&mut self.branding_settings),
                 "cancel_url" => Deserialize::begin(&mut self.cancel_url),
                 "client_reference_id" => Deserialize::begin(&mut self.client_reference_id),
                 "client_secret" => Deserialize::begin(&mut self.client_secret),
@@ -315,6 +324,9 @@ const _: () = {
                 "customer_details" => Deserialize::begin(&mut self.customer_details),
                 "customer_email" => Deserialize::begin(&mut self.customer_email),
                 "discounts" => Deserialize::begin(&mut self.discounts),
+                "excluded_payment_method_types" => {
+                    Deserialize::begin(&mut self.excluded_payment_method_types)
+                }
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "id" => Deserialize::begin(&mut self.id),
                 "invoice" => Deserialize::begin(&mut self.invoice),
@@ -324,6 +336,7 @@ const _: () = {
                 "locale" => Deserialize::begin(&mut self.locale),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "mode" => Deserialize::begin(&mut self.mode),
+                "name_collection" => Deserialize::begin(&mut self.name_collection),
                 "optional_items" => Deserialize::begin(&mut self.optional_items),
                 "origin_context" => Deserialize::begin(&mut self.origin_context),
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
@@ -375,6 +388,7 @@ const _: () = {
                 amount_total: Deserialize::default(),
                 automatic_tax: Deserialize::default(),
                 billing_address_collection: Deserialize::default(),
+                branding_settings: Deserialize::default(),
                 cancel_url: Deserialize::default(),
                 client_reference_id: Deserialize::default(),
                 client_secret: Deserialize::default(),
@@ -391,6 +405,7 @@ const _: () = {
                 customer_details: Deserialize::default(),
                 customer_email: Deserialize::default(),
                 discounts: Deserialize::default(),
+                excluded_payment_method_types: Deserialize::default(),
                 expires_at: Deserialize::default(),
                 id: Deserialize::default(),
                 invoice: Deserialize::default(),
@@ -400,6 +415,7 @@ const _: () = {
                 locale: Deserialize::default(),
                 metadata: Deserialize::default(),
                 mode: Deserialize::default(),
+                name_collection: Deserialize::default(),
                 optional_items: Deserialize::default(),
                 origin_context: Deserialize::default(),
                 payment_intent: Deserialize::default(),
@@ -441,6 +457,7 @@ const _: () = {
                 Some(amount_total),
                 Some(automatic_tax),
                 Some(billing_address_collection),
+                Some(branding_settings),
                 Some(cancel_url),
                 Some(client_reference_id),
                 Some(client_secret),
@@ -457,6 +474,7 @@ const _: () = {
                 Some(customer_details),
                 Some(customer_email),
                 Some(discounts),
+                Some(excluded_payment_method_types),
                 Some(expires_at),
                 Some(id),
                 Some(invoice),
@@ -466,6 +484,7 @@ const _: () = {
                 Some(locale),
                 Some(metadata),
                 Some(mode),
+                Some(name_collection),
                 Some(optional_items),
                 Some(origin_context),
                 Some(payment_intent),
@@ -503,6 +522,7 @@ const _: () = {
                 self.amount_total,
                 self.automatic_tax.take(),
                 self.billing_address_collection,
+                self.branding_settings.take(),
                 self.cancel_url.take(),
                 self.client_reference_id.take(),
                 self.client_secret.take(),
@@ -519,6 +539,7 @@ const _: () = {
                 self.customer_details.take(),
                 self.customer_email.take(),
                 self.discounts.take(),
+                self.excluded_payment_method_types.take(),
                 self.expires_at,
                 self.id.take(),
                 self.invoice.take(),
@@ -528,6 +549,7 @@ const _: () = {
                 self.locale.take(),
                 self.metadata.take(),
                 self.mode,
+                self.name_collection,
                 self.optional_items.take(),
                 self.origin_context,
                 self.payment_intent.take(),
@@ -569,6 +591,7 @@ const _: () = {
                 amount_total,
                 automatic_tax,
                 billing_address_collection,
+                branding_settings,
                 cancel_url,
                 client_reference_id,
                 client_secret,
@@ -585,6 +608,7 @@ const _: () = {
                 customer_details,
                 customer_email,
                 discounts,
+                excluded_payment_method_types,
                 expires_at,
                 id,
                 invoice,
@@ -594,6 +618,7 @@ const _: () = {
                 locale,
                 metadata,
                 mode,
+                name_collection,
                 optional_items,
                 origin_context,
                 payment_intent,
@@ -661,6 +686,7 @@ const _: () = {
                     "billing_address_collection" => {
                         b.billing_address_collection = FromValueOpt::from_value(v)
                     }
+                    "branding_settings" => b.branding_settings = FromValueOpt::from_value(v),
                     "cancel_url" => b.cancel_url = FromValueOpt::from_value(v),
                     "client_reference_id" => b.client_reference_id = FromValueOpt::from_value(v),
                     "client_secret" => b.client_secret = FromValueOpt::from_value(v),
@@ -679,6 +705,9 @@ const _: () = {
                     "customer_details" => b.customer_details = FromValueOpt::from_value(v),
                     "customer_email" => b.customer_email = FromValueOpt::from_value(v),
                     "discounts" => b.discounts = FromValueOpt::from_value(v),
+                    "excluded_payment_method_types" => {
+                        b.excluded_payment_method_types = FromValueOpt::from_value(v)
+                    }
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "invoice" => b.invoice = FromValueOpt::from_value(v),
@@ -688,6 +717,7 @@ const _: () = {
                     "locale" => b.locale = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "mode" => b.mode = FromValueOpt::from_value(v),
+                    "name_collection" => b.name_collection = FromValueOpt::from_value(v),
                     "optional_items" => b.optional_items = FromValueOpt::from_value(v),
                     "origin_context" => b.origin_context = FromValueOpt::from_value(v),
                     "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
@@ -743,7 +773,7 @@ const _: () = {
 impl serde::Serialize for CheckoutSession {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CheckoutSession", 62)?;
+        let mut s = s.serialize_struct("CheckoutSession", 65)?;
         s.serialize_field("adaptive_pricing", &self.adaptive_pricing)?;
         s.serialize_field("after_expiration", &self.after_expiration)?;
         s.serialize_field("allow_promotion_codes", &self.allow_promotion_codes)?;
@@ -751,6 +781,7 @@ impl serde::Serialize for CheckoutSession {
         s.serialize_field("amount_total", &self.amount_total)?;
         s.serialize_field("automatic_tax", &self.automatic_tax)?;
         s.serialize_field("billing_address_collection", &self.billing_address_collection)?;
+        s.serialize_field("branding_settings", &self.branding_settings)?;
         s.serialize_field("cancel_url", &self.cancel_url)?;
         s.serialize_field("client_reference_id", &self.client_reference_id)?;
         s.serialize_field("client_secret", &self.client_secret)?;
@@ -767,6 +798,7 @@ impl serde::Serialize for CheckoutSession {
         s.serialize_field("customer_details", &self.customer_details)?;
         s.serialize_field("customer_email", &self.customer_email)?;
         s.serialize_field("discounts", &self.discounts)?;
+        s.serialize_field("excluded_payment_method_types", &self.excluded_payment_method_types)?;
         s.serialize_field("expires_at", &self.expires_at)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("invoice", &self.invoice)?;
@@ -776,6 +808,7 @@ impl serde::Serialize for CheckoutSession {
         s.serialize_field("locale", &self.locale)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("mode", &self.mode)?;
+        s.serialize_field("name_collection", &self.name_collection)?;
         s.serialize_field("optional_items", &self.optional_items)?;
         s.serialize_field("origin_context", &self.origin_context)?;
         s.serialize_field("payment_intent", &self.payment_intent)?;

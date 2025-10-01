@@ -2,6 +2,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutCardPaymentMethodOptions {
+    /// Controls when the funds will be captured from the customer's account.
+    pub capture_method: Option<CheckoutCardPaymentMethodOptionsCaptureMethod>,
     pub installments: Option<stripe_shared::CheckoutCardInstallmentsOptions>,
     /// Request ability to [capture beyond the standard authorization validity window](/payments/extended-authorization) for this CheckoutSession.
     pub request_extended_authorization:
@@ -42,6 +44,7 @@ pub struct CheckoutCardPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutCardPaymentMethodOptionsBuilder {
+    capture_method: Option<Option<CheckoutCardPaymentMethodOptionsCaptureMethod>>,
     installments: Option<Option<stripe_shared::CheckoutCardInstallmentsOptions>>,
     request_extended_authorization:
         Option<Option<CheckoutCardPaymentMethodOptionsRequestExtendedAuthorization>>,
@@ -98,6 +101,7 @@ const _: () = {
         type Out = CheckoutCardPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "capture_method" => Deserialize::begin(&mut self.capture_method),
                 "installments" => Deserialize::begin(&mut self.installments),
                 "request_extended_authorization" => {
                     Deserialize::begin(&mut self.request_extended_authorization)
@@ -123,6 +127,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                capture_method: Deserialize::default(),
                 installments: Deserialize::default(),
                 request_extended_authorization: Deserialize::default(),
                 request_incremental_authorization: Deserialize::default(),
@@ -138,6 +143,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(capture_method),
                 Some(installments),
                 Some(request_extended_authorization),
                 Some(request_incremental_authorization),
@@ -149,6 +155,7 @@ const _: () = {
                 Some(statement_descriptor_suffix_kana),
                 Some(statement_descriptor_suffix_kanji),
             ) = (
+                self.capture_method,
                 self.installments,
                 self.request_extended_authorization,
                 self.request_incremental_authorization,
@@ -164,6 +171,7 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                capture_method,
                 installments,
                 request_extended_authorization,
                 request_incremental_authorization,
@@ -201,6 +209,7 @@ const _: () = {
             let mut b = CheckoutCardPaymentMethodOptionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
                     "installments" => b.installments = FromValueOpt::from_value(v),
                     "request_extended_authorization" => {
                         b.request_extended_authorization = FromValueOpt::from_value(v)
@@ -229,6 +238,80 @@ const _: () = {
         }
     }
 };
+/// Controls when the funds will be captured from the customer's account.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CheckoutCardPaymentMethodOptionsCaptureMethod {
+    Manual,
+}
+impl CheckoutCardPaymentMethodOptionsCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        use CheckoutCardPaymentMethodOptionsCaptureMethod::*;
+        match self {
+            Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for CheckoutCardPaymentMethodOptionsCaptureMethod {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CheckoutCardPaymentMethodOptionsCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CheckoutCardPaymentMethodOptionsCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for CheckoutCardPaymentMethodOptionsCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for CheckoutCardPaymentMethodOptionsCaptureMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CheckoutCardPaymentMethodOptionsCaptureMethod> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            CheckoutCardPaymentMethodOptionsCaptureMethod::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CheckoutCardPaymentMethodOptionsCaptureMethod);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CheckoutCardPaymentMethodOptionsCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CheckoutCardPaymentMethodOptionsCaptureMethod",
+            )
+        })
+    }
+}
 /// Request ability to [capture beyond the standard authorization validity window](/payments/extended-authorization) for this CheckoutSession.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CheckoutCardPaymentMethodOptionsRequestExtendedAuthorization {

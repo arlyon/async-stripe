@@ -5,9 +5,13 @@ pub struct PaymentPagesCheckoutSessionCustomerDetails {
     /// The customer's address after a completed Checkout Session.
     /// Note: This property is populated only for sessions on or after March 30, 2022.
     pub address: Option<stripe_shared::Address>,
+    /// The customer's business name after a completed Checkout Session.
+    pub business_name: Option<String>,
     /// The email associated with the Customer, if one exists, on the Checkout Session after a completed Checkout Session or at time of session expiry.
     /// Otherwise, if the customer has consented to promotional content, this value is the most recent valid email provided by the customer on the Checkout form.
     pub email: Option<String>,
+    /// The customer's individual name after a completed Checkout Session.
+    pub individual_name: Option<String>,
     /// The customer's name after a completed Checkout Session.
     /// Note: This property is populated only for sessions on or after March 30, 2022.
     pub name: Option<String>,
@@ -21,7 +25,9 @@ pub struct PaymentPagesCheckoutSessionCustomerDetails {
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionCustomerDetailsBuilder {
     address: Option<Option<stripe_shared::Address>>,
+    business_name: Option<Option<String>>,
     email: Option<Option<String>>,
+    individual_name: Option<Option<String>>,
     name: Option<Option<String>>,
     phone: Option<Option<String>>,
     tax_exempt: Option<Option<PaymentPagesCheckoutSessionCustomerDetailsTaxExempt>>,
@@ -69,7 +75,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "address" => Deserialize::begin(&mut self.address),
+                "business_name" => Deserialize::begin(&mut self.business_name),
                 "email" => Deserialize::begin(&mut self.email),
+                "individual_name" => Deserialize::begin(&mut self.individual_name),
                 "name" => Deserialize::begin(&mut self.name),
                 "phone" => Deserialize::begin(&mut self.phone),
                 "tax_exempt" => Deserialize::begin(&mut self.tax_exempt),
@@ -82,7 +90,9 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 address: Deserialize::default(),
+                business_name: Deserialize::default(),
                 email: Deserialize::default(),
+                individual_name: Deserialize::default(),
                 name: Deserialize::default(),
                 phone: Deserialize::default(),
                 tax_exempt: Deserialize::default(),
@@ -93,14 +103,18 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(address),
+                Some(business_name),
                 Some(email),
+                Some(individual_name),
                 Some(name),
                 Some(phone),
                 Some(tax_exempt),
                 Some(tax_ids),
             ) = (
                 self.address.take(),
+                self.business_name.take(),
                 self.email.take(),
+                self.individual_name.take(),
                 self.name.take(),
                 self.phone.take(),
                 self.tax_exempt,
@@ -109,7 +123,16 @@ const _: () = {
             else {
                 return None;
             };
-            Some(Self::Out { address, email, name, phone, tax_exempt, tax_ids })
+            Some(Self::Out {
+                address,
+                business_name,
+                email,
+                individual_name,
+                name,
+                phone,
+                tax_exempt,
+                tax_ids,
+            })
         }
     }
 
@@ -137,7 +160,9 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "address" => b.address = FromValueOpt::from_value(v),
+                    "business_name" => b.business_name = FromValueOpt::from_value(v),
                     "email" => b.email = FromValueOpt::from_value(v),
+                    "individual_name" => b.individual_name = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
                     "phone" => b.phone = FromValueOpt::from_value(v),
                     "tax_exempt" => b.tax_exempt = FromValueOpt::from_value(v),

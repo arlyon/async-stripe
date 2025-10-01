@@ -344,6 +344,10 @@ pub mod checkout_alipay_payment_method_options;
 #[doc(inline)]
 pub use checkout_alipay_payment_method_options::*;
 #[doc(hidden)]
+pub mod checkout_alma_payment_method_options;
+#[doc(inline)]
+pub use checkout_alma_payment_method_options::*;
+#[doc(hidden)]
 pub mod checkout_amazon_pay_payment_method_options;
 #[doc(inline)]
 pub use checkout_amazon_pay_payment_method_options::*;
@@ -359,6 +363,10 @@ pub use checkout_bacs_debit_payment_method_options::*;
 pub mod checkout_bancontact_payment_method_options;
 #[doc(inline)]
 pub use checkout_bancontact_payment_method_options::*;
+#[doc(hidden)]
+pub mod checkout_billie_payment_method_options;
+#[doc(inline)]
+pub use checkout_billie_payment_method_options::*;
 #[doc(hidden)]
 pub mod checkout_boleto_payment_method_options;
 #[doc(inline)]
@@ -479,6 +487,10 @@ pub use checkout_revolut_pay_payment_method_options::*;
 pub mod checkout_samsung_pay_payment_method_options;
 #[doc(inline)]
 pub use checkout_samsung_pay_payment_method_options::*;
+#[doc(hidden)]
+pub mod checkout_satispay_payment_method_options;
+#[doc(inline)]
+pub use checkout_satispay_payment_method_options::*;
 #[doc(hidden)]
 pub mod checkout_sepa_debit_payment_method_options;
 #[doc(inline)]
@@ -687,6 +699,10 @@ pub use destination_details_unimplemented::*;
 pub mod discount;
 #[doc(inline)]
 pub use discount::*;
+#[doc(hidden)]
+pub mod discount_source;
+#[doc(inline)]
+pub use discount_source::*;
 #[doc(hidden)]
 pub mod discounts_resource_discount_amount;
 #[doc(inline)]
@@ -2152,6 +2168,10 @@ pub mod payment_method_details_link;
 #[doc(inline)]
 pub use payment_method_details_link::*;
 #[doc(hidden)]
+pub mod payment_method_details_mb_way;
+#[doc(inline)]
+pub use payment_method_details_mb_way::*;
+#[doc(hidden)]
 pub mod payment_method_details_mobilepay;
 #[doc(inline)]
 pub use payment_method_details_mobilepay::*;
@@ -2300,6 +2320,10 @@ pub mod payment_method_link;
 #[doc(inline)]
 pub use payment_method_link::*;
 #[doc(hidden)]
+pub mod payment_method_mb_way;
+#[doc(inline)]
+pub use payment_method_mb_way::*;
+#[doc(hidden)]
 pub mod payment_method_mobilepay;
 #[doc(inline)]
 pub use payment_method_mobilepay::*;
@@ -2415,6 +2439,10 @@ pub use payment_method_options_konbini::*;
 pub mod payment_method_options_kr_card;
 #[doc(inline)]
 pub use payment_method_options_kr_card::*;
+#[doc(hidden)]
+pub mod payment_method_options_mb_way;
+#[doc(inline)]
+pub use payment_method_options_mb_way::*;
 #[doc(hidden)]
 pub mod payment_method_options_multibanco;
 #[doc(inline)]
@@ -2572,6 +2600,22 @@ pub mod payment_pages_checkout_session_automatic_tax;
 #[doc(inline)]
 pub use payment_pages_checkout_session_automatic_tax::*;
 #[doc(hidden)]
+pub mod payment_pages_checkout_session_branding_settings;
+#[doc(inline)]
+pub use payment_pages_checkout_session_branding_settings::*;
+#[doc(hidden)]
+pub mod payment_pages_checkout_session_branding_settings_icon;
+#[doc(inline)]
+pub use payment_pages_checkout_session_branding_settings_icon::*;
+#[doc(hidden)]
+pub mod payment_pages_checkout_session_branding_settings_logo;
+#[doc(inline)]
+pub use payment_pages_checkout_session_branding_settings_logo::*;
+#[doc(hidden)]
+pub mod payment_pages_checkout_session_business_name;
+#[doc(inline)]
+pub use payment_pages_checkout_session_business_name::*;
+#[doc(hidden)]
 pub mod payment_pages_checkout_session_checkout_address_details;
 #[doc(inline)]
 pub use payment_pages_checkout_session_checkout_address_details::*;
@@ -2632,6 +2676,10 @@ pub mod payment_pages_checkout_session_discount;
 #[doc(inline)]
 pub use payment_pages_checkout_session_discount::*;
 #[doc(hidden)]
+pub mod payment_pages_checkout_session_individual_name;
+#[doc(inline)]
+pub use payment_pages_checkout_session_individual_name::*;
+#[doc(hidden)]
 pub mod payment_pages_checkout_session_invoice_creation;
 #[doc(inline)]
 pub use payment_pages_checkout_session_invoice_creation::*;
@@ -2639,6 +2687,10 @@ pub use payment_pages_checkout_session_invoice_creation::*;
 pub mod payment_pages_checkout_session_invoice_settings;
 #[doc(inline)]
 pub use payment_pages_checkout_session_invoice_settings::*;
+#[doc(hidden)]
+pub mod payment_pages_checkout_session_name_collection;
+#[doc(inline)]
+pub use payment_pages_checkout_session_name_collection::*;
 #[doc(hidden)]
 pub mod payment_pages_checkout_session_optional_item;
 #[doc(inline)]
@@ -2783,6 +2835,10 @@ pub use promotion_code::*;
 pub mod promotion_code_currency_option;
 #[doc(inline)]
 pub use promotion_code_currency_option::*;
+#[doc(hidden)]
+pub mod promotion_codes_resource_promotion;
+#[doc(inline)]
+pub use promotion_codes_resource_promotion::*;
 #[doc(hidden)]
 pub mod promotion_codes_resource_restrictions;
 #[doc(inline)]
@@ -3303,6 +3359,10 @@ pub use subscriptions_resource_billing_cycle_anchor_config::*;
 pub mod subscriptions_resource_billing_mode;
 #[doc(inline)]
 pub use subscriptions_resource_billing_mode::*;
+#[doc(hidden)]
+pub mod subscriptions_resource_billing_mode_flexible;
+#[doc(inline)]
+pub use subscriptions_resource_billing_mode_flexible::*;
 #[doc(hidden)]
 pub mod subscriptions_resource_pause_collection;
 #[doc(inline)]

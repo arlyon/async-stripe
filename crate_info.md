@@ -39,6 +39,7 @@
 | [Topup](https://stripe.com/docs/api/topups/object)                                               | async-stripe-connect  | topup                              |
 | [TransferReversal](https://stripe.com/docs/api/transfer_reversals/object)                        | async-stripe-connect  | transfer_reversal                  |
 | [Transfer](https://stripe.com/docs/api/transfers/object)                                         | async-stripe-connect  | transfer                           |
+| BalanceSettings                                                                                  | async-stripe-core     | balance_settings                   |
 | CustomerSession                                                                                  | async-stripe-core     | customer_session                   |
 | PaymentSource                                                                                    | async-stripe-core     | payment_source                     |
 | [BalanceTransaction](https://stripe.com/docs/api/balance_transactions/object)                    | async-stripe-core     | balance_transaction                |

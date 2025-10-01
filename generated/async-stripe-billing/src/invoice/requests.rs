@@ -671,7 +671,6 @@ pub struct CreateInvoicePaymentSettings {
     /// The list of payment method types (e.g.
     /// card) to provide to the invoice’s PaymentIntent.
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
-    /// Should not be specified with payment_method_configuration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodTypes>>,
 }
@@ -1583,7 +1582,6 @@ impl<'de> serde::Deserialize<'de>
 /// The list of payment method types (e.g.
 /// card) to provide to the invoice’s PaymentIntent.
 /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
-/// Should not be specified with payment_method_configuration.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
@@ -2972,7 +2970,6 @@ pub struct UpdateInvoicePaymentSettings {
     /// The list of payment method types (e.g.
     /// card) to provide to the invoice’s PaymentIntent.
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
-    /// Should not be specified with payment_method_configuration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<UpdateInvoicePaymentSettingsPaymentMethodTypes>>,
 }
@@ -3884,7 +3881,6 @@ impl<'de> serde::Deserialize<'de>
 /// The list of payment method types (e.g.
 /// card) to provide to the invoice’s PaymentIntent.
 /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
-/// Should not be specified with payment_method_configuration.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateInvoicePaymentSettingsPaymentMethodTypes {
@@ -6910,10 +6906,10 @@ pub struct CreatePreviewInvoiceCustomerDetailsShippingAddress {
     /// However, in order to activate some tax features, the format should be a two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
+    /// Address line 1, such as the street, PO Box, or company name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    /// Address line 2, such as the apartment, suite, unit, or building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
     /// ZIP or postal code.
@@ -7835,16 +7831,99 @@ impl Default for CreatePreviewInvoiceScheduleDetails {
 /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceScheduleDetailsBillingMode {
+    /// Configure behavior for flexible billing mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flexible: Option<CreatePreviewInvoiceScheduleDetailsBillingModeFlexible>,
     /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+    /// If no value is passed, the default is `flexible`.
     #[serde(rename = "type")]
     pub type_: CreatePreviewInvoiceScheduleDetailsBillingModeType,
 }
 impl CreatePreviewInvoiceScheduleDetailsBillingMode {
     pub fn new(type_: impl Into<CreatePreviewInvoiceScheduleDetailsBillingModeType>) -> Self {
-        Self { type_: type_.into() }
+        Self { flexible: None, type_: type_.into() }
+    }
+}
+/// Configure behavior for flexible billing mode.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsBillingModeFlexible {
+    /// Controls how invoices and invoice items display proration amounts and discount amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_discounts:
+        Option<CreatePreviewInvoiceScheduleDetailsBillingModeFlexibleProrationDiscounts>,
+}
+impl CreatePreviewInvoiceScheduleDetailsBillingModeFlexible {
+    pub fn new() -> Self {
+        Self { proration_discounts: None }
+    }
+}
+impl Default for CreatePreviewInvoiceScheduleDetailsBillingModeFlexible {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls how invoices and invoice items display proration amounts and discount amounts.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePreviewInvoiceScheduleDetailsBillingModeFlexibleProrationDiscounts {
+    Included,
+    Itemized,
+}
+impl CreatePreviewInvoiceScheduleDetailsBillingModeFlexibleProrationDiscounts {
+    pub fn as_str(self) -> &'static str {
+        use CreatePreviewInvoiceScheduleDetailsBillingModeFlexibleProrationDiscounts::*;
+        match self {
+            Included => "included",
+            Itemized => "itemized",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePreviewInvoiceScheduleDetailsBillingModeFlexibleProrationDiscounts
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsBillingModeFlexibleProrationDiscounts::*;
+        match s {
+            "included" => Ok(Included),
+            "itemized" => Ok(Itemized),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for CreatePreviewInvoiceScheduleDetailsBillingModeFlexibleProrationDiscounts
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsBillingModeFlexibleProrationDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePreviewInvoiceScheduleDetailsBillingModeFlexibleProrationDiscounts {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceScheduleDetailsBillingModeFlexibleProrationDiscounts
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePreviewInvoiceScheduleDetailsBillingModeFlexibleProrationDiscounts"))
     }
 }
 /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+/// If no value is passed, the default is `flexible`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePreviewInvoiceScheduleDetailsBillingModeType {
     Classic,
@@ -8030,13 +8109,6 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     pub invoice_settings: Option<CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettings>,
     /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
     pub items: Vec<CreatePreviewInvoiceScheduleDetailsPhasesItems>,
-    /// Integer representing the multiplier applied to the price interval.
-    /// For example, `iterations=2` applied to a price with `interval=month` and `interval_count=3` results in a phase of duration `2 * 3 months = 6 months`.
-    /// If set, `end_date` must not be set.
-    /// This parameter is deprecated and will be removed in a future version.
-    /// Use `duration` instead.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub iterations: Option<i64>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a phase.
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered, adding new keys and replacing existing keys in the subscription's `metadata`.
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
@@ -8083,7 +8155,6 @@ impl CreatePreviewInvoiceScheduleDetailsPhases {
             end_date: None,
             invoice_settings: None,
             items: items.into(),
-            iterations: None,
             metadata: None,
             on_behalf_of: None,
             proration_behavior: None,
@@ -8108,7 +8179,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The period associated with this invoice item.
-    /// Defaults to the period of the underlying subscription that surrounds the start of the phase.
+    /// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriod>,
     /// The ID of the price object. One of `price` or `price_data` is required.
@@ -8144,7 +8215,7 @@ impl Default for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
     }
 }
 /// The period associated with this invoice item.
-/// Defaults to the period of the underlying subscription that surrounds the start of the phase.
+/// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPeriod {
     /// End of the invoice item period.
@@ -9267,16 +9338,103 @@ pub enum CreatePreviewInvoiceSubscriptionDetailsBillingCycleAnchor {
 /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceSubscriptionDetailsBillingMode {
+    /// Configure behavior for flexible billing mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flexible: Option<CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexible>,
     /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+    /// If no value is passed, the default is `flexible`.
     #[serde(rename = "type")]
     pub type_: CreatePreviewInvoiceSubscriptionDetailsBillingModeType,
 }
 impl CreatePreviewInvoiceSubscriptionDetailsBillingMode {
     pub fn new(type_: impl Into<CreatePreviewInvoiceSubscriptionDetailsBillingModeType>) -> Self {
-        Self { type_: type_.into() }
+        Self { flexible: None, type_: type_.into() }
+    }
+}
+/// Configure behavior for flexible billing mode.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexible {
+    /// Controls how invoices and invoice items display proration amounts and discount amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_discounts:
+        Option<CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexibleProrationDiscounts>,
+}
+impl CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexible {
+    pub fn new() -> Self {
+        Self { proration_discounts: None }
+    }
+}
+impl Default for CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexible {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls how invoices and invoice items display proration amounts and discount amounts.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexibleProrationDiscounts {
+    Included,
+    Itemized,
+}
+impl CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexibleProrationDiscounts {
+    pub fn as_str(self) -> &'static str {
+        use CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexibleProrationDiscounts::*;
+        match self {
+            Included => "included",
+            Itemized => "itemized",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexibleProrationDiscounts
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexibleProrationDiscounts::*;
+        match s {
+            "included" => Ok(Included),
+            "itemized" => Ok(Itemized),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexibleProrationDiscounts
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexibleProrationDiscounts
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexibleProrationDiscounts
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexibleProrationDiscounts
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePreviewInvoiceSubscriptionDetailsBillingModeFlexibleProrationDiscounts"))
     }
 }
 /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+/// If no value is passed, the default is `flexible`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePreviewInvoiceSubscriptionDetailsBillingModeType {
     Classic,
@@ -9936,10 +10094,10 @@ pub struct OptionalFieldsAddress {
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
+    /// Address line 1, such as the street, PO Box, or company name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    /// Address line 2, such as the apartment, suite, unit, or building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
     /// ZIP or postal code.
@@ -10008,10 +10166,21 @@ pub struct ProductData {
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
+    /// A label that represents units of this product.
+    /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_label: Option<String>,
 }
 impl ProductData {
     pub fn new(name: impl Into<String>) -> Self {
-        Self { description: None, images: None, metadata: None, name: name.into(), tax_code: None }
+        Self {
+            description: None,
+            images: None,
+            metadata: None,
+            name: name.into(),
+            tax_code: None,
+            unit_label: None,
+        }
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]

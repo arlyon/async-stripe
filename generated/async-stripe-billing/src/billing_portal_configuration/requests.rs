@@ -650,6 +650,10 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub schedule_at_period_end:
         Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd>,
+    /// The behavior when updating a subscription that is trialing.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_update_behavior:
+        Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior>,
 }
 impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -659,6 +663,7 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
             products: None,
             proration_behavior: None,
             schedule_at_period_end: None,
+            trial_update_behavior: None,
         }
     }
 }
@@ -898,6 +903,70 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType"))
+    }
+}
+/// The behavior when updating a subscription that is trialing.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior {
+    ContinueTrial,
+    EndTrial,
+}
+impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior {
+    pub fn as_str(self) -> &'static str {
+        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior::*;
+        match self {
+            ContinueTrial => "continue_trial",
+            EndTrial => "end_trial",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior::*;
+        match s {
+            "continue_trial" => Ok(ContinueTrial),
+            "end_trial" => Ok(EndTrial),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior"))
     }
 }
 /// The hosted login page for this configuration.
@@ -1476,6 +1545,10 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub schedule_at_period_end:
         Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd>,
+    /// The behavior when updating a subscription that is trialing.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_update_behavior:
+        Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior>,
 }
 impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     pub fn new() -> Self {
@@ -1485,6 +1558,7 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
             products: None,
             proration_behavior: None,
             schedule_at_period_end: None,
+            trial_update_behavior: None,
         }
     }
 }
@@ -1729,6 +1803,70 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType"))
+    }
+}
+/// The behavior when updating a subscription that is trialing.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior {
+    ContinueTrial,
+    EndTrial,
+}
+impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior {
+    pub fn as_str(self) -> &'static str {
+        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior::*;
+        match self {
+            ContinueTrial => "continue_trial",
+            EndTrial => "end_trial",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior::*;
+        match s {
+            "continue_trial" => Ok(ContinueTrial),
+            "end_trial" => Ok(EndTrial),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior"))
     }
 }
 /// The hosted login page for this configuration.
