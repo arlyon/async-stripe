@@ -30,6 +30,7 @@ async-stripe-shared = {path = "../../generated/async-stripe-shared", version = "
 serialize = ["async-stripe-types/serialize","async-stripe-shared/serialize"]
 deserialize = ["async-stripe-types/deserialize","async-stripe-shared/deserialize", "dep:serde_json"]
 balance = []
+balance_settings = []
 balance_transaction = []
 cash_balance = []
 charge = []
@@ -51,6 +52,7 @@ setup_intent = []
 token = []
 
 full = ["balance",
+"balance_settings",
 "balance_transaction",
 "cash_balance",
 "charge",

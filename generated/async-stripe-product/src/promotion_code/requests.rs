@@ -197,7 +197,6 @@ struct CreatePromotionCodeBuilder {
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     code: Option<String>,
-    coupon: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -208,22 +207,91 @@ struct CreatePromotionCodeBuilder {
     max_redemptions: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+    promotion: CreatePromotionCodePromotion,
     #[serde(skip_serializing_if = "Option::is_none")]
     restrictions: Option<CreatePromotionCodeRestrictions>,
 }
 impl CreatePromotionCodeBuilder {
-    fn new(coupon: impl Into<String>) -> Self {
+    fn new(promotion: impl Into<CreatePromotionCodePromotion>) -> Self {
         Self {
             active: None,
             code: None,
-            coupon: coupon.into(),
             customer: None,
             expand: None,
             expires_at: None,
             max_redemptions: None,
             metadata: None,
+            promotion: promotion.into(),
             restrictions: None,
         }
+    }
+}
+/// The promotion referenced by this promotion code.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePromotionCodePromotion {
+    /// If promotion `type` is `coupon`, the coupon for this promotion code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// Specifies the type of promotion.
+    #[serde(rename = "type")]
+    pub type_: CreatePromotionCodePromotionType,
+}
+impl CreatePromotionCodePromotion {
+    pub fn new(type_: impl Into<CreatePromotionCodePromotionType>) -> Self {
+        Self { coupon: None, type_: type_.into() }
+    }
+}
+/// Specifies the type of promotion.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePromotionCodePromotionType {
+    Coupon,
+}
+impl CreatePromotionCodePromotionType {
+    pub fn as_str(self) -> &'static str {
+        use CreatePromotionCodePromotionType::*;
+        match self {
+            Coupon => "coupon",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePromotionCodePromotionType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePromotionCodePromotionType::*;
+        match s {
+            "coupon" => Ok(Coupon),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePromotionCodePromotionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePromotionCodePromotionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePromotionCodePromotionType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePromotionCodePromotionType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePromotionCodePromotionType")
+        })
     }
 }
 /// Settings that restrict the redemption of the promotion code.
@@ -258,7 +326,7 @@ impl Default for CreatePromotionCodeRestrictions {
         Self::new()
     }
 }
-/// A promotion code points to a coupon.
+/// A promotion code points to an underlying promotion.
 /// You can optionally restrict the code to a specific customer, redemption limit, and expiration date.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePromotionCode {
@@ -266,8 +334,8 @@ pub struct CreatePromotionCode {
 }
 impl CreatePromotionCode {
     /// Construct a new `CreatePromotionCode`.
-    pub fn new(coupon: impl Into<String>) -> Self {
-        Self { inner: CreatePromotionCodeBuilder::new(coupon.into()) }
+    pub fn new(promotion: impl Into<CreatePromotionCodePromotion>) -> Self {
+        Self { inner: CreatePromotionCodeBuilder::new(promotion.into()) }
     }
     /// Whether the promotion code is currently active.
     pub fn active(mut self, active: impl Into<bool>) -> Self {

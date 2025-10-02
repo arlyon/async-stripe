@@ -3,6 +3,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsResourceBillingMode {
+    /// Configure behavior for flexible billing mode
+    pub flexible: Option<stripe_shared::SubscriptionsResourceBillingModeFlexible>,
     /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: SubscriptionsResourceBillingModeType,
@@ -11,6 +13,7 @@ pub struct SubscriptionsResourceBillingMode {
 }
 #[doc(hidden)]
 pub struct SubscriptionsResourceBillingModeBuilder {
+    flexible: Option<Option<stripe_shared::SubscriptionsResourceBillingModeFlexible>>,
     type_: Option<SubscriptionsResourceBillingModeType>,
     updated_at: Option<Option<stripe_types::Timestamp>>,
 }
@@ -55,6 +58,7 @@ const _: () = {
         type Out = SubscriptionsResourceBillingMode;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "flexible" => Deserialize::begin(&mut self.flexible),
                 "type" => Deserialize::begin(&mut self.type_),
                 "updated_at" => Deserialize::begin(&mut self.updated_at),
 
@@ -63,14 +67,20 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { type_: Deserialize::default(), updated_at: Deserialize::default() }
+            Self {
+                flexible: Deserialize::default(),
+                type_: Deserialize::default(),
+                updated_at: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(type_), Some(updated_at)) = (self.type_, self.updated_at) else {
+            let (Some(flexible), Some(type_), Some(updated_at)) =
+                (self.flexible, self.type_, self.updated_at)
+            else {
                 return None;
             };
-            Some(Self::Out { type_, updated_at })
+            Some(Self::Out { flexible, type_, updated_at })
         }
     }
 
@@ -97,6 +107,7 @@ const _: () = {
             let mut b = SubscriptionsResourceBillingModeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "flexible" => b.flexible = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "updated_at" => b.updated_at = FromValueOpt::from_value(v),
 

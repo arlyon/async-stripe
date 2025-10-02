@@ -434,6 +434,8 @@ struct CreateIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     fleet: Option<CreateIssuingAuthorizationFleet>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    fraud_disputability_likelihood: Option<CreateIssuingAuthorizationFraudDisputabilityLikelihood>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     fuel: Option<CreateIssuingAuthorizationFuel>,
     #[serde(skip_serializing_if = "Option::is_none")]
     is_amount_controllable: Option<bool>,
@@ -445,6 +447,8 @@ struct CreateIssuingAuthorizationBuilder {
     merchant_data: Option<CreateIssuingAuthorizationMerchantData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     network_data: Option<CreateIssuingAuthorizationNetworkData>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    risk_assessment: Option<CreateIssuingAuthorizationRiskAssessment>,
     #[serde(skip_serializing_if = "Option::is_none")]
     verification_data: Option<CreateIssuingAuthorizationVerificationData>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -460,12 +464,14 @@ impl CreateIssuingAuthorizationBuilder {
             currency: None,
             expand: None,
             fleet: None,
+            fraud_disputability_likelihood: None,
             fuel: None,
             is_amount_controllable: None,
             merchant_amount: None,
             merchant_currency: None,
             merchant_data: None,
             network_data: None,
+            risk_assessment: None,
             verification_data: None,
             wallet: None,
         }
@@ -643,6 +649,71 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFleetServiceType
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CreateIssuingAuthorizationFleetServiceType")
+        })
+    }
+}
+/// Probability that this transaction can be disputed in the event of fraud.
+/// Assessed by comparing the characteristics of the authorization to card network rules.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingAuthorizationFraudDisputabilityLikelihood {
+    Neutral,
+    Unknown,
+    VeryLikely,
+    VeryUnlikely,
+}
+impl CreateIssuingAuthorizationFraudDisputabilityLikelihood {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingAuthorizationFraudDisputabilityLikelihood::*;
+        match self {
+            Neutral => "neutral",
+            Unknown => "unknown",
+            VeryLikely => "very_likely",
+            VeryUnlikely => "very_unlikely",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingAuthorizationFraudDisputabilityLikelihood {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingAuthorizationFraudDisputabilityLikelihood::*;
+        match s {
+            "neutral" => Ok(Neutral),
+            "unknown" => Ok(Unknown),
+            "very_likely" => Ok(VeryLikely),
+            "very_unlikely" => Ok(VeryUnlikely),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateIssuingAuthorizationFraudDisputabilityLikelihood {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingAuthorizationFraudDisputabilityLikelihood {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingAuthorizationFraudDisputabilityLikelihood {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFraudDisputabilityLikelihood {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateIssuingAuthorizationFraudDisputabilityLikelihood",
+            )
         })
     }
 }
@@ -1922,6 +1993,210 @@ impl Default for CreateIssuingAuthorizationNetworkData {
         Self::new()
     }
 }
+/// Stripe’s assessment of the fraud risk for this authorization.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingAuthorizationRiskAssessment {
+    /// Stripe's assessment of this authorization's likelihood of being card testing activity.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_testing_risk: Option<CreateIssuingAuthorizationRiskAssessmentCardTestingRisk>,
+    /// The dispute risk of the merchant (the seller on a purchase) on an authorization based on all Stripe Issuing activity.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub merchant_dispute_risk: Option<CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk>,
+}
+impl CreateIssuingAuthorizationRiskAssessment {
+    pub fn new() -> Self {
+        Self { card_testing_risk: None, merchant_dispute_risk: None }
+    }
+}
+impl Default for CreateIssuingAuthorizationRiskAssessment {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Stripe's assessment of this authorization's likelihood of being card testing activity.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingAuthorizationRiskAssessmentCardTestingRisk {
+    /// The % of declines due to a card number not existing in the past hour, taking place at the same merchant.
+    /// Higher rates correspond to a greater probability of card testing activity, meaning bad actors may be attempting different card number combinations to guess a correct one.
+    /// Takes on values between 0 and 100.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invalid_account_number_decline_rate_past_hour: Option<i64>,
+    /// The % of declines due to incorrect verification data (like CVV or expiry) in the past hour, taking place at the same merchant.
+    /// Higher rates correspond to a greater probability of bad actors attempting to utilize valid card credentials at merchants with verification requirements.
+    /// Takes on values between 0 and 100.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invalid_credentials_decline_rate_past_hour: Option<i64>,
+    /// The likelihood that this authorization is associated with card testing activity.
+    /// This is assessed by evaluating decline activity over the last hour.
+    pub risk_level: CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel,
+}
+impl CreateIssuingAuthorizationRiskAssessmentCardTestingRisk {
+    pub fn new(
+        risk_level: impl Into<CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel>,
+    ) -> Self {
+        Self {
+            invalid_account_number_decline_rate_past_hour: None,
+            invalid_credentials_decline_rate_past_hour: None,
+            risk_level: risk_level.into(),
+        }
+    }
+}
+/// The likelihood that this authorization is associated with card testing activity.
+/// This is assessed by evaluating decline activity over the last hour.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
+    Elevated,
+    Highest,
+    Low,
+    Normal,
+    NotAssessed,
+    Unknown,
+}
+impl CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel::*;
+        match self {
+            Elevated => "elevated",
+            Highest => "highest",
+            Low => "low",
+            Normal => "normal",
+            NotAssessed => "not_assessed",
+            Unknown => "unknown",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel::*;
+        match s {
+            "elevated" => Ok(Elevated),
+            "highest" => Ok(Highest),
+            "low" => Ok(Low),
+            "normal" => Ok(Normal),
+            "not_assessed" => Ok(NotAssessed),
+            "unknown" => Ok(Unknown),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel"))
+    }
+}
+/// The dispute risk of the merchant (the seller on a purchase) on an authorization based on all Stripe Issuing activity.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk {
+    /// The dispute rate observed across all Stripe Issuing authorizations for this merchant.
+    /// For example, a value of 50 means 50% of authorizations from this merchant on Stripe Issuing have resulted in a dispute.
+    /// Higher values mean a higher likelihood the authorization is disputed.
+    /// Takes on values between 0 and 100.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dispute_rate: Option<i64>,
+    /// The likelihood that authorizations from this merchant will result in a dispute based on their history on Stripe Issuing.
+    pub risk_level: CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel,
+}
+impl CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk {
+    pub fn new(
+        risk_level: impl Into<CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel>,
+    ) -> Self {
+        Self { dispute_rate: None, risk_level: risk_level.into() }
+    }
+}
+/// The likelihood that authorizations from this merchant will result in a dispute based on their history on Stripe Issuing.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
+    Elevated,
+    Highest,
+    Low,
+    Normal,
+    NotAssessed,
+    Unknown,
+}
+impl CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel::*;
+        match self {
+            Elevated => "elevated",
+            Highest => "highest",
+            Low => "low",
+            Normal => "normal",
+            NotAssessed => "not_assessed",
+            Unknown => "unknown",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel::*;
+        match s {
+            "elevated" => Ok(Elevated),
+            "highest" => Ok(Highest),
+            "low" => Ok(Low),
+            "normal" => Ok(Normal),
+            "not_assessed" => Ok(NotAssessed),
+            "unknown" => Ok(Unknown),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel"))
+    }
+}
 /// Verifications that Stripe performed on information that the cardholder provided to the merchant.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingAuthorizationVerificationData {
@@ -2536,6 +2811,17 @@ impl CreateIssuingAuthorization {
         self.inner.fleet = Some(fleet.into());
         self
     }
+    /// Probability that this transaction can be disputed in the event of fraud.
+    /// Assessed by comparing the characteristics of the authorization to card network rules.
+    pub fn fraud_disputability_likelihood(
+        mut self,
+        fraud_disputability_likelihood: impl Into<
+            CreateIssuingAuthorizationFraudDisputabilityLikelihood,
+        >,
+    ) -> Self {
+        self.inner.fraud_disputability_likelihood = Some(fraud_disputability_likelihood.into());
+        self
+    }
     /// Information about fuel that was purchased with this transaction.
     pub fn fuel(mut self, fuel: impl Into<CreateIssuingAuthorizationFuel>) -> Self {
         self.inner.fuel = Some(fuel.into());
@@ -2577,6 +2863,14 @@ impl CreateIssuingAuthorization {
         network_data: impl Into<CreateIssuingAuthorizationNetworkData>,
     ) -> Self {
         self.inner.network_data = Some(network_data.into());
+        self
+    }
+    /// Stripe’s assessment of the fraud risk for this authorization.
+    pub fn risk_assessment(
+        mut self,
+        risk_assessment: impl Into<CreateIssuingAuthorizationRiskAssessment>,
+    ) -> Self {
+        self.inner.risk_assessment = Some(risk_assessment.into());
         self
     }
     /// Verifications that Stripe performed on information that the cardholder provided to the merchant.

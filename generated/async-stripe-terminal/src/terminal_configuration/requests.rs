@@ -286,6 +286,8 @@ const _: () = {
 #[derive(Clone, Debug, serde::Serialize)]
 struct CreateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    bbpos_wisepad3: Option<CreateTerminalConfigurationBbposWisepad3>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     bbpos_wisepos_e: Option<BbposWisePose>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -307,6 +309,7 @@ struct CreateTerminalConfigurationBuilder {
 impl CreateTerminalConfigurationBuilder {
     fn new() -> Self {
         Self {
+            bbpos_wisepad3: None,
             bbpos_wisepos_e: None,
             expand: None,
             name: None,
@@ -317,6 +320,23 @@ impl CreateTerminalConfigurationBuilder {
             verifone_p400: None,
             wifi: None,
         }
+    }
+}
+/// An object containing device type specific settings for BBPOS WisePad 3 readers
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTerminalConfigurationBbposWisepad3 {
+    /// A File ID representing an image you would like displayed on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+impl CreateTerminalConfigurationBbposWisepad3 {
+    pub fn new() -> Self {
+        Self { splashscreen: None }
+    }
+}
+impl Default for CreateTerminalConfigurationBbposWisepad3 {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// An object containing device type specific settings for Stripe S700 readers
@@ -450,6 +470,14 @@ impl CreateTerminalConfiguration {
     pub fn new() -> Self {
         Self { inner: CreateTerminalConfigurationBuilder::new() }
     }
+    /// An object containing device type specific settings for BBPOS WisePad 3 readers
+    pub fn bbpos_wisepad3(
+        mut self,
+        bbpos_wisepad3: impl Into<CreateTerminalConfigurationBbposWisepad3>,
+    ) -> Self {
+        self.inner.bbpos_wisepad3 = Some(bbpos_wisepad3.into());
+        self
+    }
     /// An object containing device type specific settings for BBPOS WisePOS E readers
     pub fn bbpos_wisepos_e(mut self, bbpos_wisepos_e: impl Into<BbposWisePose>) -> Self {
         self.inner.bbpos_wisepos_e = Some(bbpos_wisepos_e.into());
@@ -535,6 +563,8 @@ impl StripeRequest for CreateTerminalConfiguration {
 #[derive(Clone, Debug, serde::Serialize)]
 struct UpdateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    bbpos_wisepad3: Option<UpdateTerminalConfigurationBbposWisepad3>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     bbpos_wisepos_e: Option<BbposWisePose>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -556,6 +586,7 @@ struct UpdateTerminalConfigurationBuilder {
 impl UpdateTerminalConfigurationBuilder {
     fn new() -> Self {
         Self {
+            bbpos_wisepad3: None,
             bbpos_wisepos_e: None,
             expand: None,
             name: None,
@@ -566,6 +597,23 @@ impl UpdateTerminalConfigurationBuilder {
             verifone_p400: None,
             wifi: None,
         }
+    }
+}
+/// An object containing device type specific settings for BBPOS WisePad 3 readers
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTerminalConfigurationBbposWisepad3 {
+    /// A File ID representing an image you would like displayed on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+impl UpdateTerminalConfigurationBbposWisepad3 {
+    pub fn new() -> Self {
+        Self { splashscreen: None }
+    }
+}
+impl Default for UpdateTerminalConfigurationBbposWisepad3 {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// An object containing device type specific settings for Stripe S700 readers
@@ -702,6 +750,14 @@ impl UpdateTerminalConfiguration {
             configuration: configuration.into(),
             inner: UpdateTerminalConfigurationBuilder::new(),
         }
+    }
+    /// An object containing device type specific settings for BBPOS WisePad 3 readers
+    pub fn bbpos_wisepad3(
+        mut self,
+        bbpos_wisepad3: impl Into<UpdateTerminalConfigurationBbposWisepad3>,
+    ) -> Self {
+        self.inner.bbpos_wisepad3 = Some(bbpos_wisepad3.into());
+        self
     }
     /// An object containing device type specific settings for BBPOS WisePOS E readers
     pub fn bbpos_wisepos_e(mut self, bbpos_wisepos_e: impl Into<BbposWisePose>) -> Self {

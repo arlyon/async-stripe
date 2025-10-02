@@ -5,6 +5,8 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalConfiguration {
+    pub bbpos_wisepad3:
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     pub bbpos_wisepos_e:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     /// Unique identifier for the object.
@@ -27,6 +29,9 @@ pub struct TerminalConfiguration {
 }
 #[doc(hidden)]
 pub struct TerminalConfigurationBuilder {
+    bbpos_wisepad3: Option<
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
+    >,
     bbpos_wisepos_e: Option<
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     >,
@@ -88,6 +93,7 @@ const _: () = {
         type Out = TerminalConfiguration;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "bbpos_wisepad3" => Deserialize::begin(&mut self.bbpos_wisepad3),
                 "bbpos_wisepos_e" => Deserialize::begin(&mut self.bbpos_wisepos_e),
                 "id" => Deserialize::begin(&mut self.id),
                 "is_account_default" => Deserialize::begin(&mut self.is_account_default),
@@ -106,6 +112,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                bbpos_wisepad3: Deserialize::default(),
                 bbpos_wisepos_e: Deserialize::default(),
                 id: Deserialize::default(),
                 is_account_default: Deserialize::default(),
@@ -122,6 +129,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(bbpos_wisepad3),
                 Some(bbpos_wisepos_e),
                 Some(id),
                 Some(is_account_default),
@@ -134,6 +142,7 @@ const _: () = {
                 Some(verifone_p400),
                 Some(wifi),
             ) = (
+                self.bbpos_wisepad3.take(),
                 self.bbpos_wisepos_e.take(),
                 self.id.take(),
                 self.is_account_default,
@@ -150,6 +159,7 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                bbpos_wisepad3,
                 bbpos_wisepos_e,
                 id,
                 is_account_default,
@@ -188,6 +198,7 @@ const _: () = {
             let mut b = TerminalConfigurationBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "bbpos_wisepad3" => b.bbpos_wisepad3 = FromValueOpt::from_value(v),
                     "bbpos_wisepos_e" => b.bbpos_wisepos_e = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "is_account_default" => b.is_account_default = FromValueOpt::from_value(v),
@@ -211,7 +222,8 @@ const _: () = {
 impl serde::Serialize for TerminalConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TerminalConfiguration", 12)?;
+        let mut s = s.serialize_struct("TerminalConfiguration", 13)?;
+        s.serialize_field("bbpos_wisepad3", &self.bbpos_wisepad3)?;
         s.serialize_field("bbpos_wisepos_e", &self.bbpos_wisepos_e)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("is_account_default", &self.is_account_default)?;

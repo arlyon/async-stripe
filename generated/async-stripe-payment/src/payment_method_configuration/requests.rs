@@ -210,6 +210,8 @@ struct CreatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     fpx: Option<CreatePaymentMethodConfigurationFpx>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    fr_meal_voucher_conecs: Option<CreatePaymentMethodConfigurationFrMealVoucherConecs>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     giropay: Option<CreatePaymentMethodConfigurationGiropay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     google_pay: Option<CreatePaymentMethodConfigurationGooglePay>,
@@ -302,6 +304,7 @@ impl CreatePaymentMethodConfigurationBuilder {
             eps: None,
             expand: None,
             fpx: None,
+            fr_meal_voucher_conecs: None,
             giropay: None,
             google_pay: None,
             grabpay: None,
@@ -2279,6 +2282,110 @@ impl<'de> serde::Deserialize<'de>
                 "Unknown value for CreatePaymentMethodConfigurationFpxDisplayPreferencePreference",
             )
         })
+    }
+}
+/// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
+/// Check this [page](https://stripe.com/docs/payments/benefits/fr-meal-vouchers) for more details.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationFrMealVoucherConecs {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference:
+        Option<CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference>,
+}
+impl CreatePaymentMethodConfigurationFrMealVoucherConecs {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationFrMealVoucherConecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference:
+        Option<CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference>,
+}
+impl CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference"))
     }
 }
 /// giropay is a German payment method based on online banking, introduced in 2006.
@@ -5508,6 +5615,15 @@ impl CreatePaymentMethodConfiguration {
         self.inner.fpx = Some(fpx.into());
         self
     }
+    /// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
+    /// Check this [page](https://stripe.com/docs/payments/benefits/fr-meal-vouchers) for more details.
+    pub fn fr_meal_voucher_conecs(
+        mut self,
+        fr_meal_voucher_conecs: impl Into<CreatePaymentMethodConfigurationFrMealVoucherConecs>,
+    ) -> Self {
+        self.inner.fr_meal_voucher_conecs = Some(fr_meal_voucher_conecs.into());
+        self
+    }
     /// giropay is a German payment method based on online banking, introduced in 2006.
     /// It allows customers to complete transactions online using their online banking environment, with funds debited from their bank account.
     /// Depending on their bank, customers confirm payments on giropay using a second factor of authentication or a PIN.
@@ -5843,6 +5959,8 @@ struct UpdatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     fpx: Option<UpdatePaymentMethodConfigurationFpx>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    fr_meal_voucher_conecs: Option<UpdatePaymentMethodConfigurationFrMealVoucherConecs>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     giropay: Option<UpdatePaymentMethodConfigurationGiropay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     google_pay: Option<UpdatePaymentMethodConfigurationGooglePay>,
@@ -5934,6 +6052,7 @@ impl UpdatePaymentMethodConfigurationBuilder {
             eps: None,
             expand: None,
             fpx: None,
+            fr_meal_voucher_conecs: None,
             giropay: None,
             google_pay: None,
             grabpay: None,
@@ -7910,6 +8029,110 @@ impl<'de> serde::Deserialize<'de>
                 "Unknown value for UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference",
             )
         })
+    }
+}
+/// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
+/// Check this [page](https://stripe.com/docs/payments/benefits/fr-meal-vouchers) for more details.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationFrMealVoucherConecs {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference:
+        Option<UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference>,
+}
+impl UpdatePaymentMethodConfigurationFrMealVoucherConecs {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationFrMealVoucherConecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference:
+        Option<UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference>,
+}
+impl UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference"))
     }
 }
 /// giropay is a German payment method based on online banking, introduced in 2006.
@@ -11146,6 +11369,15 @@ impl UpdatePaymentMethodConfiguration {
     /// Check this [page](https://stripe.com/docs/payments/fpx) for more details.
     pub fn fpx(mut self, fpx: impl Into<UpdatePaymentMethodConfigurationFpx>) -> Self {
         self.inner.fpx = Some(fpx.into());
+        self
+    }
+    /// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
+    /// Check this [page](https://stripe.com/docs/payments/benefits/fr-meal-vouchers) for more details.
+    pub fn fr_meal_voucher_conecs(
+        mut self,
+        fr_meal_voucher_conecs: impl Into<UpdatePaymentMethodConfigurationFrMealVoucherConecs>,
+    ) -> Self {
+        self.inner.fr_meal_voucher_conecs = Some(fr_meal_voucher_conecs.into());
         self
     }
     /// giropay is a German payment method based on online banking, introduced in 2006.

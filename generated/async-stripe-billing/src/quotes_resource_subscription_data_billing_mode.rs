@@ -3,12 +3,14 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct QuotesResourceSubscriptionDataBillingMode {
+    pub flexible: Option<stripe_shared::SubscriptionsResourceBillingModeFlexible>,
     /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: QuotesResourceSubscriptionDataBillingModeType,
 }
 #[doc(hidden)]
 pub struct QuotesResourceSubscriptionDataBillingModeBuilder {
+    flexible: Option<Option<stripe_shared::SubscriptionsResourceBillingModeFlexible>>,
     type_: Option<QuotesResourceSubscriptionDataBillingModeType>,
 }
 
@@ -52,6 +54,7 @@ const _: () = {
         type Out = QuotesResourceSubscriptionDataBillingMode;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "flexible" => Deserialize::begin(&mut self.flexible),
                 "type" => Deserialize::begin(&mut self.type_),
 
                 _ => <dyn Visitor>::ignore(),
@@ -59,14 +62,14 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { type_: Deserialize::default() }
+            Self { flexible: Deserialize::default(), type_: Deserialize::default() }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(type_),) = (self.type_,) else {
+            let (Some(flexible), Some(type_)) = (self.flexible, self.type_) else {
                 return None;
             };
-            Some(Self::Out { type_ })
+            Some(Self::Out { flexible, type_ })
         }
     }
 
@@ -93,6 +96,7 @@ const _: () = {
             let mut b = QuotesResourceSubscriptionDataBillingModeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "flexible" => b.flexible = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
 
                     _ => {}

@@ -36,6 +36,24 @@ pub use balance_detail_ungated::*;
 pub mod balance_net_available;
 #[doc(inline)]
 pub use balance_net_available::*;
+pub use balance_settings::types::*;
+pub mod balance_settings;
+#[doc(hidden)]
+pub mod balance_settings_resource_payments;
+#[doc(inline)]
+pub use balance_settings_resource_payments::*;
+#[doc(hidden)]
+pub mod balance_settings_resource_payout_schedule;
+#[doc(inline)]
+pub use balance_settings_resource_payout_schedule::*;
+#[doc(hidden)]
+pub mod balance_settings_resource_payouts;
+#[doc(inline)]
+pub use balance_settings_resource_payouts::*;
+#[doc(hidden)]
+pub mod balance_settings_resource_settlement_timing;
+#[doc(inline)]
+pub use balance_settings_resource_settlement_timing::*;
 pub mod balance_transaction;
 pub use stripe_shared::balance_transaction::*;
 pub use stripe_shared::balance_transaction_source::*;

@@ -547,6 +547,7 @@ pub enum ListPaymentMethodsCustomerType {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Mobilepay,
     Multibanco,
     NaverPay,
@@ -602,6 +603,7 @@ impl ListPaymentMethodsCustomerType {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
@@ -660,6 +662,7 @@ impl std::str::FromStr for ListPaymentMethodsCustomerType {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
@@ -957,6 +960,8 @@ struct CreateCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     balance: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    business_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     cash_balance: Option<CreateCustomerCashBalance>,
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
@@ -964,6 +969,8 @@ struct CreateCustomerBuilder {
     email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    individual_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     invoice_prefix: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1000,10 +1007,12 @@ impl CreateCustomerBuilder {
         Self {
             address: None,
             balance: None,
+            business_name: None,
             cash_balance: None,
             description: None,
             email: None,
             expand: None,
+            individual_name: None,
             invoice_prefix: None,
             invoice_settings: None,
             metadata: None,
@@ -1738,6 +1747,11 @@ impl CreateCustomer {
         self.inner.balance = Some(balance.into());
         self
     }
+    /// The customer's business name. This may be up to *150 characters*.
+    pub fn business_name(mut self, business_name: impl Into<String>) -> Self {
+        self.inner.business_name = Some(business_name.into());
+        self
+    }
     /// Balance information and default balance settings for this customer.
     pub fn cash_balance(mut self, cash_balance: impl Into<CreateCustomerCashBalance>) -> Self {
         self.inner.cash_balance = Some(cash_balance.into());
@@ -1759,6 +1773,11 @@ impl CreateCustomer {
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
         self.inner.expand = Some(expand.into());
+        self
+    }
+    /// The customer's full name. This may be up to *150 characters*.
+    pub fn individual_name(mut self, individual_name: impl Into<String>) -> Self {
+        self.inner.individual_name = Some(individual_name.into());
         self
     }
     /// The prefix for the customer used to generate unique invoice numbers.
@@ -1881,6 +1900,8 @@ struct UpdateCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     balance: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    business_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     cash_balance: Option<UpdateCustomerCashBalance>,
     #[serde(skip_serializing_if = "Option::is_none")]
     default_source: Option<String>,
@@ -1890,6 +1911,8 @@ struct UpdateCustomerBuilder {
     email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    individual_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     invoice_prefix: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1920,11 +1943,13 @@ impl UpdateCustomerBuilder {
         Self {
             address: None,
             balance: None,
+            business_name: None,
             cash_balance: None,
             default_source: None,
             description: None,
             email: None,
             expand: None,
+            individual_name: None,
             invoice_prefix: None,
             invoice_settings: None,
             metadata: None,
@@ -2269,6 +2294,11 @@ impl UpdateCustomer {
         self.inner.balance = Some(balance.into());
         self
     }
+    /// The customer's business name. This may be up to *150 characters*.
+    pub fn business_name(mut self, business_name: impl Into<String>) -> Self {
+        self.inner.business_name = Some(business_name.into());
+        self
+    }
     /// Balance information and default balance settings for this customer.
     pub fn cash_balance(mut self, cash_balance: impl Into<UpdateCustomerCashBalance>) -> Self {
         self.inner.cash_balance = Some(cash_balance.into());
@@ -2299,6 +2329,11 @@ impl UpdateCustomer {
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
         self.inner.expand = Some(expand.into());
+        self
+    }
+    /// The customer's full name. This may be up to *150 characters*.
+    pub fn individual_name(mut self, individual_name: impl Into<String>) -> Self {
+        self.inner.individual_name = Some(individual_name.into());
         self
     }
     /// The prefix for the customer used to generate unique invoice numbers.
@@ -2788,10 +2823,10 @@ pub struct OptionalFieldsCustomerAddress {
     /// However, in order to activate some tax features, the format should be a two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
+    /// Address line 1, such as the street, PO Box, or company name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    /// Address line 2, such as the apartment, suite, unit, or building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
     /// ZIP or postal code.

@@ -42,6 +42,9 @@ pub struct InvoiceItem {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The amount after discounts, but before credits and taxes.
+    /// This field is `null` for `discountable=true` items.
+    pub net_amount: Option<i64>,
     /// The parent that generated this invoice item.
     pub parent: Option<stripe_billing::BillingBillResourceInvoiceItemParentsInvoiceItemParent>,
     pub period: stripe_shared::InvoiceLineItemPeriod,
@@ -49,6 +52,7 @@ pub struct InvoiceItem {
     pub pricing: Option<stripe_shared::BillingBillResourceInvoicingPricingPricing>,
     /// Whether the invoice item was created automatically as a proration adjustment when the customer switched plans.
     pub proration: bool,
+    pub proration_details: Option<stripe_billing::ProrationDetails>,
     /// Quantity of units for the invoice item.
     /// If the invoice item is a proration, the quantity of the subscription that the proration was computed for.
     pub quantity: u64,
@@ -71,10 +75,12 @@ pub struct InvoiceItemBuilder {
     invoice: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    net_amount: Option<Option<i64>>,
     parent: Option<Option<stripe_billing::BillingBillResourceInvoiceItemParentsInvoiceItemParent>>,
     period: Option<stripe_shared::InvoiceLineItemPeriod>,
     pricing: Option<Option<stripe_shared::BillingBillResourceInvoicingPricingPricing>>,
     proration: Option<bool>,
+    proration_details: Option<Option<stripe_billing::ProrationDetails>>,
     quantity: Option<u64>,
     tax_rates: Option<Option<Vec<stripe_shared::TaxRate>>>,
     test_clock: Option<Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>>,
@@ -131,10 +137,12 @@ const _: () = {
                 "invoice" => Deserialize::begin(&mut self.invoice),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
+                "net_amount" => Deserialize::begin(&mut self.net_amount),
                 "parent" => Deserialize::begin(&mut self.parent),
                 "period" => Deserialize::begin(&mut self.period),
                 "pricing" => Deserialize::begin(&mut self.pricing),
                 "proration" => Deserialize::begin(&mut self.proration),
+                "proration_details" => Deserialize::begin(&mut self.proration_details),
                 "quantity" => Deserialize::begin(&mut self.quantity),
                 "tax_rates" => Deserialize::begin(&mut self.tax_rates),
                 "test_clock" => Deserialize::begin(&mut self.test_clock),
@@ -156,10 +164,12 @@ const _: () = {
                 invoice: Deserialize::default(),
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
+                net_amount: Deserialize::default(),
                 parent: Deserialize::default(),
                 period: Deserialize::default(),
                 pricing: Deserialize::default(),
                 proration: Deserialize::default(),
+                proration_details: Deserialize::default(),
                 quantity: Deserialize::default(),
                 tax_rates: Deserialize::default(),
                 test_clock: Deserialize::default(),
@@ -179,10 +189,12 @@ const _: () = {
                 Some(invoice),
                 Some(livemode),
                 Some(metadata),
+                Some(net_amount),
                 Some(parent),
                 Some(period),
                 Some(pricing),
                 Some(proration),
+                Some(proration_details),
                 Some(quantity),
                 Some(tax_rates),
                 Some(test_clock),
@@ -198,10 +210,12 @@ const _: () = {
                 self.invoice.take(),
                 self.livemode,
                 self.metadata.take(),
+                self.net_amount,
                 self.parent.take(),
                 self.period,
                 self.pricing.take(),
                 self.proration,
+                self.proration_details.take(),
                 self.quantity,
                 self.tax_rates.take(),
                 self.test_clock.take(),
@@ -221,10 +235,12 @@ const _: () = {
                 invoice,
                 livemode,
                 metadata,
+                net_amount,
                 parent,
                 period,
                 pricing,
                 proration,
+                proration_details,
                 quantity,
                 tax_rates,
                 test_clock,
@@ -266,10 +282,12 @@ const _: () = {
                     "invoice" => b.invoice = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "net_amount" => b.net_amount = FromValueOpt::from_value(v),
                     "parent" => b.parent = FromValueOpt::from_value(v),
                     "period" => b.period = FromValueOpt::from_value(v),
                     "pricing" => b.pricing = FromValueOpt::from_value(v),
                     "proration" => b.proration = FromValueOpt::from_value(v),
+                    "proration_details" => b.proration_details = FromValueOpt::from_value(v),
                     "quantity" => b.quantity = FromValueOpt::from_value(v),
                     "tax_rates" => b.tax_rates = FromValueOpt::from_value(v),
                     "test_clock" => b.test_clock = FromValueOpt::from_value(v),
@@ -285,7 +303,7 @@ const _: () = {
 impl serde::Serialize for InvoiceItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("InvoiceItem", 19)?;
+        let mut s = s.serialize_struct("InvoiceItem", 21)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
@@ -297,10 +315,12 @@ impl serde::Serialize for InvoiceItem {
         s.serialize_field("invoice", &self.invoice)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("net_amount", &self.net_amount)?;
         s.serialize_field("parent", &self.parent)?;
         s.serialize_field("period", &self.period)?;
         s.serialize_field("pricing", &self.pricing)?;
         s.serialize_field("proration", &self.proration)?;
+        s.serialize_field("proration_details", &self.proration_details)?;
         s.serialize_field("quantity", &self.quantity)?;
         s.serialize_field("tax_rates", &self.tax_rates)?;
         s.serialize_field("test_clock", &self.test_clock)?;

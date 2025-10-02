@@ -62,6 +62,7 @@ pub enum ListPaymentMethodType {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Mobilepay,
     Multibanco,
     NaverPay,
@@ -117,6 +118,7 @@ impl ListPaymentMethodType {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
@@ -175,6 +177,7 @@ impl std::str::FromStr for ListPaymentMethodType {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
@@ -451,6 +454,9 @@ struct CreatePaymentMethodBuilder {
     #[serde(with = "stripe_types::with_serde_json_opt")]
     link: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    mb_way: Option<miniserde::json::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -554,6 +560,7 @@ impl CreatePaymentMethodBuilder {
             konbini: None,
             kr_card: None,
             link: None,
+            mb_way: None,
             metadata: None,
             mobilepay: None,
             multibanco: None,
@@ -1686,6 +1693,7 @@ pub enum CreatePaymentMethodType {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Mobilepay,
     Multibanco,
     NaverPay,
@@ -1741,6 +1749,7 @@ impl CreatePaymentMethodType {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
@@ -1799,6 +1808,7 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
@@ -2188,6 +2198,11 @@ impl CreatePaymentMethod {
         self.inner.link = Some(link.into());
         self
     }
+    /// If this is a MB WAY PaymentMethod, this hash contains details about the MB WAY payment method.
+    pub fn mb_way(mut self, mb_way: impl Into<miniserde::json::Value>) -> Self {
+        self.inner.mb_way = Some(mb_way.into());
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -2378,13 +2393,7 @@ struct UpdatePaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
-    link: Option<miniserde::json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
-    pay_by_bank: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     us_bank_account: Option<UpdatePaymentMethodUsBankAccount>,
 }
@@ -2395,9 +2404,7 @@ impl UpdatePaymentMethodBuilder {
             billing_details: None,
             card: None,
             expand: None,
-            link: None,
             metadata: None,
-            pay_by_bank: None,
             us_bank_account: None,
         }
     }
@@ -2680,11 +2687,6 @@ impl UpdatePaymentMethod {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
-    pub fn link(mut self, link: impl Into<miniserde::json::Value>) -> Self {
-        self.inner.link = Some(link.into());
-        self
-    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -2694,11 +2696,6 @@ impl UpdatePaymentMethod {
         metadata: impl Into<std::collections::HashMap<String, String>>,
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
-        self
-    }
-    /// If this is a `pay_by_bank` PaymentMethod, this hash contains details about the PayByBank payment method.
-    pub fn pay_by_bank(mut self, pay_by_bank: impl Into<miniserde::json::Value>) -> Self {
-        self.inner.pay_by_bank = Some(pay_by_bank.into());
         self
     }
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -2875,10 +2872,10 @@ pub struct BillingDetailsAddress {
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
+    /// Address line 1, such as the street, PO Box, or company name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    /// Address line 2, such as the apartment, suite, unit, or building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
     /// ZIP or postal code.

@@ -135,7 +135,7 @@ jobs:
         features: [default-tls, rustls-tls-webpki-roots, rustls-tls-native]
     services:
       stripe-mock:
-        image: stripe/stripe-mock:v0.195.0
+        image: stripe/stripe-mock:v0.197.0
         ports:
           - 12111:12111
           - 12112:12112

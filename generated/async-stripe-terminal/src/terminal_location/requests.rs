@@ -266,26 +266,40 @@ const _: () = {
 
 #[derive(Clone, Debug, serde::Serialize)]
 struct CreateTerminalLocationBuilder {
-    address: CreateTerminalLocationAddress,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    address: Option<CreateTerminalLocationAddress>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    address_kana: Option<CreateTerminalLocationAddressKana>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    address_kanji: Option<CreateTerminalLocationAddressKanji>,
     #[serde(skip_serializing_if = "Option::is_none")]
     configuration_overrides: Option<String>,
-    display_name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    display_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    display_name_kana: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    display_name_kanji: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    phone: Option<String>,
 }
 impl CreateTerminalLocationBuilder {
-    fn new(
-        address: impl Into<CreateTerminalLocationAddress>,
-        display_name: impl Into<String>,
-    ) -> Self {
+    fn new() -> Self {
         Self {
-            address: address.into(),
+            address: None,
+            address_kana: None,
+            address_kanji: None,
             configuration_overrides: None,
-            display_name: display_name.into(),
+            display_name: None,
+            display_name_kana: None,
+            display_name_kanji: None,
             expand: None,
             metadata: None,
+            phone: None,
         }
     }
 }
@@ -297,10 +311,10 @@ pub struct CreateTerminalLocationAddress {
     pub city: Option<String>,
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     pub country: String,
-    /// Address line 1 (e.g., street, PO Box, or company name).
+    /// Address line 1, such as the street, PO Box, or company name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    /// Address line 2, such as the apartment, suite, unit, or building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
     /// ZIP or postal code.
@@ -322,6 +336,92 @@ impl CreateTerminalLocationAddress {
         }
     }
 }
+/// The Kana variation of the full address of the location (Japan only).
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTerminalLocationAddressKana {
+    /// City or ward.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Block or building number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Building details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// Postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// Prefecture.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+    /// Town or cho-me.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub town: Option<String>,
+}
+impl CreateTerminalLocationAddressKana {
+    pub fn new() -> Self {
+        Self {
+            city: None,
+            country: None,
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+            town: None,
+        }
+    }
+}
+impl Default for CreateTerminalLocationAddressKana {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The Kanji variation of the full address of the location (Japan only).
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateTerminalLocationAddressKanji {
+    /// City or ward.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Block or building number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Building details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// Postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// Prefecture.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+    /// Town or cho-me.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub town: Option<String>,
+}
+impl CreateTerminalLocationAddressKanji {
+    pub fn new() -> Self {
+        Self {
+            city: None,
+            country: None,
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+            town: None,
+        }
+    }
+}
+impl Default for CreateTerminalLocationAddressKanji {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// Creates a new `Location` object.
 /// For further details, including which address fields are required in each country, see the [Manage locations](https://stripe.com/docs/terminal/fleet/locations) guide.
 #[derive(Clone, Debug, serde::Serialize)]
@@ -330,15 +430,48 @@ pub struct CreateTerminalLocation {
 }
 impl CreateTerminalLocation {
     /// Construct a new `CreateTerminalLocation`.
-    pub fn new(
-        address: impl Into<CreateTerminalLocationAddress>,
-        display_name: impl Into<String>,
+    pub fn new() -> Self {
+        Self { inner: CreateTerminalLocationBuilder::new() }
+    }
+    /// The full address of the location.
+    pub fn address(mut self, address: impl Into<CreateTerminalLocationAddress>) -> Self {
+        self.inner.address = Some(address.into());
+        self
+    }
+    /// The Kana variation of the full address of the location (Japan only).
+    pub fn address_kana(
+        mut self,
+        address_kana: impl Into<CreateTerminalLocationAddressKana>,
     ) -> Self {
-        Self { inner: CreateTerminalLocationBuilder::new(address.into(), display_name.into()) }
+        self.inner.address_kana = Some(address_kana.into());
+        self
+    }
+    /// The Kanji variation of the full address of the location (Japan only).
+    pub fn address_kanji(
+        mut self,
+        address_kanji: impl Into<CreateTerminalLocationAddressKanji>,
+    ) -> Self {
+        self.inner.address_kanji = Some(address_kanji.into());
+        self
     }
     /// The ID of a configuration that will be used to customize all readers in this location.
     pub fn configuration_overrides(mut self, configuration_overrides: impl Into<String>) -> Self {
         self.inner.configuration_overrides = Some(configuration_overrides.into());
+        self
+    }
+    /// A name for the location. Maximum length is 1000 characters.
+    pub fn display_name(mut self, display_name: impl Into<String>) -> Self {
+        self.inner.display_name = Some(display_name.into());
+        self
+    }
+    /// The Kana variation of the name for the location (Japan only). Maximum length is 1000 characters.
+    pub fn display_name_kana(mut self, display_name_kana: impl Into<String>) -> Self {
+        self.inner.display_name_kana = Some(display_name_kana.into());
+        self
+    }
+    /// The Kanji variation of the name for the location (Japan only). Maximum length is 1000 characters.
+    pub fn display_name_kanji(mut self, display_name_kanji: impl Into<String>) -> Self {
+        self.inner.display_name_kanji = Some(display_name_kanji.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
@@ -356,6 +489,16 @@ impl CreateTerminalLocation {
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
         self
+    }
+    /// The phone number for the location.
+    pub fn phone(mut self, phone: impl Into<String>) -> Self {
+        self.inner.phone = Some(phone.into());
+        self
+    }
+}
+impl Default for CreateTerminalLocation {
+    fn default() -> Self {
+        Self::new()
     }
 }
 impl CreateTerminalLocation {
@@ -388,22 +531,37 @@ struct UpdateTerminalLocationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     address: Option<UpdateTerminalLocationAddress>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    address_kana: Option<UpdateTerminalLocationAddressKana>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    address_kanji: Option<UpdateTerminalLocationAddressKanji>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     configuration_overrides: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     display_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    display_name_kana: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    display_name_kanji: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    phone: Option<String>,
 }
 impl UpdateTerminalLocationBuilder {
     fn new() -> Self {
         Self {
             address: None,
+            address_kana: None,
+            address_kanji: None,
             configuration_overrides: None,
             display_name: None,
+            display_name_kana: None,
+            display_name_kanji: None,
             expand: None,
             metadata: None,
+            phone: None,
         }
     }
 }
@@ -418,10 +576,10 @@ pub struct UpdateTerminalLocationAddress {
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
+    /// Address line 1, such as the street, PO Box, or company name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    /// Address line 2, such as the apartment, suite, unit, or building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
     /// ZIP or postal code.
@@ -437,6 +595,92 @@ impl UpdateTerminalLocationAddress {
     }
 }
 impl Default for UpdateTerminalLocationAddress {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The Kana variation of the full address of the location (Japan only).
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTerminalLocationAddressKana {
+    /// City or ward.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Block or building number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Building details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// Postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// Prefecture.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+    /// Town or cho-me.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub town: Option<String>,
+}
+impl UpdateTerminalLocationAddressKana {
+    pub fn new() -> Self {
+        Self {
+            city: None,
+            country: None,
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+            town: None,
+        }
+    }
+}
+impl Default for UpdateTerminalLocationAddressKana {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The Kanji variation of the full address of the location (Japan only).
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateTerminalLocationAddressKanji {
+    /// City or ward.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Block or building number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Building details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// Postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// Prefecture.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+    /// Town or cho-me.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub town: Option<String>,
+}
+impl UpdateTerminalLocationAddressKanji {
+    pub fn new() -> Self {
+        Self {
+            city: None,
+            country: None,
+            line1: None,
+            line2: None,
+            postal_code: None,
+            state: None,
+            town: None,
+        }
+    }
+}
+impl Default for UpdateTerminalLocationAddressKanji {
     fn default() -> Self {
         Self::new()
     }
@@ -460,6 +704,22 @@ impl UpdateTerminalLocation {
         self.inner.address = Some(address.into());
         self
     }
+    /// The Kana variation of the full address of the location (Japan only).
+    pub fn address_kana(
+        mut self,
+        address_kana: impl Into<UpdateTerminalLocationAddressKana>,
+    ) -> Self {
+        self.inner.address_kana = Some(address_kana.into());
+        self
+    }
+    /// The Kanji variation of the full address of the location (Japan only).
+    pub fn address_kanji(
+        mut self,
+        address_kanji: impl Into<UpdateTerminalLocationAddressKanji>,
+    ) -> Self {
+        self.inner.address_kanji = Some(address_kanji.into());
+        self
+    }
     /// The ID of a configuration that will be used to customize all readers in this location.
     pub fn configuration_overrides(mut self, configuration_overrides: impl Into<String>) -> Self {
         self.inner.configuration_overrides = Some(configuration_overrides.into());
@@ -468,6 +728,16 @@ impl UpdateTerminalLocation {
     /// A name for the location.
     pub fn display_name(mut self, display_name: impl Into<String>) -> Self {
         self.inner.display_name = Some(display_name.into());
+        self
+    }
+    /// The Kana variation of the name for the location (Japan only).
+    pub fn display_name_kana(mut self, display_name_kana: impl Into<String>) -> Self {
+        self.inner.display_name_kana = Some(display_name_kana.into());
+        self
+    }
+    /// The Kanji variation of the name for the location (Japan only).
+    pub fn display_name_kanji(mut self, display_name_kanji: impl Into<String>) -> Self {
+        self.inner.display_name_kanji = Some(display_name_kanji.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
@@ -484,6 +754,11 @@ impl UpdateTerminalLocation {
         metadata: impl Into<std::collections::HashMap<String, String>>,
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
+        self
+    }
+    /// The phone number for the location.
+    pub fn phone(mut self, phone: impl Into<String>) -> Self {
+        self.inner.phone = Some(phone.into());
         self
     }
 }

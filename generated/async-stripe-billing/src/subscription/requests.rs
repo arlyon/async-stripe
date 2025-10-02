@@ -779,7 +779,8 @@ pub struct CreateSubscriptionAddInvoiceItems {
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// The period associated with this invoice item. Defaults to the current period of the subscription.
+    /// The period associated with this invoice item.
+    /// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<CreateSubscriptionAddInvoiceItemsPeriod>,
     /// The ID of the price object. One of `price` or `price_data` is required.
@@ -814,7 +815,8 @@ impl Default for CreateSubscriptionAddInvoiceItems {
         Self::new()
     }
 }
-/// The period associated with this invoice item. Defaults to the current period of the subscription.
+/// The period associated with this invoice item.
+/// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionAddInvoiceItemsPeriod {
     /// End of the invoice item period.
@@ -1171,7 +1173,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionAutomaticTaxLiabilityTyp
     }
 }
 /// Mutually exclusive with billing_cycle_anchor and only valid with monthly and yearly price intervals.
-/// When provided, the billing_cycle_anchor is set to the next occurence of the day_of_month at the hour, minute, and second UTC.
+/// When provided, the billing_cycle_anchor is set to the next occurrence of the day_of_month at the hour, minute, and second UTC.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionBillingCycleAnchorConfig {
     /// The day of the month the anchor should be. Ranges from 1 to 31.
@@ -1203,16 +1205,96 @@ impl CreateSubscriptionBillingCycleAnchorConfig {
 /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionBillingMode {
+    /// Configure behavior for flexible billing mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flexible: Option<CreateSubscriptionBillingModeFlexible>,
     /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+    /// If no value is passed, the default is `flexible`.
     #[serde(rename = "type")]
     pub type_: CreateSubscriptionBillingModeType,
 }
 impl CreateSubscriptionBillingMode {
     pub fn new(type_: impl Into<CreateSubscriptionBillingModeType>) -> Self {
-        Self { type_: type_.into() }
+        Self { flexible: None, type_: type_.into() }
+    }
+}
+/// Configure behavior for flexible billing mode.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionBillingModeFlexible {
+    /// Controls how invoices and invoice items display proration amounts and discount amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_discounts: Option<CreateSubscriptionBillingModeFlexibleProrationDiscounts>,
+}
+impl CreateSubscriptionBillingModeFlexible {
+    pub fn new() -> Self {
+        Self { proration_discounts: None }
+    }
+}
+impl Default for CreateSubscriptionBillingModeFlexible {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls how invoices and invoice items display proration amounts and discount amounts.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSubscriptionBillingModeFlexibleProrationDiscounts {
+    Included,
+    Itemized,
+}
+impl CreateSubscriptionBillingModeFlexibleProrationDiscounts {
+    pub fn as_str(self) -> &'static str {
+        use CreateSubscriptionBillingModeFlexibleProrationDiscounts::*;
+        match self {
+            Included => "included",
+            Itemized => "itemized",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionBillingModeFlexibleProrationDiscounts {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionBillingModeFlexibleProrationDiscounts::*;
+        match s {
+            "included" => Ok(Included),
+            "itemized" => Ok(Itemized),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionBillingModeFlexibleProrationDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSubscriptionBillingModeFlexibleProrationDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSubscriptionBillingModeFlexibleProrationDiscounts {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionBillingModeFlexibleProrationDiscounts {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionBillingModeFlexibleProrationDiscounts",
+            )
+        })
     }
 }
 /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+/// If no value is passed, the default is `flexible`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSubscriptionBillingModeType {
     Classic,
@@ -3162,7 +3244,7 @@ impl CreateSubscription {
         self
     }
     /// Mutually exclusive with billing_cycle_anchor and only valid with monthly and yearly price intervals.
-    /// When provided, the billing_cycle_anchor is set to the next occurence of the day_of_month at the hour, minute, and second UTC.
+    /// When provided, the billing_cycle_anchor is set to the next occurrence of the day_of_month at the hour, minute, and second UTC.
     pub fn billing_cycle_anchor_config(
         mut self,
         billing_cycle_anchor_config: impl Into<CreateSubscriptionBillingCycleAnchorConfig>,
@@ -3425,14 +3507,94 @@ impl MigrateSubscriptionBuilder {
 /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct MigrateSubscriptionBillingMode {
+    /// Configure behavior for flexible billing mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flexible: Option<MigrateSubscriptionBillingModeFlexible>,
+    /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
     #[serde(rename = "type")]
     pub type_: MigrateSubscriptionBillingModeType,
 }
 impl MigrateSubscriptionBillingMode {
     pub fn new(type_: impl Into<MigrateSubscriptionBillingModeType>) -> Self {
-        Self { type_: type_.into() }
+        Self { flexible: None, type_: type_.into() }
     }
 }
+/// Configure behavior for flexible billing mode.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct MigrateSubscriptionBillingModeFlexible {
+    /// Controls how invoices and invoice items display proration amounts and discount amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_discounts: Option<MigrateSubscriptionBillingModeFlexibleProrationDiscounts>,
+}
+impl MigrateSubscriptionBillingModeFlexible {
+    pub fn new() -> Self {
+        Self { proration_discounts: None }
+    }
+}
+impl Default for MigrateSubscriptionBillingModeFlexible {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls how invoices and invoice items display proration amounts and discount amounts.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum MigrateSubscriptionBillingModeFlexibleProrationDiscounts {
+    Included,
+    Itemized,
+}
+impl MigrateSubscriptionBillingModeFlexibleProrationDiscounts {
+    pub fn as_str(self) -> &'static str {
+        use MigrateSubscriptionBillingModeFlexibleProrationDiscounts::*;
+        match self {
+            Included => "included",
+            Itemized => "itemized",
+        }
+    }
+}
+
+impl std::str::FromStr for MigrateSubscriptionBillingModeFlexibleProrationDiscounts {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use MigrateSubscriptionBillingModeFlexibleProrationDiscounts::*;
+        match s {
+            "included" => Ok(Included),
+            "itemized" => Ok(Itemized),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for MigrateSubscriptionBillingModeFlexibleProrationDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for MigrateSubscriptionBillingModeFlexibleProrationDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for MigrateSubscriptionBillingModeFlexibleProrationDiscounts {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for MigrateSubscriptionBillingModeFlexibleProrationDiscounts {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for MigrateSubscriptionBillingModeFlexibleProrationDiscounts",
+            )
+        })
+    }
+}
+/// Controls the calculation and orchestration of prorations and invoices for subscriptions.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum MigrateSubscriptionBillingModeType {
     Flexible,
@@ -3865,7 +4027,8 @@ pub struct UpdateSubscriptionAddInvoiceItems {
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// The period associated with this invoice item. Defaults to the current period of the subscription.
+    /// The period associated with this invoice item.
+    /// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<UpdateSubscriptionAddInvoiceItemsPeriod>,
     /// The ID of the price object. One of `price` or `price_data` is required.
@@ -3900,7 +4063,8 @@ impl Default for UpdateSubscriptionAddInvoiceItems {
         Self::new()
     }
 }
-/// The period associated with this invoice item. Defaults to the current period of the subscription.
+/// The period associated with this invoice item.
+/// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionAddInvoiceItemsPeriod {
     /// End of the invoice item period.

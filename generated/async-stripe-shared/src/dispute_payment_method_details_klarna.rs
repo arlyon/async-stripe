@@ -2,11 +2,14 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputePaymentMethodDetailsKlarna {
+    /// Chargeback loss reason mapped by Stripe from Klarna's chargeback loss reason
+    pub chargeback_loss_reason_code: Option<String>,
     /// The reason for the dispute as defined by Klarna
     pub reason_code: Option<String>,
 }
 #[doc(hidden)]
 pub struct DisputePaymentMethodDetailsKlarnaBuilder {
+    chargeback_loss_reason_code: Option<Option<String>>,
     reason_code: Option<Option<String>>,
 }
 
@@ -50,6 +53,9 @@ const _: () = {
         type Out = DisputePaymentMethodDetailsKlarna;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "chargeback_loss_reason_code" => {
+                    Deserialize::begin(&mut self.chargeback_loss_reason_code)
+                }
                 "reason_code" => Deserialize::begin(&mut self.reason_code),
 
                 _ => <dyn Visitor>::ignore(),
@@ -57,14 +63,19 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { reason_code: Deserialize::default() }
+            Self {
+                chargeback_loss_reason_code: Deserialize::default(),
+                reason_code: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(reason_code),) = (self.reason_code.take(),) else {
+            let (Some(chargeback_loss_reason_code), Some(reason_code)) =
+                (self.chargeback_loss_reason_code.take(), self.reason_code.take())
+            else {
                 return None;
             };
-            Some(Self::Out { reason_code })
+            Some(Self::Out { chargeback_loss_reason_code, reason_code })
         }
     }
 
@@ -91,6 +102,9 @@ const _: () = {
             let mut b = DisputePaymentMethodDetailsKlarnaBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "chargeback_loss_reason_code" => {
+                        b.chargeback_loss_reason_code = FromValueOpt::from_value(v)
+                    }
                     "reason_code" => b.reason_code = FromValueOpt::from_value(v),
 
                     _ => {}

@@ -550,6 +550,10 @@ pub struct CreateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub link: Option<miniserde::json::Value>,
+    /// If this is a MB WAY PaymentMethod, this hash contains details about the MB WAY payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub mb_way: Option<miniserde::json::Value>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -679,6 +683,7 @@ impl CreateSetupIntentPaymentMethodData {
             konbini: None,
             kr_card: None,
             link: None,
+            mb_way: None,
             metadata: None,
             mobilepay: None,
             multibanco: None,
@@ -1680,6 +1685,7 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Mobilepay,
     Multibanco,
     NaverPay,
@@ -1734,6 +1740,7 @@ impl CreateSetupIntentPaymentMethodDataType {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
@@ -1791,6 +1798,7 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataType {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
@@ -4619,6 +4627,10 @@ pub struct UpdateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub link: Option<miniserde::json::Value>,
+    /// If this is a MB WAY PaymentMethod, this hash contains details about the MB WAY payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub mb_way: Option<miniserde::json::Value>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -4748,6 +4760,7 @@ impl UpdateSetupIntentPaymentMethodData {
             konbini: None,
             kr_card: None,
             link: None,
+            mb_way: None,
             metadata: None,
             mobilepay: None,
             multibanco: None,
@@ -5749,6 +5762,7 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Mobilepay,
     Multibanco,
     NaverPay,
@@ -5803,6 +5817,7 @@ impl UpdateSetupIntentPaymentMethodDataType {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
@@ -5860,6 +5875,7 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataType {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
@@ -8818,6 +8834,10 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub link: Option<miniserde::json::Value>,
+    /// If this is a MB WAY PaymentMethod, this hash contains details about the MB WAY payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub mb_way: Option<miniserde::json::Value>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -8947,6 +8967,7 @@ impl ConfirmSetupIntentPaymentMethodData {
             konbini: None,
             kr_card: None,
             link: None,
+            mb_way: None,
             metadata: None,
             mobilepay: None,
             multibanco: None,
@@ -9948,6 +9969,7 @@ pub enum ConfirmSetupIntentPaymentMethodDataType {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Mobilepay,
     Multibanco,
     NaverPay,
@@ -10002,6 +10024,7 @@ impl ConfirmSetupIntentPaymentMethodDataType {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
@@ -10059,6 +10082,7 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataType {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
@@ -12692,10 +12716,10 @@ pub struct BillingDetailsAddress {
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
+    /// Address line 1, such as the street, PO Box, or company name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    /// Address line 2, such as the apartment, suite, unit, or building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
     /// ZIP or postal code.

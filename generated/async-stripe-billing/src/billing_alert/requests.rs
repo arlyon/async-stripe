@@ -200,7 +200,7 @@ pub struct CreateBillingAlertUsageThreshold {
     pub gte: i64,
     /// The [Billing Meter](/api/billing/meter) ID whose usage is monitored.
     pub meter: String,
-    /// Whether the alert should only fire only once, or once per billing cycle.
+    /// Defines how the alert will behave.
     pub recurrence: CreateBillingAlertUsageThresholdRecurrence,
 }
 impl CreateBillingAlertUsageThreshold {
@@ -283,7 +283,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingAlertUsageThresholdFiltersTyp
         })
     }
 }
-/// Whether the alert should only fire only once, or once per billing cycle.
+/// Defines how the alert will behave.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateBillingAlertUsageThresholdRecurrence {
     OneTime,

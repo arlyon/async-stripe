@@ -46,6 +46,8 @@ pub struct IssuingCard {
     pub replacement_for: Option<stripe_types::Expandable<stripe_shared::IssuingCard>>,
     /// The reason why the previous card needed to be replaced.
     pub replacement_reason: Option<stripe_shared::IssuingCardReplacementReason>,
+    /// Text separate from cardholder name, printed on the card.
+    pub second_line: Option<String>,
     /// Where and how the card will be shipped.
     pub shipping: Option<stripe_shared::IssuingCardShipping>,
     pub spending_controls: stripe_shared::IssuingCardAuthorizationControls,
@@ -80,6 +82,7 @@ pub struct IssuingCardBuilder {
     replaced_by: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCard>>>,
     replacement_for: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCard>>>,
     replacement_reason: Option<Option<stripe_shared::IssuingCardReplacementReason>>,
+    second_line: Option<Option<String>>,
     shipping: Option<Option<stripe_shared::IssuingCardShipping>>,
     spending_controls: Option<stripe_shared::IssuingCardAuthorizationControls>,
     status: Option<stripe_shared::IssuingCardStatus>,
@@ -145,6 +148,7 @@ const _: () = {
                 "replaced_by" => Deserialize::begin(&mut self.replaced_by),
                 "replacement_for" => Deserialize::begin(&mut self.replacement_for),
                 "replacement_reason" => Deserialize::begin(&mut self.replacement_reason),
+                "second_line" => Deserialize::begin(&mut self.second_line),
                 "shipping" => Deserialize::begin(&mut self.shipping),
                 "spending_controls" => Deserialize::begin(&mut self.spending_controls),
                 "status" => Deserialize::begin(&mut self.status),
@@ -175,6 +179,7 @@ const _: () = {
                 replaced_by: Deserialize::default(),
                 replacement_for: Deserialize::default(),
                 replacement_reason: Deserialize::default(),
+                second_line: Deserialize::default(),
                 shipping: Deserialize::default(),
                 spending_controls: Deserialize::default(),
                 status: Deserialize::default(),
@@ -203,6 +208,7 @@ const _: () = {
                 Some(replaced_by),
                 Some(replacement_for),
                 Some(replacement_reason),
+                Some(second_line),
                 Some(shipping),
                 Some(spending_controls),
                 Some(status),
@@ -227,6 +233,7 @@ const _: () = {
                 self.replaced_by.take(),
                 self.replacement_for.take(),
                 self.replacement_reason,
+                self.second_line.take(),
                 self.shipping.take(),
                 self.spending_controls.take(),
                 self.status,
@@ -255,6 +262,7 @@ const _: () = {
                 replaced_by,
                 replacement_for,
                 replacement_reason,
+                second_line,
                 shipping,
                 spending_controls,
                 status,
@@ -307,6 +315,7 @@ const _: () = {
                     "replaced_by" => b.replaced_by = FromValueOpt::from_value(v),
                     "replacement_for" => b.replacement_for = FromValueOpt::from_value(v),
                     "replacement_reason" => b.replacement_reason = FromValueOpt::from_value(v),
+                    "second_line" => b.second_line = FromValueOpt::from_value(v),
                     "shipping" => b.shipping = FromValueOpt::from_value(v),
                     "spending_controls" => b.spending_controls = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
@@ -324,7 +333,7 @@ const _: () = {
 impl serde::Serialize for IssuingCard {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("IssuingCard", 24)?;
+        let mut s = s.serialize_struct("IssuingCard", 25)?;
         s.serialize_field("brand", &self.brand)?;
         s.serialize_field("cancellation_reason", &self.cancellation_reason)?;
         s.serialize_field("cardholder", &self.cardholder)?;
@@ -343,6 +352,7 @@ impl serde::Serialize for IssuingCard {
         s.serialize_field("replaced_by", &self.replaced_by)?;
         s.serialize_field("replacement_for", &self.replacement_for)?;
         s.serialize_field("replacement_reason", &self.replacement_reason)?;
+        s.serialize_field("second_line", &self.second_line)?;
         s.serialize_field("shipping", &self.shipping)?;
         s.serialize_field("spending_controls", &self.spending_controls)?;
         s.serialize_field("status", &self.status)?;

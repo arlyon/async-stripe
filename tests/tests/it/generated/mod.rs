@@ -9,6 +9,7 @@ pub fn check_fixtures(resources: &serde_json::Value) {
     check_object::<stripe_connect::ApplicationFee>(resources, "application_fee");
     check_object::<stripe_connect::AppsSecret>(resources, "apps.secret");
     check_object::<stripe_core::Balance>(resources, "balance");
+    check_object::<stripe_core::BalanceSettings>(resources, "balance_settings");
     check_object::<stripe_core::BalanceTransaction>(resources, "balance_transaction");
     check_object::<stripe_payment::BankAccount>(resources, "bank_account");
     check_object::<stripe_billing::BillingAlert>(resources, "billing.alert");

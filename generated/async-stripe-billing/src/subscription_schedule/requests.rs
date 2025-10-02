@@ -238,16 +238,99 @@ impl CreateSubscriptionScheduleBuilder {
 /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionScheduleBillingMode {
+    /// Configure behavior for flexible billing mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flexible: Option<CreateSubscriptionScheduleBillingModeFlexible>,
     /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+    /// If no value is passed, the default is `flexible`.
     #[serde(rename = "type")]
     pub type_: CreateSubscriptionScheduleBillingModeType,
 }
 impl CreateSubscriptionScheduleBillingMode {
     pub fn new(type_: impl Into<CreateSubscriptionScheduleBillingModeType>) -> Self {
-        Self { type_: type_.into() }
+        Self { flexible: None, type_: type_.into() }
+    }
+}
+/// Configure behavior for flexible billing mode.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionScheduleBillingModeFlexible {
+    /// Controls how invoices and invoice items display proration amounts and discount amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_discounts:
+        Option<CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts>,
+}
+impl CreateSubscriptionScheduleBillingModeFlexible {
+    pub fn new() -> Self {
+        Self { proration_discounts: None }
+    }
+}
+impl Default for CreateSubscriptionScheduleBillingModeFlexible {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls how invoices and invoice items display proration amounts and discount amounts.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
+    Included,
+    Itemized,
+}
+impl CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
+    pub fn as_str(self) -> &'static str {
+        use CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts::*;
+        match self {
+            Included => "included",
+            Itemized => "itemized",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts::*;
+        match s {
+            "included" => Ok(Included),
+            "itemized" => Ok(Itemized),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts",
+            )
+        })
     }
 }
 /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+/// If no value is passed, the default is `flexible`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSubscriptionScheduleBillingModeType {
     Classic,
@@ -749,13 +832,6 @@ pub struct CreateSubscriptionSchedulePhases {
     pub invoice_settings: Option<CreateSubscriptionSchedulePhasesInvoiceSettings>,
     /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
     pub items: Vec<CreateSubscriptionSchedulePhasesItems>,
-    /// Integer representing the multiplier applied to the price interval.
-    /// For example, `iterations=2` applied to a price with `interval=month` and `interval_count=3` results in a phase of duration `2 * 3 months = 6 months`.
-    /// If set, `end_date` must not be set.
-    /// This parameter is deprecated and will be removed in a future version.
-    /// Use `duration` instead.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub iterations: Option<i64>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a phase.
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered, adding new keys and replacing existing keys in the subscription's `metadata`.
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
@@ -798,7 +874,6 @@ impl CreateSubscriptionSchedulePhases {
             end_date: None,
             invoice_settings: None,
             items: items.into(),
-            iterations: None,
             metadata: None,
             on_behalf_of: None,
             proration_behavior: None,
@@ -822,7 +897,7 @@ pub struct CreateSubscriptionSchedulePhasesAddInvoiceItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The period associated with this invoice item.
-    /// Defaults to the period of the underlying subscription that surrounds the start of the phase.
+    /// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod>,
     /// The ID of the price object. One of `price` or `price_data` is required.
@@ -858,7 +933,7 @@ impl Default for CreateSubscriptionSchedulePhasesAddInvoiceItems {
     }
 }
 /// The period associated with this invoice item.
-/// Defaults to the period of the underlying subscription that surrounds the start of the phase.
+/// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
     /// End of the invoice item period.
@@ -2427,13 +2502,6 @@ pub struct UpdateSubscriptionSchedulePhases {
     pub invoice_settings: Option<UpdateSubscriptionSchedulePhasesInvoiceSettings>,
     /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
     pub items: Vec<UpdateSubscriptionSchedulePhasesItems>,
-    /// Integer representing the multiplier applied to the price interval.
-    /// For example, `iterations=2` applied to a price with `interval=month` and `interval_count=3` results in a phase of duration `2 * 3 months = 6 months`.
-    /// If set, `end_date` must not be set.
-    /// This parameter is deprecated and will be removed in a future version.
-    /// Use `duration` instead.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub iterations: Option<i64>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a phase.
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered, adding new keys and replacing existing keys in the subscription's `metadata`.
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
@@ -2480,7 +2548,6 @@ impl UpdateSubscriptionSchedulePhases {
             end_date: None,
             invoice_settings: None,
             items: items.into(),
-            iterations: None,
             metadata: None,
             on_behalf_of: None,
             proration_behavior: None,
@@ -2505,7 +2572,7 @@ pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The period associated with this invoice item.
-    /// Defaults to the period of the underlying subscription that surrounds the start of the phase.
+    /// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod>,
     /// The ID of the price object. One of `price` or `price_data` is required.
@@ -2541,7 +2608,7 @@ impl Default for UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     }
 }
 /// The period associated with this invoice item.
-/// Defaults to the period of the underlying subscription that surrounds the start of the phase.
+/// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
     /// End of the invoice item period.
