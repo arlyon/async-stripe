@@ -56,7 +56,7 @@ async fn retry() {
 
     let res = server_errors_req().send(&client).await;
 
-    mock.assert_hits_async(5).await;
+    mock.assert_calls_async(5).await;
     assert!(res.is_err());
 
     // And it should also work for retry strategy set per request
@@ -71,7 +71,7 @@ async fn retry() {
 
     let res = server_errors_req().request_strategy(RequestStrategy::Retry(5)).send(&client).await;
 
-    mock.assert_hits_async(5).await;
+    mock.assert_calls_async(5).await;
     assert!(res.is_err());
 }
 
@@ -99,7 +99,7 @@ async fn user_error() {
         .await;
 
     // We don't retry a 404
-    mock.assert_hits_async(1).await;
+    mock.assert_calls_async(1).await;
 
     match res {
         Err(StripeError::Stripe(x, status)) => {
@@ -144,7 +144,7 @@ async fn nice_serde_error() {
         .request_strategy(RequestStrategy::Retry(3));
     let res = req.send(&client).await;
 
-    mock.assert_hits_async(1).await;
+    mock.assert_calls_async(1).await;
 
     match res {
         Err(StripeError::JSONDeserialize(_)) => {}
@@ -166,7 +166,7 @@ async fn retry_header() {
 
     let res = server_errors_req().send(&client).await;
 
-    hello_mock.assert_hits_async(1).await;
+    hello_mock.assert_calls_async(1).await;
     assert!(res.is_err());
 }
 
@@ -181,7 +181,7 @@ async fn retry_with_body() {
         when.method(POST)
             .path("/v1/server-errors")
             .header("content-type", "application/x-www-form-urlencoded")
-            .x_www_form_urlencoded_tuple("id", TEST_DATA_ID);
+            .form_urlencoded_tuple("id", TEST_DATA_ID);
         then.status(500);
     });
 
@@ -189,7 +189,7 @@ async fn retry_with_body() {
     let res =
         req.customize::<TestData>().request_strategy(RequestStrategy::Retry(5)).send(&client).await;
 
-    mock.assert_hits_async(5).await;
+    mock.assert_calls_async(5).await;
     assert!(res.is_err());
 }
 
@@ -216,7 +216,7 @@ async fn user_error_transfers() {
 
     let req = RequestBuilder::new(StripeMethod::Get, "/transfers").customize::<()>();
     let res = req.send(&client).await.unwrap_err();
-    mock.assert_hits_async(1).await;
+    mock.assert_calls_async(1).await;
 
     match res {
         StripeError::Stripe(err, status_code) => {
@@ -256,7 +256,7 @@ async fn assert_headers_sent(
     });
 
     let _ = req.send(&client).await;
-    mock.assert_hits_async(1).await;
+    mock.assert_calls_async(1).await;
 }
 
 async fn assert_user_agent_sent(builder: ClientBuilder, expected: String) {
