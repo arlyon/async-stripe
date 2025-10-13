@@ -12,10 +12,10 @@ heck = "0.5.0"
 petgraph = { version = "0.8.3", default-features = false, features = ["graphmap", "std"] }
 lazy_static = "1"
 reqwest = { version = "0.12", features = ["blocking", "json"] }
-regex-lite = "0.1.7"
+regex-lite = "0.1.8"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-toml = "0.9.7"
+toml = "0.9.8"
 anyhow = "1.0.100"
 tracing = "0.1.40"
 openapiv3 = "2"
