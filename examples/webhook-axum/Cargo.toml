@@ -5,7 +5,7 @@ edition = "2024"
 publish = false
 
 [dependencies]
-tokio = { version = "1.24.1", features = ["rt-multi-thread", "macros"] }
+tokio = { version = "1.48.0", features = ["rt-multi-thread", "macros"] }
 axum = { version = "0.8.4", features = ["macros"] }
 async-stripe-webhook = { path = "../../async-stripe-webhook", features = [
     "async-stripe-checkout",
