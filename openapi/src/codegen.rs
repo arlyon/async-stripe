@@ -111,6 +111,7 @@ impl CodeGen {
             let mod_rs = formatdoc! {
                 r#"
             #![recursion_limit = "256"]
+            #![deny(clippy::large_stack_frames)]
             #![allow(clippy::large_enum_variant)]
             #![allow(rustdoc::broken_intra_doc_links)]
             #![allow(rustdoc::invalid_html_tags)]
