@@ -25,7 +25,7 @@ hyper-rustls = { version = "0.27", default-features = false, features = ["http1"
 thiserror = "2.0.11"
 miniserde.workspace = true
 bytes = "1.6.0"
-tokio = { version = "1.24.1", features = ["rt", "macros"] }
+tokio = { version = "1.48.0", features = ["rt", "macros"] }
 
 # async-std-surf deps
 async-std = { version = "1.12.0", optional = true }
@@ -53,4 +53,4 @@ uuid = ["async-stripe-client-core/uuid"]
 [dev-dependencies]
 serde.workspace = true
 serde_json.workspace = true
-httpmock = { version = "0.7.0", default-features = false }
+httpmock = { version = "0.8.2", default-features = false }
