@@ -1,3 +1,4 @@
+#![deny(clippy::large_stack_frames)]
 #![allow(clippy::large_enum_variant)]
 #![recursion_limit = "256"]
 //! This crate provides Rust bindings for handling [Stripe webhook events](https://stripe.com/docs/webhooks).

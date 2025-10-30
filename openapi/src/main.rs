@@ -104,6 +104,10 @@ fn main() -> Result<()> {
 
     if !args.dry_run {
         info!("Formatting generated files");
+
+        // in a rather bizarre turn of events, we actually need to run fmt _twice_
+        // to get it 'settled'. otherwise it will fail formatting checks
+        let _out = fmt_cmd.output()?;
         let out = fmt_cmd.output()?;
         if !out.status.success() {
             bail!("Rustfmt failed with outputs {out:?}");
