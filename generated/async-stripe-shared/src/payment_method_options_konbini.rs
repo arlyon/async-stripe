@@ -76,7 +76,6 @@ const _: () = {
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "product_description" => Deserialize::begin(&mut self.product_description),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -146,7 +145,6 @@ const _: () = {
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
                     "product_description" => b.product_description = FromValueOpt::from_value(v),
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

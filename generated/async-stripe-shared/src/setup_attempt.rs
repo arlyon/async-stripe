@@ -114,7 +114,6 @@ const _: () = {
                 "setup_intent" => Deserialize::begin(&mut self.setup_intent),
                 "status" => Deserialize::begin(&mut self.status),
                 "usage" => Deserialize::begin(&mut self.usage),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -231,7 +230,6 @@ const _: () = {
                     "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "usage" => b.usage = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

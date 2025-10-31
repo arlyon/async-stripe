@@ -550,6 +550,7 @@ impl<'de> serde::Deserialize<'de> for SubscribeFinancialConnectionsAccountFeatur
     }
 }
 /// Subscribes to periodic refreshes of data associated with a Financial Connections `Account`.
+/// When the account status is active, data is typically refreshed once a day.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct SubscribeFinancialConnectionsAccount {
     inner: SubscribeFinancialConnectionsAccountBuilder,

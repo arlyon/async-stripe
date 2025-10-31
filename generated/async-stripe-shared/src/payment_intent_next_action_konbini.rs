@@ -58,7 +58,6 @@ const _: () = {
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "hosted_voucher_url" => Deserialize::begin(&mut self.hosted_voucher_url),
                 "stores" => Deserialize::begin(&mut self.stores),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -107,7 +106,6 @@ const _: () = {
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
                     "hosted_voucher_url" => b.hosted_voucher_url = FromValueOpt::from_value(v),
                     "stores" => b.stores = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

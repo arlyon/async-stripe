@@ -91,7 +91,6 @@ const _: () = {
                 "suggested_decision_version" => {
                     Deserialize::begin(&mut self.suggested_decision_version)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -190,7 +189,6 @@ const _: () = {
                     "suggested_decision_version" => {
                         b.suggested_decision_version = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

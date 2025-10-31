@@ -59,7 +59,6 @@ const _: () = {
                 "card_logo" => Deserialize::begin(&mut self.card_logo),
                 "carrier_text" => Deserialize::begin(&mut self.carrier_text),
                 "second_line" => Deserialize::begin(&mut self.second_line),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "card_logo" => b.card_logo = FromValueOpt::from_value(v),
                     "carrier_text" => b.carrier_text = FromValueOpt::from_value(v),
                     "second_line" => b.second_line = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -62,7 +62,6 @@ const _: () = {
                 "payment_method_update" => Deserialize::begin(&mut self.payment_method_update),
                 "subscription_cancel" => Deserialize::begin(&mut self.subscription_cancel),
                 "subscription_update" => Deserialize::begin(&mut self.subscription_update),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -134,7 +133,6 @@ const _: () = {
                     }
                     "subscription_cancel" => b.subscription_cancel = FromValueOpt::from_value(v),
                     "subscription_update" => b.subscription_update = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

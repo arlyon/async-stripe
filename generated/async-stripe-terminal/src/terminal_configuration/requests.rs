@@ -1079,6 +1079,9 @@ pub struct Tipping {
     /// Tipping configuration for GBP
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gbp: Option<CurrencySpecificConfig>,
+    /// Tipping configuration for GIP
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gip: Option<CurrencySpecificConfig>,
     /// Tipping configuration for HKD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hkd: Option<CurrencySpecificConfig>,
@@ -1128,6 +1131,7 @@ impl Tipping {
             dkk: None,
             eur: None,
             gbp: None,
+            gip: None,
             hkd: None,
             huf: None,
             jpy: None,

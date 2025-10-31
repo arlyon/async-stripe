@@ -100,7 +100,6 @@ const _: () = {
                 "tax_behavior" => Deserialize::begin(&mut self.tax_behavior),
                 "tax_code" => Deserialize::begin(&mut self.tax_code),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -200,7 +199,6 @@ const _: () = {
                     "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
                     "tax_code" => b.tax_code = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

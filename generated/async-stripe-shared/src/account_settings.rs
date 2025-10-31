@@ -77,7 +77,6 @@ const _: () = {
                 "payouts" => Deserialize::begin(&mut self.payouts),
                 "sepa_debit_payments" => Deserialize::begin(&mut self.sepa_debit_payments),
                 "treasury" => Deserialize::begin(&mut self.treasury),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -172,7 +171,6 @@ const _: () = {
                     "payouts" => b.payouts = FromValueOpt::from_value(v),
                     "sepa_debit_payments" => b.sepa_debit_payments = FromValueOpt::from_value(v),
                     "treasury" => b.treasury = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

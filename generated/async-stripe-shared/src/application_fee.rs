@@ -107,7 +107,6 @@ const _: () = {
                 "originating_transaction" => Deserialize::begin(&mut self.originating_transaction),
                 "refunded" => Deserialize::begin(&mut self.refunded),
                 "refunds" => Deserialize::begin(&mut self.refunds),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -224,7 +223,6 @@ const _: () = {
                     }
                     "refunded" => b.refunded = FromValueOpt::from_value(v),
                     "refunds" => b.refunds = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

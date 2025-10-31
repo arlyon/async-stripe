@@ -62,7 +62,6 @@ const _: () = {
             Ok(match k {
                 "preferred_language" => Deserialize::begin(&mut self.preferred_language),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                 match k.as_str() {
                     "preferred_language" => b.preferred_language = FromValueOpt::from_value(v),
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

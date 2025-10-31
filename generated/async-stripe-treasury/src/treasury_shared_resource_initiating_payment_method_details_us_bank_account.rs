@@ -59,7 +59,6 @@ const _: () = {
                 "bank_name" => Deserialize::begin(&mut self.bank_name),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "routing_number" => Deserialize::begin(&mut self.routing_number),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "bank_name" => b.bank_name = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "routing_number" => b.routing_number = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

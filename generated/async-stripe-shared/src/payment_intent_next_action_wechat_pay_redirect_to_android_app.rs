@@ -76,7 +76,6 @@ const _: () = {
                 "prepay_id" => Deserialize::begin(&mut self.prepay_id),
                 "sign" => Deserialize::begin(&mut self.sign),
                 "timestamp" => Deserialize::begin(&mut self.timestamp),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -149,7 +148,6 @@ const _: () = {
                     "prepay_id" => b.prepay_id = FromValueOpt::from_value(v),
                     "sign" => b.sign = FromValueOpt::from_value(v),
                     "timestamp" => b.timestamp = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

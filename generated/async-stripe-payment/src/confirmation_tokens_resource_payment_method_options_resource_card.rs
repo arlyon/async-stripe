@@ -59,7 +59,6 @@ const _: () = {
             Ok(match k {
                 "cvc_token" => Deserialize::begin(&mut self.cvc_token),
                 "installments" => Deserialize::begin(&mut self.installments),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -103,7 +102,6 @@ const _: () = {
                 match k.as_str() {
                     "cvc_token" => b.cvc_token = FromValueOpt::from_value(v),
                     "installments" => b.installments = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

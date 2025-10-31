@@ -61,7 +61,6 @@ const _: () = {
                 }
                 "skip_tipping" => Deserialize::begin(&mut self.skip_tipping),
                 "tipping" => Deserialize::begin(&mut self.tipping),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -112,7 +111,6 @@ const _: () = {
                     }
                     "skip_tipping" => b.skip_tipping = FromValueOpt::from_value(v),
                     "tipping" => b.tipping = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

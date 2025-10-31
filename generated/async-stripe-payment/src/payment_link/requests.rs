@@ -278,6 +278,8 @@ struct CreatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    name_collection: Option<NameCollectionParams>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     on_behalf_of: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     optional_items: Option<Vec<CreatePaymentLinkOptionalItems>>,
@@ -323,6 +325,7 @@ impl CreatePaymentLinkBuilder {
             invoice_creation: None,
             line_items: line_items.into(),
             metadata: None,
+            name_collection: None,
             on_behalf_of: None,
             optional_items: None,
             payment_intent_data: None,
@@ -3007,6 +3010,11 @@ impl CreatePaymentLink {
         self.inner.metadata = Some(metadata.into());
         self
     }
+    /// Controls settings applied for collecting the customer's name.
+    pub fn name_collection(mut self, name_collection: impl Into<NameCollectionParams>) -> Self {
+        self.inner.name_collection = Some(name_collection.into());
+        self
+    }
     /// The account on behalf of which to charge.
     pub fn on_behalf_of(mut self, on_behalf_of: impl Into<String>) -> Self {
         self.inner.on_behalf_of = Some(on_behalf_of.into());
@@ -3173,6 +3181,8 @@ struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    name_collection: Option<NameCollectionParams>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     payment_intent_data: Option<UpdatePaymentLinkPaymentIntentData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_collection: Option<UpdatePaymentLinkPaymentMethodCollection>,
@@ -3207,6 +3217,7 @@ impl UpdatePaymentLinkBuilder {
             invoice_creation: None,
             line_items: None,
             metadata: None,
+            name_collection: None,
             payment_intent_data: None,
             payment_method_collection: None,
             payment_method_types: None,
@@ -5189,6 +5200,11 @@ impl UpdatePaymentLink {
         self.inner.metadata = Some(metadata.into());
         self
     }
+    /// Controls settings applied for collecting the customer's name.
+    pub fn name_collection(mut self, name_collection: impl Into<NameCollectionParams>) -> Self {
+        self.inner.name_collection = Some(name_collection.into());
+        self
+    }
     /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
     pub fn payment_intent_data(
         mut self,
@@ -5380,6 +5396,34 @@ impl AdjustableQuantityParams {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct NameCollectionBusinessParams {
+    /// Enable business name collection on the payment link. Defaults to `false`.
+    pub enabled: bool,
+    /// Whether the customer is required to provide their business name before checking out.
+    /// Defaults to `false`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+impl NameCollectionBusinessParams {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), optional: None }
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct NameCollectionIndividualParams {
+    /// Enable individual name collection on the payment link. Defaults to `false`.
+    pub enabled: bool,
+    /// Whether the customer is required to provide their full name before checking out.
+    /// Defaults to `false`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+impl NameCollectionIndividualParams {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), optional: None }
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct PhoneNumberCollectionParams {
     /// Set to `true` to enable phone number collection.
     pub enabled: bool,
@@ -5438,6 +5482,25 @@ impl CustomTextParam {
     }
 }
 impl Default for CustomTextParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct NameCollectionParams {
+    /// Controls settings applied for collecting the customer's business name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub business: Option<NameCollectionBusinessParams>,
+    /// Controls settings applied for collecting the customer's individual name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub individual: Option<NameCollectionIndividualParams>,
+}
+impl NameCollectionParams {
+    pub fn new() -> Self {
+        Self { business: None, individual: None }
+    }
+}
+impl Default for NameCollectionParams {
     fn default() -> Self {
         Self::new()
     }

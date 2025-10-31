@@ -3,16 +3,16 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceChoice {
-    /// The id to be selected
-    pub id: Option<String>,
-    /// The button style for the choice
+    /// The identifier for the selected choice. Maximum 50 characters.
+    pub id: Option<stripe_terminal::TerminalReaderReaderResourceChoiceId>,
+    /// The button style for the choice. Can be `primary` or `secondary`.
     pub style: Option<TerminalReaderReaderResourceChoiceStyle>,
-    /// The text to be selected
+    /// The text to be selected. Maximum 30 characters.
     pub text: String,
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceChoiceBuilder {
-    id: Option<Option<String>>,
+    id: Option<Option<stripe_terminal::TerminalReaderReaderResourceChoiceId>>,
     style: Option<Option<TerminalReaderReaderResourceChoiceStyle>>,
     text: Option<String>,
 }
@@ -60,7 +60,6 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "style" => Deserialize::begin(&mut self.style),
                 "text" => Deserialize::begin(&mut self.text),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "id" => b.id = FromValueOpt::from_value(v),
                     "style" => b.style = FromValueOpt::from_value(v),
                     "text" => b.text = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -117,7 +115,7 @@ const _: () = {
         }
     }
 };
-/// The button style for the choice
+/// The button style for the choice. Can be `primary` or `secondary`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TerminalReaderReaderResourceChoiceStyle {
     Primary,
@@ -191,3 +189,14 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceChoiceStyle {
         })
     }
 }
+impl stripe_types::Object for TerminalReaderReaderResourceChoice {
+    type Id = Option<stripe_terminal::TerminalReaderReaderResourceChoiceId>;
+    fn id(&self) -> &Self::Id {
+        &self.id
+    }
+
+    fn into_id(self) -> Self::Id {
+        self.id
+    }
+}
+stripe_types::def_id!(TerminalReaderReaderResourceChoiceId);

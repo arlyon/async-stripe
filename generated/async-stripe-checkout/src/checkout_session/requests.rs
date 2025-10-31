@@ -623,15 +623,16 @@ pub struct CreateCheckoutSessionBrandingSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub button_color: Option<String>,
     /// A string to override the business name shown on the Checkout Session.
+    /// This only shows at the top of the Checkout page, and your business name still appears in terms, receipts, and other places.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_name: Option<String>,
     /// The font family for the Checkout Session corresponding to one of the [supported font families](https://docs.stripe.com/payments/checkout/customization/appearance?payment-ui=stripe-hosted#font-compatibility).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub font_family: Option<CreateCheckoutSessionBrandingSettingsFontFamily>,
-    /// The icon for the Checkout Session. You cannot set both `logo` and `icon`.
+    /// The icon for the Checkout Session. For best results, use a square image.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub icon: Option<CreateCheckoutSessionBrandingSettingsIcon>,
-    /// The logo for the Checkout Session. You cannot set both `logo` and `icon`.
+    /// The logo for the Checkout Session.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub logo: Option<CreateCheckoutSessionBrandingSettingsLogo>,
 }
@@ -844,7 +845,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionBrandingSettingsFontF
         Ok(Self::from_str(&s).unwrap())
     }
 }
-/// The icon for the Checkout Session. You cannot set both `logo` and `icon`.
+/// The icon for the Checkout Session. For best results, use a square image.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionBrandingSettingsIcon {
     /// The ID of a [File upload](https://stripe.com/docs/api/files) representing the icon.
@@ -922,7 +923,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionBrandingSettingsIconT
         })
     }
 }
-/// The logo for the Checkout Session. You cannot set both `logo` and `icon`.
+/// The logo for the Checkout Session.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionBrandingSettingsLogo {
     /// The ID of a [File upload](https://stripe.com/docs/api/files) representing the logo.
@@ -1821,6 +1822,7 @@ pub enum CreateCheckoutSessionExcludedPaymentMethodTypes {
     Klarna,
     Konbini,
     KrCard,
+    MbWay,
     Mobilepay,
     Multibanco,
     NaverPay,
@@ -1875,6 +1877,7 @@ impl CreateCheckoutSessionExcludedPaymentMethodTypes {
             Klarna => "klarna",
             Konbini => "konbini",
             KrCard => "kr_card",
+            MbWay => "mb_way",
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
@@ -1932,6 +1935,7 @@ impl std::str::FromStr for CreateCheckoutSessionExcludedPaymentMethodTypes {
             "klarna" => Ok(Klarna),
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
+            "mb_way" => Ok(MbWay),
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
@@ -3216,6 +3220,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     /// contains details about the Swish payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub swish: Option<CreateCheckoutSessionPaymentMethodOptionsSwish>,
+    /// contains details about the TWINT payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub twint: Option<CreateCheckoutSessionPaymentMethodOptionsTwint>,
     /// contains details about the Us Bank Account payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccount>,
@@ -3267,6 +3274,7 @@ impl CreateCheckoutSessionPaymentMethodOptions {
             sepa_debit: None,
             sofort: None,
             swish: None,
+            twint: None,
             us_bank_account: None,
             wechat_pay: None,
         }
@@ -8890,6 +8898,94 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsSwish {
         Self::new()
     }
 }
+/// contains details about the TWINT payment method options.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsTwint {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+    ///
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage>,
+}
+impl CreateCheckoutSessionPaymentMethodOptionsTwint {
+    pub fn new() -> Self {
+        Self { setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsTwint {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+///
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage {
+    None,
+}
+impl CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        use CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage::*;
+        match self {
+            None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage",
+            )
+        })
+    }
+}
 /// contains details about the Us Bank Account payment method options.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccount {
@@ -9412,6 +9508,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Mobilepay,
     Multibanco,
     NaverPay,
@@ -9467,6 +9564,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
@@ -9525,6 +9623,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodTypes {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),

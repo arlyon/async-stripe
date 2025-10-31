@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "count" => Deserialize::begin(&mut self.count),
                 "limit" => Deserialize::begin(&mut self.limit),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -97,7 +96,6 @@ const _: () = {
                 match k.as_str() {
                     "count" => b.count = FromValueOpt::from_value(v),
                     "limit" => b.limit = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

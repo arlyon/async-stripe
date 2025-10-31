@@ -279,7 +279,6 @@ const _: () = {
                 "trial_end" => Deserialize::begin(&mut self.trial_end),
                 "trial_settings" => Deserialize::begin(&mut self.trial_settings),
                 "trial_start" => Deserialize::begin(&mut self.trial_start),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -549,7 +548,6 @@ const _: () = {
                     "trial_end" => b.trial_end = FromValueOpt::from_value(v),
                     "trial_settings" => b.trial_settings = FromValueOpt::from_value(v),
                     "trial_start" => b.trial_start = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

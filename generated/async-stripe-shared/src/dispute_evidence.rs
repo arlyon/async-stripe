@@ -180,7 +180,6 @@ const _: () = {
                 }
                 "uncategorized_file" => Deserialize::begin(&mut self.uncategorized_file),
                 "uncategorized_text" => Deserialize::begin(&mut self.uncategorized_text),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -387,7 +386,6 @@ const _: () = {
                     }
                     "uncategorized_file" => b.uncategorized_file = FromValueOpt::from_value(v),
                     "uncategorized_text" => b.uncategorized_text = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

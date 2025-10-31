@@ -63,7 +63,6 @@ const _: () = {
                 "default_payment_method" => Deserialize::begin(&mut self.default_payment_method),
                 "footer" => Deserialize::begin(&mut self.footer),
                 "rendering_options" => Deserialize::begin(&mut self.rendering_options),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -125,7 +124,6 @@ const _: () = {
                     }
                     "footer" => b.footer = FromValueOpt::from_value(v),
                     "rendering_options" => b.rendering_options = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

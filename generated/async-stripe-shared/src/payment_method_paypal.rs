@@ -62,7 +62,6 @@ const _: () = {
                 "country" => Deserialize::begin(&mut self.country),
                 "payer_email" => Deserialize::begin(&mut self.payer_email),
                 "payer_id" => Deserialize::begin(&mut self.payer_id),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -111,7 +110,6 @@ const _: () = {
                     "country" => b.country = FromValueOpt::from_value(v),
                     "payer_email" => b.payer_email = FromValueOpt::from_value(v),
                     "payer_id" => b.payer_id = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "generated_card" => Deserialize::begin(&mut self.generated_card),
                 "offline" => Deserialize::begin(&mut self.offline),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -98,7 +97,6 @@ const _: () = {
                 match k.as_str() {
                     "generated_card" => b.generated_card = FromValueOpt::from_value(v),
                     "offline" => b.offline = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

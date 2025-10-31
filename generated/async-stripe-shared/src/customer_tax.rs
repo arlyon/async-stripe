@@ -8,12 +8,16 @@ pub struct CustomerTax {
     pub ip_address: Option<String>,
     /// The identified tax location of the customer.
     pub location: Option<stripe_shared::CustomerTaxLocation>,
+    /// The tax calculation provider used for location resolution.
+    /// Defaults to `stripe` when not using a [third-party provider](/tax/third-party-apps).
+    pub provider: CustomerTaxProvider,
 }
 #[doc(hidden)]
 pub struct CustomerTaxBuilder {
     automatic_tax: Option<CustomerTaxAutomaticTax>,
     ip_address: Option<Option<String>>,
     location: Option<Option<stripe_shared::CustomerTaxLocation>>,
+    provider: Option<CustomerTaxProvider>,
 }
 
 #[allow(
@@ -59,7 +63,7 @@ const _: () = {
                 "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
                 "ip_address" => Deserialize::begin(&mut self.ip_address),
                 "location" => Deserialize::begin(&mut self.location),
-
+                "provider" => Deserialize::begin(&mut self.provider),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -69,16 +73,17 @@ const _: () = {
                 automatic_tax: Deserialize::default(),
                 ip_address: Deserialize::default(),
                 location: Deserialize::default(),
+                provider: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(automatic_tax), Some(ip_address), Some(location)) =
-                (self.automatic_tax, self.ip_address.take(), self.location.take())
+            let (Some(automatic_tax), Some(ip_address), Some(location), Some(provider)) =
+                (self.automatic_tax, self.ip_address.take(), self.location.take(), self.provider)
             else {
                 return None;
             };
-            Some(Self::Out { automatic_tax, ip_address, location })
+            Some(Self::Out { automatic_tax, ip_address, location, provider })
         }
     }
 
@@ -108,7 +113,7 @@ const _: () = {
                     "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
                     "ip_address" => b.ip_address = FromValueOpt::from_value(v),
                     "location" => b.location = FromValueOpt::from_value(v),
-
+                    "provider" => b.provider = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }
@@ -191,5 +196,83 @@ impl<'de> serde::Deserialize<'de> for CustomerTaxAutomaticTax {
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxAutomaticTax"))
+    }
+}
+/// The tax calculation provider used for location resolution.
+/// Defaults to `stripe` when not using a [third-party provider](/tax/third-party-apps).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CustomerTaxProvider {
+    Anrok,
+    Avalara,
+    Sphere,
+    Stripe,
+}
+impl CustomerTaxProvider {
+    pub fn as_str(self) -> &'static str {
+        use CustomerTaxProvider::*;
+        match self {
+            Anrok => "anrok",
+            Avalara => "avalara",
+            Sphere => "sphere",
+            Stripe => "stripe",
+        }
+    }
+}
+
+impl std::str::FromStr for CustomerTaxProvider {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CustomerTaxProvider::*;
+        match s {
+            "anrok" => Ok(Anrok),
+            "avalara" => Ok(Avalara),
+            "sphere" => Ok(Sphere),
+            "stripe" => Ok(Stripe),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CustomerTaxProvider {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CustomerTaxProvider {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for CustomerTaxProvider {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for CustomerTaxProvider {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CustomerTaxProvider> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CustomerTaxProvider::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CustomerTaxProvider);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CustomerTaxProvider {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxProvider"))
     }
 }

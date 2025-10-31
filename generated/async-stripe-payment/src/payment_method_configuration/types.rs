@@ -43,6 +43,7 @@ pub struct PaymentMethodConfiguration {
     pub cartes_bancaires:
         Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub cashapp: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub crypto: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub customer_balance:
         Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub eps: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
@@ -63,6 +64,7 @@ pub struct PaymentMethodConfiguration {
     pub link: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+    pub mb_way: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub mobilepay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub multibanco: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     /// The configuration's name.
@@ -113,6 +115,7 @@ pub struct PaymentMethodConfigurationBuilder {
     cartes_bancaires:
         Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     cashapp: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    crypto: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     customer_balance:
         Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     eps: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
@@ -130,6 +133,7 @@ pub struct PaymentMethodConfigurationBuilder {
     kr_card: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     link: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     livemode: Option<bool>,
+    mb_way: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     mobilepay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     multibanco: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     name: Option<String>,
@@ -216,6 +220,7 @@ const _: () = {
                 "card" => Deserialize::begin(&mut self.card),
                 "cartes_bancaires" => Deserialize::begin(&mut self.cartes_bancaires),
                 "cashapp" => Deserialize::begin(&mut self.cashapp),
+                "crypto" => Deserialize::begin(&mut self.crypto),
                 "customer_balance" => Deserialize::begin(&mut self.customer_balance),
                 "eps" => Deserialize::begin(&mut self.eps),
                 "fpx" => Deserialize::begin(&mut self.fpx),
@@ -232,6 +237,7 @@ const _: () = {
                 "kr_card" => Deserialize::begin(&mut self.kr_card),
                 "link" => Deserialize::begin(&mut self.link),
                 "livemode" => Deserialize::begin(&mut self.livemode),
+                "mb_way" => Deserialize::begin(&mut self.mb_way),
                 "mobilepay" => Deserialize::begin(&mut self.mobilepay),
                 "multibanco" => Deserialize::begin(&mut self.multibanco),
                 "name" => Deserialize::begin(&mut self.name),
@@ -256,7 +262,6 @@ const _: () = {
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
                 "wechat_pay" => Deserialize::begin(&mut self.wechat_pay),
                 "zip" => Deserialize::begin(&mut self.zip),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -281,6 +286,7 @@ const _: () = {
                 card: Deserialize::default(),
                 cartes_bancaires: Deserialize::default(),
                 cashapp: Deserialize::default(),
+                crypto: Deserialize::default(),
                 customer_balance: Deserialize::default(),
                 eps: Deserialize::default(),
                 fpx: Deserialize::default(),
@@ -297,6 +303,7 @@ const _: () = {
                 kr_card: Deserialize::default(),
                 link: Deserialize::default(),
                 livemode: Deserialize::default(),
+                mb_way: Deserialize::default(),
                 mobilepay: Deserialize::default(),
                 multibanco: Deserialize::default(),
                 name: Deserialize::default(),
@@ -344,6 +351,7 @@ const _: () = {
                 Some(card),
                 Some(cartes_bancaires),
                 Some(cashapp),
+                Some(crypto),
                 Some(customer_balance),
                 Some(eps),
                 Some(fpx),
@@ -360,6 +368,7 @@ const _: () = {
                 Some(kr_card),
                 Some(link),
                 Some(livemode),
+                Some(mb_way),
                 Some(mobilepay),
                 Some(multibanco),
                 Some(name),
@@ -403,6 +412,7 @@ const _: () = {
                 self.card,
                 self.cartes_bancaires,
                 self.cashapp,
+                self.crypto,
                 self.customer_balance,
                 self.eps,
                 self.fpx,
@@ -419,6 +429,7 @@ const _: () = {
                 self.kr_card,
                 self.link,
                 self.livemode,
+                self.mb_way,
                 self.mobilepay,
                 self.multibanco,
                 self.name.take(),
@@ -466,6 +477,7 @@ const _: () = {
                 card,
                 cartes_bancaires,
                 cashapp,
+                crypto,
                 customer_balance,
                 eps,
                 fpx,
@@ -482,6 +494,7 @@ const _: () = {
                 kr_card,
                 link,
                 livemode,
+                mb_way,
                 mobilepay,
                 multibanco,
                 name,
@@ -551,6 +564,7 @@ const _: () = {
                     "card" => b.card = FromValueOpt::from_value(v),
                     "cartes_bancaires" => b.cartes_bancaires = FromValueOpt::from_value(v),
                     "cashapp" => b.cashapp = FromValueOpt::from_value(v),
+                    "crypto" => b.crypto = FromValueOpt::from_value(v),
                     "customer_balance" => b.customer_balance = FromValueOpt::from_value(v),
                     "eps" => b.eps = FromValueOpt::from_value(v),
                     "fpx" => b.fpx = FromValueOpt::from_value(v),
@@ -567,6 +581,7 @@ const _: () = {
                     "kr_card" => b.kr_card = FromValueOpt::from_value(v),
                     "link" => b.link = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "mb_way" => b.mb_way = FromValueOpt::from_value(v),
                     "mobilepay" => b.mobilepay = FromValueOpt::from_value(v),
                     "multibanco" => b.multibanco = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
@@ -591,7 +606,6 @@ const _: () = {
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
                     "wechat_pay" => b.wechat_pay = FromValueOpt::from_value(v),
                     "zip" => b.zip = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -603,7 +617,7 @@ const _: () = {
 impl serde::Serialize for PaymentMethodConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethodConfiguration", 59)?;
+        let mut s = s.serialize_struct("PaymentMethodConfiguration", 61)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("affirm", &self.affirm)?;
@@ -622,6 +636,7 @@ impl serde::Serialize for PaymentMethodConfiguration {
         s.serialize_field("card", &self.card)?;
         s.serialize_field("cartes_bancaires", &self.cartes_bancaires)?;
         s.serialize_field("cashapp", &self.cashapp)?;
+        s.serialize_field("crypto", &self.crypto)?;
         s.serialize_field("customer_balance", &self.customer_balance)?;
         s.serialize_field("eps", &self.eps)?;
         s.serialize_field("fpx", &self.fpx)?;
@@ -638,6 +653,7 @@ impl serde::Serialize for PaymentMethodConfiguration {
         s.serialize_field("kr_card", &self.kr_card)?;
         s.serialize_field("link", &self.link)?;
         s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("mb_way", &self.mb_way)?;
         s.serialize_field("mobilepay", &self.mobilepay)?;
         s.serialize_field("multibanco", &self.multibanco)?;
         s.serialize_field("name", &self.name)?;

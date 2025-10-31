@@ -66,26 +66,23 @@ const _: () = {
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
             "eu_bank_transfer" => Deserialize::begin(&mut self.eu_bank_transfer),
-"gb_bank_transfer" => Deserialize::begin(&mut self.gb_bank_transfer),
-"jp_bank_transfer" => Deserialize::begin(&mut self.jp_bank_transfer),
-"reference" => Deserialize::begin(&mut self.reference),
-"type" => Deserialize::begin(&mut self.type_),
-"us_bank_transfer" => Deserialize::begin(&mut self.us_bank_transfer),
-
+            "gb_bank_transfer" => Deserialize::begin(&mut self.gb_bank_transfer),
+            "jp_bank_transfer" => Deserialize::begin(&mut self.jp_bank_transfer),
+            "reference" => Deserialize::begin(&mut self.reference),
+            "type" => Deserialize::begin(&mut self.type_),
+            "us_bank_transfer" => Deserialize::begin(&mut self.us_bank_transfer),
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self {
-            eu_bank_transfer: Deserialize::default(),
+        Self { eu_bank_transfer: Deserialize::default(),
 gb_bank_transfer: Deserialize::default(),
 jp_bank_transfer: Deserialize::default(),
 reference: Deserialize::default(),
 type_: Deserialize::default(),
 us_bank_transfer: Deserialize::default(),
-
-        }
+ }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
@@ -131,13 +128,12 @@ self.us_bank_transfer.take(),
         let mut b = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferBuilder::deser_default();
         for (k, v) in obj {
             match k.as_str() {
-                "eu_bank_transfer" => b.eu_bank_transfer = FromValueOpt::from_value(v),
-"gb_bank_transfer" => b.gb_bank_transfer = FromValueOpt::from_value(v),
-"jp_bank_transfer" => b.jp_bank_transfer = FromValueOpt::from_value(v),
-"reference" => b.reference = FromValueOpt::from_value(v),
-"type" => b.type_ = FromValueOpt::from_value(v),
-"us_bank_transfer" => b.us_bank_transfer = FromValueOpt::from_value(v),
-
+            "eu_bank_transfer" => b.eu_bank_transfer = FromValueOpt::from_value(v),
+            "gb_bank_transfer" => b.gb_bank_transfer = FromValueOpt::from_value(v),
+            "jp_bank_transfer" => b.jp_bank_transfer = FromValueOpt::from_value(v),
+            "reference" => b.reference = FromValueOpt::from_value(v),
+            "type" => b.type_ = FromValueOpt::from_value(v),
+            "us_bank_transfer" => b.us_bank_transfer = FromValueOpt::from_value(v),
                 _ => {}
             }
         }

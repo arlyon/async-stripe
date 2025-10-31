@@ -57,7 +57,6 @@ const _: () = {
             Ok(match k {
                 "amount_percent" => Deserialize::begin(&mut self.amount_percent),
                 "destination" => Deserialize::begin(&mut self.destination),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -101,7 +100,6 @@ const _: () = {
                 match k.as_str() {
                     "amount_percent" => b.amount_percent = FromValueOpt::from_value(v),
                     "destination" => b.destination = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

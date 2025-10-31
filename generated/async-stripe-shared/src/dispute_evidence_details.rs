@@ -69,7 +69,6 @@ const _: () = {
                 "has_evidence" => Deserialize::begin(&mut self.has_evidence),
                 "past_due" => Deserialize::begin(&mut self.past_due),
                 "submission_count" => Deserialize::begin(&mut self.submission_count),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -139,7 +138,6 @@ const _: () = {
                     "has_evidence" => b.has_evidence = FromValueOpt::from_value(v),
                     "past_due" => b.past_due = FromValueOpt::from_value(v),
                     "submission_count" => b.submission_count = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

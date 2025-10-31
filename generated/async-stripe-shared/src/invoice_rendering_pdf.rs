@@ -53,7 +53,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "page_size" => Deserialize::begin(&mut self.page_size),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -94,7 +93,6 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "page_size" => b.page_size = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

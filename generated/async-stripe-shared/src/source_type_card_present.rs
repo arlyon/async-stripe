@@ -137,7 +137,6 @@ const _: () = {
                 "transaction_status_information" => {
                     Deserialize::begin(&mut self.transaction_status_information)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -326,7 +325,6 @@ const _: () = {
                     "transaction_status_information" => {
                         b.transaction_status_information = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

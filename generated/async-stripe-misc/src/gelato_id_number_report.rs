@@ -76,7 +76,6 @@ const _: () = {
                 "id_number_type" => Deserialize::begin(&mut self.id_number_type),
                 "last_name" => Deserialize::begin(&mut self.last_name),
                 "status" => Deserialize::begin(&mut self.status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -148,7 +147,6 @@ const _: () = {
                     "id_number_type" => b.id_number_type = FromValueOpt::from_value(v),
                     "last_name" => b.last_name = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -73,7 +73,6 @@ const _: () = {
                 "effective_date" => Deserialize::begin(&mut self.effective_date),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "trial_period_days" => Deserialize::begin(&mut self.trial_period_days),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -143,7 +142,6 @@ const _: () = {
                     "effective_date" => b.effective_date = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "trial_period_days" => b.trial_period_days = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

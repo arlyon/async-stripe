@@ -61,7 +61,6 @@ const _: () = {
                 "flexible" => Deserialize::begin(&mut self.flexible),
                 "type" => Deserialize::begin(&mut self.type_),
                 "updated_at" => Deserialize::begin(&mut self.updated_at),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                     "flexible" => b.flexible = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "updated_at" => b.updated_at = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

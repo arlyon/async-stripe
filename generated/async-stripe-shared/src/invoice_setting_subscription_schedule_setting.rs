@@ -60,7 +60,6 @@ const _: () = {
                 "account_tax_ids" => Deserialize::begin(&mut self.account_tax_ids),
                 "days_until_due" => Deserialize::begin(&mut self.days_until_due),
                 "issuer" => Deserialize::begin(&mut self.issuer),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "account_tax_ids" => b.account_tax_ids = FromValueOpt::from_value(v),
                     "days_until_due" => b.days_until_due = FromValueOpt::from_value(v),
                     "issuer" => b.issuer = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

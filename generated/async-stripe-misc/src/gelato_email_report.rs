@@ -60,7 +60,6 @@ const _: () = {
                 "email" => Deserialize::begin(&mut self.email),
                 "error" => Deserialize::begin(&mut self.error),
                 "status" => Deserialize::begin(&mut self.status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "email" => b.email = FromValueOpt::from_value(v),
                     "error" => b.error = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

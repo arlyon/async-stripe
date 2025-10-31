@@ -56,7 +56,6 @@ const _: () = {
             Ok(match k {
                 "bank" => Deserialize::begin(&mut self.bank),
                 "bic" => Deserialize::begin(&mut self.bic),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -98,7 +97,6 @@ const _: () = {
                 match k.as_str() {
                     "bank" => b.bank = FromValueOpt::from_value(v),
                     "bic" => b.bic = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

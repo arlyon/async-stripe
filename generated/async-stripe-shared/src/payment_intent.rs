@@ -86,6 +86,7 @@ pub struct PaymentIntent {
     /// The account (if any) for which the funds of the PaymentIntent are intended.
     /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts) for details.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
+    pub payment_details: Option<stripe_shared::PaymentFlowsPaymentDetails>,
     /// ID of the payment method used in this PaymentIntent.
     pub payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
     /// Information about the [payment method configuration](https://stripe.com/docs/api/payment_method_configurations) used for this PaymentIntent.
@@ -167,6 +168,7 @@ pub struct PaymentIntentBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
     next_action: Option<Option<stripe_shared::PaymentIntentNextAction>>,
     on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
+    payment_details: Option<Option<stripe_shared::PaymentFlowsPaymentDetails>>,
     payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
     payment_method_configuration_details:
         Option<Option<stripe_shared::PaymentMethodConfigBizPaymentMethodConfigurationDetails>>,
@@ -254,6 +256,7 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "next_action" => Deserialize::begin(&mut self.next_action),
                 "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
+                "payment_details" => Deserialize::begin(&mut self.payment_details),
                 "payment_method" => Deserialize::begin(&mut self.payment_method),
                 "payment_method_configuration_details" => {
                     Deserialize::begin(&mut self.payment_method_configuration_details)
@@ -274,7 +277,6 @@ const _: () = {
                 "status" => Deserialize::begin(&mut self.status),
                 "transfer_data" => Deserialize::begin(&mut self.transfer_data),
                 "transfer_group" => Deserialize::begin(&mut self.transfer_group),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -305,6 +307,7 @@ const _: () = {
                 metadata: Deserialize::default(),
                 next_action: Deserialize::default(),
                 on_behalf_of: Deserialize::default(),
+                payment_details: Deserialize::default(),
                 payment_method: Deserialize::default(),
                 payment_method_configuration_details: Deserialize::default(),
                 payment_method_options: Deserialize::default(),
@@ -350,6 +353,7 @@ const _: () = {
                 Some(metadata),
                 Some(next_action),
                 Some(on_behalf_of),
+                Some(payment_details),
                 Some(payment_method),
                 Some(payment_method_configuration_details),
                 Some(payment_method_options),
@@ -369,7 +373,7 @@ const _: () = {
             ) = (
                 self.amount,
                 self.amount_capturable,
-                self.amount_details,
+                self.amount_details.take(),
                 self.amount_received,
                 self.application.take(),
                 self.application_fee_amount,
@@ -391,6 +395,7 @@ const _: () = {
                 self.metadata.take(),
                 self.next_action.take(),
                 self.on_behalf_of.take(),
+                self.payment_details.take(),
                 self.payment_method.take(),
                 self.payment_method_configuration_details.take(),
                 self.payment_method_options.take(),
@@ -436,6 +441,7 @@ const _: () = {
                 metadata,
                 next_action,
                 on_behalf_of,
+                payment_details,
                 payment_method,
                 payment_method_configuration_details,
                 payment_method_options,
@@ -509,6 +515,7 @@ const _: () = {
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "next_action" => b.next_action = FromValueOpt::from_value(v),
                     "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
+                    "payment_details" => b.payment_details = FromValueOpt::from_value(v),
                     "payment_method" => b.payment_method = FromValueOpt::from_value(v),
                     "payment_method_configuration_details" => {
                         b.payment_method_configuration_details = FromValueOpt::from_value(v)
@@ -531,7 +538,6 @@ const _: () = {
                     "status" => b.status = FromValueOpt::from_value(v),
                     "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
                     "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -543,7 +549,7 @@ const _: () = {
 impl serde::Serialize for PaymentIntent {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentIntent", 41)?;
+        let mut s = s.serialize_struct("PaymentIntent", 42)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_capturable", &self.amount_capturable)?;
         s.serialize_field("amount_details", &self.amount_details)?;
@@ -568,6 +574,7 @@ impl serde::Serialize for PaymentIntent {
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("next_action", &self.next_action)?;
         s.serialize_field("on_behalf_of", &self.on_behalf_of)?;
+        s.serialize_field("payment_details", &self.payment_details)?;
         s.serialize_field("payment_method", &self.payment_method)?;
         s.serialize_field(
             "payment_method_configuration_details",

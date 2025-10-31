@@ -77,7 +77,6 @@ const _: () = {
                 "hosted_instructions_url" => Deserialize::begin(&mut self.hosted_instructions_url),
                 "reference" => Deserialize::begin(&mut self.reference),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -155,7 +154,6 @@ const _: () = {
                     }
                     "reference" => b.reference = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

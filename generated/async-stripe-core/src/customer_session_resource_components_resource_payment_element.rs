@@ -63,7 +63,6 @@ const _: () = {
             Ok(match k {
                 "enabled" => Deserialize::begin(&mut self.enabled),
                 "features" => Deserialize::begin(&mut self.features),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -106,7 +105,6 @@ const _: () = {
                 match k.as_str() {
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
                     "features" => b.features = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

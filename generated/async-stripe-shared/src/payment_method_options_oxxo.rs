@@ -63,7 +63,6 @@ const _: () = {
             Ok(match k {
                 "expires_after_days" => Deserialize::begin(&mut self.expires_after_days),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                 match k.as_str() {
                     "expires_after_days" => b.expires_after_days = FromValueOpt::from_value(v),
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -93,7 +93,6 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "phone" => Deserialize::begin(&mut self.phone),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -195,7 +194,6 @@ const _: () = {
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "phone" => b.phone = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "reference" => Deserialize::begin(&mut self.reference),
                 "reference_status" => Deserialize::begin(&mut self.reference_status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "reference" => b.reference = FromValueOpt::from_value(v),
                     "reference_status" => b.reference_status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

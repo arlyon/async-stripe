@@ -63,7 +63,6 @@ const _: () = {
                 "device" => Deserialize::begin(&mut self.device),
                 "platform" => Deserialize::begin(&mut self.platform),
                 "version" => Deserialize::begin(&mut self.version),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -117,7 +116,6 @@ const _: () = {
                     "device" => b.device = FromValueOpt::from_value(v),
                     "platform" => b.platform = FromValueOpt::from_value(v),
                     "version" => b.version = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

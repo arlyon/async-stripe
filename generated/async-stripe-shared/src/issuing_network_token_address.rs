@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "line1" => Deserialize::begin(&mut self.line1),
                 "postal_code" => Deserialize::begin(&mut self.postal_code),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -98,7 +97,6 @@ const _: () = {
                 match k.as_str() {
                     "line1" => b.line1 = FromValueOpt::from_value(v),
                     "postal_code" => b.postal_code = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -63,7 +63,6 @@ const _: () = {
                 "ip" => Deserialize::begin(&mut self.ip),
                 "service_agreement" => Deserialize::begin(&mut self.service_agreement),
                 "user_agent" => Deserialize::begin(&mut self.user_agent),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -114,7 +113,6 @@ const _: () = {
                     "ip" => b.ip = FromValueOpt::from_value(v),
                     "service_agreement" => b.service_agreement = FromValueOpt::from_value(v),
                     "user_agent" => b.user_agent = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -148,7 +148,6 @@ const _: () = {
                 }
                 "status" => Deserialize::begin(&mut self.status),
                 "transfer_reversal" => Deserialize::begin(&mut self.transfer_reversal),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -302,7 +301,6 @@ const _: () = {
                     }
                     "status" => b.status = FromValueOpt::from_value(v),
                     "transfer_reversal" => b.transfer_reversal = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

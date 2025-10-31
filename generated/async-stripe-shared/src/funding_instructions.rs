@@ -67,7 +67,6 @@ const _: () = {
                 "currency" => Deserialize::begin(&mut self.currency),
                 "funding_type" => Deserialize::begin(&mut self.funding_type),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -118,7 +117,6 @@ const _: () = {
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "funding_type" => b.funding_type = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

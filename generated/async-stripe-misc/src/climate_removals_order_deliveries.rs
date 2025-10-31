@@ -67,7 +67,6 @@ const _: () = {
                 "metric_tons" => Deserialize::begin(&mut self.metric_tons),
                 "registry_url" => Deserialize::begin(&mut self.registry_url),
                 "supplier" => Deserialize::begin(&mut self.supplier),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -131,7 +130,6 @@ const _: () = {
                     "metric_tons" => b.metric_tons = FromValueOpt::from_value(v),
                     "registry_url" => b.registry_url = FromValueOpt::from_value(v),
                     "supplier" => b.supplier = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

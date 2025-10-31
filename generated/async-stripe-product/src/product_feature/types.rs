@@ -59,7 +59,6 @@ const _: () = {
                 "entitlement_feature" => Deserialize::begin(&mut self.entitlement_feature),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "entitlement_feature" => b.entitlement_feature = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

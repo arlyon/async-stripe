@@ -59,7 +59,6 @@ const _: () = {
                 "fixed_amounts" => Deserialize::begin(&mut self.fixed_amounts),
                 "percentages" => Deserialize::begin(&mut self.percentages),
                 "smart_tip_threshold" => Deserialize::begin(&mut self.smart_tip_threshold),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "fixed_amounts" => b.fixed_amounts = FromValueOpt::from_value(v),
                     "percentages" => b.percentages = FromValueOpt::from_value(v),
                     "smart_tip_threshold" => b.smart_tip_threshold = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

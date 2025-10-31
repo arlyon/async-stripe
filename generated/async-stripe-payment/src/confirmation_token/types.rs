@@ -112,7 +112,6 @@ const _: () = {
                 "setup_intent" => Deserialize::begin(&mut self.setup_intent),
                 "shipping" => Deserialize::begin(&mut self.shipping),
                 "use_stripe_sdk" => Deserialize::begin(&mut self.use_stripe_sdk),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -226,7 +225,6 @@ const _: () = {
                     "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
                     "shipping" => b.shipping = FromValueOpt::from_value(v),
                     "use_stripe_sdk" => b.use_stripe_sdk = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

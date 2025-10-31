@@ -71,7 +71,6 @@ const _: () = {
                 "flight_number" => Deserialize::begin(&mut self.flight_number),
                 "service_class" => Deserialize::begin(&mut self.service_class),
                 "stopover_allowed" => Deserialize::begin(&mut self.stopover_allowed),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -148,7 +147,6 @@ const _: () = {
                     "flight_number" => b.flight_number = FromValueOpt::from_value(v),
                     "service_class" => b.service_class = FromValueOpt::from_value(v),
                     "stopover_allowed" => b.stopover_allowed = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

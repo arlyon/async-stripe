@@ -81,7 +81,6 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -157,7 +156,6 @@ const _: () = {
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

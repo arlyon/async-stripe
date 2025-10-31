@@ -91,7 +91,6 @@ const _: () = {
                 "refund_application_fee" => Deserialize::begin(&mut self.refund_application_fee),
                 "refund_payment_config" => Deserialize::begin(&mut self.refund_payment_config),
                 "reverse_transfer" => Deserialize::begin(&mut self.reverse_transfer),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -185,7 +184,6 @@ const _: () = {
                         b.refund_payment_config = FromValueOpt::from_value(v)
                     }
                     "reverse_transfer" => b.reverse_transfer = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

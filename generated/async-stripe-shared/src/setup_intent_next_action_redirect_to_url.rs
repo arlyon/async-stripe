@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "return_url" => Deserialize::begin(&mut self.return_url),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -97,7 +96,6 @@ const _: () = {
                 match k.as_str() {
                     "return_url" => b.return_url = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

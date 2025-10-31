@@ -77,7 +77,6 @@ const _: () = {
                 "issuer" => Deserialize::begin(&mut self.issuer),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "rendering_options" => Deserialize::begin(&mut self.rendering_options),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -157,7 +156,6 @@ const _: () = {
                     "issuer" => b.issuer = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "rendering_options" => b.rendering_options = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

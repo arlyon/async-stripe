@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "days_until_due" => Deserialize::begin(&mut self.days_until_due),
                 "issuer" => Deserialize::begin(&mut self.issuer),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -98,7 +97,6 @@ const _: () = {
                 match k.as_str() {
                     "days_until_due" => b.days_until_due = FromValueOpt::from_value(v),
                     "issuer" => b.issuer = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

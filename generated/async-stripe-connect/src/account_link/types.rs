@@ -64,7 +64,6 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -113,7 +112,6 @@ const _: () = {
                     "created" => b.created = FromValueOpt::from_value(v),
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

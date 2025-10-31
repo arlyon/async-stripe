@@ -58,7 +58,6 @@ const _: () = {
                 "hosted_instructions_url" => Deserialize::begin(&mut self.hosted_instructions_url),
                 "mobile_auth_url" => Deserialize::begin(&mut self.mobile_auth_url),
                 "qr_code" => Deserialize::begin(&mut self.qr_code),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -112,7 +111,6 @@ const _: () = {
                     }
                     "mobile_auth_url" => b.mobile_auth_url = FromValueOpt::from_value(v),
                     "qr_code" => b.qr_code = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

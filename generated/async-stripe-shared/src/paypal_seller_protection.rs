@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "dispute_categories" => Deserialize::begin(&mut self.dispute_categories),
                 "status" => Deserialize::begin(&mut self.status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "dispute_categories" => b.dispute_categories = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

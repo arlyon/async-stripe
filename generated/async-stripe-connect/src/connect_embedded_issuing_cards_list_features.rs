@@ -76,7 +76,6 @@ const _: () = {
                 "spend_control_management" => {
                     Deserialize::begin(&mut self.spend_control_management)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -154,7 +153,6 @@ const _: () = {
                     "spend_control_management" => {
                         b.spend_control_management = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

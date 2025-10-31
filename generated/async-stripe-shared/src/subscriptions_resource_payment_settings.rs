@@ -67,7 +67,6 @@ const _: () = {
                 "save_default_payment_method" => {
                     Deserialize::begin(&mut self.save_default_payment_method)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -131,7 +130,6 @@ const _: () = {
                     "save_default_payment_method" => {
                         b.save_default_payment_method = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }
@@ -156,6 +154,7 @@ pub enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     Card,
     Cashapp,
     Crypto,
+    Custom,
     CustomerBalance,
     Eps,
     Fpx,
@@ -202,6 +201,7 @@ impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
             Card => "card",
             Cashapp => "cashapp",
             Crypto => "crypto",
+            Custom => "custom",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -251,6 +251,7 @@ impl std::str::FromStr for SubscriptionsResourcePaymentSettingsPaymentMethodType
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
             "crypto" => Ok(Crypto),
+            "custom" => Ok(Custom),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),

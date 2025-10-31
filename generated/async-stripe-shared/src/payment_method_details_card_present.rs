@@ -166,7 +166,6 @@ const _: () = {
                 "read_method" => Deserialize::begin(&mut self.read_method),
                 "receipt" => Deserialize::begin(&mut self.receipt),
                 "wallet" => Deserialize::begin(&mut self.wallet),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -342,7 +341,6 @@ const _: () = {
                     "read_method" => b.read_method = FromValueOpt::from_value(v),
                     "receipt" => b.receipt = FromValueOpt::from_value(v),
                     "wallet" => b.wallet = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

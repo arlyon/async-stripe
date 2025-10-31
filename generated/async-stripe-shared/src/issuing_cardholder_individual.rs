@@ -71,7 +71,6 @@ const _: () = {
                 "first_name" => Deserialize::begin(&mut self.first_name),
                 "last_name" => Deserialize::begin(&mut self.last_name),
                 "verification" => Deserialize::begin(&mut self.verification),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -135,7 +134,6 @@ const _: () = {
                     "first_name" => b.first_name = FromValueOpt::from_value(v),
                     "last_name" => b.last_name = FromValueOpt::from_value(v),
                     "verification" => b.verification = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

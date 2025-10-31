@@ -309,7 +309,6 @@ const _: () = {
                     Deserialize::begin(&mut self.us_bank_transfer_payments)
                 }
                 "zip_payments" => Deserialize::begin(&mut self.zip_payments),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -682,7 +681,6 @@ const _: () = {
                         b.us_bank_transfer_payments = FromValueOpt::from_value(v)
                     }
                     "zip_payments" => b.zip_payments = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

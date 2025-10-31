@@ -91,7 +91,6 @@ const _: () = {
                 "product_type" => Deserialize::begin(&mut self.product_type),
                 "return_status" => Deserialize::begin(&mut self.return_status),
                 "returned_at" => Deserialize::begin(&mut self.returned_at),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -190,7 +189,6 @@ const _: () = {
                     "product_type" => b.product_type = FromValueOpt::from_value(v),
                     "return_status" => b.return_status = FromValueOpt::from_value(v),
                     "returned_at" => b.returned_at = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

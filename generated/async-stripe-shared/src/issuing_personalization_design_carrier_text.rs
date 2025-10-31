@@ -63,7 +63,6 @@ const _: () = {
                 "footer_title" => Deserialize::begin(&mut self.footer_title),
                 "header_body" => Deserialize::begin(&mut self.header_body),
                 "header_title" => Deserialize::begin(&mut self.header_title),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -117,7 +116,6 @@ const _: () = {
                     "footer_title" => b.footer_title = FromValueOpt::from_value(v),
                     "header_body" => b.header_body = FromValueOpt::from_value(v),
                     "header_title" => b.header_title = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

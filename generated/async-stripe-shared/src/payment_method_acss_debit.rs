@@ -68,7 +68,6 @@ const _: () = {
                 "institution_number" => Deserialize::begin(&mut self.institution_number),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "transit_number" => Deserialize::begin(&mut self.transit_number),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -132,7 +131,6 @@ const _: () = {
                     "institution_number" => b.institution_number = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "transit_number" => b.transit_number = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

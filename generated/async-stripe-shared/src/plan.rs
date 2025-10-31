@@ -149,7 +149,6 @@ const _: () = {
                 "transform_usage" => Deserialize::begin(&mut self.transform_usage),
                 "trial_period_days" => Deserialize::begin(&mut self.trial_period_days),
                 "usage_type" => Deserialize::begin(&mut self.usage_type),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -289,7 +288,6 @@ const _: () = {
                     "transform_usage" => b.transform_usage = FromValueOpt::from_value(v),
                     "trial_period_days" => b.trial_period_days = FromValueOpt::from_value(v),
                     "usage_type" => b.usage_type = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

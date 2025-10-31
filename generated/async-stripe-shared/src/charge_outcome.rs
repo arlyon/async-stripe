@@ -102,7 +102,6 @@ const _: () = {
                 "rule" => Deserialize::begin(&mut self.rule),
                 "seller_message" => Deserialize::begin(&mut self.seller_message),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -197,7 +196,6 @@ const _: () = {
                     "rule" => b.rule = FromValueOpt::from_value(v),
                     "seller_message" => b.seller_message = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

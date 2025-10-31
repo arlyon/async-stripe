@@ -90,7 +90,6 @@ const _: () = {
                 "name" => Deserialize::begin(&mut self.name),
                 "payload" => Deserialize::begin(&mut self.payload),
                 "scope" => Deserialize::begin(&mut self.scope),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -166,7 +165,6 @@ const _: () = {
                     "name" => b.name = FromValueOpt::from_value(v),
                     "payload" => b.payload = FromValueOpt::from_value(v),
                     "scope" => b.scope = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

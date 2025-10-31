@@ -59,7 +59,6 @@ const _: () = {
                 "country" => Deserialize::begin(&mut self.country),
                 "source" => Deserialize::begin(&mut self.source),
                 "state" => Deserialize::begin(&mut self.state),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "country" => b.country = FromValueOpt::from_value(v),
                     "source" => b.source = FromValueOpt::from_value(v),
                     "state" => b.state = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

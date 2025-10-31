@@ -82,7 +82,6 @@ const _: () = {
                 "refund_attributes_status" => {
                     Deserialize::begin(&mut self.refund_attributes_status)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -161,7 +160,6 @@ const _: () = {
                     "refund_attributes_status" => {
                         b.refund_attributes_status = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

@@ -61,7 +61,6 @@ const _: () = {
                 "balances" => Deserialize::begin(&mut self.balances),
                 "customer" => Deserialize::begin(&mut self.customer),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                     "balances" => b.balances = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

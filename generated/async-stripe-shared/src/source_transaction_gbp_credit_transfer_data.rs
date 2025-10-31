@@ -77,7 +77,6 @@ const _: () = {
                 "sender_account_number" => Deserialize::begin(&mut self.sender_account_number),
                 "sender_name" => Deserialize::begin(&mut self.sender_name),
                 "sender_sort_code" => Deserialize::begin(&mut self.sender_sort_code),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -159,7 +158,6 @@ const _: () = {
                     }
                     "sender_name" => b.sender_name = FromValueOpt::from_value(v),
                     "sender_sort_code" => b.sender_sort_code = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

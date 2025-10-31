@@ -55,7 +55,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "reference_prefix" => Deserialize::begin(&mut self.reference_prefix),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -96,7 +95,6 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "reference_prefix" => b.reference_prefix = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

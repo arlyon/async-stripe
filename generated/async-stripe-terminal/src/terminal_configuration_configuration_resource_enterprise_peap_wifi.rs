@@ -63,7 +63,6 @@ const _: () = {
                 "password" => Deserialize::begin(&mut self.password),
                 "ssid" => Deserialize::begin(&mut self.ssid),
                 "username" => Deserialize::begin(&mut self.username),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -119,7 +118,6 @@ const _: () = {
                     "password" => b.password = FromValueOpt::from_value(v),
                     "ssid" => b.ssid = FromValueOpt::from_value(v),
                     "username" => b.username = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -117,7 +117,6 @@ const _: () = {
                 "spending_controls" => Deserialize::begin(&mut self.spending_controls),
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -237,7 +236,6 @@ const _: () = {
                     "spending_controls" => b.spending_controls = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

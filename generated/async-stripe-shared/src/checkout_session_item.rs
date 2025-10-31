@@ -94,7 +94,6 @@ const _: () = {
                 "price" => Deserialize::begin(&mut self.price),
                 "quantity" => Deserialize::begin(&mut self.quantity),
                 "taxes" => Deserialize::begin(&mut self.taxes),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -194,7 +193,6 @@ const _: () = {
                     "price" => b.price = FromValueOpt::from_value(v),
                     "quantity" => b.quantity = FromValueOpt::from_value(v),
                     "taxes" => b.taxes = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

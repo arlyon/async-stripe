@@ -67,7 +67,6 @@ const _: () = {
                 "refundable" => Deserialize::begin(&mut self.refundable),
                 "segments" => Deserialize::begin(&mut self.segments),
                 "travel_agency" => Deserialize::begin(&mut self.travel_agency),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -131,7 +130,6 @@ const _: () = {
                     "refundable" => b.refundable = FromValueOpt::from_value(v),
                     "segments" => b.segments = FromValueOpt::from_value(v),
                     "travel_agency" => b.travel_agency = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

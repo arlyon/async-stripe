@@ -214,6 +214,9 @@ struct CreateSetupIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    excluded_payment_method_types:
+        Option<Vec<stripe_shared::SetupIntentExcludedPaymentMethodTypes>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     flow_directions: Option<Vec<stripe_shared::SetupIntentFlowDirections>>,
@@ -251,6 +254,7 @@ impl CreateSetupIntentBuilder {
             confirmation_token: None,
             customer: None,
             description: None,
+            excluded_payment_method_types: None,
             expand: None,
             flow_directions: None,
             mandate_data: None,
@@ -4345,6 +4349,16 @@ impl CreateSetupIntent {
         self.inner.description = Some(description.into());
         self
     }
+    /// The list of payment method types to exclude from use with this SetupIntent.
+    pub fn excluded_payment_method_types(
+        mut self,
+        excluded_payment_method_types: impl Into<
+            Vec<stripe_shared::SetupIntentExcludedPaymentMethodTypes>,
+        >,
+    ) -> Self {
+        self.inner.excluded_payment_method_types = Some(excluded_payment_method_types.into());
+        self
+    }
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
         self.inner.expand = Some(expand.into());
@@ -4486,6 +4500,9 @@ struct UpdateSetupIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    excluded_payment_method_types:
+        Option<Vec<stripe_shared::SetupIntentExcludedPaymentMethodTypes>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     flow_directions: Option<Vec<stripe_shared::SetupIntentFlowDirections>>,
@@ -4508,6 +4525,7 @@ impl UpdateSetupIntentBuilder {
             attach_to_self: None,
             customer: None,
             description: None,
+            excluded_payment_method_types: None,
             expand: None,
             flow_directions: None,
             metadata: None,
@@ -8321,6 +8339,16 @@ impl UpdateSetupIntent {
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub fn description(mut self, description: impl Into<String>) -> Self {
         self.inner.description = Some(description.into());
+        self
+    }
+    /// The list of payment method types to exclude from use with this SetupIntent.
+    pub fn excluded_payment_method_types(
+        mut self,
+        excluded_payment_method_types: impl Into<
+            Vec<stripe_shared::SetupIntentExcludedPaymentMethodTypes>,
+        >,
+    ) -> Self {
+        self.inner.excluded_payment_method_types = Some(excluded_payment_method_types.into());
         self
     }
     /// Specifies which fields in the response should be expanded.

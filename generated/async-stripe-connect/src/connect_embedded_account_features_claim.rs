@@ -64,7 +64,6 @@ const _: () = {
                 "external_account_collection" => {
                     Deserialize::begin(&mut self.external_account_collection)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -115,7 +114,6 @@ const _: () = {
                     "external_account_collection" => {
                         b.external_account_collection = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

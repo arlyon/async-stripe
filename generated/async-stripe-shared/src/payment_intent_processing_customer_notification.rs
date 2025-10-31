@@ -56,7 +56,6 @@ const _: () = {
             Ok(match k {
                 "approval_requested" => Deserialize::begin(&mut self.approval_requested),
                 "completes_at" => Deserialize::begin(&mut self.completes_at),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -103,7 +102,6 @@ const _: () = {
                 match k.as_str() {
                     "approval_requested" => b.approval_requested = FromValueOpt::from_value(v),
                     "completes_at" => b.completes_at = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

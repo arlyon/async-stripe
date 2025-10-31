@@ -57,7 +57,6 @@ const _: () = {
                     Deserialize::begin(&mut self.visa_compelling_evidence_3)
                 }
                 "visa_compliance" => Deserialize::begin(&mut self.visa_compliance),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -106,7 +105,6 @@ const _: () = {
                         b.visa_compelling_evidence_3 = FromValueOpt::from_value(v)
                     }
                     "visa_compliance" => b.visa_compliance = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

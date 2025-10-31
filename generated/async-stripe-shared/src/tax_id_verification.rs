@@ -59,7 +59,6 @@ const _: () = {
                 "status" => Deserialize::begin(&mut self.status),
                 "verified_address" => Deserialize::begin(&mut self.verified_address),
                 "verified_name" => Deserialize::begin(&mut self.verified_name),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "status" => b.status = FromValueOpt::from_value(v),
                     "verified_address" => b.verified_address = FromValueOpt::from_value(v),
                     "verified_name" => b.verified_name = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

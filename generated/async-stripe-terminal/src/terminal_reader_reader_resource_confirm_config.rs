@@ -52,7 +52,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "return_url" => Deserialize::begin(&mut self.return_url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -93,7 +92,6 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "return_url" => b.return_url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

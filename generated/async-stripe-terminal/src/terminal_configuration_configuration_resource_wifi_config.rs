@@ -71,7 +71,6 @@ const _: () = {
                 "enterprise_eap_tls" => Deserialize::begin(&mut self.enterprise_eap_tls),
                 "personal_psk" => Deserialize::begin(&mut self.personal_psk),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -132,7 +131,6 @@ const _: () = {
                     "enterprise_eap_tls" => b.enterprise_eap_tls = FromValueOpt::from_value(v),
                     "personal_psk" => b.personal_psk = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

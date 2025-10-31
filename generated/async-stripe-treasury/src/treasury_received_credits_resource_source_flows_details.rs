@@ -64,7 +64,6 @@ const _: () = {
                 "outbound_transfer" => Deserialize::begin(&mut self.outbound_transfer),
                 "payout" => Deserialize::begin(&mut self.payout),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -128,7 +127,6 @@ const _: () = {
                     "outbound_transfer" => b.outbound_transfer = FromValueOpt::from_value(v),
                     "payout" => b.payout = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

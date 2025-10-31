@@ -96,7 +96,6 @@ const _: () = {
                 "status_transitions" => Deserialize::begin(&mut self.status_transitions),
                 "updated" => Deserialize::begin(&mut self.updated),
                 "value_settings" => Deserialize::begin(&mut self.value_settings),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -201,7 +200,6 @@ const _: () = {
                     "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
                     "updated" => b.updated = FromValueOpt::from_value(v),
                     "value_settings" => b.value_settings = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

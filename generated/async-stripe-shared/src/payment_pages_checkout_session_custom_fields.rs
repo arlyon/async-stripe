@@ -74,7 +74,6 @@ const _: () = {
                 "optional" => Deserialize::begin(&mut self.optional),
                 "text" => Deserialize::begin(&mut self.text),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -146,7 +145,6 @@ const _: () = {
                     "optional" => b.optional = FromValueOpt::from_value(v),
                     "text" => b.text = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -265,6 +265,8 @@ impl StripeRequest for SearchPaymentIntent {
 struct CreatePaymentIntentBuilder {
     amount: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
+    amount_details: Option<CreatePaymentIntentAmountDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     application_fee_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     automatic_payment_methods: Option<CreatePaymentIntentAutomaticPaymentMethods>,
@@ -299,6 +301,8 @@ struct CreatePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     on_behalf_of: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    payment_details: Option<CreatePaymentIntentPaymentDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     payment_method: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_configuration: Option<String>,
@@ -309,7 +313,7 @@ struct CreatePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_types: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    radar_options: Option<RadarOptionsWithHiddenOptions>,
+    radar_options: Option<CreatePaymentIntentRadarOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     receipt_email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -333,6 +337,7 @@ impl CreatePaymentIntentBuilder {
     fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
         Self {
             amount: amount.into(),
+            amount_details: None,
             application_fee_amount: None,
             automatic_payment_methods: None,
             capture_method: None,
@@ -350,6 +355,7 @@ impl CreatePaymentIntentBuilder {
             metadata: None,
             off_session: None,
             on_behalf_of: None,
+            payment_details: None,
             payment_method: None,
             payment_method_configuration: None,
             payment_method_data: None,
@@ -366,6 +372,243 @@ impl CreatePaymentIntentBuilder {
             transfer_group: None,
             use_stripe_sdk: None,
         }
+    }
+}
+/// Provides industry-specific information about the amount.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentIntentAmountDetails {
+    /// The total discount applied on the transaction represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// An integer greater than 0.
+    ///
+    /// This field is mutually exclusive with the `amount_details[line_items][#][discount_amount]` field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount_amount: Option<i64>,
+    /// A list of line items, each containing information about a product in the PaymentIntent.
+    /// There is a maximum of 100 line items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line_items: Option<Vec<CreatePaymentIntentAmountDetailsLineItems>>,
+    /// Contains information about the shipping portion of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping: Option<AmountDetailsShippingParam>,
+    /// Contains information about the tax portion of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<AmountDetailsTaxParam>,
+}
+impl CreatePaymentIntentAmountDetails {
+    pub fn new() -> Self {
+        Self { discount_amount: None, line_items: None, shipping: None, tax: None }
+    }
+}
+impl Default for CreatePaymentIntentAmountDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// A list of line items, each containing information about a product in the PaymentIntent.
+/// There is a maximum of 100 line items.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentIntentAmountDetailsLineItems {
+    /// The discount applied on this line item represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// An integer greater than 0.
+    ///
+    /// This field is mutually exclusive with the `amount_details[discount_amount]` field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount_amount: Option<i64>,
+    /// Payment method-specific information for line items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_options:
+        Option<CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions>,
+    /// The product code of the line item, such as an SKU.
+    /// Required for L3 rates.
+    /// At most 12 characters long.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_code: Option<String>,
+    /// The product name of the line item. Required for L3 rates. At most 1024 characters long.
+    ///
+    /// For Cards, this field is truncated to 26 alphanumeric characters before being sent to the card networks.
+    /// For Paypal, this field is truncated to 127 characters.
+    pub product_name: String,
+    /// The quantity of items. Required for L3 rates. An integer greater than 0.
+    pub quantity: u64,
+    /// Contains information about the tax on the item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<AmountDetailsLineItemTaxParam>,
+    /// The unit cost of the line item represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// Required for L3 rates.
+    /// An integer greater than or equal to 0.
+    pub unit_cost: i64,
+    /// A unit of measure for the line item, such as gallons, feet, meters, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_of_measure: Option<String>,
+}
+impl CreatePaymentIntentAmountDetailsLineItems {
+    pub fn new(
+        product_name: impl Into<String>,
+        quantity: impl Into<u64>,
+        unit_cost: impl Into<i64>,
+    ) -> Self {
+        Self {
+            discount_amount: None,
+            payment_method_options: None,
+            product_code: None,
+            product_name: product_name.into(),
+            quantity: quantity.into(),
+            tax: None,
+            unit_cost: unit_cost.into(),
+            unit_of_measure: None,
+        }
+    }
+}
+/// Payment method-specific information for line items.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    /// This sub-hash contains line item details that are specific to `card` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard>,
+    /// This sub-hash contains line item details that are specific to `card_present` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_present:
+        Option<CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent>,
+    /// This sub-hash contains line item details that are specific to `klarna` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam>,
+    /// This sub-hash contains line item details that are specific to `paypal` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal>,
+}
+impl CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    pub fn new() -> Self {
+        Self { card: None, card_present: None, klarna: None, paypal: None }
+    }
+}
+impl Default for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `card` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub commodity_code: Option<String>,
+}
+impl CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    pub fn new() -> Self {
+        Self { commodity_code: None }
+    }
+}
+impl Default for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `card_present` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub commodity_code: Option<String>,
+}
+impl CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    pub fn new() -> Self {
+        Self { commodity_code: None }
+    }
+}
+impl Default for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `paypal` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    /// Type of the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub category:
+        Option<CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory>,
+    /// Description of the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// The Stripe account ID of the connected account that sells the item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sold_by: Option<String>,
+}
+impl CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    pub fn new() -> Self {
+        Self { category: None, description: None, sold_by: None }
+    }
+}
+impl Default for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of the line item.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory {
+    DigitalGoods,
+    Donation,
+    PhysicalGoods,
+}
+impl CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory::*;
+        match self {
+            DigitalGoods => "digital_goods",
+            Donation => "donation",
+            PhysicalGoods => "physical_goods",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory::*;
+        match s {
+            "digital_goods" => Ok(DigitalGoods),
+            "donation" => Ok(Donation),
+            "physical_goods" => Ok(PhysicalGoods),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory"))
     }
 }
 /// When you enable this parameter, this PaymentIntent accepts payment methods that you enable in the Dashboard and that are compatible with this PaymentIntent's other parameters.
@@ -553,6 +796,33 @@ pub enum CreatePaymentIntentOffSession {
     #[serde(untagged)]
     Bool(bool),
 }
+/// Provides industry-specific information about the charge.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetails {
+    /// A unique value to identify the customer. This field is available only for card payments.
+    ///
+    /// This field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_reference: Option<String>,
+    /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
+    ///
+    /// Required when the Payment Method Types array contains `card`, including when [automatic_payment_methods.enabled](/api/payment_intents/create#create_payment_intent-automatic_payment_methods-enabled) is set to `true`.
+    ///
+    /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
+    /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub order_reference: Option<String>,
+}
+impl CreatePaymentIntentPaymentDetails {
+    pub fn new() -> Self {
+        Self { customer_reference: None, order_reference: None }
+    }
+}
+impl Default for CreatePaymentIntentPaymentDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// If provided, this hash will be used to create a PaymentMethod. The new PaymentMethod will appear
 /// in the [payment_method](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-payment_method).
 /// property on the PaymentIntent.
@@ -720,7 +990,7 @@ pub struct CreatePaymentIntentPaymentMethodData {
     /// Options to configure Radar.
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub radar_options: Option<RadarOptionsWithHiddenOptions>,
+    pub radar_options: Option<CreatePaymentIntentPaymentMethodDataRadarOptions>,
     /// If this is a `revolut_pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -1734,6 +2004,24 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataP24Ban
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).unwrap())
+    }
+}
+/// Options to configure Radar.
+/// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentIntentPaymentMethodDataRadarOptions {
+    /// A [Radar Session](https://stripe.com/docs/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
+}
+impl CreatePaymentIntentPaymentMethodDataRadarOptions {
+    pub fn new() -> Self {
+        Self { session: None }
+    }
+}
+impl Default for CreatePaymentIntentPaymentMethodDataRadarOptions {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
@@ -11000,6 +11288,24 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsZip
         })
     }
 }
+/// Options to configure Radar.
+/// Learn more about [Radar Sessions](https://stripe.com/docs/radar/radar-session).
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentIntentRadarOptions {
+    /// A [Radar Session](https://stripe.com/docs/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
+}
+impl CreatePaymentIntentRadarOptions {
+    pub fn new() -> Self {
+        Self { session: None }
+    }
+}
+impl Default for CreatePaymentIntentRadarOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// Shipping information for this PaymentIntent.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentIntentShipping {
@@ -11106,6 +11412,14 @@ impl CreatePaymentIntent {
     /// Construct a new `CreatePaymentIntent`.
     pub fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
         Self { inner: CreatePaymentIntentBuilder::new(amount.into(), currency.into()) }
+    }
+    /// Provides industry-specific information about the amount.
+    pub fn amount_details(
+        mut self,
+        amount_details: impl Into<CreatePaymentIntentAmountDetails>,
+    ) -> Self {
+        self.inner.amount_details = Some(amount_details.into());
+        self
     }
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     /// The amount of the application fee collected will be capped at the total amount captured.
@@ -11225,6 +11539,14 @@ impl CreatePaymentIntent {
         self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
     }
+    /// Provides industry-specific information about the charge.
+    pub fn payment_details(
+        mut self,
+        payment_details: impl Into<CreatePaymentIntentPaymentDetails>,
+    ) -> Self {
+        self.inner.payment_details = Some(payment_details.into());
+        self
+    }
     /// ID of the payment method (a PaymentMethod, Card, or [compatible Source](https://stripe.com/docs/payments/payment-methods#compatibility) object) to attach to this PaymentIntent.
     ///
     /// If you don't provide the `payment_method` parameter or the `source` parameter with `confirm=true`, `source` automatically populates with `customer.default_source` to improve migration for users of the Charges API.
@@ -11272,7 +11594,7 @@ impl CreatePaymentIntent {
     /// Learn more about [Radar Sessions](https://stripe.com/docs/radar/radar-session).
     pub fn radar_options(
         mut self,
-        radar_options: impl Into<RadarOptionsWithHiddenOptions>,
+        radar_options: impl Into<CreatePaymentIntentRadarOptions>,
     ) -> Self {
         self.inner.radar_options = Some(radar_options.into());
         self
@@ -11380,6 +11702,8 @@ struct UpdatePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    amount_details: Option<UpdatePaymentIntentAmountDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     application_fee_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     capture_method: Option<stripe_shared::PaymentIntentCaptureMethod>,
@@ -11396,6 +11720,8 @@ struct UpdatePaymentIntentBuilder {
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_details: Option<UpdatePaymentIntentPaymentDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11425,6 +11751,7 @@ impl UpdatePaymentIntentBuilder {
     fn new() -> Self {
         Self {
             amount: None,
+            amount_details: None,
             application_fee_amount: None,
             capture_method: None,
             currency: None,
@@ -11433,6 +11760,7 @@ impl UpdatePaymentIntentBuilder {
             excluded_payment_method_types: None,
             expand: None,
             metadata: None,
+            payment_details: None,
             payment_method: None,
             payment_method_configuration: None,
             payment_method_data: None,
@@ -11446,6 +11774,270 @@ impl UpdatePaymentIntentBuilder {
             transfer_data: None,
             transfer_group: None,
         }
+    }
+}
+/// Provides industry-specific information about the amount.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentIntentAmountDetails {
+    /// The total discount applied on the transaction represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// An integer greater than 0.
+    ///
+    /// This field is mutually exclusive with the `amount_details[line_items][#][discount_amount]` field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount_amount: Option<i64>,
+    /// A list of line items, each containing information about a product in the PaymentIntent.
+    /// There is a maximum of 100 line items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line_items: Option<Vec<UpdatePaymentIntentAmountDetailsLineItems>>,
+    /// Contains information about the shipping portion of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping: Option<AmountDetailsShippingParam>,
+    /// Contains information about the tax portion of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<AmountDetailsTaxParam>,
+}
+impl UpdatePaymentIntentAmountDetails {
+    pub fn new() -> Self {
+        Self { discount_amount: None, line_items: None, shipping: None, tax: None }
+    }
+}
+impl Default for UpdatePaymentIntentAmountDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// A list of line items, each containing information about a product in the PaymentIntent.
+/// There is a maximum of 100 line items.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentIntentAmountDetailsLineItems {
+    /// The discount applied on this line item represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// An integer greater than 0.
+    ///
+    /// This field is mutually exclusive with the `amount_details[discount_amount]` field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount_amount: Option<i64>,
+    /// Payment method-specific information for line items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_options:
+        Option<UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions>,
+    /// The product code of the line item, such as an SKU.
+    /// Required for L3 rates.
+    /// At most 12 characters long.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_code: Option<String>,
+    /// The product name of the line item. Required for L3 rates. At most 1024 characters long.
+    ///
+    /// For Cards, this field is truncated to 26 alphanumeric characters before being sent to the card networks.
+    /// For Paypal, this field is truncated to 127 characters.
+    pub product_name: String,
+    /// The quantity of items. Required for L3 rates. An integer greater than 0.
+    pub quantity: u64,
+    /// Contains information about the tax on the item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<AmountDetailsLineItemTaxParam>,
+    /// The unit cost of the line item represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// Required for L3 rates.
+    /// An integer greater than or equal to 0.
+    pub unit_cost: i64,
+    /// A unit of measure for the line item, such as gallons, feet, meters, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_of_measure: Option<String>,
+}
+impl UpdatePaymentIntentAmountDetailsLineItems {
+    pub fn new(
+        product_name: impl Into<String>,
+        quantity: impl Into<u64>,
+        unit_cost: impl Into<i64>,
+    ) -> Self {
+        Self {
+            discount_amount: None,
+            payment_method_options: None,
+            product_code: None,
+            product_name: product_name.into(),
+            quantity: quantity.into(),
+            tax: None,
+            unit_cost: unit_cost.into(),
+            unit_of_measure: None,
+        }
+    }
+}
+/// Payment method-specific information for line items.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    /// This sub-hash contains line item details that are specific to `card` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard>,
+    /// This sub-hash contains line item details that are specific to `card_present` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_present:
+        Option<UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent>,
+    /// This sub-hash contains line item details that are specific to `klarna` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam>,
+    /// This sub-hash contains line item details that are specific to `paypal` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal>,
+}
+impl UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    pub fn new() -> Self {
+        Self { card: None, card_present: None, klarna: None, paypal: None }
+    }
+}
+impl Default for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `card` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub commodity_code: Option<String>,
+}
+impl UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    pub fn new() -> Self {
+        Self { commodity_code: None }
+    }
+}
+impl Default for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `card_present` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub commodity_code: Option<String>,
+}
+impl UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    pub fn new() -> Self {
+        Self { commodity_code: None }
+    }
+}
+impl Default for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `paypal` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    /// Type of the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub category:
+        Option<UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory>,
+    /// Description of the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// The Stripe account ID of the connected account that sells the item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sold_by: Option<String>,
+}
+impl UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    pub fn new() -> Self {
+        Self { category: None, description: None, sold_by: None }
+    }
+}
+impl Default for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of the line item.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory {
+    DigitalGoods,
+    Donation,
+    PhysicalGoods,
+}
+impl UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory::*;
+        match self {
+            DigitalGoods => "digital_goods",
+            Donation => "donation",
+            PhysicalGoods => "physical_goods",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory::*;
+        match s {
+            "digital_goods" => Ok(DigitalGoods),
+            "donation" => Ok(Donation),
+            "physical_goods" => Ok(PhysicalGoods),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory"))
+    }
+}
+/// Provides industry-specific information about the charge.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetails {
+    /// A unique value to identify the customer. This field is available only for card payments.
+    ///
+    /// This field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_reference: Option<String>,
+    /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
+    ///
+    /// Required when the Payment Method Types array contains `card`, including when [automatic_payment_methods.enabled](/api/payment_intents/create#create_payment_intent-automatic_payment_methods-enabled) is set to `true`.
+    ///
+    /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
+    /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub order_reference: Option<String>,
+}
+impl UpdatePaymentIntentPaymentDetails {
+    pub fn new() -> Self {
+        Self { customer_reference: None, order_reference: None }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentDetails {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// If provided, this hash will be used to create a PaymentMethod. The new PaymentMethod will appear
@@ -11615,7 +12207,7 @@ pub struct UpdatePaymentIntentPaymentMethodData {
     /// Options to configure Radar.
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub radar_options: Option<RadarOptionsWithHiddenOptions>,
+    pub radar_options: Option<UpdatePaymentIntentPaymentMethodDataRadarOptions>,
     /// If this is a `revolut_pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -12629,6 +13221,24 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataP24Ban
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).unwrap())
+    }
+}
+/// Options to configure Radar.
+/// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodDataRadarOptions {
+    /// A [Radar Session](https://stripe.com/docs/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
+}
+impl UpdatePaymentIntentPaymentMethodDataRadarOptions {
+    pub fn new() -> Self {
+        Self { session: None }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentMethodDataRadarOptions {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
@@ -22002,6 +22612,14 @@ impl UpdatePaymentIntent {
         self.inner.amount = Some(amount.into());
         self
     }
+    /// Provides industry-specific information about the amount.
+    pub fn amount_details(
+        mut self,
+        amount_details: impl Into<UpdatePaymentIntentAmountDetails>,
+    ) -> Self {
+        self.inner.amount_details = Some(amount_details.into());
+        self
+    }
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     /// The amount of the application fee collected will be capped at the total amount captured.
     /// For more information, see the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts).
@@ -22062,6 +22680,14 @@ impl UpdatePaymentIntent {
         metadata: impl Into<std::collections::HashMap<String, String>>,
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
+        self
+    }
+    /// Provides industry-specific information about the charge.
+    pub fn payment_details(
+        mut self,
+        payment_details: impl Into<UpdatePaymentIntentPaymentDetails>,
+    ) -> Self {
+        self.inner.payment_details = Some(payment_details.into());
         self
     }
     /// ID of the payment method (a PaymentMethod, Card, or [compatible Source](https://stripe.com/docs/payments/payment-methods/transitioning#compatibility) object) to attach to this PaymentIntent.
@@ -22411,6 +23037,8 @@ impl StripeRequest for CancelPaymentIntent {
 #[derive(Clone, Debug, serde::Serialize)]
 struct CapturePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    amount_details: Option<CapturePaymentIntentAmountDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     amount_to_capture: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     application_fee_amount: Option<i64>,
@@ -22421,6 +23049,8 @@ struct CapturePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    payment_details: Option<CapturePaymentIntentPaymentDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     statement_descriptor: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     statement_descriptor_suffix: Option<String>,
@@ -22430,15 +23060,281 @@ struct CapturePaymentIntentBuilder {
 impl CapturePaymentIntentBuilder {
     fn new() -> Self {
         Self {
+            amount_details: None,
             amount_to_capture: None,
             application_fee_amount: None,
             expand: None,
             final_capture: None,
             metadata: None,
+            payment_details: None,
             statement_descriptor: None,
             statement_descriptor_suffix: None,
             transfer_data: None,
         }
+    }
+}
+/// Provides industry-specific information about the amount.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CapturePaymentIntentAmountDetails {
+    /// The total discount applied on the transaction represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// An integer greater than 0.
+    ///
+    /// This field is mutually exclusive with the `amount_details[line_items][#][discount_amount]` field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount_amount: Option<i64>,
+    /// A list of line items, each containing information about a product in the PaymentIntent.
+    /// There is a maximum of 100 line items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line_items: Option<Vec<CapturePaymentIntentAmountDetailsLineItems>>,
+    /// Contains information about the shipping portion of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping: Option<AmountDetailsShippingParam>,
+    /// Contains information about the tax portion of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<AmountDetailsTaxParam>,
+}
+impl CapturePaymentIntentAmountDetails {
+    pub fn new() -> Self {
+        Self { discount_amount: None, line_items: None, shipping: None, tax: None }
+    }
+}
+impl Default for CapturePaymentIntentAmountDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// A list of line items, each containing information about a product in the PaymentIntent.
+/// There is a maximum of 100 line items.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CapturePaymentIntentAmountDetailsLineItems {
+    /// The discount applied on this line item represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// An integer greater than 0.
+    ///
+    /// This field is mutually exclusive with the `amount_details[discount_amount]` field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount_amount: Option<i64>,
+    /// Payment method-specific information for line items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_options:
+        Option<CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptions>,
+    /// The product code of the line item, such as an SKU.
+    /// Required for L3 rates.
+    /// At most 12 characters long.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_code: Option<String>,
+    /// The product name of the line item. Required for L3 rates. At most 1024 characters long.
+    ///
+    /// For Cards, this field is truncated to 26 alphanumeric characters before being sent to the card networks.
+    /// For Paypal, this field is truncated to 127 characters.
+    pub product_name: String,
+    /// The quantity of items. Required for L3 rates. An integer greater than 0.
+    pub quantity: u64,
+    /// Contains information about the tax on the item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<AmountDetailsLineItemTaxParam>,
+    /// The unit cost of the line item represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// Required for L3 rates.
+    /// An integer greater than or equal to 0.
+    pub unit_cost: i64,
+    /// A unit of measure for the line item, such as gallons, feet, meters, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_of_measure: Option<String>,
+}
+impl CapturePaymentIntentAmountDetailsLineItems {
+    pub fn new(
+        product_name: impl Into<String>,
+        quantity: impl Into<u64>,
+        unit_cost: impl Into<i64>,
+    ) -> Self {
+        Self {
+            discount_amount: None,
+            payment_method_options: None,
+            product_code: None,
+            product_name: product_name.into(),
+            quantity: quantity.into(),
+            tax: None,
+            unit_cost: unit_cost.into(),
+            unit_of_measure: None,
+        }
+    }
+}
+/// Payment method-specific information for line items.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    /// This sub-hash contains line item details that are specific to `card` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard>,
+    /// This sub-hash contains line item details that are specific to `card_present` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_present:
+        Option<CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent>,
+    /// This sub-hash contains line item details that are specific to `klarna` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam>,
+    /// This sub-hash contains line item details that are specific to `paypal` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal>,
+}
+impl CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    pub fn new() -> Self {
+        Self { card: None, card_present: None, klarna: None, paypal: None }
+    }
+}
+impl Default for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `card` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub commodity_code: Option<String>,
+}
+impl CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    pub fn new() -> Self {
+        Self { commodity_code: None }
+    }
+}
+impl Default for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `card_present` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub commodity_code: Option<String>,
+}
+impl CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    pub fn new() -> Self {
+        Self { commodity_code: None }
+    }
+}
+impl Default for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `paypal` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    /// Type of the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub category:
+        Option<CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory>,
+    /// Description of the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// The Stripe account ID of the connected account that sells the item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sold_by: Option<String>,
+}
+impl CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    pub fn new() -> Self {
+        Self { category: None, description: None, sold_by: None }
+    }
+}
+impl Default for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of the line item.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory {
+    DigitalGoods,
+    Donation,
+    PhysicalGoods,
+}
+impl CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory {
+    pub fn as_str(self) -> &'static str {
+        use CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory::*;
+        match self {
+            DigitalGoods => "digital_goods",
+            Donation => "donation",
+            PhysicalGoods => "physical_goods",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory::*;
+        match s {
+            "digital_goods" => Ok(DigitalGoods),
+            "donation" => Ok(Donation),
+            "physical_goods" => Ok(PhysicalGoods),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory"))
+    }
+}
+/// Provides industry-specific information about the charge.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetails {
+    /// A unique value to identify the customer. This field is available only for card payments.
+    ///
+    /// This field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_reference: Option<String>,
+    /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
+    ///
+    /// Required when the Payment Method Types array contains `card`, including when [automatic_payment_methods.enabled](/api/payment_intents/create#create_payment_intent-automatic_payment_methods-enabled) is set to `true`.
+    ///
+    /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
+    /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub order_reference: Option<String>,
+}
+impl CapturePaymentIntentPaymentDetails {
+    pub fn new() -> Self {
+        Self { customer_reference: None, order_reference: None }
+    }
+}
+impl Default for CapturePaymentIntentPaymentDetails {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The parameters that you can use to automatically create a transfer after the payment
@@ -22475,6 +23371,14 @@ impl CapturePaymentIntent {
     pub fn new(intent: impl Into<stripe_shared::PaymentIntentId>) -> Self {
         Self { intent: intent.into(), inner: CapturePaymentIntentBuilder::new() }
     }
+    /// Provides industry-specific information about the amount.
+    pub fn amount_details(
+        mut self,
+        amount_details: impl Into<CapturePaymentIntentAmountDetails>,
+    ) -> Self {
+        self.inner.amount_details = Some(amount_details.into());
+        self
+    }
     /// The amount to capture from the PaymentIntent, which must be less than or equal to the original amount.
     /// Defaults to the full `amount_capturable` if it's not provided.
     pub fn amount_to_capture(mut self, amount_to_capture: impl Into<i64>) -> Self {
@@ -22509,6 +23413,14 @@ impl CapturePaymentIntent {
         metadata: impl Into<std::collections::HashMap<String, String>>,
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
+        self
+    }
+    /// Provides industry-specific information about the charge.
+    pub fn payment_details(
+        mut self,
+        payment_details: impl Into<CapturePaymentIntentPaymentDetails>,
+    ) -> Self {
+        self.inner.payment_details = Some(payment_details.into());
         self
     }
     /// Text that appears on the customer's statement as the statement descriptor for a non-card charge.
@@ -22571,6 +23483,8 @@ impl StripeRequest for CapturePaymentIntent {
 #[derive(Clone, Debug, serde::Serialize)]
 struct ConfirmPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    amount_details: Option<ConfirmPaymentIntentAmountDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     capture_method: Option<stripe_shared::PaymentIntentCaptureMethod>,
     #[serde(skip_serializing_if = "Option::is_none")]
     confirmation_token: Option<String>,
@@ -22588,6 +23502,8 @@ struct ConfirmPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     off_session: Option<ConfirmPaymentIntentOffSession>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    payment_details: Option<ConfirmPaymentIntentPaymentDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     payment_method: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_data: Option<ConfirmPaymentIntentPaymentMethodData>,
@@ -22596,7 +23512,7 @@ struct ConfirmPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_types: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    radar_options: Option<RadarOptionsWithHiddenOptions>,
+    radar_options: Option<ConfirmPaymentIntentRadarOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     receipt_email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -22611,6 +23527,7 @@ struct ConfirmPaymentIntentBuilder {
 impl ConfirmPaymentIntentBuilder {
     fn new() -> Self {
         Self {
+            amount_details: None,
             capture_method: None,
             confirmation_token: None,
             error_on_requires_action: None,
@@ -22619,6 +23536,7 @@ impl ConfirmPaymentIntentBuilder {
             mandate: None,
             mandate_data: None,
             off_session: None,
+            payment_details: None,
             payment_method: None,
             payment_method_data: None,
             payment_method_options: None,
@@ -22630,6 +23548,243 @@ impl ConfirmPaymentIntentBuilder {
             shipping: None,
             use_stripe_sdk: None,
         }
+    }
+}
+/// Provides industry-specific information about the amount.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmPaymentIntentAmountDetails {
+    /// The total discount applied on the transaction represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// An integer greater than 0.
+    ///
+    /// This field is mutually exclusive with the `amount_details[line_items][#][discount_amount]` field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount_amount: Option<i64>,
+    /// A list of line items, each containing information about a product in the PaymentIntent.
+    /// There is a maximum of 100 line items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line_items: Option<Vec<ConfirmPaymentIntentAmountDetailsLineItems>>,
+    /// Contains information about the shipping portion of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping: Option<AmountDetailsShippingParam>,
+    /// Contains information about the tax portion of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<AmountDetailsTaxParam>,
+}
+impl ConfirmPaymentIntentAmountDetails {
+    pub fn new() -> Self {
+        Self { discount_amount: None, line_items: None, shipping: None, tax: None }
+    }
+}
+impl Default for ConfirmPaymentIntentAmountDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// A list of line items, each containing information about a product in the PaymentIntent.
+/// There is a maximum of 100 line items.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmPaymentIntentAmountDetailsLineItems {
+    /// The discount applied on this line item represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// An integer greater than 0.
+    ///
+    /// This field is mutually exclusive with the `amount_details[discount_amount]` field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount_amount: Option<i64>,
+    /// Payment method-specific information for line items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_options:
+        Option<ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptions>,
+    /// The product code of the line item, such as an SKU.
+    /// Required for L3 rates.
+    /// At most 12 characters long.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_code: Option<String>,
+    /// The product name of the line item. Required for L3 rates. At most 1024 characters long.
+    ///
+    /// For Cards, this field is truncated to 26 alphanumeric characters before being sent to the card networks.
+    /// For Paypal, this field is truncated to 127 characters.
+    pub product_name: String,
+    /// The quantity of items. Required for L3 rates. An integer greater than 0.
+    pub quantity: u64,
+    /// Contains information about the tax on the item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<AmountDetailsLineItemTaxParam>,
+    /// The unit cost of the line item represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// Required for L3 rates.
+    /// An integer greater than or equal to 0.
+    pub unit_cost: i64,
+    /// A unit of measure for the line item, such as gallons, feet, meters, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_of_measure: Option<String>,
+}
+impl ConfirmPaymentIntentAmountDetailsLineItems {
+    pub fn new(
+        product_name: impl Into<String>,
+        quantity: impl Into<u64>,
+        unit_cost: impl Into<i64>,
+    ) -> Self {
+        Self {
+            discount_amount: None,
+            payment_method_options: None,
+            product_code: None,
+            product_name: product_name.into(),
+            quantity: quantity.into(),
+            tax: None,
+            unit_cost: unit_cost.into(),
+            unit_of_measure: None,
+        }
+    }
+}
+/// Payment method-specific information for line items.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    /// This sub-hash contains line item details that are specific to `card` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard>,
+    /// This sub-hash contains line item details that are specific to `card_present` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_present:
+        Option<ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent>,
+    /// This sub-hash contains line item details that are specific to `klarna` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam>,
+    /// This sub-hash contains line item details that are specific to `paypal` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal>,
+}
+impl ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    pub fn new() -> Self {
+        Self { card: None, card_present: None, klarna: None, paypal: None }
+    }
+}
+impl Default for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `card` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub commodity_code: Option<String>,
+}
+impl ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    pub fn new() -> Self {
+        Self { commodity_code: None }
+    }
+}
+impl Default for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `card_present` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub commodity_code: Option<String>,
+}
+impl ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    pub fn new() -> Self {
+        Self { commodity_code: None }
+    }
+}
+impl Default for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `paypal` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    /// Type of the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub category:
+        Option<ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory>,
+    /// Description of the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// The Stripe account ID of the connected account that sells the item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sold_by: Option<String>,
+}
+impl ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    pub fn new() -> Self {
+        Self { category: None, description: None, sold_by: None }
+    }
+}
+impl Default for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of the line item.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory {
+    DigitalGoods,
+    Donation,
+    PhysicalGoods,
+}
+impl ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory {
+    pub fn as_str(self) -> &'static str {
+        use ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory::*;
+        match self {
+            DigitalGoods => "digital_goods",
+            Donation => "donation",
+            PhysicalGoods => "physical_goods",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory::*;
+        match s {
+            "digital_goods" => Ok(DigitalGoods),
+            "donation" => Ok(Donation),
+            "physical_goods" => Ok(PhysicalGoods),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory"))
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -22848,6 +24003,33 @@ pub enum ConfirmPaymentIntentOffSession {
     #[serde(untagged)]
     Bool(bool),
 }
+/// Provides industry-specific information about the charge.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetails {
+    /// A unique value to identify the customer. This field is available only for card payments.
+    ///
+    /// This field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_reference: Option<String>,
+    /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
+    ///
+    /// Required when the Payment Method Types array contains `card`, including when [automatic_payment_methods.enabled](/api/payment_intents/create#create_payment_intent-automatic_payment_methods-enabled) is set to `true`.
+    ///
+    /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
+    /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub order_reference: Option<String>,
+}
+impl ConfirmPaymentIntentPaymentDetails {
+    pub fn new() -> Self {
+        Self { customer_reference: None, order_reference: None }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// If provided, this hash will be used to create a PaymentMethod. The new PaymentMethod will appear
 /// in the [payment_method](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-payment_method).
 /// property on the PaymentIntent.
@@ -23015,7 +24197,7 @@ pub struct ConfirmPaymentIntentPaymentMethodData {
     /// Options to configure Radar.
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub radar_options: Option<RadarOptionsWithHiddenOptions>,
+    pub radar_options: Option<ConfirmPaymentIntentPaymentMethodDataRadarOptions>,
     /// If this is a `revolut_pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -24029,6 +25211,24 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataP24Ba
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).unwrap())
+    }
+}
+/// Options to configure Radar.
+/// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentMethodDataRadarOptions {
+    /// A [Radar Session](https://stripe.com/docs/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
+}
+impl ConfirmPaymentIntentPaymentMethodDataRadarOptions {
+    pub fn new() -> Self {
+        Self { session: None }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentMethodDataRadarOptions {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
@@ -33305,6 +34505,24 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsZi
         })
     }
 }
+/// Options to configure Radar.
+/// Learn more about [Radar Sessions](https://stripe.com/docs/radar/radar-session).
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ConfirmPaymentIntentRadarOptions {
+    /// A [Radar Session](https://stripe.com/docs/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
+}
+impl ConfirmPaymentIntentRadarOptions {
+    pub fn new() -> Self {
+        Self { session: None }
+    }
+}
+impl Default for ConfirmPaymentIntentRadarOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// Shipping information for this PaymentIntent.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmPaymentIntentShipping {
@@ -33409,6 +34627,14 @@ impl ConfirmPaymentIntent {
     pub fn new(intent: impl Into<stripe_shared::PaymentIntentId>) -> Self {
         Self { intent: intent.into(), inner: ConfirmPaymentIntentBuilder::new() }
     }
+    /// Provides industry-specific information about the amount.
+    pub fn amount_details(
+        mut self,
+        amount_details: impl Into<ConfirmPaymentIntentAmountDetails>,
+    ) -> Self {
+        self.inner.amount_details = Some(amount_details.into());
+        self
+    }
     /// Controls when the funds will be captured from the customer's account.
     pub fn capture_method(
         mut self,
@@ -33463,6 +34689,14 @@ impl ConfirmPaymentIntent {
         self.inner.off_session = Some(off_session.into());
         self
     }
+    /// Provides industry-specific information about the charge.
+    pub fn payment_details(
+        mut self,
+        payment_details: impl Into<ConfirmPaymentIntentPaymentDetails>,
+    ) -> Self {
+        self.inner.payment_details = Some(payment_details.into());
+        self
+    }
     /// ID of the payment method (a PaymentMethod, Card, or [compatible Source](https://stripe.com/docs/payments/payment-methods/transitioning#compatibility) object) to attach to this PaymentIntent.
     /// If the payment method is attached to a Customer, it must match the [customer](https://stripe.com/docs/api#create_payment_intent-customer) that is set on this PaymentIntent.
     pub fn payment_method(mut self, payment_method: impl Into<String>) -> Self {
@@ -33498,7 +34732,7 @@ impl ConfirmPaymentIntent {
     /// Learn more about [Radar Sessions](https://stripe.com/docs/radar/radar-session).
     pub fn radar_options(
         mut self,
-        radar_options: impl Into<RadarOptionsWithHiddenOptions>,
+        radar_options: impl Into<ConfirmPaymentIntentRadarOptions>,
     ) -> Self {
         self.inner.radar_options = Some(radar_options.into());
         self
@@ -33575,6 +34809,8 @@ impl StripeRequest for ConfirmPaymentIntent {
 struct IncrementAuthorizationPaymentIntentBuilder {
     amount: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
+    amount_details: Option<IncrementAuthorizationPaymentIntentAmountDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     application_fee_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
@@ -33582,6 +34818,8 @@ struct IncrementAuthorizationPaymentIntentBuilder {
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_details: Option<IncrementAuthorizationPaymentIntentPaymentDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
     statement_descriptor: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -33591,13 +34829,289 @@ impl IncrementAuthorizationPaymentIntentBuilder {
     fn new(amount: impl Into<i64>) -> Self {
         Self {
             amount: amount.into(),
+            amount_details: None,
             application_fee_amount: None,
             description: None,
             expand: None,
             metadata: None,
+            payment_details: None,
             statement_descriptor: None,
             transfer_data: None,
         }
+    }
+}
+/// Provides industry-specific information about the amount.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct IncrementAuthorizationPaymentIntentAmountDetails {
+    /// The total discount applied on the transaction represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// An integer greater than 0.
+    ///
+    /// This field is mutually exclusive with the `amount_details[line_items][#][discount_amount]` field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount_amount: Option<i64>,
+    /// A list of line items, each containing information about a product in the PaymentIntent.
+    /// There is a maximum of 100 line items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line_items: Option<Vec<IncrementAuthorizationPaymentIntentAmountDetailsLineItems>>,
+    /// Contains information about the shipping portion of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping: Option<AmountDetailsShippingParam>,
+    /// Contains information about the tax portion of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<AmountDetailsTaxParam>,
+}
+impl IncrementAuthorizationPaymentIntentAmountDetails {
+    pub fn new() -> Self {
+        Self { discount_amount: None, line_items: None, shipping: None, tax: None }
+    }
+}
+impl Default for IncrementAuthorizationPaymentIntentAmountDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// A list of line items, each containing information about a product in the PaymentIntent.
+/// There is a maximum of 100 line items.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct IncrementAuthorizationPaymentIntentAmountDetailsLineItems {
+    /// The discount applied on this line item represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// An integer greater than 0.
+    ///
+    /// This field is mutually exclusive with the `amount_details[discount_amount]` field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount_amount: Option<i64>,
+    /// Payment method-specific information for line items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_options:
+        Option<IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptions>,
+    /// The product code of the line item, such as an SKU.
+    /// Required for L3 rates.
+    /// At most 12 characters long.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_code: Option<String>,
+    /// The product name of the line item. Required for L3 rates. At most 1024 characters long.
+    ///
+    /// For Cards, this field is truncated to 26 alphanumeric characters before being sent to the card networks.
+    /// For Paypal, this field is truncated to 127 characters.
+    pub product_name: String,
+    /// The quantity of items. Required for L3 rates. An integer greater than 0.
+    pub quantity: u64,
+    /// Contains information about the tax on the item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<AmountDetailsLineItemTaxParam>,
+    /// The unit cost of the line item represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// Required for L3 rates.
+    /// An integer greater than or equal to 0.
+    pub unit_cost: i64,
+    /// A unit of measure for the line item, such as gallons, feet, meters, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_of_measure: Option<String>,
+}
+impl IncrementAuthorizationPaymentIntentAmountDetailsLineItems {
+    pub fn new(
+        product_name: impl Into<String>,
+        quantity: impl Into<u64>,
+        unit_cost: impl Into<i64>,
+    ) -> Self {
+        Self {
+            discount_amount: None,
+            payment_method_options: None,
+            product_code: None,
+            product_name: product_name.into(),
+            quantity: quantity.into(),
+            tax: None,
+            unit_cost: unit_cost.into(),
+            unit_of_measure: None,
+        }
+    }
+}
+/// Payment method-specific information for line items.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    /// This sub-hash contains line item details that are specific to `card` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card:
+        Option<IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard>,
+    /// This sub-hash contains line item details that are specific to `card_present` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_present: Option<
+        IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent,
+    >,
+    /// This sub-hash contains line item details that are specific to `klarna` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam>,
+    /// This sub-hash contains line item details that are specific to `paypal` payment method."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal:
+        Option<IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal>,
+}
+impl IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    pub fn new() -> Self {
+        Self { card: None, card_present: None, klarna: None, paypal: None }
+    }
+}
+impl Default for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `card` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub commodity_code: Option<String>,
+}
+impl IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    pub fn new() -> Self {
+        Self { commodity_code: None }
+    }
+}
+impl Default for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `card_present` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent
+{
+    /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub commodity_code: Option<String>,
+}
+impl IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    pub fn new() -> Self {
+        Self { commodity_code: None }
+    }
+}
+impl Default
+    for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// This sub-hash contains line item details that are specific to `paypal` payment method."
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    /// Type of the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub category: Option<
+        IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory,
+    >,
+    /// Description of the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// The Stripe account ID of the connected account that sells the item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sold_by: Option<String>,
+}
+impl IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    pub fn new() -> Self {
+        Self { category: None, description: None, sold_by: None }
+    }
+}
+impl Default
+    for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of the line item.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    DigitalGoods,
+    Donation,
+    PhysicalGoods,
+}
+impl IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory {
+    pub fn as_str(self) -> &'static str {
+        use IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory::*;
+        match self {
+            DigitalGoods => "digital_goods",
+            Donation => "donation",
+            PhysicalGoods => "physical_goods",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory::*;
+        match s {
+            "digital_goods" => Ok(DigitalGoods),
+            "donation" => Ok(Donation),
+            "physical_goods" => Ok(PhysicalGoods),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory"))
+    }
+}
+/// Provides industry-specific information about the charge.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct IncrementAuthorizationPaymentIntentPaymentDetails {
+    /// A unique value to identify the customer. This field is available only for card payments.
+    ///
+    /// This field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_reference: Option<String>,
+    /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
+    ///
+    /// Required when the Payment Method Types array contains `card`, including when [automatic_payment_methods.enabled](/api/payment_intents/create#create_payment_intent-automatic_payment_methods-enabled) is set to `true`.
+    ///
+    /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
+    /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub order_reference: Option<String>,
+}
+impl IncrementAuthorizationPaymentIntentPaymentDetails {
+    pub fn new() -> Self {
+        Self { customer_reference: None, order_reference: None }
+    }
+}
+impl Default for IncrementAuthorizationPaymentIntentPaymentDetails {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The parameters used to automatically create a transfer after the payment is captured.
@@ -33655,6 +35169,14 @@ impl IncrementAuthorizationPaymentIntent {
             inner: IncrementAuthorizationPaymentIntentBuilder::new(amount.into()),
         }
     }
+    /// Provides industry-specific information about the amount.
+    pub fn amount_details(
+        mut self,
+        amount_details: impl Into<IncrementAuthorizationPaymentIntentAmountDetails>,
+    ) -> Self {
+        self.inner.amount_details = Some(amount_details.into());
+        self
+    }
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     /// The amount of the application fee collected will be capped at the total amount captured.
     /// For more information, see the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts).
@@ -33681,6 +35203,14 @@ impl IncrementAuthorizationPaymentIntent {
         metadata: impl Into<std::collections::HashMap<String, String>>,
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
+        self
+    }
+    /// Provides industry-specific information about the charge.
+    pub fn payment_details(
+        mut self,
+        payment_details: impl Into<IncrementAuthorizationPaymentIntentPaymentDetails>,
+    ) -> Self {
+        self.inner.payment_details = Some(payment_details.into());
         self
     }
     /// Text that appears on the customer's statement as the statement descriptor for a non-card or card charge.
@@ -33803,6 +35333,85 @@ impl StripeRequest for VerifyMicrodepositsPaymentIntent {
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
+pub struct PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam {
+    /// URL to an image for the product. Max length, 4096 characters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub image_url: Option<String>,
+    /// URL to the product page. Max length, 4096 characters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_url: Option<String>,
+    /// Unique reference for this line item to correlate it with your system’s internal records.
+    /// The field is displayed in the Klarna Consumer App if passed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+    /// Reference for the subscription this line item is for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_reference: Option<String>,
+}
+impl PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam {
+    pub fn new() -> Self {
+        Self { image_url: None, product_url: None, reference: None, subscription_reference: None }
+    }
+}
+impl Default for PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct AmountDetailsLineItemTaxParam {
+    /// The total amount of tax on a single line item represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// Required for L3 rates.
+    /// An integer greater than or equal to 0.
+    ///
+    /// This field is mutually exclusive with the `amount_details[tax][total_tax_amount]` field.
+    pub total_tax_amount: i64,
+}
+impl AmountDetailsLineItemTaxParam {
+    pub fn new(total_tax_amount: impl Into<i64>) -> Self {
+        Self { total_tax_amount: total_tax_amount.into() }
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct AmountDetailsShippingParam {
+    /// If a physical good is being shipped, the cost of shipping represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// An integer greater than or equal to 0.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// If a physical good is being shipped, the postal code of where it is being shipped from.
+    /// At most 10 alphanumeric characters long, hyphens are allowed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub from_postal_code: Option<String>,
+    /// If a physical good is being shipped, the postal code of where it is being shipped to.
+    /// At most 10 alphanumeric characters long, hyphens are allowed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub to_postal_code: Option<String>,
+}
+impl AmountDetailsShippingParam {
+    pub fn new() -> Self {
+        Self { amount: None, from_postal_code: None, to_postal_code: None }
+    }
+}
+impl Default for AmountDetailsShippingParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct AmountDetailsTaxParam {
+    /// The total amount of tax on the transaction represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// Required for L2 rates.
+    /// An integer greater than or equal to 0.
+    ///
+    /// This field is mutually exclusive with the `amount_details[line_items][#][tax][total_tax_amount]` field.
+    pub total_tax_amount: i64,
+}
+impl AmountDetailsTaxParam {
+    pub fn new(total_tax_amount: impl Into<i64>) -> Self {
+        Self { total_tax_amount: total_tax_amount.into() }
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct OnlineParam {
     /// The IP address from which the Mandate was accepted by the customer.
     pub ip_address: String,
@@ -33848,22 +35457,6 @@ pub struct DateOfBirth {
 impl DateOfBirth {
     pub fn new(day: impl Into<i64>, month: impl Into<i64>, year: impl Into<i64>) -> Self {
         Self { day: day.into(), month: month.into(), year: year.into() }
-    }
-}
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct RadarOptionsWithHiddenOptions {
-    /// A [Radar Session](https://stripe.com/docs/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub session: Option<String>,
-}
-impl RadarOptionsWithHiddenOptions {
-    pub fn new() -> Self {
-        Self { session: None }
-    }
-}
-impl Default for RadarOptionsWithHiddenOptions {
-    fn default() -> Self {
-        Self::new()
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]

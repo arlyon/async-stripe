@@ -62,7 +62,6 @@ const _: () = {
                 "bank" => Deserialize::begin(&mut self.bank),
                 "reference" => Deserialize::begin(&mut self.reference),
                 "verified_name" => Deserialize::begin(&mut self.verified_name),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -111,7 +110,6 @@ const _: () = {
                     "bank" => b.bank = FromValueOpt::from_value(v),
                     "reference" => b.reference = FromValueOpt::from_value(v),
                     "verified_name" => b.verified_name = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

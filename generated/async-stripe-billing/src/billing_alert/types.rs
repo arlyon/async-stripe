@@ -72,7 +72,6 @@ const _: () = {
                 "status" => Deserialize::begin(&mut self.status),
                 "title" => Deserialize::begin(&mut self.title),
                 "usage_threshold" => Deserialize::begin(&mut self.usage_threshold),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -140,7 +139,6 @@ const _: () = {
                     "status" => b.status = FromValueOpt::from_value(v),
                     "title" => b.title = FromValueOpt::from_value(v),
                     "usage_threshold" => b.usage_threshold = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

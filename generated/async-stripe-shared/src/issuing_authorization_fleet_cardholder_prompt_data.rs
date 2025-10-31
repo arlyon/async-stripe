@@ -73,7 +73,6 @@ const _: () = {
                 "unspecified_id" => Deserialize::begin(&mut self.unspecified_id),
                 "user_id" => Deserialize::begin(&mut self.user_id),
                 "vehicle_number" => Deserialize::begin(&mut self.vehicle_number),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -148,7 +147,6 @@ const _: () = {
                     "unspecified_id" => b.unspecified_id = FromValueOpt::from_value(v),
                     "user_id" => b.user_id = FromValueOpt::from_value(v),
                     "vehicle_number" => b.vehicle_number = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

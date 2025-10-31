@@ -90,7 +90,6 @@ const _: () = {
                 "name" => Deserialize::begin(&mut self.name),
                 "updated" => Deserialize::begin(&mut self.updated),
                 "version" => Deserialize::begin(&mut self.version),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -175,7 +174,6 @@ const _: () = {
                     "name" => b.name = FromValueOpt::from_value(v),
                     "updated" => b.updated = FromValueOpt::from_value(v),
                     "version" => b.version = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

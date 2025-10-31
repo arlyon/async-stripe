@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "charge" => Deserialize::begin(&mut self.charge),
                 "setup_attempt" => Deserialize::begin(&mut self.setup_attempt),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "charge" => b.charge = FromValueOpt::from_value(v),
                     "setup_attempt" => b.setup_attempt = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

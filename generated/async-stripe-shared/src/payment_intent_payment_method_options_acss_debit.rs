@@ -74,7 +74,6 @@ const _: () = {
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
                 "target_date" => Deserialize::begin(&mut self.target_date),
                 "verification_method" => Deserialize::begin(&mut self.verification_method),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -139,7 +138,6 @@ const _: () = {
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
                     "target_date" => b.target_date = FromValueOpt::from_value(v),
                     "verification_method" => b.verification_method = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

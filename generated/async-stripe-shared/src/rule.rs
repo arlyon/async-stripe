@@ -56,7 +56,6 @@ const _: () = {
                 "action" => Deserialize::begin(&mut self.action),
                 "id" => Deserialize::begin(&mut self.id),
                 "predicate" => Deserialize::begin(&mut self.predicate),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -105,7 +104,6 @@ const _: () = {
                     "action" => b.action = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "predicate" => b.predicate = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

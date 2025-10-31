@@ -697,6 +697,9 @@ pub enum EventObject {
     /// This event is not fired for negative transactions.
     #[cfg(feature = "async-stripe-core")]
     BalanceAvailable(stripe_core::Balance),
+    /// Occurs whenever a balance settings status or property has changed.
+    #[cfg(feature = "async-stripe-core")]
+    BalanceSettingsUpdated(stripe_core::BalanceSettings),
     /// Occurs whenever your custom alert threshold is met.
     #[cfg(feature = "async-stripe-billing")]
     BillingAlertTriggered(stripe_billing::BillingAlertTriggered),
@@ -915,6 +918,8 @@ pub enum EventObject {
     InvoicePaid(stripe_shared::Invoice),
     /// Occurs whenever an invoice payment attempt requires further user action to complete.
     InvoicePaymentActionRequired(stripe_shared::Invoice),
+    /// Occurs when an invoice requires a payment using a payment method that cannot be processed by Stripe.
+    InvoicePaymentAttemptRequired(stripe_shared::Invoice),
     /// Occurs whenever an invoice payment attempt fails, due to either a declined payment, including soft decline, or to the lack of a stored payment method.
     InvoicePaymentFailed(stripe_shared::Invoice),
     /// Occurs whenever an invoice payment attempt succeeds.
@@ -1309,6 +1314,10 @@ impl EventObject {
         if typ == "balance.available" {
             return FromValueOpt::from_value(data).map(Self::BalanceAvailable);
         }
+        #[cfg(feature = "async-stripe-core")]
+        if typ == "balance_settings.updated" {
+            return FromValueOpt::from_value(data).map(Self::BalanceSettingsUpdated);
+        }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "billing.alert.triggered" {
             return FromValueOpt::from_value(data).map(Self::BillingAlertTriggered);
@@ -1615,6 +1624,9 @@ impl EventObject {
         }
         if typ == "invoice.payment_action_required" {
             return FromValueOpt::from_value(data).map(Self::InvoicePaymentActionRequired);
+        }
+        if typ == "invoice.payment_attempt_required" {
+            return FromValueOpt::from_value(data).map(Self::InvoicePaymentAttemptRequired);
         }
         if typ == "invoice.payment_failed" {
             return FromValueOpt::from_value(data).map(Self::InvoicePaymentFailed);

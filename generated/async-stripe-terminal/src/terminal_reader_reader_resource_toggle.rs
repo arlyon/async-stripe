@@ -3,13 +3,13 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceToggle {
-    /// The toggle's default value
+    /// The toggle's default value. Can be `enabled` or `disabled`.
     pub default_value: Option<TerminalReaderReaderResourceToggleDefaultValue>,
-    /// The toggle's description text
+    /// The toggle's description text. Maximum 50 characters.
     pub description: Option<String>,
-    /// The toggle's title text
+    /// The toggle's title text. Maximum 50 characters.
     pub title: Option<String>,
-    /// The toggle's collected value
+    /// The toggle's collected value. Can be `enabled` or `disabled`.
     pub value: Option<TerminalReaderReaderResourceToggleValue>,
 }
 #[doc(hidden)]
@@ -64,7 +64,6 @@ const _: () = {
                 "description" => Deserialize::begin(&mut self.description),
                 "title" => Deserialize::begin(&mut self.title),
                 "value" => Deserialize::begin(&mut self.value),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -115,7 +114,6 @@ const _: () = {
                     "description" => b.description = FromValueOpt::from_value(v),
                     "title" => b.title = FromValueOpt::from_value(v),
                     "value" => b.value = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -123,7 +121,7 @@ const _: () = {
         }
     }
 };
-/// The toggle's default value
+/// The toggle's default value. Can be `enabled` or `disabled`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TerminalReaderReaderResourceToggleDefaultValue {
     Disabled,
@@ -200,7 +198,7 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceToggleDefaultV
         })
     }
 }
-/// The toggle's collected value
+/// The toggle's collected value. Can be `enabled` or `disabled`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TerminalReaderReaderResourceToggleValue {
     Disabled,

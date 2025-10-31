@@ -102,7 +102,6 @@ const _: () = {
                 "status" => Deserialize::begin(&mut self.status),
                 "transaction" => Deserialize::begin(&mut self.transaction),
                 "treasury" => Deserialize::begin(&mut self.treasury),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -207,7 +206,6 @@ const _: () = {
                     "status" => b.status = FromValueOpt::from_value(v),
                     "transaction" => b.transaction = FromValueOpt::from_value(v),
                     "treasury" => b.treasury = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

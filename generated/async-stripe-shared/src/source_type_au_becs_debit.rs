@@ -56,7 +56,6 @@ const _: () = {
                 "bsb_number" => Deserialize::begin(&mut self.bsb_number),
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
                 "last4" => Deserialize::begin(&mut self.last4),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -105,7 +104,6 @@ const _: () = {
                     "bsb_number" => b.bsb_number = FromValueOpt::from_value(v),
                     "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

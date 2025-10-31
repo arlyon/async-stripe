@@ -53,16 +53,13 @@ const _: () = {
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
             "status" => Deserialize::begin(&mut self.status),
-
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self {
-            status: Deserialize::default(),
-
-        }
+        Self { status: Deserialize::default(),
+ }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
@@ -98,8 +95,7 @@ const _: () = {
         let mut b = PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorizationBuilder::deser_default();
         for (k, v) in obj {
             match k.as_str() {
-                "status" => b.status = FromValueOpt::from_value(v),
-
+            "status" => b.status = FromValueOpt::from_value(v),
                 _ => {}
             }
         }

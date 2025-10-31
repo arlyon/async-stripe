@@ -31,6 +31,7 @@ pub struct PaymentMethod {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     pub crypto: Option<stripe_shared::PaymentMethodCrypto>,
+    pub custom: Option<stripe_shared::PaymentMethodCustom>,
     /// The ID of the Customer to which this PaymentMethod is saved.
     /// This will not be set when the PaymentMethod has not been saved to a Customer.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
@@ -104,6 +105,7 @@ pub struct PaymentMethodBuilder {
     cashapp: Option<Option<stripe_shared::PaymentMethodCashapp>>,
     created: Option<stripe_types::Timestamp>,
     crypto: Option<Option<stripe_shared::PaymentMethodCrypto>>,
+    custom: Option<Option<stripe_shared::PaymentMethodCustom>>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
     customer_balance: Option<Option<stripe_shared::PaymentMethodCustomerBalance>>,
     eps: Option<Option<stripe_shared::PaymentMethodEps>>,
@@ -206,6 +208,7 @@ const _: () = {
                 "cashapp" => Deserialize::begin(&mut self.cashapp),
                 "created" => Deserialize::begin(&mut self.created),
                 "crypto" => Deserialize::begin(&mut self.crypto),
+                "custom" => Deserialize::begin(&mut self.custom),
                 "customer" => Deserialize::begin(&mut self.customer),
                 "customer_balance" => Deserialize::begin(&mut self.customer_balance),
                 "eps" => Deserialize::begin(&mut self.eps),
@@ -247,7 +250,6 @@ const _: () = {
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
                 "wechat_pay" => Deserialize::begin(&mut self.wechat_pay),
                 "zip" => Deserialize::begin(&mut self.zip),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -273,6 +275,7 @@ const _: () = {
                 cashapp: Deserialize::default(),
                 created: Deserialize::default(),
                 crypto: Deserialize::default(),
+                custom: Deserialize::default(),
                 customer: Deserialize::default(),
                 customer_balance: Deserialize::default(),
                 eps: Deserialize::default(),
@@ -338,6 +341,7 @@ const _: () = {
                 Some(cashapp),
                 Some(created),
                 Some(crypto),
+                Some(custom),
                 Some(customer),
                 Some(customer_balance),
                 Some(eps),
@@ -399,6 +403,7 @@ const _: () = {
                 self.cashapp.take(),
                 self.created,
                 self.crypto,
+                self.custom.take(),
                 self.customer.take(),
                 self.customer_balance,
                 self.eps.take(),
@@ -464,6 +469,7 @@ const _: () = {
                 cashapp,
                 created,
                 crypto,
+                custom,
                 customer,
                 customer_balance,
                 eps,
@@ -551,6 +557,7 @@ const _: () = {
                     "cashapp" => b.cashapp = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "crypto" => b.crypto = FromValueOpt::from_value(v),
+                    "custom" => b.custom = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
                     "customer_balance" => b.customer_balance = FromValueOpt::from_value(v),
                     "eps" => b.eps = FromValueOpt::from_value(v),
@@ -592,7 +599,6 @@ const _: () = {
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
                     "wechat_pay" => b.wechat_pay = FromValueOpt::from_value(v),
                     "zip" => b.zip = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -604,7 +610,7 @@ const _: () = {
 impl serde::Serialize for PaymentMethod {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethod", 61)?;
+        let mut s = s.serialize_struct("PaymentMethod", 62)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("affirm", &self.affirm)?;
         s.serialize_field("afterpay_clearpay", &self.afterpay_clearpay)?;
@@ -624,6 +630,7 @@ impl serde::Serialize for PaymentMethod {
         s.serialize_field("cashapp", &self.cashapp)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("crypto", &self.crypto)?;
+        s.serialize_field("custom", &self.custom)?;
         s.serialize_field("customer", &self.customer)?;
         s.serialize_field("customer_balance", &self.customer_balance)?;
         s.serialize_field("eps", &self.eps)?;
@@ -692,6 +699,7 @@ pub enum PaymentMethodType {
     CardPresent,
     Cashapp,
     Crypto,
+    Custom,
     CustomerBalance,
     Eps,
     Fpx,
@@ -750,6 +758,7 @@ impl PaymentMethodType {
             CardPresent => "card_present",
             Cashapp => "cashapp",
             Crypto => "crypto",
+            Custom => "custom",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -811,6 +820,7 @@ impl std::str::FromStr for PaymentMethodType {
             "card_present" => Ok(CardPresent),
             "cashapp" => Ok(Cashapp),
             "crypto" => Ok(Crypto),
+            "custom" => Ok(Custom),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),

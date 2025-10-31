@@ -141,7 +141,6 @@ const _: () = {
                 "shipping_delay" => Deserialize::begin(&mut self.shipping_delay),
                 "shipping_first_name" => Deserialize::begin(&mut self.shipping_first_name),
                 "shipping_last_name" => Deserialize::begin(&mut self.shipping_last_name),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -334,7 +333,6 @@ const _: () = {
                     "shipping_delay" => b.shipping_delay = FromValueOpt::from_value(v),
                     "shipping_first_name" => b.shipping_first_name = FromValueOpt::from_value(v),
                     "shipping_last_name" => b.shipping_last_name = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

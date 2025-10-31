@@ -168,7 +168,12 @@ pub fn check_fixtures(resources: &serde_json::Value) {
     check_object::<stripe_billing::InvoiceLineItem>(resources, "line_item");
     check_object::<stripe_connect::LoginLink>(resources, "login_link");
     check_object::<stripe_core::Mandate>(resources, "mandate");
+    check_object::<stripe_payment::PaymentAttemptRecord>(resources, "payment_attempt_record");
     check_object::<stripe_core::PaymentIntent>(resources, "payment_intent");
+    check_object::<stripe_core::PaymentIntentAmountDetailsLineItem>(
+        resources,
+        "payment_intent_amount_details_line_item",
+    );
     check_object::<stripe_payment::PaymentLink>(resources, "payment_link");
     check_object::<stripe_payment::PaymentMethod>(resources, "payment_method");
     check_object::<stripe_payment::PaymentMethodConfiguration>(
@@ -176,6 +181,7 @@ pub fn check_fixtures(resources: &serde_json::Value) {
         "payment_method_configuration",
     );
     check_object::<stripe_payment::PaymentMethodDomain>(resources, "payment_method_domain");
+    check_object::<stripe_billing::PaymentRecord>(resources, "payment_record");
     check_object::<stripe_core::Payout>(resources, "payout");
     check_object::<stripe_connect::Person>(resources, "person");
     check_object::<stripe_billing::Plan>(resources, "plan");

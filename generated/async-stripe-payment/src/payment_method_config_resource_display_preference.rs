@@ -60,7 +60,6 @@ const _: () = {
                 "overridable" => Deserialize::begin(&mut self.overridable),
                 "preference" => Deserialize::begin(&mut self.preference),
                 "value" => Deserialize::begin(&mut self.value),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "overridable" => b.overridable = FromValueOpt::from_value(v),
                     "preference" => b.preference = FromValueOpt::from_value(v),
                     "value" => b.value = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

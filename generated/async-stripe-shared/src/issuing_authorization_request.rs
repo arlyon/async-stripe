@@ -106,7 +106,6 @@ const _: () = {
                 "reason" => Deserialize::begin(&mut self.reason),
                 "reason_message" => Deserialize::begin(&mut self.reason_message),
                 "requested_at" => Deserialize::begin(&mut self.requested_at),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -211,7 +210,6 @@ const _: () = {
                     "reason" => b.reason = FromValueOpt::from_value(v),
                     "reason_message" => b.reason_message = FromValueOpt::from_value(v),
                     "requested_at" => b.requested_at = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

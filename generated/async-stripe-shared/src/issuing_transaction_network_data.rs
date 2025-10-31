@@ -64,7 +64,6 @@ const _: () = {
                 "authorization_code" => Deserialize::begin(&mut self.authorization_code),
                 "processing_date" => Deserialize::begin(&mut self.processing_date),
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -115,7 +114,6 @@ const _: () = {
                     "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
                     "processing_date" => b.processing_date = FromValueOpt::from_value(v),
                     "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

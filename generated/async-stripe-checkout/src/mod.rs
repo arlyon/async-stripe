@@ -60,6 +60,7 @@ pub use stripe_shared::checkout_session_payment_method_options::*;
 pub use stripe_shared::checkout_session_wallet_options::*;
 pub use stripe_shared::checkout_sofort_payment_method_options::*;
 pub use stripe_shared::checkout_swish_payment_method_options::*;
+pub use stripe_shared::checkout_twint_payment_method_options::*;
 pub use stripe_shared::checkout_us_bank_account_payment_method_options::*;
 pub use stripe_shared::payment_pages_checkout_session_adaptive_pricing::*;
 pub use stripe_shared::payment_pages_checkout_session_after_expiration::*;

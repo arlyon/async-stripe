@@ -56,7 +56,6 @@ const _: () = {
             Ok(match k {
                 "claimed_by" => Deserialize::begin(&mut self.claimed_by),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -98,7 +97,6 @@ const _: () = {
                 match k.as_str() {
                     "claimed_by" => b.claimed_by = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

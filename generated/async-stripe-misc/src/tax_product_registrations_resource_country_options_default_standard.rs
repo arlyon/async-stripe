@@ -53,7 +53,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "place_of_supply_scheme" => Deserialize::begin(&mut self.place_of_supply_scheme),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -98,7 +97,6 @@ const _: () = {
                     "place_of_supply_scheme" => {
                         b.place_of_supply_scheme = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

@@ -56,7 +56,6 @@ const _: () = {
             Ok(match k {
                 "promotions" => Deserialize::begin(&mut self.promotions),
                 "terms_of_service" => Deserialize::begin(&mut self.terms_of_service),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -100,7 +99,6 @@ const _: () = {
                 match k.as_str() {
                     "promotions" => b.promotions = FromValueOpt::from_value(v),
                     "terms_of_service" => b.terms_of_service = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

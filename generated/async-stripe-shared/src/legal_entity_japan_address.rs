@@ -75,7 +75,6 @@ const _: () = {
                 "postal_code" => Deserialize::begin(&mut self.postal_code),
                 "state" => Deserialize::begin(&mut self.state),
                 "town" => Deserialize::begin(&mut self.town),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -147,7 +146,6 @@ const _: () = {
                     "postal_code" => b.postal_code = FromValueOpt::from_value(v),
                     "state" => b.state = FromValueOpt::from_value(v),
                     "town" => b.town = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

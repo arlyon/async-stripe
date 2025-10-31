@@ -71,7 +71,6 @@ const _: () = {
                 "email" => Deserialize::begin(&mut self.email),
                 "name" => Deserialize::begin(&mut self.name),
                 "shipping_address" => Deserialize::begin(&mut self.shipping_address),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -125,7 +124,6 @@ const _: () = {
                     "email" => b.email = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
                     "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

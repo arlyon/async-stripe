@@ -77,7 +77,6 @@ const _: () = {
                 "result_reason" => Deserialize::begin(&mut self.result_reason),
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
                 "version" => Deserialize::begin(&mut self.version),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -154,7 +153,6 @@ const _: () = {
                     "result_reason" => b.result_reason = FromValueOpt::from_value(v),
                     "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
                     "version" => b.version = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

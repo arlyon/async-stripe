@@ -64,7 +64,6 @@ const _: () = {
                 "klarna" => Deserialize::begin(&mut self.klarna),
                 "paypal" => Deserialize::begin(&mut self.paypal),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -121,7 +120,6 @@ const _: () = {
                     "klarna" => b.klarna = FromValueOpt::from_value(v),
                     "paypal" => b.paypal = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

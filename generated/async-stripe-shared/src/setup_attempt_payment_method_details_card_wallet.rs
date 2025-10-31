@@ -60,7 +60,6 @@ const _: () = {
                 "apple_pay" => Deserialize::begin(&mut self.apple_pay),
                 "google_pay" => Deserialize::begin(&mut self.google_pay),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
                     "google_pay" => b.google_pay = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

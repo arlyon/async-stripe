@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "line_item_ids" => Deserialize::begin(&mut self.line_item_ids),
                 "usage_gte" => Deserialize::begin(&mut self.usage_gte),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "line_item_ids" => b.line_item_ids = FromValueOpt::from_value(v),
                     "usage_gte" => b.usage_gte = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -113,7 +113,6 @@ const _: () = {
                 "network" => Deserialize::begin(&mut self.network),
                 "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
                 "wallet" => Deserialize::begin(&mut self.wallet),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -228,7 +227,6 @@ const _: () = {
                     "network" => b.network = FromValueOpt::from_value(v),
                     "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
                     "wallet" => b.wallet = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

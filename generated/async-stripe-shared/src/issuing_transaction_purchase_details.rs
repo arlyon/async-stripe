@@ -71,7 +71,6 @@ const _: () = {
                 "lodging" => Deserialize::begin(&mut self.lodging),
                 "receipt" => Deserialize::begin(&mut self.receipt),
                 "reference" => Deserialize::begin(&mut self.reference),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -139,7 +138,6 @@ const _: () = {
                     "lodging" => b.lodging = FromValueOpt::from_value(v),
                     "receipt" => b.receipt = FromValueOpt::from_value(v),
                     "reference" => b.reference = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

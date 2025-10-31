@@ -77,7 +77,6 @@ const _: () = {
                 "swift" => Deserialize::begin(&mut self.swift),
                 "type" => Deserialize::begin(&mut self.type_),
                 "zengin" => Deserialize::begin(&mut self.zengin),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -153,7 +152,6 @@ const _: () = {
                     "swift" => b.swift = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "zengin" => b.zengin = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

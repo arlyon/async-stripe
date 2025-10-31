@@ -104,7 +104,6 @@ const _: () = {
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
                 "reason" => Deserialize::begin(&mut self.reason),
                 "session" => Deserialize::begin(&mut self.session),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -214,7 +213,6 @@ const _: () = {
                     "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
                     "reason" => b.reason = FromValueOpt::from_value(v),
                     "session" => b.session = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

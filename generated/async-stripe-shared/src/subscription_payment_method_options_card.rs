@@ -62,7 +62,6 @@ const _: () = {
                 "mandate_options" => Deserialize::begin(&mut self.mandate_options),
                 "network" => Deserialize::begin(&mut self.network),
                 "request_three_d_secure" => Deserialize::begin(&mut self.request_three_d_secure),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -113,7 +112,6 @@ const _: () = {
                     "request_three_d_secure" => {
                         b.request_three_d_secure = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

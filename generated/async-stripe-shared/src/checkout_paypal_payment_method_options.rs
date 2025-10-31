@@ -71,7 +71,6 @@ const _: () = {
                 "preferred_locale" => Deserialize::begin(&mut self.preferred_locale),
                 "reference" => Deserialize::begin(&mut self.reference),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -131,7 +130,6 @@ const _: () = {
                     "preferred_locale" => b.preferred_locale = FromValueOpt::from_value(v),
                     "reference" => b.reference = FromValueOpt::from_value(v),
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

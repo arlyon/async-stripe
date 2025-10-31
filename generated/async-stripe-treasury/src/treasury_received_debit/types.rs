@@ -116,7 +116,6 @@ const _: () = {
                 "reversal_details" => Deserialize::begin(&mut self.reversal_details),
                 "status" => Deserialize::begin(&mut self.status),
                 "transaction" => Deserialize::begin(&mut self.transaction),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -240,7 +239,6 @@ const _: () = {
                     "reversal_details" => b.reversal_details = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "transaction" => b.transaction = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -93,7 +93,6 @@ const _: () = {
                 "transacted_at" => Deserialize::begin(&mut self.transacted_at),
                 "transaction_refresh" => Deserialize::begin(&mut self.transaction_refresh),
                 "updated" => Deserialize::begin(&mut self.updated),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -193,7 +192,6 @@ const _: () = {
                     "transacted_at" => b.transacted_at = FromValueOpt::from_value(v),
                     "transaction_refresh" => b.transaction_refresh = FromValueOpt::from_value(v),
                     "updated" => b.updated = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

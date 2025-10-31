@@ -62,7 +62,6 @@ const _: () = {
                 "shipping_address_zip" => Deserialize::begin(&mut self.shipping_address_zip),
                 "shipping_amount" => Deserialize::begin(&mut self.shipping_amount),
                 "shipping_from_zip" => Deserialize::begin(&mut self.shipping_from_zip),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -137,7 +136,6 @@ const _: () = {
                     "shipping_address_zip" => b.shipping_address_zip = FromValueOpt::from_value(v),
                     "shipping_amount" => b.shipping_amount = FromValueOpt::from_value(v),
                     "shipping_from_zip" => b.shipping_from_zip = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

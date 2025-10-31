@@ -139,7 +139,6 @@ const _: () = {
                     Deserialize::begin(&mut self.supported_payment_method_types)
                 }
                 "transaction_refresh" => Deserialize::begin(&mut self.transaction_refresh),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -276,7 +275,6 @@ const _: () = {
                         b.supported_payment_method_types = FromValueOpt::from_value(v)
                     }
                     "transaction_refresh" => b.transaction_refresh = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

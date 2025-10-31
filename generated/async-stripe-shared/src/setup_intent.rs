@@ -51,6 +51,9 @@ pub struct SetupIntent {
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub description: Option<String>,
+    /// Payment method types that are excluded from this SetupIntent.
+    pub excluded_payment_method_types:
+        Option<Vec<stripe_shared::SetupIntentExcludedPaymentMethodTypes>>,
     /// Indicates the directions of money movement for which this payment method is intended to be used.
     ///
     /// Include `inbound` if you intend to use the payment method as the origin to pull funds from.
@@ -108,6 +111,8 @@ pub struct SetupIntentBuilder {
     created: Option<stripe_types::Timestamp>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
     description: Option<Option<String>>,
+    excluded_payment_method_types:
+        Option<Option<Vec<stripe_shared::SetupIntentExcludedPaymentMethodTypes>>>,
     flow_directions: Option<Option<Vec<stripe_shared::SetupIntentFlowDirections>>>,
     id: Option<stripe_shared::SetupIntentId>,
     last_setup_error: Option<Option<Box<stripe_shared::ApiErrors>>>,
@@ -177,6 +182,9 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "customer" => Deserialize::begin(&mut self.customer),
                 "description" => Deserialize::begin(&mut self.description),
+                "excluded_payment_method_types" => {
+                    Deserialize::begin(&mut self.excluded_payment_method_types)
+                }
                 "flow_directions" => Deserialize::begin(&mut self.flow_directions),
                 "id" => Deserialize::begin(&mut self.id),
                 "last_setup_error" => Deserialize::begin(&mut self.last_setup_error),
@@ -195,7 +203,6 @@ const _: () = {
                 "single_use_mandate" => Deserialize::begin(&mut self.single_use_mandate),
                 "status" => Deserialize::begin(&mut self.status),
                 "usage" => Deserialize::begin(&mut self.usage),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -210,6 +217,7 @@ const _: () = {
                 created: Deserialize::default(),
                 customer: Deserialize::default(),
                 description: Deserialize::default(),
+                excluded_payment_method_types: Deserialize::default(),
                 flow_directions: Deserialize::default(),
                 id: Deserialize::default(),
                 last_setup_error: Deserialize::default(),
@@ -239,6 +247,7 @@ const _: () = {
                 Some(created),
                 Some(customer),
                 Some(description),
+                Some(excluded_payment_method_types),
                 Some(flow_directions),
                 Some(id),
                 Some(last_setup_error),
@@ -264,6 +273,7 @@ const _: () = {
                 self.created,
                 self.customer.take(),
                 self.description.take(),
+                self.excluded_payment_method_types.take(),
                 self.flow_directions.take(),
                 self.id.take(),
                 self.last_setup_error.take(),
@@ -293,6 +303,7 @@ const _: () = {
                 created,
                 customer,
                 description,
+                excluded_payment_method_types,
                 flow_directions,
                 id,
                 last_setup_error,
@@ -346,6 +357,9 @@ const _: () = {
                     "created" => b.created = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
+                    "excluded_payment_method_types" => {
+                        b.excluded_payment_method_types = FromValueOpt::from_value(v)
+                    }
                     "flow_directions" => b.flow_directions = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "last_setup_error" => b.last_setup_error = FromValueOpt::from_value(v),
@@ -366,7 +380,6 @@ const _: () = {
                     "single_use_mandate" => b.single_use_mandate = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "usage" => b.usage = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -378,7 +391,7 @@ const _: () = {
 impl serde::Serialize for SetupIntent {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("SetupIntent", 25)?;
+        let mut s = s.serialize_struct("SetupIntent", 26)?;
         s.serialize_field("application", &self.application)?;
         s.serialize_field("attach_to_self", &self.attach_to_self)?;
         s.serialize_field("automatic_payment_methods", &self.automatic_payment_methods)?;
@@ -387,6 +400,7 @@ impl serde::Serialize for SetupIntent {
         s.serialize_field("created", &self.created)?;
         s.serialize_field("customer", &self.customer)?;
         s.serialize_field("description", &self.description)?;
+        s.serialize_field("excluded_payment_method_types", &self.excluded_payment_method_types)?;
         s.serialize_field("flow_directions", &self.flow_directions)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("last_setup_error", &self.last_setup_error)?;
@@ -576,6 +590,216 @@ impl<'de> serde::Deserialize<'de> for SetupIntentCancellationReason {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SetupIntentCancellationReason")
         })
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum SetupIntentExcludedPaymentMethodTypes {
+    AcssDebit,
+    Affirm,
+    AfterpayClearpay,
+    Alipay,
+    Alma,
+    AmazonPay,
+    AuBecsDebit,
+    BacsDebit,
+    Bancontact,
+    Billie,
+    Blik,
+    Boleto,
+    Card,
+    Cashapp,
+    Crypto,
+    CustomerBalance,
+    Eps,
+    Fpx,
+    Giropay,
+    Grabpay,
+    Ideal,
+    KakaoPay,
+    Klarna,
+    Konbini,
+    KrCard,
+    MbWay,
+    Mobilepay,
+    Multibanco,
+    NaverPay,
+    NzBankAccount,
+    Oxxo,
+    P24,
+    PayByBank,
+    Payco,
+    Paynow,
+    Paypal,
+    Pix,
+    Promptpay,
+    RevolutPay,
+    SamsungPay,
+    Satispay,
+    SepaDebit,
+    Sofort,
+    Swish,
+    Twint,
+    UsBankAccount,
+    WechatPay,
+    Zip,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl SetupIntentExcludedPaymentMethodTypes {
+    pub fn as_str(&self) -> &str {
+        use SetupIntentExcludedPaymentMethodTypes::*;
+        match self {
+            AcssDebit => "acss_debit",
+            Affirm => "affirm",
+            AfterpayClearpay => "afterpay_clearpay",
+            Alipay => "alipay",
+            Alma => "alma",
+            AmazonPay => "amazon_pay",
+            AuBecsDebit => "au_becs_debit",
+            BacsDebit => "bacs_debit",
+            Bancontact => "bancontact",
+            Billie => "billie",
+            Blik => "blik",
+            Boleto => "boleto",
+            Card => "card",
+            Cashapp => "cashapp",
+            Crypto => "crypto",
+            CustomerBalance => "customer_balance",
+            Eps => "eps",
+            Fpx => "fpx",
+            Giropay => "giropay",
+            Grabpay => "grabpay",
+            Ideal => "ideal",
+            KakaoPay => "kakao_pay",
+            Klarna => "klarna",
+            Konbini => "konbini",
+            KrCard => "kr_card",
+            MbWay => "mb_way",
+            Mobilepay => "mobilepay",
+            Multibanco => "multibanco",
+            NaverPay => "naver_pay",
+            NzBankAccount => "nz_bank_account",
+            Oxxo => "oxxo",
+            P24 => "p24",
+            PayByBank => "pay_by_bank",
+            Payco => "payco",
+            Paynow => "paynow",
+            Paypal => "paypal",
+            Pix => "pix",
+            Promptpay => "promptpay",
+            RevolutPay => "revolut_pay",
+            SamsungPay => "samsung_pay",
+            Satispay => "satispay",
+            SepaDebit => "sepa_debit",
+            Sofort => "sofort",
+            Swish => "swish",
+            Twint => "twint",
+            UsBankAccount => "us_bank_account",
+            WechatPay => "wechat_pay",
+            Zip => "zip",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for SetupIntentExcludedPaymentMethodTypes {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SetupIntentExcludedPaymentMethodTypes::*;
+        match s {
+            "acss_debit" => Ok(AcssDebit),
+            "affirm" => Ok(Affirm),
+            "afterpay_clearpay" => Ok(AfterpayClearpay),
+            "alipay" => Ok(Alipay),
+            "alma" => Ok(Alma),
+            "amazon_pay" => Ok(AmazonPay),
+            "au_becs_debit" => Ok(AuBecsDebit),
+            "bacs_debit" => Ok(BacsDebit),
+            "bancontact" => Ok(Bancontact),
+            "billie" => Ok(Billie),
+            "blik" => Ok(Blik),
+            "boleto" => Ok(Boleto),
+            "card" => Ok(Card),
+            "cashapp" => Ok(Cashapp),
+            "crypto" => Ok(Crypto),
+            "customer_balance" => Ok(CustomerBalance),
+            "eps" => Ok(Eps),
+            "fpx" => Ok(Fpx),
+            "giropay" => Ok(Giropay),
+            "grabpay" => Ok(Grabpay),
+            "ideal" => Ok(Ideal),
+            "kakao_pay" => Ok(KakaoPay),
+            "klarna" => Ok(Klarna),
+            "konbini" => Ok(Konbini),
+            "kr_card" => Ok(KrCard),
+            "mb_way" => Ok(MbWay),
+            "mobilepay" => Ok(Mobilepay),
+            "multibanco" => Ok(Multibanco),
+            "naver_pay" => Ok(NaverPay),
+            "nz_bank_account" => Ok(NzBankAccount),
+            "oxxo" => Ok(Oxxo),
+            "p24" => Ok(P24),
+            "pay_by_bank" => Ok(PayByBank),
+            "payco" => Ok(Payco),
+            "paynow" => Ok(Paynow),
+            "paypal" => Ok(Paypal),
+            "pix" => Ok(Pix),
+            "promptpay" => Ok(Promptpay),
+            "revolut_pay" => Ok(RevolutPay),
+            "samsung_pay" => Ok(SamsungPay),
+            "satispay" => Ok(Satispay),
+            "sepa_debit" => Ok(SepaDebit),
+            "sofort" => Ok(Sofort),
+            "swish" => Ok(Swish),
+            "twint" => Ok(Twint),
+            "us_bank_account" => Ok(UsBankAccount),
+            "wechat_pay" => Ok(WechatPay),
+            "zip" => Ok(Zip),
+            v => Ok(Unknown(v.to_owned())),
+        }
+    }
+}
+impl std::fmt::Display for SetupIntentExcludedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SetupIntentExcludedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for SetupIntentExcludedPaymentMethodTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for SetupIntentExcludedPaymentMethodTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<SetupIntentExcludedPaymentMethodTypes> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SetupIntentExcludedPaymentMethodTypes::from_str(s).unwrap());
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(SetupIntentExcludedPaymentMethodTypes);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for SetupIntentExcludedPaymentMethodTypes {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

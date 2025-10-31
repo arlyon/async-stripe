@@ -103,7 +103,6 @@ const _: () = {
                 "promotion" => Deserialize::begin(&mut self.promotion),
                 "restrictions" => Deserialize::begin(&mut self.restrictions),
                 "times_redeemed" => Deserialize::begin(&mut self.times_redeemed),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -208,7 +207,6 @@ const _: () = {
                     "promotion" => b.promotion = FromValueOpt::from_value(v),
                     "restrictions" => b.restrictions = FromValueOpt::from_value(v),
                     "times_redeemed" => b.times_redeemed = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -72,7 +72,6 @@ const _: () = {
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "routing_number" => Deserialize::begin(&mut self.routing_number),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -147,7 +146,6 @@ const _: () = {
                     "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "routing_number" => b.routing_number = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

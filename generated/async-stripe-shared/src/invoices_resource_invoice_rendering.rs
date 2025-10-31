@@ -63,7 +63,6 @@ const _: () = {
                 "pdf" => Deserialize::begin(&mut self.pdf),
                 "template" => Deserialize::begin(&mut self.template),
                 "template_version" => Deserialize::begin(&mut self.template_version),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -117,7 +116,6 @@ const _: () = {
                     "pdf" => b.pdf = FromValueOpt::from_value(v),
                     "template" => b.template = FromValueOpt::from_value(v),
                     "template_version" => b.template_version = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

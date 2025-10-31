@@ -144,7 +144,6 @@ const _: () = {
                 "treasury" => Deserialize::begin(&mut self.treasury),
                 "type" => Deserialize::begin(&mut self.type_),
                 "wallet" => Deserialize::begin(&mut self.wallet),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -294,7 +293,6 @@ const _: () = {
                     "treasury" => b.treasury = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "wallet" => b.wallet = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

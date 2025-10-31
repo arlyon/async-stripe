@@ -110,7 +110,6 @@ const _: () = {
                 "payouts_list" => Deserialize::begin(&mut self.payouts_list),
                 "tax_registrations" => Deserialize::begin(&mut self.tax_registrations),
                 "tax_settings" => Deserialize::begin(&mut self.tax_settings),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -254,7 +253,6 @@ const _: () = {
                     "payouts_list" => b.payouts_list = FromValueOpt::from_value(v),
                     "tax_registrations" => b.tax_registrations = FromValueOpt::from_value(v),
                     "tax_settings" => b.tax_settings = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

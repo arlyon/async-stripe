@@ -61,7 +61,6 @@ const _: () = {
                 "payer_details" => Deserialize::begin(&mut self.payer_details),
                 "payment_method_category" => Deserialize::begin(&mut self.payment_method_category),
                 "preferred_locale" => Deserialize::begin(&mut self.preferred_locale),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -114,7 +113,6 @@ const _: () = {
                         b.payment_method_category = FromValueOpt::from_value(v)
                     }
                     "preferred_locale" => b.preferred_locale = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

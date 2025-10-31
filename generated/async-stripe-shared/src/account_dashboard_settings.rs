@@ -57,7 +57,6 @@ const _: () = {
             Ok(match k {
                 "display_name" => Deserialize::begin(&mut self.display_name),
                 "timezone" => Deserialize::begin(&mut self.timezone),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -101,7 +100,6 @@ const _: () = {
                 match k.as_str() {
                     "display_name" => b.display_name = FromValueOpt::from_value(v),
                     "timezone" => b.timezone = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

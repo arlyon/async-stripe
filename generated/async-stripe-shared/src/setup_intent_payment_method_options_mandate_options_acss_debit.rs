@@ -74,7 +74,6 @@ const _: () = {
                 "interval_description" => Deserialize::begin(&mut self.interval_description),
                 "payment_schedule" => Deserialize::begin(&mut self.payment_schedule),
                 "transaction_type" => Deserialize::begin(&mut self.transaction_type),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -145,7 +144,6 @@ const _: () = {
                     "interval_description" => b.interval_description = FromValueOpt::from_value(v),
                     "payment_schedule" => b.payment_schedule = FromValueOpt::from_value(v),
                     "transaction_type" => b.transaction_type = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

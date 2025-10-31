@@ -63,7 +63,6 @@ const _: () = {
                 "length" => Deserialize::begin(&mut self.length),
                 "weight" => Deserialize::begin(&mut self.weight),
                 "width" => Deserialize::begin(&mut self.width),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -114,7 +113,6 @@ const _: () = {
                     "length" => b.length = FromValueOpt::from_value(v),
                     "weight" => b.weight = FromValueOpt::from_value(v),
                     "width" => b.width = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

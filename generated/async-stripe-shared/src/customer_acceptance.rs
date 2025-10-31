@@ -62,7 +62,6 @@ const _: () = {
                 "offline" => Deserialize::begin(&mut self.offline),
                 "online" => Deserialize::begin(&mut self.online),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -113,7 +112,6 @@ const _: () = {
                     "offline" => b.offline = FromValueOpt::from_value(v),
                     "online" => b.online = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -59,7 +59,6 @@ const _: () = {
                 "reset_billing_cycle_anchor" => {
                     Deserialize::begin(&mut self.reset_billing_cycle_anchor)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "reset_billing_cycle_anchor" => {
                         b.reset_billing_cycle_anchor = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

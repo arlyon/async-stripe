@@ -85,7 +85,6 @@ const _: () = {
                 "customer_purchase_ip" => Deserialize::begin(&mut self.customer_purchase_ip),
                 "product_description" => Deserialize::begin(&mut self.product_description),
                 "shipping_address" => Deserialize::begin(&mut self.shipping_address),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -175,7 +174,6 @@ const _: () = {
                     "customer_purchase_ip" => b.customer_purchase_ip = FromValueOpt::from_value(v),
                     "product_description" => b.product_description = FromValueOpt::from_value(v),
                     "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

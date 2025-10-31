@@ -72,7 +72,6 @@ const _: () = {
                 "branch_code" => Deserialize::begin(&mut self.branch_code),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "suffix" => Deserialize::begin(&mut self.suffix),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -147,7 +146,6 @@ const _: () = {
                     "branch_code" => b.branch_code = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "suffix" => b.suffix = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

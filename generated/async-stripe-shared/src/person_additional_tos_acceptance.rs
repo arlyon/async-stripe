@@ -59,7 +59,6 @@ const _: () = {
                 "date" => Deserialize::begin(&mut self.date),
                 "ip" => Deserialize::begin(&mut self.ip),
                 "user_agent" => Deserialize::begin(&mut self.user_agent),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "date" => b.date = FromValueOpt::from_value(v),
                     "ip" => b.ip = FromValueOpt::from_value(v),
                     "user_agent" => b.user_agent = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

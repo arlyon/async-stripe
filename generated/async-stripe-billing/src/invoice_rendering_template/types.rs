@@ -78,7 +78,6 @@ const _: () = {
                 "nickname" => Deserialize::begin(&mut self.nickname),
                 "status" => Deserialize::begin(&mut self.status),
                 "version" => Deserialize::begin(&mut self.version),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -150,7 +149,6 @@ const _: () = {
                     "nickname" => b.nickname = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "version" => b.version = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

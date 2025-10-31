@@ -65,7 +65,6 @@ const _: () = {
                 "bank_name" => Deserialize::begin(&mut self.bank_name),
                 "bic" => Deserialize::begin(&mut self.bic),
                 "verified_name" => Deserialize::begin(&mut self.verified_name),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -119,7 +118,6 @@ const _: () = {
                     "bank_name" => b.bank_name = FromValueOpt::from_value(v),
                     "bic" => b.bic = FromValueOpt::from_value(v),
                     "verified_name" => b.verified_name = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

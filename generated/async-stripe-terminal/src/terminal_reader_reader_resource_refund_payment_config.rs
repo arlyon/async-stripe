@@ -54,7 +54,6 @@ const _: () = {
                 "enable_customer_cancellation" => {
                     Deserialize::begin(&mut self.enable_customer_cancellation)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -97,7 +96,6 @@ const _: () = {
                     "enable_customer_cancellation" => {
                         b.enable_customer_cancellation = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

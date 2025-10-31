@@ -67,7 +67,6 @@ const _: () = {
                 "image_data_url" => Deserialize::begin(&mut self.image_data_url),
                 "image_url_png" => Deserialize::begin(&mut self.image_url_png),
                 "image_url_svg" => Deserialize::begin(&mut self.image_url_svg),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -139,7 +138,6 @@ const _: () = {
                     "image_data_url" => b.image_data_url = FromValueOpt::from_value(v),
                     "image_url_png" => b.image_url_png = FromValueOpt::from_value(v),
                     "image_url_svg" => b.image_url_svg = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

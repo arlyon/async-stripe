@@ -105,7 +105,6 @@ const _: () = {
                 "pending_webhooks" => Deserialize::begin(&mut self.pending_webhooks),
                 "request" => Deserialize::begin(&mut self.request),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -200,7 +199,6 @@ const _: () = {
                     "pending_webhooks" => b.pending_webhooks = FromValueOpt::from_value(v),
                     "request" => b.request = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -242,6 +240,7 @@ pub enum EventType {
     ApplicationFeeRefundUpdated,
     ApplicationFeeRefunded,
     BalanceAvailable,
+    BalanceSettingsUpdated,
     BillingAlertTriggered,
     BillingPortalConfigurationCreated,
     BillingPortalConfigurationUpdated,
@@ -324,6 +323,7 @@ pub enum EventType {
     InvoiceOverpaid,
     InvoicePaid,
     InvoicePaymentActionRequired,
+    InvoicePaymentAttemptRequired,
     InvoicePaymentFailed,
     InvoicePaymentSucceeded,
     InvoiceSent,
@@ -491,6 +491,7 @@ impl EventType {
             ApplicationFeeRefundUpdated => "application_fee.refund.updated",
             ApplicationFeeRefunded => "application_fee.refunded",
             BalanceAvailable => "balance.available",
+            BalanceSettingsUpdated => "balance_settings.updated",
             BillingAlertTriggered => "billing.alert.triggered",
             BillingPortalConfigurationCreated => "billing_portal.configuration.created",
             BillingPortalConfigurationUpdated => "billing_portal.configuration.updated",
@@ -587,6 +588,7 @@ impl EventType {
             InvoiceOverpaid => "invoice.overpaid",
             InvoicePaid => "invoice.paid",
             InvoicePaymentActionRequired => "invoice.payment_action_required",
+            InvoicePaymentAttemptRequired => "invoice.payment_attempt_required",
             InvoicePaymentFailed => "invoice.payment_failed",
             InvoicePaymentSucceeded => "invoice.payment_succeeded",
             InvoiceSent => "invoice.sent",
@@ -771,6 +773,7 @@ impl std::str::FromStr for EventType {
             "application_fee.refund.updated" => Ok(ApplicationFeeRefundUpdated),
             "application_fee.refunded" => Ok(ApplicationFeeRefunded),
             "balance.available" => Ok(BalanceAvailable),
+            "balance_settings.updated" => Ok(BalanceSettingsUpdated),
             "billing.alert.triggered" => Ok(BillingAlertTriggered),
             "billing_portal.configuration.created" => Ok(BillingPortalConfigurationCreated),
             "billing_portal.configuration.updated" => Ok(BillingPortalConfigurationUpdated),
@@ -875,6 +878,7 @@ impl std::str::FromStr for EventType {
             "invoice.overpaid" => Ok(InvoiceOverpaid),
             "invoice.paid" => Ok(InvoicePaid),
             "invoice.payment_action_required" => Ok(InvoicePaymentActionRequired),
+            "invoice.payment_attempt_required" => Ok(InvoicePaymentAttemptRequired),
             "invoice.payment_failed" => Ok(InvoicePaymentFailed),
             "invoice.payment_succeeded" => Ok(InvoicePaymentSucceeded),
             "invoice.sent" => Ok(InvoiceSent),

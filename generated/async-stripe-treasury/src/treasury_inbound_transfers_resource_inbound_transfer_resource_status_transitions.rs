@@ -63,7 +63,6 @@ const _: () = {
                 "canceled_at" => Deserialize::begin(&mut self.canceled_at),
                 "failed_at" => Deserialize::begin(&mut self.failed_at),
                 "succeeded_at" => Deserialize::begin(&mut self.succeeded_at),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -113,7 +112,6 @@ const _: () = {
                     "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
                     "failed_at" => b.failed_at = FromValueOpt::from_value(v),
                     "succeeded_at" => b.succeeded_at = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

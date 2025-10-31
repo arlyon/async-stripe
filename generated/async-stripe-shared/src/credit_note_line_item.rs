@@ -107,7 +107,6 @@ const _: () = {
                 "type" => Deserialize::begin(&mut self.type_),
                 "unit_amount" => Deserialize::begin(&mut self.unit_amount),
                 "unit_amount_decimal" => Deserialize::begin(&mut self.unit_amount_decimal),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -224,7 +223,6 @@ const _: () = {
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
                     "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

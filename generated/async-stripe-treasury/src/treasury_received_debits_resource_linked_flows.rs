@@ -67,7 +67,6 @@ const _: () = {
                 "issuing_authorization" => Deserialize::begin(&mut self.issuing_authorization),
                 "issuing_transaction" => Deserialize::begin(&mut self.issuing_transaction),
                 "payout" => Deserialize::begin(&mut self.payout),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -139,7 +138,6 @@ const _: () = {
                     }
                     "issuing_transaction" => b.issuing_transaction = FromValueOpt::from_value(v),
                     "payout" => b.payout = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

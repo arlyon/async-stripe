@@ -51,7 +51,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "require_verification" => Deserialize::begin(&mut self.require_verification),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -92,7 +91,6 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "require_verification" => b.require_verification = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

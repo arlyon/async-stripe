@@ -154,7 +154,6 @@ const _: () = {
                 "wechat_pay_redirect_to_ios_app" => {
                     Deserialize::begin(&mut self.wechat_pay_redirect_to_ios_app)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -322,7 +321,6 @@ const _: () = {
                     "wechat_pay_redirect_to_ios_app" => {
                         b.wechat_pay_redirect_to_ios_app = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

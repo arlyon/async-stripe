@@ -61,7 +61,6 @@ const _: () = {
                 "count" => Deserialize::begin(&mut self.count),
                 "interval" => Deserialize::begin(&mut self.interval),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                     "count" => b.count = FromValueOpt::from_value(v),
                     "interval" => b.interval = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

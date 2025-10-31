@@ -59,7 +59,6 @@ const _: () = {
                 "creditor_identifier" => Deserialize::begin(&mut self.creditor_identifier),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "mandate_reference" => Deserialize::begin(&mut self.mandate_reference),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "creditor_identifier" => b.creditor_identifier = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "mandate_reference" => b.mandate_reference = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -62,7 +62,6 @@ const _: () = {
                 "file" => Deserialize::begin(&mut self.file),
                 "type" => Deserialize::begin(&mut self.type_),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -111,7 +110,6 @@ const _: () = {
                     "file" => b.file = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

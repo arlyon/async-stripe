@@ -58,7 +58,6 @@ const _: () = {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "destination" => Deserialize::begin(&mut self.destination),
                 "source_types" => Deserialize::begin(&mut self.source_types),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -107,7 +106,6 @@ const _: () = {
                     "amount" => b.amount = FromValueOpt::from_value(v),
                     "destination" => b.destination = FromValueOpt::from_value(v),
                     "source_types" => b.source_types = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

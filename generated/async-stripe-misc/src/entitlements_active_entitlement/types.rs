@@ -63,7 +63,6 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "lookup_key" => Deserialize::begin(&mut self.lookup_key),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -114,7 +113,6 @@ const _: () = {
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "lookup_key" => b.lookup_key = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

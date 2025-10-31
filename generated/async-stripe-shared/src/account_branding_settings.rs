@@ -65,7 +65,6 @@ const _: () = {
                 "logo" => Deserialize::begin(&mut self.logo),
                 "primary_color" => Deserialize::begin(&mut self.primary_color),
                 "secondary_color" => Deserialize::begin(&mut self.secondary_color),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -119,7 +118,6 @@ const _: () = {
                     "logo" => b.logo = FromValueOpt::from_value(v),
                     "primary_color" => b.primary_color = FromValueOpt::from_value(v),
                     "secondary_color" => b.secondary_color = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

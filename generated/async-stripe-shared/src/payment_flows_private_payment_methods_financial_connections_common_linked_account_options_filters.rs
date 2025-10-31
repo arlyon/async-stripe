@@ -60,16 +60,13 @@ const _: () = {
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
             "account_subcategories" => Deserialize::begin(&mut self.account_subcategories),
-
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self {
-            account_subcategories: Deserialize::default(),
-
-        }
+        Self { account_subcategories: Deserialize::default(),
+ }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
@@ -112,7 +109,6 @@ const _: () = {
                     "account_subcategories" => {
                         b.account_subcategories = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

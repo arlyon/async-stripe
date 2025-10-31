@@ -63,7 +63,6 @@ const _: () = {
                 "currency" => Deserialize::begin(&mut self.currency),
                 "net_available" => Deserialize::begin(&mut self.net_available),
                 "source_types" => Deserialize::begin(&mut self.source_types),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -114,7 +113,6 @@ const _: () = {
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "net_available" => b.net_available = FromValueOpt::from_value(v),
                     "source_types" => b.source_types = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

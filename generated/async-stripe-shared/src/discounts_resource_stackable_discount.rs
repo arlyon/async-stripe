@@ -59,7 +59,6 @@ const _: () = {
                 "coupon" => Deserialize::begin(&mut self.coupon),
                 "discount" => Deserialize::begin(&mut self.discount),
                 "promotion_code" => Deserialize::begin(&mut self.promotion_code),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "coupon" => b.coupon = FromValueOpt::from_value(v),
                     "discount" => b.discount = FromValueOpt::from_value(v),
                     "promotion_code" => b.promotion_code = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

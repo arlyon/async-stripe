@@ -30,9 +30,9 @@ impl ListPaymentMethodBuilder {
         }
     }
 }
-/// An optional filter on the list, based on the object `type` field.
-/// Without the filter, the list includes all current and future payment method types.
-/// If your integration expects only one type of payment method in the response, make sure to provide a type value in the request.
+/// Filters the list by the object `type` field.
+/// Unfiltered, the list returns all payment method types except `custom`.
+/// If your integration expects only one type of payment method in the response, specify that type value in the request to reduce your payload.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ListPaymentMethodType {
@@ -51,6 +51,7 @@ pub enum ListPaymentMethodType {
     Card,
     Cashapp,
     Crypto,
+    Custom,
     CustomerBalance,
     Eps,
     Fpx,
@@ -107,6 +108,7 @@ impl ListPaymentMethodType {
             Card => "card",
             Cashapp => "cashapp",
             Crypto => "crypto",
+            Custom => "custom",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -166,6 +168,7 @@ impl std::str::FromStr for ListPaymentMethodType {
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
             "crypto" => Ok(Crypto),
+            "custom" => Ok(Custom),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),
@@ -272,9 +275,9 @@ impl ListPaymentMethod {
         self.inner.starting_after = Some(starting_after.into());
         self
     }
-    /// An optional filter on the list, based on the object `type` field.
-    /// Without the filter, the list includes all current and future payment method types.
-    /// If your integration expects only one type of payment method in the response, make sure to provide a type value in the request.
+    /// Filters the list by the object `type` field.
+    /// Unfiltered, the list returns all payment method types except `custom`.
+    /// If your integration expects only one type of payment method in the response, specify that type value in the request to reduce your payload.
     pub fn type_(mut self, type_: impl Into<ListPaymentMethodType>) -> Self {
         self.inner.type_ = Some(type_.into());
         self
@@ -418,6 +421,8 @@ struct CreatePaymentMethodBuilder {
     #[serde(with = "stripe_types::with_serde_json_opt")]
     crypto: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    custom: Option<CreatePaymentMethodCustom>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -546,6 +551,7 @@ impl CreatePaymentMethodBuilder {
             card: None,
             cashapp: None,
             crypto: None,
+            custom: None,
             customer: None,
             customer_balance: None,
             eps: None,
@@ -797,6 +803,19 @@ pub struct CreatePaymentMethodTokenParams {
 impl CreatePaymentMethodTokenParams {
     pub fn new(token: impl Into<String>) -> Self {
         Self { token: token.into() }
+    }
+}
+/// If this is a `custom` PaymentMethod, this hash contains details about the Custom payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodCustom {
+    /// ID of the Dashboard-only CustomPaymentMethodType.
+    /// This field is used by Stripe products' internal code to support CPMs.
+    #[serde(rename = "type")]
+    pub type_: String,
+}
+impl CreatePaymentMethodCustom {
+    pub fn new(type_: impl Into<String>) -> Self {
+        Self { type_: type_.into() }
     }
 }
 /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
@@ -1682,6 +1701,7 @@ pub enum CreatePaymentMethodType {
     Card,
     Cashapp,
     Crypto,
+    Custom,
     CustomerBalance,
     Eps,
     Fpx,
@@ -1738,6 +1758,7 @@ impl CreatePaymentMethodType {
             Card => "card",
             Cashapp => "cashapp",
             Crypto => "crypto",
+            Custom => "custom",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -1797,6 +1818,7 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
             "crypto" => Ok(Crypto),
+            "custom" => Ok(Custom),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),
@@ -2126,6 +2148,11 @@ impl CreatePaymentMethod {
     /// If this is a Crypto PaymentMethod, this hash contains details about the Crypto payment method.
     pub fn crypto(mut self, crypto: impl Into<miniserde::json::Value>) -> Self {
         self.inner.crypto = Some(crypto.into());
+        self
+    }
+    /// If this is a `custom` PaymentMethod, this hash contains details about the Custom payment method.
+    pub fn custom(mut self, custom: impl Into<CreatePaymentMethodCustom>) -> Self {
+        self.inner.custom = Some(custom.into());
         self
     }
     /// The `Customer` to whom the original PaymentMethod is attached.

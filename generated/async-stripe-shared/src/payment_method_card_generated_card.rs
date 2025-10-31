@@ -59,7 +59,6 @@ const _: () = {
                 "charge" => Deserialize::begin(&mut self.charge),
                 "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
                 "setup_attempt" => Deserialize::begin(&mut self.setup_attempt),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                         b.payment_method_details = FromValueOpt::from_value(v)
                     }
                     "setup_attempt" => b.setup_attempt = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -154,7 +154,6 @@ const _: () = {
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
                 "wallets" => Deserialize::begin(&mut self.wallets),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -321,7 +320,6 @@ const _: () = {
                     "status" => b.status = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "wallets" => b.wallets = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

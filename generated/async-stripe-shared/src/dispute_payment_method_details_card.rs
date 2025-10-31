@@ -61,7 +61,6 @@ const _: () = {
                 "brand" => Deserialize::begin(&mut self.brand),
                 "case_type" => Deserialize::begin(&mut self.case_type),
                 "network_reason_code" => Deserialize::begin(&mut self.network_reason_code),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                     "brand" => b.brand = FromValueOpt::from_value(v),
                     "case_type" => b.case_type = FromValueOpt::from_value(v),
                     "network_reason_code" => b.network_reason_code = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

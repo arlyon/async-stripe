@@ -61,7 +61,6 @@ const _: () = {
             Ok(match k {
                 "location" => Deserialize::begin(&mut self.location),
                 "secret" => Deserialize::begin(&mut self.secret),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -103,7 +102,6 @@ const _: () = {
                 match k.as_str() {
                     "location" => b.location = FromValueOpt::from_value(v),
                     "secret" => b.secret = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

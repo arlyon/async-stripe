@@ -59,7 +59,6 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "id" => Deserialize::begin(&mut self.id),
                 "owners" => Deserialize::begin(&mut self.owners),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "created" => b.created = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "owners" => b.owners = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

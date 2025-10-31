@@ -57,7 +57,6 @@ const _: () = {
                     Deserialize::begin(&mut self.chargeback_loss_reason_code)
                 }
                 "reason_code" => Deserialize::begin(&mut self.reason_code),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -106,7 +105,6 @@ const _: () = {
                         b.chargeback_loss_reason_code = FromValueOpt::from_value(v)
                     }
                     "reason_code" => b.reason_code = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

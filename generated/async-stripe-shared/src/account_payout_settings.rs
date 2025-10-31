@@ -61,7 +61,6 @@ const _: () = {
                 "debit_negative_balances" => Deserialize::begin(&mut self.debit_negative_balances),
                 "schedule" => Deserialize::begin(&mut self.schedule),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -114,7 +113,6 @@ const _: () = {
                     }
                     "schedule" => b.schedule = FromValueOpt::from_value(v),
                     "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

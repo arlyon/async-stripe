@@ -76,7 +76,6 @@ const _: () = {
                 "font_family" => Deserialize::begin(&mut self.font_family),
                 "icon" => Deserialize::begin(&mut self.icon),
                 "logo" => Deserialize::begin(&mut self.logo),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -156,7 +155,6 @@ const _: () = {
                     "font_family" => b.font_family = FromValueOpt::from_value(v),
                     "icon" => b.icon = FromValueOpt::from_value(v),
                     "logo" => b.logo = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

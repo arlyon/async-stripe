@@ -59,7 +59,6 @@ const _: () = {
                 "default_value" => Deserialize::begin(&mut self.default_value),
                 "maximum_length" => Deserialize::begin(&mut self.maximum_length),
                 "minimum_length" => Deserialize::begin(&mut self.minimum_length),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "default_value" => b.default_value = FromValueOpt::from_value(v),
                     "maximum_length" => b.maximum_length = FromValueOpt::from_value(v),
                     "minimum_length" => b.minimum_length = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

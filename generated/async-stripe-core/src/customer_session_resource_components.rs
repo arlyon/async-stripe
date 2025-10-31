@@ -4,12 +4,18 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerSessionResourceComponents {
     pub buy_button: stripe_core::CustomerSessionResourceComponentsResourceBuyButton,
+    pub customer_sheet: stripe_core::CustomerSessionResourceComponentsResourceCustomerSheet,
+    pub mobile_payment_element:
+        stripe_core::CustomerSessionResourceComponentsResourceMobilePaymentElement,
     pub payment_element: stripe_core::CustomerSessionResourceComponentsResourcePaymentElement,
     pub pricing_table: stripe_core::CustomerSessionResourceComponentsResourcePricingTable,
 }
 #[doc(hidden)]
 pub struct CustomerSessionResourceComponentsBuilder {
     buy_button: Option<stripe_core::CustomerSessionResourceComponentsResourceBuyButton>,
+    customer_sheet: Option<stripe_core::CustomerSessionResourceComponentsResourceCustomerSheet>,
+    mobile_payment_element:
+        Option<stripe_core::CustomerSessionResourceComponentsResourceMobilePaymentElement>,
     payment_element: Option<stripe_core::CustomerSessionResourceComponentsResourcePaymentElement>,
     pricing_table: Option<stripe_core::CustomerSessionResourceComponentsResourcePricingTable>,
 }
@@ -55,9 +61,10 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "buy_button" => Deserialize::begin(&mut self.buy_button),
+                "customer_sheet" => Deserialize::begin(&mut self.customer_sheet),
+                "mobile_payment_element" => Deserialize::begin(&mut self.mobile_payment_element),
                 "payment_element" => Deserialize::begin(&mut self.payment_element),
                 "pricing_table" => Deserialize::begin(&mut self.pricing_table),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -65,18 +72,37 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 buy_button: Deserialize::default(),
+                customer_sheet: Deserialize::default(),
+                mobile_payment_element: Deserialize::default(),
                 payment_element: Deserialize::default(),
                 pricing_table: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(buy_button), Some(payment_element), Some(pricing_table)) =
-                (self.buy_button, self.payment_element.take(), self.pricing_table)
+            let (
+                Some(buy_button),
+                Some(customer_sheet),
+                Some(mobile_payment_element),
+                Some(payment_element),
+                Some(pricing_table),
+            ) = (
+                self.buy_button,
+                self.customer_sheet.take(),
+                self.mobile_payment_element.take(),
+                self.payment_element.take(),
+                self.pricing_table,
+            )
             else {
                 return None;
             };
-            Some(Self::Out { buy_button, payment_element, pricing_table })
+            Some(Self::Out {
+                buy_button,
+                customer_sheet,
+                mobile_payment_element,
+                payment_element,
+                pricing_table,
+            })
         }
     }
 
@@ -104,9 +130,12 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "buy_button" => b.buy_button = FromValueOpt::from_value(v),
+                    "customer_sheet" => b.customer_sheet = FromValueOpt::from_value(v),
+                    "mobile_payment_element" => {
+                        b.mobile_payment_element = FromValueOpt::from_value(v)
+                    }
                     "payment_element" => b.payment_element = FromValueOpt::from_value(v),
                     "pricing_table" => b.pricing_table = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

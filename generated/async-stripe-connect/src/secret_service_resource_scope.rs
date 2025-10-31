@@ -56,7 +56,6 @@ const _: () = {
             Ok(match k {
                 "type" => Deserialize::begin(&mut self.type_),
                 "user" => Deserialize::begin(&mut self.user),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -98,7 +97,6 @@ const _: () = {
                 match k.as_str() {
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "user" => b.user = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

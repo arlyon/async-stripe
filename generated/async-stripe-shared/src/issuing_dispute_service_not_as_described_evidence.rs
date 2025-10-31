@@ -69,7 +69,6 @@ const _: () = {
                 "cancellation_reason" => Deserialize::begin(&mut self.cancellation_reason),
                 "explanation" => Deserialize::begin(&mut self.explanation),
                 "received_at" => Deserialize::begin(&mut self.received_at),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -141,7 +140,6 @@ const _: () = {
                     "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
                     "explanation" => b.explanation = FromValueOpt::from_value(v),
                     "received_at" => b.received_at = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -82,7 +82,6 @@ const _: () = {
                 "refund_and_dispute_prefunding" => {
                     Deserialize::begin(&mut self.refund_and_dispute_prefunding)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -164,7 +163,6 @@ const _: () = {
                     "refund_and_dispute_prefunding" => {
                         b.refund_and_dispute_prefunding = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

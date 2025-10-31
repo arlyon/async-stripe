@@ -63,7 +63,6 @@ const _: () = {
             Ok(match k {
                 "ip_address" => Deserialize::begin(&mut self.ip_address),
                 "user_agent" => Deserialize::begin(&mut self.user_agent),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                 match k.as_str() {
                     "ip_address" => b.ip_address = FromValueOpt::from_value(v),
                     "user_agent" => b.user_agent = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

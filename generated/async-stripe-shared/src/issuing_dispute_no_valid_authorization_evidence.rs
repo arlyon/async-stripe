@@ -57,7 +57,6 @@ const _: () = {
                     Deserialize::begin(&mut self.additional_documentation)
                 }
                 "explanation" => Deserialize::begin(&mut self.explanation),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -106,7 +105,6 @@ const _: () = {
                         b.additional_documentation = FromValueOpt::from_value(v)
                     }
                     "explanation" => b.explanation = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

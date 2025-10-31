@@ -80,7 +80,6 @@ const _: () = {
                 "statement_descriptor_prefix_kanji" => {
                     Deserialize::begin(&mut self.statement_descriptor_prefix_kanji)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -158,7 +157,6 @@ const _: () = {
                     "statement_descriptor_prefix_kanji" => {
                         b.statement_descriptor_prefix_kanji = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

@@ -67,7 +67,6 @@ const _: () = {
                 "interval" => Deserialize::begin(&mut self.interval),
                 "interval_count" => Deserialize::begin(&mut self.interval_count),
                 "total_details" => Deserialize::begin(&mut self.total_details),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -137,7 +136,6 @@ const _: () = {
                     "interval" => b.interval = FromValueOpt::from_value(v),
                     "interval_count" => b.interval_count = FromValueOpt::from_value(v),
                     "total_details" => b.total_details = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

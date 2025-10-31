@@ -56,7 +56,6 @@ const _: () = {
             Ok(match k {
                 "deadline" => Deserialize::begin(&mut self.deadline),
                 "restricted_reason" => Deserialize::begin(&mut self.restricted_reason),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "deadline" => b.deadline = FromValueOpt::from_value(v),
                     "restricted_reason" => b.restricted_reason = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

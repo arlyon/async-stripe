@@ -23,6 +23,12 @@ pub struct CreateCustomerSessionComponents {
     /// Configuration for buy button.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub buy_button: Option<CreateCustomerSessionComponentsBuyButton>,
+    /// Configuration for the customer sheet.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_sheet: Option<CreateCustomerSessionComponentsCustomerSheet>,
+    /// Configuration for the mobile payment element.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mobile_payment_element: Option<CreateCustomerSessionComponentsMobilePaymentElement>,
     /// Configuration for the Payment Element.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_element: Option<CreateCustomerSessionComponentsPaymentElement>,
@@ -32,7 +38,13 @@ pub struct CreateCustomerSessionComponents {
 }
 impl CreateCustomerSessionComponents {
     pub fn new() -> Self {
-        Self { buy_button: None, payment_element: None, pricing_table: None }
+        Self {
+            buy_button: None,
+            customer_sheet: None,
+            mobile_payment_element: None,
+            payment_element: None,
+            pricing_table: None,
+        }
     }
 }
 impl Default for CreateCustomerSessionComponents {
@@ -49,6 +61,557 @@ pub struct CreateCustomerSessionComponentsBuyButton {
 impl CreateCustomerSessionComponentsBuyButton {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into() }
+    }
+}
+/// Configuration for the customer sheet.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateCustomerSessionComponentsCustomerSheet {
+    /// Whether the customer sheet is enabled.
+    pub enabled: bool,
+    /// This hash defines whether the customer sheet supports certain features.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateCustomerSessionComponentsCustomerSheetFeatures>,
+}
+impl CreateCustomerSessionComponentsCustomerSheet {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
+    }
+}
+/// This hash defines whether the customer sheet supports certain features.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateCustomerSessionComponentsCustomerSheetFeatures {
+    /// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the customer sheet displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
+    ///
+    /// If not specified, defaults to ["always"].
+    /// In order to display all saved payment methods, specify ["always", "limited", "unspecified"].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_allow_redisplay_filters: Option<
+        Vec<CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters>,
+    >,
+    /// Controls whether the customer sheet displays the option to remove a saved payment method."
+    ///
+    /// Allowing buyers to remove their saved payment methods impacts subscriptions that depend on that payment method.
+    /// Removing the payment method detaches the [`customer` object](https://docs.stripe.com/api/payment_methods/object#payment_method_object-customer) from that [PaymentMethod](https://docs.stripe.com/api/payment_methods).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_remove:
+        Option<CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove>,
+}
+impl CreateCustomerSessionComponentsCustomerSheetFeatures {
+    pub fn new() -> Self {
+        Self { payment_method_allow_redisplay_filters: None, payment_method_remove: None }
+    }
+}
+impl Default for CreateCustomerSessionComponentsCustomerSheetFeatures {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the customer sheet displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
+///
+/// If not specified, defaults to ["always"].
+/// In order to display all saved payment methods, specify ["always", "limited", "unspecified"].
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters {
+    Always,
+    Limited,
+    Unspecified,
+}
+impl CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters {
+    pub fn as_str(self) -> &'static str {
+        use CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters::*;
+        match self {
+            Always => "always",
+            Limited => "limited",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters::*;
+        match s {
+            "always" => Ok(Always),
+            "limited" => Ok(Limited),
+            "unspecified" => Ok(Unspecified),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters"))
+    }
+}
+/// Controls whether the customer sheet displays the option to remove a saved payment method."
+///
+/// Allowing buyers to remove their saved payment methods impacts subscriptions that depend on that payment method.
+/// Removing the payment method detaches the [`customer` object](https://docs.stripe.com/api/payment_methods/object#payment_method_object-customer) from that [PaymentMethod](https://docs.stripe.com/api/payment_methods).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove {
+    Disabled,
+    Enabled,
+}
+impl CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove {
+    pub fn as_str(self) -> &'static str {
+        use CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove::*;
+        match self {
+            Disabled => "disabled",
+            Enabled => "enabled",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove::*;
+        match s {
+            "disabled" => Ok(Disabled),
+            "enabled" => Ok(Enabled),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove"))
+    }
+}
+/// Configuration for the mobile payment element.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateCustomerSessionComponentsMobilePaymentElement {
+    /// Whether the mobile payment element is enabled.
+    pub enabled: bool,
+    /// This hash defines whether the mobile payment element supports certain features.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateCustomerSessionComponentsMobilePaymentElementFeatures>,
+}
+impl CreateCustomerSessionComponentsMobilePaymentElement {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
+    }
+}
+/// This hash defines whether the mobile payment element supports certain features.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateCustomerSessionComponentsMobilePaymentElementFeatures {
+        /// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the mobile payment element displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
+    ///
+        /// If not specified, defaults to ["always"].
+    /// In order to display all saved payment methods, specify ["always", "limited", "unspecified"].
+#[serde(skip_serializing_if = "Option::is_none")]
+pub payment_method_allow_redisplay_filters: Option<Vec<CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters>>,
+    /// Controls whether or not the mobile payment element shows saved payment methods.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub payment_method_redisplay: Option<CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay>,
+    /// Controls whether the mobile payment element displays the option to remove a saved payment method."
+    ///
+        /// Allowing buyers to remove their saved payment methods impacts subscriptions that depend on that payment method.
+    /// Removing the payment method detaches the [`customer` object](https://docs.stripe.com/api/payment_methods/object#payment_method_object-customer) from that [PaymentMethod](https://docs.stripe.com/api/payment_methods).
+#[serde(skip_serializing_if = "Option::is_none")]
+pub payment_method_remove: Option<CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove>,
+        /// Controls whether the mobile payment element displays a checkbox offering to save a new payment method.
+    ///
+        /// If a customer checks the box, the [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) value on the PaymentMethod is set to `'always'` at confirmation time.
+    /// For PaymentIntents, the [`setup_future_usage`](https://docs.stripe.com/api/payment_intents/object#payment_intent_object-setup_future_usage) value is also set to the value defined in `payment_method_save_usage`.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub payment_method_save: Option<CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave>,
+        /// Allows overriding the value of allow_override when saving a new payment method when payment_method_save is set to disabled.
+    /// Use values: "always", "limited", or "unspecified".
+    ///
+    /// If not specified, defaults to `nil` (no override value).
+#[serde(skip_serializing_if = "Option::is_none")]
+pub payment_method_save_allow_redisplay_override: Option<CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride>,
+
+}
+impl CreateCustomerSessionComponentsMobilePaymentElementFeatures {
+    pub fn new() -> Self {
+        Self {
+            payment_method_allow_redisplay_filters: None,
+            payment_method_redisplay: None,
+            payment_method_remove: None,
+            payment_method_save: None,
+            payment_method_save_allow_redisplay_override: None,
+        }
+    }
+}
+impl Default for CreateCustomerSessionComponentsMobilePaymentElementFeatures {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the mobile payment element displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
+///
+/// If not specified, defaults to ["always"].
+/// In order to display all saved payment methods, specify ["always", "limited", "unspecified"].
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters
+{
+    Always,
+    Limited,
+    Unspecified,
+}
+impl CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters {
+    pub fn as_str(self) -> &'static str {
+        use CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters::*;
+        match self {
+            Always => "always",
+            Limited => "limited",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters::*;
+        match s {
+    "always" => Ok(Always),
+"limited" => Ok(Limited),
+"unspecified" => Ok(Unspecified),
+_ => Err(stripe_types::StripeParseError)
+
+        }
+    }
+}
+impl std::fmt::Display for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters"))
+    }
+}
+/// Controls whether or not the mobile payment element shows saved payment methods.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay {
+    Disabled,
+    Enabled,
+}
+impl CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay {
+    pub fn as_str(self) -> &'static str {
+        use CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay::*;
+        match self {
+            Disabled => "disabled",
+            Enabled => "enabled",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay::*;
+        match s {
+            "disabled" => Ok(Disabled),
+            "enabled" => Ok(Enabled),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay"))
+    }
+}
+/// Controls whether the mobile payment element displays the option to remove a saved payment method."
+///
+/// Allowing buyers to remove their saved payment methods impacts subscriptions that depend on that payment method.
+/// Removing the payment method detaches the [`customer` object](https://docs.stripe.com/api/payment_methods/object#payment_method_object-customer) from that [PaymentMethod](https://docs.stripe.com/api/payment_methods).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove {
+    Disabled,
+    Enabled,
+}
+impl CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove {
+    pub fn as_str(self) -> &'static str {
+        use CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove::*;
+        match self {
+            Disabled => "disabled",
+            Enabled => "enabled",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove::*;
+        match s {
+            "disabled" => Ok(Disabled),
+            "enabled" => Ok(Enabled),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove"))
+    }
+}
+/// Controls whether the mobile payment element displays a checkbox offering to save a new payment method.
+///
+/// If a customer checks the box, the [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) value on the PaymentMethod is set to `'always'` at confirmation time.
+/// For PaymentIntents, the [`setup_future_usage`](https://docs.stripe.com/api/payment_intents/object#payment_intent_object-setup_future_usage) value is also set to the value defined in `payment_method_save_usage`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave {
+    Disabled,
+    Enabled,
+}
+impl CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave {
+    pub fn as_str(self) -> &'static str {
+        use CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave::*;
+        match self {
+            Disabled => "disabled",
+            Enabled => "enabled",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave
+{
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave::*;
+        match s {
+            "disabled" => Ok(Disabled),
+            "enabled" => Ok(Enabled),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave"))
+    }
+}
+/// Allows overriding the value of allow_override when saving a new payment method when payment_method_save is set to disabled.
+/// Use values: "always", "limited", or "unspecified".
+///
+/// If not specified, defaults to `nil` (no override value).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride
+{
+    Always,
+    Limited,
+    Unspecified,
+}
+impl CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride {
+    pub fn as_str(self) -> &'static str {
+        use CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride::*;
+        match self {
+Always => "always",
+Limited => "limited",
+Unspecified => "unspecified",
+
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride::*;
+        match s {
+    "always" => Ok(Always),
+"limited" => Ok(Limited),
+"unspecified" => Ok(Unspecified),
+_ => Err(stripe_types::StripeParseError)
+
+        }
+    }
+}
+impl std::fmt::Display for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride"))
     }
 }
 /// Configuration for the Payment Element.

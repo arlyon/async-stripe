@@ -59,7 +59,6 @@ const _: () = {
             Ok(match k {
                 "province_standard" => Deserialize::begin(&mut self.province_standard),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -103,7 +102,6 @@ const _: () = {
                 match k.as_str() {
                     "province_standard" => b.province_standard = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

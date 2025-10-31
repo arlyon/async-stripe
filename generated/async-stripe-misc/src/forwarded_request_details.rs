@@ -61,7 +61,6 @@ const _: () = {
                 "body" => Deserialize::begin(&mut self.body),
                 "headers" => Deserialize::begin(&mut self.headers),
                 "http_method" => Deserialize::begin(&mut self.http_method),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                     "body" => b.body = FromValueOpt::from_value(v),
                     "headers" => b.headers = FromValueOpt::from_value(v),
                     "http_method" => b.http_method = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

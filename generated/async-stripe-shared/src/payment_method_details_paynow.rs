@@ -59,7 +59,6 @@ const _: () = {
                 "location" => Deserialize::begin(&mut self.location),
                 "reader" => Deserialize::begin(&mut self.reader),
                 "reference" => Deserialize::begin(&mut self.reference),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "location" => b.location = FromValueOpt::from_value(v),
                     "reader" => b.reader = FromValueOpt::from_value(v),
                     "reference" => b.reference = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

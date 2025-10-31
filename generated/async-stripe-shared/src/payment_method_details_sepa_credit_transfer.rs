@@ -59,7 +59,6 @@ const _: () = {
                 "bank_name" => Deserialize::begin(&mut self.bank_name),
                 "bic" => Deserialize::begin(&mut self.bic),
                 "iban" => Deserialize::begin(&mut self.iban),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "bank_name" => b.bank_name = FromValueOpt::from_value(v),
                     "bic" => b.bic = FromValueOpt::from_value(v),
                     "iban" => b.iban = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

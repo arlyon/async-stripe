@@ -202,6 +202,8 @@ struct CreatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     cashapp: Option<CreatePaymentMethodConfigurationCashapp>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    crypto: Option<CreatePaymentMethodConfigurationCrypto>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     customer_balance: Option<CreatePaymentMethodConfigurationCustomerBalance>,
     #[serde(skip_serializing_if = "Option::is_none")]
     eps: Option<CreatePaymentMethodConfigurationEps>,
@@ -231,6 +233,8 @@ struct CreatePaymentMethodConfigurationBuilder {
     kr_card: Option<CreatePaymentMethodConfigurationKrCard>,
     #[serde(skip_serializing_if = "Option::is_none")]
     link: Option<CreatePaymentMethodConfigurationLink>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    mb_way: Option<CreatePaymentMethodConfigurationMbWay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     mobilepay: Option<CreatePaymentMethodConfigurationMobilepay>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -300,6 +304,7 @@ impl CreatePaymentMethodConfigurationBuilder {
             card: None,
             cartes_bancaires: None,
             cashapp: None,
+            crypto: None,
             customer_balance: None,
             eps: None,
             expand: None,
@@ -315,6 +320,7 @@ impl CreatePaymentMethodConfigurationBuilder {
             konbini: None,
             kr_card: None,
             link: None,
+            mb_way: None,
             mobilepay: None,
             multibanco: None,
             name: None,
@@ -1980,6 +1986,99 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationCashappDisplayPreferencePreference"))
     }
 }
+/// [Stablecoin payments](https://stripe.com/docs/payments/stablecoin-payments) enable customers to pay in stablecoins like USDC from 100s of wallets including Phantom and Metamask.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationCrypto {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationCryptoDisplayPreference>,
+}
+impl CreatePaymentMethodConfigurationCrypto {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationCrypto {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationCryptoDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference>,
+}
+impl CreatePaymentMethodConfigurationCryptoDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationCryptoDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference"))
+    }
+}
 /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
 /// The cash balance can be funded via a bank transfer.
 /// Check this [page](https://stripe.com/docs/payments/bank-transfers) for more details.
@@ -3341,6 +3440,101 @@ impl<'de> serde::Deserialize<'de>
                 "Unknown value for CreatePaymentMethodConfigurationLinkDisplayPreferencePreference",
             )
         })
+    }
+}
+/// MB WAY is the most popular wallet in Portugal.
+/// After entering their phone number in your checkout, customers approve the payment directly in their MB WAY app.
+/// Check this [page](https://stripe.com/docs/payments/mb-way) for more details.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationMbWay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationMbWayDisplayPreference>,
+}
+impl CreatePaymentMethodConfigurationMbWay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationMbWay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationMbWayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference>,
+}
+impl CreatePaymentMethodConfigurationMbWayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationMbWayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference"))
     }
 }
 /// MobilePay is a [single-use](https://stripe.com/docs/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
@@ -5585,6 +5779,11 @@ impl CreatePaymentMethodConfiguration {
         self.inner.cashapp = Some(cashapp.into());
         self
     }
+    /// [Stablecoin payments](https://stripe.com/docs/payments/stablecoin-payments) enable customers to pay in stablecoins like USDC from 100s of wallets including Phantom and Metamask.
+    pub fn crypto(mut self, crypto: impl Into<CreatePaymentMethodConfigurationCrypto>) -> Self {
+        self.inner.crypto = Some(crypto.into());
+        self
+    }
     /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
     /// The cash balance can be funded via a bank transfer.
     /// Check this [page](https://stripe.com/docs/payments/bank-transfers) for more details.
@@ -5695,6 +5894,13 @@ impl CreatePaymentMethodConfiguration {
     /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
     pub fn link(mut self, link: impl Into<CreatePaymentMethodConfigurationLink>) -> Self {
         self.inner.link = Some(link.into());
+        self
+    }
+    /// MB WAY is the most popular wallet in Portugal.
+    /// After entering their phone number in your checkout, customers approve the payment directly in their MB WAY app.
+    /// Check this [page](https://stripe.com/docs/payments/mb-way) for more details.
+    pub fn mb_way(mut self, mb_way: impl Into<CreatePaymentMethodConfigurationMbWay>) -> Self {
+        self.inner.mb_way = Some(mb_way.into());
         self
     }
     /// MobilePay is a [single-use](https://stripe.com/docs/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
@@ -5951,6 +6157,8 @@ struct UpdatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     cashapp: Option<UpdatePaymentMethodConfigurationCashapp>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    crypto: Option<UpdatePaymentMethodConfigurationCrypto>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     customer_balance: Option<UpdatePaymentMethodConfigurationCustomerBalance>,
     #[serde(skip_serializing_if = "Option::is_none")]
     eps: Option<UpdatePaymentMethodConfigurationEps>,
@@ -5980,6 +6188,8 @@ struct UpdatePaymentMethodConfigurationBuilder {
     kr_card: Option<UpdatePaymentMethodConfigurationKrCard>,
     #[serde(skip_serializing_if = "Option::is_none")]
     link: Option<UpdatePaymentMethodConfigurationLink>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    mb_way: Option<UpdatePaymentMethodConfigurationMbWay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     mobilepay: Option<UpdatePaymentMethodConfigurationMobilepay>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6048,6 +6258,7 @@ impl UpdatePaymentMethodConfigurationBuilder {
             card: None,
             cartes_bancaires: None,
             cashapp: None,
+            crypto: None,
             customer_balance: None,
             eps: None,
             expand: None,
@@ -6063,6 +6274,7 @@ impl UpdatePaymentMethodConfigurationBuilder {
             konbini: None,
             kr_card: None,
             link: None,
+            mb_way: None,
             mobilepay: None,
             multibanco: None,
             name: None,
@@ -7727,6 +7939,99 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference"))
     }
 }
+/// [Stablecoin payments](https://stripe.com/docs/payments/stablecoin-payments) enable customers to pay in stablecoins like USDC from 100s of wallets including Phantom and Metamask.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationCrypto {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationCryptoDisplayPreference>,
+}
+impl UpdatePaymentMethodConfigurationCrypto {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationCrypto {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationCryptoDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference>,
+}
+impl UpdatePaymentMethodConfigurationCryptoDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationCryptoDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference"))
+    }
+}
 /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
 /// The cash balance can be funded via a bank transfer.
 /// Check this [page](https://stripe.com/docs/payments/bank-transfers) for more details.
@@ -9088,6 +9393,101 @@ impl<'de> serde::Deserialize<'de>
                 "Unknown value for UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference",
             )
         })
+    }
+}
+/// MB WAY is the most popular wallet in Portugal.
+/// After entering their phone number in your checkout, customers approve the payment directly in their MB WAY app.
+/// Check this [page](https://stripe.com/docs/payments/mb-way) for more details.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationMbWay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationMbWayDisplayPreference>,
+}
+impl UpdatePaymentMethodConfigurationMbWay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationMbWay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationMbWayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference>,
+}
+impl UpdatePaymentMethodConfigurationMbWayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationMbWayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+}
+impl UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference"))
     }
 }
 /// MobilePay is a [single-use](https://stripe.com/docs/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
@@ -11341,6 +11741,11 @@ impl UpdatePaymentMethodConfiguration {
         self.inner.cashapp = Some(cashapp.into());
         self
     }
+    /// [Stablecoin payments](https://stripe.com/docs/payments/stablecoin-payments) enable customers to pay in stablecoins like USDC from 100s of wallets including Phantom and Metamask.
+    pub fn crypto(mut self, crypto: impl Into<UpdatePaymentMethodConfigurationCrypto>) -> Self {
+        self.inner.crypto = Some(crypto.into());
+        self
+    }
     /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
     /// The cash balance can be funded via a bank transfer.
     /// Check this [page](https://stripe.com/docs/payments/bank-transfers) for more details.
@@ -11451,6 +11856,13 @@ impl UpdatePaymentMethodConfiguration {
     /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
     pub fn link(mut self, link: impl Into<UpdatePaymentMethodConfigurationLink>) -> Self {
         self.inner.link = Some(link.into());
+        self
+    }
+    /// MB WAY is the most popular wallet in Portugal.
+    /// After entering their phone number in your checkout, customers approve the payment directly in their MB WAY app.
+    /// Check this [page](https://stripe.com/docs/payments/mb-way) for more details.
+    pub fn mb_way(mut self, mb_way: impl Into<UpdatePaymentMethodConfigurationMbWay>) -> Self {
+        self.inner.mb_way = Some(mb_way.into());
         self
     }
     /// MobilePay is a [single-use](https://stripe.com/docs/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.

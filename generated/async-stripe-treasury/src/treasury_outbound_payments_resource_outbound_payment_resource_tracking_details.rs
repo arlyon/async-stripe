@@ -61,7 +61,6 @@ const _: () = {
                 "ach" => Deserialize::begin(&mut self.ach),
                 "type" => Deserialize::begin(&mut self.type_),
                 "us_domestic_wire" => Deserialize::begin(&mut self.us_domestic_wire),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -111,7 +110,6 @@ const _: () = {
                     "ach" => b.ach = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "us_domestic_wire" => b.us_domestic_wire = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

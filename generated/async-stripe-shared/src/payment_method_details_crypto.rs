@@ -63,7 +63,6 @@ const _: () = {
                 "network" => Deserialize::begin(&mut self.network),
                 "token_currency" => Deserialize::begin(&mut self.token_currency),
                 "transaction_hash" => Deserialize::begin(&mut self.transaction_hash),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -117,7 +116,6 @@ const _: () = {
                     "network" => b.network = FromValueOpt::from_value(v),
                     "token_currency" => b.token_currency = FromValueOpt::from_value(v),
                     "transaction_hash" => b.transaction_hash = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -131,6 +129,7 @@ pub enum PaymentMethodDetailsCryptoNetwork {
     Base,
     Ethereum,
     Polygon,
+    Solana,
 }
 impl PaymentMethodDetailsCryptoNetwork {
     pub fn as_str(self) -> &'static str {
@@ -139,6 +138,7 @@ impl PaymentMethodDetailsCryptoNetwork {
             Base => "base",
             Ethereum => "ethereum",
             Polygon => "polygon",
+            Solana => "solana",
         }
     }
 }
@@ -151,6 +151,7 @@ impl std::str::FromStr for PaymentMethodDetailsCryptoNetwork {
             "base" => Ok(Base),
             "ethereum" => Ok(Ethereum),
             "polygon" => Ok(Polygon),
+            "solana" => Ok(Solana),
             _ => Err(stripe_types::StripeParseError),
         }
     }

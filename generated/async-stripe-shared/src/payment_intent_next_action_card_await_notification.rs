@@ -59,7 +59,6 @@ const _: () = {
                 "customer_approval_required" => {
                     Deserialize::begin(&mut self.customer_approval_required)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "customer_approval_required" => {
                         b.customer_approval_required = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

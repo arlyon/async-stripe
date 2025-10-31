@@ -63,7 +63,6 @@ const _: () = {
                 }
                 "dispute_management" => Deserialize::begin(&mut self.dispute_management),
                 "refund_management" => Deserialize::begin(&mut self.refund_management),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -125,7 +124,6 @@ const _: () = {
                     }
                     "dispute_management" => b.dispute_management = FromValueOpt::from_value(v),
                     "refund_management" => b.refund_management = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

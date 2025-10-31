@@ -91,7 +91,6 @@ const _: () = {
                     Deserialize::begin(&mut self.supported_transfer_countries)
                 }
                 "verification_fields" => Deserialize::begin(&mut self.verification_fields),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -179,7 +178,6 @@ const _: () = {
                         b.supported_transfer_countries = FromValueOpt::from_value(v)
                     }
                     "verification_fields" => b.verification_fields = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

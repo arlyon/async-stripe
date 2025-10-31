@@ -84,7 +84,6 @@ const _: () = {
                 "service_not_as_described" => {
                     Deserialize::begin(&mut self.service_not_as_described)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -180,7 +179,6 @@ const _: () = {
                     "service_not_as_described" => {
                         b.service_not_as_described = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

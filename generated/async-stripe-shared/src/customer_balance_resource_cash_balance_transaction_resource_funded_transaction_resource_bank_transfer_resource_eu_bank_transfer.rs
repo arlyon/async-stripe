@@ -59,20 +59,17 @@ const _: () = {
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
             "bic" => Deserialize::begin(&mut self.bic),
-"iban_last4" => Deserialize::begin(&mut self.iban_last4),
-"sender_name" => Deserialize::begin(&mut self.sender_name),
-
+            "iban_last4" => Deserialize::begin(&mut self.iban_last4),
+            "sender_name" => Deserialize::begin(&mut self.sender_name),
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self {
-            bic: Deserialize::default(),
+        Self { bic: Deserialize::default(),
 iban_last4: Deserialize::default(),
 sender_name: Deserialize::default(),
-
-        }
+ }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
@@ -112,10 +109,9 @@ self.sender_name.take(),
         let mut b = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceEuBankTransferBuilder::deser_default();
         for (k, v) in obj {
             match k.as_str() {
-                "bic" => b.bic = FromValueOpt::from_value(v),
-"iban_last4" => b.iban_last4 = FromValueOpt::from_value(v),
-"sender_name" => b.sender_name = FromValueOpt::from_value(v),
-
+            "bic" => b.bic = FromValueOpt::from_value(v),
+            "iban_last4" => b.iban_last4 = FromValueOpt::from_value(v),
+            "sender_name" => b.sender_name = FromValueOpt::from_value(v),
                 _ => {}
             }
         }

@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "attempts_remaining" => Deserialize::begin(&mut self.attempts_remaining),
                 "status" => Deserialize::begin(&mut self.status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "attempts_remaining" => b.attempts_remaining = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

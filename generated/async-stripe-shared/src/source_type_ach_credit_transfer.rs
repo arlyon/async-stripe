@@ -75,7 +75,6 @@ const _: () = {
                 "refund_routing_number" => Deserialize::begin(&mut self.refund_routing_number),
                 "routing_number" => Deserialize::begin(&mut self.routing_number),
                 "swift_code" => Deserialize::begin(&mut self.swift_code),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -166,7 +165,6 @@ const _: () = {
                     }
                     "routing_number" => b.routing_number = FromValueOpt::from_value(v),
                     "swift_code" => b.swift_code = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

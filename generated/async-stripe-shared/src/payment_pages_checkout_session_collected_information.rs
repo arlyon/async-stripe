@@ -60,7 +60,6 @@ const _: () = {
                 "business_name" => Deserialize::begin(&mut self.business_name),
                 "individual_name" => Deserialize::begin(&mut self.individual_name),
                 "shipping_details" => Deserialize::begin(&mut self.shipping_details),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -111,7 +110,6 @@ const _: () = {
                     "business_name" => b.business_name = FromValueOpt::from_value(v),
                     "individual_name" => b.individual_name = FromValueOpt::from_value(v),
                     "shipping_details" => b.shipping_details = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

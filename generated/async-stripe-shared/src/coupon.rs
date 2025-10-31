@@ -124,7 +124,6 @@ const _: () = {
                 "redeem_by" => Deserialize::begin(&mut self.redeem_by),
                 "times_redeemed" => Deserialize::begin(&mut self.times_redeemed),
                 "valid" => Deserialize::begin(&mut self.valid),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -249,7 +248,6 @@ const _: () = {
                     "redeem_by" => b.redeem_by = FromValueOpt::from_value(v),
                     "times_redeemed" => b.times_redeemed = FromValueOpt::from_value(v),
                     "valid" => b.valid = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

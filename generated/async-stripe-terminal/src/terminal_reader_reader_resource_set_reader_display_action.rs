@@ -3,9 +3,9 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceSetReaderDisplayAction {
-    /// Cart object to be displayed by the reader.
+    /// Cart object to be displayed by the reader, including line items, amounts, and currency.
     pub cart: Option<stripe_terminal::TerminalReaderReaderResourceCart>,
-    /// Type of information to be displayed by the reader.
+    /// Type of information to be displayed by the reader. Only `cart` is currently supported.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: TerminalReaderReaderResourceSetReaderDisplayActionType,
 }
@@ -57,7 +57,6 @@ const _: () = {
             Ok(match k {
                 "cart" => Deserialize::begin(&mut self.cart),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "cart" => b.cart = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -107,7 +105,7 @@ const _: () = {
         }
     }
 };
-/// Type of information to be displayed by the reader.
+/// Type of information to be displayed by the reader. Only `cart` is currently supported.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TerminalReaderReaderResourceSetReaderDisplayActionType {
     Cart,

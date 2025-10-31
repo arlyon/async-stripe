@@ -83,7 +83,6 @@ const _: () = {
                 "percent_ownership" => Deserialize::begin(&mut self.percent_ownership),
                 "representative" => Deserialize::begin(&mut self.representative),
                 "title" => Deserialize::begin(&mut self.title),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -168,7 +167,6 @@ const _: () = {
                     "percent_ownership" => b.percent_ownership = FromValueOpt::from_value(v),
                     "representative" => b.representative = FromValueOpt::from_value(v),
                     "title" => b.title = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

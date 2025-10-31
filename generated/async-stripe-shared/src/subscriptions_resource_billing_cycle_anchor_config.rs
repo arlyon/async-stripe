@@ -67,7 +67,6 @@ const _: () = {
                 "minute" => Deserialize::begin(&mut self.minute),
                 "month" => Deserialize::begin(&mut self.month),
                 "second" => Deserialize::begin(&mut self.second),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -120,7 +119,6 @@ const _: () = {
                     "minute" => b.minute = FromValueOpt::from_value(v),
                     "month" => b.month = FromValueOpt::from_value(v),
                     "second" => b.second = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

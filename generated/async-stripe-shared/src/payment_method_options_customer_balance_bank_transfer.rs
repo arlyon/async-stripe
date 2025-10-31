@@ -65,7 +65,6 @@ const _: () = {
                 "eu_bank_transfer" => Deserialize::begin(&mut self.eu_bank_transfer),
                 "requested_address_types" => Deserialize::begin(&mut self.requested_address_types),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -116,7 +115,6 @@ const _: () = {
                         b.requested_address_types = FromValueOpt::from_value(v)
                     }
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

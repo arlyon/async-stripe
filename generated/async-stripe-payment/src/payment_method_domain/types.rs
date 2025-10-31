@@ -91,7 +91,6 @@ const _: () = {
                 "link" => Deserialize::begin(&mut self.link),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "paypal" => Deserialize::begin(&mut self.paypal),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -191,7 +190,6 @@ const _: () = {
                     "link" => b.link = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "paypal" => b.paypal = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -191,7 +191,6 @@ const _: () = {
                 "total_taxes" => Deserialize::begin(&mut self.total_taxes),
                 "type" => Deserialize::begin(&mut self.type_),
                 "voided_at" => Deserialize::begin(&mut self.voided_at),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -402,7 +401,6 @@ const _: () = {
                     "total_taxes" => b.total_taxes = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "voided_at" => b.voided_at = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

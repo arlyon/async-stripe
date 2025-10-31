@@ -61,7 +61,6 @@ const _: () = {
                 "hosted_confirmation" => Deserialize::begin(&mut self.hosted_confirmation),
                 "redirect" => Deserialize::begin(&mut self.redirect),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                     "hosted_confirmation" => b.hosted_confirmation = FromValueOpt::from_value(v),
                     "redirect" => b.redirect = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

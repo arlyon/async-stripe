@@ -61,7 +61,6 @@ const _: () = {
                 "prior_undisputed_transactions" => {
                     Deserialize::begin(&mut self.prior_undisputed_transactions)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                     "prior_undisputed_transactions" => {
                         b.prior_undisputed_transactions = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

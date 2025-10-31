@@ -66,7 +66,6 @@ const _: () = {
                 "tax_deduction_account_number" => {
                     Deserialize::begin(&mut self.tax_deduction_account_number)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -128,7 +127,6 @@ const _: () = {
                     "tax_deduction_account_number" => {
                         b.tax_deduction_account_number = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

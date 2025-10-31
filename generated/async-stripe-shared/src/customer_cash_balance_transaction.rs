@@ -112,7 +112,6 @@ const _: () = {
                 "transferred_to_balance" => Deserialize::begin(&mut self.transferred_to_balance),
                 "type" => Deserialize::begin(&mut self.type_),
                 "unapplied_from_payment" => Deserialize::begin(&mut self.unapplied_from_payment),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -235,7 +234,6 @@ const _: () = {
                     "unapplied_from_payment" => {
                         b.unapplied_from_payment = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

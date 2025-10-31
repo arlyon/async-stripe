@@ -58,7 +58,6 @@ const _: () = {
             Ok(match k {
                 "account_subcategories" => Deserialize::begin(&mut self.account_subcategories),
                 "countries" => Deserialize::begin(&mut self.countries),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -107,7 +106,6 @@ const _: () = {
                         b.account_subcategories = FromValueOpt::from_value(v)
                     }
                     "countries" => b.countries = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

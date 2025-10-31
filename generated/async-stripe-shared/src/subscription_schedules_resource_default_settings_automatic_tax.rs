@@ -64,7 +64,6 @@ const _: () = {
                 "disabled_reason" => Deserialize::begin(&mut self.disabled_reason),
                 "enabled" => Deserialize::begin(&mut self.enabled),
                 "liability" => Deserialize::begin(&mut self.liability),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -114,7 +113,6 @@ const _: () = {
                     "disabled_reason" => b.disabled_reason = FromValueOpt::from_value(v),
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
                     "liability" => b.liability = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

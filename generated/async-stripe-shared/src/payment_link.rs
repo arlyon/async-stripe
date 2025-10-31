@@ -49,6 +49,7 @@ pub struct PaymentLink {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
+    pub name_collection: Option<stripe_shared::PaymentLinksResourceNameCollection>,
     /// The account on behalf of which to charge.
     /// See the [Connect documentation](https://support.stripe.com/questions/sending-invoices-on-behalf-of-connected-accounts) for details.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
@@ -101,6 +102,7 @@ pub struct PaymentLinkBuilder {
     line_items: Option<Option<stripe_types::List<stripe_shared::CheckoutSessionItem>>>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
+    name_collection: Option<Option<stripe_shared::PaymentLinksResourceNameCollection>>,
     on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
     optional_items: Option<Option<Vec<stripe_shared::PaymentLinksResourceOptionalItem>>>,
     payment_intent_data: Option<Option<stripe_shared::PaymentLinksResourcePaymentIntentData>>,
@@ -179,6 +181,7 @@ const _: () = {
                 "line_items" => Deserialize::begin(&mut self.line_items),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
+                "name_collection" => Deserialize::begin(&mut self.name_collection),
                 "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
                 "optional_items" => Deserialize::begin(&mut self.optional_items),
                 "payment_intent_data" => Deserialize::begin(&mut self.payment_intent_data),
@@ -197,7 +200,6 @@ const _: () = {
                 "tax_id_collection" => Deserialize::begin(&mut self.tax_id_collection),
                 "transfer_data" => Deserialize::begin(&mut self.transfer_data),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -223,6 +225,7 @@ const _: () = {
                 line_items: Deserialize::default(),
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
+                name_collection: Deserialize::default(),
                 on_behalf_of: Deserialize::default(),
                 optional_items: Deserialize::default(),
                 payment_intent_data: Deserialize::default(),
@@ -261,6 +264,7 @@ const _: () = {
                 Some(line_items),
                 Some(livemode),
                 Some(metadata),
+                Some(name_collection),
                 Some(on_behalf_of),
                 Some(optional_items),
                 Some(payment_intent_data),
@@ -295,6 +299,7 @@ const _: () = {
                 self.line_items.take(),
                 self.livemode,
                 self.metadata.take(),
+                self.name_collection,
                 self.on_behalf_of.take(),
                 self.optional_items.take(),
                 self.payment_intent_data.take(),
@@ -333,6 +338,7 @@ const _: () = {
                 line_items,
                 livemode,
                 metadata,
+                name_collection,
                 on_behalf_of,
                 optional_items,
                 payment_intent_data,
@@ -401,6 +407,7 @@ const _: () = {
                     "line_items" => b.line_items = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "name_collection" => b.name_collection = FromValueOpt::from_value(v),
                     "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
                     "optional_items" => b.optional_items = FromValueOpt::from_value(v),
                     "payment_intent_data" => b.payment_intent_data = FromValueOpt::from_value(v),
@@ -421,7 +428,6 @@ const _: () = {
                     "tax_id_collection" => b.tax_id_collection = FromValueOpt::from_value(v),
                     "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -433,7 +439,7 @@ const _: () = {
 impl serde::Serialize for PaymentLink {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentLink", 34)?;
+        let mut s = s.serialize_struct("PaymentLink", 35)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("after_completion", &self.after_completion)?;
         s.serialize_field("allow_promotion_codes", &self.allow_promotion_codes)?;
@@ -453,6 +459,7 @@ impl serde::Serialize for PaymentLink {
         s.serialize_field("line_items", &self.line_items)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("name_collection", &self.name_collection)?;
         s.serialize_field("on_behalf_of", &self.on_behalf_of)?;
         s.serialize_field("optional_items", &self.optional_items)?;
         s.serialize_field("payment_intent_data", &self.payment_intent_data)?;
@@ -721,6 +728,7 @@ pub enum PaymentLinkPaymentMethodTypes {
     Klarna,
     Konbini,
     Link,
+    MbWay,
     Mobilepay,
     Multibanco,
     Oxxo,
@@ -765,6 +773,7 @@ impl PaymentLinkPaymentMethodTypes {
             Klarna => "klarna",
             Konbini => "konbini",
             Link => "link",
+            MbWay => "mb_way",
             Mobilepay => "mobilepay",
             Multibanco => "multibanco",
             Oxxo => "oxxo",
@@ -812,6 +821,7 @@ impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
             "klarna" => Ok(Klarna),
             "konbini" => Ok(Konbini),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "mobilepay" => Ok(Mobilepay),
             "multibanco" => Ok(Multibanco),
             "oxxo" => Ok(Oxxo),

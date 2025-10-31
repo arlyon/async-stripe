@@ -79,7 +79,6 @@ const _: () = {
                 }
                 "instant_payouts" => Deserialize::begin(&mut self.instant_payouts),
                 "standard_payouts" => Deserialize::begin(&mut self.standard_payouts),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -153,7 +152,6 @@ const _: () = {
                     }
                     "instant_payouts" => b.instant_payouts = FromValueOpt::from_value(v),
                     "standard_payouts" => b.standard_payouts = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

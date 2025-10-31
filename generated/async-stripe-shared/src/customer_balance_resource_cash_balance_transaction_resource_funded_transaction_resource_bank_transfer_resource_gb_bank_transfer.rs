@@ -59,20 +59,17 @@ const _: () = {
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
             "account_number_last4" => Deserialize::begin(&mut self.account_number_last4),
-"sender_name" => Deserialize::begin(&mut self.sender_name),
-"sort_code" => Deserialize::begin(&mut self.sort_code),
-
+            "sender_name" => Deserialize::begin(&mut self.sender_name),
+            "sort_code" => Deserialize::begin(&mut self.sort_code),
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self {
-            account_number_last4: Deserialize::default(),
+        Self { account_number_last4: Deserialize::default(),
 sender_name: Deserialize::default(),
 sort_code: Deserialize::default(),
-
-        }
+ }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
@@ -112,10 +109,9 @@ self.sort_code.take(),
         let mut b = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceGbBankTransferBuilder::deser_default();
         for (k, v) in obj {
             match k.as_str() {
-                "account_number_last4" => b.account_number_last4 = FromValueOpt::from_value(v),
-"sender_name" => b.sender_name = FromValueOpt::from_value(v),
-"sort_code" => b.sort_code = FromValueOpt::from_value(v),
-
+            "account_number_last4" => b.account_number_last4 = FromValueOpt::from_value(v),
+            "sender_name" => b.sender_name = FromValueOpt::from_value(v),
+            "sort_code" => b.sort_code = FromValueOpt::from_value(v),
                 _ => {}
             }
         }

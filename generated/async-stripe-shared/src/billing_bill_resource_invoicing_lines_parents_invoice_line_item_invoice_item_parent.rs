@@ -69,7 +69,6 @@ const _: () = {
                 "proration" => Deserialize::begin(&mut self.proration),
                 "proration_details" => Deserialize::begin(&mut self.proration_details),
                 "subscription" => Deserialize::begin(&mut self.subscription),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -124,7 +123,6 @@ const _: () = {
                     "proration" => b.proration = FromValueOpt::from_value(v),
                     "proration_details" => b.proration_details = FromValueOpt::from_value(v),
                     "subscription" => b.subscription = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

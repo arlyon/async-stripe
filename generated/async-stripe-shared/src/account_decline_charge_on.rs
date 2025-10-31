@@ -57,7 +57,6 @@ const _: () = {
             Ok(match k {
                 "avs_failure" => Deserialize::begin(&mut self.avs_failure),
                 "cvc_failure" => Deserialize::begin(&mut self.cvc_failure),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -100,7 +99,6 @@ const _: () = {
                 match k.as_str() {
                     "avs_failure" => b.avs_failure = FromValueOpt::from_value(v),
                     "cvc_failure" => b.cvc_failure = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

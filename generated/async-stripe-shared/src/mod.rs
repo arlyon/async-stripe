@@ -513,6 +513,10 @@ pub mod checkout_swish_payment_method_options;
 #[doc(inline)]
 pub use checkout_swish_payment_method_options::*;
 #[doc(hidden)]
+pub mod checkout_twint_payment_method_options;
+#[doc(inline)]
+pub use checkout_twint_payment_method_options::*;
+#[doc(hidden)]
 pub mod checkout_us_bank_account_payment_method_options;
 #[doc(inline)]
 pub use checkout_us_bank_account_payment_method_options::*;
@@ -549,6 +553,10 @@ pub mod credit_note_refund;
 #[doc(inline)]
 pub use credit_note_refund::*;
 #[doc(hidden)]
+pub mod credit_notes_payment_record_refund;
+#[doc(inline)]
+pub use credit_notes_payment_record_refund::*;
+#[doc(hidden)]
 pub mod credit_notes_pretax_credit_amount;
 #[doc(inline)]
 pub use credit_notes_pretax_credit_amount::*;
@@ -556,6 +564,10 @@ pub use credit_notes_pretax_credit_amount::*;
 pub mod currency_option;
 #[doc(inline)]
 pub use currency_option::*;
+#[doc(hidden)]
+pub mod custom_logo;
+#[doc(inline)]
+pub use custom_logo::*;
 #[doc(hidden)]
 pub mod custom_unit_amount;
 #[doc(inline)]
@@ -1373,6 +1385,10 @@ pub mod legal_entity_registration_date;
 #[doc(inline)]
 pub use legal_entity_registration_date::*;
 #[doc(hidden)]
+pub mod legal_entity_representative_declaration;
+#[doc(inline)]
+pub use legal_entity_representative_declaration::*;
+#[doc(hidden)]
 pub mod legal_entity_ubo_declaration;
 #[doc(inline)]
 pub use legal_entity_ubo_declaration::*;
@@ -1509,6 +1525,22 @@ pub mod payment_flows_amount_details_client_resource_tip;
 #[doc(inline)]
 pub use payment_flows_amount_details_client_resource_tip::*;
 #[doc(hidden)]
+pub mod payment_flows_amount_details_resource_line_items_list_resource_line_item_resource_payment_method_options;
+#[doc(inline)]
+pub use payment_flows_amount_details_resource_line_items_list_resource_line_item_resource_payment_method_options::*;
+#[doc(hidden)]
+pub mod payment_flows_amount_details_resource_line_items_list_resource_line_item_resource_tax;
+#[doc(inline)]
+pub use payment_flows_amount_details_resource_line_items_list_resource_line_item_resource_tax::*;
+#[doc(hidden)]
+pub mod payment_flows_amount_details_resource_shipping;
+#[doc(inline)]
+pub use payment_flows_amount_details_resource_shipping::*;
+#[doc(hidden)]
+pub mod payment_flows_amount_details_resource_tax;
+#[doc(inline)]
+pub use payment_flows_amount_details_resource_tax::*;
+#[doc(hidden)]
 pub mod payment_flows_automatic_payment_methods_payment_intent;
 #[doc(inline)]
 pub use payment_flows_automatic_payment_methods_payment_intent::*;
@@ -1516,6 +1548,10 @@ pub use payment_flows_automatic_payment_methods_payment_intent::*;
 pub mod payment_flows_automatic_payment_methods_setup_intent;
 #[doc(inline)]
 pub use payment_flows_automatic_payment_methods_setup_intent::*;
+#[doc(hidden)]
+pub mod payment_flows_payment_details;
+#[doc(inline)]
+pub use payment_flows_payment_details::*;
 #[doc(hidden)]
 pub mod payment_flows_payment_intent_presentment_details;
 #[doc(inline)]
@@ -1545,6 +1581,14 @@ pub mod payment_flows_private_payment_methods_card_details_api_resource_multicap
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_card_details_api_resource_multicapture::*;
 #[doc(hidden)]
+pub mod payment_flows_private_payment_methods_card_payment_intent_amount_details_line_item_payment_method_options;
+#[doc(inline)]
+pub use payment_flows_private_payment_methods_card_payment_intent_amount_details_line_item_payment_method_options::*;
+#[doc(hidden)]
+pub mod payment_flows_private_payment_methods_card_present_amount_details_line_item_payment_method_options;
+#[doc(inline)]
+pub use payment_flows_private_payment_methods_card_present_amount_details_line_item_payment_method_options::*;
+#[doc(hidden)]
 pub mod payment_flows_private_payment_methods_card_present_common_wallet;
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_card_present_common_wallet::*;
@@ -1561,6 +1605,10 @@ pub mod payment_flows_private_payment_methods_klarna_dob;
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_klarna_dob::*;
 #[doc(hidden)]
+pub mod payment_flows_private_payment_methods_klarna_payment_intent_amount_details_line_item_payment_method_options;
+#[doc(inline)]
+pub use payment_flows_private_payment_methods_klarna_payment_intent_amount_details_line_item_payment_method_options::*;
+#[doc(hidden)]
 pub mod payment_flows_private_payment_methods_naver_pay_payment_method_options;
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_naver_pay_payment_method_options::*;
@@ -1569,6 +1617,10 @@ pub mod payment_flows_private_payment_methods_payco_payment_method_options;
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_payco_payment_method_options::*;
 #[doc(hidden)]
+pub mod payment_flows_private_payment_methods_paypal_amount_details_line_item_payment_method_options;
+#[doc(inline)]
+pub use payment_flows_private_payment_methods_paypal_amount_details_line_item_payment_method_options::*;
+#[doc(hidden)]
 pub mod payment_flows_private_payment_methods_samsung_pay_payment_method_options;
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_samsung_pay_payment_method_options::*;
@@ -1576,6 +1628,10 @@ pub use payment_flows_private_payment_methods_samsung_pay_payment_method_options
 pub mod payment_intent;
 #[doc(inline)]
 pub use payment_intent::*;
+#[doc(hidden)]
+pub mod payment_intent_amount_details_line_item;
+#[doc(inline)]
+pub use payment_intent_amount_details_line_item::*;
 #[doc(hidden)]
 pub mod payment_intent_card_processing;
 #[doc(inline)]
@@ -1765,6 +1821,10 @@ pub mod payment_links_resource_automatic_tax;
 #[doc(inline)]
 pub use payment_links_resource_automatic_tax::*;
 #[doc(hidden)]
+pub mod payment_links_resource_business_name;
+#[doc(inline)]
+pub use payment_links_resource_business_name::*;
+#[doc(hidden)]
 pub mod payment_links_resource_completed_sessions;
 #[doc(inline)]
 pub use payment_links_resource_completed_sessions::*;
@@ -1813,6 +1873,10 @@ pub mod payment_links_resource_custom_text_position;
 #[doc(inline)]
 pub use payment_links_resource_custom_text_position::*;
 #[doc(hidden)]
+pub mod payment_links_resource_individual_name;
+#[doc(inline)]
+pub use payment_links_resource_individual_name::*;
+#[doc(hidden)]
 pub mod payment_links_resource_invoice_creation;
 #[doc(inline)]
 pub use payment_links_resource_invoice_creation::*;
@@ -1820,6 +1884,10 @@ pub use payment_links_resource_invoice_creation::*;
 pub mod payment_links_resource_invoice_settings;
 #[doc(inline)]
 pub use payment_links_resource_invoice_settings::*;
+#[doc(hidden)]
+pub mod payment_links_resource_name_collection;
+#[doc(inline)]
+pub use payment_links_resource_name_collection::*;
 #[doc(hidden)]
 pub mod payment_links_resource_optional_item;
 #[doc(inline)]
@@ -1980,6 +2048,10 @@ pub use payment_method_config_biz_payment_method_configuration_details::*;
 pub mod payment_method_crypto;
 #[doc(inline)]
 pub use payment_method_crypto::*;
+#[doc(hidden)]
+pub mod payment_method_custom;
+#[doc(inline)]
+pub use payment_method_custom::*;
 #[doc(hidden)]
 pub mod payment_method_customer_balance;
 #[doc(inline)]
@@ -2749,9 +2821,81 @@ pub mod payment_pages_private_card_payment_method_options_resource_restrictions;
 #[doc(inline)]
 pub use payment_pages_private_card_payment_method_options_resource_restrictions::*;
 #[doc(hidden)]
+pub mod payment_record;
+#[doc(inline)]
+pub use payment_record::*;
+#[doc(hidden)]
 pub mod payment_source;
 #[doc(inline)]
 pub use payment_source::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_address;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_address::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_amount;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_amount::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_billing_details;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_billing_details::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_customer_details;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_customer_details::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_card_details;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_card_details::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_card_details_resource_checks;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_card_details_resource_checks::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_card_details_resource_network_token;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_card_details_resource_network_token::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_card_details_resource_three_d_secure;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_card_details_resource_three_d_secure::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet_resource_apple_pay;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet_resource_apple_pay::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet_resource_google_pay;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet_resource_google_pay::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_custom_details;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_custom_details::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_details;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_details::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_us_bank_account_details;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_us_bank_account_details::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_processor_details;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_processor_details::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_processor_details_resource_custom_details;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_processor_details_resource_custom_details::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_shipping_details;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_shipping_details::*;
 #[doc(hidden)]
 pub mod payout;
 #[doc(inline)]
@@ -2880,6 +3024,10 @@ pub use refund_destination_details_br_bank_transfer::*;
 pub mod refund_destination_details_card;
 #[doc(inline)]
 pub use refund_destination_details_card::*;
+#[doc(hidden)]
+pub mod refund_destination_details_crypto;
+#[doc(inline)]
+pub use refund_destination_details_crypto::*;
 #[doc(hidden)]
 pub mod refund_destination_details_eu_bank_transfer;
 #[doc(inline)]

@@ -59,7 +59,6 @@ const _: () = {
             Ok(match k {
                 "inbound_flows" => Deserialize::begin(&mut self.inbound_flows),
                 "outbound_flows" => Deserialize::begin(&mut self.outbound_flows),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -104,7 +103,6 @@ const _: () = {
                 match k.as_str() {
                     "inbound_flows" => b.inbound_flows = FromValueOpt::from_value(v),
                     "outbound_flows" => b.outbound_flows = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

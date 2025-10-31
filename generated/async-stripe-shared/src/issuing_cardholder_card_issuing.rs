@@ -52,7 +52,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "user_terms_acceptance" => Deserialize::begin(&mut self.user_terms_acceptance),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -95,7 +94,6 @@ const _: () = {
                     "user_terms_acceptance" => {
                         b.user_terms_acceptance = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

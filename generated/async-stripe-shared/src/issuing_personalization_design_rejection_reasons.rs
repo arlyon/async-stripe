@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "card_logo" => Deserialize::begin(&mut self.card_logo),
                 "carrier_text" => Deserialize::begin(&mut self.carrier_text),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "card_logo" => b.card_logo = FromValueOpt::from_value(v),
                     "carrier_text" => b.carrier_text = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

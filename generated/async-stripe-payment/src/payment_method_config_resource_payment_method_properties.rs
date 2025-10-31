@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "available" => Deserialize::begin(&mut self.available),
                 "display_preference" => Deserialize::begin(&mut self.display_preference),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "available" => b.available = FromValueOpt::from_value(v),
                     "display_preference" => b.display_preference = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -40,6 +40,8 @@ pub struct LegalEntityCompany {
     /// The company's phone number (used for verification).
     pub phone: Option<String>,
     pub registration_date: Option<stripe_shared::LegalEntityRegistrationDate>,
+    /// This hash is used to attest that the representative is authorized to act as the representative of their legal entity.
+    pub representative_declaration: Option<stripe_shared::LegalEntityRepresentativeDeclaration>,
     /// The category identifying the legal structure of the company or legal entity.
     /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
@@ -71,6 +73,7 @@ pub struct LegalEntityCompanyBuilder {
     ownership_exemption_reason: Option<Option<LegalEntityCompanyOwnershipExemptionReason>>,
     phone: Option<Option<String>>,
     registration_date: Option<Option<stripe_shared::LegalEntityRegistrationDate>>,
+    representative_declaration: Option<Option<stripe_shared::LegalEntityRepresentativeDeclaration>>,
     structure: Option<Option<LegalEntityCompanyStructure>>,
     tax_id_provided: Option<Option<bool>>,
     tax_id_registrar: Option<Option<String>>,
@@ -138,12 +141,14 @@ const _: () = {
                 }
                 "phone" => Deserialize::begin(&mut self.phone),
                 "registration_date" => Deserialize::begin(&mut self.registration_date),
+                "representative_declaration" => {
+                    Deserialize::begin(&mut self.representative_declaration)
+                }
                 "structure" => Deserialize::begin(&mut self.structure),
                 "tax_id_provided" => Deserialize::begin(&mut self.tax_id_provided),
                 "tax_id_registrar" => Deserialize::begin(&mut self.tax_id_registrar),
                 "vat_id_provided" => Deserialize::begin(&mut self.vat_id_provided),
                 "verification" => Deserialize::begin(&mut self.verification),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -166,6 +171,7 @@ const _: () = {
                 ownership_exemption_reason: Deserialize::default(),
                 phone: Deserialize::default(),
                 registration_date: Deserialize::default(),
+                representative_declaration: Deserialize::default(),
                 structure: Deserialize::default(),
                 tax_id_provided: Deserialize::default(),
                 tax_id_registrar: Deserialize::default(),
@@ -192,6 +198,7 @@ const _: () = {
                 Some(ownership_exemption_reason),
                 Some(phone),
                 Some(registration_date),
+                Some(representative_declaration),
                 Some(structure),
                 Some(tax_id_provided),
                 Some(tax_id_registrar),
@@ -214,6 +221,7 @@ const _: () = {
                 self.ownership_exemption_reason,
                 self.phone.take(),
                 self.registration_date,
+                self.representative_declaration.take(),
                 self.structure.take(),
                 self.tax_id_provided,
                 self.tax_id_registrar.take(),
@@ -240,6 +248,7 @@ const _: () = {
                 ownership_exemption_reason,
                 phone,
                 registration_date,
+                representative_declaration,
                 structure,
                 tax_id_provided,
                 tax_id_registrar,
@@ -294,12 +303,14 @@ const _: () = {
                     }
                     "phone" => b.phone = FromValueOpt::from_value(v),
                     "registration_date" => b.registration_date = FromValueOpt::from_value(v),
+                    "representative_declaration" => {
+                        b.representative_declaration = FromValueOpt::from_value(v)
+                    }
                     "structure" => b.structure = FromValueOpt::from_value(v),
                     "tax_id_provided" => b.tax_id_provided = FromValueOpt::from_value(v),
                     "tax_id_registrar" => b.tax_id_registrar = FromValueOpt::from_value(v),
                     "vat_id_provided" => b.vat_id_provided = FromValueOpt::from_value(v),
                     "verification" => b.verification = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -60,7 +60,6 @@ const _: () = {
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
                 "payment_reference" => Deserialize::begin(&mut self.payment_reference),
                 "verified_phone_last4" => Deserialize::begin(&mut self.verified_phone_last4),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -111,7 +110,6 @@ const _: () = {
                     "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
                     "payment_reference" => b.payment_reference = FromValueOpt::from_value(v),
                     "verified_phone_last4" => b.verified_phone_last4 = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -66,7 +66,6 @@ const _: () = {
                 "app_id" => Deserialize::begin(&mut self.app_id),
                 "client" => Deserialize::begin(&mut self.client),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -115,7 +114,6 @@ const _: () = {
                     "app_id" => b.app_id = FromValueOpt::from_value(v),
                     "client" => b.client = FromValueOpt::from_value(v),
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

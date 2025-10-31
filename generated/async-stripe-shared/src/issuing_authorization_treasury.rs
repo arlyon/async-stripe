@@ -59,7 +59,6 @@ const _: () = {
                 "received_credits" => Deserialize::begin(&mut self.received_credits),
                 "received_debits" => Deserialize::begin(&mut self.received_debits),
                 "transaction" => Deserialize::begin(&mut self.transaction),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                     "received_credits" => b.received_credits = FromValueOpt::from_value(v),
                     "received_debits" => b.received_debits = FromValueOpt::from_value(v),
                     "transaction" => b.transaction = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

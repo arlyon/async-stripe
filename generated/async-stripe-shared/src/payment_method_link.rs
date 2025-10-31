@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "email" => Deserialize::begin(&mut self.email),
                 "persistent_token" => Deserialize::begin(&mut self.persistent_token),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "email" => b.email = FromValueOpt::from_value(v),
                     "persistent_token" => b.persistent_token = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

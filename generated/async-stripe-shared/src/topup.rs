@@ -120,7 +120,6 @@ const _: () = {
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "status" => Deserialize::begin(&mut self.status),
                 "transfer_group" => Deserialize::begin(&mut self.transfer_group),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -242,7 +241,6 @@ const _: () = {
                     "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

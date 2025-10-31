@@ -58,16 +58,13 @@ const _: () = {
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
             "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self {
-            payment_intent: Deserialize::default(),
-
-        }
+        Self { payment_intent: Deserialize::default(),
+ }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
@@ -108,7 +105,6 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

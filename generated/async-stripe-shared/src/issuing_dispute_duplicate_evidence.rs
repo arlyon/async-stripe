@@ -74,7 +74,6 @@ const _: () = {
                 "check_image" => Deserialize::begin(&mut self.check_image),
                 "explanation" => Deserialize::begin(&mut self.explanation),
                 "original_transaction" => Deserialize::begin(&mut self.original_transaction),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -151,7 +150,6 @@ const _: () = {
                     "check_image" => b.check_image = FromValueOpt::from_value(v),
                     "explanation" => b.explanation = FromValueOpt::from_value(v),
                     "original_transaction" => b.original_transaction = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

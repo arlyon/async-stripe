@@ -198,7 +198,7 @@ struct PreviewCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     refund_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    refunds: Option<Vec<CreditNoteRefundParams>>,
+    refunds: Option<Vec<PreviewCreditNoteRefunds>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_cost: Option<CreditNoteShippingCost>,
 }
@@ -385,6 +385,90 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteLinesType {
             .map_err(|_| serde::de::Error::custom("Unknown value for PreviewCreditNoteLinesType"))
     }
 }
+/// Refunds to link to this credit note.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct PreviewCreditNoteRefunds {
+    /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
+    /// Defaults to the entire refund amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_refunded: Option<i64>,
+    /// The PaymentRecord refund details to link to this credit note.
+    /// Required when `type` is `payment_record_refund`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_record_refund: Option<PaymentRecordRefundParams>,
+    /// ID of an existing refund to link this credit note to. Required when `type` is `refund`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund: Option<String>,
+    /// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<PreviewCreditNoteRefundsType>,
+}
+impl PreviewCreditNoteRefunds {
+    pub fn new() -> Self {
+        Self { amount_refunded: None, payment_record_refund: None, refund: None, type_: None }
+    }
+}
+impl Default for PreviewCreditNoteRefunds {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum PreviewCreditNoteRefundsType {
+    PaymentRecordRefund,
+    Refund,
+}
+impl PreviewCreditNoteRefundsType {
+    pub fn as_str(self) -> &'static str {
+        use PreviewCreditNoteRefundsType::*;
+        match self {
+            PaymentRecordRefund => "payment_record_refund",
+            Refund => "refund",
+        }
+    }
+}
+
+impl std::str::FromStr for PreviewCreditNoteRefundsType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PreviewCreditNoteRefundsType::*;
+        match s {
+            "payment_record_refund" => Ok(PaymentRecordRefund),
+            "refund" => Ok(Refund),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for PreviewCreditNoteRefundsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PreviewCreditNoteRefundsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for PreviewCreditNoteRefundsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PreviewCreditNoteRefundsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PreviewCreditNoteRefundsType"))
+    }
+}
 /// Get a preview of a credit note without creating it.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct PreviewCreditNote {
@@ -462,7 +546,7 @@ impl PreviewCreditNote {
         self
     }
     /// Refunds to link to this credit note.
-    pub fn refunds(mut self, refunds: impl Into<Vec<CreditNoteRefundParams>>) -> Self {
+    pub fn refunds(mut self, refunds: impl Into<Vec<PreviewCreditNoteRefunds>>) -> Self {
         self.inner.refunds = Some(refunds.into());
         self
     }
@@ -528,7 +612,7 @@ struct PreviewLinesCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     refund_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    refunds: Option<Vec<CreditNoteRefundParams>>,
+    refunds: Option<Vec<PreviewLinesCreditNoteRefunds>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_cost: Option<CreditNoteShippingCost>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -722,6 +806,91 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteLinesType {
         })
     }
 }
+/// Refunds to link to this credit note.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct PreviewLinesCreditNoteRefunds {
+    /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
+    /// Defaults to the entire refund amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_refunded: Option<i64>,
+    /// The PaymentRecord refund details to link to this credit note.
+    /// Required when `type` is `payment_record_refund`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_record_refund: Option<PaymentRecordRefundParams>,
+    /// ID of an existing refund to link this credit note to. Required when `type` is `refund`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund: Option<String>,
+    /// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<PreviewLinesCreditNoteRefundsType>,
+}
+impl PreviewLinesCreditNoteRefunds {
+    pub fn new() -> Self {
+        Self { amount_refunded: None, payment_record_refund: None, refund: None, type_: None }
+    }
+}
+impl Default for PreviewLinesCreditNoteRefunds {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum PreviewLinesCreditNoteRefundsType {
+    PaymentRecordRefund,
+    Refund,
+}
+impl PreviewLinesCreditNoteRefundsType {
+    pub fn as_str(self) -> &'static str {
+        use PreviewLinesCreditNoteRefundsType::*;
+        match self {
+            PaymentRecordRefund => "payment_record_refund",
+            Refund => "refund",
+        }
+    }
+}
+
+impl std::str::FromStr for PreviewLinesCreditNoteRefundsType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PreviewLinesCreditNoteRefundsType::*;
+        match s {
+            "payment_record_refund" => Ok(PaymentRecordRefund),
+            "refund" => Ok(Refund),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for PreviewLinesCreditNoteRefundsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PreviewLinesCreditNoteRefundsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for PreviewLinesCreditNoteRefundsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteRefundsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PreviewLinesCreditNoteRefundsType")
+        })
+    }
+}
 /// When retrieving a credit note preview, you’ll get a **lines** property containing the first handful of those items.
 /// This URL you can retrieve the full (paginated) list of line items.
 #[derive(Clone, Debug, serde::Serialize)]
@@ -813,7 +982,7 @@ impl PreviewLinesCreditNote {
         self
     }
     /// Refunds to link to this credit note.
-    pub fn refunds(mut self, refunds: impl Into<Vec<CreditNoteRefundParams>>) -> Self {
+    pub fn refunds(mut self, refunds: impl Into<Vec<PreviewLinesCreditNoteRefunds>>) -> Self {
         self.inner.refunds = Some(refunds.into());
         self
     }
@@ -889,7 +1058,7 @@ struct CreateCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     refund_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    refunds: Option<Vec<CreditNoteRefundParams>>,
+    refunds: Option<Vec<CreateCreditNoteRefunds>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_cost: Option<CreditNoteShippingCost>,
 }
@@ -1076,6 +1245,90 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteLinesType {
             .map_err(|_| serde::de::Error::custom("Unknown value for CreateCreditNoteLinesType"))
     }
 }
+/// Refunds to link to this credit note.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateCreditNoteRefunds {
+    /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
+    /// Defaults to the entire refund amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_refunded: Option<i64>,
+    /// The PaymentRecord refund details to link to this credit note.
+    /// Required when `type` is `payment_record_refund`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_record_refund: Option<PaymentRecordRefundParams>,
+    /// ID of an existing refund to link this credit note to. Required when `type` is `refund`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund: Option<String>,
+    /// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CreateCreditNoteRefundsType>,
+}
+impl CreateCreditNoteRefunds {
+    pub fn new() -> Self {
+        Self { amount_refunded: None, payment_record_refund: None, refund: None, type_: None }
+    }
+}
+impl Default for CreateCreditNoteRefunds {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateCreditNoteRefundsType {
+    PaymentRecordRefund,
+    Refund,
+}
+impl CreateCreditNoteRefundsType {
+    pub fn as_str(self) -> &'static str {
+        use CreateCreditNoteRefundsType::*;
+        match self {
+            PaymentRecordRefund => "payment_record_refund",
+            Refund => "refund",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCreditNoteRefundsType {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCreditNoteRefundsType::*;
+        match s {
+            "payment_record_refund" => Ok(PaymentRecordRefund),
+            "refund" => Ok(Refund),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreateCreditNoteRefundsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCreditNoteRefundsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateCreditNoteRefundsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCreditNoteRefundsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreateCreditNoteRefundsType"))
+    }
+}
 /// Issue a credit note to adjust the amount of a finalized invoice.
 /// A credit note will first reduce the invoice’s `amount_remaining` (and `amount_due`), but not below zero.
 /// This amount is indicated by the credit note’s `pre_payment_amount`.
@@ -1168,7 +1421,7 @@ impl CreateCreditNote {
         self
     }
     /// Refunds to link to this credit note.
-    pub fn refunds(mut self, refunds: impl Into<Vec<CreditNoteRefundParams>>) -> Self {
+    pub fn refunds(mut self, refunds: impl Into<Vec<CreateCreditNoteRefunds>>) -> Self {
         self.inner.refunds = Some(refunds.into());
         self
     }
@@ -1357,23 +1610,16 @@ impl TaxAmountWithTaxRateParam {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
-pub struct CreditNoteRefundParams {
-    /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
-    /// Defaults to the entire refund amount.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_refunded: Option<i64>,
-    /// ID of an existing refund to link this credit note to. Required when `type` is `refund`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub refund: Option<String>,
+pub struct PaymentRecordRefundParams {
+    /// The ID of the PaymentRecord with the refund to link to this credit note.
+    pub payment_record: String,
+    /// The PaymentRecord refund group to link to this credit note.
+    /// For refunds processed off-Stripe, this will correspond to the `processor_details.custom.refund_reference` field provided when reporting the refund on the PaymentRecord.
+    pub refund_group: String,
 }
-impl CreditNoteRefundParams {
-    pub fn new() -> Self {
-        Self { amount_refunded: None, refund: None }
-    }
-}
-impl Default for CreditNoteRefundParams {
-    fn default() -> Self {
-        Self::new()
+impl PaymentRecordRefundParams {
+    pub fn new(payment_record: impl Into<String>, refund_group: impl Into<String>) -> Self {
+        Self { payment_record: payment_record.into(), refund_group: refund_group.into() }
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]

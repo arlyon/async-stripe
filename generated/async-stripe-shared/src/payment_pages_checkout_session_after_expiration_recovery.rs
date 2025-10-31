@@ -65,7 +65,6 @@ const _: () = {
                 "enabled" => Deserialize::begin(&mut self.enabled),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -118,7 +117,6 @@ const _: () = {
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

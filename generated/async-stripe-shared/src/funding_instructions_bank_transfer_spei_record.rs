@@ -70,7 +70,6 @@ const _: () = {
                 "bank_code" => Deserialize::begin(&mut self.bank_code),
                 "bank_name" => Deserialize::begin(&mut self.bank_name),
                 "clabe" => Deserialize::begin(&mut self.clabe),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -147,7 +146,6 @@ const _: () = {
                     "bank_code" => b.bank_code = FromValueOpt::from_value(v),
                     "bank_name" => b.bank_name = FromValueOpt::from_value(v),
                     "clabe" => b.clabe = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

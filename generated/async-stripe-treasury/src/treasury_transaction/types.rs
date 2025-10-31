@@ -106,7 +106,6 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "status" => Deserialize::begin(&mut self.status),
                 "status_transitions" => Deserialize::begin(&mut self.status_transitions),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -221,7 +220,6 @@ const _: () = {
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
