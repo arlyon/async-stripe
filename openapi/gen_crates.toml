@@ -78,6 +78,20 @@ paths = [
     "bank_account",
     "payment_link",
     "confirmation_token",
+    "payment_attempt_record",
+    "payments_primitives_payment_records_resource_address",
+    "payment_flows_private_payment_methods_alipay_details",
+    "payments_primitives_payment_records_resource_customer_details",
+    "payments_primitives_payment_records_resource_amount",
+    "payments_primitives_payment_records_resource_payment_method_card_details",
+    "payments_primitives_payment_records_resource_payment_method_card_details_resource_checks",
+    "payments_primitives_payment_records_resource_payment_method_card_details_resource_network_token",
+    "payments_primitives_payment_records_resource_payment_method_card_details_resource_three_d_secure",
+    "payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet",
+    "payments_primitives_payment_records_resource_payment_method_custom_details",
+    "payments_primitives_payment_records_resource_payment_method_details",
+    "payments_primitives_payment_records_resource_processor_details",
+    "payments_primitives_payment_records_resource_processor_details_resource_custom_details",
 ]
 description = '''This crate provides Rust bindings to the Stripe HTTP API, specifically
 for requests mentioned in the `Payment Methods` and `Payment Links` sections

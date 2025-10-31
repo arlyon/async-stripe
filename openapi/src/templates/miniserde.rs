@@ -203,10 +203,15 @@ fn miniserde_struct_inner(
         let f_name = &field.variable_name();
         let wire_name = field.wire_name();
 
-        let _ = writeln!(key_inner, r#""{wire_name}" => Deserialize::begin(&mut self.{f_name}),"#);
-        let _ = writeln!(
+        let _ = write!(
+            key_inner,
+            r#"
+            "{wire_name}" => Deserialize::begin(&mut self.{f_name}),"#
+        );
+        let _ = write!(
             from_obj_inner,
-            r#""{wire_name}" => b.{f_name} = FromValueOpt::from_value(v),"#
+            r#"
+            "{wire_name}" => b.{f_name} = FromValueOpt::from_value(v),"#
         );
         let is_copy = field.rust_type.is_copy(components);
 
@@ -250,16 +255,13 @@ fn miniserde_struct_inner(
     impl MapBuilder for {builder_name} {{
         type Out = {ident};
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {{
-            Ok(match k {{
-                {key_inner}
+            Ok(match k {{{key_inner}
                 _ => <dyn Visitor>::ignore(),
             }})
         }}
 
         fn deser_default() -> Self {{
-            Self {{
-                {builder_new_inner}
-            }}
+            Self {{ {builder_new_inner} }}
         }}
 
         fn take_out(&mut self) -> Option<Self::Out> {{
@@ -292,8 +294,7 @@ fn miniserde_struct_inner(
             }};
             let mut b = {builder_name}::deser_default();
             for (k, v) in obj {{
-                match k.as_str() {{
-                    {from_obj_inner}
+                match k.as_str() {{{from_obj_inner}
                     _ => {{}}
                 }}
             }}
